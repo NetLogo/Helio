@@ -1,0 +1,347 @@
+/* (c) 2025 Omar Ibrahim, CCL
+   with code repurposed and https://necolas.github.io/normalize.css/8.0.1/normalize.css
+   licensed under the MIT License. */
+
+.container {
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	gap: var(--space-lg);
+	padding: var(--space-sm) var(--space-md);
+	background: var(--color-nav-background);
+	color: var(--color-nav-text);
+	box-shadow: var(--shadow-md);
+	transition: transform var(--dur-fast), background var(--dur-fast);
+
+	--blur-backdrop: 0;
+	backdrop-filter: blur(var(--blur-backdrop));
+}
+
+.brand {
+	font-size: 1.25rem;
+	font-weight: 700;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	margin-left: var(--space-lg);
+	gap: 0.5rem;
+}
+
+.brand svg,
+.brand img,
+.brand picture,
+.brand:not(.brand img):not(.brand picture):not(.brand svg) {
+	width: 11rem;
+	height: auto;
+}
+
+.row {
+	display: contents;
+}
+
+.menus {
+	display: none;
+}
+.row > .menus {
+	display: contents;
+}
+
+.links {
+	display: flex;
+	align-items: center;
+	gap: var(--space-md);
+	flex: 1;
+
+	max-width: max(70vw, 400px);
+}
+
+.item {
+	position: relative;
+	white-space: nowrap;
+	break-after: avoid;
+}
+.item > a,
+.action {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.4rem 0.6rem;
+	border-radius: var(--radius-sm);
+	color: inherit;
+	text-decoration: none;
+	font-weight: 500;
+	transition: background var(--dur-fast);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis; /* Ensures long text is truncated with ellipsis */
+	word-break: keep-all;
+}
+.item > a:hover,
+.action:hover {
+	background: var(--color-nav-hover);
+}
+
+.item.active > a,
+.dropdown a.active {
+	text-shadow: 0 0 0 var(--color-nav-active), 0.03em 0 var(--color-nav-active); /* Fake bold effect with no layout shift */
+	color: var(--color-nav-active);
+}
+
+.dropdown {
+	position: absolute;
+	left: 0;
+	top: 105%;
+	min-width: 14rem;
+	padding: var(--space-sm);
+	background: var(--color-background-overlay);
+	border-radius: var(--radius-sm);
+	opacity: 0;
+	transform: scaleY(0.8) translateY(5px);
+	transform-origin: top;
+	pointer-events: none;
+	transition: opacity var(--dur-fast), transform var(--dur-fast);
+	box-shadow: var(--shadow-md);
+	
+	--columns: 1;
+	column-count: var(--columns);
+	column-gap: var(--space-sm);
+	row-gap: var(--space-xs);
+}
+.dropdown a {
+	display: block;
+	padding: 0.45rem 0.9rem;
+	font-weight: 400;
+	color: var(--color-black);
+	text-decoration: none;
+	border-radius: var(--radius);
+	transition: background var(--dur-fast), color var(--dur-fast);
+}
+.dropdown a:hover {
+	background: var(--color-nav-hover);
+}
+.item:hover > .dropdown,
+.dropdown:hover,
+.dropdown.open {
+	opacity: 1;
+	transform: scaleY(1);
+	pointer-events: auto;
+}
+
+/* Version selector */
+.version-select {
+	appearance: base-select;
+	background: var(--color-nav-text);
+	color: var(--color-text-on-primary);
+	border: 1px solid transparent;
+	border-radius: var(--radius);
+	display: inline-flex;
+	align-items: center;
+
+	padding: 0.35rem 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+
+	width: fit-content;
+	max-height: 1.9lh;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.version-select:hover:not(.version-select option:hover) {
+	background: var(--color-brand);
+}
+.version-select:focus {
+	outline: none;
+}
+.version-select:focus-visible {
+	outline: 1px dashed var(--color-primary);
+	outline-offset: 1px;
+}
+.version-select:disabled {
+	background: var(--color-grey-light);
+	color: var(--color-text-disabled);
+	cursor: not-allowed;
+}
+.version-select option {
+	background: var(--color-background);
+}
+
+/* Utility buttons */
+.row > .actions {
+	display: flex;
+	align-items: center;
+	gap: var(--space-xs);
+}
+:not(.row) > .actions {
+	display: none;
+}
+.action svg {
+	width: 20px;
+	height: 20px;
+	fill: var(--color-nav-text);
+}
+.action:hover svg {
+	fill: var(--color-brand);
+}
+.action:focus {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+button.action {
+	border: none;
+	outline: none;
+}
+
+
+/* ------------------------------------------------------------------
+   MOBILE
+------------------------------------------------------------------ */
+.hamburger {
+	display: none;
+	flex-direction: column;
+	gap: 4px;
+	cursor: pointer;
+}
+.hamburger span {
+	width: 22px;
+	height: 2px;
+	background: var(--color-nav-text);
+	transition: transform var(--dur-fast);
+}
+.menuToggle {
+	display: none;
+}
+
+/* Mobile */
+.row {
+	display: contents;
+}
+
+@media (max-width: 1214px) {
+	:root {
+		--max-width-ch: 150ch;
+		--space-xl: 2rem; /* Adjusted for smaller screens */
+		--space-lg: 1.5rem; /* Adjusted for smaller screens */
+		--space-md: 1rem; /* Adjusted for smaller screens */
+		--space-sm: 0.75rem; /* Adjusted for smaller screens */
+	}
+	.container {
+		flex-direction: column;
+		justify-content: space-around;
+	}
+	.brand svg,
+	.brand img,
+	.brand picture,
+	.brand:not(.brand img):not(.brand picture):not(.brand svg) {
+		width: 8rem;
+		text-align: left;
+	}
+	.row {
+		display: flex;
+		gap: var(--space-md);
+		justify-content: space-between;
+		width: 100%;
+	}
+	.anchor {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+	.row > .menus {
+		display: none;
+	}
+	.menus {
+		width: 100%;
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height var(--dur-fast) ease;
+
+		max-height: 70vh;
+		overflow: auto;
+	}
+	.links {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.item {
+		width: 100%;
+	}
+	.menuToggle {
+		padding-left: 0.6rem;
+	}
+	.menuToggle:not(:checked) ~ .menus {
+		display: none;
+	}
+	.menuToggle:checked ~ .menus {
+		display: flex;
+		max-height: 600px;
+		padding: 0.5rem 0;
+	}
+	.item:hover > .dropdown {
+		position: relative;
+		transform: none;
+		opacity: 1;
+		pointer-events: auto;
+		box-shadow: none;
+	}
+	.dropdown {
+		background: transparent;
+		padding: 0;
+		position: relative;
+		display: contents;
+		opacity: 1;
+		height: auto;
+		transform: none;
+		box-shadow: none;
+	}
+	.dropdown a {
+		padding-left: 1.25rem;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		pointer-events: all;
+	}
+	.hamburger {
+		display: flex;
+	}
+	.menuToggle:checked + div .hamburger span:nth-child(1) {
+		transform: translateY(6px) rotate(45deg);
+	}
+	.menuToggle:checked + div .hamburger span:nth-child(2) {
+		opacity: 0;
+	}
+	.menuToggle:checked + div .hamburger span:nth-child(3) {
+		transform: translateY(-6px) rotate(-45deg);
+	}
+
+	.version-select {
+		font-size: 0.7rem;
+		max-height: 2rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+@media (max-width: 768px) {
+	.brand svg,
+	.brand img,
+	.brand picture,
+	.brand:not(.brand img):not(.brand picture):not(.brand svg) {
+		/* display: none; Hide brand logo on small screens */
+		width: 6rem; /* Adjust width for smaller screens */
+		margin-left: 0;
+	}
+}
+
+// Utilities
+.blurBackdrop {
+	background: transparent;
+}
+
+.hide {
+	transform: translateY(-100%);
+}

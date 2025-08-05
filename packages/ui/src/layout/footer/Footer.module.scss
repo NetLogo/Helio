@@ -1,0 +1,24 @@
+.footer {
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--color-nav-background);
+  box-shadow: var(--shadow-md);
+  color: var(--color-black);
+}
+
+.section {
+  padding: var(--space-md) var(--space-sm);
+}
+
+.brandSection img,
+.brandSection svg {
+  width: 100%;
+  height: fit-content;
+  margin: 0 auto;
+  margin-bottom: var(--space-md);
+}
+
+@media (min-width: 1024px) {
+  .section {
+    grid-column: span var(--section-span) / span var(--section-span);
+  }
+}

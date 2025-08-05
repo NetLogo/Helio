@@ -4,11 +4,13 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./shared-styles.css",
+    ".": "./shared-styles.scss",
+    "./scss/*.scss": "./scss/*.scss",
     "./postcss": "./postcss.config.js"
   },
   "devDependencies": {
     "postcss": "^8.5.3",
+    "sass": "^1.89.2",
     "tailwindcss": "^4.1.5"
   }
 }
