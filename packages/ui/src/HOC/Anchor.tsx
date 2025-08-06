@@ -12,10 +12,12 @@ type AnchorProps = {
 const Anchor = ({ external, children, ...props }: AnchorProps) => {
   if (external) {
     return (
-      <Link target="_blank" rel="noopener noreferrer" {...props}>
+      // Why not <Link>?
+      // Because <Link> is only useful for internal navigation.
+      <a target="_blank" rel="noopener noreferrer" {...props}>
         <FontAwesomeIcon icon={faLink} className="mr-1" />
         {children}
-      </Link>
+      </a>
     );
   }
   return <Link {...props}>{children}</Link>;
