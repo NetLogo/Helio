@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { cn } from '@/utils/cn';
 import styles from './Navbar.module.scss';
 
+import Anchor from '@/HOC/Anchor';
 import { useDebouncedHover } from '@/hooks/useDebouncedHover';
 import { isWindowDefined } from '@/utils/client';
 import { cssVariable } from '@/utils/styles';
@@ -66,6 +67,7 @@ const Navbar = ({
   brand,
   brandHref,
   className,
+  style,
   show = true,
   blurBackdrop = 0,
   ...rest
@@ -80,7 +82,7 @@ const Navbar = ({
       )}
       style={{
         ...cssVariable('--blur-backdrop', blurBackdrop),
-        ...(rest.style || {}),
+        ...(style || {}),
       }}
       id={id}
       data-show={show}
@@ -107,22 +109,39 @@ Navbar.Client = ({ options = {}, ...rest }: NavbarClientProps) => {
   return <Navbar {...rest} {...uiProps} />;
 };
 
-Navbar.MenuToggle = ({ id }: { id: string }) => (
-  <input id={id + '-toggle'} type="checkbox" className={styles.menuToggle} />
+Navbar.MenuToggle = ({
+  id,
+  className,
+  ...rest
+}: { id: string } & React.HTMLProps<HTMLInputElement>) => (
+  <input
+    id={id + '-toggle'}
+    type="checkbox"
+    className={cn(styles.menuToggle, className)}
+    {...rest}
+  />
 );
 
-Navbar.Row = ({ children }: { children?: React.ReactNode }) => (
-  <div className={styles.row}>{children}</div>
+Navbar.Row = ({
+  children,
+  className,
+  ...rest
+}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
+  <div className={cn(styles.row, className)} {...rest}>
+    {children}
+  </div>
 );
 
 Navbar.AnchorContainer = ({
   id,
   children,
+  className,
+  ...rest
 }: {
   id: string;
   children?: React.ReactNode;
-}) => (
-  <div className={styles.anchor}>
+} & React.HTMLProps<HTMLDivElement>) => (
+  <div className={cn(styles.anchor, className)} {...rest}>
     <label className={styles.hamburger} htmlFor={id + '-toggle'}>
       {' '}
       <span></span>
@@ -136,17 +155,23 @@ Navbar.AnchorContainer = ({
 Navbar.BrandContainer = ({
   children,
   href,
+  className,
+  ...rest
 }: {
   children?: React.ReactNode;
   href?: string;
-}) => (
-  <a className={styles.brand} href={href}>
+} & React.HTMLProps<HTMLAnchorElement>) => (
+  <Anchor href={href} className={cn(styles.brand, className)} {...rest}>
     {children}
-  </a>
+  </Anchor>
 );
 
-Navbar.LinksContainer = ({ children }: { children?: React.ReactNode }) => (
-  <div className={styles.menus}>
+Navbar.LinksContainer = ({
+  children,
+  className,
+  ...rest
+}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
+  <div className={cn(styles.menus, className)} {...rest}>
     <div className={styles.links}>{children}</div>
   </div>
 );
@@ -167,7 +192,7 @@ Navbar.Item = ({
       {...rest}
     >
       {icon && <span className={styles.icon}>{icon}</span>}
-      <a href={href}>{title}</a>
+      <Anchor href={href}>{title}</Anchor>
       {children && (
         <div
           className={cn(styles.dropdown, dropdownOpen && styles.open)}
@@ -205,17 +230,34 @@ Navbar.ItemClient = (props: NavbarMenu) => {
   );
 };
 
-Navbar.DropdownItem = ({ title, href, icon, active, ...rest }: NavLink) => {
+Navbar.DropdownItem = ({
+  title,
+  href,
+  icon,
+  active,
+  className,
+  ...rest
+}: NavLink) => {
   return (
-    <a href={href} className={cn(active && styles.active)} {...rest}>
+    <Anchor
+      href={href}
+      className={cn(active && styles.active, className)}
+      {...rest}
+    >
       {icon && <span className={styles.icon}>{icon}</span>}
       {title}
-    </a>
+    </Anchor>
   );
 };
 
-Navbar.ActionsContainer = ({ children }: { children?: React.ReactNode }) => (
-  <div className={styles.actions}>{children}</div>
+Navbar.ActionsContainer = ({
+  children,
+  className,
+  ...rest
+}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
+  <div className={cn(styles.actions, className)} {...rest}>
+    {children}
+  </div>
 );
 Navbar.Action = ({
   title,
@@ -229,7 +271,7 @@ Navbar.Action = ({
     console.warn('Navbar.Action requires either href or onClick prop.');
     return null;
   }
-  const Component = href ? 'a' : 'button';
+  const Component = href ? Anchor : 'button';
   return (
     <Component
       href={href}

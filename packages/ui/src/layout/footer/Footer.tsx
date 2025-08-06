@@ -1,3 +1,4 @@
+import Anchor from '@/HOC/Anchor';
 import { cn } from '@/utils/cn';
 import { cssVariable, maybeCSSVariable } from '@/utils/styles';
 import React from 'react';
@@ -48,13 +49,13 @@ const Footer = ({
   sections = 3,
   children,
   className,
+  style,
   ...rest
 }: FooterProps) => {
   if (!show) return null;
 
   return (
     <footer
-      {...rest}
       className={cn(
         'w-full mt-5 px-4 gap-3',
         'bg-gray-50 border-t border-gray-200',
@@ -63,8 +64,9 @@ const Footer = ({
       )}
       style={{
         ...cssVariable('--section-span', 12 / sections),
-        ...(rest.style || {}),
+        ...(style || {}),
       }}
+      {...rest}
     >
       {children}
     </footer>
@@ -74,8 +76,12 @@ const Footer = ({
 /**
  * Main container for footer content with responsive layout
  */
-Footer.Container = ({ children }: { children?: React.ReactNode }) => (
-  <div className="mx-auto py-8">
+Footer.Container = ({
+  children,
+  className,
+  ...rest
+}: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('mx-auto py-8', className)} {...rest}>
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">{children}</div>
   </div>
 );
@@ -88,16 +94,20 @@ Footer.BrandSection = ({
   brand,
   brandHref,
   span,
-}: FooterBrandSectionProps) => (
+  className,
+  style,
+  ...rest
+}: FooterBrandSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('px-1 py-2', styles.section, styles.brandSection)}
-    style={{ ...maybeCSSVariable('--section-span', span) }}
+    className={cn('px-1 py-2', styles.section, styles.brandSection, className)}
+    style={{ ...maybeCSSVariable('--section-span', span), ...style }}
+    {...rest}
   >
     <div className="flex flex-col items-start">
       {brand && (
-        <a href={brandHref} className="flex items-center space-x-2">
+        <Anchor href={brandHref} className="flex items-center space-x-2">
           {brand}
-        </a>
+        </Anchor>
       )}
       {children}
     </div>
@@ -107,10 +117,18 @@ Footer.BrandSection = ({
 /**
  * Links section with title and list of links
  */
-Footer.LinksSection = ({ title, links, span }: FooterLinksSectionProps) => (
+Footer.LinksSection = ({
+  title,
+  links,
+  span,
+  className,
+  style,
+  ...rest
+}: FooterLinksSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('px-1 py-2', styles.section)}
-    style={{ ...maybeCSSVariable('--section-span', span) }}
+    className={cn('px-1 py-2', styles.section, className)}
+    style={{ ...maybeCSSVariable('--section-span', span), ...style }}
+    {...rest}
   >
     <div>
       <h5 className="mt-0 mb-4 text-lg font-semibold text-gray-900">{title}</h5>
@@ -126,25 +144,42 @@ Footer.LinksSection = ({ title, links, span }: FooterLinksSectionProps) => (
 /**
  * Individual link item
  */
-Footer.Link = ({ title, href, external = false }: FooterLink) => (
+Footer.Link = ({
+  title,
+  href,
+  external = false,
+  className,
+  ...rest
+}: FooterLink & React.HTMLAttributes<HTMLAnchorElement>) => (
   <li>
-    <a
+    <Anchor
       href={href}
-      className="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200"
-      {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
+      className={cn(
+        'text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200',
+        className
+      )}
+      external={external}
+      {...rest}
     >
       {title}
-    </a>
+    </Anchor>
   </li>
 );
 
 /**
  * Copyright and legal information section
  */
-Footer.Section = ({ children, span }: FooterSectionProps) => (
+Footer.Section = ({
+  children,
+  span,
+  className,
+  style = {},
+  ...rest
+}: FooterSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('lg:col-span-5 px-1 py-2', styles.section)}
-    style={{ ...maybeCSSVariable('--section-span', span) }}
+    className={cn('lg:col-span-5 px-1 py-2', styles.section, className)}
+    style={{ ...maybeCSSVariable('--section-span', span), ...style }}
+    {...rest}
   >
     <div className="text-gray-700 space-y-3">{children}</div>
   </div>
@@ -157,18 +192,24 @@ Footer.CopyrightLink = ({
   href,
   children,
   external = false,
+  className,
+  ...rest
 }: {
   href: string;
   children: React.ReactNode;
   external?: boolean;
-}) => (
-  <a
+} & React.HTMLAttributes<HTMLAnchorElement>) => (
+  <Anchor
     href={href}
-    className="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200"
+    className={cn(
+      'text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200',
+      className
+    )}
     {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
+    {...rest}
   >
     {children}
-  </a>
+  </Anchor>
 );
 
 export default Footer;
