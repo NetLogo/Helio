@@ -1,5 +1,3 @@
-import '@repo/tailwind-config';
-import '@repo/ui/styles.scss';
 import './globals.scss';
 
 import type { Metadata } from 'next';
