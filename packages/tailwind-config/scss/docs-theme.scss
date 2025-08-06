@@ -449,3 +449,9 @@ a.modern-anchor:hover,
 a:not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a):hover {
   color: var(--color-link-hover);
 }
+
+ul,
+ol,
+menu {
+  list-style: unset;
+}

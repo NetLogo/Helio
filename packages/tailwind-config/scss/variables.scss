@@ -10,11 +10,11 @@
   --line-height-code: 1.6em;
 
   /* Border */
-  --radius-sm: 3px;
-  --radius: 4px;
-  --radius-md: 5px;
-  --radius-lg: 8px;
-  --radius-xl: 10px;
+  --radius-sm: 0.1875rem;
+  --radius: 0.25rem;
+  --radius-md: 0.3125rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.625rem;
 
   /* Color palette */
   --color-blue: #0670ed;
@@ -92,7 +92,31 @@
   --scroll-margin: 2em;
 }
 
-@media (max-width: 1214px) {
+/*
+ * Theme variables for Tailwind CSS
+ * Some of these repeat the :root variables but are necessary for Tailwind to
+ * correctly apply styles based on the theme.
+ * It would be nice to avoid duplication.
+ */
+@theme {
+  --font-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: monospace;
+
+  --color-black: #161616;
+  --color-white: #fff;
+
+  --leading-normal: 1.6em;
+
+  --radius-xs: 0.1875rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.3125rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.625rem;
+
+  --drop-shadow-md: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 1024px) {
   :root {
     --max-width-ch: 150ch;
     --space-xl: 2rem; /* Adjusted for smaller screens */

@@ -1,7 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import 'tailwindcss';
 
-@theme {
-  --color-blue-1000: #2a8af6;
-  --color-purple-1000: #a853ba;
-  --color-red-1000: #e92a67;
+// Declare the `website` layer higher than all
+// Tailwind CSS layers to ensure it can override styles.
+@layer theme, base, components, utilities, website;
+
+// Normalizing and variable setting happens at the lowest level
+@layer theme {
+  @import './scss/variables.scss';
+  @import './scss/normalize.scss';
 }
