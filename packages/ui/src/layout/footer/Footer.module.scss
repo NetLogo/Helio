@@ -10,7 +10,7 @@
 }
 
 .brandSection img,
-.brandSection svg {
+.brandSection svg:not(:global(.svg-inline--fa)) {
   width: 100%;
   height: fit-content;
   margin: 0 auto;

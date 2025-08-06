@@ -8,6 +8,7 @@
   z-index: 1000;
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
   gap: var(--space-lg);
   padding: var(--space-sm) var(--space-md);
   background: var(--color-nav-background);
@@ -32,7 +33,7 @@
   gap: 0.5rem;
 }
 
-.brand svg,
+.brand svg:not(:global(.svg-inline--fa)),
 .brand img,
 .brand picture,
 .brand:not(.brand img):not(.brand picture):not(.brand svg) {
