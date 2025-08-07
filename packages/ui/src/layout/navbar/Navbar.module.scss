@@ -228,7 +228,7 @@ button.action {
   display: contents;
 }
 
-@media (max-width: 1214px) {
+@media (max-width: 1256px) {
   .container {
     flex-direction: column;
     justify-content: space-around;
@@ -237,7 +237,8 @@ button.action {
   .brand img,
   .brand picture,
   .brand:not(.brand img):not(.brand picture):not(.brand svg) {
-    width: 8rem;
+    width: 10rem;
+    margin-left: 0;
     text-align: left;
   }
   .row {
@@ -307,6 +308,7 @@ button.action {
   }
   .hamburger {
     display: flex;
+    vertical-align: -1rem;
   }
   .menuToggle:checked + div .hamburger span:nth-child(1) {
     transform: translateY(6px) rotate(45deg);
@@ -333,7 +335,7 @@ button.action {
   .brand picture,
   .brand:not(.brand img):not(.brand picture):not(.brand svg) {
     /* display: none; Hide brand logo on small screens */
-    width: 6rem; /* Adjust width for smaller screens */
+    width: 9rem; /* Adjust width for smaller screens */
     margin-left: 0;
   }
 }
