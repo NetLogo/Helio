@@ -1,0 +1,11 @@
+{
+  "defaults": {
+    "language": "en",
+    "output": false,
+    "inheritFrom": [0],
+    "extension": "md"
+  },
+  "projectRoot": ".",
+  "outputRoot": "dist",
+  "scanRoot": "autogen"
+}
