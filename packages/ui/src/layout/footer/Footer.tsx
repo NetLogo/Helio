@@ -152,15 +152,7 @@ Footer.Link = ({
   ...rest
 }: FooterLink & React.HTMLAttributes<HTMLAnchorElement>) => (
   <li>
-    <Anchor
-      href={href}
-      className={cn(
-        'text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200',
-        className
-      )}
-      external={external}
-      {...rest}
-    >
+    <Anchor href={href} className={cn(className)} external={external} {...rest}>
       {title}
     </Anchor>
   </li>
