@@ -4,14 +4,11 @@ import Navbar from '@repo/ui/layout/navbar/Navbar';
 import Image from 'next/image';
 
 export default function ClientNavbar() {
-  const options = {};
-
   return (
     <Navbar.Client
       id="main-navbar"
       brand={<Image src={NetLogoUserManualSVG} alt="NetLogo" />}
       brandHref="/"
-      options={options}
     >
       <Navbar.LinksContainer>
         {navbarLinks.map((link) => (
@@ -27,6 +24,7 @@ export default function ClientNavbar() {
                   key={child.title}
                   title={child.title}
                   href={child.href}
+                  className="expand-hit-zone"
                 />
               ))}
           </Navbar.ItemClient>

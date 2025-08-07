@@ -1,3 +1,5 @@
+@use './scss/utilities.scss';
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import 'tailwindcss';
 
@@ -6,7 +8,23 @@
 @layer theme, base, components, utilities, website;
 
 // Normalizing and variable setting happens at the lowest level
-@layer theme {
-  @import './scss/variables.scss';
+@import './scss/variables.scss';
+@layer website {
   @import './scss/normalize.scss';
+}
+
+@layer base {
+  /*
+  * Font Awesome 6 
+  * It takes time for FA to load in dev environments, so we want to avoid
+    * layout shifts by ensuring that the icon containers are sized correctly.
+  */
+  .svg-inline--fa {
+    display: inline-block;
+    box-sizing: border-box;
+    overflow: visible;
+    vertical-align: -0.125em;
+    height: 1em;
+    width: 1.25em;
+  }
 }

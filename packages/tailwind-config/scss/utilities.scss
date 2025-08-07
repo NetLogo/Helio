@@ -1,0 +1,22 @@
+@layer utilities {
+  .expand-hit-zone {
+    position: relative;
+    overflow: visible !important;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -0.5rem;
+      right: -0.5rem;
+      bottom: -0.5rem;
+      left: -0.5rem;
+      pointer-events: auto; // critical: this allows clicks on ::before
+    }
+
+    &.debug::before {
+      background-color: rgba(255, 0, 0, 0.1);
+      border: 1px solid red;
+      pointer-events: none;
+    }
+  }
+}
