@@ -1,5 +1,5 @@
-@import '@repo/tailwind-config';
 @import '@repo/ui/styles.scss';
+@import '@repo/tailwind-config';
 
 @layer website {
   @import '@repo/tailwind-config/scss/docs-theme.scss';
