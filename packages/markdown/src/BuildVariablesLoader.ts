@@ -64,7 +64,7 @@ export class BuildVariablesLoader {
   ];
   static readonly xmlParser = new XMLParser();
 
-  constructor(private projectRoot: string) {}
+  constructor(private scanRoot: string) {}
 
   /**
    * Fetches the content of a file from a local path or a remote URL.
@@ -75,7 +75,7 @@ export class BuildVariablesLoader {
     if (isURL(value)) {
       return readRemote(value);
     } else {
-      const fullPath = path.join(this.projectRoot, value);
+      const fullPath = path.join(this.scanRoot, value);
       return readLocal(fullPath);
     }
   }

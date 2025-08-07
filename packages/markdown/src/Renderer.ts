@@ -84,7 +84,7 @@ class MarkdownRenderer {
     // BuildVariablesLoader
     if (!MarkdownRenderer.buildVariablesLoader) {
       MarkdownRenderer.buildVariablesLoader = new BuildVariablesLoader(
-        this.projectRoot
+        this.scanRoot
       );
     }
 
