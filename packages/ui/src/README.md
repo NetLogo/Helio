@@ -11,10 +11,10 @@ yarn workspace <my-project> add @repo/tailwind-config @repo/ui
 2. Create a `globals.scss` file with the following imports
 
 ```scss
-// Imports Tailwind CSS; Imports NetLogo variables, updates Tailwind CSS variables
-@import '@repo/tailwind-config';
 // Imports classes from @repo/ui library
 @import '@repo/ui/styles.scss';
+// Imports Tailwind CSS; Imports NetLogo variables, updates Tailwind CSS variables
+@import '@repo/tailwind-config';
 
 // The `website` layer is defined higher than any Tailwind CSS
 // layer (@layer theme, base, components, utilities, website)
