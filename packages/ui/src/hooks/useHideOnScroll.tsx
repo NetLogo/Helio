@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 export default function useHideOnScroll({
   enabled = true,
   threshold = 50,
+  aggregateThreshold = true,
 } = {}) {
   const [show, setShow] = useState(true);
   const prevScrollY = useRef(0);
@@ -13,7 +14,14 @@ export default function useHideOnScroll({
 
     const handleScroll = () => {
       if (window.scrollY > prevScrollY.current) {
-        scrollDownAmount.current += window.scrollY - prevScrollY.current;
+        // Scroll amount when scrolling down
+        if (aggregateThreshold) {
+          scrollDownAmount.current += window.scrollY - prevScrollY.current;
+        } else {
+          scrollDownAmount.current = window.scrollY - prevScrollY.current;
+        }
+
+        // Check if we've scrolled down enough to hide
         if (scrollDownAmount.current > threshold) {
           setShow(false);
         }

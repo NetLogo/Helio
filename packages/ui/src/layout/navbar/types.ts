@@ -18,6 +18,7 @@ export interface NavbarDynamicProps {
 export interface NavbarOptions {
   hideOnScroll?: {
     threshold?: number; // Default: 50
+    aggregateThreshold?: boolean; // Default: true
   };
 }
 

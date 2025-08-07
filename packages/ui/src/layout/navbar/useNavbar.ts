@@ -8,6 +8,7 @@ export function useNavbar(options: NavbarOptions): NavbarDynamicProps {
     const show = useHideOnScroll({
       enabled: Boolean(options.hideOnScroll),
       threshold: options.hideOnScroll?.threshold,
+      aggregateThreshold: options.hideOnScroll?.aggregateThreshold ?? true,
     });
 
     return { show };
