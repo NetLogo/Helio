@@ -1,0 +1,15 @@
+tags:
+  - Resource Manager
+  - File Management
+  - Resources
+---
+output: True
+title: Resource Manager
+description:
+  Guide to managing resources and files in NetLogo models, including importing
+  and organizing external files and data.
+keywords:
+  - Resource Manager
+  - File Management
+  - Resources
+  - NetLogo

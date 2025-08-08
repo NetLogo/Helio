@@ -1,0 +1,15 @@
+tags:
+  - Interface Tab
+  - GUI Design
+  - Interface Elements
+---
+output: True
+title: Interface Tab
+description:
+  The Interface tab allows you to design and customize the user interface for
+  your NetLogo model with buttons, sliders, plots, and other controls.
+keywords:
+  - Interface Tab
+  - GUI Design
+  - Interface Elements
+  - NetLogo

@@ -1,0 +1,16 @@
+tags:
+  - Extensions
+  - Extension Development
+  - Programming
+---
+output: True
+title: Extension Authoring
+description:
+  Guide to creating and developing custom extensions for NetLogo to extend its
+  functionality with new commands and capabilities.
+keywords:
+  - Extension Authoring
+  - Extension Development
+  - Extensions
+  - Programming
+  - NetLogo

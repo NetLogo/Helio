@@ -1,0 +1,15 @@
+tags:
+  - Controlling
+  - Simulation Control
+  - Models
+---
+output: True
+title: Controlling the Model
+description:
+  Guide to controlling NetLogo models, including running simulations, adjusting
+  parameters, and managing model execution.
+keywords:
+  - Controlling
+  - Simulation Control
+  - Model Execution
+  - NetLogo
