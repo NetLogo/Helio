@@ -24,7 +24,6 @@ export default function ClientNavbar() {
                   key={child.title}
                   title={child.title}
                   href={child.href}
-                  className="expand-hit-zone"
                 />
               ))}
           </Navbar.ItemClient>
