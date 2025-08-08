@@ -58,6 +58,74 @@ class PageParser {
    */
   async processYamlFile(yamlFilePath: string): Promise<void> {
     const data = await this.renderer.loadYaml(yamlFilePath);
+    const relativeBaseName = path
+      .relative(this.getProjectScanRoot(), yamlFilePath) // Remove scan root
+      .replace(/\.ya?ml$/i, ''); // Remove .yaml/.yml extension
+
+    await this.processPageConfigurations(data, relativeBaseName);
+    console.info(`Processed YAML file: ${yamlFilePath}`);
+  }
+
+  /**
+   * Process dynamically generated page configuration objects directly, bypassing YAML file loading.
+   * This method allows you to programmatically generate page configurations and process them
+   * without needing to create YAML files on disk.
+   *
+   * @param pageConfigs - Array of page configuration objects to process
+   * @param baseFileName - Base name to use for output files (replaces YAML file path logic)
+   * @param markdownContent - Optional markdown content to use instead of reading from files
+   * @returns A promise that resolves when processing is complete
+   *
+   * @example
+   * ```ts
+   * const configs = [
+   *   {
+   *     title: 'Dynamic Page 1',
+   *     description: 'Generated programmatically',
+   *     language: 'en',
+   *     output: true
+   *   },
+   *   {
+   *     title: 'Dynamic Page 2',
+   *     language: 'es',
+   *     inheritFrom: [0],
+   *     output: true
+   *   }
+   * ];
+   *
+   * await pageParser.processConfigurations(
+   *   configs,
+   *   'dynamic-pages',
+   *   '# {{title}}\n\n{{description}}'
+   * );
+   * ```
+   */
+  async processConfigurations(
+    pageConfigs: Array<Partial<MarkdownPageConfig> | null | undefined>,
+    baseFileName: string,
+    markdownContent?: string
+  ): Promise<void> {
+    await this.processPageConfigurations(
+      pageConfigs,
+      baseFileName,
+      markdownContent
+    );
+    console.info(
+      `Processed ${pageConfigs.length} configuration objects with base name: ${baseFileName}`
+    );
+  }
+
+  /**
+   * Shared implementation for processing page configurations from any source.
+   * @param data - Array of page configuration objects to process
+   * @param relativeBaseName - Base name for file path generation
+   * @param markdownContent - Optional markdown content to use instead of reading from files
+   */
+  private async processPageConfigurations(
+    data: Array<Partial<MarkdownPageConfig> | null | undefined>,
+    relativeBaseName: string,
+    markdownContent?: string
+  ): Promise<void> {
     const defaults = { ...this.projectConfig.defaults };
 
     for (const item of data) {
@@ -82,19 +150,15 @@ class PageParser {
       const language = mdConfig.language || defaults.language;
       const extension = mdConfig.extension || 'md';
 
-      const relativeBaseName = path
-        .relative(this.getProjectScanRoot(), yamlFilePath) // Remove scan root
-        .replace(/\.ya?ml$/i, ''); // Remove .yaml/.yml extension
-
       const defaultLanguage = defaults.language || 'en';
       const sourceFileName = joinIgnoreNone(
         // Join + Filter
         [
-          relativeBaseName, // <yaml-name>
+          relativeBaseName, // <base-name>
           language === defaultLanguage ? null : language, // <language> if not default
           extension, // <extension>
         ],
-        '.' // = <yaml-name>.<language>.<extension> or <yaml-name>.<extension>
+        '.' // = <base-name>.<language>.<extension> or <base-name>.<extension>
       );
 
       const distDir = this.projectConfig.outputRoot || 'dist';
@@ -115,7 +179,18 @@ class PageParser {
       if (mdConfig.output) {
         await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
-        await this.generateHtmlFile(sourceFileName, outputPath, buildVars);
+        if (markdownContent) {
+          // Use provided markdown content directly
+          await this.generateHtmlFileFromContent(
+            markdownContent,
+            outputPath,
+            buildVars
+          );
+        } else {
+          // Read markdown from file system as usual
+          await this.generateHtmlFile(sourceFileName, outputPath, buildVars);
+        }
+
         await this.generateMetadataJSON(
           sourceFileName,
           jsonOutputPath,
@@ -123,8 +198,6 @@ class PageParser {
         );
       }
     }
-
-    console.info(`Processed YAML file: ${yamlFilePath}`);
   }
 
   /**
@@ -142,12 +215,52 @@ class PageParser {
     const sourcePath = path.join(this.getProjectScanRoot(), sourceFileName);
     const templateContent = await fs.readFile(sourcePath, 'utf-8');
 
+    await this.renderAndWriteHtml(
+      templateContent,
+      outputPath,
+      buildVars,
+      `Generated HTML: ${outputPath}`
+    );
+  }
+
+  /**
+   * Generate an HTML file from provided markdown content (no file system read).
+   * @param markdownContent - The markdown content to render
+   * @param outputPath - Path where the HTML file should be written
+   * @param buildVars - Variables to use in template rendering
+   */
+  private async generateHtmlFileFromContent(
+    markdownContent: string,
+    outputPath: string,
+    buildVars: Record<string, any>
+  ): Promise<void> {
+    await this.renderAndWriteHtml(
+      markdownContent,
+      outputPath,
+      buildVars,
+      `Generated HTML from content: ${outputPath}`
+    );
+  }
+
+  /**
+   * Render markdown content to HTML and write to file (shared implementation).
+   * @param markdownContent - The markdown content to render
+   * @param outputPath - Path where the HTML file should be written
+   * @param buildVars - Variables to use in template rendering
+   * @param logMessage - Message to log after successful write
+   */
+  private async renderAndWriteHtml(
+    markdownContent: string,
+    outputPath: string,
+    buildVars: Record<string, any>,
+    logMessage: string
+  ): Promise<void> {
     // Render markdown to HTML
-    const renderedHtml = this.renderer.render(templateContent, buildVars);
+    const renderedHtml = this.renderer.render(markdownContent, buildVars);
 
     // Write output HTML file
     await fs.writeFile(outputPath, renderedHtml, 'utf-8');
-    console.info(`Generated HTML: ${outputPath}`);
+    console.info(logMessage);
   }
 
   /**
@@ -184,17 +297,6 @@ class PageParser {
    */
   private getProjectScanRoot(): string {
     return this.renderer.scanRoot!;
-  }
-
-  /**
-   * Process multiple YAML files.
-   * @param yamlFilePaths - Array of YAML file paths to process
-   * @returns A promise that resolves when all files are processed
-   */
-  async processYamlFiles(yamlFilePaths: string[]): Promise<void> {
-    for (const yamlFilePath of yamlFilePaths) {
-      await this.processYamlFile(yamlFilePath);
-    }
   }
 }
 

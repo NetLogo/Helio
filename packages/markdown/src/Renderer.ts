@@ -1,8 +1,12 @@
 import fs from 'fs/promises';
-import MarkdownIt from 'markdown-it';
 import mustache from 'mustache';
 import path from 'path';
 import yaml from 'yaml';
+
+// Why `require`? Because markdown-it does not have proper ESM
+// exports and struggles to find some of its dependencies when imported
+// via `import`. Using `require` works around this issue. --Omar I. Aug 8, 25
+const MarkdownIt = require('markdown-it');
 
 import { BuildVariable, BuildVariablesLoader } from './BuildVariablesLoader.js';
 import {
@@ -26,14 +30,16 @@ import { MarkdownProjectConfig } from './schemas.js';
  */
 class MarkdownRenderer {
   static readonly markdownIt = new MarkdownIt();
-  static buildVariablesLoader: BuildVariablesLoader | undefined = undefined;
+
+  buildVariablesLoader: BuildVariablesLoader | undefined = undefined;
+  pageProcessor: PageParser | undefined;
 
   projectConfig: MarkdownProjectConfig | undefined;
   projectRoot: string | undefined;
   scanRoot: string | undefined;
   outputRoot: string | undefined;
   defaultLanguage: string | undefined;
-  pageProcessor: PageParser | undefined;
+
   initialized = false;
 
   constructor(private configPath: string) {}
@@ -67,13 +73,13 @@ class MarkdownRenderer {
       );
     }
 
-    this.scanRoot = path.resolve(
-      process.cwd(),
-      this.projectConfig.scanRoot || '.'
-    );
     this.projectRoot = path.resolve(
       process.cwd(),
       this.projectConfig.projectRoot || '.'
+    );
+    this.scanRoot = path.resolve(
+      process.cwd(),
+      this.projectConfig.scanRoot || '.'
     );
     this.outputRoot = path.join(
       this.projectRoot,
@@ -82,11 +88,7 @@ class MarkdownRenderer {
     this.defaultLanguage = this.projectConfig.defaults?.language || 'en';
 
     // BuildVariablesLoader
-    if (!MarkdownRenderer.buildVariablesLoader) {
-      MarkdownRenderer.buildVariablesLoader = new BuildVariablesLoader(
-        this.scanRoot
-      );
-    }
+    this.buildVariablesLoader = new BuildVariablesLoader(this.scanRoot);
 
     // PageParser
     this.pageProcessor = new PageParser(this, this.projectConfig);
@@ -173,18 +175,18 @@ class MarkdownRenderer {
    */
   async loadBuildVariable(value: string): Promise<BuildVariable> {
     this.ensureInitialized();
-    return MarkdownRenderer.buildVariablesLoader!.load(value);
+    return this.buildVariablesLoader!.load(value);
   }
 
   /**
-   * Render markdown/mustache content with given variables.
-   * @param content - Markdown template content
+   *
+   * @param content - Mustache template content
    * @param variables - Variables to interpolate
-   * @returns Rendered HTML
+   * @returns Rendered content
    *
    * @throws {RenderError} If rendering fails for any reason.
    */
-  render(content: string, variables: Record<string, any>) {
+  renderMustache(content: string, variables: Record<string, any>) {
     let rendered;
     try {
       rendered = mustache.render(content, variables);
@@ -198,13 +200,35 @@ class MarkdownRenderer {
         error.message
       );
     }
+    return rendered;
+  }
 
+  /**
+   * Render markdown content to HTML.
+   * @param content - Markdown content to render.
+   * @returns Rendered HTML.
+   */
+  renderMarkdown(content: string) {
     let htmlOutput;
     try {
-      htmlOutput = MarkdownRenderer.markdownIt.render(rendered);
+      htmlOutput = MarkdownRenderer.markdownIt.render(content);
     } catch (error: any) {
       throw new RenderError(`Failed to render HTML output`, error.message);
     }
+    return htmlOutput;
+  }
+
+  /**
+   * Render markdown/mustache content with given variables.
+   * @param content - Markdown template content
+   * @param variables - Variables to interpolate
+   * @returns Rendered HTML
+   *
+   * @throws {RenderError} If rendering fails for any reason.
+   */
+  render(content: string, variables: Record<string, any>) {
+    const mustacheRendered = this.renderMustache(content, variables);
+    const htmlOutput = this.renderMarkdown(mustacheRendered);
     return htmlOutput;
   }
 
@@ -214,8 +238,11 @@ class MarkdownRenderer {
    */
   async run() {
     await this.init();
-    const yamlFiles = await this.findYamlFiles();
-    await this.pageProcessor!.processYamlFiles(yamlFiles);
+    const yamlFilePaths = await this.findYamlFiles();
+    for (const yamlFilePath of yamlFilePaths) {
+      console.info(`Processing YAML file: ${yamlFilePath}`);
+      await this.pageProcessor!.processYamlFile(yamlFilePath);
+    }
   }
 }
 
