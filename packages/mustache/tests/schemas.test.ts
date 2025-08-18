@@ -2,10 +2,10 @@ import { describe, expect, it } from '@jest/globals';
 import {
   AuthorDeclarationSchema,
   BuildVariablesDeclarationSchema,
-  MarkdownPageDeclarationSchema,
+  PageDeclarationSchema,
   ProjectConfigSchema,
-  type MarkdownPageConfig,
-  type MarkdownProjectConfig,
+  type PageConfig,
+  type ProjectConfig,
 } from '../src/schemas.js';
 
 describe('schemas', () => {
@@ -72,10 +72,10 @@ describe('schemas', () => {
     });
   });
 
-  describe('MarkdownPageDeclarationSchema', () => {
+  describe('PageDeclarationSchema', () => {
     it('should validate minimal page configuration', () => {
       const valid = {};
-      expect(() => MarkdownPageDeclarationSchema.parse(valid)).not.toThrow();
+      expect(() => PageDeclarationSchema.parse(valid)).not.toThrow();
     });
 
     it('should validate full page configuration', () => {
@@ -99,7 +99,7 @@ describe('schemas', () => {
           },
         ],
       };
-      const result = MarkdownPageDeclarationSchema.parse(valid);
+      const result = PageDeclarationSchema.parse(valid);
       expect(result.title).toBe('Test Page');
       expect(result.language).toBe('en');
       expect(result.output).toBe(true);
@@ -107,7 +107,7 @@ describe('schemas', () => {
 
     it('should set default extension to .md', () => {
       const config = {};
-      const result = MarkdownPageDeclarationSchema.parse(config);
+      const result = PageDeclarationSchema.parse(config);
       expect(result.extension).toBe('.md');
     });
 
@@ -115,28 +115,28 @@ describe('schemas', () => {
       const valid = {
         inheritFrom: [0, 1, 2],
       };
-      expect(() => MarkdownPageDeclarationSchema.parse(valid)).not.toThrow();
+      expect(() => PageDeclarationSchema.parse(valid)).not.toThrow();
     });
 
     it('should reject inheritFrom with non-numbers', () => {
       const invalid = {
         inheritFrom: [0, 'invalid', 2],
       };
-      expect(() => MarkdownPageDeclarationSchema.parse(invalid)).toThrow();
+      expect(() => PageDeclarationSchema.parse(invalid)).toThrow();
     });
 
     it('should validate keywords as array of strings', () => {
       const valid = {
         keywords: ['keyword1', 'keyword2'],
       };
-      expect(() => MarkdownPageDeclarationSchema.parse(valid)).not.toThrow();
+      expect(() => PageDeclarationSchema.parse(valid)).not.toThrow();
     });
 
     it('should validate tags as array of strings', () => {
       const valid = {
         tags: ['tag1', 'tag2'],
       };
-      expect(() => MarkdownPageDeclarationSchema.parse(valid)).not.toThrow();
+      expect(() => PageDeclarationSchema.parse(valid)).not.toThrow();
     });
 
     it('should validate authors array', () => {
@@ -146,7 +146,7 @@ describe('schemas', () => {
           { name: 'Author 2', email: 'author2@example.com' },
         ],
       };
-      expect(() => MarkdownPageDeclarationSchema.parse(valid)).not.toThrow();
+      expect(() => PageDeclarationSchema.parse(valid)).not.toThrow();
     });
   });
 
@@ -210,8 +210,8 @@ describe('schemas', () => {
   });
 
   describe('Type exports', () => {
-    it('should export MarkdownProjectConfig type', () => {
-      const config: MarkdownProjectConfig = {
+    it('should export ProjectConfig type', () => {
+      const config: ProjectConfig = {
         projectRoot: '.',
         scanRoot: '.',
         outputRoot: './dist',
@@ -224,8 +224,8 @@ describe('schemas', () => {
       expect(config).toBeDefined();
     });
 
-    it('should export MarkdownPageConfig type', () => {
-      const config: MarkdownPageConfig = {
+    it('should export PageConfig type', () => {
+      const config: PageConfig = {
         title: 'Test Page',
         description: 'Test description',
         language: 'en',

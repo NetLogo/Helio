@@ -14,7 +14,7 @@ import { getFileExtension, isURL, readLocal, readRemote } from './utils.js';
  * @class BuildVariablesLoader
  *
  * Class to load build variables from various file formats (YAML, JSON, INI, XML).
- * In our Markdown engine, we allow developers to specify build variables in the YAML
+ * In our engine, we allow developers to specify build variables in the YAML
  * front matter, but also to load them from external files without having to dive into
  * the code. This class supports loading from local files or remote URLs.
  *

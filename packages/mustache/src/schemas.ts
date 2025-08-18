@@ -13,9 +13,9 @@ const AuthorDeclarationSchema = z.object({
 });
 
 /**
- * Schema for an item in the Markdown configuration.
+ * Schema for an item in the Page configuration.
  * These typically live under the `defaults` key in the config file
- * or in the first YAML front matter of a Markdown file.
+ * or in the first YAML front matter of a Page file.
  *
  * @example
  * ```yaml
@@ -38,10 +38,10 @@ const AuthorDeclarationSchema = z.object({
  *   - NetLogo
  *   - Behavior Space
  */
-const MarkdownPageDeclarationSchema = z.object({
+const PageDeclarationSchema = z.object({
   // The YAML front matter can inherit from other items by their index
   inheritFrom: z.array(z.number()).optional(),
-  // The language of the Markdown content (e.g., 'en', 'fr')
+  // The language of the content (e.g., 'en', 'fr')
   language: z.string().optional(),
   // Whether this front matter item exports an HTML file
   output: z.boolean().optional(),
@@ -62,7 +62,7 @@ const MarkdownPageDeclarationSchema = z.object({
 
 // Allow arbitrary additional keys in the front matter
 // as long as they don't conflict with the known keys above
-MarkdownPageDeclarationSchema.and(
+PageDeclarationSchema.and(
   z.record(z.any(), z.any()).refine(
     (obj) => {
       const knownKeys = new Set([
@@ -86,32 +86,32 @@ MarkdownPageDeclarationSchema.and(
   )
 );
 
-type MarkdownPageConfig = z.infer<typeof MarkdownPageDeclarationSchema>;
+type PageConfig = z.infer<typeof PageDeclarationSchema>;
 
 /**
- * Main configuration schema for the Markdown builder.
+ * Main configuration schema for the builder.
  * Enforces required keys and their structure.
  */
 const ProjectConfigSchema = z.object({
   // The root of the script files
   projectRoot: z.string().default('.'),
-  // Where to find the Markdown source files
+  // Where to find the source files
   scanRoot: z.string().default('.'),
   // Where to output the built files
   outputRoot: z.string().default('./dist'),
-  // Default declarations for Markdown items
-  defaults: MarkdownPageDeclarationSchema,
+  // Default declarations for items
+  defaults: PageDeclarationSchema,
 });
 
 /**
- * Type-safe representation of a valid Markdown builder config.
+ * Type-safe representation of a valid builder config.
  */
-type MarkdownProjectConfig = z.infer<typeof ProjectConfigSchema>;
+type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
 
 export {
   AuthorDeclarationSchema,
   BuildVariablesDeclarationSchema,
-  MarkdownPageDeclarationSchema,
+  PageDeclarationSchema,
   ProjectConfigSchema,
 };
-export type { MarkdownPageConfig, MarkdownProjectConfig };
+export type { PageConfig, ProjectConfig };

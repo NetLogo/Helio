@@ -1,26 +1,13 @@
 {
-  "extends": "@repo/typescript-config/base.json",
+  "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "es2022",
-    "moduleResolution": "node",
-    "lib": ["ES2022"],
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "allowJs": false,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "skipLibCheck": true,
-    "baseUrl": "./src",
+    "outDir": "dist",
+    "baseUrl": ".",
     "paths": {
-      "./*": ["./dist/*"]
-    }
+      "@/*": ["src/*"]
+    },
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["dist", "build", "node_modules"]
 }

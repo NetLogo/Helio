@@ -1,11 +1,11 @@
 import fs from 'fs/promises';
 import { JSONParseError, ParseError, ValidationError } from './errors.js';
-import { MarkdownProjectConfig, ProjectConfigSchema } from './schemas.js';
+import { ProjectConfig, ProjectConfigSchema } from './schemas.js';
 
 /**
  * @class ProjectConfigLoader
  *
- * Responsible for loading and validating the root Markdown configuration file (e.g., `conf.json`).
+ * Responsible for loading and validating the root configuration file (e.g., `conf.json`).
  *
  * Developers use this file to define global defaults and root paths for builds. This loader ensures
  * the config is both readable and schema-valid before usage elsewhere in the system.
@@ -16,7 +16,7 @@ import { MarkdownProjectConfig, ProjectConfigSchema } from './schemas.js';
  * console.log(config.projectRoot); // -> './articles'
  * ```
  *
- * @summary Load and validate the Markdown engine config file.
+ * @summary Load and validate the engine config file.
  * @description Parses a JSON config file, validates its structure using `zod`, and returns a strongly typed object.
  *
  * @throws {ParseError} If the file is unreadable or not valid JSON.
@@ -29,10 +29,9 @@ export class ProjectConfigLoader {
   /**
    * Loads and validates a config file from the given path.
    * @param configPath - Path to the config file (typically `conf.json`)
-   * @returns Parsed and validated MarkdownConfig object
+   * @returns Parsed and validated Config object
    */
-  static async load(configPath: string): Promise<MarkdownProjectConfig> {
-    // Read the file as a string
+  static async load(configPath: string): Promise<ProjectConfig> {
     let raw: string;
     try {
       raw = await fs.readFile(configPath, 'utf-8');
@@ -40,7 +39,6 @@ export class ProjectConfigLoader {
       throw new ParseError(configPath, err);
     }
 
-    // Parse the string as JSON
     let parsed: unknown;
     try {
       parsed = JSON.parse(raw);
@@ -48,7 +46,6 @@ export class ProjectConfigLoader {
       throw new JSONParseError(configPath, err);
     }
 
-    // Attempt to validate the parsed config against the schema
     const result = ProjectConfigSchema.safeParse(parsed);
     if (!result.success) {
       throw new ValidationError(
@@ -56,6 +53,6 @@ export class ProjectConfigLoader {
       );
     }
 
-    return ProjectConfigSchema.parse(parsed); // Apply defaults
+    return ProjectConfigSchema.parse(parsed);
   }
 }
