@@ -1030,5 +1030,79 @@ This is private content.
         expect(result.totalPages).toBe(1);
       });
     });
+
+    it('should handle build errors in the try-catch block', async () => {
+      // Mock findYamlFiles to throw an error that should be caught in the outer try-catch
+      const findYamlFilesSpy = jest
+        .spyOn(renderer as any, 'findYamlFiles')
+        .mockRejectedValue(new Error('Build error'));
+
+      const result = await renderer.build();
+
+      expect(result.success).toBe(false);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0]).toContain('Build error');
+
+      // Restore original method
+      findYamlFilesSpy.mockRestore();
+    });
+  });
+
+  describe('helper methods', () => {
+    describe('getOutputFilePath', () => {
+      it('should generate correct output file path', () => {
+        const result = renderer.getOutputFilePath('test/page', 'html');
+        expect(result).toBe('/current/dir/test-output/test/page.html');
+      });
+
+      it('should handle extension with leading dot', () => {
+        const result = renderer.getOutputFilePath('test/page', '.html');
+        expect(result).toBe('/current/dir/test-output/test/page.html');
+      });
+
+      it('should handle nested paths', () => {
+        const result = renderer.getOutputFilePath(
+          'docs/guides/getting-started',
+          'md'
+        );
+        expect(result).toBe(
+          '/current/dir/test-output/docs/guides/getting-started.md'
+        );
+      });
+
+      it('should handle special characters in base name', () => {
+        const result = renderer.getOutputFilePath('test-file_name', 'txt');
+        expect(result).toBe('/current/dir/test-output/test-file_name.txt');
+      });
+    });
+
+    describe('getMetadataFilePath', () => {
+      it('should generate correct metadata file path', () => {
+        const result = renderer.getMetadataFilePath('test/page');
+        expect(result).toBe('/current/dir/test-output/test/page.metadata.json');
+      });
+
+      it('should handle nested paths', () => {
+        const result = renderer.getMetadataFilePath(
+          'docs/guides/getting-started'
+        );
+        expect(result).toBe(
+          '/current/dir/test-output/docs/guides/getting-started.metadata.json'
+        );
+      });
+
+      it('should handle special characters in base name', () => {
+        const result = renderer.getMetadataFilePath('test-file_name');
+        expect(result).toBe(
+          '/current/dir/test-output/test-file_name.metadata.json'
+        );
+      });
+
+      it('should use PageParser METADATA_SUFFIX constant', () => {
+        // Verify it uses the constant from PageParser
+        const result = renderer.getMetadataFilePath('test');
+        expect(result).toContain('.metadata.json'); // This should match PageParser.METADATA_SUFFIX
+      });
+    });
   });
 });

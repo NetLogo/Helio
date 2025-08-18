@@ -235,4 +235,37 @@ describe('schemas', () => {
       expect(config).toBeDefined();
     });
   });
+
+  describe('PageDeclarationSchema additional key validation', () => {
+    it('should allow additional keys that do not conflict with known keys', () => {
+      const configWithAdditionalKeys = {
+        title: 'Test Page',
+        customField: 'custom value',
+        anotherField: 123,
+      };
+
+      expect(() =>
+        PageDeclarationSchema.parse(configWithAdditionalKeys)
+      ).not.toThrow();
+      const result = PageDeclarationSchema.parse(configWithAdditionalKeys);
+      expect(result.title).toBe('Test Page');
+    });
+
+    it('should validate the refine function logic for additional keys', () => {
+      // Test with only custom keys (no conflicts)
+      const validConfig = {
+        customKey: 'value',
+        anotherCustom: 'another value',
+      };
+
+      expect(() => PageDeclarationSchema.parse(validConfig)).not.toThrow();
+    });
+
+    it('should handle empty config with defaults', () => {
+      const emptyConfig = {};
+
+      const result = PageDeclarationSchema.parse(emptyConfig);
+      expect(result.extension).toBe('.md'); // Should get default
+    });
+  });
 });
