@@ -572,9 +572,13 @@ This is counter page number **{{count}}**.
         processConfigurations: jest.fn(),
         processYamlFile: jest
           .fn<(yamlPath: string) => Promise<PageResult[]>>()
-          .mockResolvedValueOnce([{ baseName: 'good1', sourcePath: 'good1.md', success: true }])
+          .mockResolvedValueOnce([
+            { baseName: 'good1', sourcePath: 'good1.md', success: true },
+          ])
           .mockRejectedValueOnce(new Error('Processing failed'))
-          .mockResolvedValueOnce([{ baseName: 'good2', sourcePath: 'good2.md', success: true }]),
+          .mockResolvedValueOnce([
+            { baseName: 'good2', sourcePath: 'good2.md', success: true },
+          ]),
       };
       (renderer as any)._pageParser = mockPageParser;
 

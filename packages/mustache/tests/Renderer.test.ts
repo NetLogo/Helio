@@ -227,12 +227,14 @@ describe('MustacheRenderer', () => {
           outputPath: '/output/test1.html',
           success: true,
           title: 'Test 1',
+          baseName: 'test1',
         },
         {
           sourcePath: 'test2.md',
           outputPath: '/output/test2.html',
           success: true,
           title: 'Test 2',
+          baseName: 'test2',
         },
       ];
 
@@ -259,12 +261,14 @@ describe('MustacheRenderer', () => {
       const successResult: PageResult = {
         sourcePath: 'test1.md',
         success: true,
+        baseName: 'test1',
       };
 
       const failureResult: PageResult = {
         sourcePath: 'test2.md',
         success: false,
         error: 'Processing failed',
+        baseName: 'test2',
       };
 
       mockPageParser.processYamlFile
@@ -284,7 +288,9 @@ describe('MustacheRenderer', () => {
 
     it('should handle YAML file processing exceptions', async () => {
       mockPageParser.processYamlFile
-        .mockResolvedValueOnce([{ sourcePath: 'test1.md', success: true }])
+        .mockResolvedValueOnce([
+          { sourcePath: 'test1.md', success: true, baseName: 'test1' },
+        ])
         .mockRejectedValueOnce(new Error('File processing error'));
 
       const result = await renderer.build();
@@ -346,8 +352,12 @@ describe('MustacheRenderer', () => {
       });
 
       mockPageParser.processYamlFile
-        .mockResolvedValueOnce([{ sourcePath: 'test.md', success: true }])
-        .mockResolvedValueOnce([{ sourcePath: 'nested.md', success: true }]);
+        .mockResolvedValueOnce([
+          { sourcePath: 'test.md', success: true, baseName: 'test' },
+        ])
+        .mockResolvedValueOnce([
+          { sourcePath: 'nested.md', success: true, baseName: 'nested' },
+        ]);
 
       const result = await renderer.build();
 
@@ -361,7 +371,7 @@ describe('MustacheRenderer', () => {
       mockPageParser.processYamlFile.mockImplementation(async () => {
         // Simulate some processing time
         await new Promise((resolve) => setTimeout(resolve, 10));
-        return [{ sourcePath: 'test.md', success: true }];
+        return [{ sourcePath: 'test.md', success: true, baseName: 'test' }];
       });
 
       const result = await renderer.build();
@@ -383,7 +393,12 @@ describe('MustacheRenderer', () => {
   describe('buildSingle method', () => {
     it('should build single YAML file successfully', async () => {
       const mockResults: PageResult[] = [
-        { sourcePath: 'test.md', success: true, title: 'Test Page' },
+        {
+          sourcePath: 'test.md',
+          success: true,
+          title: 'Test Page',
+          baseName: 'test',
+        },
       ];
       mockPageParser.processYamlFile.mockResolvedValue(mockResults);
 
@@ -397,7 +412,7 @@ describe('MustacheRenderer', () => {
 
     it('should handle relative paths', async () => {
       const mockResults: PageResult[] = [
-        { sourcePath: 'docs/guide.md', success: true },
+        { sourcePath: 'docs/guide.md', success: true, baseName: 'docs/guide' },
       ];
       mockPageParser.processYamlFile.mockResolvedValue(mockResults);
 
@@ -412,7 +427,7 @@ describe('MustacheRenderer', () => {
     it('should handle absolute paths', async () => {
       const absolutePath = '/absolute/path/test.yaml';
       const mockResults: PageResult[] = [
-        { sourcePath: 'test.md', success: true },
+        { sourcePath: 'test.md', success: true, baseName: 'test' },
       ];
       mockPageParser.processYamlFile.mockResolvedValue(mockResults);
 
@@ -483,12 +498,18 @@ describe('MustacheRenderer', () => {
       const content = '# {{title}}\n\n{{description}}';
 
       const mockResults: PageResult[] = [
-        { sourcePath: 'dynamic.md', success: true, title: 'Config 1' },
+        {
+          sourcePath: 'dynamic.md',
+          success: true,
+          title: 'Config 1',
+          baseName: 'dynamic',
+        },
         {
           sourcePath: 'dynamic.es.md',
           success: true,
           title: 'Config 2',
           language: 'es',
+          baseName: 'dynamic.es',
         },
       ];
 
@@ -514,7 +535,7 @@ describe('MustacheRenderer', () => {
       ];
 
       const mockResults: PageResult[] = [
-        { sourcePath: 'file-based.md', success: true },
+        { sourcePath: 'file-based.md', success: true, baseName: 'file-based' },
       ];
 
       mockPageParser.processConfigurations.mockResolvedValue(mockResults);
@@ -865,6 +886,7 @@ This is private content.
           success: true,
           title: 'Document 1',
           language: 'en',
+          baseName: 'doc1',
         },
         {
           sourcePath: 'doc2.es.md',
@@ -872,6 +894,7 @@ This is private content.
           success: true,
           title: 'Documento 2',
           language: 'es',
+          baseName: 'doc2.es',
         },
       ];
 
@@ -902,12 +925,14 @@ This is private content.
         outputPath: '/output/success.html',
         success: true,
         title: 'Success Page',
+        baseName: 'success',
       };
 
       const failureResult: PageResult = {
         sourcePath: 'failure.md',
         success: false,
         error: 'Template compilation failed',
+        baseName: 'failure',
       };
 
       mockFs.readdir.mockResolvedValue([
@@ -943,6 +968,7 @@ This is private content.
         outputPath: `/output/file${i}.html`,
         success: true,
         title: `File ${i}`,
+        baseName: `file${i}`,
       }));
 
       mockFs.readdir.mockResolvedValue(files as any);
@@ -986,7 +1012,7 @@ This is private content.
       ] as any);
 
       mockPageParser.processYamlFile.mockResolvedValue([
-        { sourcePath: 'test.md', success: true },
+        { sourcePath: 'test.md', success: true, baseName: 'test' },
       ]);
 
       // Start multiple builds concurrently
