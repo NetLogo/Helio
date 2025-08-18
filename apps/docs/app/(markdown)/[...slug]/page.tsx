@@ -1,20 +1,20 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+import NetLogoMarkdown from '@repo/markdown';
 import MustacheRenderer from '@repo/mustache';
+
+const configPath = path.join(process.cwd(), 'autogen', 'conf.json');
 
 export default async function Page({ params }: { params: { slug: string[] } }) {
   const { slug } = await params;
   const { content } = await getPageContent(slug);
   return (
-    <main
-      className="min-h-screen prose"
-      dangerouslySetInnerHTML={{ __html: content || '<p>Page not found.</p>' }}
-    />
+    <main className="min-h-screen prose">
+      <NetLogoMarkdown>{content || '<p>Page not found.</p>'}</NetLogoMarkdown>
+    </main>
   );
 }
-
-const configPath = path.join(process.cwd(), 'autogen', 'conf.json');
 
 export async function generateStaticParams() {
   const renderer = await MustacheRenderer.fromConfigPath(configPath);

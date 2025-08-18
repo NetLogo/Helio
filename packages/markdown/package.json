@@ -9,15 +9,18 @@
   ],
   "exports": {
     "./styles.scss": "./dist/index.scss",
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./dist/*.js"
+    ".": {
+      "default": "./dist/markdown.js",
+      "types": "./dist/markdown.d.ts"
     },
-    "./**/*": {
-      "types": "./dist/**/*.d.ts",
-      "default": "./dist/**/*.js"
+    "./components/**/*": {
+      "default": "./dist/components/*.js",
+      "types": "./dist/components/*.d.ts"
     },
-    "./assets/*": "./assets/*"
+    "./plugins/**/*": {
+      "default": "./dist/plugins/*.js",
+      "types": "./dist/plugins/*.d.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
@@ -44,6 +47,7 @@
     "@repo/typescript-config": "*",
     "@tailwindcss/cli": "^4.1.5",
     "@types/react": "^19.1.0",
+    "@types/unist": "^3.0.3",
     "chokidar-cli": "^3.0.0",
     "copyfiles": "^2.4.1",
     "eslint": "^9.31.0",
@@ -52,6 +56,12 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "react-markdown": "^10.1.0",
+    "rehype-raw": "^7.0.0",
+    "remark-directive": "^4.0.0",
+    "remark-directive-rehype": "^0.4.2",
+    "remark-gfm": "^4.0.1",
+    "remark-toc": "^9.0.0",
     "tsc-alias": "^1.8.16",
     "typescript-plugin-css-modules": "^5.2.0"
   }
