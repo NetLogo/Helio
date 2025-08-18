@@ -242,6 +242,24 @@ describe('PageParser', () => {
       expect(results[1].error).toContain('Invalid inheritFrom index');
     });
 
+    it('should handle non-cascade inheritance', async () => {
+      const configs = [
+        { title: 'Valid', output: true },
+        { inheritFrom: [2], title: 'Invalid', output: true }, // Index 2 is ahead of this one
+        { title: 'Invalid', output: true },
+      ];
+
+      const results = await pageParser['processPageConfigurations'](
+        configs,
+        'non-cascade'
+      );
+
+      expect(results[0].success).toBe(true);
+      expect(results[1].success).toBe(false);
+      expect(results[1].error).toContain('Invalid inheritFrom index');
+      expect(results[2].success).toBe(true);
+    });
+
     it('should load build variables', async () => {
       mockRenderer.loadBuildVariable.mockResolvedValue({ loaded: 'data' });
       const configs = [

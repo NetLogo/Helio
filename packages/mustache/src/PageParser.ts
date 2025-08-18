@@ -307,6 +307,13 @@ class PageParser {
             `Invalid inheritFrom index ${idx} in item at index ${currentIndex}`
           );
         }
+
+        if (idx >= currentIndex) {
+          throw new Error(
+            `Invalid inheritFrom index ${idx} must be less than the current item index ${currentIndex} to apply inheritance correctly`
+          );
+        }
+
         Object.assign(baseConfig, configs[idx] || {});
       }
     }
