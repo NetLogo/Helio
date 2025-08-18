@@ -1,31 +1,28 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import MarkdownRenderer, { PageParser } from '@repo/markdown';
+import MustacheRenderer from '@repo/mustache';
 
 export default async function Page({ params }: { params: { slug: string[] } }) {
   const { slug } = await params;
-  const { html } = await getPageHTML(slug);
+  const { content } = await getPageContent(slug);
   return (
     <main
       className="min-h-screen prose"
-      dangerouslySetInnerHTML={{ __html: html || '<p>Page not found.</p>' }}
+      dangerouslySetInnerHTML={{ __html: content || '<p>Page not found.</p>' }}
     />
   );
 }
 
-export async function generateStaticParams() {
-  const renderer = new MarkdownRenderer(
-    path.join(process.cwd(), 'autogen', 'conf.json')
-  );
-  await renderer.run();
+const configPath = path.join(process.cwd(), 'autogen', 'conf.json');
 
-  // Scan the output directory for generated pages
-  const outputDir = renderer.outputRoot!;
-  const generatedPages = await fs.readdir(outputDir, { recursive: true });
-  const generatedSlugs = generatedPages
-    .filter((file) => file.endsWith('.html'))
-    .map((file) => file.replace(/\.html$/, ''))
+export async function generateStaticParams() {
+  const renderer = await MustacheRenderer.fromConfigPath(configPath);
+  const results = await renderer.build();
+
+  const generatedSlugs = Object.values(results.pages)
+    .filter((page) => page.success)
+    .map((page) => page.baseName)
     .map((slug) => ({ slug: slug.split('/') }));
 
   return generatedSlugs;
@@ -39,16 +36,10 @@ export async function generateMetadata({
   // https://nextjs.org/docs/messages/sync-dynamic-apis
   const { slug } = await params;
 
-  const renderer = new MarkdownRenderer(
-    path.join(process.cwd(), 'autogen', 'conf.json')
-  );
-  await renderer.init();
+  const renderer = await MustacheRenderer.fromConfigPath(configPath);
 
   const slugPath = slug.join('/');
-  const metadataPath = path.join(
-    renderer.outputRoot!,
-    slugPath + PageParser.METADATA_SUFFIX
-  );
+  const metadataPath = renderer.getMetadataFilePath(slugPath);
 
   try {
     const metadataContent = await fs.readFile(metadataPath, 'utf-8');
@@ -66,27 +57,21 @@ export async function generateMetadata({
   }
 }
 
-export async function getPageHTML(slug: string[]) {
-  const renderer = new MarkdownRenderer(
-    path.join(process.cwd(), 'autogen', 'conf.json')
-  );
-  await renderer.init();
+export async function getPageContent(slug: string[]) {
+  const renderer = await MustacheRenderer.fromConfigPath(configPath);
 
   const slugPath = slug.join('/');
-  const htmlPath = path.join(
-    renderer.outputRoot!,
-    slugPath + PageParser.HTML_SUFFIX
-  );
+  const outputPath = renderer.getOutputFilePath(slugPath, 'md');
 
   try {
-    const htmlContent = await fs.readFile(htmlPath, 'utf-8');
+    const outputContent = await fs.readFile(outputPath, 'utf-8');
     return {
-      html: htmlContent,
+      content: outputContent,
     };
   } catch (error) {
-    console.error(`Failed to read HTML for slug: ${slugPath}`, error);
+    console.error(`Failed to read output for slug: ${slugPath}`, error);
     return {
-      html: null,
+      content: null,
       notFound: true,
     };
   }
