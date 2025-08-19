@@ -3,7 +3,7 @@ import type { Code, InlineCode } from 'mdast';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-import highlightNL from '@/lib/highlight-nl';
+import highlightNL from '../lib/highlight-nl';
 
 export const remarkHighlightNL: Plugin<[], Root> = () => {
   return (tree) => {
