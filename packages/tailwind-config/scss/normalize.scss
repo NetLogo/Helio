@@ -6,18 +6,6 @@
    RESET & BASE
    ========================================================================== */
 
-/* Prevent iOS and MacOS OverScroll */
-html,
-body {
-  overscroll-behavior: contain; /* Prevents overscroll on iOS and MacOS */
-  font-synthesis: none;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
 /**
  * 1. Correct the line height in all browsers.
