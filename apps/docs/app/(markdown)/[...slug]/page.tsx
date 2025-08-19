@@ -4,6 +4,8 @@ import path from 'path';
 import NetLogoMarkdown from '@repo/markdown';
 import MustacheRenderer from '@repo/mustache';
 
+import '@repo/markdown/styles.scss';
+
 const configPath = path.join(process.cwd(), 'autogen', 'conf.json');
 
 export default async function Page({ params }: { params: { slug: string[] } }) {
@@ -23,7 +25,17 @@ export async function generateStaticParams() {
   const generatedSlugs = Object.values(results.pages)
     .filter((page) => page.success)
     .map((page) => page.baseName)
-    .map((slug) => ({ slug: slug.split('/') }));
+    .map((slug) => ({ slug: slug.split('/') }))
+    .reduce(
+      (acc, { slug }) => {
+        acc.push({ slug });
+        acc.push({
+          slug: [...slug.slice(0, -1), slug.at(-1) + '.html'],
+        });
+        return acc;
+      },
+      [] as { slug: string[] }[]
+    );
 
   return generatedSlugs;
 }
@@ -38,7 +50,7 @@ export async function generateMetadata({
 
   const renderer = await MustacheRenderer.fromConfigPath(configPath);
 
-  const slugPath = slug.join('/');
+  const slugPath = slug.join('/').replace(/\.html$/, '');
   const metadataPath = renderer.getMetadataFilePath(slugPath);
 
   try {
@@ -60,7 +72,7 @@ export async function generateMetadata({
 export async function getPageContent(slug: string[]) {
   const renderer = await MustacheRenderer.fromConfigPath(configPath);
 
-  const slugPath = slug.join('/');
+  const slugPath = slug.join('/').replace(/\.html$/, '');
   const outputPath = renderer.getOutputFilePath(slugPath, 'md');
 
   try {
