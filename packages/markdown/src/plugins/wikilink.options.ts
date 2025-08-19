@@ -57,8 +57,6 @@ interface WikiLinkOptions {
       width?: number | string;
       height?: number | string;
     };
-    /** Base path for image resolution */
-    basePath?: string;
   };
 
   /**
@@ -76,7 +74,20 @@ interface WikiLinkOptions {
  * Default values for WikiLink configuration
  */
 const DEFAULT_OPTIONS = {
-  hrefTemplate: (permalink: string) => `#${permalink}`,
+  hrefTemplate: (
+    permalink: string,
+    linkType: LinkType,
+    anchor?: string | null
+  ) => {
+    switch (linkType) {
+      case 'imageLink':
+        return `${permalink}${anchor ? `#${anchor}` : ''}`;
+      case 'missingLink':
+        return `#${permalink}${anchor || ''}`;
+      default:
+        return `#${permalink}${anchor ? `#${anchor}` : ''}`;
+    }
+  },
   classNames: {
     wikiLink: 'wikilink',
     imageLink: 'wikilink-image',
@@ -88,7 +99,6 @@ const DEFAULT_OPTIONS = {
   imageOptions: {
     altTemplate: (filename: string) => filename,
     defaultSize: {},
-    basePath: '',
   },
   integration: {
     fileExtension: '.md',

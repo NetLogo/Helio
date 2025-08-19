@@ -5,9 +5,6 @@
 This activity gets you thinking about computer modeling and how you can use it.
 It also gives you insight into NetLogo itself. We encourage beginning users to
 start here.
-Wow. [[man]]
-
-Wow [[man]] I don't know [[man|Man]] really [[man#man|Mannns]] and [[man#man]] [[#man]].
 
 #### Table of Contents
 

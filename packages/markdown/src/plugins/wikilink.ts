@@ -41,6 +41,11 @@ export const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (
           display = displayText?.trim() ?? permalink;
         }
 
+        if ([display, permalink, anchor].every((s) => Boolean(s) === false)) {
+          // If all are empty, skip this match
+          continue;
+        }
+
         const wikiLink = new WikiLink(
           full,
           isEmbed,
@@ -78,12 +83,15 @@ class WikiLink {
 
   href(linkType: LinkType): string {
     const { hrefTemplate, integration } = this.options;
-    const encoded = integration?.encode
-      ? integration.encode(this.permalink)
-      : this.permalink;
+    const encode =
+      integration?.encode ||
+      ((str: string) => encodeURIComponent(str).replace(/%20/g, '+'));
+
+    const anchor = this.anchor ? encode(this.anchor) : '';
+    const permalink = this.permalink ? encode(this.permalink) : '';
     return hrefTemplate
-      ? hrefTemplate(encoded, linkType, this.anchor)
-      : `#${encoded}${this.anchor || ''}`;
+      ? hrefTemplate(permalink, linkType, anchor)
+      : `#${permalink}${anchor ? `#${anchor}` : ''}`;
   }
 
   get text(): string {
@@ -101,10 +109,11 @@ class WikiLink {
     if (this.isImage) {
       linkType = 'imageLink';
       href = this.href(linkType);
+      const alt = this.text || this.permalink;
       el = {
         type: 'image',
-        url: (imageOptions?.basePath || '') + this.href,
-        alt: imageOptions?.altTemplate?.(this.permalink) || this.text,
+        url: href,
+        alt: imageOptions?.altTemplate?.(alt) || alt,
         data: {
           hName: 'img',
           hProperties: {
