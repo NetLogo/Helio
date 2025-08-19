@@ -57,7 +57,7 @@ const Footer = ({
   return (
     <footer
       className={cn(
-        'w-full mt-5 px-4 gap-3',
+        'w-full mt-5 px-4 py-0 gap-3',
         'bg-gray-50 border-t border-gray-200',
         styles.footer,
         className
