@@ -308,9 +308,9 @@ class PageParser {
           );
         }
 
-        if (idx >= currentIndex) {
+        if (idx > currentIndex) {
           throw new Error(
-            `Invalid inheritFrom index ${idx} must be less than the current item index ${currentIndex} to apply inheritance correctly`
+            `Invalid inheritFrom index ${idx} must be less than or equal to the current item index ${currentIndex} to apply inheritance correctly`
           );
         }
 
