@@ -13,11 +13,11 @@ This guide only covers changes most likely to cause issues for users. See the
 [release notes](https://github.com/NetLogo/NetLogo/wiki/Release-notes) for more
 complete details on differences between versions.
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

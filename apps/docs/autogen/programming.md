@@ -7,13 +7,7 @@ This section describes the NetLogo programming language in detail.
 The Code Example models mentioned throughout can be found in the Code Examples
 section of the Models Library.
 
-<div class="toc">
-
 #### Table of Contents
-
-[TOC levels=2,3]
-
-</div>
 
 ## Agents and Agentsets
 

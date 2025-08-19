@@ -5,11 +5,11 @@
 This tutorial leads you through the process of building a complete model, built
 up in stages, with every step explained along the way.
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

@@ -6,11 +6,11 @@ The Code tab is where the code for the model is stored. Commands you only want
 to use once can be typed in the Command Center, but collections of commands that
 you want to save for later use can be stored in the Code tab. ![[codetab.png]]
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

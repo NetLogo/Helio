@@ -9,11 +9,11 @@ NetLogo uses fully scalable and rotatable vector shapes, which means you can
 create designs by combining basic geometric elements, which can appear on-screen
 in any size or orientation.
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

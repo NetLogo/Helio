@@ -7,11 +7,11 @@ activities and write your own new ones. It assumes you are familiar with running
 HubNet activities, basic NetLogo code and NetLogo interface elements. For more
 general information about HubNet see the [HubNet Guide](hubnet.html).
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

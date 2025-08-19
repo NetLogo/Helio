@@ -14,11 +14,11 @@ output was in XML format. See
 [the documentation for that prior version](https://ccl.northwestern.edu/netlogo/6.2.2/docs/)
 if you're not on the latest NetLogo release.
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

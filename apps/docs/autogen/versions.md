@@ -7,11 +7,11 @@
 For help running models made in old versions, see the
 [Transition Guide](transition.html).
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

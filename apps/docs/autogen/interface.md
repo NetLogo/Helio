@@ -12,11 +12,11 @@ was designed to meet all these needs.
 The interface can be divided into two main parts: NetLogo menus, and the main
 NetLogo window. The main window is divided into tabs.
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

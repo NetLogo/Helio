@@ -10,11 +10,11 @@ In this section, the focus will start to shift from observing models to
 manipulating models. You will start to see the inner workings of the models and
 be able to change how they look.
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

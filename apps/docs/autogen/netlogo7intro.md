@@ -5,7 +5,7 @@
 The bolded items in the table of contents are the most important changes in
 NetLogo 7.0.0
 
-<div class="toc">
+
 
 #### Table of Contents
 

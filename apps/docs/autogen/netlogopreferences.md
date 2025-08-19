@@ -2,7 +2,7 @@
 
 # {{title}}
 
-<div class="toc">
+
 
 #### Table of Contents
 

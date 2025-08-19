@@ -15,11 +15,11 @@ excellent opportunities for learning.
 You may want to print out the tutorials to make them easier to refer to while
 you're using NetLogo.
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

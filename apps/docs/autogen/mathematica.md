@@ -28,11 +28,11 @@ your model.
 For more information about Mathematica, please visit the
 [Wolfram Research web site](http://www.wolfram.com/).
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

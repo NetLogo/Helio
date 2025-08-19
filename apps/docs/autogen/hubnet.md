@@ -19,11 +19,11 @@ For more information on participatory simulations and their learning potential,
 please visit the
 [Participatory Simulations Project web site](http://ccl.northwestern.edu/rp/ps/index.shtml).
 
-<div class="toc">
+
 
 #### Table of Contents
 
-[TOC]
+
 
 </div>
 

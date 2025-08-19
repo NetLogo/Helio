@@ -37,7 +37,7 @@ We'd like to hear from you. (See [Contacting Us](contact.html).)
 
 <div id="questions">
 
-<div class="toc">
+
 
 #### Table of Contents
 
