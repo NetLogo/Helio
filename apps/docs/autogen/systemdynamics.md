@@ -1,5 +1,3 @@
-{{> header}}
-
 # {{title}}
 
 This guide has three parts:

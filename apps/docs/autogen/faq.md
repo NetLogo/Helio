@@ -28,24 +28,14 @@
   }
 </style>
 
-{{> header}}
 
 # {{title}}
 
 Feedback from users is very valuable to us in designing and improving NetLogo.
 We'd like to hear from you. (See [Contacting Us](contact.html).)
 
-<div id="questions">
-
-
 
 #### Table of Contents
-
-[TOC levels=2,3]
-
-</div>
-
-</div>
 
 ## General
 

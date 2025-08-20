@@ -1,6 +1,6 @@
-{{> header}}
-
 # {{title}}
+
+#### Table of Contents
 
 NetLogo supports [extensions](extensions.html) as a way of adding functionality
 that it does not already provide. Here are a few common reasons you might want

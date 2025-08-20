@@ -1,5 +1,3 @@
-{{> header}}
-
 # {{title}}
 
 This activity gets you thinking about computer modeling and how you can use it.

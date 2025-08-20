@@ -1,17 +1,9 @@
-{{> header}}
-
 # {{title}}
 
 The bolded items in the table of contents are the most important changes in
 NetLogo 7.0.0
 
-
-
 #### Table of Contents
-
-[TOC levels=2,3]
-
-</div>
 
 For a video showing changes in NetLogo 7,
 [see here](https://www.youtube.com/watch?v=Xeagb1Y-xKU).

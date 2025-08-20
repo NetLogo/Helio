@@ -1,14 +1,6 @@
-{{> header}}
-
 # {{title}}
 
-
-
 #### Table of Contents
-
-[TOC levels=2,3]
-
-</div>
 
 ## Overview
 

@@ -1,5 +1,7 @@
 # {{title}}
 
+#### Table of Contents
+
 NetLogo extensions allow users to write new commands and reporters in Java and
 other languages for use in NetLogo models. This section of the User Manual
 introduces extensions and shows how to use an extension in your model once you

@@ -1,18 +1,10 @@
-{{> header}}
-
 # {{title}}
 
 The Code tab is where the code for the model is stored. Commands you only want
 to use once can be typed in the Command Center, but collections of commands that
 you want to save for later use can be stored in the Code tab. ![[codetab.png]]
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 Many Code tab behaviors can be changed by using
 [Code preferences](netlogopreferences.html#code-preferences). These preferences

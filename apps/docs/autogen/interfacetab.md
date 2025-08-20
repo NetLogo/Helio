@@ -1,7 +1,3 @@
-{{> header}}
-
-<main class="prose">
-
 # {{title}}
 
 The Interface tab is where you watch your model run. It also has tools you can
@@ -976,5 +972,3 @@ You can close an agent monitor by clicking the window's close button, or
 by pressing the Esc key. You can close all the agent monitors by using the
 "Close All Monitors" option in the Tools Menu or close just those for dead
 agents by choosing "Close Monitors for Dead Agents."
-
-</main>

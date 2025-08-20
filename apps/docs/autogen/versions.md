@@ -1,5 +1,3 @@
-{{> header}}
-
 <main class="prose versions-page">
 
 # {{title}}
@@ -7,13 +5,7 @@
 For help running models made in old versions, see the
 [Transition Guide](transition.html).
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## Version 7.0.0-beta2 (July 2025)
 

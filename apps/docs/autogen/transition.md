@@ -1,5 +1,3 @@
-{{> header}}
-
 # {{title}}
 
 Many models created in earlier versions of NetLogo also work in NetLogo 7.0.
@@ -13,13 +11,7 @@ This guide only covers changes most likely to cause issues for users. See the
 [release notes](https://github.com/NetLogo/NetLogo/wiki/Release-notes) for more
 complete details on differences between versions.
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## Changes for NetLogo 7.0.0
 

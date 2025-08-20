@@ -1,5 +1,3 @@
-{{> header}}
-
 # {{title}}
 
 If you read the [Sample Model: Party](sample.html) section, you got a brief
@@ -15,13 +13,7 @@ excellent opportunities for learning.
 You may want to print out the tutorials to make them easier to refer to while
 you're using NetLogo.
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## Sample Model: Wolf Sheep Predation
 

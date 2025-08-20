@@ -1,5 +1,3 @@
-{{> header}}
-
 # {{title}}
 
 So far you've successfully navigated your way through opening and running
@@ -10,13 +8,7 @@ In this section, the focus will start to shift from observing models to
 manipulating models. You will start to see the inner workings of the models and
 be able to change how they look.
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## Sample Model: Traffic Basic
 

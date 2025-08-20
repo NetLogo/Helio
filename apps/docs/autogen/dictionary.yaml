@@ -1,0 +1,19 @@
+tags:
+  - Dictionary
+  - Primitives
+  - API
+buildVariables:
+  dictionary: data/dictionary.json
+---
+output: True
+title: NetLogo Dictionary
+description:
+  Reference for NetLogo primitives, including their usage, parameters, and
+  examples.
+keywords:
+  - API Reference
+  - Dictionary
+  - Primitives
+  - Input/Output
+  - Turtles
+  - Patches

@@ -1,12 +1,3 @@
-{{> header}}
-
-<title>
-  NetLogo {{version}} User Manual
-</title>
-<link rel="stylesheet" href="netlogo.css" type="text/css">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
 # {{title}}
 
 <p><img width="600" height="300" src="images/whatis/thumbnails.png" alt="">

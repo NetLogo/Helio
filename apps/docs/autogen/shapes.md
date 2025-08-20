@@ -1,5 +1,3 @@
-{{> header}}
-
 # {{title}}
 
 The Turtle and Link Shape Editors allows you to create and save turtle and link
@@ -9,13 +7,7 @@ NetLogo uses fully scalable and rotatable vector shapes, which means you can
 create designs by combining basic geometric elements, which can appear on-screen
 in any size or orientation.
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## Getting started
 

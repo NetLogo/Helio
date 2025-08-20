@@ -1,8 +1,4 @@
-{{> header}}
-
-<title>NetLogo {{version}}: Contact Us</title>
-
-# Contact Us
+# {{title}}
 
 Feedback from users is essential to us in designing and improving NetLogo. We'd
 like to hear from you.

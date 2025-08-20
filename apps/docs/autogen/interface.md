@@ -1,4 +1,3 @@
-{{> header}}
 
 # {{title}}
 
@@ -12,13 +11,7 @@ was designed to meet all these needs.
 The interface can be divided into two main parts: NetLogo menus, and the main
 NetLogo window. The main window is divided into tabs.
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## Menus
 

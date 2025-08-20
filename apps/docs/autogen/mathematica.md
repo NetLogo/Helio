@@ -1,5 +1,3 @@
-{{> header}}
-
 # {{title}}
 
 The NetLogo-Mathematica link provides modelers with an easy to use, real-time
@@ -28,13 +26,7 @@ your model.
 For more information about Mathematica, please visit the
 [Wolfram Research web site](http://www.wolfram.com/).
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## What can I do with it?
 

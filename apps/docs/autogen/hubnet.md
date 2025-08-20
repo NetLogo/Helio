@@ -1,4 +1,3 @@
-{{> header}}
 
 # {{title}}
 
@@ -19,13 +18,7 @@ For more information on participatory simulations and their learning potential,
 please visit the
 [Participatory Simulations Project web site](http://ccl.northwestern.edu/rp/ps/index.shtml).
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## Understanding HubNet
 

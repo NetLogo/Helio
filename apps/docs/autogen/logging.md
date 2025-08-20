@@ -1,5 +1,3 @@
-{{> header}}
-
 # {{title}}
 
 NetLogo's logging facility allows researchers to record student actions for
@@ -14,13 +12,7 @@ output was in XML format. See
 [the documentation for that prior version](https://ccl.northwestern.edu/netlogo/6.2.2/docs/)
 if you're not on the latest NetLogo release.
 
-
-
 #### Table of Contents
-
-
-
-</div>
 
 ## Starting Logging
 

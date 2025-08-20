@@ -1,6 +1,6 @@
-{{> header}}
-
 # {{title}}
+
+#### Table of Contents
 
 The Extension Manager is a tool for discovering and managing
 [extensions](extensions.html). Extensions provide additional NetLogo language
