@@ -3,9 +3,11 @@
     "language": "en",
     "output": false,
     "inheritFrom": [0],
-    "extension": "md"
+    "extension": "md",
+    "specialChars": "< > &"
   },
   "projectRoot": ".",
   "outputRoot": "dist",
-  "scanRoot": "autogen"
+  "scanRoot": "autogen",
+  "engine": "handlebars"
 }
