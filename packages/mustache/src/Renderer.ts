@@ -74,7 +74,9 @@ class MustacheRenderer {
    * @throws {FileFetchError} If YAML files cannot be read
    * @throws {ParseError} If YAML files cannot be parsed
    */
-  async build(): Promise<BuildResult> {
+  async build(
+    sharedBuildVariables?: Record<string, unknown>
+  ): Promise<BuildResult> {
     const startTime = new Date();
     const errors: string[] = [];
     const pages: Record<string, PageResult> = {};
@@ -84,7 +86,10 @@ class MustacheRenderer {
 
       for (const yamlPath of yamlFiles) {
         try {
-          const pageResults = await this.buildSingle(yamlPath);
+          const pageResults = await this.buildSingle(
+            yamlPath,
+            sharedBuildVariables
+          );
           for (const pageResult of pageResults) {
             pages[pageResult.sourcePath] = pageResult;
           }
@@ -141,10 +146,16 @@ class MustacheRenderer {
    * @throws {ParseError} If the YAML file cannot be parsed
    * @throws {RenderError} If template rendering fails
    */
-  async buildSingle(yamlPath: string): Promise<PageResult[]> {
+  async buildSingle(
+    yamlPath: string,
+    sharedBuildVariables?: Record<string, unknown>
+  ): Promise<PageResult[]> {
     try {
       yamlPath = path.resolve(this.paths.scanRoot, yamlPath);
-      return await this._pageParser.processYamlFile(yamlPath);
+      return await this._pageParser.processYamlFile(
+        yamlPath,
+        sharedBuildVariables
+      );
     } catch (error: any) {
       console.warn(`Error processing ${yamlPath}: ${error.message}`);
       return [];
@@ -164,14 +175,16 @@ class MustacheRenderer {
   async buildFromConfiguration(
     config: Array<Partial<PageConfig>>,
     baseFileName: string,
-    content?: string
+    content?: string,
+    sharedBuildVariables?: Record<string, unknown>
   ): Promise<PageResult[]> {
     try {
       // Process the single configuration using PageParser
       return await this._pageParser.processConfigurations(
         config,
         baseFileName,
-        content
+        content,
+        sharedBuildVariables
       );
     } catch (error: any) {
       return [];

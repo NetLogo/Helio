@@ -55,7 +55,10 @@ class PageParser {
    * @param yamlFilePath - Path to the YAML file to process
    * @returns A promise that resolves when processing is complete
    */
-  async processYamlFile(yamlFilePath: string): Promise<PageResult[]> {
+  async processYamlFile(
+    yamlFilePath: string,
+    sharedBuildVariables?: Record<string, unknown>
+  ): Promise<PageResult[]> {
     const data = await this.loadYaml(yamlFilePath);
     const relativeBaseName = path
       .relative(this.getProjectScanRoot(), yamlFilePath) // Remove scan root
@@ -63,7 +66,9 @@ class PageParser {
 
     const results = await this.processPageConfigurations(
       data,
-      relativeBaseName
+      relativeBaseName,
+      undefined,
+      sharedBuildVariables
     );
     return results;
   }
@@ -105,12 +110,14 @@ class PageParser {
   async processConfigurations(
     pageConfigs: Array<Partial<PageConfig> | null | undefined>,
     baseFileName: string,
-    fileContent?: string
+    fileContent?: string,
+    sharedBuildVariables?: Record<string, unknown>
   ): Promise<PageResult[]> {
     const results = await this.processPageConfigurations(
       pageConfigs,
       baseFileName,
-      fileContent
+      fileContent,
+      sharedBuildVariables
     );
     return results;
   }
@@ -124,7 +131,8 @@ class PageParser {
   private async processPageConfigurations(
     data: Array<Partial<PageConfig> | null | undefined>,
     relativeBaseName: string,
-    fileContent?: string
+    fileContent?: string,
+    sharedBuildVariables?: Record<string, unknown>
   ): Promise<PageResult[]> {
     let results: PageResult[] = [];
     const defaults = { language: 'en', ...this.projectConfig.defaults };
@@ -138,7 +146,10 @@ class PageParser {
           index
         );
 
-        const buildVars = await this._prepareBuildVariables(mdConfig);
+        const buildVars = await this._prepareBuildVariables(
+          mdConfig,
+          sharedBuildVariables
+        );
 
         const language = this._getPageLanguage(mdConfig, defaults.language);
         const extension = mdConfig.extension || 'md';
@@ -325,9 +336,13 @@ class PageParser {
   }
 
   private async _prepareBuildVariables(
-    mdConfig: PageConfig
+    mdConfig: PageConfig,
+    sharedBuildVariables?: Record<string, unknown>
   ): Promise<Record<string, unknown>> {
-    const buildVars: Record<string, unknown> = { ...mdConfig };
+    const buildVars: Record<string, unknown> = {
+      ...mdConfig,
+      ...(sharedBuildVariables || {}),
+    };
     if (mdConfig.buildVariables) {
       for (const [key, val] of Object.entries(mdConfig.buildVariables)) {
         buildVars[key] = await this.renderer.loadBuildVariable(val as string);
