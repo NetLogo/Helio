@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import fs from 'fs/promises';
 import { ProjectConfigLoader } from '../src/ProjectConfigLoader.js';
 import { JSONParseError, ParseError, ValidationError } from '../src/errors.js';
-import { MarkdownProjectConfig } from '../src/schemas.js';
+import { ProjectConfig } from '../src/schemas.js';
 
 // Mock fs/promises
 jest.mock('fs/promises');
@@ -14,7 +14,7 @@ describe('ProjectConfigLoader', () => {
   });
 
   describe('load', () => {
-    const validConfig: MarkdownProjectConfig = {
+    const validConfig: ProjectConfig = {
       projectRoot: './project',
       scanRoot: './source',
       outputRoot: './output',
@@ -25,6 +25,7 @@ describe('ProjectConfigLoader', () => {
         title: 'Default Title',
         description: 'Default Description',
       },
+      engine: 'mustache',
     };
 
     it('should load and validate a valid config file', async () => {

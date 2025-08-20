@@ -29,7 +29,7 @@ describe('errors', () => {
       const error = new FileFetchError(filePath, originalMessage);
 
       expect(error.message).toBe(
-        `Failed to fetch file ${filePath}: ${originalMessage}`
+        `Failed to fetch file ${JSON.stringify(filePath)}: ${originalMessage}`
       );
       expect(error).toBeInstanceOf(Error);
     });

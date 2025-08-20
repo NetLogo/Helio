@@ -51,6 +51,7 @@ describe('MustacheRenderer', () => {
       projectRoot: './test-project',
       scanRoot: './test-source',
       outputRoot: './test-output',
+      engine: 'mustache',
       defaults: {
         language: 'en',
         extension: 'md',
@@ -405,7 +406,8 @@ describe('MustacheRenderer', () => {
       const results = await renderer.buildSingle('test.yaml');
 
       expect(mockPageParser.processYamlFile).toHaveBeenCalledWith(
-        '/current/dir/test-source/test.yaml'
+        '/current/dir/test-source/test.yaml',
+        undefined
       );
       expect(results).toEqual(mockResults);
     });
@@ -419,7 +421,8 @@ describe('MustacheRenderer', () => {
       const results = await renderer.buildSingle('docs/guide.yaml');
 
       expect(mockPageParser.processYamlFile).toHaveBeenCalledWith(
-        '/current/dir/test-source/docs/guide.yaml'
+        '/current/dir/test-source/docs/guide.yaml',
+        undefined
       );
       expect(results).toEqual(mockResults);
     });
@@ -433,7 +436,10 @@ describe('MustacheRenderer', () => {
 
       const results = await renderer.buildSingle(absolutePath);
 
-      expect(mockPageParser.processYamlFile).toHaveBeenCalledWith(absolutePath);
+      expect(mockPageParser.processYamlFile).toHaveBeenCalledWith(
+        absolutePath,
+        undefined
+      );
       expect(results).toEqual(mockResults);
     });
 
@@ -524,7 +530,8 @@ describe('MustacheRenderer', () => {
       expect(mockPageParser.processConfigurations).toHaveBeenCalledWith(
         configs,
         baseFileName,
-        content
+        content,
+        undefined
       );
       expect(results).toEqual(mockResults);
     });
@@ -548,6 +555,7 @@ describe('MustacheRenderer', () => {
       expect(mockPageParser.processConfigurations).toHaveBeenCalledWith(
         configs,
         'file-based',
+        undefined,
         undefined
       );
       expect(results).toEqual(mockResults);
@@ -580,6 +588,7 @@ describe('MustacheRenderer', () => {
       expect(mockPageParser.processConfigurations).toHaveBeenCalledWith(
         configs,
         'empty',
+        undefined,
         undefined
       );
       expect(results).toEqual([]);

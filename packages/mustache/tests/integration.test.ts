@@ -39,6 +39,7 @@ describe('MustacheRenderer Integration Tests', () => {
       projectRoot: '.',
       scanRoot: './test-data',
       outputRoot: './test-dist',
+      engine: 'mustache',
       defaults: {
         language: 'en',
         extension: 'md',
@@ -216,7 +217,8 @@ describe('MustacheRenderer Integration Tests', () => {
       expect(mockPageParser.processConfigurations).toHaveBeenCalledWith(
         configurations,
         'direct-config',
-        template
+        template,
+        undefined
       );
     });
 

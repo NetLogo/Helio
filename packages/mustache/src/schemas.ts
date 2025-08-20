@@ -101,6 +101,8 @@ const ProjectConfigSchema = z.object({
   outputRoot: z.string().default('./dist'),
   // Default declarations for items
   defaults: PageDeclarationSchema,
+  // Optional engine to use for rendering templates
+  engine: z.enum(['mustache', 'handlebars']).default('mustache').optional(),
 });
 
 /**

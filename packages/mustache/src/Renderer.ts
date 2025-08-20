@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import Handlebars from 'handlebars';
 import mustache from 'mustache';
 import path from 'path';
 
@@ -202,14 +203,21 @@ class MustacheRenderer {
   render(content: string, variables: Record<string, any>) {
     let rendered;
     try {
-      rendered = mustache.render(content, variables);
-      // Validate the rendered output
+      if (this._config.engine === 'handlebars') {
+        const template = Handlebars.compile(content);
+        rendered = template(variables);
+      } else {
+        rendered = mustache.render(content, variables);
+      }
+
       if (!rendered) {
         throw new RenderError('Rendered output is empty');
       }
     } catch (error: any) {
+      const engineName =
+        this._config.engine === 'handlebars' ? 'Handlebars' : 'Mustache';
       throw new RenderError(
-        `Failed to render Mustache template`,
+        `Failed to render ${engineName} template`,
         error.message
       );
     }
