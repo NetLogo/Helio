@@ -26,11 +26,13 @@ export const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (
 
       const regex = /(!?\[\[([^\]|]+)(?:\|([^\]#]+))?(#[^\]]+)?\]\])/g;
       visit(tree, 'text', (node, index, parent) => {
+        const children = [];
+
         let value = node.value;
         let match;
         let lastIndex = 0;
-        const children = [];
         let nChildren = 1;
+        let nNodesVisited = 0;
 
         if (!value.includes('[[')) {
           return;
@@ -60,6 +62,11 @@ export const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (
               if (nodeValue.includes(']]')) {
                 value = tempValue;
                 nChildren += tmpNChildren;
+                break;
+              }
+
+              nNodesVisited += 1;
+              if (nNodesVisited >= (opts.greedyMatch!.maxNodes || 25)) {
                 break;
               }
             }
@@ -160,8 +167,6 @@ class WikiLink {
       const alt = this.text || this.permalink;
       el = {
         type: 'image',
-        url: href,
-        alt: imageOptions?.altTemplate?.(alt) || alt,
         data: {
           hName: 'img',
           hProperties: {
@@ -169,6 +174,7 @@ class WikiLink {
             width: imageOptions?.defaultSize?.width,
             height: imageOptions?.defaultSize?.height,
             src: href,
+            alt: imageOptions?.altTemplate?.(alt) || alt,
           },
         },
       };

@@ -76,6 +76,8 @@ interface WikiLinkOptions {
   greedyMatch?: {
     /** Maximum iterations to prevent infinite loops */
     maxIterations?: number;
+    /** Maximum number of nodes to consume during greedy matching */
+    maxNodes?: number;
     /** Node types that can be consumed during greedy matching */
     consumableTypes?: string[];
     /** Function to access node value for greedy matching */
@@ -137,6 +139,7 @@ const DEFAULT_OPTIONS = {
   },
   greedyMatch: {
     maxIterations: 10,
+    maxNodes: 25,
     consumableTypes: ['text', 'html'],
     accessor: greedyAccessor,
   },
