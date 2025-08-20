@@ -31,3 +31,6 @@ export default function MyComponent() {
 |`remarkRehypeQuestion`|Question directives|`remark`|✓|
 |`remarkHighlightNL`|NetLogo syntax highlighting|`remark`|✓|
 |`remarkToc`|Generate table of contents|`remark`||
+
+## TODOs
+[ ] Figure out how WikiLinks figures out where images are in Scala
