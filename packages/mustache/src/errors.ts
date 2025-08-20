@@ -9,7 +9,7 @@ export class FileNotFoundError extends Error {
 // FileFetchError
 export class FileFetchError extends Error {
   constructor(filePath: string, message: unknown) {
-    super(`Failed to fetch file ${filePath}: ${message}`);
+    super(`Failed to fetch file ${JSON.stringify(filePath)}: ${message}`);
   }
 }
 
