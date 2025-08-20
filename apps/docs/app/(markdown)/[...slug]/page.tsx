@@ -20,7 +20,13 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
 
 export async function generateStaticParams() {
   const renderer = await MustacheRenderer.fromConfigPath(configPath);
-  const results = await renderer.build();
+  const buildVariables = {
+    version: process.env['PRODUCT_VERSION'] || 'unknown',
+    buildDate: new Date(
+      process.env['PRODUCT_BUILD_DATE'] || Date.now()
+    ).toISOString(),
+  };
+  const results = await renderer.build(buildVariables);
 
   const generatedSlugs = Object.values(results.pages)
     .filter((page) => page.success)
