@@ -1,58 +1,104 @@
-# Turborepo Tailwind CSS starter
+# Helio
 
-This Turborepo starter is maintained by the Turborepo core team.
+A monorepo for NetLogo-related web applications and shared packages, built with Next.js, TypeScript, and Turborepo.
 
-## Using this example
+## 🏗️ Project Structure
 
-Run the following command:
+This monorepo contains:
 
-```sh
-npx create-turbo@latest -e with-tailwind
+### Applications (`apps/`)
+- **`docs`** - Documentation website (runs on port 3000)
+- **`nettango`** - NetTango website (runs on port 3001)
+
+### Packages (`packages/`)
+- **`@repo/ui`** - Shared React components and styling
+- **`@repo/markdown`** - NetLogo Markdown renderer
+- **`@repo/mustache`** - Mustache renderer with extended feature set
+
+- **`@repo/eslint-config`** - Shared ESLint configuration
+- **`@repo/tailwind-config`** - Shared Tailwind CSS configuration
+- **`@repo/typescript-config`** - Shared TypeScript configuration
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ (specified in `engines`)
+- Yarn 1.22.22 (specified package manager, must use for reproducability)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd Helio
+
+# Install dependencies
+yarn install
 ```
 
-## What's inside?
+### Development
 
-This Turborepo includes the following packages/apps:
+```bash
+# Start all applications in development mode
+yarn dev
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Building packages/ui
-
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
-
-- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
-
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
-
-For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
-
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
+# Start a specific app
+yarn workspace docs dev
+yarn workspace nettango dev
 ```
 
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
+### Building
 
-### Utilities
+```bash
+# Build all applications and packages
+yarn build
 
-This Turborepo has some additional tools already setup for you:
+# Build a specific app
+yarn workspace docs build
+yarn workspace nettango build
+```
 
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Other Commands
+
+```bash
+# Lint all packages
+yarn lint
+
+# Type checking
+yarn check-types
+
+# Format code
+yarn format
+```
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15+ with React 19
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4+ with SCSS
+- **Build Tool**: Turborepo
+- **Package Manager**: Yarn Workspaces
+- **Icons**: FontAwesome
+
+## 📁 Key Features
+
+- **Monorepo Architecture**: Efficient code sharing with Turborepo
+- **Modern React**: Using React 19 with Next.js 15
+- **Type Safety**: Full TypeScript support across all packages
+- **Shared Components**: Reusable UI components via `@repo/ui`
+- **Consistent Styling**: Shared Tailwind configuration
+- **Development Tools**: ESLint, Prettier, and TypeScript checking
+
+## 📝 Scripts
+
+The following scripts are available at the root level:
+
+- `yarn dev` - Start development servers for all apps
+- `yarn build` - Build all apps and packages for production
+- `yarn lint` - Run ESLint on all packages
+- `yarn check-types` - Run TypeScript type checking
+- `yarn format` - Format code with Prettier
+
+## 📄 License
+
+This project is private and not publicly licensed.
