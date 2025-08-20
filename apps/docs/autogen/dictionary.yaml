@@ -10,6 +10,7 @@ title: NetLogo Dictionary
 description:
   Reference for NetLogo primitives, including their usage, parameters, and
   examples.
+specialChars: '< >'
 keywords:
   - API Reference
   - Dictionary

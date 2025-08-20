@@ -66,73 +66,81 @@ actually run a primitive, consult its dictionary entry.
 
 <h3 id="{{{id}}}">{{{title}}}</h3>
 
-<!-- {{#dictionary.entries}}
-{{#data.syntax}}
-[[{{{name}}}]]
-{{/data.syntax}}
-{{/dictionary.entries}} -->
-
-[[in-<breed>-neighbors]]
-[[in-<breed>-neighbors]]
-
-{{#subcategories}}
-
-<h4 id="{{{id}}}">{{{title}}}</h4>
-
-{{/subcategories}}
-
+{{#entries}}
+[[{{{name}}}|{{{id}}}]]
+{{#if additional_names.length}}
+({{#each additional_names}}[[{{{.}}}|{{{../id}}}]]{{#unless @last}}, {{/unless}}{{/each}})
+{{/if}}
+{{/entries}}
 {{/dictionary.categories}}
 
-## Built-In Variables {#builtinvariables}
+## Built-In Variables
+<div>
 
-{{#dictionary.categories}}
-{{#subcategories}}
-### {{{title}}} {#{{{id}}}}
-
-{{/subcategories}}
-{{/dictionary.categories}}
-
-## Keywords {#Keywords}
-
-{{#dictionary.entries}}
-{{#data.syntax}}
-{{#entry_categories}}
-{{#isKeyword}}
-[`{{{name}}}`](#{{{../../../id}}}) {{/isKeyword}}
-{{/entry_categories}}
-{{/data.syntax}}
-{{/dictionary.entries}}
-
-## Constants {#Constants}
-
-{{#dictionary.entries}}
-{{#data.constants}}
-<div class="dict_entry" id="{{{../id}}}">
-
-### {{{title}}}
-
-{{#constants}}
-**[{{{name}}}](#{{{../../id}}})**{{#value}} = {{{value}}}{{/value}}  
-{{/constants}}
+{{#dictionary.catalog.variables.subcategories}}
+<h3 id="{{{id}}}">{{{title}}}</h3>
+{{/dictionary.catalog.variables.subcategories}}
 
 </div>
-{{/data.constants}}
-{{/dictionary.entries}}
 
-## Dictionary Entries
+## Keywords
+{{#each dictionary.catalog.keywords.entries}}
+[[{{{name}}}|{{{id}}}]]
+{{/each}}
 
-{{#dictionary.entries}}
-{{#data.syntax}}
-<div class="dict_entry" id="{{{../id}}}">
+## Constants
 
-### {{#syntax}}{{{name}}}{{#since}}<span class="since">{{{since}}}</span>{{/since}}{{^last}} {{/last}}{{/syntax}} {#{{{../id}}}}
+{{#each dictionary.entries}}
+{{#if data.constants.length}}
+<div class="dict_entry" id="{{{id}}}" data-constants="{{#each data.constants}}{{{name}}}{{#unless @last}} {{/unless}}{{/each}}">
 
-{{#examples}}
-<span class="prim_example">{{{code}}}</span>
-{{/examples}}
+### {{{data.title}}}
 
-{{{description}}}
+{{#each data.constants}}
+[[{{{name}}}]] {{#if value}}= {{{value}}}{{/if}}<br/>
+{{/each}}
 
 </div>
-{{/data.syntax}}
-{{/dictionary.entries}}
+{{/if}}
+{{/each}}
+
+## Primitives and Commands
+
+{{#each dictionary.entries}}
+{{#if data.syntax.length}}
+<div class="dict_entry" id="{{{id}}}">
+  <h3>
+    {{#each data.syntax}}
+      <a href="#{{{../id}}}">
+        {{name}}
+        {{#if since}}
+          <span class="since">
+          {{{since}}}
+          </span>
+        {{/if}}
+      </a>
+    {{/each}}
+  </h3>
+
+  {{#if data.examples.length}}
+  <h4>
+  {{#each data.examples}}
+
+  :::span{.prim_example}
+    {{code}}
+    {{#if since}}
+      :::span{.since}
+      {{{since}}}
+      :::
+    {{/if}}
+  :::
+
+  {{/each}}
+  </h4>
+  {{/if}}
+
+  {{{data.description}}}
+
+</div>
+{{/if}}
+{{/each}}
