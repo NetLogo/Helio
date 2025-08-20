@@ -21,6 +21,8 @@ export const wikiLinkConfig: WikiLinkOptions = {
         return `images/${permalink}${anchorQuery}`;
       case 'missingLink':
         return `dictionary.html#${dictionaryPermalink}${anchorQuery}`;
+      case 'externalLink':
+        return permalink + (anchor ? `#${encodeURIComponent(anchor)}` : '');
       default:
         return (
           `#${encodeURIComponent(permalink).replace(/%20/g, '+')}` + anchorQuery
@@ -47,6 +49,23 @@ export const wikiLinkConfig: WikiLinkOptions = {
   },
   integration: {
     encode: (permalink: string) => permalink,
+    greedyMatch: true,
+  },
+  greedyMatch: {
+    maxIterations: 15,
+    consumableTypes: ['text', 'html', 'link'],
+    accessor: (node: any) => {
+      switch (node.type) {
+        case 'text':
+          return node.value;
+        case 'html':
+          return node.value;
+        case 'link':
+          return node.url;
+        default:
+          return '';
+      }
+    },
   },
 };
 

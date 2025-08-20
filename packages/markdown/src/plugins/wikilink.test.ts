@@ -76,6 +76,149 @@ describe('remarkWikiLink', () => {
     });
   });
 
+  describe('greedy matching', () => {
+    it('should parse wikilinks that span text/html nodes', async () => {
+      const options: WikiLinkOptions = {
+        integration: {
+          greedyMatch: true,
+        },
+      };
+
+      const markdown = 'This is a [[in-<breed>-neighbors]] test.';
+      const tree = processor.parse(markdown);
+      await processor().use(remarkWikiLink, options).run(tree);
+
+      const paragraph = tree.children[0];
+
+      expect(paragraph.children).toHaveLength(3);
+      expect(paragraph.children[0].value).toBe('This is a ');
+      expect(paragraph.children[1].type).toBe('link');
+      expect(paragraph.children[1].url).toBe('#in-%3Cbreed%3E-neighbors');
+      expect(paragraph.children[2].value).toBe(' test.');
+    });
+
+    it('should parse multiple wikilinks that span text/html nodes', async () => {
+      const options: WikiLinkOptions = {
+        integration: {
+          greedyMatch: true,
+        },
+      };
+
+      const markdown = 'Links: [[in-<breed>-neighbors]] and [[another-link]].';
+      const tree = processor.parse(markdown);
+      await processor().use(remarkWikiLink, options).run(tree);
+      const paragraph = tree.children[0];
+
+      // Expect two links in the paragraph
+      expect(paragraph.children).toHaveLength(5);
+      expect(paragraph.children[0].value).toBe('Links: ');
+      expect(paragraph.children[1].type).toBe('link');
+      expect(paragraph.children[1].url).toBe('#in-%3Cbreed%3E-neighbors');
+      expect(paragraph.children[2].value).toBe(' and ');
+      expect(paragraph.children[3].type).toBe('link');
+      expect(paragraph.children[3].url).toBe('#another-link');
+      expect(paragraph.children[4].value).toBe('.');
+    });
+
+    it('should parse multiple wikilinks that span text/html with line break as separator', async () => {
+      const options: WikiLinkOptions = {
+        integration: {
+          greedyMatch: true,
+        },
+      };
+
+      const markdown = `[[in-<breed>-neighbors]]
+[[another-link]]`;
+      const tree = processor.parse(markdown);
+      await processor().use(remarkWikiLink, options).run(tree);
+      const paragraph = tree.children[0];
+
+      // Expect two links in the paragraph
+      expect(paragraph.children).toHaveLength(3);
+      expect(paragraph.children[0].type).toBe('link');
+      expect(paragraph.children[0].url).toBe('#in-%3Cbreed%3E-neighbors');
+      expect(paragraph.children[0].children[0].value).toBe(
+        'in-<breed>-neighbors'
+      );
+      expect(paragraph.children[1].type).toBe('text');
+      expect(paragraph.children[1].value).toBe('\n');
+      expect(paragraph.children[2].type).toBe('link');
+      expect(paragraph.children[2].url).toBe('#another-link');
+    });
+
+    it('should parse multiple text/html wikilinks line break as separator', async () => {
+      const options: WikiLinkOptions = {
+        integration: {
+          greedyMatch: true,
+        },
+      };
+
+      const markdown = `[[in-<breed>-neighbors]]
+[[another-<breed>-link]]
+[[one-more-<breed>-link]]`;
+      const tree = processor.parse(markdown);
+      await processor().use(remarkWikiLink, options).run(tree);
+      const paragraph = tree.children[0];
+
+      expect(paragraph.children).toHaveLength(5);
+      expect(paragraph.children[0].type).toBe('link');
+      expect(paragraph.children[0].url).toBe('#in-%3Cbreed%3E-neighbors');
+      expect(paragraph.children[0].children[0].value).toBe(
+        'in-<breed>-neighbors'
+      );
+      expect(paragraph.children[1].type).toBe('text');
+      expect(paragraph.children[1].value).toBe('\n');
+      expect(paragraph.children[2].type).toBe('link');
+      expect(paragraph.children[2].url).toBe('#another-%3Cbreed%3E-link');
+      expect(paragraph.children[2].children[0].value).toBe(
+        'another-<breed>-link'
+      );
+      expect(paragraph.children[3].type).toBe('text');
+      expect(paragraph.children[3].value).toBe('\n');
+      expect(paragraph.children[4].type).toBe('link');
+      expect(paragraph.children[4].url).toBe('#one-more-%3Cbreed%3E-link');
+      expect(paragraph.children[4].children[0].value).toBe(
+        'one-more-<breed>-link'
+      );
+    });
+
+    it('should parse multiple text/html wikilinks with display texts', async () => {
+      const options: WikiLinkOptions = {
+        integration: {
+          greedyMatch: true,
+        },
+      };
+
+      const markdown = `[[First Display|in-<breed>-neighbors]]
+[[Second-<display>|another-<breed>-link]]
+[[third-<display>|one-more-<breed>-link]]`;
+      const tree = processor.parse(markdown);
+      await processor().use(remarkWikiLink, options).run(tree);
+      const paragraph = tree.children[0];
+
+      expect(paragraph.children).toHaveLength(5);
+      expect(paragraph.children[0].type).toBe('link');
+      expect(paragraph.children[0].url).toBe('#in-%3Cbreed%3E-neighbors');
+      expect(paragraph.children[0].data.hProperties['data-display-text']).toBe(
+        'First Display'
+      );
+      expect(paragraph.children[1].type).toBe('text');
+      expect(paragraph.children[1].value).toBe('\n');
+      expect(paragraph.children[2].type).toBe('link');
+      expect(paragraph.children[2].url).toBe('#another-%3Cbreed%3E-link');
+      expect(paragraph.children[2].data.hProperties['data-display-text']).toBe(
+        'Second-<display>'
+      );
+      expect(paragraph.children[3].type).toBe('text');
+      expect(paragraph.children[3].value).toBe('\n');
+      expect(paragraph.children[4].type).toBe('link');
+      expect(paragraph.children[4].url).toBe('#one-more-%3Cbreed%3E-link');
+      expect(paragraph.children[4].data.hProperties['data-display-text']).toBe(
+        'third-<display>'
+      );
+    });
+  });
+
   describe('image wikilinks', () => {
     it('should parse image wikilinks with ![[]]', async () => {
       const markdown = 'Here is an image: ![[image.png]]';

@@ -1,11 +1,13 @@
 import type { Content, Element, Root } from 'hast';
 
-export const isNodeElement = (node?: Content): node is Element => {
+export const isNodeElement = (
+  node?: Content | { type: string }
+): node is Element => {
   return node?.type === 'element';
 };
 
 export const isNodeHeading = (
-  node: Content | undefined,
+  node: Content | { type: string } | undefined,
   { minHeadingLevel = 1, maxHeadingLevel = 6 } = {}
 ): node is Element => {
   return (
@@ -21,8 +23,8 @@ export const isNodeHeading = (
 export const next = (
   parent: Root | Element | undefined,
   firstIndex: number,
-  stop: (node?: Content) => boolean
-): readonly [Content | undefined, number] => {
+  stop: (node?: Content | { type: string }) => boolean
+): readonly [Content | { type: string } | undefined, number] => {
   if (!parent) return [undefined, -1] as const;
   for (let i = firstIndex + 1; i < parent.children.length; i++) {
     const child = parent.children[i];

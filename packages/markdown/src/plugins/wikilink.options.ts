@@ -67,8 +67,37 @@ interface WikiLinkOptions {
     fileExtension?: string;
     /** URL encoding options */
     encode?: (permalink: string) => string;
+    /** Whether to greedy match until it finds a closing ]] */
+    greedyMatch?: boolean;
+  };
+  /**
+   * Greedy matching options
+   */
+  greedyMatch?: {
+    /** Maximum iterations to prevent infinite loops */
+    maxIterations?: number;
+    /** Node types that can be consumed during greedy matching */
+    consumableTypes?: string[];
+    /** Function to access node value for greedy matching */
+    accessor?: (node: any) => string;
   };
 }
+
+/**
+ * Default greedy accessor
+ */
+export const greedyAccessor = (node: any): string => {
+  switch (node.type) {
+    case 'text':
+      return node.value;
+    case 'html':
+      return node.value;
+    case 'link':
+      return node.url;
+    default:
+      return '';
+  }
+};
 
 /**
  * Default values for WikiLink configuration
@@ -104,6 +133,12 @@ const DEFAULT_OPTIONS = {
     fileExtension: '.md',
     encode: (permalink: string) =>
       encodeURIComponent(permalink).replace(/%20/g, '+'),
+    greedyMatch: false,
+  },
+  greedyMatch: {
+    maxIterations: 10,
+    consumableTypes: ['text', 'html'],
+    accessor: greedyAccessor,
   },
 };
 
@@ -164,6 +199,10 @@ const getDefaultWikiLinkOptions = (
     integration: {
       ...DEFAULT_OPTIONS.integration,
       ...providedOptions.integration,
+    },
+    greedyMatch: {
+      ...DEFAULT_OPTIONS.greedyMatch,
+      ...providedOptions.greedyMatch,
     },
   };
 };

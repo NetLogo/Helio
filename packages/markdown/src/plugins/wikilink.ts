@@ -1,7 +1,9 @@
 import type { Root } from 'hast';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
+import { next } from './utils';
 import {
+  greedyAccessor as defaultGreedyAccessor,
   getDefaultWikiLinkOptions,
   LinkType,
   WikiLinkOptions,
@@ -11,63 +13,109 @@ export const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (
   options = undefined
 ) => {
   const opts = getDefaultWikiLinkOptions(options);
-  const regex = /(!?\[\[([^\]|]+)(?:\|([^\]#]+))?(#[^\]]+)?\]\])/g;
 
   return (tree) => {
-    visit(tree, 'text', (node, index, parent) => {
-      const value = node.value;
-      let match;
-      let lastIndex = 0;
-      const children = [];
+    let hasChanges = true;
+    let iterations = 0;
+    const maxIterations = opts.greedyMatch?.maxIterations || 10; // Prevent infinite loops
+    const greedyAccessor = opts.greedyMatch?.accessor || defaultGreedyAccessor;
 
-      while ((match = regex.exec(value))) {
-        const [full, , displayText, permalinkRaw, heading] = match;
-        const isEmbed = full.startsWith('![[');
-        const before = value.slice(lastIndex, match.index);
-        if (before) children.push({ type: 'text', value: before });
+    while (hasChanges && iterations < maxIterations) {
+      hasChanges = false;
+      iterations++;
 
-        let display: string;
-        let permalink: string;
-        let anchor: string | null;
+      const regex = /(!?\[\[([^\]|]+)(?:\|([^\]#]+))?(#[^\]]+)?\]\])/g;
+      visit(tree, 'text', (node, index, parent) => {
+        let value = node.value;
+        let match;
+        let lastIndex = 0;
+        const children = [];
+        let nChildren = 1;
 
-        if (!permalinkRaw && !heading) {
-          display = displayText?.trim() || '';
-          const parts = display.split('#');
-          permalink = parts[0] || '';
-          anchor = parts[1] || null;
-        } else {
-          permalink = (permalinkRaw ?? displayText ?? '').trim();
-          anchor = heading ? heading.slice(1) : null; // Remove the '#' if present
-          display = displayText?.trim() ?? permalink;
+        if (!value.includes('[[')) {
+          return;
         }
 
-        if ([display, permalink, anchor].every((s) => Boolean(s) === false)) {
-          // If all are empty, skip this match
-          continue;
+        if (value.includes('[[') && !value.includes(']]')) {
+          // If there's an opening [[ without a closing ]], we can't process it correctly
+          // unless the greedy matching is enabled.
+          if (opts.integration?.greedyMatch && typeof index === 'number') {
+            let currentNodeIndex = index;
+            let tempValue = value;
+            let tmpNChildren = 0;
+            while (currentNodeIndex !== -1) {
+              const consumableTypes = opts.greedyMatch!.consumableTypes || [];
+              const [nextNode, nextIndex] = next(
+                parent,
+                currentNodeIndex,
+                (n) => consumableTypes.includes(n?.type || '')
+              );
+
+              if (!nextNode) break;
+              const nodeValue = greedyAccessor(nextNode);
+              tempValue += nodeValue;
+              currentNodeIndex = nextIndex;
+              tmpNChildren++;
+
+              if (nodeValue.includes(']]')) {
+                value = tempValue;
+                nChildren += tmpNChildren;
+                break;
+              }
+            }
+          }
         }
 
-        const wikiLink = new WikiLink(
-          full,
-          isEmbed,
-          permalink,
-          anchor || null,
-          display || null,
-          opts
-        );
+        while ((match = regex.exec(value))) {
+          const [full, , displayText, permalinkRaw, heading] = match;
+          const isEmbed = full.startsWith('![[');
+          const before = value.slice(lastIndex, match.index);
+          if (before) children.push({ type: 'text', value: before });
 
-        children.push(wikiLink.toElement());
-        lastIndex = regex.lastIndex;
-      }
+          let display: string;
+          let permalink: string;
+          let anchor: string | null;
 
-      if (lastIndex < value.length) {
-        children.push({ type: 'text', value: value.slice(lastIndex) });
-      }
+          if (!permalinkRaw && !heading) {
+            display = displayText?.trim() || '';
+            const parts = display.split('#');
+            permalink = parts[0] || '';
+            anchor = parts[1] || null;
+          } else {
+            permalink = (permalinkRaw ?? displayText ?? '').trim();
+            anchor = heading ? heading.slice(1) : null; // Remove the '#' if present
+            display = displayText?.trim() ?? permalink;
+          }
 
-      if (children.length > 0 && parent && typeof index === 'number') {
-        parent.children.splice(index, 1, ...children);
-        return index + children.length;
-      }
-    });
+          if ([display, permalink, anchor].every((s) => Boolean(s) === false)) {
+            // If all are empty, skip this match
+            continue;
+          }
+
+          const wikiLink = new WikiLink(
+            full,
+            isEmbed,
+            permalink,
+            anchor || null,
+            display || null,
+            opts
+          );
+
+          children.push(wikiLink.toElement());
+          lastIndex = regex.lastIndex;
+        }
+
+        if (lastIndex < value.length) {
+          children.push({ type: 'text', value: value.slice(lastIndex) });
+        }
+
+        if (children.length > 0 && parent && typeof index === 'number') {
+          parent.children.splice(index, nChildren, ...children);
+          hasChanges = true;
+          return index + children.length;
+        }
+      });
+    }
   };
 };
 
@@ -130,6 +178,12 @@ class WikiLink {
         !validation?.linkExists?.(this.permalink);
       linkType = isMissingLink ? 'missingLink' : 'wikiLink';
 
+      const isExternalLink =
+        this.permalink.startsWith('http://') ||
+        this.permalink.startsWith('https://') ||
+        this.permalink.startsWith('www.');
+      linkType = isExternalLink ? 'externalLink' : linkType;
+
       const titleTemplate =
         htmlOptions?.[linkType]?.titleTemplate ||
         ((permalink: string, displayText?: string) => displayText || permalink);
@@ -146,11 +200,13 @@ class WikiLink {
             className: [
               classNames?.wikiLink,
               isMissingLink ? classNames?.missingLink : '',
+              isExternalLink ? classNames?.externalLink : '',
             ].filter(Boolean),
             title: titleTemplate(this.permalink, this.displayText ?? undefined),
             target: htmlOptions?.[linkType]?.target || '_self',
             rel: htmlOptions?.[linkType]?.rel || 'noopener',
             href: href,
+            ...(this.displayText && { 'data-display-text': this.displayText }),
           },
         },
       };

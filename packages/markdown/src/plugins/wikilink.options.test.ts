@@ -31,6 +31,7 @@ describe('wikilink.options', () => {
       expect(options.integration).toEqual({
         fileExtension: '.md',
         encode: expect.any(Function),
+        greedyMatch: false,
       });
     });
 
