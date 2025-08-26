@@ -3,28 +3,25 @@ import Handlebars from 'handlebars';
 import mustache from 'mustache';
 import path from 'path';
 
-import { BuildResult, PageResult } from 'api.schemas.js';
-import { BuildVariable, BuildVariablesLoader } from './BuildVariablesLoader.js';
-import {
-  FileFetchError,
-  InitializationError,
-  ParseError,
-  RenderError,
-} from './errors.js';
+import { BuildResult, PageResult } from './api.schemas.js';
+import { BuildVariablesLoader } from './BuildVariablesLoader.js';
+import { HandlebarsEngine, MustacheEngine, TemplateEngine } from './engines.js';
+import { InitializationError, RenderError } from './errors.js';
 import PageParser from './PageParser.js';
-import { ProjectConfigLoader } from './ProjectConfigLoader.js';
 import { PageConfig, ProjectConfig, ProjectConfigSchema } from './schemas.js';
 
 /**
- * @class MustacheRenderer
+ * @class TemplateRenderer
  *
- * High-level interface for rendering mustache templates driven by
- * YAML front matter or equivalent JSON configuration.
+ * High-level interface for rendering mustache/handlebars
+ * templates driven by YAML front matter or equivalent
+ * JSON configuration.
  *
  */
-class MustacheRenderer {
+class Renderer {
   private _buildVariablesLoader: BuildVariablesLoader;
   private _pageParser: PageParser;
+  private _engine: TemplateEngine;
 
   public paths: {
     projectRoot: string;
@@ -36,13 +33,13 @@ class MustacheRenderer {
   constructor(private _config: ProjectConfig) {
     if (!this._config) {
       throw new InitializationError(
-        'MustacheRenderer requires a project configuration.'
+        'Renderer requires a project configuration.'
       );
     }
 
     if (!ProjectConfigSchema.safeParse(this._config).success) {
       throw new InitializationError(
-        'Invalid project configuration provided to MustacheRenderer.'
+        'Invalid project configuration provided to Renderer.'
       );
     }
 
@@ -55,14 +52,25 @@ class MustacheRenderer {
       ),
     };
 
+    switch (this._config.engine) {
+      case 'handlebars':
+        this._engine = new HandlebarsEngine();
+        break;
+      case 'mustache':
+        this._engine = new MustacheEngine();
+        break;
+      default:
+        this._engine = new MustacheEngine();
+    }
+
     this.defaultLanguage = this._config.defaults?.language || 'en';
     this._buildVariablesLoader = new BuildVariablesLoader(this.paths.scanRoot);
-    this._pageParser = new PageParser(this, this._config);
-  }
-
-  static async fromConfigPath(configPath: string): Promise<MustacheRenderer> {
-    const projectConfig = await ProjectConfigLoader.load(configPath);
-    return new MustacheRenderer(projectConfig);
+    this._pageParser = new PageParser(
+      this._engine,
+      this._buildVariablesLoader,
+      this._config,
+      this.paths
+    );
   }
 
   // Public API
@@ -276,22 +284,6 @@ class MustacheRenderer {
     await walk(this.paths.scanRoot);
     return yamlFiles;
   }
-
-  /**
-   * Load a build variable from a file using the BuildVariablesLoader.
-   * @param value - The build variable to load.
-   * @returns A promise that resolves to the value of the build variable.
-   *
-   * @throws {InitializationError} If the renderer has not been initialized.
-   *
-   * From BuildVariablesLoader.ts:
-   * @throws {FileFetchError} If the file cannot be fetched
-   * @throws {ParseError} If the file cannot be parsed
-   * @throws {UnsupportedFileTypeError} If the file type is not supported
-   */
-  async loadBuildVariable(value: string): Promise<BuildVariable> {
-    return this._buildVariablesLoader.load(value);
-  }
 }
 
-export default MustacheRenderer;
+export default Renderer;

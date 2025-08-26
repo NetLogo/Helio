@@ -2,9 +2,10 @@ import fs from 'fs/promises';
 import path from 'path';
 import yaml from 'yaml';
 
-import { PageResult } from 'api.schemas.js';
+import { BuildVariablesLoader } from './BuildVariablesLoader.js';
+import { PageResult } from './api.schemas.js';
+import { TemplateEngine } from './engines.js';
 import { FileFetchError, ParseError } from './errors.js';
-import MustacheRenderer from './Renderer.js';
 import { PageConfig, ProjectConfig } from './schemas.js';
 import { joinIgnoreNone } from './utils.js';
 
@@ -23,15 +24,15 @@ import { joinIgnoreNone } from './utils.js';
  * - Writing output files
  */
 class PageParser {
-  private renderer: MustacheRenderer;
-  private projectConfig: ProjectConfig;
-
   static readonly METADATA_SUFFIX = '.metadata.json';
+  private scannedForPartials?: boolean = false;
 
-  constructor(renderer: MustacheRenderer, projectConfig: ProjectConfig) {
-    this.renderer = renderer;
-    this.projectConfig = projectConfig;
-  }
+  constructor(
+    private engine: TemplateEngine,
+    private buildVariablesLoader: BuildVariablesLoader,
+    private projectConfig: ProjectConfig,
+    private paths: { scanRoot: string; projectRoot: string }
+  ) {}
 
   /**
    * Process a single YAML file, generate HTML files for each item.
@@ -134,6 +135,8 @@ class PageParser {
     fileContent?: string,
     sharedBuildVariables?: Record<string, unknown>
   ): Promise<PageResult[]> {
+    await this._loadPartialsIfNeeded();
+
     let results: PageResult[] = [];
     const defaults = { language: 'en', ...this.projectConfig.defaults };
     const configs = [...data];
@@ -266,7 +269,7 @@ class PageParser {
     buildVars: Record<string, any>
   ): Promise<void> {
     // Render content to output
-    const renderedOutput = this.renderer.render(fileContent, buildVars);
+    const renderedOutput = this.engine.render(fileContent, buildVars);
 
     // Write output file
     await fs.writeFile(outputPath, renderedOutput, 'utf-8');
@@ -345,10 +348,23 @@ class PageParser {
     };
     if (mdConfig.buildVariables) {
       for (const [key, val] of Object.entries(mdConfig.buildVariables)) {
-        buildVars[key] = await this.renderer.loadBuildVariable(val as string);
+        buildVars[key] = await this.buildVariablesLoader.load(val as string);
       }
     }
     return buildVars;
+  }
+
+  private async _loadPartialsIfNeeded() {
+    if (this.scannedForPartials) return;
+    try {
+      await this.engine.registerPartialsFromDirectory(
+        this.getProjectScanRoot()
+      );
+      this.scannedForPartials = true;
+    } catch (error) {
+      console.error('Failed to load partials from directory:', error);
+      throw new Error('Partial loading failed');
+    }
   }
 
   private _getPageLanguage(
@@ -436,7 +452,7 @@ class PageParser {
    * @returns The project root path
    */
   private getProjectRoot(): string {
-    return this.renderer.paths.projectRoot;
+    return this.paths.projectRoot;
   }
 
   /**
@@ -444,7 +460,7 @@ class PageParser {
    * @returns The scan root path
    */
   private getProjectScanRoot(): string {
-    return this.renderer.paths.scanRoot;
+    return this.paths.scanRoot;
   }
 }
 

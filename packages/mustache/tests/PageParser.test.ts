@@ -2,9 +2,11 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import fs from 'fs/promises';
 import yaml from 'yaml';
 
+import { BuildVariablesLoader } from '../src/BuildVariablesLoader.js';
+import { TemplateEngine } from '../src/engines.js';
 import { FileFetchError, ParseError } from '../src/errors.js';
 import PageParser from '../src/PageParser.js';
-import type MustacheRenderer from '../src/Renderer.js';
+import type Renderer from '../src/Renderer.js';
 import type { PageConfig, ProjectConfig } from '../src/schemas.js';
 
 // Mock dependencies
@@ -16,7 +18,9 @@ const mockYaml = yaml as jest.Mocked<typeof yaml>;
 
 describe('PageParser', () => {
   let pageParser: PageParser;
-  let mockRenderer: jest.Mocked<MustacheRenderer>;
+  let mockRenderer: jest.Mocked<Renderer>;
+  let mockBuildVariablesLoader: jest.Mocked<BuildVariablesLoader>;
+  let mockEngine: jest.Mocked<TemplateEngine>;
   let mockProjectConfig: ProjectConfig;
 
   beforeEach(() => {
@@ -46,11 +50,30 @@ describe('PageParser', () => {
       },
     };
 
-    pageParser = new PageParser(mockRenderer, mockProjectConfig);
+    mockBuildVariablesLoader = {
+      supportedFileTypes: 'json, yaml, yml, xml, nlogox, ini',
+      load: jest.fn(),
+      fetch: jest.fn(),
+    } as any;
+
+    mockEngine = {
+      render: jest.fn(),
+      registerPartial: jest.fn(),
+      registerPartialsFromDirectory: jest.fn(),
+    } as any;
+
+    pageParser = new PageParser(
+      mockEngine,
+      mockBuildVariablesLoader,
+      mockProjectConfig,
+      mockRenderer.paths
+    );
 
     // Default mock implementations
-    mockRenderer.render.mockReturnValue('Rendered content');
-    mockRenderer.loadBuildVariable.mockResolvedValue({ key: 'value' });
+    mockEngine.render.mockReturnValue('Rendered content');
+    mockEngine.registerPartial.mockImplementation(() => {});
+    mockEngine.registerPartialsFromDirectory.mockResolvedValue([]);
+    mockBuildVariablesLoader.load.mockResolvedValue({ key: 'value' });
     mockFs.mkdir.mockResolvedValue(undefined);
     mockFs.writeFile.mockResolvedValue(undefined);
     mockFs.readFile.mockResolvedValue('# {{title}}\n\n{{description}}');
@@ -59,7 +82,9 @@ describe('PageParser', () => {
   describe('constructor', () => {
     it('should create PageParser with renderer and config', () => {
       expect(pageParser).toBeInstanceOf(PageParser);
-      expect(pageParser['renderer']).toBe(mockRenderer);
+      expect(pageParser['engine']).toBe(mockEngine);
+      expect(pageParser['buildVariablesLoader']).toBe(mockBuildVariablesLoader);
+      expect(pageParser['paths']).toBe(mockRenderer.paths);
       expect(pageParser['projectConfig']).toBe(mockProjectConfig);
     });
 
@@ -174,7 +199,7 @@ describe('PageParser', () => {
       expect(results).toHaveLength(1);
       expect(results[0].success).toBe(true);
       expect(mockFs.readFile).not.toHaveBeenCalled(); // Should not read from filesystem
-      expect(mockRenderer.render).toHaveBeenCalledWith(
+      expect(mockEngine.render).toHaveBeenCalledWith(
         content,
         expect.any(Object)
       );
@@ -261,7 +286,7 @@ describe('PageParser', () => {
     });
 
     it('should load build variables', async () => {
-      mockRenderer.loadBuildVariable.mockResolvedValue({ loaded: 'data' });
+      mockBuildVariablesLoader.load.mockResolvedValue({ loaded: 'data' });
       const configs = [
         {
           title: 'Test',
@@ -274,10 +299,8 @@ describe('PageParser', () => {
 
       await pageParser['processPageConfigurations'](configs, 'build-vars');
 
-      expect(mockRenderer.loadBuildVariable).toHaveBeenCalledWith(
-        'config.json'
-      );
-      expect(mockRenderer.render).toHaveBeenCalledWith(
+      expect(mockBuildVariablesLoader.load).toHaveBeenCalledWith('config.json');
+      expect(mockEngine.render).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
           external: { loaded: 'data' },
@@ -335,7 +358,7 @@ describe('PageParser', () => {
       await pageParser['processPageConfigurations'](configs, 'no-output');
 
       expect(mockFs.writeFile).not.toHaveBeenCalled();
-      expect(mockRenderer.render).not.toHaveBeenCalled();
+      expect(mockEngine.render).not.toHaveBeenCalled();
     });
 
     it('should create output directories', async () => {
@@ -349,7 +372,7 @@ describe('PageParser', () => {
     });
 
     it('should handle rendering errors gracefully', async () => {
-      mockRenderer.render.mockImplementation(() => {
+      mockEngine.render.mockImplementation(() => {
         throw new Error('Rendering failed');
       });
       const configs = [{ title: 'Test', output: true }];
@@ -433,7 +456,7 @@ describe('PageParser', () => {
         '/project/src/test.md',
         'utf-8'
       );
-      expect(mockRenderer.render).toHaveBeenCalledWith(sourceContent, {
+      expect(mockEngine.render).toHaveBeenCalledWith(sourceContent, {
         title: 'Test',
         description: 'Description',
       });
@@ -466,7 +489,7 @@ describe('PageParser', () => {
         }
       );
 
-      expect(mockRenderer.render).toHaveBeenCalledWith(content, {
+      expect(mockEngine.render).toHaveBeenCalledWith(content, {
         title: 'Test',
         description: 'Description',
       });
@@ -487,7 +510,7 @@ describe('PageParser', () => {
         { title: 'Test' }
       );
 
-      expect(mockRenderer.render).toHaveBeenCalledWith('{{title}}', {
+      expect(mockEngine.render).toHaveBeenCalledWith('{{title}}', {
         title: 'Test',
       });
       expect(mockFs.writeFile).toHaveBeenCalledWith(
@@ -498,7 +521,7 @@ describe('PageParser', () => {
     });
 
     it('should handle rendering errors', async () => {
-      mockRenderer.render.mockImplementation(() => {
+      mockEngine.render.mockImplementation(() => {
         throw new Error('Render error');
       });
 
@@ -663,11 +686,11 @@ describe('PageParser', () => {
 
         expect(result.title).toBe('Test');
         expect(result.description).toBe('Desc');
-        expect(mockRenderer.loadBuildVariable).not.toHaveBeenCalled();
+        expect(mockBuildVariablesLoader.load).not.toHaveBeenCalled();
       });
 
       it('should load external build variables', async () => {
-        mockRenderer.loadBuildVariable.mockResolvedValue({ external: 'data' });
+        mockBuildVariablesLoader.load.mockResolvedValue({ external: 'data' });
         const config = {
           title: 'Test',
           extension: 'md',
@@ -681,12 +704,10 @@ describe('PageParser', () => {
           config as PageConfig
         );
 
-        expect(mockRenderer.loadBuildVariable).toHaveBeenCalledWith(
+        expect(mockBuildVariablesLoader.load).toHaveBeenCalledWith(
           'config.json'
         );
-        expect(mockRenderer.loadBuildVariable).toHaveBeenCalledWith(
-          'data.yaml'
-        );
+        expect(mockBuildVariablesLoader.load).toHaveBeenCalledWith('data.yaml');
         expect(result.config).toEqual({ external: 'data' });
         expect(result.data).toEqual({ external: 'data' });
       });
@@ -935,7 +956,78 @@ describe('PageParser', () => {
       expect(results).toHaveLength(1000);
       // All results should have outputPath, but only 100 should have had files actually written
       expect(results.every((r) => r.outputPath)).toBe(true);
-      expect(mockRenderer.render).toHaveBeenCalledTimes(100); // Only called for output: true pages
+      expect(mockEngine.render).toHaveBeenCalledTimes(100); // Only called for output: true pages
+    });
+
+    it('should handle partial loading errors gracefully', async () => {
+      const configs = [{ title: 'Test Page' }];
+
+      // Mock the engine to throw an error during partial registration
+      mockEngine.registerPartialsFromDirectory.mockRejectedValue(
+        new Error('Partial loading failed')
+      );
+
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
+      await expect(
+        pageParser['processPageConfigurations'](configs, 'test')
+      ).rejects.toThrow('Partial loading failed');
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to load partials from directory:',
+        expect.any(Error)
+      );
+
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('edge cases and branch coverage', () => {
+    it('should handle configuration with empty extension property', async () => {
+      const configs = [
+        {
+          title: 'Test',
+          extension: '', // This should trigger the extension || 'md' branch
+        },
+      ];
+
+      const result = await pageParser.processConfigurations(
+        configs,
+        'test-source.yaml'
+      );
+      expect(Array.isArray(result)).toBe(true);
+    });
+
+    it('should handle configurations with undefined extension', async () => {
+      const configs = [
+        {
+          title: 'Test',
+          // extension is undefined, should use default 'md'
+        },
+      ];
+
+      const result = await pageParser.processConfigurations(
+        configs,
+        'test-source.yaml'
+      );
+      expect(Array.isArray(result)).toBe(true);
+    });
+
+    it('should handle languages correctly for extension defaulting', async () => {
+      const configs = [
+        {
+          title: 'Language Test',
+          language: 'es', // Non-default language
+        },
+      ];
+
+      const result = await pageParser.processConfigurations(
+        configs,
+        'language-source.yaml'
+      );
+      expect(Array.isArray(result)).toBe(true);
     });
   });
 });

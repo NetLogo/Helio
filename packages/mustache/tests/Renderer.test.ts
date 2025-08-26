@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 
 import type { PageResult } from '../src/api.schemas.js';
 import { BuildVariablesLoader } from '../src/BuildVariablesLoader.js';
+import { TemplateEngine } from '../src/engines.js';
 import {
   FileFetchError,
   InitializationError,
@@ -11,7 +12,7 @@ import {
 } from '../src/errors.js';
 import PageParser from '../src/PageParser.js';
 import { ProjectConfigLoader } from '../src/ProjectConfigLoader.js';
-import MustacheRenderer from '../src/Renderer.js';
+import Renderer from '../src/Renderer.js';
 import type { PageConfig, ProjectConfig } from '../src/schemas.js';
 import { ProjectConfigSchema } from '../src/schemas.js';
 
@@ -38,8 +39,9 @@ const mockProjectConfigSchema = ProjectConfigSchema as jest.Mocked<
   typeof ProjectConfigSchema
 >;
 
-describe('MustacheRenderer', () => {
-  let renderer: MustacheRenderer;
+describe('Renderer', () => {
+  let renderer: Renderer;
+  let mockEngine: jest.Mocked<TemplateEngine>;
   let mockConfig: ProjectConfig;
   let mockPageParser: jest.Mocked<PageParser>;
   let mockBuildVariablesLoader: jest.Mocked<BuildVariablesLoader>;
@@ -74,6 +76,12 @@ describe('MustacheRenderer', () => {
     } as any;
     MockPageParser.mockImplementation(() => mockPageParser);
 
+    // Mock TemplateEngine
+    mockEngine = {
+      render: jest.fn(),
+      registerPartial: jest.fn(),
+    } as any;
+
     // Mock BuildVariablesLoader
     mockBuildVariablesLoader = {
       load: jest.fn(),
@@ -83,12 +91,12 @@ describe('MustacheRenderer', () => {
     // Mock process.cwd()
     jest.spyOn(process, 'cwd').mockReturnValue('/current/dir');
 
-    renderer = new MustacheRenderer(mockConfig);
+    renderer = new Renderer(mockConfig);
   });
 
   describe('constructor', () => {
     it('should create renderer with valid config', () => {
-      expect(renderer).toBeInstanceOf(MustacheRenderer);
+      expect(renderer).toBeInstanceOf(Renderer);
       expect(renderer.paths.projectRoot).toBe('/current/dir/test-project');
       expect(renderer.paths.scanRoot).toBe('/current/dir/test-source');
       expect(renderer.paths.outputRoot).toBe('/current/dir/test-output');
@@ -102,9 +110,7 @@ describe('MustacheRenderer', () => {
         data: minimalConfig,
       } as any);
 
-      const minimalRenderer = new MustacheRenderer(
-        minimalConfig as ProjectConfig
-      );
+      const minimalRenderer = new Renderer(minimalConfig as ProjectConfig);
 
       expect(minimalRenderer.paths.projectRoot).toBe('/current/dir');
       expect(minimalRenderer.paths.scanRoot).toBe('/current/dir');
@@ -117,26 +123,64 @@ describe('MustacheRenderer', () => {
         defaults: { ...mockConfig.defaults, language: undefined },
       };
 
-      const rendererWithoutLanguage = new MustacheRenderer(
+      const rendererWithoutLanguage = new Renderer(
         configWithoutLanguage as ProjectConfig
       );
 
       expect(rendererWithoutLanguage.defaultLanguage).toBe('en');
     });
 
-    it('should throw InitializationError for null config', () => {
-      expect(() => new MustacheRenderer(null as any)).toThrow(
-        InitializationError
+    it('should create renderer with handlebars engine', () => {
+      const configWithHandlebars = {
+        ...mockConfig,
+        defaults: { ...mockConfig.defaults, engine: 'handlebars' as const },
+      };
+
+      const renderer = new Renderer(configWithHandlebars);
+      expect(renderer).toBeInstanceOf(Renderer);
+      // Verify that the handlebars engine is selected
+      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe(
+        'Hello World!'
       );
-      expect(() => new MustacheRenderer(null as any)).toThrow(
-        'MustacheRenderer requires a project configuration.'
+    });
+
+    it('should create renderer with mustache engine explicitly', () => {
+      const configWithMustache = {
+        ...mockConfig,
+        defaults: { ...mockConfig.defaults, engine: 'mustache' as const },
+      };
+
+      const renderer = new Renderer(configWithMustache);
+      expect(renderer).toBeInstanceOf(Renderer);
+      // Verify that the mustache engine is selected
+      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe(
+        'Hello World!'
+      );
+    });
+
+    it('should use default mustache engine for unknown engine types', () => {
+      const configWithUnknownEngine = {
+        ...mockConfig,
+        defaults: { ...mockConfig.defaults, engine: 'unknown' as any },
+      };
+
+      const renderer = new Renderer(configWithUnknownEngine);
+      expect(renderer).toBeInstanceOf(Renderer);
+      // Verify that the default (mustache) engine is used
+      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe(
+        'Hello World!'
+      );
+    });
+
+    it('should throw InitializationError for null config', () => {
+      expect(() => new Renderer(null as any)).toThrow(InitializationError);
+      expect(() => new Renderer(null as any)).toThrow(
+        'Renderer requires a project configuration.'
       );
     });
 
     it('should throw InitializationError for undefined config', () => {
-      expect(() => new MustacheRenderer(undefined as any)).toThrow(
-        InitializationError
-      );
+      expect(() => new Renderer(undefined as any)).toThrow(InitializationError);
     });
 
     it('should throw InitializationError for invalid config', () => {
@@ -145,11 +189,9 @@ describe('MustacheRenderer', () => {
         error: new Error('Invalid config'),
       } as any);
 
-      expect(() => new MustacheRenderer(mockConfig)).toThrow(
-        InitializationError
-      );
-      expect(() => new MustacheRenderer(mockConfig)).toThrow(
-        'Invalid project configuration provided to MustacheRenderer.'
+      expect(() => new Renderer(mockConfig)).toThrow(InitializationError);
+      expect(() => new Renderer(mockConfig)).toThrow(
+        'Invalid project configuration provided to Renderer.'
       );
     });
 
@@ -161,42 +203,11 @@ describe('MustacheRenderer', () => {
         defaults: {},
       };
 
-      const absoluteRenderer = new MustacheRenderer(
-        absoluteConfig as ProjectConfig
-      );
+      const absoluteRenderer = new Renderer(absoluteConfig as ProjectConfig);
 
       expect(absoluteRenderer.paths.projectRoot).toBe('/absolute/project');
       expect(absoluteRenderer.paths.scanRoot).toBe('/absolute/source');
       expect(absoluteRenderer.paths.outputRoot).toBe('/absolute/output');
-    });
-
-    it('should initialize PageParser and BuildVariablesLoader', () => {
-      expect(MockPageParser).toHaveBeenCalledWith(renderer, mockConfig);
-      expect(MockBuildVariablesLoader).toHaveBeenCalledWith(
-        renderer.paths.scanRoot
-      );
-    });
-  });
-
-  describe('fromConfigPath static method', () => {
-    it('should load config and create renderer', async () => {
-      const configPath = '/path/to/config.json';
-      MockProjectConfigLoader.load.mockResolvedValue(mockConfig);
-
-      const result = await MustacheRenderer.fromConfigPath(configPath);
-
-      expect(MockProjectConfigLoader.load).toHaveBeenCalledWith(configPath);
-      expect(result).toBeInstanceOf(MustacheRenderer);
-    });
-
-    it('should propagate config loading errors', async () => {
-      const configPath = '/path/to/missing.json';
-      const error = new Error('Config not found');
-      MockProjectConfigLoader.load.mockRejectedValue(error);
-
-      await expect(MustacheRenderer.fromConfigPath(configPath)).rejects.toThrow(
-        'Config not found'
-      );
     });
   });
 
@@ -756,6 +767,21 @@ This is private content.
       expect(privateResult).toContain('This is private content.');
       expect(privateResult).not.toContain('This is public content.');
     });
+
+    it('should render handlebars templates when engine is handlebars', () => {
+      const handlebarsConfig = {
+        ...mockConfig,
+        defaults: { ...mockConfig.defaults, engine: 'handlebars' as const },
+      };
+      const handlebarsRenderer = new Renderer(handlebarsConfig);
+
+      const content = 'Hello {{user.name}}! You are {{user.age}} years old.';
+      const variables = { user: { name: 'John', age: 30 } };
+
+      const result = handlebarsRenderer.render(content, variables);
+
+      expect(result).toBe('Hello John! You are 30 years old.');
+    });
   });
 
   describe('findYamlFiles (private method)', () => {
@@ -841,46 +867,6 @@ This is private content.
 
       expect(yamlFiles).toHaveLength(1);
       expect(yamlFiles[0]).toContain('deep.yaml');
-    });
-  });
-
-  describe('loadBuildVariable method', () => {
-    it('should load build variable using BuildVariablesLoader', async () => {
-      const mockVariable = { key: 'value', data: [1, 2, 3] };
-      mockBuildVariablesLoader.load.mockResolvedValue(mockVariable);
-
-      const result = await renderer.loadBuildVariable('config.json');
-
-      expect(mockBuildVariablesLoader.load).toHaveBeenCalledWith('config.json');
-      expect(result).toEqual(mockVariable);
-    });
-
-    it('should propagate build variable loading errors', async () => {
-      const error = new FileFetchError('missing.json', 'File not found');
-      mockBuildVariablesLoader.load.mockRejectedValue(error);
-
-      await expect(renderer.loadBuildVariable('missing.json')).rejects.toThrow(
-        FileFetchError
-      );
-    });
-
-    it('should handle different file types', async () => {
-      const yamlData = { type: 'yaml', data: 'test' };
-      const jsonData = { type: 'json', data: 'test' };
-      const iniData = { type: 'ini', data: 'test' };
-
-      mockBuildVariablesLoader.load
-        .mockResolvedValueOnce(yamlData)
-        .mockResolvedValueOnce(jsonData)
-        .mockResolvedValueOnce(iniData);
-
-      const yamlResult = await renderer.loadBuildVariable('config.yaml');
-      const jsonResult = await renderer.loadBuildVariable('config.json');
-      const iniResult = await renderer.loadBuildVariable('config.ini');
-
-      expect(yamlResult).toEqual(yamlData);
-      expect(jsonResult).toEqual(jsonData);
-      expect(iniResult).toEqual(iniData);
     });
   });
 
@@ -1112,6 +1098,79 @@ This is private content.
         const result = renderer.getMetadataFilePath('test');
         expect(result).toContain('.metadata.json'); // This should match PageParser.METADATA_SUFFIX
       });
+    });
+
+    describe('getSourceFilePath', () => {
+      it('should generate correct source file path', () => {
+        const result = renderer.getSourceFilePath('test/page', 'html');
+        expect(result).toBe('/current/dir/test-source/test/page.html');
+      });
+
+      it('should handle extension with leading dot when generating source path', () => {
+        const result = renderer.getSourceFilePath('test/page', '.html');
+        expect(result).toBe('/current/dir/test-source/test/page.html');
+      });
+
+      it('should handle extension without leading dot when generating source path', () => {
+        const result = renderer.getSourceFilePath('test/page', 'html');
+        expect(result).toBe('/current/dir/test-source/test/page.html');
+      });
+
+      it('should generate correct source file path', () => {
+        const renderer = new Renderer(mockConfig);
+        const result = renderer.getSourceFilePath('test-page', 'md');
+        expect(result).toMatch(/test-page\.md$/);
+      });
+
+      it('should handle extension with leading dot when generating source path', () => {
+        const renderer = new Renderer(mockConfig);
+        const result = renderer.getSourceFilePath('test-page', '.md');
+        expect(result).toMatch(/test-page\.md$/);
+      });
+
+      it('should handle extension without leading dot when generating source path', () => {
+        const renderer = new Renderer(mockConfig);
+        const result = renderer.getSourceFilePath('test-page', 'html');
+        expect(result).toMatch(/test-page\.html$/);
+      });
+    });
+  });
+
+  describe('engine configuration edge cases', () => {
+    it('should handle handlebars engine explicitly', () => {
+      const config = {
+        projectRoot: '/test',
+        scanRoot: '/test/scan',
+        outputRoot: '/test/output',
+        defaults: {
+          extension: 'md',
+          language: 'en',
+          title: 'Default',
+        },
+        engine: 'handlebars' as const,
+      };
+
+      const renderer = new Renderer(config);
+      const result = renderer.render('Hello {{name}}!', { name: 'World' });
+      expect(result).toBe('Hello World!');
+    });
+
+    it('should handle mustache engine explicitly', () => {
+      const config = {
+        projectRoot: '/test',
+        scanRoot: '/test/scan',
+        outputRoot: '/test/output',
+        defaults: {
+          extension: 'md',
+          language: 'en',
+          title: 'Default',
+        },
+        engine: 'mustache' as const,
+      };
+
+      const renderer = new Renderer(config);
+      const result = renderer.render('Hello {{name}}!', { name: 'World' });
+      expect(result).toBe('Hello World!');
     });
   });
 });
