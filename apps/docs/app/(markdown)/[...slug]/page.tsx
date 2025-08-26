@@ -1,12 +1,11 @@
 import fs from 'fs/promises';
-import path from 'path';
 
 import NetLogoMarkdown from '@repo/markdown';
 import MustacheRenderer from '@repo/mustache';
 
 import '@repo/markdown/styles.scss';
 
-const configPath = path.join(process.cwd(), 'autogen', 'conf.json');
+import AutogenOptions from './autogen.config';
 
 export default async function Page({ params }: { params: { slug: string[] } }) {
   const { slug } = await params;
@@ -19,7 +18,7 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
 }
 
 export async function generateStaticParams() {
-  const renderer = await MustacheRenderer.fromConfigPath(configPath);
+  const renderer = new MustacheRenderer(AutogenOptions);
   const buildVariables = {
     version: process.env['PRODUCT_VERSION'] || 'unknown',
     buildDate: new Date(
@@ -54,7 +53,7 @@ export async function generateMetadata({
   // https://nextjs.org/docs/messages/sync-dynamic-apis
   const { slug } = await params;
 
-  const renderer = await MustacheRenderer.fromConfigPath(configPath);
+  const renderer = new MustacheRenderer(AutogenOptions);
 
   const slugPath = slug.join('/').replace(/\.html$/, '');
   const metadataPath = renderer.getMetadataFilePath(slugPath);
@@ -76,7 +75,7 @@ export async function generateMetadata({
 }
 
 export async function getPageContent(slug: string[]) {
-  const renderer = await MustacheRenderer.fromConfigPath(configPath);
+  const renderer = new MustacheRenderer(AutogenOptions);
 
   const slugPath = slug.join('/').replace(/\.html$/, '');
   const outputPath = renderer.getOutputFilePath(slugPath, 'md');
