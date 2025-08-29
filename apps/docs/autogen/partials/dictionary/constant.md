@@ -4,7 +4,7 @@
 ### {{{data.title}}}
 
 {{#each data.constants}}
-[[{{{name}}}]] {{#if value}}= {{{value}}}{{/if}}<br/>
+`{{{name}}}` {{#if value}}= {{{value}}}{{/if}}<br/>
 {{/each}}
 
 </div>
