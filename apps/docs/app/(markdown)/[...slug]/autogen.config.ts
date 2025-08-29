@@ -6,7 +6,6 @@ export default {
     output: false,
     inheritFrom: [0],
     extension: 'md',
-    specialChars: '< > &',
     title: 'NetLogo User Manual',
     version: `7.0.0`,
   },
