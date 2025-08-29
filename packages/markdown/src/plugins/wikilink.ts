@@ -167,6 +167,8 @@ class WikiLink {
       const alt = this.text || this.permalink;
       el = {
         type: 'image',
+        url: href,
+        alt: alt,
         data: {
           hName: 'img',
           hProperties: {
