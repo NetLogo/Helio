@@ -14,7 +14,7 @@ export default function Page() {
           </h1>
           <p>
             Welcome to the documentation for NetLogo {productVersion}. Download
-            the latest version
+            the latest version{' '}
             <a href="https://www.netlogo.org/download">here</a>.
           </p>
           <p>
@@ -23,7 +23,7 @@ export default function Page() {
               Release Notes
             </a>{' '}
             for information about new features, bug fixes, and other changes in
-            this version. For help running models made in old versions, see the
+            this version. For help running models made in old versions, see the{' '}
             <a href="transition.html#changes-for-netlogo-700">
               Transition Guide
             </a>

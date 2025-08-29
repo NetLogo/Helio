@@ -2,8 +2,6 @@ import '@repo/markdown/styles.scss';
 
 import NetLogoMarkdown from '@repo/markdown';
 
-import Head from 'next/head';
-import React from 'react';
 import autogenConfig from './autogen.config';
 import * as NetLogoDocs from './NetLogoDocs';
 
@@ -11,14 +9,9 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
   const { slug } = await params;
   const { content } = await NetLogoDocs.getPageContent(slug, autogenConfig);
   return (
-    <React.Fragment>
-      <Head>
-        <base href="/" />
-      </Head>
-      <main className="min-h-screen prose">
-        <NetLogoMarkdown>{content || '<p>Page not found.</p>'}</NetLogoMarkdown>
-      </main>
-    </React.Fragment>
+    <main className="min-h-screen prose">
+      <NetLogoMarkdown>{content || '<p>Page not found.</p>'}</NetLogoMarkdown>
+    </main>
   );
 }
 
