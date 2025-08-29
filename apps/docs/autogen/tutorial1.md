@@ -20,7 +20,7 @@ you're using NetLogo.
 We'll open one of the Sample Models and explore it in detail. Let's try a
 biology model: Wolf Sheep Predation, a predator-prey population model.
 
-> - Open the Models Library from the File menu. ![[/file-menu.png]]
+> - Open the Models Library from the File menu. ![[file-menu.png]]
 > - Choose "Wolf Sheep Predation" from the Biology section and press "Open".
 
 The Interface tab will fill up with lots of buttons, switches, sliders and
@@ -52,9 +52,9 @@ you will first need to set it up.
 When a button is pressed, the model responds with an action. A button can be a
 "once" button, or a "forever" button. You can tell the difference between these
 two types of buttons by a symbol on the face of the button. Forever buttons have
-two arrows in the bottom right corners, like this: ![[goforeverinactive.png]]
+two arrows in the bottom right corners, like this: ![[tutorial1/goforeverinactive.png]]
 
-Once buttons don't have the arrows, like this: ![[setup.png]]
+Once buttons don't have the arrows, like this: ![[tutorial1/setup.png]]
 
 Once buttons do one action and then stop. When the action is finished, the
 button pops back up.
@@ -63,7 +63,7 @@ Forever buttons do an action over and over again. When you want the action to
 stop, press the button again. It will finish the current action, then pop back
 up. You may have noticed that the "go" button was gray when you first opened the
 model. That is because it is inactive until the "setup" button is pressed.
-Pressing an inactive button will have no effect. ![[goforeveractive.png]]
+Pressing an inactive button will have no effect. ![[tutorial1/goforeveractive.png]]
 
 Most models, including Wolf Sheep Predation, have a once button called "setup"
 and a forever button called "go". Many models also have a once button called "go
@@ -86,7 +86,7 @@ middle of an action, and as the result the model could get confused.)
 ## Controlling speed: Speed Slider
 
 The speed slider allows you to control the speed of a model, that is, the speed
-at which turtles move, patches change color, and so on. ![[speed-slider.png]]
+at which turtles move, patches change color, and so on. ![[tutorial1/speed-slider.png]]
 
 When you move the slider to the left the model slows down so there are longer
 pauses between each tick (time step). That makes it easier to see what is
@@ -111,7 +111,7 @@ deeper understanding of the phenomena being modeled.
 
 Choosers, switches, and sliders give you access to a model's settings. Here are
 the choosers, switches, and sliders in Wolf Sheep Predation:
-![[controllers.png]]
+![[tutorial1/controllers.png]]
 
 Let's experiment with their effect on the behavior of the model.
 
@@ -229,7 +229,7 @@ from the popup menu.
 ### Monitors
 
 Monitors are another means of displaying information from a model. Here are the
-monitors in Wolf Sheep Predation: ![[monitors.png]]
+monitors in Wolf Sheep Predation: ![[tutorial1/monitors.png]]
 
 The monitors show us the population of sheep and wolves, and the amount of
 grass. (Remember, the amount of grass is divided by four to keep the plot from
@@ -280,7 +280,7 @@ There are more model settings than there's room for in the toolbar. The
 > - Press the "Settings..." button in the toolbar.
 >
 > A dialog will open containing all the settings for the view:
-> ![[edit-view-properties.png]] | What are the current settings for min-pxcor,
+> ![[tutorial1/edit-view-properties.png]] | What are the current settings for min-pxcor,
 > max-pxcor, min-pycor, | max-pycor, and patch size?
 >
 > - Press "cancel" to make this window go away without changing the settings.
@@ -312,7 +312,7 @@ Think of the patches as being like square tiles in a room with a tile floor. By
 default, exactly in the middle of the room is a tile labeled (0,0); meaning that
 if the room was divided in half one way and then the other way, these two
 dividing lines would intersect on this tile. We now have a coordinate system
-that will help us locate objects within the room: ![[coords.png]]
+that will help us locate objects within the room: ![[tutorial1/coords.png]]
 
 > | How many tiles away is the (0,0) tile from the right side of the room?
 >
@@ -320,8 +320,8 @@ that will help us locate objects within the room: ![[coords.png]]
 
 In NetLogo, the number of tiles from right to left is called world-width. And
 the number of tiles from top to bottom is world-height. These numbers are
-defined by top, bottom, left and right boundaries. ![[coords-horizontal.png]]
-![[coords-vertical.png]]
+defined by top, bottom, left and right boundaries. ![[tutorial1/coords-horizontal.png]]
+![[tutorial1/coords-vertical.png]]
 
 In these diagrams, max-pxcor is 3 , min-pxcor is -3, max-pycor is 2 and
 min-pycor is -2.

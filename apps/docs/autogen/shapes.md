@@ -31,7 +31,7 @@ another model.
 **Default shapes**
 
 Here are the turtle shapes that are included by default in every new NetLogo
-model: ![[shapes.png]]
+model: ![[shapes/shapes.png]]
 
 First row: default, airplane, arrow, box, bug, butterfly, car Second row:
 circle, circle 2, cow, cylinder, dot, face happy, face neutral Third row: face
@@ -42,11 +42,11 @@ triangle 2, truck, turtle Sixth row: wheel, x
 **Shapes library**
 
 And here are the shapes in the shapes library (including all of the default
-shapes, too): ![[library.png]]
+shapes, too): ![[shapes/library.png]]
 
 By default there is only one Link shape in a model, that is "default". This
 shape is simply a single straight line with a simple arrowhead (if the link
-happens to be directed). ![[defaultlinkshape.png]]
+happens to be directed). ![[shapes/defaultlinkshape.png]]
 
 ## Creating and editing turtle shapes
 
@@ -159,7 +159,7 @@ to change:
 - Dash pattern of lines: There are several dashed line patterns available in the
   selection boxes so not all lines need be solid.
 
-Here are some link shapes with various properties: ![[linkshapes.png]]
+Here are some link shapes with various properties: ![[shapes/linkshapes.png]]
 
 ## Using shapes in a model
 

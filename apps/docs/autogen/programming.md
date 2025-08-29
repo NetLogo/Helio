@@ -474,7 +474,7 @@ links) between a pair if they are in opposite directions.
 As part of our network support we have also added several different primitives
 that will help you to visualize the networks. The simplest is [[layout-circle]]
 which evenly spaces the agents around the center of the world given a radius.
-![[circle-layout.png]]
+![[programming/circle-layout.png]]
 
 [[layout-radial]] is a good layout if you have something like a tree structure,
 though even if there are some cycles in the tree it will still work, though as
@@ -485,13 +485,13 @@ away from the root will be arranged in a circular pattern around the central
 node and the next level around those nodes and so on. [[layout-radial]] will
 attempt to account for asymmetrical graphs and give more space to branches that
 are wider. [[layout-radial]] also takes a breed as an input so you use one breed
-of links to layout the network and not another. ![[radial-layout.png]]
+of links to layout the network and not another. ![[programming/radial-layout.png]]
 
 Given a set of anchor nodes [[layout-tutte]] places all the other nodes at the
 center of mass of the nodes it is linked to. The anchor set is automatically
 arranged in a circle layout with a user defined radius and the other nodes will
 converge into place (this of course means that you may have to run it several
-times before the layout is stable.) ![[tutte-layout.png]]
+times before the layout is stable.) ![[programming/tutte-layout.png]]
 
 [[layout-spring]] is useful for many kinds of networks. The drawback is that is
 relatively slow since it takes many iterations to converge. In this layout the
@@ -560,7 +560,7 @@ will be drawn.
 
 Here's some turtles which have made a drawing over a grid of randomly shaded
 patches. Notice how the turtles cover the lines and the lines cover the patch
-colors. The [[pen-size]] used here was 2: ![[color chart|drawing.png]]
+colors. The [[pen-size]] used here was 2: ![[programming/color chart|drawing.png]]
 
 The [[stamp]] command lets a turtle leave an image of itself behind in the
 drawing and [[stamp-erase]] lets it remove the pixels below it in the drawing.
@@ -1680,10 +1680,10 @@ because they have a shape.)
 
 Wrapping also affects how the view looks when you are following a turtle. On a
 torus, wherever the turtle goes, you will always see the whole world around it:
-![[torus.png]]
+![[programming/torus.png]]
 
 Whereas in a box or cylinder the world has edges, so the areas past those edges
-show up in the view as gray: ![[box.png]]
+show up in the view as gray: ![[programming/box.png]]
 
 > **Code Example:** Termites Perspective Demo (torus), Ants Perspective Demo
 > (box)
@@ -2762,7 +2762,7 @@ plotting techniques. Also check out the following code examples:
 
 NetLogo represents colors in different ways. A color can be number in the range
 0 to 140, with the exception of 140 itself. Below is a chart showing the range
-of such NetLogo colors. ![[/colors.png]]
+of such NetLogo colors. ![[programming//colors.png]]
 
 The chart shows that:
 

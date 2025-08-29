@@ -2,7 +2,7 @@
 
 The Code tab is where the code for the model is stored. Commands you only want
 to use once can be typed in the Command Center, but collections of commands that
-you want to save for later use can be stored in the Code tab. ![[codetab.png]]
+you want to save for later use can be stored in the Code tab. ![[codetab/codetab.png]]
 
 #### Table of Contents
 
@@ -64,7 +64,7 @@ error will not be highlighted. If the error occurs in the Interface tab, for
 example if any button or plot commands result in a compilation error, the
 Interface tab will turn orange instead.
 
-![[codetaberror.png]]
+![[codetab/codetaberror.png]]
 
 Switching tabs also causes the code to be checked, so if you just switch tabs,
 pressing the Check button first isn't necessary.
@@ -88,7 +88,7 @@ can then be moved and resized.
 ## Find & Replace
 
 To find a fragment of code in the Code tab, click on the "Find" button in the
-Code toolbar and the Find dialog will appear. ![[find-replace.png]]
+Code toolbar and the Find dialog will appear. ![[codetab/find-replace.png]]
 
 You may enter a word or phrase to find, and optionally also a new word or phrase
 to replace it with. The "Ignore case" checkbox controls whether the
@@ -113,7 +113,7 @@ you open a set of square brackets "[" (perhaps after an `if` statement), NetLogo
 will automatically add spaces so that the following lines of code are two spaces
 further indented than the bracket. When you close the square brackets the
 closing bracket will be lined up with the matching open bracket.
-![[tabified-code.png]]
+![[codetab/tabified-code.png]]
 
 NetLogo will try to indent the code as you type, but you can also press the tab
 key anywhere on any line to ask NetLogo to indent the line immediately. Or, you

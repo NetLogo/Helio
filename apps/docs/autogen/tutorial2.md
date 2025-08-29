@@ -53,7 +53,7 @@ NetLogo's agents: turtles, patches, links, and the observer.
 > - Click the mouse in the white box at the bottom of the Command Center.
 > - Type the text shown here:
 >
-> ![[cc-set-patches-yellow.png]]
+> ![[tutorial2/cc-set-patches-yellow.png]]
 >
 > - Press the return key.
 >
@@ -72,11 +72,11 @@ NetLogo's agents: turtles, patches, links, and the observer.
 > | What happened in the Command Center?
 >
 > You may have noticed that the command you just typed is now displayed in the
-> Command Center as shown below: ![[commandcenterhistory.png]]
+> Command Center as shown below: ![[tutorial2/commandcenterhistory.png]]
 >
 > - Type in the bottom of the Command Center the text shown below:
 >
-> ![[cc-set-turtles-brown.png]]
+> ![[tutorial2/cc-set-turtles-brown.png]]
 >
 > | Was the result what you expected?
 >
@@ -99,7 +99,7 @@ different types.
 
 > - In the Command Center, click on the "observer>" in the bottom left corner:
 >
-> ![[cc-context-menu.png]]
+> ![[tutorial2/cc-context-menu.png]]
 >
 > - Choose "turtles" from the popup menu.
 > - Type `set color pink` and press return.
@@ -150,7 +150,7 @@ for changing color: [[color]] and [[pcolor]].
 > patches turn red.
 >
 > If you try to ask the patches to `set color red`, an error message occurs:
-> ![[cc-error-patch-color.png]]
+> ![[tutorial2/cc-error-patch-color.png]]
 >
 > - Type `set pcolor red` instead and press return.
 
@@ -170,7 +170,7 @@ In NetLogo, colors have a numeric value. In all of the exercises we have been
 using the name of the color. This is because NetLogo recognizes 16 different
 color names. This does not mean that NetLogo only recognizes 16 colors. There
 are many shades in between these colors that can be used too. Here's a chart
-that shows the whole NetLogo color space: ![[color chart|/colors.png]]
+that shows the whole NetLogo color space: ![[tutorial2/color chart|/colors.png]]
 
 To get an intermediate shade, you refer to it by a number instead, or by adding
 or subtracting a number from a name. For example, when you type `set color red`,
@@ -209,7 +209,7 @@ group of blue cars. Let's look at how to change only one car's color.
 >   is highlighted in the view. Select "inspect turtle" from the sub-menu for
 >   the red turtle.
 >
-> A turtle monitor for that car will appear: ![[car-inspector.png]]
+> A turtle monitor for that car will appear: ![[tutorial2/car-inspector.png]]
 
 The mini-view at the top of the agent monitor will always stay centered on this
 agent. You can zoom the view in and out using the slider below the view and you
@@ -277,7 +277,7 @@ that affect individual turtles, as well as groups of turtles.
 > patch?
 
 If you try to have the observer `ask patch 0 [set pcolor blue]`, you'll get an
-error message: ![[cc-error-expected-number.png]]
+error message: ![[tutorial2/cc-error-expected-number.png]]
 
 To ask an individual turtle to do something, we use its who number. But patches
 don't have who numbers, therefore we need to refer to them some other way.
@@ -288,7 +288,7 @@ designated in the same way as plotting a point.
 
 > - Open a patch monitor for any patch.
 >
-> ![[patch-inspector.png]]
+> ![[tutorial2/patch-inspector.png]]
 >
 > The monitor shows that for the patch in the picture, its
 > [pxcor](dictionary.html#pcor) variable is -19 and its

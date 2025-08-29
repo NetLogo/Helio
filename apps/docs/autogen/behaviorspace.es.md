@@ -492,7 +492,7 @@ En la siguiente imagen de muestra de **Resultados tabulados**, la sección de en
 columnas de número de ejecución (`[run number]`]) y paso (`[step]`) se resaltan en azul, los valores iniciales de las
 variables para la ejecución se muestran en verde y los datos de indicadores de medición se muestran en morado.
 
-![[/behaviorspace/bs-table.png]]
+![[behaviorspace//behaviorspace/bs-table.png]]
 
 #### Resultados en hoja de cálculo
 
@@ -527,7 +527,7 @@ muestran en verde,
 los indicadores adicionales calculados se muestran en anaranjado, y los datos de medición de indicadores se encuentran
 en morado.
 
-![[/behaviorspace/bs-spreadsheet.png]]
+![[behaviorspace//behaviorspace/bs-spreadsheet.png]]
 
 #### Resultados estadísticos
 
@@ -550,7 +550,7 @@ En la siguiente imagen de muestra de **Resultados estadísticos**, la sección d
 las combinaciones de parámetros en verde, las columnas de número de paso (`[step]`) en azul, y los datos estadísticos
 morado.
 
-![[/behaviorspace/bs-stats.png]]
+![[behaviorspace//behaviorspace/bs-stats.png]]
 
 #### Resultados en lista
 
@@ -577,7 +577,7 @@ el nombre del reportero en anaranjado, las columnas de número de ejecución (`[
 (`[step]`)
 en azul, los valores iniciales de las variables en verde, y la lista expandida de datos en morado.
 
-![[/behaviorspace/bs-lists.png]]
+![[behaviorspace//behaviorspace/bs-lists.png]]
 
 #### Cambios en archivos de resultados
 

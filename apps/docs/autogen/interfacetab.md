@@ -383,7 +383,7 @@ Editing a Note
 ## Other Interface Toolbar controls
 The other controls in the Interface toolbar allow you to control the view
 updates and various other model properties.
-![[model-buttons.png]]
+![[interfacetab/model-buttons.png]]
 
 The speed slider is located in the Interface Toolbar. You can make the
 model run faster by moving the slider to the right, or by clicking one
@@ -625,11 +625,11 @@ black because the patches are black and there are no turtles yet. You can open
 the 3D View, an alternate visual representation of the world, by right clicking
 (ctrl-clicking on Mac) on the View and choosing "Switch to 3D View" (this option
 is also available in the "Tools" menu).
-![[open3d-context.png]]
+![[interfacetab/open3d-context.png]]
 
 There are a number of settings for the View (accessible by editing the View, or
 by pressing the "Settings" button in the Interface Toolbar):
-![[settings.png]]
+![[interfacetab/settings.png]]
 
 Notice that the settings are broken up into three groups. There are world, view,
 and tick counter settings. World settings affect the properties of the world
@@ -717,13 +717,13 @@ mouse by clicking and dragging in the View.
 
 At the bottom of the 3D View window there are buttons to move the observer, or change
 the perspective from which you are looking at the world.
-![[3d-buttons.png]]
+![[interfacetab/3d-buttons.png]]
 
 While you are adjusting one of these settings, a blue cross will appear at the
 current focus point of the 3D observer.
 The little blue triangle will always point along the y-axis in the positive
 direction, so you can orient yourself in case you get lost.
-![[3d-cross.png]]
+![[interfacetab/3d-cross.png]]
 
 To look at the world from a different angle, press the "Orbit" button, then
 click and drag the mouse. The observer will continue to face the same point as
@@ -807,11 +807,11 @@ example, the 2D circle shape becomes a sphere in the 3D view.
 All other shapes are based on their 2D forms. If a shape is a rotatable shape,
 it is assumed to be a top view and it is extruded as if through a cookie cutter
 and oriented parallel to the xy-plane, as in Ants.
-![[3d-rotatable.png]]
+![[interfacetab/3d-rotatable.png]]
 
 Or, if a shape is non-rotatable, it is assumed to be a side view, and it is
 drawn always facing the observer, as in Wolf Sheep Predation.
-![[3d-non-rotatable.png]]
+![[interfacetab/3d-non-rotatable.png]]
 
 ## Command Center
 
@@ -823,7 +823,7 @@ the fly.
 the Command Center.)
 
 Let's take a look at the design of the Command Center.
-![[command-center.png]]
+![[interfacetab/command-center.png]]
 
 The smaller box, below the large box, is where you type a command. After typing
 it press the Return or Enter key to run it. You can use the up arrow to access the
@@ -887,7 +887,7 @@ resulting file in another program.)
 When you create a plot, as with all widgets, the edit dialog automatically
 appears.
 
-![[Plot Editor|plot.png]]
+![[interfacetab/Plot Editor|plot.png]]
 
 Many of the fields are fairly self-explanatory, such as the name of the plot,
 labels for the x and y axes, ranges for the axes, and the "Show legend?"
@@ -929,7 +929,7 @@ dialog with additional pen settings. The trash can button deletes the pen.
 
 Clicking a pen's edit button will open this dialog:
 
-![[Plot Editor|plot-pen-advanced.png]]
+![[interfacetab/Plot Editor|plot-pen-advanced.png]]
 
 - Mode allows you to change the appearance of the plot pen: line, bar (for a bar
   chart), or point (a scatter plot of individual points).
@@ -952,21 +952,21 @@ Agent monitors display both the values of all the variables for a particular
 agent and a mini-view that shows the agent and a small area around it.
 
 You can open agent monitors through the Tools menu or the [[inspect]] command.
-![[agentmonitor1.png]]
+![[interfacetab/agentmonitor1.png]]
 
 You can zoom in or out using the slider beneath the view and you can [[watch]]
 the agent in the main view using the "Watch" button.
-![[agentmonitor2.png]]
+![[interfacetab/agentmonitor2.png]]
 
 Below the slider the current value of each agent variable is displayed. You can
 enter a new value, and press the Enter or Return key. It will be as if, for example,
 the code `set pcolor ...` had run.
-![[agentmonitor3.png]]
+![[interfacetab/agentmonitor3.png]]
 
 Below the agent variable area there is a miniature command center. Rather than
 running code as the observer, or talking to all of the turtles, patches, or
 links, the code entered in this command center is run only by the agent shown in the window.
-![[agentmonitor4.png]]
+![[interfacetab/agentmonitor4.png]]
 
 You can close an agent monitor by clicking the window's close button, or
 by pressing the Esc key. You can close all the agent monitors by using the

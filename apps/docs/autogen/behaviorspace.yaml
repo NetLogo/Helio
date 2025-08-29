@@ -12,11 +12,11 @@ keywords:
 ---
 output: True
 language: es
-title: Espacio-Conductual
+title: BehaviorSpace
 description:
-  Espacio-Conductual es una herramienta de software integrada con NetLogo que
-  permite realizar experimentos con modelos.
+  BehaviorSpace es una herramienta de software integrada con NetLogo que permite
+  realizar experimentos con modelos.
 keywords:
-  - Espacio-Conductual
+  - BehaviorSpace
   - NetLogo
   - Behavior Space

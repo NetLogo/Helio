@@ -96,7 +96,7 @@ entire simulation to the participants.
 
 You'll find the HubNet activities in NetLogo's Models Library, in the HubNet
 Activities folder. We suggest doing a few practice runs of an activity before
-trying it in front of a class. ![[hubnetstartactivity.png]]
+trying it in front of a class. ![[hubnet/hubnetstartactivity.png]]
 
 Open a Computer HubNet model. NetLogo will prompt you to enter the name of your
 new HubNet session. This is the name that participants will use to identify this
@@ -117,7 +117,7 @@ Control Center.
 
 ### HubNet Control Center
 
-![[hubnetcontrolcenter.png]]
+![[hubnet/hubnetcontrolcenter.png]]
 
 The HubNet Control Center lets you interact with the HubNet server. It displays
 the name, activity, address and port number of your server. The "Mirror 2D View

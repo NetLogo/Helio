@@ -21,7 +21,7 @@ started.
 ## Interface
 
 The Extension Manager can be shown by choosing "Extensions…" from the Tools
-menu. ![[screenshot.png]]
+menu. ![[extension-manager/screenshot.png]]
 
 On the left side of the Extension Manager window, you can see a list of all
 available extensions. Extensions that are already installed and up-to-date have

@@ -17,7 +17,7 @@ NetLogo window. The main window is divided into tabs.
 
 On a Mac, if you are running the NetLogo application, the menu bar is located at
 the top of the screen. On other platforms, the menu bar is found at the top of
-the NetLogo window. ![[menubar.png]]
+the NetLogo window. ![[interface/menubar.png]]
 
 The functions available from the menus in the menubar are listed in the
 following chart.
@@ -26,8 +26,8 @@ following chart.
 
 <table border>
       <colgroup>
-      <col style="width: 15%" />
-      <col style="width: 85%" />
+<col style="width: 15%" />
+<col style="width: 85%" />
       </colgroup>
   <thead>
   <tr>
@@ -520,7 +520,7 @@ Help
 
 At the top of NetLogo's main window are three tabs labeled "Interface", "Info"
 and "Code". Only one tab at a time can be visible, but you can switch between
-them by clicking on the tabs at the top of the window. ![[interfacetoolbar.png]]
+them by clicking on the tabs at the top of the window. ![[interface/interfacetoolbar.png]]
 
 Right below the row of tabs is a toolbar containing a row of controls. The
 controls available vary from tab to tab.

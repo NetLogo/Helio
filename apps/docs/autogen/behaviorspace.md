@@ -489,7 +489,7 @@ In the **Table output** sample image below, the header section is in red, the ru
 columns are in blue, the initial values of the variables for the run are in green, and the
 measurement metric data is in purple.
 
-![[bs-table.png]]
+![[behaviorspace/bs-table.png]]
 
 #### Spreadsheet output
 This format lists the step numbers as well as each metric for each run in a
@@ -520,7 +520,7 @@ In the **Spreadsheet output** sample image below, the header section is in red, 
 is in blue, the initial values of the variables for the run are in green, the extra calculated
 metrics are in orange, and the measurement metric data is in purple.
 
-![[bs-spreadsheet.png]]
+![[behaviorspace/bs-spreadsheet.png]]
 
 #### Statistics output
 *(Since 6.4)*
@@ -552,7 +552,7 @@ standard deviation of "count frogs", followed by the same statistics for
 and columns A-D show the parameter combination that was used. The statistics
 are calculated across all the repetitions.
 
-![[bs-stats.png]]
+![[behaviorspace/bs-stats.png]]
 
 #### Lists output
 *(Since 6.4)*
@@ -575,7 +575,7 @@ are in green, and the expanded list data is in purple. The list data starts in
 row 7, with the headers (the index into the list, starting from 0) starting in
 column E.
 
-![[bs-lists.png]]
+![[behaviorspace/bs-lists.png]]
 
 #### Output File Changes
 *(Since 6.4)*
