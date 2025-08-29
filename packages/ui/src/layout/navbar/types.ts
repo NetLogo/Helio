@@ -44,7 +44,7 @@ export type NavbarMenu = {
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export type NavbarAction = {
-  title: string;
+  title?: string;
   href?: string;
   icon?: React.ReactNode;
   onClick?: () => void;

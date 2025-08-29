@@ -260,7 +260,7 @@ Navbar.ActionsContainer = ({
   </div>
 );
 Navbar.Action = ({
-  title,
+  title = '',
   href,
   icon,
   onClick,
@@ -279,7 +279,7 @@ Navbar.Action = ({
       onClick={onClick}
       {...rest}
     >
-      {icon && <span className={styles.icon}>{icon}</span>}
+      {icon}
       {title}
     </Component>
   );

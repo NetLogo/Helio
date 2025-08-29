@@ -8,7 +8,7 @@
   z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   gap: var(--space-lg);
   padding: var(--space-sm) var(--space-md);
   background: var(--color-nav-background);
@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-left: var(--space-lg);
+  margin-left: var(--space-md);
   gap: 0.5rem;
 }
 
@@ -188,12 +188,13 @@
   display: none;
 }
 .action svg {
-  width: 20px;
   height: 20px;
+  min-width: 20px;
   fill: var(--color-nav-text);
 }
 .action:hover svg {
   fill: var(--color-brand);
+  color: var(--color-brand);
 }
 .action:focus {
   outline: 2px solid var(--color-focus);
