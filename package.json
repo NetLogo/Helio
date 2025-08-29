@@ -1,5 +1,5 @@
 {
-  "name": "with-tailwind",
+  "name": "helio",
   "private": true,
   "scripts": {
     "build": "turbo run build",
