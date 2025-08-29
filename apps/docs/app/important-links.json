@@ -1,0 +1,32 @@
+[
+  {
+    "href": "whatis.html",
+    "text": "What is NetLogo?",
+    "external": false
+  },
+  {
+    "href": "sample.html",
+    "text": "Your first NetLogo model",
+    "external": false
+  },
+  {
+    "href": "programming.html",
+    "text": "Programming Guide",
+    "external": false
+  },
+  {
+    "href": "dictionary.html",
+    "text": "Dictionary Reference",
+    "external": false
+  },
+  {
+    "href": "requirements.html",
+    "text": "System Requirements",
+    "external": false
+  },
+  {
+    "href": "copyright.html",
+    "text": "Copyright Information",
+    "external": false
+  }
+]
