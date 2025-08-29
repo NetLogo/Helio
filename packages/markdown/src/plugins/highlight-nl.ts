@@ -19,6 +19,8 @@ export const remarkHighlightNL: Plugin<[], Root> = () => {
     });
 
     visit(tree, 'inlineCode', (node: InlineCode) => {
+      if (!node.value) return;
+      if (node.value.split(' ').length < 2) return; // only highlight if multiple words
       (node as any).type = 'html';
       (node as any).value = `<code>${highlightNL(node.value)}</code>`;
     });
