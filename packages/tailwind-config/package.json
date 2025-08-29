@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./shared-styles.scss",
+    ".": "./index.scss",
     "./scss/*.scss": "./scss/*.scss",
     "./postcss": "./postcss.config.js"
   },

@@ -6,15 +6,12 @@
    RESET & BASE
    ========================================================================== */
 
-
 /**
  * 1. Correct the line height in all browsers.
- * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
 html {
   line-height: 1.1; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
 }
 
 /* Sections
@@ -22,9 +19,7 @@ html {
 body {
   background-color: var(--color-background);
   color: var(--color-black);
-  min-height: 100vh;
   line-height: var(--line-height);
-  font-size: 13px;
   min-height: 90vh;
 }
 
@@ -95,7 +90,7 @@ hr {
  */
 
 pre {
-  font-family: monospace, monospace; /* 1 */
+  font-family: monospace; /* 1 */
   font-size: 1em; /* 2 */
 }
 
