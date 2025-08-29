@@ -1,48 +1,29 @@
-import fs from 'fs/promises';
-
-import NetLogoMarkdown from '@repo/markdown';
-import MustacheRenderer from '@repo/mustache';
-
 import '@repo/markdown/styles.scss';
 
-import AutogenOptions from './autogen.config';
+import NetLogoMarkdown from '@repo/markdown';
+
+import Head from 'next/head';
+import React from 'react';
+import autogenConfig from './autogen.config';
+import * as NetLogoDocs from './NetLogoDocs';
 
 export default async function Page({ params }: { params: { slug: string[] } }) {
   const { slug } = await params;
-  const { content } = await getPageContent(slug);
+  const { content } = await NetLogoDocs.getPageContent(slug, autogenConfig);
   return (
-    <main className="min-h-screen prose">
-      <NetLogoMarkdown>{content || '<p>Page not found.</p>'}</NetLogoMarkdown>
-    </main>
+    <React.Fragment>
+      <Head>
+        <base href="/" />
+      </Head>
+      <main className="min-h-screen prose">
+        <NetLogoMarkdown>{content || '<p>Page not found.</p>'}</NetLogoMarkdown>
+      </main>
+    </React.Fragment>
   );
 }
 
 export async function generateStaticParams() {
-  const renderer = new MustacheRenderer(AutogenOptions);
-  const buildVariables = {
-    version: process.env['PRODUCT_VERSION'] || 'unknown',
-    buildDate: new Date(
-      process.env['PRODUCT_BUILD_DATE'] || Date.now()
-    ).toISOString(),
-  };
-  const results = await renderer.build(buildVariables);
-
-  const generatedSlugs = Object.values(results.pages)
-    .filter((page) => page.success)
-    .map((page) => page.baseName)
-    .map((slug) => ({ slug: slug.split('/') }))
-    .reduce(
-      (acc, { slug }) => {
-        acc.push({ slug });
-        acc.push({
-          slug: [...slug.slice(0, -1), slug.at(-1) + '.html'],
-        });
-        return acc;
-      },
-      [] as { slug: string[] }[]
-    );
-
-  return generatedSlugs;
+  return NetLogoDocs.generateStaticParams(autogenConfig);
 }
 
 export async function generateMetadata({
@@ -52,44 +33,5 @@ export async function generateMetadata({
 }) {
   // https://nextjs.org/docs/messages/sync-dynamic-apis
   const { slug } = await params;
-
-  const renderer = new MustacheRenderer(AutogenOptions);
-
-  const slugPath = slug.join('/').replace(/\.html$/, '');
-  const metadataPath = renderer.getMetadataFilePath(slugPath);
-
-  try {
-    const metadataContent = await fs.readFile(metadataPath, 'utf-8');
-    const metadata = JSON.parse(metadataContent);
-    return {
-      title: metadata.title || 'Documentation',
-      description: metadata.description || 'Documentation page',
-    };
-  } catch (error) {
-    console.error(`Failed to read metadata for slug: ${slugPath}`, error);
-    return {
-      title: 'Documentation',
-      description: 'Documentation page',
-    };
-  }
-}
-
-export async function getPageContent(slug: string[]) {
-  const renderer = new MustacheRenderer(AutogenOptions);
-
-  const slugPath = slug.join('/').replace(/\.html$/, '');
-  const outputPath = renderer.getOutputFilePath(slugPath, 'md');
-
-  try {
-    const outputContent = await fs.readFile(outputPath, 'utf-8');
-    return {
-      content: outputContent,
-    };
-  } catch (error) {
-    console.error(`Failed to read output for slug: ${slugPath}`, error);
-    return {
-      content: null,
-      notFound: true,
-    };
-  }
+  return NetLogoDocs.generateMetadata(slug, autogenConfig);
 }
