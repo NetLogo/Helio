@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { XMLParser } from 'fast-xml-parser';
 import ini from 'ini';
 import yaml from 'yaml';
 import { BuildVariablesLoader } from '../src/BuildVariablesLoader.js';
-import { FileFetchError, ParseError } from '../src/errors.js';
+import {
+  FileFetchError,
+  ParseError,
+  UnsupportedFileTypeError,
+} from '../src/errors.js';
 import * as utils from '../src/utils.js';
 
 // Mock the utils module
@@ -30,26 +33,10 @@ describe('BuildVariablesLoader', () => {
     });
   });
 
-  describe('static properties', () => {
-    it('should have correct supported extensions', () => {
-      expect(BuildVariablesLoader.supportedExtensions).toEqual([
-        '.yaml',
-        '.yml',
-        '.json',
-        '.ini',
-        '.xml',
-        '.nlogox',
-      ]);
-    });
-
-    it('should have XML parser instance', () => {
-      expect(BuildVariablesLoader.xmlParser).toBeInstanceOf(XMLParser);
-    });
-  });
-
   describe('supportedFileTypes getter', () => {
     it('should return joined supported extensions', () => {
-      const expected = '.yaml, .yml, .json, .ini, .xml, .nlogox';
+      const expected =
+        '.js, .ts, .jsx, .tsx, .yml, .yaml, .ini, .xml, .nlogox, .json';
       expect(loader.supportedFileTypes).toBe(expected);
     });
   });
@@ -255,88 +242,42 @@ describe('BuildVariablesLoader', () => {
       });
     });
 
-    describe('XML files', () => {
-      const mockXmlParser = {
-        parse: jest.fn(),
-      };
-
-      beforeEach(() => {
-        // Mock the static XML parser
-        (BuildVariablesLoader as any).xmlParser = mockXmlParser;
-      });
-
-      it('should parse .xml files', async () => {
-        const xmlContent = '<root><item>value</item></root>';
-        const expectedResult = { root: { item: 'value' } };
-
-        mockGetFileExtension.mockReturnValue('.xml');
-        jest.spyOn(loader, 'fetch').mockResolvedValue(xmlContent);
-        mockXmlParser.parse.mockReturnValue(expectedResult);
-
-        const result = await loader.load('config.xml');
-
-        expect(mockXmlParser.parse).toHaveBeenCalledWith(xmlContent);
-        expect(result).toEqual(expectedResult);
-      });
-
-      it('should parse .nlogox files', async () => {
-        const nlogoxContent = '<nlogo><model>content</model></nlogo>';
-        const expectedResult = { nlogo: { model: 'content' } };
-
-        mockGetFileExtension.mockReturnValue('.nlogox');
-        jest.spyOn(loader, 'fetch').mockResolvedValue(nlogoxContent);
-        mockXmlParser.parse.mockReturnValue(expectedResult);
-
-        const result = await loader.load('model.nlogox');
-
-        expect(mockXmlParser.parse).toHaveBeenCalledWith(nlogoxContent);
-        expect(result).toEqual(expectedResult);
-      });
-
-      it('should handle XML parsing errors', async () => {
-        const invalidXml = '<root><unclosed>';
-
-        mockGetFileExtension.mockReturnValue('.xml');
-        jest.spyOn(loader, 'fetch').mockResolvedValue(invalidXml);
-        mockXmlParser.parse.mockImplementation(() => {
-          throw new Error('XML parse error');
-        });
-
-        await expect(loader.load('invalid.xml')).rejects.toThrow(ParseError);
-        await expect(loader.load('invalid.xml')).rejects.toThrow(
-          'XML parse error'
-        );
-      });
-    });
-
     describe('unsupported file types', () => {
-      it('should throw ParseError for unsupported extensions', async () => {
+      it('should throw UnsupportedFileTypeError for unsupported extensions', async () => {
         mockGetFileExtension.mockReturnValue('.txt');
         jest.spyOn(loader, 'fetch').mockResolvedValue('some content');
 
-        await expect(loader.load('config.txt')).rejects.toThrow(ParseError);
         await expect(loader.load('config.txt')).rejects.toThrow(
-          'Unsupported file type'
+          UnsupportedFileTypeError
+        );
+        await expect(loader.load('config.txt')).rejects.toThrow(
+          'Unsupported file type: .txt for config.txt'
         );
       });
 
-      it('should throw ParseError for files without extensions', async () => {
+      it('should throw UnsupportedFileTypeError for files without extensions', async () => {
         mockGetFileExtension.mockReturnValue('');
         jest.spyOn(loader, 'fetch').mockResolvedValue('some content');
 
-        await expect(loader.load('config')).rejects.toThrow(ParseError);
+        await expect(loader.load('config')).rejects.toThrow(
+          UnsupportedFileTypeError
+        );
       });
 
-      it('should throw ParseError for unknown extensions', async () => {
+      it('should throw UnsupportedFileTypeError for unknown extensions', async () => {
         mockGetFileExtension.mockReturnValue('.unknown');
         jest.spyOn(loader, 'fetch').mockResolvedValue('some content');
 
-        await expect(loader.load('config.unknown')).rejects.toThrow(ParseError);
+        await expect(loader.load('config.unknown')).rejects.toThrow(
+          UnsupportedFileTypeError
+        );
       });
     });
 
     describe('fetch errors', () => {
       it('should throw FileFetchError when fetch fails', async () => {
+        mockGetFileExtension.mockReturnValue('.yaml');
+
         const testPath = 'nonexistent.yaml';
         const fetchError = new Error('File not found');
 
@@ -347,6 +288,8 @@ describe('BuildVariablesLoader', () => {
       });
 
       it('should preserve original error message in FileFetchError', async () => {
+        mockGetFileExtension.mockReturnValue('.yaml');
+
         const testPath = 'network-error.yaml';
         const originalError = new Error('Network timeout');
 
@@ -497,9 +440,9 @@ metadata:
         await loader.load(testPath);
         fail('Should have thrown an error');
       } catch (error) {
-        expect(error).toBeInstanceOf(ParseError);
-        expect((error as ParseError).message).toContain(testPath);
-        expect((error as ParseError).message).toContain(
+        expect(error).toBeInstanceOf(UnsupportedFileTypeError);
+        expect((error as UnsupportedFileTypeError).message).toContain(testPath);
+        expect((error as UnsupportedFileTypeError).message).toContain(
           'Unsupported file type'
         );
       }

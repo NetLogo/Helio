@@ -1,8 +1,10 @@
-import ini from 'ini';
 import path from 'path';
-import yaml from 'yaml';
 
-import { XMLParser } from 'fast-xml-parser';
+import {
+  BuildVariableReader,
+  DataFileReader,
+  NodeStdoutReader,
+} from './BuildVariablesLoader.readerModules.js';
 import {
   FileFetchError,
   ParseError,
@@ -17,6 +19,8 @@ import { getFileExtension, isURL, readLocal, readRemote } from './utils.js';
  * In our engine, we allow developers to specify build variables in the YAML
  * front matter, but also to load them from external files without having to dive into
  * the code. This class supports loading from local files or remote URLs.
+ * It also supports dynamic loading of JavaScript files, long as the module
+ * default export is a valid BuildVariable.
  *
  * Where would you see this? In some MyArticle.yaml file:
  * ```yaml
@@ -26,12 +30,6 @@ import { getFileExtension, isURL, readLocal, readRemote } from './utils.js';
  *  - dictionary: https://example.com/dictionary.yaml
  *  - myNetLogoModel: models/MyModel.nlogox
  * ```
- *
- * Supported file types:
- * - YAML (.yaml, .yml)
- * - JSON (.json)
- * - INI (.ini)
- * - XML (.xml, .nlogox)
  *
  * @example
  * ```ts
@@ -54,17 +52,32 @@ import { getFileExtension, isURL, readLocal, readRemote } from './utils.js';
  * @see {@link https://nodejs.org/api/fs.html#fs_fs_promises_api} for local file reading
  */
 export class BuildVariablesLoader {
-  static readonly supportedExtensions = [
-    '.yaml',
-    '.yml',
-    '.json',
-    '.ini',
-    '.xml',
-    '.nlogox',
+  static readonly readers: BuildVariableReader[] = [
+    new NodeStdoutReader(),
+    new DataFileReader(),
   ];
-  static readonly xmlParser = new XMLParser();
 
-  constructor(private scanRoot: string) {}
+  extensionMap = new Map<string, BuildVariableReader>();
+  constructor(private scanRoot: string) {
+    for (const loader of BuildVariablesLoader.readers) {
+      for (const ext of loader.supportedExtensions) {
+        this.extensionMap.set(ext, loader);
+      }
+    }
+  }
+
+  /**
+   * Returns the full file path for a given value (local path or URL).
+   * @param value - The input value (local path or URL)
+   * @returns The full file path as a string
+   */
+  getFullFilePath(value: string): string {
+    if (isURL(value)) {
+      return value;
+    } else {
+      return path.join(this.scanRoot, value);
+    }
+  }
 
   /**
    * Fetches the content of a file from a local path or a remote URL.
@@ -80,38 +93,13 @@ export class BuildVariablesLoader {
     }
   }
 
-  /**
-   * Loads and parses build variables from a given path or URL.
-   * @param value - Path or URL to load the build variables from
-   * @returns Parsed build variables as an object or array
-   * @throws {FileFetchError} If the file cannot be fetched
-   * @throws {ParseError} If the file cannot be parsed
-   * @throws {UnsupportedFileTypeError} If the file type is not supported
-   */
   async load(value: string): Promise<BuildVariable> {
-    let source;
-    try {
-      source = await this.fetch(value);
-    } catch (error: any) {
-      throw new FileFetchError(value, error.message);
-    }
-
     const extension = getFileExtension(value).toLowerCase();
-
-    try {
-      if (extension === '.yaml' || extension === '.yml') {
-        return yaml.parse(source);
-      } else if (extension === '.json') {
-        return JSON.parse(source);
-      } else if (extension === '.ini') {
-        return ini.parse(source);
-      } else if (extension === '.xml' || extension === '.nlogox') {
-        return BuildVariablesLoader.xmlParser.parse(source);
-      } else {
-        throw new UnsupportedFileTypeError(value);
-      }
-    } catch (error: any) {
-      throw new ParseError(value, error.message);
+    const reader = this.extensionMap.get(extension);
+    if (reader) {
+      return reader.read(this, value);
+    } else {
+      throw new UnsupportedFileTypeError(`${extension} for ${value}`);
     }
   }
 
@@ -122,7 +110,9 @@ export class BuildVariablesLoader {
    * @type {string}
    */
   get supportedFileTypes() {
-    return BuildVariablesLoader.supportedExtensions.join(', ');
+    return BuildVariablesLoader.readers
+      .flatMap((reader) => reader.supportedExtensions)
+      .join(', ');
   }
 }
 

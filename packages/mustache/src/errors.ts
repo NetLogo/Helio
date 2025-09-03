@@ -13,6 +13,13 @@ export class FileFetchError extends Error {
   }
 }
 
+// FileLoadError
+export class FileLoadError extends Error {
+  constructor(filePath: string, message: unknown) {
+    super(`Failed to load file ${filePath}: ${message}`);
+  }
+}
+
 // ParseError
 export class ParseError extends Error {
   constructor(filePath: string, message: unknown) {
