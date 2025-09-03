@@ -3,7 +3,7 @@ tags:
   - Primitives
   - API
 buildVariables:
-  dictionary: data/dictionary.json
+  dictionary: data/dictionary.js
 ---
 output: True
 title: NetLogo Dictionary

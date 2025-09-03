@@ -24,14 +24,19 @@ actually run a primitive, consult its dictionary entry.
 ## Built-In Variables
 <div>
 
-{{#dictionary.catalog.variables.subcategories}}
+{{#each dictionary.variables}}
 <h3 id="{{{id}}}">{{{title}}}</h3>
-{{/dictionary.catalog.variables.subcategories}}
+
+{{#each entries}}
+[[{{{name}}}|{{{id}}}]]
+{{/each}}
+
+{{/each}}
 
 </div>
 
 ## Keywords
-{{#each dictionary.catalog.keywords.entries}}
+{{#each dictionary.keywords.entries}}
 [[{{{name}}}|{{{id}}}]]
 {{/each}}
 
