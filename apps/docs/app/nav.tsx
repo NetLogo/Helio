@@ -84,13 +84,19 @@ function isSublinkActive(href: string | undefined) {
 function isLinkParentActive(link: NavbarLink) {
   if (typeof window === 'undefined') return false;
   const currentPath = window.location.pathname;
-  return link.children?.some((child) => isSublinkActive(child.href)) || false;
+  const isParentActiveOnItsOwn =
+    new URL(link.href, window.location.href).pathname === currentPath;
+  return (
+    isParentActiveOnItsOwn ||
+    link.children?.some((child) => isSublinkActive(child.href)) ||
+    false
+  );
 }
 
 const navbarLinks: NavbarLink[] = [
   {
     title: 'Home',
-    href: './',
+    href: '/',
   },
   {
     title: 'Learn NetLogo',
