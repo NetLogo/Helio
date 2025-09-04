@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import type { ProjectConfig as MustacheProjectConfig } from '@repo/mustache';
 import MustacheRenderer from '@repo/mustache';
 
-import { generatePrimitiveIndices } from './PrimIndices';
+import { generatePrimitiveIndex } from './PrimIndex';
 import * as Constants from './constants';
 
 export async function generateBetweenDirectoriesPages(
@@ -19,14 +19,15 @@ export async function generateDictionaryPrimitivePages(
   sharedBuildVariables: Record<string, unknown> = {}
 ) {
   const dictionary = Constants.dictionary;
-  return await generatePrimitiveIndices(
+  return await generatePrimitiveIndex({
     dictionary,
-    `NetLogo ${sharedBuildVariables.version} Dictionary`,
-    'dictionary',
-    Constants.primitiveIndexTemplate,
+    dictionaryDisplayName: `NetLogo ${sharedBuildVariables.version} Dictionary`,
+    dictionaryHomeDirectory: 'dictionary',
+    indexFileName: 'dict',
+    template: Constants.primitiveIndexTemplate,
     renderer,
-    sharedBuildVariables
-  );
+    buildVariables: sharedBuildVariables,
+  });
 }
 
 export async function generateDictionary3DPrimitivePages(
@@ -34,14 +35,15 @@ export async function generateDictionary3DPrimitivePages(
   sharedBuildVariables: Record<string, unknown> = {}
 ) {
   const dictionary = Constants.dictionary3D;
-  return await generatePrimitiveIndices(
+  return await generatePrimitiveIndex({
     dictionary,
-    `NetLogo ${sharedBuildVariables.version} Dictionary 3D`,
-    '3d',
-    Constants.primitiveIndexTemplate,
+    dictionaryDisplayName: `NetLogo ${sharedBuildVariables.version} Dictionary 3D`,
+    dictionaryHomeDirectory: '3d',
+    indexFileName: 'dict3D',
+    template: Constants.primitiveIndexTemplate,
     renderer,
-    sharedBuildVariables
-  );
+    buildVariables: sharedBuildVariables,
+  });
 }
 
 export async function generateStaticParams(config: MustacheProjectConfig) {
@@ -71,9 +73,9 @@ export async function generateStaticParams(config: MustacheProjectConfig) {
     .reduce(
       (acc, { slug }) => {
         acc.push({ slug });
-        acc.push({
-          slug: [...slug.slice(0, -1), slug.at(-1) + '.html'],
-        });
+        if (process.env.NODE_ENV !== 'production') {
+          acc.push({ slug: [...slug.slice(0, -1), slug.at(-1) + '.html'] });
+        }
         return acc;
       },
       [] as { slug: string[] }[]
@@ -89,7 +91,9 @@ export async function generateMetadata(
   const renderer = new MustacheRenderer(config);
 
   const slugPath = slug.join('/').replace(/\.html$/, '');
-  const metadataPath = renderer.getMetadataFilePath(slugPath);
+  const metadataPath = decodeURIComponent(
+    renderer.getMetadataFilePath(slugPath)
+  );
 
   try {
     const metadataContent = await fs.readFile(metadataPath, 'utf-8');
@@ -114,7 +118,9 @@ export async function getPageContent(
   const renderer = new MustacheRenderer(config);
 
   const slugPath = slug.join('/').replace(/\.html$/, '');
-  const outputPath = renderer.getOutputFilePath(slugPath, 'md');
+  const outputPath = decodeURIComponent(
+    renderer.getOutputFilePath(slugPath, 'md')
+  );
 
   try {
     const outputContent = await fs.readFile(outputPath, 'utf-8');

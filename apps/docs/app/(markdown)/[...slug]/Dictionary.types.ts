@@ -44,54 +44,33 @@ type DictionaryEntry =
   | DictionaryEntryGeneric<DictionarySyntaxEntry>
   | DictionaryEntryGeneric<DictionaryConstantEntry>;
 
-interface DictionaryEntryBrief {
-  id: string;
-  name: string;
-  additional_names: string[];
-}
-
-interface DictionaryCategoryTree {
-  title: string;
-  id: string;
-  entries: DictionaryEntryBrief[];
-  subcategories: DictionaryCategoryTree[];
-}
-
-interface Dictionary {
+interface DictionaryType {
   created_at: Date;
   updated_at: Date;
   entries: DictionaryEntry[];
-  categories: DictionaryCategoryTree[];
 }
 
-class DictionaryClass implements Dictionary {
+class DictionaryClass implements DictionaryType {
   created_at: Date = new Date();
   updated_at: Date = new Date();
   entries: DictionaryEntry[] = [];
-  categories: DictionaryCategoryTree[] = [];
 
   getEntryById(entryId: string): DictionaryEntry | undefined {
     return this.entries.find((entry) => entry.id === entryId);
   }
-
-  getCategoryById(categoryId: string): DictionaryCategoryTree | undefined {
-    return this.categories.find((category) => category.id === categoryId);
-  }
 }
 
 export type {
-  Dictionary,
   DictionaryCategory,
-  DictionaryCategoryTree,
   DictionaryClass,
   DictionaryConstant,
   DictionaryConstantEntry,
   DictionaryEntry,
-  DictionaryEntryBrief,
   DictionaryEntryGeneric,
   DictionaryExample,
   DictionarySyntax,
   DictionarySyntaxEntry,
+  DictionaryType,
 };
 
 export default DictionaryClass;

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Dictionary } from './PrimIndices.types';
+import { DictionaryType } from './Dictionary.types';
 
 export const primitiveIndexTemplate = fs.readFileSync(
   'autogen/primIndex.md',
@@ -14,5 +14,5 @@ export const dictionary3DData = fs.readFileSync(
   'utf-8'
 );
 
-export const dictionary: Dictionary = JSON.parse(dictionaryData);
-export const dictionary3D: Dictionary = JSON.parse(dictionary3DData);
+export const dictionary: DictionaryType = JSON.parse(dictionaryData);
+export const dictionary3D: DictionaryType = JSON.parse(dictionary3DData);
