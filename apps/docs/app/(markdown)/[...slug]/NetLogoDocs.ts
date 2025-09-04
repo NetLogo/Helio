@@ -46,7 +46,7 @@ export async function generateDictionary3DPrimitivePages(
   });
 }
 
-export async function generateStaticParams(config: MustacheProjectConfig) {
+export async function generateMarkdownPages(config: MustacheProjectConfig) {
   const renderer = new MustacheRenderer(config);
   const buildVariables = {
     version: process.env['PRODUCT_VERSION'] || 'unknown',
@@ -66,22 +66,7 @@ export async function generateStaticParams(config: MustacheProjectConfig) {
     }, {});
   });
 
-  const generatedSlugs = Object.values(results)
-    .filter((page) => page.success)
-    .map((page) => page.baseName)
-    .map((slug) => ({ slug: slug.split('/') }))
-    .reduce(
-      (acc, { slug }) => {
-        acc.push({ slug });
-        if (process.env.NODE_ENV !== 'production') {
-          acc.push({ slug: [...slug.slice(0, -1), slug.at(-1) + '.html'] });
-        }
-        return acc;
-      },
-      [] as { slug: string[] }[]
-    );
-
-  return generatedSlugs;
+  return results;
 }
 
 export async function generateMetadata(

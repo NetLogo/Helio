@@ -16,7 +16,23 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
 }
 
 export async function generateStaticParams() {
-  return NetLogoDocs.generateStaticParams(autogenConfig);
+  const results = await NetLogoDocs.generateMarkdownPages(autogenConfig);
+  const generatedSlugs = Object.values(results)
+    .filter((page) => page.success)
+    .map((page) => page.baseName)
+    .map((slug) => ({ slug: slug.split('/') }))
+    .reduce(
+      (acc, { slug }) => {
+        acc.push({ slug });
+        if (process.env.NODE_ENV !== 'production') {
+          acc.push({ slug: [...slug.slice(0, -1), slug.at(-1) + '.html'] });
+        }
+        return acc;
+      },
+      [] as { slug: string[] }[]
+    );
+
+  return generatedSlugs;
 }
 
 export async function generateMetadata({
