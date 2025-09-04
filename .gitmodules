@@ -67,9 +67,6 @@
 [submodule "external/extensions/resource"]
 	path = external/extensions/resource
 	url = https://github.com/NetLogo/Resource-Extension
-[submodule "netlogo-gui/colorpicker"]
-	path = netlogo-gui/colorpicker
-	url = https://github.com/NetLogo/ColorPicker
 [submodule "external/extensions/sr"]
 	path = external/extensions/sr
 	url = https://github.com/NetLogo/SimpleR-Extension

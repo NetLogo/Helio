@@ -3,6 +3,7 @@ import './globals.scss';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import { ScrollToHash } from './client';
 import ClientFooter from './footer';
 import ClientNavbar from './nav';
 
@@ -27,18 +28,7 @@ export default function RootLayout({
         <ClientNavbar />
         {children}
         <ClientFooter />
-        <script>
-          {`if (window.location.hash) {
-            const target = document.querySelector(window.location.hash);
-            if (target) {
-              target.scrollIntoView({ behavior: 'smooth' });
-              // Ensure the target is visible after scrolling
-              setTimeout(() => {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }, 100);
-            }
-          }`}
-        </script>
+        <ScrollToHash />
       </body>
     </html>
   );

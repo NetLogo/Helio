@@ -50,7 +50,7 @@ export default function Page() {
         />
       </div>
       <div className="grid grid-cols-12 gap-5">
-        <div className="col-span-1 md:col-span-6">
+        <div className="col-span-12 md:col-span-6">
           <h3>Important Links</h3>
           <ul>
             {importantLinks.map((link, index) => (
@@ -62,7 +62,7 @@ export default function Page() {
             ))}
           </ul>
         </div>
-        <div className="col-span-1 md:col-span-6">
+        <div className="col-span-12 md:col-span-6">
           <h3>Beginner's Guide</h3>
           <ul>
             {beginnersLinks.map((link, index) => (

@@ -1,7 +1,7 @@
 'use client';
 
 import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
-import Footer from '@repo/ui/layout/footer/Footer';
+import Footer from '@repo/ui/components/footer/Footer';
 import Image from 'next/image';
 
 export default function ClientFooter() {

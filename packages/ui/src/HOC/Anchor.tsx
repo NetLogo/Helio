@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 
-import { Link } from '@/utils/next';
+import { Link } from '@/lib/utils/next';
 
 type AnchorProps = {
   external?: boolean;

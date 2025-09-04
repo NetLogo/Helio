@@ -1,14 +1,19 @@
 'use client';
-import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
-import Navbar from '@repo/ui/layout/navbar/Navbar';
+
+import { useLayoutEffect, useState } from 'react';
+
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+
+import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
+import Navbar from '@repo/ui/components/navbar/Navbar';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { isWindowDefined } from '@repo/ui/utils/client';
-import { useLayoutEffect, useState } from 'react';
+
+import { isWindowDefined } from '@repo/ui/lib/utils/client';
+import VersionSelectDropdown from '@repo/ui/widgets/VersionSelectDropdown';
 
 export default function ClientNavbar() {
   const [links, setLinks] = useState(navbarLinks);
@@ -57,6 +62,11 @@ export default function ClientNavbar() {
         ))}
       </Navbar.LinksContainer>
       <Navbar.ActionsContainer>
+        <VersionSelectDropdown
+          versions={versions}
+          selectedVersion="7.0.0-beta2"
+          onVersionChange={onVersionChange}
+        />
         <Navbar.Action
           icon={<FontAwesomeIcon icon={faGithub} />}
           href="https://github.com/NetLogo"
@@ -92,6 +102,39 @@ function isLinkParentActive(link: NavbarLink) {
     false
   );
 }
+
+const versions = {
+  '7.0.0-beta2': { displayName: '7.0.0 Beta 2' },
+  '6.4.0': {},
+  '6.3.0': {},
+  '6.2.2': {},
+  '6.1.1': {},
+  '6.0.4': {},
+  '6.0beta': { displayName: '6.0 Beta' },
+  '5.3.1': {},
+  '5.2.1': {},
+  '5.1.0': {},
+  '5.0': {},
+  '4.1': {},
+  '4.0': {},
+  '3.2': {},
+  '3.1': {},
+  '3.0': {},
+  '2.1': { disabled: true },
+  '2.0': { disabled: true },
+  '1.2': { disabled: true },
+  '1.1': { disabled: true },
+  '1.0': { disabled: true },
+} as const;
+
+const onVersionChange = (version: keyof typeof versions) => {
+  if (!isWindowDefined()) return;
+  if (parseInt(version.charAt(0)) >= 7) {
+    window.location.pathname = `/${version}`;
+  } else {
+    window.location.href = `https://ccl.northwestern.edu/netlogo/${version}/docs`;
+  }
+};
 
 const navbarLinks: NavbarLink[] = [
   {

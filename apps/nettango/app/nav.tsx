@@ -1,6 +1,6 @@
 'use client';
 import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
-import Navbar from '@repo/ui/layout/navbar/Navbar';
+import Navbar from '@repo/ui/components/navbar/Navbar';
 import Image from 'next/image';
 
 export default function ClientNavbar() {
