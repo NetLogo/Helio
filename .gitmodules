@@ -1,75 +1,78 @@
-[submodule "extensions/array"]
-	path = extensions/array
+[submodule "external/extensions/array"]
+	path = external/extensions/array
 	url = https://github.com/NetLogo/Array-Extension.git
-[submodule "extensions/bitmap"]
-	path = extensions/bitmap
+[submodule "external/extensions/bitmap"]
+	path = external/extensions/bitmap
 	url = https://github.com/NetLogo/Bitmap-Extension.git
-[submodule "extensions/gis"]
-	path = extensions/gis
+[submodule "external/extensions/gis"]
+	path = external/extensions/gis
 	url = https://github.com/NetLogo/GIS-Extension.git
-[submodule "extensions/matrix"]
-	path = extensions/matrix
+[submodule "external/extensions/matrix"]
+	path = external/extensions/matrix
 	url = https://github.com/NetLogo/Matrix-Extension.git
-[submodule "extensions/profiler"]
-	path = extensions/profiler
+[submodule "external/extensions/profiler"]
+	path = external/extensions/profiler
 	url = https://github.com/NetLogo/Profiler-Extension.git
-[submodule "extensions/sample"]
-	path = extensions/sample
+[submodule "external/extensions/sample"]
+	path = external/extensions/sample
 	url = https://github.com/NetLogo/Sample-Extension.git
-[submodule "extensions/sample-scala"]
-	path = extensions/sample-scala
+[submodule "external/extensions/sample-scala"]
+	path = external/extensions/sample-scala
 	url = https://github.com/NetLogo/Sample-Scala-Extension.git
-[submodule "extensions/sound"]
-	path = extensions/sound
+[submodule "external/extensions/sound"]
+	path = external/extensions/sound
 	url = https://github.com/NetLogo/Sound-Extension.git
-[submodule "extensions/table"]
-	path = extensions/table
+[submodule "external/extensions/table"]
+	path = external/extensions/table
 	url = https://github.com/NetLogo/Table-Extension.git
 [submodule "Mathematica-Link"]
 	path = Mathematica-Link
 	url = https://github.com/NetLogo/Mathematica-Link.git
-[submodule "extensions/nw"]
-	path = extensions/nw
+[submodule "external/extensions/nw"]
+	path = external/extensions/nw
 	url = https://github.com/NetLogo/NW-Extension
-[submodule "extensions/csv"]
-	path = extensions/csv
+[submodule "external/extensions/csv"]
+	path = external/extensions/csv
 	url = https://github.com/NetLogo/CSV-Extension
 [submodule "gogo-hid"]
-	path = extensions/gogo
+	path = external/extensions/gogo
 	url = https://github.com/NetLogo/GoGo-HID-Extension
-[submodule "extensions/palette"]
-	path = extensions/palette
+[submodule "external/extensions/palette"]
+	path = external/extensions/palette
 	url = https://github.com/NetLogo/Palette-Extension
-[submodule "extensions/arduino"]
-	path = extensions/arduino
+[submodule "external/extensions/arduino"]
+	path = external/extensions/arduino
 	url = https://github.com/NetLogo/Arduino-Extension/
-[submodule "extensions/vid"]
-	path = extensions/vid
+[submodule "external/extensions/vid"]
+	path = external/extensions/vid
 	url = https://github.com/NetLogo/vid.git
-[submodule "extensions/view2.5d"]
-	path = extensions/view2.5d
+[submodule "external/extensions/view2.5d"]
+	path = external/extensions/view2.5d
 	url = https://github.com/NetLogo/View2.5D.git
-[submodule "extensions/ls"]
-	path = extensions/ls
+[submodule "external/extensions/ls"]
+	path = external/extensions/ls
 	url = https://github.com/NetLogo/LevelSpace.git
-[submodule "extensions/rnd"]
-	path = extensions/rnd
+[submodule "external/extensions/rnd"]
+	path = external/extensions/rnd
 	url = https://github.com/NetLogo/Rnd-Extension.git
 [submodule "behaviorsearch"]
 	path = behaviorsearch
 	url = https://github.com/NetLogo/behaviorsearch.git
-[submodule "extensions/py"]
-	path = extensions/py
+[submodule "external/extensions/py"]
+	path = external/extensions/py
 	url = https://github.com/NetLogo/Python-Extension
-[submodule "extensions/time"]
-	path = extensions/time
+[submodule "external/extensions/time"]
+	path = external/extensions/time
 	url = https://github.com/NetLogo/Time-Extension
-[submodule "extensions/resource"]
-	path = extensions/resource
+[submodule "external/extensions/resource"]
+	path = external/extensions/resource
 	url = https://github.com/NetLogo/Resource-Extension
 [submodule "netlogo-gui/colorpicker"]
 	path = netlogo-gui/colorpicker
 	url = https://github.com/NetLogo/ColorPicker
-[submodule "extensions/sr"]
-	path = extensions/sr
+[submodule "external/extensions/sr"]
+	path = external/extensions/sr
 	url = https://github.com/NetLogo/SimpleR-Extension
+[submodule "external/extensions/gogo"]
+	path = external/extensions/gogo
+	url = https://github.com/NetLogo/GoGo-HID-Extension
