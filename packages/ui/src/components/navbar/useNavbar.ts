@@ -1,5 +1,5 @@
 import useHideOnScroll from '@/hooks/useHideOnScroll';
-import { isWindowDefined } from '@/utils/client';
+import { isWindowDefined } from '@/lib/utils/client';
 import { NavbarDynamicProps, NavbarOptions } from './types';
 
 export function useNavbar(options: NavbarOptions): NavbarDynamicProps {

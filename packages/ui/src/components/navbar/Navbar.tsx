@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 import styles from './Navbar.module.scss';
 
 import Anchor from '@/HOC/Anchor';
 import { useDebouncedHover } from '@/hooks/useDebouncedHover';
-import { isWindowDefined } from '@/utils/client';
-import { cssVariable } from '@/utils/styles';
+import { isWindowDefined } from '@/lib/utils/client';
+import { cssVariable } from '@/lib/utils/styles';
 import type {
   NavbarAction,
   NavbarClientProps,

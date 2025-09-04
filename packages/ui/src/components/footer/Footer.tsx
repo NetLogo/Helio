@@ -1,6 +1,6 @@
 import Anchor from '@/HOC/Anchor';
-import { cn } from '@/utils/cn';
-import { cssVariable, maybeCSSVariable } from '@/utils/styles';
+import { cn } from '@/lib/utils/cn';
+import { cssVariable, maybeCSSVariable } from '@/lib/utils/styles';
 import React from 'react';
 import styles from './Footer.module.scss';
 import type {
