@@ -725,7 +725,7 @@ open the graphical interface otherwise).
   output)
 - `--lists <path>`: pathname to send lists output to (or - for standard output),
   cannot be used without `--table` or `--spreadsheet`
-- --stats <path>: pathname to send statistics output to (or - for standard output)
+- `--stats <path>`: pathname to send statistics output to (or - for standard output)
  cannot be used without `--table` or `--spreadsheet`
 - `--threads <number>`: use this many threads to do model runs in parallel, or 1
   to disable parallel runs. defaults to `floor(0.75 * <number of processors>)`.
