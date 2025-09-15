@@ -1,8 +1,14 @@
-:::span{.prim_example}
+<span class="prim_example">
+
 {{code}}
 {{#if since}}
-:::span{.since}
+
+<span class="since">
+
 {{{since}}}
-:::
+
+</span>
+
 {{/if}}
-:::
+
+</span>

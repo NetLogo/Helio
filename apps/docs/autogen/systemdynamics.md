@@ -8,7 +8,7 @@ This guide has three parts:
 - [**Tutorial: Wolf-Sheep Predation (aggregate)**](#tutorial): Walks you through
   creating a model with the System Dynamics Modeler.
 
-## <a id="what">What is the NetLogo System Dynamics Modeler?</a>
+## <a id="what" href="#what">What is the NetLogo System Dynamics Modeler?</a>
 
 System Dynamics is a type of modeling where you try to understand how things
 relate to one another. It is a little different from the agent-based approach we
@@ -76,7 +76,7 @@ the a System Dynamics model and an agent-based model side-by-side. It runs the
 System Dynamics implementation of Wolf-Sheep Predation next to the agent-based
 Wolf Sheep Predation model from the Biology section of Sample Models.
 
-## <a id="how">How it Works</a>
+## <a id="how" href="#how">How it Works</a>
 
 To open the System Dynamics Modeler, choose the System Dynamics Modeler item in
 the Tools menu. The System Dynamics Modeler window will appear. ![[systemdynamics/window.png]]
@@ -252,7 +252,7 @@ The diagram you create with the System Dynamics Modeler, and the procedures
 generated from your diagram, are part of your NetLogo model. When you a save the
 NetLogo model, your diagram is saved with it, in the same file.
 
-## <a id="tutorial">Tutorial: Wolf-Sheep Predation</a>
+## <a id="tutorial" href="#tutorial">Tutorial: Wolf-Sheep Predation</a>
 
 Let's create a model of Wolf-Sheep Predation with the System Dynamics Modeler.
 

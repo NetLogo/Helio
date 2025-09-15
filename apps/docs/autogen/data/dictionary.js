@@ -120,6 +120,3 @@ for (const entry of dictionary.entries) {
 dictionary.variables = Object.values(dictionaryVariables);
 
 console.log(JSON.stringify(dictionary));
-
-// output to tmp
-await fs.writeFile('tmp.json', JSON.stringify(dictionary, null, 2));

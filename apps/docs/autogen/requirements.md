@@ -41,7 +41,7 @@ higher.
 
 Start NetLogo by running the provided `NetLogo` executable.
 
-## <a id="threed">3D Requirements</a>
+## 3D Requirements
 
 Occasionally an older, less powerful system is not able to use the 3D view or
 NetLogo 3D. Try it and see.

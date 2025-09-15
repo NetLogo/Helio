@@ -65,7 +65,7 @@ following chart.
       </tr>
       <tr>
         <td>Save As NetLogo Web…</td>
-        <td>Saves your model as an HTML web page that runs using <a href="https://netlogoweb.org">NetLogo Web</a>.  Note the version of NetLogo Web used is bundled with NetLogo, so it may not be up to date with <a href="https://netlogoweb.org/whats-new">the latest changes and features<a>.  You can also <a href="https://netlogoweb.org/docs/faq#loading">upload your model to NetLogo Web</a> and <a href="https://netlogoweb.org/docs/faq#saving">export it to HTML from there</a> to get the most recent updates included.</td>
+        <td>Saves your model as an HTML web page that runs using <a href="https://netlogoweb.org">NetLogo Web</a>.  Note the version of NetLogo Web used is bundled with NetLogo, so it may not be up to date with <a href="https://netlogoweb.org/whats-new">the latest changes and features</a>.  You can also <a href="https://netlogoweb.org/docs/faq#loading">upload your model to NetLogo Web</a> and <a href="https://netlogoweb.org/docs/faq#saving">export it to HTML from there</a> to get the most recent updates included.</td>
       </tr>
       <tr>
         <td>Manage Bundled Resources</td>
