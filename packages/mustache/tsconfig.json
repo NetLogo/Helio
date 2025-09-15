@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "es2022",
+    "ignoreDeprecations": "6.0",
     "moduleResolution": "node",
     "lib": ["ES2022"],
     "outDir": "./dist",
