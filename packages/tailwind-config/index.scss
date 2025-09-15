@@ -1,12 +1,10 @@
 @use './scss/utilities.scss';
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-@import 'tailwindcss';
 
 // Declare the `website` layer higher than all
 // Tailwind CSS layers to ensure it can override styles.
 @layer theme, base, components, utilities, website;
-
 
 // Normalizing and variable setting happens at the lowest level
 @import './scss/variables.scss';
