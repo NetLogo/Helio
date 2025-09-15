@@ -7,26 +7,20 @@ export const tocConfig = {
 };
 
 export const wikiLinkConfig: WikiLinkOptions = {
-  hrefTemplate: (
-    permalink: string,
-    linkType: LinkType,
-    anchor?: string | null
-  ) => {
+  hrefTemplate: (permalink: string, linkType: LinkType, anchor?: string | null) => {
     const dictionaryPermalink = permalink.replace(/^__|[\?]$/g, '');
     const anchorQuery = anchor ? `?anchor=${encodeURIComponent(anchor)}` : '';
     switch (linkType) {
       case 'wikiLink':
-        return `dictionary.html#${dictionaryPermalink}${anchorQuery}`;
+        return `/dictionary.html#${dictionaryPermalink}${anchorQuery}`;
       case 'imageLink':
-        return `images/${permalink}${anchorQuery}`;
+        return `/images/${permalink}${anchorQuery}`;
       case 'missingLink':
-        return `dictionary.html#${dictionaryPermalink}${anchorQuery}`;
+        return `/dictionary.html#${dictionaryPermalink}${anchorQuery}`;
       case 'externalLink':
         return permalink + (anchor ? `#${encodeURIComponent(anchor)}` : '');
       default:
-        return (
-          `#${encodeURIComponent(permalink).replace(/%20/g, '+')}` + anchorQuery
-        );
+        return `#${encodeURIComponent(permalink).replace(/%20/g, '+')}` + anchorQuery;
     }
   },
   htmlOptions: {

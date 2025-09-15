@@ -8,7 +8,9 @@ import highlightNL from '../lib/highlight-nl';
 export const remarkHighlightNL: Plugin<[], Root> = () => {
   return (tree) => {
     const isNLogo = (node: Code) =>
-      node.lang === 'netlogo' || node.lang === 'nlogo' || !node.lang;
+      node.lang?.toLowerCase() === 'netlogo' ||
+      node.lang?.toLowerCase() === 'nlogo' ||
+      !node.lang;
 
     visit(tree, 'code', (node: Code) => {
       if (node.value && isNLogo(node)) {

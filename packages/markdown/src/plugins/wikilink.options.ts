@@ -79,7 +79,7 @@ interface WikiLinkOptions {
     /** Maximum number of nodes to consume during greedy matching */
     maxNodes?: number;
     /** Node types that can be consumed during greedy matching */
-    consumableTypes?: string[];
+    consumableTypes?: Array<string>;
     /** Function to access node value for greedy matching */
     accessor?: (node: any) => string;
   };

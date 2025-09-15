@@ -3,8 +3,6 @@ import Markdown from 'react-markdown';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
-import remarkDirective from 'remark-directive';
-import remarkDirectiveRehype from 'remark-directive-rehype';
 import remarkGfm from 'remark-gfm';
 import remarkSmartypants from 'remark-smartypants';
 import remarkToc from 'remark-toc';
@@ -32,8 +30,6 @@ const NetLogoMarkdown = React.memo(
           rehypeTableWrapper,
         ]}
         remarkPlugins={[
-          remarkDirective,
-          remarkDirectiveRehype,
           [remarkWikiLink, wikiLinkConfig],
           remarkGfm,
           remarkSmartypants,
