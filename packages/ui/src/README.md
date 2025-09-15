@@ -90,9 +90,6 @@ throw. For example, in `src/layout/navbar/Navbar.tsx`, we see the
 ```tsx
 Navbar.ItemClient = (props: NavbarMenu) => {
   if (!isWindowDefined()) {
-    console.warn(
-      'Navbar.ItemClient can only be used in a client-side context.'
-    );
     return <Navbar.Item {...props} />;
   }
 

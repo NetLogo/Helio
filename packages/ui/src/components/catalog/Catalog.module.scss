@@ -1,0 +1,208 @@
+@use '../../styles/legacy-sidebar.scss';
+
+/* Dictionary Styling
+ * Flex Box Layout
+ * Wide:
+ * (Sidebar) (...Content)
+ * Mobile:
+ * (Content)
+ * (Sidebar)
+ */
+
+.sidebar-layout {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-lg);
+  --sidebar-size: 20rem; /* Fixed width for sidebar */
+}
+
+.sidebar-layout > *:nth-child(2) {
+  flex: 1; /* Make second child take remaining space */
+}
+
+.sidebar-layout .sidebar {
+  flex: 0 0 var(--sidebar-size);
+  width: var(--sidebar-size);
+  overflow-y: auto;
+  flex-shrink: 0; /* Prevent shrinking */
+  box-shadow: none;
+  padding: 0;
+  padding-bottom: var(--space-sm);
+}
+
+.sidebar-layout .sidebar .heading-sticky {
+  padding: var(--space-md) var(--space-xs);
+  padding-top: 1rem;
+  background-color: var(--color-nav-background);
+  position: sticky;
+  top: 0;
+  z-index: 10; /* Ensure it stays above other content */
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: var(--block-bottom);
+}
+
+.sidebar-layout .sidebar .heading-title {
+  /* One line max */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar .heading-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-nav-text);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-layout .sidebar .search-bar {
+  outline: none;
+  border: solid 1px;
+  border-color: var(--color-black);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  color: var(--color-nav-text);
+  width: 100%;
+  font-size: 0.875rem;
+  background: var(--color-background-overlay);
+}
+
+.sidebar-layout .content {
+  flex: 1; /* Take remaining space */
+  min-width: unset;
+  padding: 0;
+  max-width: calc(100vw - var(--sidebar-size) - 2 * var(--space-lg));
+  margin-top: 0;
+  margin-bottom: var(--space-lg);
+}
+
+.sidebar-layout .content .dict_entry {
+  padding-inline: 0 !important;
+}
+
+.sidebar-layout ~ footer {
+  margin-top: 0;
+}
+
+.dictionary-entry-page .navbar {
+  position: fixed;
+  width: 100%;
+}
+
+/* Folded sidebar not shown on desktop */
+.sidebar-folded {
+  display: none;
+}
+
+.sidebar-layout .sidebar .heading-section {
+  margin-top: 0;
+}
+
+/* --------- Mobile / Tablet: max-width 1214px --------- */
+@media (max-width: 1214px) {
+  .sidebar-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .sidebar-layout .sidebar {
+    padding: 0;
+    width: calc(100% - 2 * var(--space-xl));
+    margin: var(--space-lg) auto 0 auto;
+    background-color: transparent;
+    position: unset;
+    flex: unset;
+  }
+
+  .sidebar-layout .sidebar .heading-sticky {
+    padding: var(--space-md) var(--space-md);
+  }
+
+  .sidebar-folded {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-md);
+    align-items: center;
+    margin-bottom: var(--block-bottom);
+    background: var(--color-nav-background);
+    padding: var(--space-lg) !important;
+  }
+
+  .active-item-name {
+    max-height: 1lh;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .menu-active .hamburger span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .menu-active .hamburger span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-active .hamburger span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .item-list {
+    padding: 0 !important;
+    background: var(--color-nav-background);
+    overflow-y: auto;
+    position: absolute;
+    top: 12rem;
+    width: calc(100% - 2 * var(--space-xl));
+    max-height: 30rem;
+    z-index: 10;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transition: all var(--dur-fast) ease;
+  }
+
+  .item-list .heading-items {
+    padding-inline: var(--space-lg) !important;
+    padding-top: 0 !important;
+  }
+
+  .item-list {
+    opacity: 0;
+    max-height: 0;
+    pointer-events: none;
+  }
+
+  .menu-active .item-list {
+    display: block;
+    max-height: 30rem;
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .sidebar-layout .content {
+    max-width: 100vw;
+    margin-top: 0;
+  }
+
+  .sidebar #active-item {
+    max-width: calc(90% - 2 * var(--space-lg));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* --------- Desktop: min-width 1215px --------- */
+@media (min-width: 1215px) {
+  .sidebar-layout .sidebar {
+    min-height: 100vh; /* full-height */
+    max-height: 100vh;
+    margin-top: 0;
+  }
+  .sidebar-layout .content {
+    margin-bottom: var(--block-bottom);
+  }
+}

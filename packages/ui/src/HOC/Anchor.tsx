@@ -1,9 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { faLink } from '@fortawesome/free-solid-svg-icons';
-
-import { Link } from '@/lib/utils/next';
-
+import { Link as NextLink } from '../lib/utils/next';
 type AnchorProps = {
   external?: boolean;
   children?: React.ReactNode;
@@ -20,7 +18,7 @@ const Anchor = ({ external, children, ...props }: AnchorProps) => {
       </a>
     );
   }
-  return <Link {...props}>{children}</Link>;
+  return <NextLink {...props}>{children}</NextLink>;
 };
 
 export default Anchor;

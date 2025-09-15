@@ -1,5 +1,7 @@
-import { ObjectFunctor } from '@/lib/utils/objects';
 import { LuChevronDown } from 'react-icons/lu';
+
+import { ObjectFunctor } from '@repo/utils/std/objects';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +17,7 @@ export default function VersionSelectDropdown<
   onVersionChange,
 }: VersionSelectDropdownProps<K>) {
   const versionsObject = new ObjectFunctor(versions)
-    .map((key, value) => {
+    .mapValues((key, value) => {
       return {
         displayName: value.displayName || (key as string),
         selected: selectedVersion === key,

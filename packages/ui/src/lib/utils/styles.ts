@@ -11,3 +11,7 @@ export function maybeCSSVariable(variable: string, value?: string | number) {
   }
   return cssVariable(variable, value);
 }
+
+export type CSSVariable = `--${string}`;
+export type CSSLengthUnit = 'px' | 'em' | 'rem' | 'vh' | 'vw' | '%';
+export type CSSSize = `${number}${CSSLengthUnit}` | `calc(${string})` | CSSVariable;

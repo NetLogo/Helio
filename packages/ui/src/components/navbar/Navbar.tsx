@@ -75,9 +75,9 @@ const Navbar = ({
   return (
     <nav
       className={cn(
-        styles.container,
-        !show && styles.hide,
-        Boolean(blurBackdrop) && styles.blurBackdrop,
+        styles['container'],
+        !show && styles['hide'],
+        Boolean(blurBackdrop) && styles['blurBackdrop'],
         className
       )}
       style={{
@@ -108,6 +108,7 @@ Navbar.Client = ({ options = {}, ...rest }: NavbarClientProps) => {
   const uiProps = useNavbar(options);
   return <Navbar {...rest} {...uiProps} />;
 };
+(Navbar.Client as React.FC).displayName = 'Navbar.Client';
 
 Navbar.MenuToggle = ({
   id,
@@ -117,20 +118,22 @@ Navbar.MenuToggle = ({
   <input
     id={id + '-toggle'}
     type="checkbox"
-    className={cn(styles.menuToggle, className)}
+    className={cn(styles['menuToggle'], className)}
     {...rest}
   />
 );
+(Navbar.MenuToggle as React.FC).displayName = 'Navbar.MenuToggle';
 
 Navbar.Row = ({
   children,
   className,
   ...rest
 }: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
-  <div className={cn(styles.row, className)} {...rest}>
+  <div className={cn(styles['row'], className)} {...rest}>
     {children}
   </div>
 );
+(Navbar.Row as React.FC).displayName = 'Navbar.Row';
 
 Navbar.AnchorContainer = ({
   id,
@@ -141,8 +144,8 @@ Navbar.AnchorContainer = ({
   id: string;
   children?: React.ReactNode;
 } & React.HTMLProps<HTMLDivElement>) => (
-  <div className={cn(styles.anchor, className)} {...rest}>
-    <label className={styles.hamburger} htmlFor={id + '-toggle'}>
+  <div className={cn(styles['anchor'], className)} {...rest}>
+    <label className={styles['hamburger']} htmlFor={id + '-toggle'}>
       {' '}
       <span></span>
       <span></span>
@@ -151,6 +154,7 @@ Navbar.AnchorContainer = ({
     {children}
   </div>
 );
+(Navbar.AnchorContainer as React.FC).displayName = 'Navbar.AnchorContainer';
 
 Navbar.BrandContainer = ({
   children,
@@ -161,20 +165,23 @@ Navbar.BrandContainer = ({
   children?: React.ReactNode;
   href?: string;
 } & React.HTMLProps<HTMLAnchorElement>) => (
-  <Anchor href={href} className={cn(styles.brand, className)} {...rest}>
+  <Anchor href={href} className={cn(styles['brand'], className)} {...rest}>
     {children}
   </Anchor>
 );
+(Navbar.BrandContainer as React.FC).displayName = 'Navbar.BrandContainer';
 
 Navbar.LinksContainer = ({
   children,
   className,
   ...rest
 }: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
-  <div className={cn(styles.menus, className)} {...rest}>
-    <div className={styles.links}>{children}</div>
+  <div className={cn(styles['menus'], className)} {...rest}>
+    <div className={styles['links']}>{children}</div>
   </div>
 );
+(Navbar.LinksContainer as React.FC).displayName = 'Navbar.LinksContainer';
+
 Navbar.Item = ({
   title,
   href,
@@ -188,14 +195,14 @@ Navbar.Item = ({
 }: NavbarMenu) => {
   return (
     <div
-      className={cn(styles.item, active && styles.active, className)}
+      className={cn(styles['item'], active && styles['active'], className)}
       {...rest}
     >
-      {icon && <span className={styles.icon}>{icon}</span>}
+      {icon && <span className={styles['icon']}>{icon}</span>}
       <Anchor href={href}>{title}</Anchor>
       {children && (
         <div
-          className={cn(styles.dropdown, dropdownOpen && styles.open)}
+          className={cn(styles['dropdown'], dropdownOpen && styles['open'])}
           style={{ ...cssVariable('--columns', columns) }}
         >
           {children}
@@ -207,9 +214,6 @@ Navbar.Item = ({
 
 Navbar.ItemClient = (props: NavbarMenu) => {
   if (!isWindowDefined()) {
-    console.warn(
-      'Navbar.ItemClient can only be used in a client-side context.'
-    );
     return <Navbar.Item {...props} />;
   }
 
@@ -229,6 +233,7 @@ Navbar.ItemClient = (props: NavbarMenu) => {
     />
   );
 };
+(Navbar.ItemClient as React.FC).displayName = 'Navbar.ItemClient';
 
 Navbar.DropdownItem = ({
   title,
@@ -241,24 +246,27 @@ Navbar.DropdownItem = ({
   return (
     <Anchor
       href={href}
-      className={cn(active && styles.active, className)}
+      className={cn(active && styles['active'], className)}
       {...rest}
     >
-      {icon && <span className={styles.icon}>{icon}</span>}
+      {icon && <span className={styles['icon']}>{icon}</span>}
       {title}
     </Anchor>
   );
 };
+(Navbar.DropdownItem as React.FC).displayName = 'Navbar.DropdownItem';
 
 Navbar.ActionsContainer = ({
   children,
   className,
   ...rest
 }: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
-  <div className={cn(styles.actions, className)} {...rest}>
+  <div className={cn(styles['actions'], className)} {...rest}>
     {children}
   </div>
 );
+(Navbar.ActionsContainer as React.FC).displayName = 'Navbar.ActionsContainer';
+
 Navbar.Action = ({
   title = '',
   href,
@@ -275,7 +283,7 @@ Navbar.Action = ({
   return (
     <Component
       href={href}
-      className={cn(styles.action, className)}
+      className={cn(styles['action'], className)}
       onClick={onClick}
       {...rest}
     >
@@ -284,5 +292,6 @@ Navbar.Action = ({
     </Component>
   );
 };
+(Navbar.Action as React.FC).displayName = 'Navbar.Action';
 
 export default Navbar;

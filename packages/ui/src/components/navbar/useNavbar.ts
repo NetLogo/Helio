@@ -14,8 +14,6 @@ export function useNavbar(options: NavbarOptions): NavbarDynamicProps {
     return { show };
   } else {
     // Server-side logic
-    console.warn('useNavbar should only be used in a client-side context.');
     return { show: true };
   }
-  return {};
 }

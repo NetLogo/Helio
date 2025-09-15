@@ -59,7 +59,7 @@ const Footer = ({
       className={cn(
         'w-full mt-5 px-4 py-0 gap-3',
         'bg-gray-50 border-t border-gray-200',
-        styles.footer,
+        styles['footer'],
         className
       )}
       style={{
@@ -99,7 +99,12 @@ Footer.BrandSection = ({
   ...rest
 }: FooterBrandSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('px-1 py-2', styles.section, styles.brandSection, className)}
+    className={cn(
+      'px-1 py-2',
+      styles['section'],
+      styles['brandSection'],
+      className
+    )}
     style={{ ...maybeCSSVariable('--section-span', span), ...style }}
     {...rest}
   >
@@ -126,7 +131,7 @@ Footer.LinksSection = ({
   ...rest
 }: FooterLinksSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('px-1 py-2', styles.section, className)}
+    className={cn('px-1 py-2', styles['section'], className)}
     style={{ ...maybeCSSVariable('--section-span', span), ...style }}
     {...rest}
   >
@@ -169,7 +174,7 @@ Footer.Section = ({
   ...rest
 }: FooterSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('lg:col-span-5 px-1 py-2', styles.section, className)}
+    className={cn('lg:col-span-5 px-1 py-2', styles['section'], className)}
     style={{ ...maybeCSSVariable('--section-span', span), ...style }}
     {...rest}
   >
