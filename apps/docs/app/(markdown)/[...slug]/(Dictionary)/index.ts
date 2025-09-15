@@ -3,7 +3,7 @@ import {
   DictionaryEntry,
   DictionaryEntryGeneric,
   DictionarySyntaxEntry,
-} from './Dictionary.types';
+} from './types';
 
 export const isSyntaxEntry = (
   entry: DictionaryEntry

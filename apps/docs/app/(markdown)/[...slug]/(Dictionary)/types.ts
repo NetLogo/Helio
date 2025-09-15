@@ -10,10 +10,10 @@ interface DictionaryExample {
 }
 
 interface DictionarySyntaxEntry {
-  syntax: DictionarySyntax[];
+  syntax: Array<DictionarySyntax>;
   description: string; // Markdown
-  examples: DictionaryExample[];
-  initial: number;
+  examples: Array<DictionaryExample>;
+  initial?: number;
 }
 
 interface DictionaryConstant {
@@ -23,7 +23,7 @@ interface DictionaryConstant {
 
 interface DictionaryConstantEntry {
   title: string;
-  constants: DictionaryConstant[];
+  constants: Array<DictionaryConstant>;
 }
 
 interface DictionaryCategory {
@@ -34,10 +34,9 @@ interface DictionaryCategory {
 
 interface DictionaryEntryGeneric<T> {
   id: string;
-  entry_categories: DictionaryCategory[];
+  entry_categories: Array<DictionaryCategory>;
   data: T;
-  icons: string[][];
-  parsing_errors: string[];
+  icons: Array<Array<string>>;
 }
 
 type DictionaryEntry =
@@ -45,15 +44,15 @@ type DictionaryEntry =
   | DictionaryEntryGeneric<DictionaryConstantEntry>;
 
 interface DictionaryType {
-  created_at: Date;
-  updated_at: Date;
-  entries: DictionaryEntry[];
+  created_at?: Date;
+  updated_at?: Date;
+  entries: Array<DictionaryEntry>;
 }
 
 class DictionaryClass implements DictionaryType {
   created_at: Date = new Date();
   updated_at: Date = new Date();
-  entries: DictionaryEntry[] = [];
+  entries: Array<DictionaryEntry> = [];
 
   getEntryById(entryId: string): DictionaryEntry | undefined {
     return this.entries.find((entry) => entry.id === entryId);

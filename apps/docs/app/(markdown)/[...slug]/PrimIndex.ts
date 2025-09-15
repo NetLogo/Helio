@@ -3,28 +3,39 @@ import path from 'path';
 
 import type { PageConfig, PageResult } from '@repo/mustache';
 import MustacheRenderer from '@repo/mustache';
-
-import * as Dictionary from './Dictionary';
-import type { DictionaryEntry, DictionaryType } from './Dictionary.types';
+import { saveToPublicDir } from '@repo/utils/next/files';
+import { PrimitiveCatalogProps } from './(PrimitiveCatalog)/types';
 
 export async function generatePrimitiveIndexEntry(
-  source: DictionaryEntry,
+  source: PrimIndexEntry,
   dictionaryDisplayName: string,
   dictionaryHomeDirectory: string,
+  primitivesDirectory: string,
   template: string,
   renderer: MustacheRenderer,
-  buildVariables: Record<string, unknown> = {}
+  buildVariables: Record<string, unknown> = {},
+  indexOutputURI: string,
+  currentItemLabel: string
 ) {
+  const reactRenderMetadata: PrimitiveCatalogProps = {
+    dictionaryDisplayName,
+    dictionaryHomeDirectory,
+    indexFileURI: `/generated/${indexOutputURI}.txt`,
+    currentItemId: source.id,
+    currentItemLabel: currentItemLabel,
+  };
   const configuration: Partial<PageConfig> = {
     title: `${dictionaryDisplayName}: ${source.id}`,
     description: `Documentation for the ${source.id} primitive.`,
-    keywords: getDictionaryEntryKeywords(source),
     output: true,
+
+    layout: 'catalog',
+    ...reactRenderMetadata,
   };
 
   const results = await renderer.buildFromConfiguration(
     [configuration],
-    `${dictionaryHomeDirectory}/${source.id}`,
+    path.join(primitivesDirectory, source.id),
     template,
     {
       entry: source,
@@ -34,75 +45,76 @@ export async function generatePrimitiveIndexEntry(
     }
   );
 
-  return results.at(0)!;
+  return results;
 }
 
-export async function generatePrimitiveIndex({
+export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
   dictionary,
   dictionaryDisplayName,
   dictionaryHomeDirectory,
+  primitivesDirectory,
   indexFileName,
   template,
   renderer,
   buildVariables,
+  getEntryNames,
 }: {
-  dictionary: DictionaryType;
+  dictionary: PrimDictionary<T>;
   dictionaryDisplayName: string;
   dictionaryHomeDirectory: string;
+  primitivesDirectory?: string;
   indexFileName: string;
   template: string;
   renderer: MustacheRenderer;
   buildVariables: Record<string, unknown>;
+  getEntryNames: (entry: T) => Array<string>;
 }) {
-  const allResults: PageResult[] = [];
+  const allResults: Array<PageResult> = [];
   const primitiveIndex: Array<readonly [string, string]> = [];
 
+  const primitiveDir = primitivesDirectory ?? dictionaryHomeDirectory;
+  const indexOutputPath = path.join(
+    renderer.paths.outputRoot,
+    `${indexFileName}.txt`
+  );
+  if (!fs.existsSync(path.dirname(indexOutputPath))) {
+    fs.mkdirSync(path.dirname(indexOutputPath), { recursive: true });
+  }
+
   for (const entry of dictionary.entries) {
+    const entryNames = getEntryNames(entry);
+    const currentItemLabel = entryNames.join(', ');
     const result = await generatePrimitiveIndexEntry(
       entry,
       dictionaryDisplayName,
       dictionaryHomeDirectory,
+      primitiveDir,
       template,
       renderer,
-      buildVariables
+      buildVariables,
+      indexFileName,
+      currentItemLabel
     );
 
     primitiveIndex.push(
-      ...Dictionary.getEntryNames(entry).map(
-        (name) => [name, entry.id + '.html'] as const
-      )
+      ...entryNames.map((name) => [name, entry.id + '.html'] as const)
     );
 
-    allResults.push(result);
+    allResults.push(...result);
   }
 
-  const outputPath = path.join(
-    renderer.paths.outputRoot,
-    `${indexFileName}.txt`
-  );
-  await fs.promises.writeFile(
-    outputPath,
-    primitiveIndex.map((e) => e.join(' ')).join('\n'),
-    'utf-8'
-  );
+  const indexFileContent = primitiveIndex.map((e) => e.join(' ')).join('\n');
+  await fs.promises.writeFile(indexOutputPath, indexFileContent, 'utf-8');
+
+  saveToPublicDir(['generated', indexFileName + '.txt'], indexFileContent);
 
   return allResults;
 }
 
-function getDictionaryEntryKeywords(entry: DictionaryEntry): string[] {
-  const keywords = new Set<string>(['NetLogo', 'primitive']);
-  keywords.add(entry.id);
-  if (Dictionary.isConstantEntry(entry)) {
-    keywords.add('constant');
-    entry.data.constants.forEach((constant) => {
-      keywords.add(constant.name);
-      if (constant.value) {
-        keywords.add(constant.value);
-      }
-    });
-  } else if (Dictionary.isSyntaxEntry(entry)) {
-    keywords.add('syntax');
-    entry.data.syntax.forEach((syntax) => keywords.add(syntax.name));
-  }
-  return Array.from(keywords);
+export interface PrimIndexEntry {
+  id: string;
+}
+
+export interface PrimDictionary<T extends PrimIndexEntry> {
+  entries: Array<T>;
 }

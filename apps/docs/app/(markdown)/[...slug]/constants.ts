@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { DictionaryType } from './Dictionary.types';
+import { DictionaryType } from './(Dictionary)/types';
 
 export const primitiveIndexTemplate = fs.readFileSync(
   'autogen/primIndex.md',
