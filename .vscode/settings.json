@@ -22,7 +22,28 @@
   "prettier.bracketSpacing": true,
   "prettier.arrowParens": "always",
   "prettier.endOfLine": "lf",
-  "prettier.printWidth": 80,
+  "prettier.printWidth": 100,
   "prettier.proseWrap": "always",
-  "prettier.jsxSingleQuote": false
+  "prettier.jsxSingleQuote": false,
+
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "[mustache]": {
+    "editor.formatOnSave": false
+  },
+  "[yaml]": {
+    "editor.formatOnSave": false
+  },
+
+  "files.exclude": {
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/.out": true,
+    "**/.turbo": true,
+    "external/": true,
+    ".git*": true,
+    ".npmrc": true
+    // "**/out": true
+  }
 }

@@ -5,18 +5,23 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000 --turbopack",
-    "build": "next build",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@repo/ui": "*",
+    "@repo/utils": "*",
+    "@repo/next-utils": "*",
+    "hocon-parser": "^1.0.1",
     "next": "^15.4.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
-    "sass": "^1.89.2"
+    "sass": "^1.89.2",
+    "swr": "^2.3.6",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.4.2",
