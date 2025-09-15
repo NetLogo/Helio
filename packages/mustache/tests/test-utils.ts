@@ -133,9 +133,9 @@ export const createMockFileSystem = () => {
 
 export const mockConsole = () => {
   const originalConsole = { ...console };
-  const logs: string[] = [];
-  const errors: string[] = [];
-  const warnings: string[] = [];
+  const logs: Array<string> = [];
+  const errors: Array<string> = [];
+  const warnings: Array<string> = [];
 
   beforeEach(() => {
     logs.length = 0;

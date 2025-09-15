@@ -16,14 +16,14 @@ const mockFs = fs as jest.Mocked<typeof fs>;
 // Mock PageParser interface
 interface MockPageParser {
   processYamlFile: jest.MockedFunction<
-    (yamlPath: string) => Promise<PageResult[]>
+    (yamlPath: string) => Promise<Array<PageResult>>
   >;
   processConfigurations: jest.MockedFunction<
     (
       config: Array<Partial<PageConfig>>,
       baseFileName: string,
       content?: string
-    ) => Promise<PageResult[]>
+    ) => Promise<Array<PageResult>>
   >;
 }
 
@@ -88,7 +88,7 @@ describe('MustacheRenderer Integration Tests', () => {
       // Mock PageParser behavior
       const mockPageParser: MockPageParser = {
         processYamlFile: jest
-          .fn<(yamlPath: string) => Promise<PageResult[]>>()
+          .fn<(yamlPath: string) => Promise<Array<PageResult>>>()
           .mockResolvedValue([
             {
               baseName: 'test',
@@ -114,7 +114,7 @@ describe('MustacheRenderer Integration Tests', () => {
     it('should handle buildSingle errors gracefully', async () => {
       const mockPageParser: MockPageParser = {
         processYamlFile: jest
-          .fn<(yamlPath: string) => Promise<PageResult[]>>()
+          .fn<(yamlPath: string) => Promise<Array<PageResult>>>()
           .mockRejectedValue(new Error('File not found')),
         processConfigurations: jest.fn(),
       };
@@ -173,7 +173,7 @@ describe('MustacheRenderer Integration Tests', () => {
               config: Array<Partial<PageConfig>>,
               baseFileName: string,
               content?: string
-            ) => Promise<PageResult[]>
+            ) => Promise<Array<PageResult>>
           >()
           .mockResolvedValue([
             {
@@ -231,7 +231,7 @@ describe('MustacheRenderer Integration Tests', () => {
               config: Array<Partial<PageConfig>>,
               baseFileName: string,
               content?: string
-            ) => Promise<PageResult[]>
+            ) => Promise<Array<PageResult>>
           >()
           .mockRejectedValue(new Error('Config error')),
       };
@@ -263,7 +263,7 @@ describe('MustacheRenderer Integration Tests', () => {
               config: Array<Partial<PageConfig>>,
               baseFileName: string,
               content?: string
-            ) => Promise<PageResult[]>
+            ) => Promise<Array<PageResult>>
           >(),
       };
       (renderer as any)._pageParser = mockPageParser;
@@ -303,7 +303,7 @@ This is counter page number **{{count}}**.
 `;
 
       // Build all counter pages
-      const allResults: PageResult[][] = [];
+      const allResults: Array<PageResult>[] = [];
       for (let i = 1; i <= 5; i++) {
         const configurations = [
           { count: i },
@@ -354,7 +354,7 @@ This is counter page number **{{count}}**.
               config: Array<Partial<PageConfig>>,
               baseFileName: string,
               content?: string
-            ) => Promise<PageResult[]>
+            ) => Promise<Array<PageResult>>
           >()
           .mockResolvedValue([
             {
@@ -457,7 +457,7 @@ This is counter page number **{{count}}**.
       const mockPageParser: MockPageParser = {
         processConfigurations: jest.fn(),
         processYamlFile: jest
-          .fn<(yamlPath: string) => Promise<PageResult[]>>()
+          .fn<(yamlPath: string) => Promise<Array<PageResult>>>()
           .mockResolvedValueOnce([
             {
               baseName: 'test',
@@ -516,7 +516,7 @@ This is counter page number **{{count}}**.
       const mockPageParser: MockPageParser = {
         processConfigurations: jest.fn(),
         processYamlFile: jest
-          .fn<(yamlPath: string) => Promise<PageResult[]>>()
+          .fn<(yamlPath: string) => Promise<Array<PageResult>>>()
           .mockResolvedValueOnce([
             {
               baseName: 'success',
@@ -573,7 +573,7 @@ This is counter page number **{{count}}**.
       const mockPageParser: MockPageParser = {
         processConfigurations: jest.fn(),
         processYamlFile: jest
-          .fn<(yamlPath: string) => Promise<PageResult[]>>()
+          .fn<(yamlPath: string) => Promise<Array<PageResult>>>()
           .mockResolvedValueOnce([
             { baseName: 'good1', sourcePath: 'good1.md', success: true },
           ])

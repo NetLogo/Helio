@@ -4,8 +4,8 @@ import path from 'path';
 import Handlebars from 'handlebars';
 import mustache from 'mustache';
 
-import { RenderError } from './errors';
-import { getFileExtension } from './utils';
+import { RenderError } from './errors.js';
+import { getFileExtension } from './utils.js';
 
 abstract class TemplateEngine {
   abstract registerPartial(key: string, content: string): void;
@@ -13,7 +13,7 @@ abstract class TemplateEngine {
 
   async registerPartialsFromDirectory(
     directory: string,
-    extensions: string[] = ['mustache', 'md'],
+    extensions: Array<string> = ['mustache', 'md'],
     rootDirectory = directory
   ) {
     const files = await fs.readdir(directory, {

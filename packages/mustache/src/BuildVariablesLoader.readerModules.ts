@@ -14,7 +14,7 @@ import { getFileExtension } from './utils';
  * @description Interface for language modules that can load build variables.
  */
 export interface BuildVariableReader {
-  get supportedExtensions(): string[];
+  get supportedExtensions(): Array<string>;
   read(loader: BuildVariablesLoader, loadKey: string): Promise<BuildVariable>;
 }
 

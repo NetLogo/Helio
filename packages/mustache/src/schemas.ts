@@ -38,53 +38,29 @@ const AuthorDeclarationSchema = z.object({
  *   - NetLogo
  *   - Behavior Space
  */
-const PageDeclarationSchema = z.object({
-  // The YAML front matter can inherit from other items by their index
-  inheritFrom: z.array(z.number()).optional(),
-  // The language of the content (e.g., 'en', 'fr')
-  language: z.string().optional(),
-  // Whether this front matter item exports an HTML file
-  output: z.boolean().optional(),
-  // The variables used to populate the Mustache templates
-  // as provided in the front matter
-  buildVariables: BuildVariablesDeclarationSchema.optional(),
-  // File extension to use for scanning
-  extension: z.string().optional().default('.md'),
+const PageDeclarationSchema = z
+  .object({
+    // The YAML front matter can inherit from other items by their index
+    inheritFrom: z.array(z.number()).optional(),
+    // The language of the content (e.g., 'en', 'fr')
+    language: z.string().optional(),
+    // Whether this front matter item exports an HTML file
+    output: z.boolean().optional(),
+    // The variables used to populate the Mustache templates
+    // as provided in the front matter
+    buildVariables: BuildVariablesDeclarationSchema.optional(),
+    // File extension to use for scanning
+    extension: z.string().optional().default('.md'),
 
-  // Other common keys
-  title: z.string().optional(),
-  description: z.string().optional(),
-  shortDescription: z.string().optional(),
-  keywords: z.array(z.string()).optional(),
-  tags: z.array(z.string()).optional(),
-  authors: z.array(AuthorDeclarationSchema).optional(),
-});
-
-// Allow arbitrary additional keys in the front matter
-// as long as they don't conflict with the known keys above
-PageDeclarationSchema.and(
-  z.record(z.any(), z.any()).refine(
-    (obj) => {
-      const knownKeys = new Set([
-        'inheritFrom',
-        'language',
-        'output',
-        'buildVariables',
-        'extension',
-        'title',
-        'description',
-        'shortDescription',
-        'keywords',
-        'tags',
-        'authors',
-      ]);
-      return Object.keys(obj).every((key) => !knownKeys.has(key));
-    },
-    {
-      message: 'Additional keys must not conflict with known keys',
-    }
-  )
-);
+    // Other common keys
+    title: z.string().optional(),
+    description: z.string().optional(),
+    shortDescription: z.string().optional(),
+    keywords: z.array(z.string()).optional(),
+    tags: z.array(z.string()).optional(),
+    authors: z.array(AuthorDeclarationSchema).optional(),
+  })
+  .and(z.record(z.any(), z.any()));
 
 type PageConfig = z.infer<typeof PageDeclarationSchema>;
 

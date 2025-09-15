@@ -233,7 +233,7 @@ describe('Renderer', () => {
     });
 
     it('should build all YAML files successfully', async () => {
-      const mockPageResults: PageResult[] = [
+      const mockPageResults: Array<PageResult> = [
         {
           sourcePath: 'test1.md',
           outputPath: '/output/test1.html',
@@ -404,7 +404,7 @@ describe('Renderer', () => {
 
   describe('buildSingle method', () => {
     it('should build single YAML file successfully', async () => {
-      const mockResults: PageResult[] = [
+      const mockResults: Array<PageResult> = [
         {
           sourcePath: 'test.md',
           success: true,
@@ -424,7 +424,7 @@ describe('Renderer', () => {
     });
 
     it('should handle relative paths', async () => {
-      const mockResults: PageResult[] = [
+      const mockResults: Array<PageResult> = [
         { sourcePath: 'docs/guide.md', success: true, baseName: 'docs/guide' },
       ];
       mockPageParser.processYamlFile.mockResolvedValue(mockResults);
@@ -440,7 +440,7 @@ describe('Renderer', () => {
 
     it('should handle absolute paths', async () => {
       const absolutePath = '/absolute/path/test.yaml';
-      const mockResults: PageResult[] = [
+      const mockResults: Array<PageResult> = [
         { sourcePath: 'test.md', success: true, baseName: 'test' },
       ];
       mockPageParser.processYamlFile.mockResolvedValue(mockResults);
@@ -514,7 +514,7 @@ describe('Renderer', () => {
       const baseFileName = 'dynamic';
       const content = '# {{title}}\n\n{{description}}';
 
-      const mockResults: PageResult[] = [
+      const mockResults: Array<PageResult> = [
         {
           sourcePath: 'dynamic.md',
           success: true,
@@ -552,7 +552,7 @@ describe('Renderer', () => {
         { title: 'File Based', output: true },
       ];
 
-      const mockResults: PageResult[] = [
+      const mockResults: Array<PageResult> = [
         { sourcePath: 'file-based.md', success: true, baseName: 'file-based' },
       ];
 
@@ -874,7 +874,7 @@ This is private content.
     it('should handle complete workflow with real data', async () => {
       // Mock a complete successful build workflow
       const yamlFiles = ['/test-source/doc1.yaml', '/test-source/doc2.yaml'];
-      const pageResults: PageResult[] = [
+      const pageResults: Array<PageResult> = [
         {
           sourcePath: 'doc1.md',
           outputPath: '/test-output/doc1.html',

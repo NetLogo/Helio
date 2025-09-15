@@ -59,7 +59,7 @@ class PageParser {
   async processYamlFile(
     yamlFilePath: string,
     sharedBuildVariables?: Record<string, unknown>
-  ): Promise<PageResult[]> {
+  ): Promise<Array<PageResult>> {
     const data = await this.loadYaml(yamlFilePath);
     const relativeBaseName = path
       .relative(this.getProjectScanRoot(), yamlFilePath) // Remove scan root
@@ -113,7 +113,7 @@ class PageParser {
     baseFileName: string,
     fileContent?: string,
     sharedBuildVariables?: Record<string, unknown>
-  ): Promise<PageResult[]> {
+  ): Promise<Array<PageResult>> {
     const results = await this.processPageConfigurations(
       pageConfigs,
       baseFileName,
@@ -134,10 +134,10 @@ class PageParser {
     relativeBaseName: string,
     fileContent?: string,
     sharedBuildVariables?: Record<string, unknown>
-  ): Promise<PageResult[]> {
+  ): Promise<Array<PageResult>> {
     await this._loadPartialsIfNeeded();
 
-    let results: PageResult[] = [];
+    let results: Array<PageResult> = [];
     const defaults = { language: 'en', ...this.projectConfig.defaults };
     const configs = [...data];
 
