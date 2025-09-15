@@ -1,8 +1,11 @@
+import { ReactNode } from 'react';
+
 import Anchor from '@repo/ui/HOC/Anchor';
+import Image from '@repo/ui/HOC/Image';
 import beginnersLinks from './beginners-links.json';
 import importantLinks from './important-links.json';
 
-export default function Page() {
+export default function Page(): ReactNode {
   const productVersion = process.env['PRODUCT_VERSION'];
   return (
     <main className="md:my-5 px-2 mx-auto nl-container-width">
@@ -13,40 +16,32 @@ export default function Page() {
             {productVersion} Documentation
           </h1>
           <p>
-            Welcome to the documentation for NetLogo {productVersion}. Download
-            the latest version{' '}
+            Welcome to the documentation for NetLogo {productVersion}. Download the latest version{' '}
             <a href="https://www.netlogo.org/download">here</a>.
           </p>
           <p>
-            Please read the{' '}
-            <a href="versions.html#version-700-beta2-july-2025">
-              Release Notes
-            </a>{' '}
-            for information about new features, bug fixes, and other changes in
-            this version. For help running models made in old versions, see the{' '}
-            <a href="transition.html#changes-for-netlogo-700">
-              Transition Guide
-            </a>
-            .
+            Please read the <a href="/versions.html#version-700-beta2-july-2025">Release Notes</a>{' '}
+            for information about new features, bug fixes, and other changes in this version. For
+            help running models made in old versions, see the{' '}
+            <a href="/transition.html#changes-for-netlogo-700">Transition Guide</a>.
           </p>
           <p>
-            If you use or refer to NetLogo in a publication, we ask that you
-            cite it. For the correct citation, see the{' '}
-            <a href="copyright.html">Copyright and License Information</a> page.
+            If you use or refer to NetLogo in a publication, we ask that you cite it. For the
+            correct citation, see the{' '}
+            <a href="/copyright.html">Copyright and License Information</a> page.
           </p>
           <div className="highlight highlight-warning">
             <p>
-              NetLogo {productVersion} is a beta release. It is not recommended
-              for production use, but we welcome your feedback on the new
-              features and changes.
+              NetLogo {productVersion} is a beta release. It is not recommended for production use,
+              but we welcome your feedback on the new features and changes.
             </p>
           </div>
         </div>
-        <img
+        <Image
           className="md:col-span-4"
-          src="images/netlogo-banner_2x.webp"
+          src="/images/netlogo-banner_2x.webp"
           alt="NetLogo {productVersion} Banner"
-          srcSet="images/netlogo-banner_1x.webp 1x, images/netlogo-banner_2x.webp 2x"
+          srcSet="/images/netlogo-banner_1x.webp 1x, /images/netlogo-banner_2x.webp 2x"
         />
       </div>
       <div className="grid grid-cols-12 gap-5">
@@ -63,7 +58,7 @@ export default function Page() {
           </ul>
         </div>
         <div className="col-span-12 md:col-span-6">
-          <h3>Beginner's Guide</h3>
+          <h3>Beginner&apos;s Guide</h3>
           <ul>
             {beginnersLinks.map((link, index) => (
               <li key={index}>

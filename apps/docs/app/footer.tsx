@@ -3,8 +3,14 @@
 import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
 import Footer from '@repo/ui/components/footer/Footer';
 import Image from 'next/image';
+import { useLayoutEffect, useState } from 'react';
 
 export default function ClientFooter() {
+  const [year, setYear] = useState(new Date().getFullYear());
+  useLayoutEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <Footer sections={3}>
       <Footer.Container>
@@ -14,10 +20,9 @@ export default function ClientFooter() {
         >
           <hr className="w-full border-gray-300 my-4" />
           <p>
-            NetLogo is a programmable modeling environment for simulating
-            natural and social phenomena. It was authored by Uri Wilensky in
-            1999 and has been in continuous development ever since at the Center
-            for Connected Learning and Computer-Based Modeling.
+            NetLogo is a programmable modeling environment for simulating natural and social
+            phenomena. It was authored by Uri Wilensky in 1999 and has been in continuous
+            development ever since at the Center for Connected Learning and Computer-Based Modeling.
           </p>
         </Footer.BrandSection>
 
@@ -57,7 +62,7 @@ export default function ClientFooter() {
 
         <Footer.Section span={5}>
           <p id="copyright" className="mt-2">
-            Copyright © 1999- Uri Wilensky and the{' '}
+            Copyright © 1999-{year} Uri Wilensky and the{' '}
             <Footer.CopyrightLink href="https://ccl.northwestern.edu/" external>
               Center for Connected Learning and Computer-Based Modeling
             </Footer.CopyrightLink>{' '}
@@ -68,17 +73,15 @@ export default function ClientFooter() {
             . All rights reserved.
           </p>
           <p>
-            This program is free software; you can redistribute it and/or modify
-            it under the terms of the GNU General Public License as published by
-            the Free Software Foundation; either version 2 of the{' '}
-            <Footer.CopyrightLink href="copyright.html">
-              License
-            </Footer.CopyrightLink>
-            , or (at your option) any later version.
+            This program is free software; you can redistribute it and/or modify it under the terms
+            of the GNU General Public License as published by the Free Software Foundation; either
+            version 2 of the{' '}
+            <Footer.CopyrightLink href="copyright.html">License</Footer.CopyrightLink>, or (at your
+            option) any later version.
           </p>
           <p>
-            Commercial licenses are also available. To inquire about commercial
-            licenses, please contact Uri Wilensky at{' '}
+            Commercial licenses are also available. To inquire about commercial licenses, please
+            contact Uri Wilensky at{' '}
             <Footer.CopyrightLink href="mailto:netlogo-commercial-admin@ccl.northwestern.edu">
               netlogo-commercial-admin@ccl.northwestern.edu
             </Footer.CopyrightLink>

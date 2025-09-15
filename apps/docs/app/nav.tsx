@@ -1,21 +1,24 @@
 'use client';
 
-import { useLayoutEffect, useState } from 'react';
+import { ReactNode, useLayoutEffect, useState } from 'react';
 
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-
-import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
-import Navbar from '@repo/ui/components/navbar/Navbar';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
+import Navbar from '@repo/ui/components/navbar/Navbar';
 import { isWindowDefined } from '@repo/ui/lib/utils/client';
 import VersionSelectDropdown from '@repo/ui/widgets/VersionSelectDropdown';
 
-export default function ClientNavbar() {
+export default function ClientNavbar({
+  navbarLinks,
+}: {
+  navbarLinks: Array<NavbarLink>;
+}): ReactNode {
   const [links, setLinks] = useState(navbarLinks);
   const pathname = usePathname();
 
@@ -85,7 +88,8 @@ function isSublinkActive(href: string | undefined) {
   if (!href) return false;
   try {
     const currentPath = window.location.pathname;
-    return new URL(href, window.location.href).pathname === currentPath;
+    const candidatePath = new URL(href, window.location.href).pathname;
+    return currentPath === candidatePath;
   } catch {
     return false;
   }
@@ -94,12 +98,10 @@ function isSublinkActive(href: string | undefined) {
 function isLinkParentActive(link: NavbarLink) {
   if (typeof window === 'undefined') return false;
   const currentPath = window.location.pathname;
-  const isParentActiveOnItsOwn =
-    new URL(link.href, window.location.href).pathname === currentPath;
+  const candidatePath = new URL(link.href, window.location.href).pathname;
+  const isParentActiveOnItsOwn = candidatePath === currentPath;
   return (
-    isParentActiveOnItsOwn ||
-    link.children?.some((child) => isSublinkActive(child.href)) ||
-    false
+    isParentActiveOnItsOwn || link.children?.some((child) => isSublinkActive(child.href)) || false
   );
 }
 
@@ -136,69 +138,10 @@ const onVersionChange = (version: keyof typeof versions) => {
   }
 };
 
-const navbarLinks: NavbarLink[] = [
-  {
-    title: 'Home',
-    href: '/',
-  },
-  {
-    title: 'Learn NetLogo',
-    href: 'whatis.html',
-    children: [
-      { title: 'What is NetLogo?', href: 'whatis.html' },
-      { title: 'Tutorial #0 Sample Model', href: 'sample.html' },
-      { title: 'Tutorial #1 Models', href: 'tutorial1.html' },
-      { title: 'Tutorial #2 Commands', href: 'tutorial2.html' },
-      { title: 'Tutorial #3 Procedures', href: 'tutorial3.html' },
-    ],
-  },
-  {
-    title: 'Documentation',
-    href: 'dictionary.html',
-    children: [
-      { title: 'NetLogo Dictionary', href: 'dictionary.html' },
-      { title: 'Interface Guide', href: 'interface.html' },
-      { title: 'Interface Tab Guide', href: 'interfacetab.html' },
-      { title: 'Info Tab Guide', href: 'infotab.html' },
-      { title: 'Code Tab Guide', href: 'codetab.html' },
-      { title: 'Programming Guide', href: 'programming.html' },
-      { title: 'Transition Guide', href: 'transition.html' },
-      { title: 'Scaladoc', href: 'scaladoc' },
-    ],
-  },
-  {
-    title: 'Advanced Tools',
-    href: 'extension-manager.html',
-    columns: 2,
-    children: [
-      { title: 'Extension Manager', href: 'extension-manager.html' },
-      { title: 'Shapes Editor', href: 'shapes.html' },
-      { title: 'BehaviorSpace', href: 'behaviorspace.html' },
-      { title: 'System Dynamics', href: 'systemdynamics.html' },
-      { title: 'HubNet', href: 'hubnet.html' },
-      { title: 'HubNet Authoring', href: 'hubnet-authoring.html' },
-      { title: 'Logging', href: 'logging.html' },
-      { title: 'Controlling', href: 'controlling.html' },
-      { title: 'Mathematica Link', href: 'mathematica.html' },
-      { title: 'NetLogo 3D', href: '3d.html' },
-    ],
-  },
-  {
-    title: 'Extensions',
-    href: 'extensions.html',
-    columns: 2,
-    children: [{ title: 'Extensions Guide', href: 'extensions.html' }],
-  },
-  {
-    title: 'FAQ',
-    href: 'faq.html',
-  },
-];
-
-interface NavbarLink {
+export interface NavbarLink {
   title: string;
   href: string;
   columns?: number;
-  children?: Omit<NavbarLink, 'children'>[];
+  children?: Array<Omit<NavbarLink, 'children'>>;
   active?: boolean;
 }

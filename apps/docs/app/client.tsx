@@ -1,21 +1,38 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 
 export function ScrollToHash() {
   const pathname = usePathname();
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (window.location.hash) {
       const target = document.querySelector(window.location.hash);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth' });
         setTimeout(() => {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        }, 0);
       }
     }
   }, [pathname]);
 
-  return <></>;
+  return (
+    <>
+      <script>
+        {`document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash) {
+            const target = document.querySelector(window.location.hash);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth' });
+              // Ensure the target is visible after scrolling
+              setTimeout(() => {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 100);
+            }
+          }
+        });`}
+      </script>
+    </>
+  );
 }
