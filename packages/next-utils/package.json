@@ -1,0 +1,33 @@
+{
+  "name": "@repo/next-utils",
+  "version": "0.0.0",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    },
+    "./**/*": {
+      "types": "./dist/**/*.d.ts",
+      "default": "./dist/**/*.js"
+    }
+  },
+  "license": "GPL-2.0-only",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "check-types": "tsc --noEmit",
+    "dev": "tsc --watch & tsc-alias --watch",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "next": "^15.5.3",
+    "typescript": "5.8.2"
+  },
+  "devDependencies": {
+    "tsc-alias": "^1.8.16"
+  }
+}
