@@ -6,11 +6,7 @@ import MustacheRenderer, { PageConfig, PageResult } from '@repo/mustache';
 import { ArrayUtils } from '@repo/utils/std/array';
 import autogenConfig from '../autogen.config';
 import { generatePrimitiveIndex } from '../PrimIndex';
-import {
-  MustachePrimitiveWrapper,
-  Primitive,
-  TableOfContents,
-} from './entities';
+import { MustachePrimitiveWrapper, Primitive, TableOfContents } from './entities';
 import * as Fixtures from './fixtures';
 import { parseAllFromText } from './parser';
 import { ExtensionConfig } from './types';
@@ -75,7 +71,7 @@ export class ExtensionDocumentationBuilder {
       dictionary: { entries: this.wrappedPrimitives },
       dictionaryDisplayName: this.displayName + ' Dictionary',
       dictionaryHomeDirectory: this.primRoot,
-      indexFileName: `extensions/${this.shortName}`,
+      indexFileName: path.join('extensions', this.shortName),
       template: this.primIndexTemplate,
       renderer: this._renderer,
       buildVariables: this.additionalVariables,
@@ -84,10 +80,7 @@ export class ExtensionDocumentationBuilder {
   }
 
   async buildAll(): Promise<Array<PageResult>> {
-    const concatedResult = await Promise.all([
-      this.buildHomePage(),
-      this.buildPrimitivePages(),
-    ]);
+    const concatedResult = await Promise.all([this.buildHomePage(), this.buildPrimitivePages()]);
     return concatedResult.flat(1);
   }
 
@@ -113,10 +106,7 @@ export class ExtensionDocumentationBuilder {
   }
 
   get emptyTableOfContents(): boolean {
-    return (
-      !this.config.tableOfContents ||
-      Object.keys(this.config.tableOfContents).length === 0
-    );
+    return !this.config.tableOfContents || Object.keys(this.config.tableOfContents).length === 0;
   }
 
   get primRoot(): string {
@@ -141,8 +131,7 @@ export class ExtensionDocumentationBuilder {
   // Initialization methods
   private _getFullName(): string {
     const nameFromMap = Fixtures.autoDocumentedExtensions.get(this.shortName);
-    if (!nameFromMap)
-      console.warn(`Extension ${this.shortName} not found in full name map.`);
+    if (!nameFromMap) console.warn(`Extension ${this.shortName} not found in full name map.`);
     return nameFromMap || this.shortName;
   }
 
@@ -166,8 +155,7 @@ export class ExtensionDocumentationBuilder {
       .filter((dep) => dep !== 'primitives')
       .map((dep) => {
         const depPath = path.join(this.dirPath, dep);
-        if (fs.existsSync(depPath))
-          return [dep, fs.readFileSync(depPath, 'utf-8')];
+        if (fs.existsSync(depPath)) return [dep, fs.readFileSync(depPath, 'utf-8')];
         return [dep, null];
       })
       .filter(([, content]) => content !== null);
@@ -176,10 +164,7 @@ export class ExtensionDocumentationBuilder {
 
   private _parseSections(): [Array<string>, Array<string>] {
     const dependencyNames = this.config.filesToIncludeInManual || [];
-    const prePrimitive = ArrayUtils.takeWhile(
-      dependencyNames,
-      (name) => name !== 'primitives'
-    );
+    const prePrimitive = ArrayUtils.takeWhile(dependencyNames, (name) => name !== 'primitives');
     const postPrimitive = ArrayUtils.dropWhile(
       dependencyNames,
       (name) => name !== 'primitives'
@@ -191,9 +176,7 @@ export class ExtensionDocumentationBuilder {
         .map((sectionName) => {
           const content = this.dependencies[sectionName];
           if (!content) {
-            console.warn(
-              `Missing file ${sectionName} in extension ${this.shortName}.`
-            );
+            console.warn(`Missing file ${sectionName} in extension ${this.shortName}.`);
           }
           return content;
         })
@@ -214,9 +197,7 @@ export class ExtensionDocumentationBuilder {
   }
 }
 
-export async function getDocumentedExtensionBuilders(): Promise<
-  ExtensionDocumentationBuilder[]
-> {
+export async function getDocumentedExtensionBuilders(): Promise<ExtensionDocumentationBuilder[]> {
   const extensionDir = process.env['EXTENSIONS_DIR'];
   if (!extensionDir) {
     console.error('Environment Variable EXTENSIONS_DIR not set.');
@@ -229,9 +210,7 @@ export async function getDocumentedExtensionBuilders(): Promise<
       withFileTypes: true,
     })
     .filter((dir) => dir.isDirectory())
-    .filter((dir) =>
-      fs.existsSync(path.join(scanDirectory, dir.name, Fixtures.configFileName))
-    );
+    .filter((dir) => fs.existsSync(path.join(scanDirectory, dir.name, Fixtures.configFileName)));
 
   return directories
     .map((dir) => path.join(scanDirectory, dir.name))
