@@ -3,7 +3,7 @@ import path from 'path';
 
 import type { PageConfig, PageResult } from '@repo/mustache';
 import MustacheRenderer from '@repo/mustache';
-import { saveToPublicDir } from '@repo/utils/next/files';
+import { saveToPublicDir } from '@repo/next-utils/files';
 import { PrimitiveCatalogProps } from './(PrimitiveCatalog)/types';
 
 export async function generatePrimitiveIndexEntry(
@@ -73,10 +73,7 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
   const primitiveIndex: Array<readonly [string, string]> = [];
 
   const primitiveDir = primitivesDirectory ?? dictionaryHomeDirectory;
-  const indexOutputPath = path.join(
-    renderer.paths.outputRoot,
-    `${indexFileName}.txt`
-  );
+  const indexOutputPath = path.join(renderer.paths.outputRoot, `${indexFileName}.txt`);
   if (!fs.existsSync(path.dirname(indexOutputPath))) {
     fs.mkdirSync(path.dirname(indexOutputPath), { recursive: true });
   }
@@ -96,9 +93,7 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
       currentItemLabel
     );
 
-    primitiveIndex.push(
-      ...entryNames.map((name) => [name, entry.id + '.html'] as const)
-    );
+    primitiveIndex.push(...entryNames.map((name) => [name, entry.id + '.html'] as const));
 
     allResults.push(...result);
   }
