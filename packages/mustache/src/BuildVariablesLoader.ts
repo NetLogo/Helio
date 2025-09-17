@@ -5,11 +5,7 @@ import {
   DataFileReader,
   NodeStdoutReader,
 } from './BuildVariablesLoader.readerModules.js';
-import {
-  FileFetchError,
-  ParseError,
-  UnsupportedFileTypeError,
-} from './errors.js';
+import { UnsupportedFileTypeError } from './errors.js';
 import { getFileExtension, isURL, readLocal, readRemote } from './utils.js';
 
 /**
@@ -52,10 +48,7 @@ import { getFileExtension, isURL, readLocal, readRemote } from './utils.js';
  * @see {@link https://nodejs.org/api/fs.html#fs_fs_promises_api} for local file reading
  */
 export class BuildVariablesLoader {
-  static readonly readers: BuildVariableReader[] = [
-    new NodeStdoutReader(),
-    new DataFileReader(),
-  ];
+  static readonly readers: BuildVariableReader[] = [new NodeStdoutReader(), new DataFileReader()];
 
   extensionMap = new Map<string, BuildVariableReader>();
   constructor(private scanRoot: string) {
@@ -110,9 +103,7 @@ export class BuildVariablesLoader {
    * @type {string}
    */
   get supportedFileTypes() {
-    return BuildVariablesLoader.readers
-      .flatMap((reader) => reader.supportedExtensions)
-      .join(', ');
+    return BuildVariablesLoader.readers.flatMap((reader) => reader.supportedExtensions).join(', ');
   }
 }
 

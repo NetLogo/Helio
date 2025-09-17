@@ -5,7 +5,7 @@ import path from 'path';
 
 import { BuildResult, PageResult } from './api.schemas.js';
 import { BuildVariablesLoader } from './BuildVariablesLoader.js';
-import { HandlebarsEngine, MustacheEngine, TemplateEngine } from './engines.js';
+import { createTemplateEngine, TemplateEngine } from './engines.js';
 import { InitializationError, RenderError } from './errors.js';
 import PageParser from './PageParser.js';
 import { PageConfig, ProjectConfig, ProjectConfigSchema } from './schemas.js';
@@ -32,36 +32,20 @@ class Renderer {
 
   constructor(private _config: ProjectConfig) {
     if (!this._config) {
-      throw new InitializationError(
-        'Renderer requires a project configuration.'
-      );
+      throw new InitializationError('Renderer requires a project configuration.');
     }
 
     if (!ProjectConfigSchema.safeParse(this._config).success) {
-      throw new InitializationError(
-        'Invalid project configuration provided to Renderer.'
-      );
+      throw new InitializationError('Invalid project configuration provided to Renderer.');
     }
 
     this.paths = {
       projectRoot: path.resolve(process.cwd(), this._config.projectRoot || '.'),
       scanRoot: path.resolve(process.cwd(), this._config.scanRoot || '.'),
-      outputRoot: path.resolve(
-        process.cwd(),
-        this._config.outputRoot || 'dist'
-      ),
+      outputRoot: path.resolve(process.cwd(), this._config.outputRoot || 'dist'),
     };
 
-    switch (this._config.engine) {
-      case 'handlebars':
-        this._engine = new HandlebarsEngine();
-        break;
-      case 'mustache':
-        this._engine = new MustacheEngine();
-        break;
-      default:
-        this._engine = new MustacheEngine();
-    }
+    this._engine = createTemplateEngine(this._config.engine);
 
     this.defaultLanguage = this._config.defaults?.language || 'en';
     this._buildVariablesLoader = new BuildVariablesLoader(this.paths.scanRoot);
@@ -83,9 +67,7 @@ class Renderer {
    * @throws {FileFetchError} If YAML files cannot be read
    * @throws {ParseError} If YAML files cannot be parsed
    */
-  async build(
-    sharedBuildVariables?: Record<string, unknown>
-  ): Promise<BuildResult> {
+  async build(sharedBuildVariables?: Record<string, unknown>): Promise<BuildResult> {
     const startTime = new Date();
     const errors: string[] = [];
     const pages: Record<string, PageResult> = {};
@@ -95,10 +77,7 @@ class Renderer {
 
       for (const yamlPath of yamlFiles) {
         try {
-          const pageResults = await this.buildSingle(
-            yamlPath,
-            sharedBuildVariables
-          );
+          const pageResults = await this.buildSingle(yamlPath, sharedBuildVariables);
           for (const pageResult of pageResults) {
             pages[pageResult.sourcePath] = pageResult;
           }
@@ -108,9 +87,7 @@ class Renderer {
       }
 
       const endTime = new Date();
-      const successfulPages = Object.values(pages).filter(
-        (p) => p.success
-      ).length;
+      const successfulPages = Object.values(pages).filter((p) => p.success).length;
       const failedPages = Object.values(pages).filter((p) => !p.success).length;
 
       return {
@@ -161,10 +138,7 @@ class Renderer {
   ): Promise<PageResult[]> {
     try {
       yamlPath = path.resolve(this.paths.scanRoot, yamlPath);
-      return await this._pageParser.processYamlFile(
-        yamlPath,
-        sharedBuildVariables
-      );
+      return await this._pageParser.processYamlFile(yamlPath, sharedBuildVariables);
     } catch (error: any) {
       console.warn(`Error processing ${yamlPath}: ${error.message}`);
       return [];
@@ -222,38 +196,30 @@ class Renderer {
         throw new RenderError('Rendered output is empty');
       }
     } catch (error: any) {
-      const engineName =
-        this._config.engine === 'handlebars' ? 'Handlebars' : 'Mustache';
-      throw new RenderError(
-        `Failed to render ${engineName} template`,
-        error.message
-      );
+      const engineName = this._config.engine === 'handlebars' ? 'Handlebars' : 'Mustache';
+      throw new RenderError(`Failed to render ${engineName} template`, error.message);
     }
     return rendered;
+  }
+
+  // Public Methods
+  registerPartial(name: string, content: string) {
+    this._engine.registerPartial(name, content);
   }
 
   // Helper Public API
   getOutputFilePath(relativeBaseName: string, extension: string): string {
     const extensionNoDot = extension.replace(/^\./, '');
-    return path.join(
-      this.paths.outputRoot,
-      relativeBaseName + '.' + extensionNoDot
-    );
+    return path.join(this.paths.outputRoot, relativeBaseName + '.' + extensionNoDot);
   }
 
   getMetadataFilePath(relativeBaseName: string): string {
-    return path.join(
-      this.paths.outputRoot,
-      relativeBaseName + PageParser.METADATA_SUFFIX
-    );
+    return path.join(this.paths.outputRoot, relativeBaseName + PageParser.METADATA_SUFFIX);
   }
 
   getSourceFilePath(relativeBaseName: string, extension: string): string {
     const extensionNoDot = extension.replace(/^\./, '');
-    return path.join(
-      this.paths.scanRoot,
-      relativeBaseName + '.' + extensionNoDot
-    );
+    return path.join(this.paths.scanRoot, relativeBaseName + '.' + extensionNoDot);
   }
 
   // Private methods

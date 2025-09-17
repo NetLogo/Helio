@@ -56,10 +56,7 @@ class MustacheEngine extends TemplateEngine {
         throw new RenderError('Rendered output is empty');
       }
     } catch (error: any) {
-      throw new RenderError(
-        `Failed to render Mustache template`,
-        error.message
-      );
+      throw new RenderError(`Failed to render Mustache template`, error.message);
     }
     return rendered;
   }
@@ -85,13 +82,25 @@ class HandlebarsEngine extends TemplateEngine {
         throw new RenderError('Rendered output is empty');
       }
     } catch (error: any) {
-      throw new RenderError(
-        `Failed to render Handlebars template`,
-        error.message
-      );
+      throw new RenderError(`Failed to render Handlebars template`, error.message);
     }
     return rendered;
   }
 }
+
+export function createTemplateEngine(
+  engine: 'mustache' | 'handlebars' = 'mustache'
+): TemplateEngine {
+  switch (engine) {
+    case 'mustache':
+      return new MustacheEngine();
+    case 'handlebars':
+      return new HandlebarsEngine();
+    default:
+      console.error(`Unknown template engine: ${engine}, defaulting to Mustache.`);
+      return new MustacheEngine();
+  }
+}
+
 export { HandlebarsEngine, MustacheEngine };
 export type { TemplateEngine };
