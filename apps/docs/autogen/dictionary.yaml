@@ -6,7 +6,7 @@ buildVariables:
   dictionary: data/dictionary.js
 ---
 output: True
-title: NetLogo Dictionary
+title: Dictionary
 description:
   Reference for NetLogo primitives, including their usage, parameters, and
   examples.

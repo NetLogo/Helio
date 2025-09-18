@@ -1,4 +1,4 @@
-# {{title}}
+# NetLogo Dictionary
 
 {{> partials/dictionary/header.md }}
 
