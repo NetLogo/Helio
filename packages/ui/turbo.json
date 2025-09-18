@@ -9,21 +9,6 @@
     },
     "build:components": {
       "outputs": ["dist/**"]
-    },
-    "dev": {
-      "with": ["dev:styles", "dev:components", "dev:scss"]
-    },
-    "dev:styles": {
-      "cache": false,
-      "persistent": true
-    },
-    "dev:components": {
-      "cache": false,
-      "persistent": true
-    },
-    "dev:scss": {
-      "cache": false,
-      "persistent": true
     }
   }
 }

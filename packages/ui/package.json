@@ -25,6 +25,7 @@
     "build:components": "tsc && tsc-alias && npm run copy:scss",
     "copy:scss": "find src -name '*.scss' -not -name 'styles.scss' | while read file; do mkdir -p \"dist/$(dirname \"${file#src/}\")\"; cp \"$file\" \"dist/${file#src/}\"; done",
     "check-types": "tsc --noEmit",
+    "dev": "npm run dev:components & npm run dev:styles & npm run dev:scss",
     "dev:styles": "tailwindcss -i ./src/styles.scss -o ./dist/styles.scss --watch",
     "dev:components": "tsc --watch & tsc-alias --watch",
     "dev:scss": "chokidar 'src/**/*.scss' -c 'npm run copy:scss'",
@@ -34,11 +35,6 @@
     "react": "^19"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-svg-core": "^7.0.0",
-    "@fortawesome/free-brands-svg-icons": "^7.0.0",
-    "@fortawesome/free-regular-svg-icons": "^7.0.0",
-    "@fortawesome/free-solid-svg-icons": "^7.0.0",
-    "@fortawesome/react-fontawesome": "^0.2.3",
     "@repo/eslint-config": "*",
     "@repo/tailwind-config": "*",
     "@repo/typescript-config": "*",

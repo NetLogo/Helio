@@ -5,9 +5,7 @@ import { ReactNode, useLayoutEffect, useState } from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaFilePdf, FaGithub } from 'react-icons/fa6';
 
 import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
 import Navbar from '@repo/ui/components/navbar/Navbar';
@@ -70,14 +68,8 @@ export default function ClientNavbar({
           selectedVersion="7.0.0-beta2"
           onVersionChange={onVersionChange}
         />
-        <Navbar.Action
-          icon={<FontAwesomeIcon icon={faGithub} />}
-          href="https://github.com/NetLogo"
-        />
-        <Navbar.Action
-          icon={<FontAwesomeIcon icon={faFilePdf} />}
-          href="/NetLogo_User_Manual.pdf"
-        />
+        <Navbar.Action icon={<FaGithub />} href="https://github.com/NetLogo" />
+        <Navbar.Action icon={<FaFilePdf />} href="/NetLogo_User_Manual.pdf" />
       </Navbar.ActionsContainer>
     </Navbar.Client>
   );

@@ -1,6 +1,5 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaLink } from 'react-icons/fa';
 
-import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { Link as NextLink } from '../lib/utils/next';
 type AnchorProps = {
   external?: boolean;
@@ -13,7 +12,7 @@ const Anchor = ({ external, children, ...props }: AnchorProps) => {
       // Why not <Link>?
       // Because <Link> is only useful for internal navigation.
       <a target="_blank" rel="noopener noreferrer" {...props}>
-        <FontAwesomeIcon icon={faLink} className="mr-1" />
+        <FaLink className="mr-1 inline" />
         {children}
       </a>
     );
