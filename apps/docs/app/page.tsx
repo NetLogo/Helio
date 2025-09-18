@@ -2,18 +2,19 @@ import { ReactNode } from 'react';
 
 import Anchor from '@repo/ui/HOC/Anchor';
 import Image from '@repo/ui/HOC/Image';
+import { Metadata } from 'next';
 import beginnersLinks from './beginners-links.json';
 import importantLinks from './important-links.json';
+import RootMetadata from './metadata';
 
 export default function Page(): ReactNode {
   const productVersion = process.env['PRODUCT_VERSION'];
   return (
-    <main className="md:my-5 px-2 mx-auto nl-container-width">
-      <div className="grid md:grid-cols-12 pt-5 gap-5">
-        <div className="md:col-span-8 nl-container-free">
+    <main className="lg:my-5 px-2 mx-auto nl-container-width">
+      <div className="grid lg:grid-cols-12 pt-5 gap-5">
+        <div className="lg:col-span-6 xl:col-span-8 nl-container-free">
           <h1 className="nl-col no-stylized-heading mt-0">
-            <span className="break-after">NetLogo</span>
-            {productVersion} Documentation
+            <span className="break-after">NetLogo</span> {productVersion} Documentation
           </h1>
           <p>
             Welcome to the documentation for NetLogo {productVersion}. Download the latest version{' '}
@@ -38,14 +39,14 @@ export default function Page(): ReactNode {
           </div>
         </div>
         <Image
-          className="md:col-span-4"
+          className="lg:col-span-6 xl:col-span-4 mx-auto"
           src="/images/netlogo-banner_2x.webp"
           alt="NetLogo {productVersion} Banner"
           srcSet="/images/netlogo-banner_1x.webp 1x, /images/netlogo-banner_2x.webp 2x"
         />
       </div>
       <div className="grid grid-cols-12 gap-5">
-        <div className="col-span-12 md:col-span-6">
+        <div className="col-span-12 xl:col-span-6">
           <h3>Important Links</h3>
           <ul>
             {importantLinks.map((link, index) => (
@@ -57,7 +58,7 @@ export default function Page(): ReactNode {
             ))}
           </ul>
         </div>
-        <div className="col-span-12 md:col-span-6">
+        <div className="col-span-12 xl:col-span-6">
           <h3>Beginner&apos;s Guide</h3>
           <ul>
             {beginnersLinks.map((link, index) => (
@@ -73,3 +74,5 @@ export default function Page(): ReactNode {
     </main>
   );
 }
+
+export const metadata: Metadata = RootMetadata;

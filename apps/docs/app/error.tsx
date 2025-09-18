@@ -1,15 +1,16 @@
 'use client';
 
+import { cn } from '@repo/ui/lib/utils/cn';
+
 export default function ErrorPage({
   status = 404,
   title = 'Page Not Found',
+  className,
   children,
 }: ErrorPageProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-6xl text-center font-bold text-gray-800 bg-red-500">
-        {status}
-      </h1>
+    <div className={cn('flex flex-col items-center justify-center min-h-screen', className)}>
+      <h1 className="text-4xl bg-red-500 mt-0">{status}</h1>
       <p className="mt-4 text-xl text-gray-600">{title}</p>
       {children && <div className="mt-6">{children}</div>}
     </div>
@@ -28,5 +29,6 @@ export enum ErrorStatus {
 export interface ErrorPageProps {
   status?: number;
   title?: string;
+  className?: string;
   children?: React.ReactNode;
 }
