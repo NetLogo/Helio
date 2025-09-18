@@ -6,21 +6,31 @@ import MustacheRenderer from '@repo/mustache';
 import { saveToPublicDir } from '@repo/next-utils/files';
 import { PrimitiveCatalogProps } from './(PrimitiveCatalog)/types';
 
-export async function generatePrimitiveIndexEntry(
-  source: PrimIndexEntry,
-  dictionaryDisplayName: string,
-  dictionaryHomeDirectory: string,
-  primitivesDirectory: string,
-  template: string,
-  renderer: MustacheRenderer,
-  buildVariables: Record<string, unknown> = {},
-  indexOutputURI: string,
-  currentItemLabel: string
-) {
+export async function generatePrimitiveIndexEntry({
+  source,
+  dictionaryDisplayName,
+  dictionaryHomeDirectory,
+  primitivesDirectory,
+  template,
+  renderer,
+  buildVariables = {},
+  indexOutputURI,
+  currentItemLabel,
+}: {
+  source: PrimIndexEntry;
+  dictionaryDisplayName: string;
+  dictionaryHomeDirectory: string;
+  primitivesDirectory: string;
+  template: string;
+  renderer: MustacheRenderer;
+  buildVariables: Record<string, unknown>;
+  indexOutputURI: string;
+  currentItemLabel: string;
+}) {
   const reactRenderMetadata: PrimitiveCatalogProps = {
     dictionaryDisplayName,
     dictionaryHomeDirectory,
-    indexFileURI: `/generated/${indexOutputURI}.txt`,
+    indexFileURI: path.join('/', 'generated', `${indexOutputURI}.txt`),
     currentItemId: source.id,
     currentItemLabel: currentItemLabel,
   };
@@ -81,18 +91,17 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
   for (const entry of dictionary.entries) {
     const entryNames = getEntryNames(entry);
     const currentItemLabel = entryNames.join(', ');
-    const result = await generatePrimitiveIndexEntry(
-      entry,
+    const result = await generatePrimitiveIndexEntry({
+      source: entry,
       dictionaryDisplayName,
       dictionaryHomeDirectory,
-      primitiveDir,
+      primitivesDirectory: primitiveDir,
       template,
       renderer,
       buildVariables,
-      indexFileName,
-      currentItemLabel
-    );
-
+      indexOutputURI: indexFileName,
+      currentItemLabel,
+    });
     primitiveIndex.push(...entryNames.map((name) => [name, entry.id + '.html'] as const));
 
     allResults.push(...result);
