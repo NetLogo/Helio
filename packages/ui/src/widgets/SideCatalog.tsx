@@ -1,13 +1,13 @@
 'use client';
-import React, { useLayoutEffect, useMemo, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import Catalog from '@/components/catalog';
 import useSearchParams from '@/hooks/useSearchParams';
 import { useUrlState } from '../hooks/useURLState';
 
 export default function SideCatalog(props: SideCatalogProps) {
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const itemsList = React.useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const itemsList = useRef<HTMLDivElement>(null);
   const { filteredItems, queryText, setQueryText, onSelect } = useSideCatalog(
     props,
     contentRef,
