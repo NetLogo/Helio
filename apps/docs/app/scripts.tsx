@@ -1,11 +1,12 @@
-'use client';
+import Script from 'next/script';
 
 export function ScrollToHash() {
   return (
-    <>
-      <script>
-        {`document.addEventListener('DOMContentLoaded', function() {
+    <Script id="scroll-to-hash" strategy="afterInteractive">
+      {`(function() {
+        document.addEventListener('DOMContentLoaded', function() {
             if (window.location.hash) {
+            console.log('Scrolling to hash:', window.location.hash);
             const target = document.querySelector(window.location.hash);
             if (target) {
               target.scrollIntoView({ behavior: 'smooth' });
@@ -15,8 +16,8 @@ export function ScrollToHash() {
               }, 100);
             }
           }
-        });`}
-      </script>
-    </>
+        });
+      })();`}
+    </Script>
   );
 }
