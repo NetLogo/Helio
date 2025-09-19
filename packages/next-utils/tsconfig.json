@@ -19,7 +19,8 @@
     "baseUrl": "./src",
     "paths": {
       "./*": ["./dist/*"]
-    }
+    },
+    "jsx": "react-jsx"
   },
   "include": ["src", "url.ts"],
   "exclude": ["node_modules", "dist"]
