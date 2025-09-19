@@ -6,6 +6,11 @@ import MustacheRenderer from '@repo/mustache';
 import * as Dictionary from './(Dictionary)';
 import * as ExtensionDocs from './(ExtensionDocs)';
 import * as Constants from './constants';
+import {
+  DocumentMetadata,
+  DocumentMetadataSchema,
+  MinimalDocumentMetadataSchema,
+} from './NetLogoDocs.types';
 import { generatePrimitiveIndex } from './PrimIndex';
 
 export async function generateBetweenDirectoriesPages(
@@ -55,9 +60,7 @@ export async function generateMarkdownPages(config: MustacheProjectConfig) {
   const renderer = new MustacheRenderer(config);
   const buildVariables = {
     version: process.env['PRODUCT_VERSION'] || 'unknown',
-    buildDate: new Date(
-      process.env['PRODUCT_BUILD_DATE'] || Date.now()
-    ).toISOString(),
+    buildDate: new Date(process.env['PRODUCT_BUILD_DATE'] || Date.now()).toISOString(),
   };
 
   const results = await Promise.all([
@@ -73,48 +76,27 @@ export async function generateMarkdownPages(config: MustacheProjectConfig) {
 export async function getPageMetadata(
   slug: Array<string>,
   config: MustacheProjectConfig
-): Promise<{
-  title: string;
-  description: string;
-  layout: 'default' | 'catalog';
-  [key: string]: unknown;
-}> {
+): Promise<DocumentMetadata> {
   const renderer = new MustacheRenderer(config);
 
   const slugPath = slug.join('/').replace(/\.html$/, '');
-  const metadataPath = decodeURIComponent(
-    renderer.getMetadataFilePath(slugPath)
-  );
+  const metadataPath = decodeURIComponent(renderer.getMetadataFilePath(slugPath));
 
   try {
     const metadataContent = await fs.readFile(metadataPath, 'utf-8');
     const metadata = JSON.parse(metadataContent);
-    return {
-      ...metadata,
-      title: metadata.title || 'Documentation',
-      description: metadata.description || 'Documentation page',
-      layout: metadata.layout || 'default',
-    };
+    return DocumentMetadataSchema.parse({ ...metadata });
   } catch (error) {
     console.error(`Failed to read metadata for slug: ${slugPath}`, error);
-    return {
-      title: 'Documentation',
-      description: 'Documentation page',
-      layout: 'default',
-    };
+    return MinimalDocumentMetadataSchema.parse({});
   }
 }
 
-export async function getPageContent(
-  slug: Array<string>,
-  config: MustacheProjectConfig
-) {
+export async function getPageContent(slug: Array<string>, config: MustacheProjectConfig) {
   const renderer = new MustacheRenderer(config);
 
   const slugPath = slug.join('/').replace(/\.html$/, '');
-  const outputPath = decodeURIComponent(
-    renderer.getOutputFilePath(slugPath, 'md')
-  );
+  const outputPath = decodeURIComponent(renderer.getOutputFilePath(slugPath, 'md'));
 
   try {
     const outputContent = await fs.readFile(outputPath, 'utf-8');

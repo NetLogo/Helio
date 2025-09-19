@@ -75,13 +75,40 @@ export default function ClientNavbar({
   );
 }
 
+function arePathnamesCongruent(windowPathname: string, candidatePathname: string) {
+  const [windowParts, candidateParts] = [windowPathname, candidatePathname].map((pname) => {
+    const parts = pname
+      .split('/')
+      .filter((p) => p.length > 0)
+      .map((p) => p.replace(/\.html$/, ''))
+      .map((p) => p.trim().split('#').at(0)!);
+    return parts;
+  }) as [string[], string[]];
+
+  let i = 0;
+  let prefixOffset = 0;
+  while (i + prefixOffset < windowParts.length) {
+    if (windowParts[i + prefixOffset] !== candidateParts[i]) {
+      if (prefixOffset === 0 && i === 0 && i !== windowParts.length - 1) {
+        // Allow the first part to be different, to account for versioned
+        // URLs. - Omar I, 2025 Sep 19
+        prefixOffset = 1;
+        continue;
+      }
+      return false;
+    }
+    i++;
+  }
+
+  return true;
+}
+
 function isSublinkActive(href: string | undefined) {
   if (typeof window === 'undefined') return false;
   if (!href) return false;
   try {
     const currentPath = window.location.pathname;
-    const candidatePath = new URL(href, window.location.href).pathname;
-    return currentPath === candidatePath;
+    return arePathnamesCongruent(currentPath, href);
   } catch {
     return false;
   }
@@ -90,8 +117,7 @@ function isSublinkActive(href: string | undefined) {
 function isLinkParentActive(link: NavbarLink) {
   if (typeof window === 'undefined') return false;
   const currentPath = window.location.pathname;
-  const candidatePath = new URL(link.href, window.location.href).pathname;
-  const isParentActiveOnItsOwn = candidatePath === currentPath;
+  const isParentActiveOnItsOwn = arePathnamesCongruent(currentPath, link.href);
   return (
     isParentActiveOnItsOwn || link.children?.some((child) => isSublinkActive(child.href)) || false
   );

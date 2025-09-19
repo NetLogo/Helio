@@ -4,6 +4,7 @@ import useSWR from 'swr';
 
 import type { SideCatalogItem } from '@repo/ui/widgets/SideCatalog';
 import SideCatalog from '@repo/ui/widgets/SideCatalog';
+import { LocalStorageCache } from '@repo/utils/lib/swr';
 
 import ErrorPage, { ErrorStatus } from '../../../error';
 import { PrimitiveCatalogProps } from './types';
@@ -17,7 +18,9 @@ export default function PrimitiveCatalog({
   currentItemLabel,
   children,
 }: PrimitiveCatalogProps) {
-  const { data, error, isLoading } = useSWR(indexFileURI, fetcher);
+  const { data, error, isLoading } = useSWR(indexFileURI, fetcher, {
+    provider: () => new LocalStorageCache(),
+  });
 
   if (error) {
     return (
@@ -41,7 +44,7 @@ export default function PrimitiveCatalog({
       isLoading={isLoading}
       withRouteTransition
     >
-      <div className="w-full">
+      <div className="w-full [&>.min-h-screen]:min-h-0">
         {children}
         <p className="p-4 md:p-0">
           Take me to the full <a href={dictionaryHomeDirectory}>{dictionaryDisplayName}</a>.

@@ -6,6 +6,7 @@ import NetLogoMarkdown from '@repo/markdown';
 import autogenConfig from './autogen.config';
 import * as NetLogoDocs from './NetLogoDocs';
 
+import { Metadata } from 'next';
 import PrimitiveCatalog from './(PrimitiveCatalog)';
 import { PrimitiveCatalogPropsSchema } from './(PrimitiveCatalog)/types';
 
@@ -70,7 +71,11 @@ export async function generateStaticParams() {
   return generatedSlugs;
 }
 
-export async function generateMetadata({ params }: { params: { slug: Array<string> } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: Array<string> };
+}): Promise<Metadata> {
   // https://nextjs.org/docs/messages/sync-dynamic-apis
   const { slug } = await params;
   return NetLogoDocs.getPageMetadata(slug, autogenConfig);
