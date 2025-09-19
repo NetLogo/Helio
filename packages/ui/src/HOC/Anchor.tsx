@@ -1,6 +1,5 @@
 import { FaLink } from 'react-icons/fa';
 
-import { Link as NextLink } from '../lib/utils/next';
 type AnchorProps = {
   external?: boolean;
   children?: React.ReactNode;
@@ -17,7 +16,7 @@ const Anchor = ({ external, children, ...props }: AnchorProps) => {
       </a>
     );
   }
-  return <NextLink {...props}>{children}</NextLink>;
+  return <a {...props}>{children}</a>;
 };
 
 export default Anchor;
