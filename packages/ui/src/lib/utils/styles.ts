@@ -1,11 +1,11 @@
-export function cssVariable(variable: string, value: string | number) {
+export function cssVariable(variable: string, value: string | number): React.CSSProperties {
   if (typeof variable !== 'string' || !variable.startsWith('--')) {
     throw new Error('CSS variable must start with "--"');
   }
   return { [variable]: value } as React.CSSProperties;
 }
 
-export function maybeCSSVariable(variable: string, value?: string | number) {
+export function maybeCSSVariable(variable: string, value?: string | number): React.CSSProperties {
   if (value === undefined) {
     return {};
   }

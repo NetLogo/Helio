@@ -1,62 +1,63 @@
-import React from 'react';
+import type React from 'react';
+import type { JSX } from 'react';
 
-export interface HamburgerProps {
+export type HamburgerProps = {
   className?: string;
-}
+};
 
-export interface ActiveItemProps extends React.ComponentProps<'div'> {
+export type ActiveItemProps = {
   className?: string;
   selectedItemLabel?: string;
   itemPrefix?: string;
-}
+} & React.ComponentProps<'div'>;
 
-export interface SearchFieldProps extends React.ComponentProps<'input'> {
+export type SearchFieldProps = {
   placeholder?: string;
   id?: string;
-}
+} & React.ComponentProps<'input'>;
 
-export interface HeaderSectionProps extends React.ComponentProps<'div'> {
+export type HeaderSectionProps = {
   title: string;
   children?: React.ReactNode;
-}
+} & React.ComponentProps<'div'>;
 
 type OnSelectCallback = (item: CatalogItem, e: React.MouseEvent<HTMLAnchorElement>) => void;
-export interface CatalogItemComponentProps extends Omit<React.ComponentProps<'li'>, 'onSelect'> {
+export type CatalogItemComponentProps = {
   item: CatalogItem;
   onSelect?: OnSelectCallback;
   active?: boolean;
-}
+} & Omit<React.ComponentProps<'li'>, 'onSelect'>;
 
-export interface ItemsListProps {
+export type ItemsListProps = {
   className?: string;
   items: Array<CatalogItem>;
   onSelect?: OnSelectCallback;
   isSelected?: (item: CatalogItem) => boolean;
   isLoading?: boolean;
-}
+};
 
-export interface MobileHeaderProps {
+export type MobileHeaderProps = {
   className?: string;
   selectedItemLabel?: string;
   hamburgerProps?: Omit<HamburgerProps, 'className'>;
   itemPrefix?: string;
-}
+};
 
-export interface ContentProps {
+export type ContentProps = {
   className?: string;
   title: string;
   items: Array<CatalogItem>;
   onSelect?: (item: CatalogItem) => void;
   headerProps?: Omit<HeaderSectionProps, 'className' | 'title'>;
   itemsListProps?: Omit<ItemsListProps, 'className' | 'items' | 'onSelect'>;
-}
+};
 
-export interface CatalogProps extends React.ComponentProps<'div'> {
+export type CatalogProps = {
   children?: React.ReactNode;
-}
+} & React.ComponentProps<'div'>;
 
-export interface CatalogItem {
+export type CatalogItem = {
   title: string;
   url?: string;
-  icon?: React.ComponentType<any>;
-}
+  icon?: JSX.Element;
+};

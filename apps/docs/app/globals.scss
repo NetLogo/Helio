@@ -1,17 +1,20 @@
+@use 'sass:meta';
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @layer theme, base, components, website, utilities;
-@import 'tailwindcss';
+@include meta.load-css('tailwindcss');
 
-@import '@repo/tailwind-config/scss/variables.scss';
+@include meta.load-css('@repo/tailwind-config/scss/variables.scss');
 
 @layer utilities {
-  @import '@repo/tailwind-config/scss/utilities.scss';
+  @include meta.load-css('@repo/tailwind-config/scss/utilities.scss');
 }
 
 @layer website {
-  @import '@repo/tailwind-config/scss/normalize.scss';
-  @import '@repo/tailwind-config/scss/docs-theme.scss';
+  @include meta.load-css('@repo/tailwind-config/scss/normalize.scss');
+  @include meta.load-css('@repo/tailwind-config/scss/docs-theme.scss');
 }
 
-@import '@repo/ui/styles.scss';
+@include meta.load-css('@repo/ui/styles.scss');
+@include meta.load-css('@repo/ui/styles.scss');

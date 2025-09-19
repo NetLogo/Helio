@@ -1,32 +1,8 @@
 'use client';
 
-import type { SideCatalogItem } from '@repo/ui/widgets/SideCatalog';
-import SideCatalog from '@repo/ui/widgets/SideCatalog';
+import Search from '@repo/ui/components/search';
+import type { ReactNode } from 'react';
 
-export default function Page() {
-  return (
-    <SideCatalog
-      label="Dictionary"
-      items={catalogItems}
-      itemPrefix="primitive:"
-      query={query}
-    >
-      <main className="w-full xl:p-4">
-        <h1>My Page</h1>
-      </main>
-    </SideCatalog>
-  );
-}
-
-const catalogItems: Array<SideCatalogItem> = [
-  { title: 'Home', url: '/' },
-  { title: 'Search', url: '/search' },
-  { title: 'Inbox', url: '/inbox' },
-  { title: 'Calendar', url: '/calendar' },
-  { title: 'Settings', url: '/settings' },
-];
-
-function query(s0: string) {
-  const s = s0.toLowerCase();
-  return catalogItems.filter((item) => item.title.toLowerCase().includes(s));
+export default function Page(): ReactNode {
+  return <Search indices={['Documenter']}></Search>;
 }

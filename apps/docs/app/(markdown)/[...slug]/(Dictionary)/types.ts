@@ -1,60 +1,60 @@
-interface DictionarySyntax {
+type DictionarySyntax = {
   name: string;
   since?: string;
   deprecated?: boolean;
-}
+};
 
-interface DictionaryExample {
+type DictionaryExample = {
   code: string;
   since?: string;
-}
+};
 
-interface DictionarySyntaxEntry {
+type DictionarySyntaxEntry = {
   syntax: Array<DictionarySyntax>;
   description: string; // Markdown
   examples: Array<DictionaryExample>;
   initial?: number;
-}
+};
 
-interface DictionaryConstant {
+type DictionaryConstant = {
   name: string;
   value?: string;
-}
+};
 
-interface DictionaryConstantEntry {
+type DictionaryConstantEntry = {
   title: string;
   constants: Array<DictionaryConstant>;
-}
+};
 
-interface DictionaryCategory {
+type DictionaryCategory = {
   title: string;
   id: string;
   subcategory?: DictionaryCategory;
-}
+};
 
-interface DictionaryEntryGeneric<T> {
+type DictionaryEntryGeneric<T> = {
   id: string;
-  entry_categories: Array<DictionaryCategory>;
+  entry_categories?: Array<DictionaryCategory>;
   data: T;
   icons: Array<Array<string>>;
-}
+};
 
 type DictionaryEntry =
   | DictionaryEntryGeneric<DictionarySyntaxEntry>
   | DictionaryEntryGeneric<DictionaryConstantEntry>;
 
-interface DictionaryType {
+type DictionaryType = {
   created_at?: Date;
   updated_at?: Date;
   entries: Array<DictionaryEntry>;
-}
+};
 
 class DictionaryClass implements DictionaryType {
-  created_at: Date = new Date();
-  updated_at: Date = new Date();
-  entries: Array<DictionaryEntry> = [];
+  public created_at: Date = new Date();
+  public updated_at: Date = new Date();
+  public entries: Array<DictionaryEntry> = [];
 
-  getEntryById(entryId: string): DictionaryEntry | undefined {
+  public getEntryById(entryId: string): DictionaryEntry | undefined {
     return this.entries.find((entry) => entry.id === entryId);
   }
 }

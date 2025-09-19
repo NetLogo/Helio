@@ -1,13 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import axios from 'axios';
 import fs from 'fs/promises';
-import {
-  getFileExtension,
-  isURL,
-  joinIgnoreNone,
-  readLocal,
-  readRemote,
-} from '../src/utils.js';
+import { getFileExtension, isURL, joinIgnoreNone, readLocal, readRemote } from '../src/utils.js';
 
 // Mock dependencies
 jest.mock('axios');
@@ -68,10 +62,7 @@ describe('utils', () => {
     });
 
     it('should handle mixed types correctly', () => {
-      const result = joinIgnoreNone(
-        ['start', null, 'middle', undefined, '', 'end'],
-        '-'
-      );
+      const result = joinIgnoreNone(['start', null, 'middle', undefined, '', 'end'], '-');
       expect(result).toBe('start-middle-end');
     });
   });
@@ -126,9 +117,9 @@ describe('utils', () => {
 
       const result = await readRemote('https://example.com/file.txt');
 
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        'https://example.com/file.txt'
-      );
+      expect(mockedAxios.get).toHaveBeenCalledWith('https://example.com/file.txt', {
+        responseType: 'text',
+      });
       expect(result).toBe(mockData);
     });
 
@@ -145,9 +136,7 @@ describe('utils', () => {
       const error = new Error('Network error');
       mockedAxios.get.mockRejectedValue(error);
 
-      await expect(readRemote('https://example.com/file.txt')).rejects.toThrow(
-        'Network error'
-      );
+      await expect(readRemote('https://example.com/file.txt')).rejects.toThrow('Network error');
     });
 
     it('should handle axios with status and headers', async () => {
@@ -172,10 +161,7 @@ describe('utils', () => {
 
       const result = await readLocal('/path/to/file.txt');
 
-      expect(mockedFs.readFile).toHaveBeenCalledWith(
-        '/path/to/file.txt',
-        'utf-8'
-      );
+      expect(mockedFs.readFile).toHaveBeenCalledWith('/path/to/file.txt', 'utf-8');
       expect(result).toBe(mockContent);
     });
 
@@ -183,9 +169,7 @@ describe('utils', () => {
       const error = new Error('File not found');
       mockedFs.readFile.mockRejectedValue(error);
 
-      await expect(readLocal('/nonexistent/file.txt')).rejects.toThrow(
-        'File not found'
-      );
+      await expect(readLocal('/nonexistent/file.txt')).rejects.toThrow('File not found');
     });
 
     it('should handle different file paths', async () => {
@@ -193,16 +177,10 @@ describe('utils', () => {
       mockedFs.readFile.mockResolvedValue(mockContent);
 
       await readLocal('./relative/path.txt');
-      expect(mockedFs.readFile).toHaveBeenCalledWith(
-        './relative/path.txt',
-        'utf-8'
-      );
+      expect(mockedFs.readFile).toHaveBeenCalledWith('./relative/path.txt', 'utf-8');
 
       await readLocal('/absolute/path.txt');
-      expect(mockedFs.readFile).toHaveBeenCalledWith(
-        '/absolute/path.txt',
-        'utf-8'
-      );
+      expect(mockedFs.readFile).toHaveBeenCalledWith('/absolute/path.txt', 'utf-8');
     });
   });
 
@@ -222,34 +200,22 @@ describe('utils', () => {
 
     it('should extract extensions from URLs', () => {
       expect(getFileExtension('https://example.com/file.txt')).toBe('.txt');
-      expect(getFileExtension('http://domain.com/path/to/document.pdf')).toBe(
-        '.pdf'
-      );
+      expect(getFileExtension('http://domain.com/path/to/document.pdf')).toBe('.pdf');
     });
 
     it('should handle URLs with query parameters', () => {
-      expect(getFileExtension('https://example.com/file.txt?version=1')).toBe(
-        '.txt'
-      );
-      expect(
-        getFileExtension('https://example.com/doc.pdf?download=true&user=123')
-      ).toBe('.pdf');
+      expect(getFileExtension('https://example.com/file.txt?version=1')).toBe('.txt');
+      expect(getFileExtension('https://example.com/doc.pdf?download=true&user=123')).toBe('.pdf');
     });
 
     it('should handle URLs with fragments', () => {
-      expect(getFileExtension('https://example.com/file.txt#section1')).toBe(
-        ''
-      );
+      expect(getFileExtension('https://example.com/file.txt#section1')).toBe('');
       expect(getFileExtension('https://example.com/doc.pdf#page=5')).toBe('');
     });
 
     it('should handle URLs with query parameters and fragments', () => {
-      expect(getFileExtension('https://example.com/file.txt?v=1#top')).toBe(
-        '.txt'
-      );
-      expect(
-        getFileExtension('https://example.com/doc.pdf?download=true#page=1')
-      ).toBe('.pdf');
+      expect(getFileExtension('https://example.com/file.txt?v=1#top')).toBe('.txt');
+      expect(getFileExtension('https://example.com/doc.pdf?download=true#page=1')).toBe('.pdf');
     });
 
     it('should return empty string for files without extensions', () => {

@@ -1,6 +1,6 @@
 // FileNotFoundError
 export class FileNotFoundError extends Error {
-  constructor(filePath: string) {
+  public constructor(filePath: string) {
     super(`File not found: ${filePath}`);
     this.name = 'FileNotFoundError';
   }
@@ -8,28 +8,28 @@ export class FileNotFoundError extends Error {
 
 // FileFetchError
 export class FileFetchError extends Error {
-  constructor(filePath: string, message: unknown) {
+  public constructor(filePath: string, message: unknown) {
     super(`Failed to fetch file ${JSON.stringify(filePath)}: ${message}`);
   }
 }
 
 // FileLoadError
 export class FileLoadError extends Error {
-  constructor(filePath: string, message: unknown) {
+  public constructor(filePath: string, message: unknown) {
     super(`Failed to load file ${filePath}: ${message}`);
   }
 }
 
 // ParseError
 export class ParseError extends Error {
-  constructor(filePath: string, message: unknown) {
+  public constructor(filePath: string, message: unknown) {
     super(`Failed to parse file ${filePath}: ${message}`);
     this.name = 'ParseError';
   }
 }
 
 export class JSONParseError extends ParseError {
-  constructor(filePath: string, message: unknown) {
+  public constructor(filePath: string, message: unknown) {
     super(filePath, `Invalid JSON format: ${message}`);
     this.name = 'JSONParseError';
   }
@@ -37,7 +37,7 @@ export class JSONParseError extends ParseError {
 
 // UnsupportedFileTypeError
 export class UnsupportedFileTypeError extends Error {
-  constructor(filePath: string) {
+  public constructor(filePath: string) {
     super(`Unsupported file type: ${filePath}`);
     this.name = 'UnsupportedFileTypeError';
   }
@@ -45,7 +45,7 @@ export class UnsupportedFileTypeError extends Error {
 
 // ValidationError
 export class ValidationError extends Error {
-  constructor(message: string) {
+  public constructor(message: string) {
     super(`Validation error: ${message}`);
     this.name = 'ValidationError';
   }
@@ -53,7 +53,7 @@ export class ValidationError extends Error {
 
 // InitializationError
 export class InitializationError extends Error {
-  constructor(message: string) {
+  public constructor(message: string) {
     super(`Initialization error: ${message}`);
     this.name = 'InitializationError';
   }
@@ -61,8 +61,16 @@ export class InitializationError extends Error {
 
 // RenderError
 export class RenderError extends Error {
-  constructor(message: string, error?: string) {
-    super(`Render error: ${message}\n${error ? `Caused by: ${error}` : ''}`);
+  public constructor(message: string, error?: string) {
+    super(`Render error: ${message}\n${error ?? ''}`);
     this.name = 'RenderError';
+  }
+}
+
+// NotSupportedError
+export class NotSupportedError extends Error {
+  public constructor(feature: string) {
+    super(`Not supported: ${feature}`);
+    this.name = 'NotSupportedError';
   }
 }

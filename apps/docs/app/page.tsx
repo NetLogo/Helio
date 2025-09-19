@@ -1,13 +1,15 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import Anchor from '@repo/ui/HOC/Anchor';
 import Image from '@repo/ui/HOC/Image';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { Env } from '../env';
 import beginnersLinks from './beginners-links.json';
 import importantLinks from './important-links.json';
 import RootMetadata from './metadata';
 
 export default function Page(): ReactNode {
+  // eslint-disable-next-line turbo/no-undeclared-env-vars
   const productVersion = process.env['PRODUCT_VERSION'];
   return (
     <main className="lg:my-5 px-2 mx-auto nl-container-width">
@@ -18,18 +20,22 @@ export default function Page(): ReactNode {
           </h1>
           <p>
             Welcome to the documentation for NetLogo {productVersion}. Download the latest version{' '}
-            <a href="https://www.netlogo.org/download">here</a>.
+            <Anchor external href="https://www.netlogo.org/download">
+              here
+            </Anchor>
+            .
           </p>
           <p>
-            Please read the <a href="/versions.html#version-700-beta2-july-2025">Release Notes</a>{' '}
-            for information about new features, bug fixes, and other changes in this version. For
-            help running models made in old versions, see the{' '}
-            <a href="/transition.html#changes-for-netlogo-700">Transition Guide</a>.
+            Please read the{' '}
+            <Anchor href="/versions.html#version-700-beta2-july-2025">Release Notes</Anchor> for
+            information about new features, bug fixes, and other changes in this version. For help
+            running models made in old versions, see the{' '}
+            <Anchor href="/transition.html#changes-for-netlogo-700">Transition Guide</Anchor>.
           </p>
           <p>
             If you use or refer to NetLogo in a publication, we ask that you cite it. For the
             correct citation, see the{' '}
-            <a href="/copyright.html">Copyright and License Information</a> page.
+            <Anchor href="/copyright.html">Copyright and License Information</Anchor> page.
           </p>
           <div className="highlight highlight-warning">
             <p>
@@ -38,12 +44,16 @@ export default function Page(): ReactNode {
             </p>
           </div>
         </div>
-        <Image
-          className="lg:col-span-6 xl:col-span-4 mx-auto"
-          src="/images/netlogo-banner_2x.webp"
-          alt="NetLogo {productVersion} Banner"
-          srcSet="/images/netlogo-banner_1x.webp 1x, /images/netlogo-banner_2x.webp 2x"
-        />
+        <div className="relative lg:col-span-6 xl:col-span-4 w-full h-full">
+          <Image
+            src={'/images/netlogo-banner_2x.webp'}
+            className="object-contain w-full h-full"
+            alt={`NetLogo ${productVersion} Banner`}
+            srcSet="images/netlogo-banner_1x.webp 1x, images/netlogo-banner_2x.webp 2x"
+            priority
+            nextOptions={{ basePath: Env.basePath }}
+          />
+        </div>
       </div>
       <div className="grid grid-cols-12 gap-5">
         <div className="col-span-12 xl:col-span-6">

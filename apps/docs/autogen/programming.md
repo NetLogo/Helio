@@ -560,7 +560,7 @@ will be drawn.
 
 Here's some turtles which have made a drawing over a grid of randomly shaded
 patches. Notice how the turtles cover the lines and the lines cover the patch
-colors. The [[pen-size]] used here was 2: ![[programming/color chart|drawing.png]]
+colors. The [[pen-size]] used here was 2: ![[color chart|programming/drawing.png]]
 
 The [[stamp]] command lets a turtle leave an image of itself behind in the
 drawing and [[stamp-erase]] lets it remove the pixels below it in the drawing.
@@ -2762,7 +2762,7 @@ plotting techniques. Also check out the following code examples:
 
 NetLogo represents colors in different ways. A color can be number in the range
 0 to 140, with the exception of 140 itself. Below is a chart showing the range
-of such NetLogo colors. ![[programming//colors.png]]
+of such NetLogo colors. ![[programming/colors.png]]
 
 The chart shows that:
 

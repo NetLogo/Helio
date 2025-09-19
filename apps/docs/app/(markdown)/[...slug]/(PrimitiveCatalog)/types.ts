@@ -8,8 +8,7 @@ export const PrimitiveCatalogPropsSchema = z.object({
   currentItemLabel: z.string().default(''),
 });
 
-export type PrimitiveCatalogProps = z.infer<
-  typeof PrimitiveCatalogPropsSchema
-> & {
+export type PrimitiveCatalogProps = z.infer<typeof PrimitiveCatalogPropsSchema> & {
   children?: React.ReactNode;
+  basePath?: string;
 };

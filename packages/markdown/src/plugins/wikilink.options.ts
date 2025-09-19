@@ -1,12 +1,14 @@
+import { isNonEmptyString } from '@repo/utils/std/string';
+import type { Content } from './utils';
 /**
  * HTML element configuration for different link types
  */
-interface LinkHtmlOptions {
-  parentNode?: { tagName: string; properties?: Record<string, any> };
+type LinkHtmlOptions = {
+  parentNode?: { tagName: string; properties?: Record<string, unknown> };
   target?: string;
   rel?: string;
   titleTemplate?: (permalink: string, displayText?: string) => string;
-}
+};
 
 /**
  * Link type identifiers
@@ -16,18 +18,14 @@ type LinkType = 'wikiLink' | 'imageLink' | 'missingLink' | 'externalLink';
 /**
  * Configuration options for WikiLink processing
  */
-interface WikiLinkOptions {
+type WikiLinkOptions = {
   /**
    * Template function for generating href URLs from permalinks
    * @param permalink - The extracted permalink from [[permalink]] or [[permalink|alias]]
    * @returns The final href URL
    * @default (permalink) => `#${permalink}`
    */
-  hrefTemplate?: (
-    permalink: string,
-    linkType: LinkType,
-    anchor?: string | null
-  ) => string;
+  hrefTemplate?: (permalink: string, linkType: LinkType, anchor?: string | null) => string;
 
   /**
    * CSS classes to apply to generated elements
@@ -81,21 +79,22 @@ interface WikiLinkOptions {
     /** Node types that can be consumed during greedy matching */
     consumableTypes?: Array<string>;
     /** Function to access node value for greedy matching */
-    accessor?: (node: any) => string;
+    accessor?: (node: Content) => string;
   };
-}
+};
 
 /**
  * Default greedy accessor
  */
-export const greedyAccessor = (node: any): string => {
+export const greedyAccessor = (node: Content): string => {
+  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (node.type) {
     case 'text':
-      return node.value;
+      return (node as { type: 'text'; value: string }).value;
     case 'html':
-      return node.value;
+      return (node as { type: 'html'; value: string }).value;
     case 'link':
-      return node.url;
+      return (node as { type: 'link'; url: string }).url;
     default:
       return '';
   }
@@ -105,18 +104,16 @@ export const greedyAccessor = (node: any): string => {
  * Default values for WikiLink configuration
  */
 const DEFAULT_OPTIONS = {
-  hrefTemplate: (
-    permalink: string,
-    linkType: LinkType,
-    anchor?: string | null
-  ) => {
+  hrefTemplate: (permalink: string, linkType: LinkType, anchor?: string | null): string => {
+    const isAnchorDefined = isNonEmptyString(anchor);
+    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
     switch (linkType) {
       case 'imageLink':
-        return `${permalink}${anchor ? `#${anchor}` : ''}`;
+        return `${permalink}${isAnchorDefined ? `#${anchor}` : ''}`;
       case 'missingLink':
-        return `#${permalink}${anchor || ''}`;
+        return `#${permalink}${isAnchorDefined ? `#${anchor}` : ''}`;
       default:
-        return `#${permalink}${anchor ? `#${anchor}` : ''}`;
+        return `#${permalink}${isAnchorDefined ? `#${anchor}` : ''}`;
     }
   },
   classNames: {
@@ -128,13 +125,12 @@ const DEFAULT_OPTIONS = {
     missingLinkBehavior: 'ignore' as const,
   },
   imageOptions: {
-    altTemplate: (filename: string) => filename,
+    altTemplate: (filename: string): string => filename,
     defaultSize: {},
   },
   integration: {
     fileExtension: '.md',
-    encode: (permalink: string) =>
-      encodeURIComponent(permalink).replace(/%20/g, '+'),
+    encode: (permalink: string): string => encodeURIComponent(permalink).replace(/%20/g, '+'),
     greedyMatch: false,
   },
   greedyMatch: {
@@ -153,7 +149,7 @@ const createDefaultHtmlOptions = (): LinkHtmlOptions => ({
   target: '_self',
   rel: undefined,
   titleTemplate: (permalink: string, displayText?: string) =>
-    displayText
+    typeof displayText === 'string' && displayText !== ''
       ? `Link to ${displayText} (${permalink})`
       : `Link to ${permalink}`,
 });
@@ -161,11 +157,8 @@ const createDefaultHtmlOptions = (): LinkHtmlOptions => ({
 /**
  * Creates default HTML options for all link types
  */
-const createDefaultHtmlOptionsForAllTypes = (): Record<
-  LinkType,
-  LinkHtmlOptions
-> => {
-  const linkTypes: LinkType[] = ['wikiLink', 'imageLink', 'missingLink'];
+const createDefaultHtmlOptionsForAllTypes = (): Record<LinkType, LinkHtmlOptions> => {
+  const linkTypes: Array<LinkType> = ['wikiLink', 'imageLink', 'missingLink'];
   return linkTypes.reduce(
     (acc, type) => ({
       ...acc,
@@ -180,7 +173,7 @@ const createDefaultHtmlOptionsForAllTypes = (): Record<
  */
 const getDefaultWikiLinkOptions = (
   providedOptions: Partial<WikiLinkOptions> = {}
-): WikiLinkOptions & { htmlOptions: Record<LinkType, LinkHtmlOptions> } => {
+): Required<WikiLinkOptions> & { htmlOptions: Record<LinkType, LinkHtmlOptions> } => {
   return {
     hrefTemplate: providedOptions.hrefTemplate ?? DEFAULT_OPTIONS.hrefTemplate,
     classNames: {

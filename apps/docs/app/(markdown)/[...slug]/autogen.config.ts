@@ -1,4 +1,4 @@
-import { ProjectConfig } from '@repo/mustache';
+import type { ProjectConfig } from '@repo/mustache';
 
 export default {
   defaults: {

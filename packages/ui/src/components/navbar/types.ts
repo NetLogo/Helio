@@ -1,6 +1,4 @@
-export interface NavbarProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    NavbarDynamicProps {
+export type NavbarProps = {
   id: string;
 
   brand?: React.ReactNode;
@@ -9,13 +7,13 @@ export interface NavbarProps
   children?: React.ReactNode;
 
   blurBackdrop?: number | string; // Default: "10px"
-}
+} & React.HTMLAttributes<HTMLDivElement> & NavbarDynamicProps
 
-export interface NavbarDynamicProps {
+export type NavbarDynamicProps = {
   show?: boolean;
 }
 
-export interface NavbarOptions {
+export type NavbarOptions = {
   hideOnScroll?: {
     threshold?: number; // Default: 50
     aggregateThreshold?: boolean; // Default: true

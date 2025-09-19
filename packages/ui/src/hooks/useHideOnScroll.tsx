@@ -4,7 +4,7 @@ export default function useHideOnScroll({
   enabled = true,
   threshold = 50,
   aggregateThreshold = true,
-} = {}) {
+} = {}): boolean {
   const [show, setShow] = useState(true);
   const prevScrollY = useRef(0);
   const scrollDownAmount = useRef(0);
@@ -12,7 +12,7 @@ export default function useHideOnScroll({
   useEffect(() => {
     if (typeof window === 'undefined' || !enabled) return;
 
-    const handleScroll = () => {
+    const handleScroll = (): void => {
       if (window.scrollY > prevScrollY.current) {
         // Scroll amount when scrolling down
         if (aggregateThreshold) {
@@ -33,8 +33,11 @@ export default function useHideOnScroll({
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [enabled, threshold]);
+    // eslint-disable-next-line @typescript-eslint/consistent-return
+    return (): void => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [enabled, threshold, aggregateThreshold]);
 
   return show;
 }

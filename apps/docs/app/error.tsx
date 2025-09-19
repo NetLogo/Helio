@@ -1,13 +1,14 @@
 'use client';
 
 import { cn } from '@repo/ui/lib/utils/cn';
+import type { JSX } from 'react';
 
 export default function ErrorPage({
   status = 404,
   title = 'Page Not Found',
   className,
   children,
-}: ErrorPageProps) {
+}: ErrorPageProps): JSX.Element {
   return (
     <div className={cn('flex flex-col items-center justify-center min-h-screen', className)}>
       <h1 className="text-4xl bg-red-500 mt-[-3rem] w-200 text-center">{status}</h1>
@@ -26,9 +27,9 @@ export enum ErrorStatus {
   Forbidden = 403,
 }
 
-export interface ErrorPageProps {
+export type ErrorPageProps = {
   status?: number;
   title?: string;
   className?: string;
   children?: React.ReactNode;
-}
+};

@@ -1,8 +1,9 @@
-import type { Content, Element, Root } from 'hast';
+import type { Element, RootContent as HastRootContent, Root } from 'hast';
+import type { RootContent as MDRootContent } from 'mdast';
 
-export const isNodeElement = (
-  node?: Content | { type: string }
-): node is Element => {
+export type Content = HastRootContent | MDRootContent;
+
+export const isNodeElement = (node?: Content | { type: string }): node is Element => {
   return node?.type === 'element';
 };
 
@@ -24,11 +25,19 @@ export const next = (
   parent: Root | Element | undefined,
   firstIndex: number,
   stop: (node?: Content | { type: string }) => boolean
-): readonly [Content | { type: string } | undefined, number] => {
+): readonly [Content | undefined, number] => {
   if (!parent) return [undefined, -1] as const;
   for (let i = firstIndex + 1; i < parent.children.length; i++) {
     const child = parent.children[i];
     if (stop(child)) return [child, i] as const;
   }
   return [undefined, -1] as const;
+};
+
+export const extractText = (node: Content | undefined): string => {
+  if (!node) return '';
+  if (!('type' in node)) return '';
+  if (node.type === 'text') return node.value;
+  if (node.type === 'element') return node.children.map(extractText).join('');
+  return '';
 };

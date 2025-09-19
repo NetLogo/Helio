@@ -14,7 +14,10 @@ export function useDebouncedHover(
   onLeave: (e: React.MouseEvent<HTMLElement>) => void,
   enterDelay = 150,
   leaveDelay = 200
-) {
+): {
+  onMouseEnter: (e: React.MouseEvent<HTMLElement>) => void;
+  onMouseLeave: (e: React.MouseEvent<HTMLElement>) => void;
+} {
   const enterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -39,7 +42,7 @@ export function useDebouncedHover(
   );
 
   useEffect(() => {
-    return () => {
+    return (): void => {
       // Optionally, clear timers on unmount
       if (enterTimer.current) clearTimeout(enterTimer.current);
       if (leaveTimer.current) clearTimeout(leaveTimer.current);

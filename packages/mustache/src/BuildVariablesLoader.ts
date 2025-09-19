@@ -1,10 +1,7 @@
 import path from 'path';
 
-import {
-  BuildVariableReader,
-  DataFileReader,
-  NodeStdoutReader,
-} from './BuildVariablesLoader.readerModules.js';
+import type { BuildVariableReader } from './BuildVariablesLoader.readerModules.js';
+import { DataFileReader } from './BuildVariablesLoader.readerModules.js';
 import { UnsupportedFileTypeError } from './errors.js';
 import { getFileExtension, isURL, readLocal, readRemote } from './utils.js';
 
@@ -48,10 +45,10 @@ import { getFileExtension, isURL, readLocal, readRemote } from './utils.js';
  * @see {@link https://nodejs.org/api/fs.html#fs_fs_promises_api} for local file reading
  */
 export class BuildVariablesLoader {
-  static readonly readers: BuildVariableReader[] = [new NodeStdoutReader(), new DataFileReader()];
+  public static readonly readers: Array<BuildVariableReader> = [new DataFileReader()];
 
-  extensionMap = new Map<string, BuildVariableReader>();
-  constructor(private scanRoot: string) {
+  public extensionMap = new Map<string, BuildVariableReader>();
+  public constructor(private readonly scanRoot: string) {
     for (const loader of BuildVariablesLoader.readers) {
       for (const ext of loader.supportedExtensions) {
         this.extensionMap.set(ext, loader);
@@ -64,7 +61,7 @@ export class BuildVariablesLoader {
    * @param value - The input value (local path or URL)
    * @returns The full file path as a string
    */
-  getFullFilePath(value: string): string {
+  public getFullFilePath(value: string): string {
     if (isURL(value)) {
       return value;
     } else {
@@ -77,7 +74,7 @@ export class BuildVariablesLoader {
    * @param value - Path or URL to fetch the build variables from
    * @returns The raw content of the file as a string
    */
-  async fetch(value: string): Promise<string> {
+  public async fetch(value: string): Promise<string> {
     if (isURL(value)) {
       return readRemote(value);
     } else {
@@ -86,7 +83,7 @@ export class BuildVariablesLoader {
     }
   }
 
-  async load(value: string): Promise<BuildVariable> {
+  public async load(value: string): Promise<BuildVariable> {
     const extension = getFileExtension(value).toLowerCase();
     const reader = this.extensionMap.get(extension);
     if (reader) {
@@ -94,16 +91,6 @@ export class BuildVariablesLoader {
     } else {
       throw new UnsupportedFileTypeError(`${extension} for ${value}`);
     }
-  }
-
-  /**
-   * Returns a list of supported file types for build variables.
-   *
-   * @readonly
-   * @type {string}
-   */
-  get supportedFileTypes() {
-    return BuildVariablesLoader.readers.flatMap((reader) => reader.supportedExtensions).join(', ');
   }
 }
 

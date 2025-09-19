@@ -2,10 +2,11 @@ import type { Plugin } from 'unified';
 import type { Literal, Node, Parent } from 'unist';
 import { u } from 'unist-builder';
 import { visit } from 'unist-util-visit';
+import type { Content } from './utils';
 
-export const remarkRehypeQuestion: Plugin<[]> = () => {
+export const remarkRehypeQuestion: Plugin = () => {
   return (tree: Node) => {
-    visit(tree, 'paragraph', (node: Node, index: number, parent: Parent) => {
+    visit(tree, 'paragraph', (node: Content, index: number, parent: Parent | null) => {
       if (!parent) return;
       else if (!('children' in parent)) return;
       else if (!Array.isArray(parent.children)) return;

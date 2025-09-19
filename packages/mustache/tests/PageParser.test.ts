@@ -117,9 +117,7 @@ describe('PageParser', () => {
       const error = new Error('File not found');
       mockFs.readFile.mockRejectedValue(error);
 
-      await expect(pageParser.processYamlFile(yamlPath)).rejects.toThrow(
-        FileFetchError
-      );
+      await expect(pageParser.processYamlFile(yamlPath)).rejects.toThrow(FileFetchError);
     });
 
     it('should handle YAML parse error', async () => {
@@ -129,9 +127,7 @@ describe('PageParser', () => {
         throw error;
       });
 
-      await expect(pageParser.processYamlFile(yamlPath)).rejects.toThrow(
-        ParseError
-      );
+      await expect(pageParser.processYamlFile(yamlPath)).rejects.toThrow(ParseError);
     });
 
     it('should calculate relative base name correctly', async () => {
@@ -148,9 +144,7 @@ describe('PageParser', () => {
     it('should handle .yml extension', async () => {
       const yamlPath = '/project/src/test.yml';
       mockFs.readFile.mockResolvedValue('title: Test');
-      mockYaml.parseAllDocuments.mockReturnValue([
-        { toJSON: () => ({ title: 'Test' }) },
-      ] as any);
+      mockYaml.parseAllDocuments.mockReturnValue([{ toJSON: () => ({ title: 'Test' }) }] as any);
 
       const results = await pageParser.processYamlFile(yamlPath);
       expect(results[0].sourcePath).toBe('/project/src/test.md');
@@ -175,10 +169,7 @@ describe('PageParser', () => {
         { title: 'Config 2', output: true, language: 'es' },
       ];
 
-      const results = await pageParser.processConfigurations(
-        configs,
-        'dynamic'
-      );
+      const results = await pageParser.processConfigurations(configs, 'dynamic');
 
       expect(results).toHaveLength(2);
       expect(results[0].success).toBe(true);
@@ -190,19 +181,12 @@ describe('PageParser', () => {
       const configs = [{ title: 'Dynamic', output: true }];
       const content = '# {{title}}\n\nDynamic content';
 
-      const results = await pageParser.processConfigurations(
-        configs,
-        'dynamic',
-        content
-      );
+      const results = await pageParser.processConfigurations(configs, 'dynamic', content);
 
       expect(results).toHaveLength(1);
       expect(results[0].success).toBe(true);
       expect(mockFs.readFile).not.toHaveBeenCalled(); // Should not read from filesystem
-      expect(mockEngine.render).toHaveBeenCalledWith(
-        content,
-        expect.any(Object)
-      );
+      expect(mockEngine.render).toHaveBeenCalledWith(content, expect.any(Object));
     });
 
     it('should handle null and undefined configurations', async () => {
@@ -227,10 +211,7 @@ describe('PageParser', () => {
     it('should apply default configuration', async () => {
       const configs = [{ title: 'Test' }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'test'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'test');
 
       expect(results[0].title).toBe('Test');
       expect(results[0].language).toBe('en'); // from defaults
@@ -242,10 +223,7 @@ describe('PageParser', () => {
         { inheritFrom: [0], title: 'Inherited', output: true },
       ];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'inherit'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'inherit');
 
       expect(results[1].title).toBe('Inherited');
       expect(results[1].description).toBe('Base description'); // Inherited
@@ -257,10 +235,7 @@ describe('PageParser', () => {
         { inheritFrom: [5], title: 'Invalid', output: true }, // Index 5 doesn't exist
       ];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'invalid'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'invalid');
 
       expect(results[0].success).toBe(true);
       expect(results[1].success).toBe(false);
@@ -274,10 +249,7 @@ describe('PageParser', () => {
         { title: 'Invalid', output: true },
       ];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'non-cascade'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'non-cascade');
 
       expect(results[0].success).toBe(true);
       expect(results[1].success).toBe(false);
@@ -311,10 +283,7 @@ describe('PageParser', () => {
     it('should generate correct source file names for default language', async () => {
       const configs = [{ title: 'English', language: 'en', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'test'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'test');
 
       expect(results[0].sourcePath).toBe('/project/src/test.md'); // No language suffix for default
     });
@@ -322,10 +291,7 @@ describe('PageParser', () => {
     it('should generate correct source file names for non-default language', async () => {
       const configs = [{ title: 'Spanish', language: 'es', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'test'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'test');
 
       expect(results[0].sourcePath).toBe('/project/src/test.es.md'); // Language suffix for non-default
     });
@@ -333,10 +299,7 @@ describe('PageParser', () => {
     it('should generate correct output paths for default language', async () => {
       const configs = [{ title: 'English', language: 'en', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'test'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'test');
 
       expect(results[0].outputPath).toBe('/project/dist/test.md');
     });
@@ -344,10 +307,7 @@ describe('PageParser', () => {
     it('should generate correct output paths for non-default language', async () => {
       const configs = [{ title: 'Spanish', language: 'es', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'test'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'test');
 
       expect(results[0].outputPath).toBe('/project/dist/es/test.md');
     });
@@ -377,10 +337,7 @@ describe('PageParser', () => {
       });
       const configs = [{ title: 'Test', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'error'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'error');
 
       expect(results[0].success).toBe(false);
       expect(results[0].error).toContain('Rendering failed');
@@ -390,10 +347,7 @@ describe('PageParser', () => {
       mockFs.writeFile.mockRejectedValue(new Error('Write failed'));
       const configs = [{ title: 'Test', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'write-error'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'write-error');
 
       expect(results[0].success).toBe(false);
       expect(results[0].error).toContain('Write failed');
@@ -406,10 +360,7 @@ describe('PageParser', () => {
         { title: 'Text', extension: '.txt', output: true }, // With dot
       ];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'extensions'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'extensions');
 
       expect(results[0].sourcePath).toBe('/project/src/extensions.md');
       expect(results[1].sourcePath).toBe('/project/src/extensions.html');
@@ -431,14 +382,9 @@ describe('PageParser', () => {
     it('should set correct metadata path in results', async () => {
       const configs = [{ title: 'Test', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'metadata'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'metadata');
 
-      expect(results[0].metadataPath).toBe(
-        '/project/dist/metadata.metadata.json'
-      );
+      expect(results[0].metadataPath).toBe('/project/dist/metadata.metadata.json');
     });
   });
 
@@ -452,10 +398,7 @@ describe('PageParser', () => {
         description: 'Description',
       });
 
-      expect(mockFs.readFile).toHaveBeenCalledWith(
-        '/project/src/test.md',
-        'utf-8'
-      );
+      expect(mockFs.readFile).toHaveBeenCalledWith('/project/src/test.md', 'utf-8');
       expect(mockEngine.render).toHaveBeenCalledWith(sourceContent, {
         title: 'Test',
         description: 'Description',
@@ -480,14 +423,10 @@ describe('PageParser', () => {
     it('should generate output from provided content', async () => {
       const content = '# {{title}}\n{{description}}';
 
-      await pageParser['generateOutputFileFromContent'](
-        content,
-        '/output/test.html',
-        {
-          title: 'Test',
-          description: 'Description',
-        }
-      );
+      await pageParser['generateOutputFileFromContent'](content, '/output/test.html', {
+        title: 'Test',
+        description: 'Description',
+      });
 
       expect(mockEngine.render).toHaveBeenCalledWith(content, {
         title: 'Test',
@@ -504,11 +443,7 @@ describe('PageParser', () => {
 
   describe('renderAndWriteOutput (private method)', () => {
     it('should render content and write to file', async () => {
-      await pageParser['renderAndWriteOutput'](
-        '{{title}}',
-        '/output/test.html',
-        { title: 'Test' }
-      );
+      await pageParser['renderAndWriteOutput']('{{title}}', '/output/test.html', { title: 'Test' });
 
       expect(mockEngine.render).toHaveBeenCalledWith('{{title}}', {
         title: 'Test',
@@ -553,11 +488,7 @@ describe('PageParser', () => {
         extension: 'md',
       };
 
-      await pageParser['generateMetadataJSON'](
-        'test.md',
-        '/output/test.metadata.json',
-        config
-      );
+      await pageParser['generateMetadataJSON']('test.md', '/output/test.metadata.json', config);
 
       expect(mockFs.writeFile).toHaveBeenCalledWith(
         '/output/test.metadata.json',
@@ -612,11 +543,7 @@ describe('PageParser', () => {
         ];
         const defaults = { language: 'en' };
 
-        const result = pageParser['_applyCascadeInheritance'](
-          configs,
-          defaults,
-          1
-        );
+        const result = pageParser['_applyCascadeInheritance'](configs, defaults, 1);
 
         expect(result.title).toBe('Child');
         expect(result.description).toBe('Base desc');
@@ -626,24 +553,21 @@ describe('PageParser', () => {
       it('should throw error for invalid current index', () => {
         const configs = [{ title: 'Test' }];
 
-        expect(() =>
-          pageParser['_applyCascadeInheritance'](configs, {}, 5)
-        ).toThrow('Invalid currentIndex 5 for inheritance');
+        expect(() => pageParser['_applyCascadeInheritance'](configs, {}, 5)).toThrow(
+          'Invalid currentIndex 5 for inheritance'
+        );
 
-        expect(() =>
-          pageParser['_applyCascadeInheritance'](configs, {}, -1)
-        ).toThrow('Invalid currentIndex -1 for inheritance');
+        expect(() => pageParser['_applyCascadeInheritance'](configs, {}, -1)).toThrow(
+          'Invalid currentIndex -1 for inheritance'
+        );
       });
 
       it('should throw error for invalid inheritFrom index', () => {
-        const configs = [
-          { title: 'Base' },
-          { title: 'Child', inheritFrom: [5] },
-        ];
+        const configs = [{ title: 'Base' }, { title: 'Child', inheritFrom: [5] }];
 
-        expect(() =>
-          pageParser['_applyCascadeInheritance'](configs, {}, 1)
-        ).toThrow('Invalid inheritFrom index 5 in item at index 1');
+        expect(() => pageParser['_applyCascadeInheritance'](configs, {}, 1)).toThrow(
+          'Invalid inheritFrom index 5 in item at index 1'
+        );
       });
 
       it('should handle multiple inheritance sources', () => {
@@ -665,11 +589,7 @@ describe('PageParser', () => {
         const configs = [{ title: 'Standalone' }];
         const defaults = { language: 'en' };
 
-        const result = pageParser['_applyCascadeInheritance'](
-          configs,
-          defaults,
-          0
-        );
+        const result = pageParser['_applyCascadeInheritance'](configs, defaults, 0);
 
         expect(result.title).toBe('Standalone');
         expect(result.language).toBe('en');
@@ -680,9 +600,7 @@ describe('PageParser', () => {
       it('should prepare build variables without external variables', async () => {
         const config = { title: 'Test', description: 'Desc' };
 
-        const result = await pageParser['_prepareBuildVariables'](
-          config as PageConfig
-        );
+        const result = await pageParser['_prepareBuildVariables'](config as PageConfig);
 
         expect(result.title).toBe('Test');
         expect(result.description).toBe('Desc');
@@ -700,13 +618,9 @@ describe('PageParser', () => {
           },
         };
 
-        const result = await pageParser['_prepareBuildVariables'](
-          config as PageConfig
-        );
+        const result = await pageParser['_prepareBuildVariables'](config as PageConfig);
 
-        expect(mockBuildVariablesLoader.load).toHaveBeenCalledWith(
-          'config.json'
-        );
+        expect(mockBuildVariablesLoader.load).toHaveBeenCalledWith('config.json');
         expect(mockBuildVariablesLoader.load).toHaveBeenCalledWith('data.yaml');
         expect(result.config).toEqual({ external: 'data' });
         expect(result.data).toEqual({ external: 'data' });
@@ -729,96 +643,54 @@ describe('PageParser', () => {
 
     describe('_getSourceFileName', () => {
       it('should generate filename for default language', () => {
-        const result = pageParser['_getSourceFileName'](
-          'test',
-          'md',
-          'en',
-          'en'
-        );
+        const result = pageParser['_getSourceFileName']('test', 'md', 'en', 'en');
         expect(result).toBe('test.md');
       });
 
       it('should generate filename for non-default language', () => {
-        const result = pageParser['_getSourceFileName'](
-          'test',
-          'md',
-          'es',
-          'en'
-        );
+        const result = pageParser['_getSourceFileName']('test', 'md', 'es', 'en');
         expect(result).toBe('test.es.md');
       });
 
       it('should handle extension with dot', () => {
-        const result = pageParser['_getSourceFileName'](
-          'test',
-          '.html',
-          'en',
-          'en'
-        );
+        const result = pageParser['_getSourceFileName']('test', '.html', 'en', 'en');
         expect(result).toBe('test.html');
       });
 
       it('should handle nested paths', () => {
-        const result = pageParser['_getSourceFileName'](
-          'docs/guide',
-          'md',
-          'fr',
-          'en'
-        );
+        const result = pageParser['_getSourceFileName']('docs/guide', 'md', 'fr', 'en');
         expect(result).toBe('docs/guide.fr.md');
       });
     });
 
     describe('_generateOutputPaths', () => {
       it('should generate paths for default language', () => {
-        const result = pageParser['_generateOutputPaths'](
-          'test',
-          'md',
-          'en',
-          'en'
-        );
+        const result = pageParser['_generateOutputPaths']('test', 'md', 'en', 'en');
 
         expect(result.outputPath).toBe('/project/dist/test.md');
-        expect(result.jsonOutputPath).toBe('/project/dist/test.metadata.json');
+        expect(result.metadataOutputPath).toBe('/project/dist/test.metadata.json');
       });
 
       it('should generate paths for non-default language', () => {
-        const result = pageParser['_generateOutputPaths'](
-          'test',
-          'md',
-          'es',
-          'en'
-        );
+        const result = pageParser['_generateOutputPaths']('test', 'md', 'es', 'en');
 
         expect(result.outputPath).toBe('/project/dist/es/test.md');
-        expect(result.jsonOutputPath).toBe(
-          '/project/dist/es/test.metadata.json'
-        );
+        expect(result.metadataOutputPath).toBe('/project/dist/es/test.metadata.json');
       });
 
       it('should handle different extensions', () => {
-        const result = pageParser['_generateOutputPaths'](
-          'test',
-          'html',
-          'en',
-          'en'
-        );
+        const result = pageParser['_generateOutputPaths']('test', 'html', 'en', 'en');
 
         expect(result.outputPath).toBe('/project/dist/test.html');
-        expect(result.jsonOutputPath).toBe('/project/dist/test.metadata.json');
+        expect(result.metadataOutputPath).toBe('/project/dist/test.metadata.json');
       });
 
       it('should use project config output root', () => {
         pageParser['projectConfig'].outputRoot = 'build';
-        const result = pageParser['_generateOutputPaths'](
-          'test',
-          'md',
-          'en',
-          'en'
-        );
+        const result = pageParser['_generateOutputPaths']('test', 'md', 'en', 'en');
 
         expect(result.outputPath).toBe('/project/build/test.md');
-        expect(result.jsonOutputPath).toBe('/project/build/test.metadata.json');
+        expect(result.metadataOutputPath).toBe('/project/build/test.metadata.json');
       });
     });
   });
@@ -833,10 +705,7 @@ describe('PageParser', () => {
 
       const result = await pageParser['loadYaml']('/path/to/file.yaml');
 
-      expect(mockFs.readFile).toHaveBeenCalledWith(
-        '/path/to/file.yaml',
-        'utf-8'
-      );
+      expect(mockFs.readFile).toHaveBeenCalledWith('/path/to/file.yaml', 'utf-8');
       expect(mockYaml.parseAllDocuments).toHaveBeenCalledWith(yamlContent);
       expect(result).toEqual([{ title: 'Test', description: 'Test desc' }]);
     });
@@ -845,9 +714,7 @@ describe('PageParser', () => {
       const error = new Error('File not found');
       mockFs.readFile.mockRejectedValue(error);
 
-      await expect(pageParser['loadYaml']('/missing.yaml')).rejects.toThrow(
-        FileFetchError
-      );
+      await expect(pageParser['loadYaml']('/missing.yaml')).rejects.toThrow(FileFetchError);
     });
 
     it('should handle YAML parse errors', async () => {
@@ -857,9 +724,7 @@ describe('PageParser', () => {
         throw error;
       });
 
-      await expect(pageParser['loadYaml']('/invalid.yaml')).rejects.toThrow(
-        ParseError
-      );
+      await expect(pageParser['loadYaml']('/invalid.yaml')).rejects.toThrow(ParseError);
     });
 
     it('should handle documents that return null from toJSON', async () => {
@@ -898,33 +763,23 @@ describe('PageParser', () => {
 
   describe('edge cases and error handling', () => {
     it('should handle empty configurations array', async () => {
-      const results = await pageParser['processPageConfigurations'](
-        [],
-        'empty'
-      );
+      const results = await pageParser['processPageConfigurations']([], 'empty');
       expect(results).toEqual([]);
     });
 
     it('should handle configuration with no title', async () => {
       const configs = [{ output: true }];
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'no-title'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'no-title');
 
       expect(results[0].success).toBe(true);
       expect(results[0].title).toBe('Default Title'); // From project defaults
     });
 
     it('should handle long file paths', async () => {
-      const longPath =
-        'very/deeply/nested/directory/structure/with/many/levels/document';
+      const longPath = 'very/deeply/nested/directory/structure/with/many/levels/document';
       const configs = [{ title: 'Deep', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        longPath
-      );
+      const results = await pageParser['processPageConfigurations'](configs, longPath);
 
       expect(results[0].sourcePath).toBe(`/project/src/${longPath}.md`);
       expect(results[0].outputPath).toBe(`/project/dist/${longPath}.md`);
@@ -934,10 +789,7 @@ describe('PageParser', () => {
       const specialPath = 'docs/特殊文档-español_français.测试';
       const configs = [{ title: 'Special', output: true }];
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        specialPath
-      );
+      const results = await pageParser['processPageConfigurations'](configs, specialPath);
 
       expect(results[0].sourcePath).toBe(`/project/src/${specialPath}.md`);
     });
@@ -948,12 +800,9 @@ describe('PageParser', () => {
         output: i % 10 === 0, // Only output every 10th page
       }));
 
-      const results = await pageParser['processPageConfigurations'](
-        configs,
-        'bulk'
-      );
+      const results = await pageParser['processPageConfigurations'](configs, 'bulk');
 
-      expect(results).toHaveLength(1000);
+      expect(results).toHaveLength(100);
       // All results should have outputPath, but only 100 should have had files actually written
       expect(results.every((r) => r.outputPath)).toBe(true);
       expect(mockEngine.render).toHaveBeenCalledTimes(100); // Only called for output: true pages
@@ -967,13 +816,11 @@ describe('PageParser', () => {
         new Error('Partial loading failed')
       );
 
-      const consoleSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => {});
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-      await expect(
-        pageParser['processPageConfigurations'](configs, 'test')
-      ).rejects.toThrow('Partial loading failed');
+      await expect(pageParser['processPageConfigurations'](configs, 'test')).rejects.toThrow(
+        'Partial loading failed'
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith(
         'Failed to load partials from directory:',
@@ -993,10 +840,7 @@ describe('PageParser', () => {
         },
       ];
 
-      const result = await pageParser.processConfigurations(
-        configs,
-        'test-source.yaml'
-      );
+      const result = await pageParser.processConfigurations(configs, 'test-source.yaml');
       expect(Array.isArray(result)).toBe(true);
     });
 
@@ -1008,10 +852,7 @@ describe('PageParser', () => {
         },
       ];
 
-      const result = await pageParser.processConfigurations(
-        configs,
-        'test-source.yaml'
-      );
+      const result = await pageParser.processConfigurations(configs, 'test-source.yaml');
       expect(Array.isArray(result)).toBe(true);
     });
 
@@ -1023,10 +864,7 @@ describe('PageParser', () => {
         },
       ];
 
-      const result = await pageParser.processConfigurations(
-        configs,
-        'language-source.yaml'
-      );
+      const result = await pageParser.processConfigurations(configs, 'language-source.yaml');
       expect(Array.isArray(result)).toBe(true);
     });
   });

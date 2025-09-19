@@ -6,25 +6,19 @@ export default function useSearchParams(): [
 ] {
   const [urlQuery, _setUrlQuery] = useState<URLSearchParams>(getUrlQuery());
   useEffect(() => {
-    function onPopState() {
+    function onPopState(): void {
       _setUrlQuery(getUrlQuery());
     }
     window.addEventListener('popstate', onPopState);
-    return () => {
+    return (): void => {
       window.removeEventListener('popstate', onPopState);
     };
   }, []);
 
-  const setUrlQuery = (
-    newParams: URLSearchParams,
-    options: { replace?: boolean } = {}
-  ) => {
+  const setUrlQuery = (newParams: URLSearchParams, options: { replace?: boolean } = {}): void => {
     const newRelativePathQuery =
-      window.location.pathname +
-      '?' +
-      newParams.toString() +
-      window.location.hash;
-    if (options.replace) {
+      window.location.pathname + '?' + newParams.toString() + window.location.hash;
+    if (options.replace === true) {
       window.history.replaceState(null, '', newRelativePathQuery);
     } else {
       window.history.pushState(null, '', newRelativePathQuery);

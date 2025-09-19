@@ -24,10 +24,6 @@ const autoDocumentedExtensions = new Map<string, string>([
 export const configFileName = 'documentation.yaml';
 
 const markdownTemplate = `
-<head>
-<base href="../">
-</head>
-
 # {{extensionName}}
 
 {{{prePrimitiveSections}}}
@@ -40,7 +36,7 @@ Looking for the primitive reference for the {{extensionName}} extension? You can
 ### {{fullCategoryName}}
 <div id="{{shortCategoryName}}">
   {{#prims}}
-  <a class="code" href="#{{_name_}}"><code>{{primitive.fullName}}</code></a>
+  <a class="code" href="#{{id}}"><code>{{primitive.fullName}}</code></a>
   {{/prims}}
 </div>
 
@@ -49,7 +45,7 @@ Looking for the primitive reference for the {{extensionName}} extension? You can
 {{#emptyTableOfContents}}{{#contents}}
 <div id="{{shortCategoryName}}" class="prose">
   {{#prims}}
-  <a class="code" href="#{{_name_}}"><code>{{primitive.fullName}}</code></a>
+  <a class="code" href="#{{id}}"><code>{{primitive.fullName}}</code></a>
   {{/prims}}
 </div>
 {{/contents}}{{/emptyTableOfContents}}
@@ -86,18 +82,9 @@ const primTemplate = /*markdown*/ `
 `;
 
 const primIndexTemplate = /*markdown*/ `
-<head>
-<base href="../">
-</head>
-
 {{#entry}}
 ${primTemplate}
 {{/entry}}
 `;
 
-export {
-  autoDocumentedExtensions,
-  markdownTemplate,
-  primIndexTemplate,
-  primTemplate,
-};
+export { autoDocumentedExtensions, markdownTemplate, primIndexTemplate, primTemplate };

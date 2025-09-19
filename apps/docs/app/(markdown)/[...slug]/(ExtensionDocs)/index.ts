@@ -1,20 +1,22 @@
 import fs from 'fs';
 import path from 'path';
 
-import MustacheRenderer, { PageConfig, PageResult } from '@repo/mustache';
+import type { PageConfig, PageResult } from '@repo/mustache';
+import MustacheRenderer from '@repo/mustache';
 
-import { ArrayUtils } from '@repo/utils/std/array';
+import * as ArrayUtils from '@repo/utils/std/array';
 import autogenConfig from '../autogen.config';
 import { generatePrimitiveIndex } from '../PrimIndex';
-import { MustachePrimitiveWrapper, Primitive, TableOfContents } from './entities';
+import type { Primitive } from './entities';
+import { MustachePrimitiveWrapper, TableOfContents } from './entities';
 import * as Fixtures from './fixtures';
 import { parseAllFromText } from './parser';
-import { ExtensionConfig } from './types';
+import type { ExtensionConfig } from './types';
 
 export class ExtensionDocumentationBuilder {
-  markdownTemplate = Fixtures.markdownTemplate;
-  primTemplate = Fixtures.primTemplate;
-  primIndexTemplate = Fixtures.primIndexTemplate;
+  private readonly markdownTemplate = Fixtures.markdownTemplate;
+  private readonly primTemplate = Fixtures.primTemplate;
+  private readonly primIndexTemplate = Fixtures.primIndexTemplate;
 
   public readonly shortName: string;
   public readonly fullName: string;
@@ -24,11 +26,11 @@ export class ExtensionDocumentationBuilder {
 
   public readonly prePrimitiveSections: Array<string>;
   public readonly postPrimitiveSections: Array<string>;
-  public readonly primitives: Primitive[];
+  public readonly primitives: Array<Primitive>;
 
-  private _renderer: MustacheRenderer;
+  private readonly _renderer: MustacheRenderer;
 
-  constructor(extensionDir: string) {
+  public constructor(extensionDir: string) {
     this.dirPath = path.resolve(extensionDir);
     this.shortName = path.basename(this.dirPath);
     this.fullName = this._getFullName();
@@ -47,7 +49,7 @@ export class ExtensionDocumentationBuilder {
     this._renderer = this._createRenderer();
   }
 
-  async buildHomePage(): Promise<Array<PageResult>> {
+  public async buildHomePage(): Promise<Array<PageResult>> {
     return await this._renderer.buildFromConfiguration(
       [this.pageConfiguration],
       this.homePageURI,
@@ -66,11 +68,12 @@ export class ExtensionDocumentationBuilder {
     );
   }
 
-  async buildPrimitivePages(): Promise<Array<PageResult>> {
+  public async buildPrimitivePages(): Promise<Array<PageResult>> {
     return await generatePrimitiveIndex({
       dictionary: { entries: this.wrappedPrimitives },
       dictionaryDisplayName: this.displayName + ' Dictionary',
-      dictionaryHomeDirectory: this.primRoot,
+      dictionaryHomeDirectory: path.join('/', 'extensions', this.primRoot + '.html'),
+      primitivesDirectory: this.primRoot,
       indexFileName: path.join('extensions', this.shortName),
       template: this.primIndexTemplate,
       renderer: this._renderer,
@@ -79,21 +82,21 @@ export class ExtensionDocumentationBuilder {
     });
   }
 
-  async buildAll(): Promise<Array<PageResult>> {
+  public async buildAll(): Promise<Array<PageResult>> {
     const concatedResult = await Promise.all([this.buildHomePage(), this.buildPrimitivePages()]);
     return concatedResult.flat(1);
   }
 
   // Computed Properties
-  get name(): string {
+  public get name(): string {
     return this.shortName;
   }
 
-  get displayName(): string {
+  protected get displayName(): string {
     return `${this.fullName} Extension`;
   }
 
-  get pageConfiguration(): Partial<PageConfig> {
+  protected get pageConfiguration(): Partial<PageConfig> {
     return {
       title: this.displayName,
       description: `Documentation for the ${this.fullName} extension.`,
@@ -101,55 +104,57 @@ export class ExtensionDocumentationBuilder {
     };
   }
 
-  get homePageURI(): string {
-    return `extensions/${this.shortName.toLowerCase()}`;
+  protected get homePageURI(): string {
+    return path.join('extensions', this.shortName.toLowerCase());
   }
 
-  get emptyTableOfContents(): boolean {
+  protected get emptyTableOfContents(): boolean {
     return !this.config.tableOfContents || Object.keys(this.config.tableOfContents).length === 0;
   }
 
-  get primRoot(): string {
+  protected get primRoot(): string {
     return this.shortName.toLowerCase();
   }
 
-  get additionalVariables(): Record<string, unknown> {
-    return this.config.additionalVariables || {};
+  protected get additionalVariables(): Record<string, unknown> {
+    return this.config.additionalVariables ?? {};
   }
 
-  get wrappedPrimitives(): MustachePrimitiveWrapper[] {
+  protected get wrappedPrimitives(): Array<MustachePrimitiveWrapper> {
     return this.primitives.map((p) => new MustachePrimitiveWrapper(p));
   }
 
-  get tableOfContents(): TableOfContents {
+  protected get tableOfContents(): TableOfContents {
     return TableOfContents.fromPrimitives(
       this.wrappedPrimitives,
-      this.config.tableOfContents || {}
+      this.config.tableOfContents ?? {}
     );
   }
 
   // Initialization methods
   private _getFullName(): string {
     const nameFromMap = Fixtures.autoDocumentedExtensions.get(this.shortName);
-    if (!nameFromMap) console.warn(`Extension ${this.shortName} not found in full name map.`);
-    return nameFromMap || this.shortName;
+    if (!(typeof nameFromMap === 'string'))
+      console.warn(`Extension ${this.shortName} not found in full name map.`);
+    return nameFromMap ?? this.shortName;
   }
 
   private _getConfigPath(): string {
     return path.join(this.dirPath, Fixtures.configFileName);
   }
 
-  private _loadConfig(configPath: string): [ExtensionConfig, Primitive[]] {
+  private _loadConfig(configPath: string): [ExtensionConfig, Array<Primitive>] {
     const fileContent = fs.readFileSync(configPath, 'utf-8');
     const parsed = parseAllFromText(fileContent);
 
-    if (!parsed.documentation || !parsed.primitives) parsed.warnings.throw();
+    if (![parsed.documentation, parsed.primitives].every(Boolean)) parsed.warnings.throw();
 
-    return [parsed.documentation!, parsed.primitives!];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return [parsed.documentation!, parsed.primitives];
   }
 
   private _loadDependencies(): Record<string, string> {
-    const dependencies = this.config.filesToIncludeInManual || [];
+    const dependencies = this.config.filesToIncludeInManual ?? [];
     if (dependencies.length === 0) return {};
     const dependencyEntries = dependencies
       .filter((dep) => dep !== 'primitives')
@@ -159,11 +164,11 @@ export class ExtensionDocumentationBuilder {
         return [dep, null];
       })
       .filter(([, content]) => content !== null);
-    return Object.fromEntries(dependencyEntries);
+    return Object.fromEntries(dependencyEntries) as Record<string, string>;
   }
 
   private _parseSections(): [Array<string>, Array<string>] {
-    const dependencyNames = this.config.filesToIncludeInManual || [];
+    const dependencyNames = this.config.filesToIncludeInManual ?? [];
     const prePrimitive = ArrayUtils.takeWhile(dependencyNames, (name) => name !== 'primitives');
     const postPrimitive = ArrayUtils.dropWhile(
       dependencyNames,
@@ -175,7 +180,7 @@ export class ExtensionDocumentationBuilder {
         .map((sectionName) => sectionName.trim())
         .map((sectionName) => {
           const content = this.dependencies[sectionName];
-          if (!content) {
+          if (!(typeof content === 'string')) {
             console.warn(`Missing file ${sectionName} in extension ${this.shortName}.`);
           }
           return content;
@@ -197,9 +202,12 @@ export class ExtensionDocumentationBuilder {
   }
 }
 
-export async function getDocumentedExtensionBuilders(): Promise<ExtensionDocumentationBuilder[]> {
+export async function getDocumentedExtensionBuilders(): Promise<
+  Array<ExtensionDocumentationBuilder>
+> {
+  // eslint-disable-next-line turbo/no-undeclared-env-vars
   const extensionDir = process.env['EXTENSIONS_DIR'];
-  if (!extensionDir) {
+  if (!(typeof extensionDir === 'string')) {
     console.error('Environment Variable EXTENSIONS_DIR not set.');
     return [];
   }
@@ -217,8 +225,8 @@ export async function getDocumentedExtensionBuilders(): Promise<ExtensionDocumen
     .map((dirPath) => new ExtensionDocumentationBuilder(dirPath));
 }
 
-export async function buildDocs() {
+export async function buildDocs(): Promise<Array<PageResult>> {
   const extensions = await getDocumentedExtensionBuilders();
-  const results = await Promise.all(extensions.map((ext) => ext.buildAll()));
+  const results = await Promise.all(extensions.map(async (ext) => ext.buildAll()));
   return results.flat(1);
 }

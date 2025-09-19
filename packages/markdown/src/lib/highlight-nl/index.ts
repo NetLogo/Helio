@@ -1,25 +1,20 @@
-// @ts-nocheck
 import Prism from 'prismjs';
 
-import {
-  commands,
-  constants,
-  keywords,
-  reporters,
-} from './netlogo-syntax-constants';
+import { commands, constants, keywords, reporters } from './netlogo-syntax-constants';
 
-const notWordCh = /[\s\[\(\]\)]/.source;
-const wordCh = /[^\s\[\(\]\)]/.source;
+const notWordCh = /[\s[(\])]/.source;
+const wordCh = /[^\s[(\])]/.source;
 const wordEnd = `(?=${notWordCh}|$)`;
 const wordStart = `(${notWordCh}|^)`;
 
-const wordRegEx = (pattern) => ({
+const wordRegEx = (pattern: string): { pattern: RegExp; lookbehind: boolean } => ({
   pattern: new RegExp(`${wordStart}(${pattern})${wordEnd}`, 'i'),
   lookbehind: true,
 });
-const memberRegEx = (words) => wordRegEx(`(?:${words.join('|')})`);
+const memberRegEx = (words: Array<string>): ReturnType<typeof wordRegEx> =>
+  wordRegEx(`(?:${words.join('|')})`);
 
-const keywordRegex = (() => {
+const keywordRegex = ((): RegExp => {
   const normalKeyword = memberRegEx(keywords).pattern.source;
   const xsOwn = wordRegEx(`${wordCh}*-own`).pattern.source;
   return new RegExp(`${normalKeyword}|${xsOwn}`, 'i');
@@ -36,6 +31,6 @@ const NetLogo = {
   variable: wordRegEx(`${wordCh}+`),
 };
 
-const highlightNL = (code) => Prism.highlight(code, NetLogo);
+const highlightNL = (code: string): string => Prism.highlight(code, NetLogo, 'netlogo');
 
 export default highlightNL;

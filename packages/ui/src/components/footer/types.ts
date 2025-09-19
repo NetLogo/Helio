@@ -1,4 +1,4 @@
-export interface FooterProps extends React.HTMLAttributes<HTMLElement> {
+export type FooterProps = {
   /**
    * Whether to show the footer (default: true)
    */
@@ -13,9 +13,9 @@ export interface FooterProps extends React.HTMLAttributes<HTMLElement> {
    * Number of sections in the footer layout (default: 3)
    */
   sections?: number;
-}
+} & React.HTMLAttributes<HTMLElement>
 
-export interface FooterSectionProps {
+export type FooterSectionProps = {
   /**
    * Brand content to display (can include logo, text, etc.)
    */
@@ -27,7 +27,7 @@ export interface FooterSectionProps {
   span?: number;
 }
 
-export interface FooterBrandSectionProps extends FooterSectionProps {
+export type FooterBrandSectionProps = {
   /**
    * Optional brand logo or image
    */
@@ -37,10 +37,9 @@ export interface FooterBrandSectionProps extends FooterSectionProps {
    * Optional link for the brand section (e.g., logo link)
    */
   brandHref?: string;
-}
+} & FooterSectionProps
 
-export interface FooterLinksSectionProps
-  extends Omit<FooterSectionProps, 'children'> {
+export type FooterLinksSectionProps = {
   /**
    * Title for the links section
    */
@@ -49,10 +48,10 @@ export interface FooterLinksSectionProps
   /**
    * Array of links to display
    */
-  links: FooterLink[];
-}
+  links: Array<FooterLink>;
+} & Omit<FooterSectionProps, 'children'>
 
-export interface FooterLink {
+export type FooterLink = {
   /**
    * Link title/text
    */

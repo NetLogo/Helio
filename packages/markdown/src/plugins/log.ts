@@ -1,7 +1,7 @@
 import type { Root } from 'hast';
 import type { Plugin } from 'unified';
 
-interface LogOptions {
+type LogOptions = {
   source?: string;
 }
 export const remarkRehypeLog: Plugin<[LogOptions], Root> = ({

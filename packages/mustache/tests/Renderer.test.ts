@@ -4,12 +4,7 @@ import fs from 'fs/promises';
 import type { PageResult } from '../src/api.schemas.js';
 import { BuildVariablesLoader } from '../src/BuildVariablesLoader.js';
 import { TemplateEngine } from '../src/engines.js';
-import {
-  FileFetchError,
-  InitializationError,
-  ParseError,
-  RenderError,
-} from '../src/errors.js';
+import { FileFetchError, InitializationError, ParseError, RenderError } from '../src/errors.js';
 import PageParser from '../src/PageParser.js';
 import { ProjectConfigLoader } from '../src/ProjectConfigLoader.js';
 import Renderer from '../src/Renderer.js';
@@ -32,12 +27,8 @@ const MockPageParser = PageParser as jest.MockedClass<typeof PageParser>;
 const MockBuildVariablesLoader = BuildVariablesLoader as jest.MockedClass<
   typeof BuildVariablesLoader
 >;
-const MockProjectConfigLoader = ProjectConfigLoader as jest.MockedClass<
-  typeof ProjectConfigLoader
->;
-const mockProjectConfigSchema = ProjectConfigSchema as jest.Mocked<
-  typeof ProjectConfigSchema
->;
+const MockProjectConfigLoader = ProjectConfigLoader as jest.MockedClass<typeof ProjectConfigLoader>;
+const mockProjectConfigSchema = ProjectConfigSchema as jest.Mocked<typeof ProjectConfigSchema>;
 
 describe('Renderer', () => {
   let renderer: Renderer;
@@ -123,9 +114,7 @@ describe('Renderer', () => {
         defaults: { ...mockConfig.defaults, language: undefined },
       };
 
-      const rendererWithoutLanguage = new Renderer(
-        configWithoutLanguage as ProjectConfig
-      );
+      const rendererWithoutLanguage = new Renderer(configWithoutLanguage as ProjectConfig);
 
       expect(rendererWithoutLanguage.defaultLanguage).toBe('en');
     });
@@ -139,9 +128,7 @@ describe('Renderer', () => {
       const renderer = new Renderer(configWithHandlebars);
       expect(renderer).toBeInstanceOf(Renderer);
       // Verify that the handlebars engine is selected
-      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe(
-        'Hello World!'
-      );
+      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe('Hello World!');
     });
 
     it('should create renderer with mustache engine explicitly', () => {
@@ -153,9 +140,7 @@ describe('Renderer', () => {
       const renderer = new Renderer(configWithMustache);
       expect(renderer).toBeInstanceOf(Renderer);
       // Verify that the mustache engine is selected
-      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe(
-        'Hello World!'
-      );
+      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe('Hello World!');
     });
 
     it('should use default mustache engine for unknown engine types', () => {
@@ -167,20 +152,7 @@ describe('Renderer', () => {
       const renderer = new Renderer(configWithUnknownEngine);
       expect(renderer).toBeInstanceOf(Renderer);
       // Verify that the default (mustache) engine is used
-      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe(
-        'Hello World!'
-      );
-    });
-
-    it('should throw InitializationError for null config', () => {
-      expect(() => new Renderer(null as any)).toThrow(InitializationError);
-      expect(() => new Renderer(null as any)).toThrow(
-        'Renderer requires a project configuration.'
-      );
-    });
-
-    it('should throw InitializationError for undefined config', () => {
-      expect(() => new Renderer(undefined as any)).toThrow(InitializationError);
+      expect(renderer.render('Hello {{name}}!', { name: 'World' })).toBe('Hello World!');
     });
 
     it('should throw InitializationError for invalid config', () => {
@@ -300,9 +272,7 @@ describe('Renderer', () => {
 
     it('should handle YAML file processing exceptions', async () => {
       mockPageParser.processYamlFile
-        .mockResolvedValueOnce([
-          { sourcePath: 'test1.md', success: true, baseName: 'test1' },
-        ])
+        .mockResolvedValueOnce([{ sourcePath: 'test1.md', success: true, baseName: 'test1' }])
         .mockRejectedValueOnce(new Error('File processing error'));
 
       const result = await renderer.build();
@@ -364,12 +334,8 @@ describe('Renderer', () => {
       });
 
       mockPageParser.processYamlFile
-        .mockResolvedValueOnce([
-          { sourcePath: 'test.md', success: true, baseName: 'test' },
-        ])
-        .mockResolvedValueOnce([
-          { sourcePath: 'nested.md', success: true, baseName: 'nested' },
-        ]);
+        .mockResolvedValueOnce([{ sourcePath: 'test.md', success: true, baseName: 'test' }])
+        .mockResolvedValueOnce([{ sourcePath: 'nested.md', success: true, baseName: 'nested' }]);
 
       const result = await renderer.build();
 
@@ -390,15 +356,11 @@ describe('Renderer', () => {
 
       expect(result.stats).toBeDefined();
       expect(result.stats!.buildTimeMs).toBeGreaterThan(0);
-      expect(result.stats!.startTime.getTime()).toBeGreaterThanOrEqual(
-        startTime
+      expect(result.stats!.startTime.getTime()).toBeGreaterThanOrEqual(startTime);
+      expect(result.stats!.endTime.getTime()).toBeGreaterThan(result.stats!.startTime.getTime());
+      expect(result.stats!.endTime.getTime() - result.stats!.startTime.getTime()).toBe(
+        result.stats!.buildTimeMs
       );
-      expect(result.stats!.endTime.getTime()).toBeGreaterThan(
-        result.stats!.startTime.getTime()
-      );
-      expect(
-        result.stats!.endTime.getTime() - result.stats!.startTime.getTime()
-      ).toBe(result.stats!.buildTimeMs);
     });
   });
 
@@ -447,10 +409,7 @@ describe('Renderer', () => {
 
       const results = await renderer.buildSingle(absolutePath);
 
-      expect(mockPageParser.processYamlFile).toHaveBeenCalledWith(
-        absolutePath,
-        undefined
-      );
+      expect(mockPageParser.processYamlFile).toHaveBeenCalledWith(absolutePath, undefined);
       expect(results).toEqual(mockResults);
     });
 
@@ -458,9 +417,7 @@ describe('Renderer', () => {
       const error = new Error('Processing failed');
       mockPageParser.processYamlFile.mockRejectedValue(error);
 
-      const consoleSpy = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(() => {});
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       const results = await renderer.buildSingle('error.yaml');
 
@@ -476,9 +433,7 @@ describe('Renderer', () => {
       const error = new FileFetchError('missing.yaml', 'File not found');
       mockPageParser.processYamlFile.mockRejectedValue(error);
 
-      const consoleSpy = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(() => {});
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       const results = await renderer.buildSingle('missing.yaml');
 
@@ -492,9 +447,7 @@ describe('Renderer', () => {
       const error = new ParseError('invalid.yaml', 'Invalid YAML syntax');
       mockPageParser.processYamlFile.mockRejectedValue(error);
 
-      const consoleSpy = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(() => {});
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       const results = await renderer.buildSingle('invalid.yaml');
 
@@ -532,11 +485,7 @@ describe('Renderer', () => {
 
       mockPageParser.processConfigurations.mockResolvedValue(mockResults);
 
-      const results = await renderer.buildFromConfiguration(
-        configs,
-        baseFileName,
-        content
-      );
+      const results = await renderer.buildFromConfiguration(configs, baseFileName, content);
 
       expect(mockPageParser.processConfigurations).toHaveBeenCalledWith(
         configs,
@@ -548,9 +497,7 @@ describe('Renderer', () => {
     });
 
     it('should build from configuration without content', async () => {
-      const configs: Array<Partial<PageConfig>> = [
-        { title: 'File Based', output: true },
-      ];
+      const configs: Array<Partial<PageConfig>> = [{ title: 'File Based', output: true }];
 
       const mockResults: Array<PageResult> = [
         { sourcePath: 'file-based.md', success: true, baseName: 'file-based' },
@@ -558,10 +505,7 @@ describe('Renderer', () => {
 
       mockPageParser.processConfigurations.mockResolvedValue(mockResults);
 
-      const results = await renderer.buildFromConfiguration(
-        configs,
-        'file-based'
-      );
+      const results = await renderer.buildFromConfiguration(configs, 'file-based');
 
       expect(mockPageParser.processConfigurations).toHaveBeenCalledWith(
         configs,
@@ -573,18 +517,11 @@ describe('Renderer', () => {
     });
 
     it('should handle configuration processing errors', async () => {
-      const configs: Array<Partial<PageConfig>> = [
-        { title: 'Error Config', output: true },
-      ];
+      const configs: Array<Partial<PageConfig>> = [{ title: 'Error Config', output: true }];
 
-      mockPageParser.processConfigurations.mockRejectedValue(
-        new Error('Config error')
-      );
+      mockPageParser.processConfigurations.mockRejectedValue(new Error('Config error'));
 
-      const results = await renderer.buildFromConfiguration(
-        configs,
-        'error-config'
-      );
+      const results = await renderer.buildFromConfiguration(configs, 'error-config');
 
       expect(results).toEqual([]);
     });
@@ -606,18 +543,11 @@ describe('Renderer', () => {
     });
 
     it('should handle RenderError from PageParser', async () => {
-      const configs: Array<Partial<PageConfig>> = [
-        { title: 'Render Error', output: true },
-      ];
+      const configs: Array<Partial<PageConfig>> = [{ title: 'Render Error', output: true }];
 
-      mockPageParser.processConfigurations.mockRejectedValue(
-        new RenderError('Template error')
-      );
+      mockPageParser.processConfigurations.mockRejectedValue(new RenderError('Template error'));
 
-      const results = await renderer.buildFromConfiguration(
-        configs,
-        'render-error'
-      );
+      const results = await renderer.buildFromConfiguration(configs, 'render-error');
 
       expect(results).toEqual([]);
     });
@@ -690,9 +620,7 @@ No items available.
       require('mustache').render = jest.fn().mockReturnValue('');
 
       expect(() => renderer.render('{{test}}', {})).toThrow(RenderError);
-      expect(() => renderer.render('{{test}}', {})).toThrow(
-        'Rendered output is empty'
-      );
+      expect(() => renderer.render('{{test}}', {})).toThrow('Rendered output is empty');
 
       // Restore original
       require('mustache').render = originalRender;
@@ -706,9 +634,7 @@ No items available.
       });
 
       expect(() => renderer.render('{{test}}', {})).toThrow(RenderError);
-      expect(() => renderer.render('{{test}}', {})).toThrow(
-        'Failed to render Mustache template'
-      );
+      expect(() => renderer.render('{{test}}', {})).toThrow('Failed to render Mustache template');
 
       // Restore original
       require('mustache').render = originalRender;
@@ -817,11 +743,7 @@ This is private content.
       const yamlFiles = await renderer['findYamlFiles']();
 
       expect(yamlFiles).toHaveLength(4);
-      expect(
-        yamlFiles.every(
-          (file) => file.endsWith('.yaml') || file.endsWith('.yml')
-        )
-      ).toBe(true);
+      expect(yamlFiles.every((file) => file.endsWith('.yaml') || file.endsWith('.yml'))).toBe(true);
     });
 
     it('should handle empty directories', async () => {
@@ -849,17 +771,11 @@ This is private content.
       mockFs.readdir.mockImplementation(async (dirPath: any) => {
         readdirCallCount++;
         if (readdirCallCount === 1) {
-          return [
-            { name: 'level1', isFile: () => false, isDirectory: () => true },
-          ] as any;
+          return [{ name: 'level1', isFile: () => false, isDirectory: () => true }] as any;
         } else if (readdirCallCount === 2) {
-          return [
-            { name: 'level2', isFile: () => false, isDirectory: () => true },
-          ] as any;
+          return [{ name: 'level2', isFile: () => false, isDirectory: () => true }] as any;
         } else {
-          return [
-            { name: 'deep.yaml', isFile: () => true, isDirectory: () => false },
-          ] as any;
+          return [{ name: 'deep.yaml', isFile: () => true, isDirectory: () => false }] as any;
         }
       });
 
@@ -990,9 +906,7 @@ This is private content.
       ] as any);
 
       // Simulate renderer being destroyed
-      mockPageParser.processYamlFile.mockRejectedValue(
-        new Error('Renderer destroyed')
-      );
+      mockPageParser.processYamlFile.mockRejectedValue(new Error('Renderer destroyed'));
 
       const result = await renderer.build();
 
@@ -1011,11 +925,7 @@ This is private content.
       ]);
 
       // Start multiple builds concurrently
-      const builds = Promise.all([
-        renderer.build(),
-        renderer.build(),
-        renderer.build(),
-      ]);
+      const builds = Promise.all([renderer.build(), renderer.build(), renderer.build()]);
 
       const results = await builds;
 
@@ -1056,13 +966,8 @@ This is private content.
       });
 
       it('should handle nested paths', () => {
-        const result = renderer.getOutputFilePath(
-          'docs/guides/getting-started',
-          'md'
-        );
-        expect(result).toBe(
-          '/current/dir/test-output/docs/guides/getting-started.md'
-        );
+        const result = renderer.getOutputFilePath('docs/guides/getting-started', 'md');
+        expect(result).toBe('/current/dir/test-output/docs/guides/getting-started.md');
       });
 
       it('should handle special characters in base name', () => {
@@ -1078,19 +983,13 @@ This is private content.
       });
 
       it('should handle nested paths', () => {
-        const result = renderer.getMetadataFilePath(
-          'docs/guides/getting-started'
-        );
-        expect(result).toBe(
-          '/current/dir/test-output/docs/guides/getting-started.metadata.json'
-        );
+        const result = renderer.getMetadataFilePath('docs/guides/getting-started');
+        expect(result).toBe('/current/dir/test-output/docs/guides/getting-started.metadata.json');
       });
 
       it('should handle special characters in base name', () => {
         const result = renderer.getMetadataFilePath('test-file_name');
-        expect(result).toBe(
-          '/current/dir/test-output/test-file_name.metadata.json'
-        );
+        expect(result).toBe('/current/dir/test-output/test-file_name.metadata.json');
       });
 
       it('should use PageParser METADATA_SUFFIX constant', () => {

@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
+import type MustacheRenderer from '@repo/mustache';
 import type { PageConfig, PageResult } from '@repo/mustache';
-import MustacheRenderer from '@repo/mustache';
 import { saveToPublicDir } from '@repo/next-utils/files';
-import { PrimitiveCatalogProps } from './(PrimitiveCatalog)/types';
+import type { PrimitiveCatalogProps } from './(PrimitiveCatalog)/types';
 
 export async function generatePrimitiveIndexEntry({
   source,
@@ -26,7 +26,7 @@ export async function generatePrimitiveIndexEntry({
   buildVariables: Record<string, unknown>;
   indexOutputURI: string;
   currentItemLabel: string;
-}) {
+}): Promise<Array<PageResult>> {
   const reactRenderMetadata: PrimitiveCatalogProps = {
     dictionaryDisplayName,
     dictionaryHomeDirectory,
@@ -78,7 +78,7 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
   renderer: MustacheRenderer;
   buildVariables: Record<string, unknown>;
   getEntryNames: (entry: T) => Array<string>;
-}) {
+}): Promise<Array<PageResult>> {
   const allResults: Array<PageResult> = [];
   const primitiveIndex: Array<readonly [string, string]> = [];
 
@@ -115,10 +115,10 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
   return allResults;
 }
 
-export interface PrimIndexEntry {
+export type PrimIndexEntry = {
   id: string;
-}
+};
 
-export interface PrimDictionary<T extends PrimIndexEntry> {
+export type PrimDictionary<T extends PrimIndexEntry> = {
   entries: Array<T>;
-}
+};

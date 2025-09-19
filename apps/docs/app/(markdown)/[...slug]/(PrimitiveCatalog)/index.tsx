@@ -6,8 +6,8 @@ import type { SideCatalogItem } from '@repo/ui/widgets/SideCatalog';
 import SideCatalog from '@repo/ui/widgets/SideCatalog';
 import { LocalStorageCache } from '@repo/utils/lib/swr';
 
-import ErrorPage, { ErrorStatus } from '../../../error';
-import { PrimitiveCatalogProps } from './types';
+import type { JSX } from 'react';
+import type { PrimitiveCatalogProps } from './types';
 
 type CatalogItem = SideCatalogItem & { id: string };
 export default function PrimitiveCatalog({
@@ -17,20 +17,12 @@ export default function PrimitiveCatalog({
   currentItemId,
   currentItemLabel,
   children,
-}: PrimitiveCatalogProps) {
-  const { data, error, isLoading } = useSWR(indexFileURI, fetcher, {
+}: PrimitiveCatalogProps): JSX.Element {
+  const { data, isLoading, ...rest } = useSWR(indexFileURI, fetcher, {
     provider: () => new LocalStorageCache(),
   });
 
-  if (error) {
-    return (
-      <ErrorPage status={ErrorStatus.BuildError} title="Error loading catalog">
-        Unable to load the {dictionaryDisplayName} (at {indexFileURI}): {error.message}
-      </ErrorPage>
-    );
-  }
-
-  let catalogItems = isLoading ? [] : (data as Array<CatalogItem>);
+  const catalogItems = isLoading || rest.error instanceof Error ? [] : (data as Array<CatalogItem>);
 
   return (
     <SideCatalog
@@ -54,7 +46,15 @@ export default function PrimitiveCatalog({
   );
 }
 
-const fetcher = async (url: string) => {
+const fetcher = async (
+  url: string
+): Promise<
+  Array<{
+    id: string | undefined;
+    title: string | undefined;
+    url: string | undefined;
+  }>
+> => {
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error('Network response was not ok');
@@ -72,7 +72,9 @@ const fetcher = async (url: string) => {
     }));
 };
 
-const makeQueryFunction = (items: Array<SideCatalogItem>) => (s0: string) => {
-  const s = s0.toLowerCase();
-  return items.filter((item) => item.title.toLowerCase().includes(s));
-};
+const makeQueryFunction =
+  (items: Array<SideCatalogItem>) =>
+  (s0: string): Array<SideCatalogItem> => {
+    const s = s0.toLowerCase();
+    return items.filter((item) => item.title.toLowerCase().includes(s));
+  };

@@ -3,12 +3,14 @@ import Handlebars from 'handlebars';
 import mustache from 'mustache';
 import path from 'path';
 
-import { BuildResult, PageResult } from './api.schemas.js';
+import type { BuildResult, PageResult } from './api.schemas.js';
 import { BuildVariablesLoader } from './BuildVariablesLoader.js';
-import { createTemplateEngine, TemplateEngine } from './engines.js';
+import type { HandlebarsEngine, MustacheEngine, TemplateEngine } from './engines.js';
+import { createTemplateEngine } from './engines.js';
 import { InitializationError, RenderError } from './errors.js';
 import PageParser from './PageParser.js';
-import { PageConfig, ProjectConfig, ProjectConfigSchema } from './schemas.js';
+import type { PageConfig, ProjectConfig } from './schemas.js';
+import { ProjectConfigSchema } from './schemas.js';
 
 /**
  * @class TemplateRenderer
@@ -19,9 +21,9 @@ import { PageConfig, ProjectConfig, ProjectConfigSchema } from './schemas.js';
  *
  */
 class Renderer {
-  private _buildVariablesLoader: BuildVariablesLoader;
-  private _pageParser: PageParser;
-  private _engine: TemplateEngine;
+  private readonly _buildVariablesLoader: BuildVariablesLoader;
+  private readonly _pageParser: PageParser;
+  private readonly _engine: TemplateEngine;
 
   public paths: {
     projectRoot: string;
@@ -30,11 +32,7 @@ class Renderer {
   };
   public defaultLanguage: string;
 
-  constructor(private _config: ProjectConfig) {
-    if (!this._config) {
-      throw new InitializationError('Renderer requires a project configuration.');
-    }
-
+  public constructor(private readonly _config: ProjectConfig) {
     if (!ProjectConfigSchema.safeParse(this._config).success) {
       throw new InitializationError('Invalid project configuration provided to Renderer.');
     }
@@ -47,7 +45,7 @@ class Renderer {
 
     this._engine = createTemplateEngine(this._config.engine);
 
-    this.defaultLanguage = this._config.defaults?.language || 'en';
+    this.defaultLanguage = this._config.defaults.language ?? 'en';
     this._buildVariablesLoader = new BuildVariablesLoader(this.paths.scanRoot);
     this._pageParser = new PageParser(
       this._engine,
@@ -67,9 +65,9 @@ class Renderer {
    * @throws {FileFetchError} If YAML files cannot be read
    * @throws {ParseError} If YAML files cannot be parsed
    */
-  async build(sharedBuildVariables?: Record<string, unknown>): Promise<BuildResult> {
+  public async build(sharedBuildVariables?: Record<string, unknown>): Promise<BuildResult> {
     const startTime = new Date();
-    const errors: string[] = [];
+    const errors: Array<string> = [];
     const pages: Record<string, PageResult> = {};
 
     try {
@@ -81,8 +79,8 @@ class Renderer {
           for (const pageResult of pageResults) {
             pages[pageResult.sourcePath] = pageResult;
           }
-        } catch (error: any) {
-          errors.push(`Failed to build ${yamlPath}: ${error.message}`);
+        } catch (error: unknown) {
+          errors.push(`Failed to build ${yamlPath}: ${(error as Error).message}`);
         }
       }
 
@@ -103,9 +101,9 @@ class Renderer {
           endTime,
         },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       const endTime = new Date();
-      errors.push(`Build failed: ${error.message}`);
+      errors.push(`Build failed: ${(error as Error).message}`);
 
       return {
         pages,
@@ -132,15 +130,15 @@ class Renderer {
    * @throws {ParseError} If the YAML file cannot be parsed
    * @throws {RenderError} If template rendering fails
    */
-  async buildSingle(
+  public async buildSingle(
     yamlPath: string,
     sharedBuildVariables?: Record<string, unknown>
-  ): Promise<PageResult[]> {
+  ): Promise<Array<PageResult>> {
     try {
       yamlPath = path.resolve(this.paths.scanRoot, yamlPath);
       return await this._pageParser.processYamlFile(yamlPath, sharedBuildVariables);
-    } catch (error: any) {
-      console.warn(`Error processing ${yamlPath}: ${error.message}`);
+    } catch (error: unknown) {
+      console.warn(`Error processing ${yamlPath}: ${(error as Error).message}`);
       return [];
     }
   }
@@ -155,12 +153,12 @@ class Renderer {
    * @returns A promise that resolves to a PageResult
    * @throws {RenderError} If template rendering fails
    */
-  async buildFromConfiguration(
+  public async buildFromConfiguration(
     config: Array<Partial<PageConfig>>,
     baseFileName: string,
     content?: string,
     sharedBuildVariables?: Record<string, unknown>
-  ): Promise<PageResult[]> {
+  ): Promise<Array<PageResult>> {
     try {
       // Process the single configuration using PageParser
       return await this._pageParser.processConfigurations(
@@ -169,7 +167,7 @@ class Renderer {
         content,
         sharedBuildVariables
       );
-    } catch (error: any) {
+    } catch {
       return [];
     }
   }
@@ -182,8 +180,8 @@ class Renderer {
    *
    * @throws {RenderError} If rendering fails for any reason.
    */
-  render(content: string, variables: Record<string, any>) {
-    let rendered;
+  public render(content: string, variables: Record<string, unknown>): string {
+    let rendered = '';
     try {
       if (this._config.engine === 'handlebars') {
         const template = Handlebars.compile(content);
@@ -195,29 +193,46 @@ class Renderer {
       if (!rendered) {
         throw new RenderError('Rendered output is empty');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       const engineName = this._config.engine === 'handlebars' ? 'Handlebars' : 'Mustache';
-      throw new RenderError(`Failed to render ${engineName} template`, error.message);
+      throw new RenderError(`Failed to render ${engineName} template`, (error as Error).message);
     }
     return rendered;
   }
 
   // Public Methods
-  registerPartial(name: string, content: string) {
+  public registerPartial(name: string, content: string): void {
     this._engine.registerPartial(name, content);
   }
 
+  public getNamedEngine(name: 'mustache'): MustacheEngine | undefined;
+  public getNamedEngine(name: 'handlebars'): HandlebarsEngine | undefined;
+  public getNamedEngine(
+    name: 'mustache' | 'handlebars'
+  ): MustacheEngine | HandlebarsEngine | undefined {
+    switch (name) {
+      case 'mustache':
+        return this._config.engine === 'mustache' ? (this._engine as MustacheEngine) : undefined;
+      case 'handlebars':
+        return this._config.engine === 'handlebars'
+          ? (this._engine as HandlebarsEngine)
+          : undefined;
+      default:
+        return undefined;
+    }
+  }
+
   // Helper Public API
-  getOutputFilePath(relativeBaseName: string, extension: string): string {
+  public getOutputFilePath(relativeBaseName: string, extension: string): string {
     const extensionNoDot = extension.replace(/^\./, '');
     return path.join(this.paths.outputRoot, relativeBaseName + '.' + extensionNoDot);
   }
 
-  getMetadataFilePath(relativeBaseName: string): string {
+  public getMetadataFilePath(relativeBaseName: string): string {
     return path.join(this.paths.outputRoot, relativeBaseName + PageParser.METADATA_SUFFIX);
   }
 
-  getSourceFilePath(relativeBaseName: string, extension: string): string {
+  public getSourceFilePath(relativeBaseName: string, extension: string): string {
     const extensionNoDot = extension.replace(/^\./, '');
     return path.join(this.paths.scanRoot, relativeBaseName + '.' + extensionNoDot);
   }
@@ -229,10 +244,10 @@ class Renderer {
    *
    * @throws {InitializationError} If the renderer has not been initialized.
    */
-  private async findYamlFiles() {
-    const yamlFiles: string[] = [];
+  private async findYamlFiles(): Promise<Array<string>> {
+    const yamlFiles: Array<string> = [];
 
-    async function walk(dir: string) {
+    async function walk(dir: string): Promise<void> {
       const entries = await fs.readdir(dir, { withFileTypes: true });
       for (const entry of entries) {
         const res = path.resolve(dir, entry.name);

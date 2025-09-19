@@ -49,9 +49,7 @@ describe('errors', () => {
       const originalMessage = 'Invalid YAML syntax';
       const error = new ParseError(filePath, originalMessage);
 
-      expect(error.message).toBe(
-        `Failed to parse file ${filePath}: ${originalMessage}`
-      );
+      expect(error.message).toBe(`Failed to parse file ${filePath}: ${originalMessage}`);
       expect(error.name).toBe('ParseError');
       expect(error).toBeInstanceOf(Error);
     });
@@ -128,9 +126,7 @@ describe('errors', () => {
       const cause = 'Undefined variable: title';
       const error = new RenderError(message, cause);
 
-      expect(error.message).toBe(
-        `Render error: ${message}\nCaused by: ${cause}`
-      );
+      expect(error.message).toBe(`Render error: ${message}\n${cause}`);
       expect(error.name).toBe('RenderError');
       expect(error).toBeInstanceOf(Error);
     });

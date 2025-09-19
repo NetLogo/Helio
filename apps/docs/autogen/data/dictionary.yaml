@@ -1993,7 +1993,7 @@ entries:
         - name: extensions
       description: |+
         Allows the model to use primitives from the extensions with the
-         given names. See the [Extensions guide](extensions.html)for more information. 
+         given names. See the [Extensions guide](extensions.html) for more information. 
 
       examples:
         - code: extensions [*name* ...]

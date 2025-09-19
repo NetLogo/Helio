@@ -3,9 +3,10 @@
 import NetLogoUserManualSVG from '@repo/ui/assets/brands/NetLogoUserManual.svg';
 import Footer from '@repo/ui/components/footer/Footer';
 import Image from 'next/image';
+import type { JSX } from 'react';
 import { useLayoutEffect, useState } from 'react';
 
-export default function ClientFooter() {
+export default function ClientFooter(): JSX.Element {
   const [year, setYear] = useState(new Date().getFullYear());
   useLayoutEffect(() => {
     setYear(new Date().getFullYear());
@@ -15,7 +16,7 @@ export default function ClientFooter() {
     <Footer sections={3}>
       <Footer.Container>
         <Footer.BrandSection
-          brand={<Image src={NetLogoUserManualSVG} alt="NetLogo User Manual" />}
+          brand={<Image src={NetLogoUserManualSVG as string} alt="NetLogo User Manual" />}
           brandHref="https://www.netlogo.org/"
         >
           <hr className="w-full border-gray-300 my-4" />

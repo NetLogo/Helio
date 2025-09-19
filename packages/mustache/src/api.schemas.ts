@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const PageResultSchema = z.object({
+export const PageResultSchema = z.object({
   /** Base file name */
   baseName: z.string(),
   /** The source file path that was processed */
@@ -21,7 +21,7 @@ const PageResultSchema = z.object({
   metadataPath: z.string().optional(),
 });
 
-const BuildResultSchema = z.object({
+export const BuildResultSchema = z.object({
   /** Map of relative file paths to their build results */
   pages: z.record(z.string(), PageResultSchema),
   /** Total number of pages processed */

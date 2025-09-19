@@ -7,7 +7,7 @@ import * as fs from 'fs/promises';
  * @param sep   - Separator to use (default: '.')
  * @returns Joined string
  */
-const joinIgnoreNone = (parts: Array<string | null | undefined>, sep = '.') => {
+const joinIgnoreNone = (parts: Array<string | null | undefined>, sep = '.'): string => {
   return parts.filter(Boolean).join(sep);
 };
 
@@ -26,7 +26,9 @@ const isURL = (value: string): boolean => {
  * @returns Fetched data as a string
  */
 const readRemote = async (url: string): Promise<string> => {
-  const { data } = await axios.get(url);
+  const { data } = await axios.get<string>(url, {
+    responseType: 'text',
+  });
   return data;
 };
 

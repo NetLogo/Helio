@@ -42,7 +42,7 @@ setup button:
 Now you have a setup button. Pressing the button runs a procedure called
 "setup". A procedure is a sequence of NetLogo commands that we assign a new
 name. We'll define that procedure soon, but we haven't yet. The button refers to
-a procedure that doesn't exist, so the button turns red: ![[errors.png]]
+a procedure that doesn't exist, so the button turns red: ![[tutorial3/errors.png]]
 
 If you want to see the actual error message, click the button.
 
@@ -57,7 +57,7 @@ Now we'll create the "setup" procedure, so the error message will go away:
 >           reset-ticks
 >         end
 
-When you're done, the Code tab looks like this: ![[setupcode.png]]
+When you're done, the Code tab looks like this: ![[tutorial3/setupcode.png]]
 
 Note that some lines are indented. Most people find it helpful to indent their
 code. It isn't mandatory, but it makes the code easier to read and change.
@@ -87,7 +87,7 @@ Let's look at what you typed in and see what each line of your procedure does:
 
 When you're done typing, switch to the Interface tab and press the setup button
 you made before. You will see the turtles scattered around the world:
-![[scatter.png]]
+![[tutorial3/scatter.png]]
 
 Press setup a couple more times, and see how the arrangement of turtles is
 different each time. Note that some turtles may be right on top of each other.
@@ -125,7 +125,7 @@ button, except:
 > - Check the "Forever" checkbox in the edit dialog.
 > - Check the "Disable until ticks start" checkbox too.
 
-![[gobutton.png]]
+![[tutorial3/gobutton.png]]
 
 The "Forever" checkbox makes the button stay down once pressed, so its commands
 run over and over again, not just once.
@@ -260,7 +260,7 @@ these turtles a nice background against which to move.
 > - Press the setup button.
 
 Voila! A lush NetLogo landscape complete with turtles and green patches appears:
-![[scatter-on-green.png]]
+![[tutorial3/scatter-on-green.png]]
 
 After seeing the new `setup` procedure work a few times, you may find it helpful
 to read through the procedure definitions again.
@@ -340,7 +340,7 @@ As each turtle wanders, it will lose one unit of energy at each step.
 >   button.
 >
 > You'll see the patches turn black as turtles travel over them.
-> ![[eating-grass.png]]
+> ![[tutorial3/eating-grass.png]]
 
 ## Monitors
 
@@ -356,7 +356,7 @@ Let's make the first monitor now.
 > - In the dialog type: `count turtles` (see image below).
 > - Press the OK button to close the dialog.
 
-![[monitor-1.png]]
+![[tutorial3/monitor-1.png]]
 
 [[turtles]] is an "agentset", the set of all turtles. [[count]] tells us how
 many agents are in that set.
@@ -373,7 +373,7 @@ Let's make the second monitor now:
 > - In the Display name section of the dialog box type: `green patches`
 > - Press the OK button to close the dialog box.
 
-![[monitor-2.png]]
+![[tutorial3/monitor-2.png]]
 
 Here we're using [[count]] again to see how many agents are in an agentset.
 [[patches]] is the set of all the patches, but we don't just want to know how
@@ -407,7 +407,7 @@ information on and off.
 > - Into the Global variable field, type `show-energy?` Don't forget to include
 >   the question mark in the name. (See image below.)
 
-![[switch.png]]
+![[tutorial3/switch.png]]
 
 > - Now go back to the 'go' procedure using the Code tab with the Toolbar.
 > - Rewrite the `eat-grass` procedure as follows:
@@ -444,7 +444,7 @@ empty string, no text is attached to the turtle.)
 
 When the switch is on, you'll see the energy of each turtle go up each time it
 eats grass. You'll also see its energy going down whenever it moves.
-![[show-energy.png]]
+![[tutorial3/show-energy.png]]
 
 ## More procedures
 
@@ -540,7 +540,7 @@ procedure calls `reset-ticks` and when our `go` procedure calls `tick`.
 > - Change the name of the new pen to "grass".
 > - Enter `plot count patches with [pcolor = green]` under Pen Update Commands.
 
-When you're done, the dialog should look like this: ![[totals.png]]
+When you're done, the dialog should look like this: ![[tutorial3/totals.png]]
 
 > - Press OK in the Plot dialog to finish editing.
 
@@ -563,7 +563,7 @@ have the general shape of the one below, though your plot might not look exactly
 the same.
 
 Remember that we left "Auto Scale?" on. This allows the plot to readjust itself
-when it runs out of room. ![[plotwindow.png]]
+when it runs out of room. ![[tutorial3/plotwindow.png]]
 
 If you forget which pen is which, you can edit the plot and check the "Show
 legend?" checkbox.

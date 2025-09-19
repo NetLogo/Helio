@@ -1,3 +1,28 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+
 @import '@repo/tailwind-config/scss/variables.scss';
+
+.DocSearch-Container {
+  z-index: 1000 !important;
+}
+
+.DocSearch-Container svg {
+  color: var(--color-primary);
+  fill: var(--color-primary);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -700px 0;
+  }
+  100% {
+    background-position: 700px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(to right, #ebebf0 0%, #e3e3ea 20%, #dde3e8 40%, #ebebf0 100%);
+  background-size: 1000px 100%;
+}

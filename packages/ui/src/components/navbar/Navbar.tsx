@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import React, { useState } from 'react';
 
 import { cn } from '@/lib/utils/cn';
@@ -7,13 +8,7 @@ import Anchor from '@/HOC/Anchor';
 import { useDebouncedHover } from '@/hooks/useDebouncedHover';
 import { isWindowDefined } from '@/lib/utils/client';
 import { cssVariable } from '@/lib/utils/styles';
-import type {
-  NavbarAction,
-  NavbarClientProps,
-  NavbarMenu,
-  NavbarProps,
-  NavLink,
-} from './types';
+import type { NavbarAction, NavbarClientProps, NavbarMenu, NavbarProps, NavLink } from './types';
 import { useNavbar } from './useNavbar';
 
 /**
@@ -71,7 +66,7 @@ const Navbar = ({
   show = true,
   blurBackdrop = 0,
   ...rest
-}: NavbarProps) => {
+}: NavbarProps): JSX.Element => {
   return (
     <nav
       className={cn(
@@ -82,7 +77,7 @@ const Navbar = ({
       )}
       style={{
         ...cssVariable('--blur-backdrop', blurBackdrop),
-        ...(style || {}),
+        ...(style ?? {}),
       }}
       id={id}
       data-show={show}
@@ -91,10 +86,8 @@ const Navbar = ({
       <Navbar.MenuToggle id={id} />
       <Navbar.Row>
         <Navbar.AnchorContainer id={id}>
-          {brand && (
-            <Navbar.BrandContainer href={brandHref}>
-              {brand}
-            </Navbar.BrandContainer>
+          {Boolean(brand) && (
+            <Navbar.BrandContainer href={brandHref}>{brand}</Navbar.BrandContainer>
           )}
         </Navbar.AnchorContainer>
         {children}
@@ -104,38 +97,39 @@ const Navbar = ({
   );
 };
 
-Navbar.Client = ({ options = {}, ...rest }: NavbarClientProps) => {
+Navbar.Client = function Client({ options = {}, ...rest }: NavbarClientProps): JSX.Element {
   const uiProps = useNavbar(options);
   return <Navbar {...rest} {...uiProps} />;
 };
-(Navbar.Client as React.FC).displayName = 'Navbar.Client';
 
-Navbar.MenuToggle = ({
+Navbar.MenuToggle = function MenuToggle({
   id,
   className,
   ...rest
-}: { id: string } & React.HTMLProps<HTMLInputElement>) => (
-  <input
-    id={id + '-toggle'}
-    type="checkbox"
-    className={cn(styles['menuToggle'], className)}
-    {...rest}
-  />
-);
-(Navbar.MenuToggle as React.FC).displayName = 'Navbar.MenuToggle';
+}: { id: string } & React.HTMLProps<HTMLInputElement>): JSX.Element {
+  return (
+    <input
+      id={id + '-toggle'}
+      type="checkbox"
+      className={cn(styles['menuToggle'], className)}
+      {...rest}
+    />
+  );
+};
 
-Navbar.Row = ({
+Navbar.Row = function Row({
   children,
   className,
   ...rest
-}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
-  <div className={cn(styles['row'], className)} {...rest}>
-    {children}
-  </div>
-);
-(Navbar.Row as React.FC).displayName = 'Navbar.Row';
+}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>): JSX.Element {
+  return (
+    <div className={cn(styles['row'], className)} {...rest}>
+      {children}
+    </div>
+  );
+};
 
-Navbar.AnchorContainer = ({
+Navbar.AnchorContainer = function AnchorContainer({
   id,
   children,
   className,
@@ -143,20 +137,21 @@ Navbar.AnchorContainer = ({
 }: {
   id: string;
   children?: React.ReactNode;
-} & React.HTMLProps<HTMLDivElement>) => (
-  <div className={cn(styles['anchor'], className)} {...rest}>
-    <label className={styles['hamburger']} htmlFor={id + '-toggle'}>
-      {' '}
-      <span></span>
-      <span></span>
-      <span></span>{' '}
-    </label>
-    {children}
-  </div>
-);
-(Navbar.AnchorContainer as React.FC).displayName = 'Navbar.AnchorContainer';
+} & React.HTMLProps<HTMLDivElement>): JSX.Element {
+  return (
+    <div className={cn(styles['anchor'], className)} {...rest}>
+      <label className={styles['hamburger']} htmlFor={id + '-toggle'}>
+        {' '}
+        <span></span>
+        <span></span>
+        <span></span>{' '}
+      </label>
+      {children}
+    </div>
+  );
+};
 
-Navbar.BrandContainer = ({
+Navbar.BrandContainer = function BrandContainer({
   children,
   href,
   className,
@@ -164,25 +159,27 @@ Navbar.BrandContainer = ({
 }: {
   children?: React.ReactNode;
   href?: string;
-} & React.HTMLProps<HTMLAnchorElement>) => (
-  <Anchor href={href} className={cn(styles['brand'], className)} {...rest}>
-    {children}
-  </Anchor>
-);
-(Navbar.BrandContainer as React.FC).displayName = 'Navbar.BrandContainer';
+} & React.HTMLProps<HTMLAnchorElement>): JSX.Element {
+  return (
+    <Anchor href={href} className={cn(styles['brand'], className)} {...rest}>
+      {children}
+    </Anchor>
+  );
+};
 
-Navbar.LinksContainer = ({
+Navbar.LinksContainer = function LinksContainer({
   children,
   className,
   ...rest
-}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
-  <div className={cn(styles['menus'], className)} {...rest}>
-    <div className={styles['links']}>{children}</div>
-  </div>
-);
-(Navbar.LinksContainer as React.FC).displayName = 'Navbar.LinksContainer';
+}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>): JSX.Element {
+  return (
+    <div className={cn(styles['menus'], className)} {...rest}>
+      <div className={styles['links']}>{children}</div>
+    </div>
+  );
+};
 
-Navbar.Item = ({
+Navbar.Item = function Item({
   title,
   href,
   icon,
@@ -192,15 +189,12 @@ Navbar.Item = ({
   columns = 1,
   dropdownOpen = false,
   ...rest
-}: NavbarMenu) => {
+}: NavbarMenu): JSX.Element {
   return (
-    <div
-      className={cn(styles['item'], active && styles['active'], className)}
-      {...rest}
-    >
-      {icon && <span className={styles['icon']}>{icon}</span>}
+    <div className={cn(styles['item'], active === true && styles['active'], className)} {...rest}>
+      {icon !== undefined && <span className={styles['icon']}>{icon}</span>}
       <Anchor href={href}>{title}</Anchor>
-      {children && (
+      {children !== undefined && (
         <div
           className={cn(styles['dropdown'], dropdownOpen && styles['open'])}
           style={{ ...cssVariable('--columns', columns) }}
@@ -212,16 +206,21 @@ Navbar.Item = ({
   );
 };
 
-Navbar.ItemClient = (props: NavbarMenu) => {
+Navbar.ItemClient = function ItemsClient(props: NavbarMenu): JSX.Element {
   if (!isWindowDefined()) {
     return <Navbar.Item {...props} />;
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { onMouseEnter, onMouseLeave } = useDebouncedHover(
-    () => setDropdownOpen(true),
-    () => setDropdownOpen(false)
+    () => {
+      setDropdownOpen(true);
+    },
+    () => {
+      setDropdownOpen(false);
+    }
   );
 
   return (
@@ -233,65 +232,54 @@ Navbar.ItemClient = (props: NavbarMenu) => {
     />
   );
 };
-(Navbar.ItemClient as React.FC).displayName = 'Navbar.ItemClient';
 
-Navbar.DropdownItem = ({
+Navbar.DropdownItem = function DropdownItem({
   title,
   href,
   icon,
   active,
   className,
   ...rest
-}: NavLink) => {
+}: NavLink): JSX.Element {
   return (
-    <Anchor
-      href={href}
-      className={cn(active && styles['active'], className)}
-      {...rest}
-    >
-      {icon && <span className={styles['icon']}>{icon}</span>}
+    <Anchor href={href} className={cn(Boolean(active) && styles['active'], className)} {...rest}>
+      {icon !== undefined && <span className={styles['icon']}>{icon}</span>}
       {title}
     </Anchor>
   );
 };
-(Navbar.DropdownItem as React.FC).displayName = 'Navbar.DropdownItem';
 
-Navbar.ActionsContainer = ({
+Navbar.ActionsContainer = function ActionsContainer({
   children,
   className,
   ...rest
-}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>) => (
-  <div className={cn(styles['actions'], className)} {...rest}>
-    {children}
-  </div>
-);
-(Navbar.ActionsContainer as React.FC).displayName = 'Navbar.ActionsContainer';
+}: { children?: React.ReactNode } & React.HTMLProps<HTMLDivElement>): JSX.Element {
+  return (
+    <div className={cn(styles['actions'], className)} {...rest}>
+      {children}
+    </div>
+  );
+};
 
-Navbar.Action = ({
+Navbar.Action = function Action({
   title = '',
   href,
   icon,
   onClick,
   className,
   ...rest
-}: NavbarAction) => {
-  if (!href && !onClick) {
+}: NavbarAction): JSX.Element | null {
+  if (!(typeof href === 'string') && !onClick) {
     console.warn('Navbar.Action requires either href or onClick prop.');
     return null;
   }
-  const Component = href ? Anchor : 'button';
+  const Component = typeof href === 'string' ? Anchor : 'button';
   return (
-    <Component
-      href={href}
-      className={cn(styles['action'], className)}
-      onClick={onClick}
-      {...rest}
-    >
+    <Component href={href} className={cn(styles['action'], className)} onClick={onClick} {...rest}>
       {icon}
       {title}
     </Component>
   );
 };
-(Navbar.Action as React.FC).displayName = 'Navbar.Action';
 
 export default Navbar;

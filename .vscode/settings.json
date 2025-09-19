@@ -38,12 +38,15 @@
 
   "files.exclude": {
     "**/.next": true,
-    "**/node_modules": true,
+    // "**/node_modules": true,
     "**/.out": true,
-    "**/.turbo": true,
+    // "**/.turbo": true,
     "external/": true,
     ".git*": true,
-    ".npmrc": true
-    // "**/out": true
+    ".npmrc": true,
+    "**/out": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/test-dist": true
   }
 }

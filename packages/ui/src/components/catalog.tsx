@@ -1,6 +1,7 @@
 import ToggleStateProvider, { useToggle } from '@/context/ToggleProvider';
 import { cn } from '@/lib/utils/cn';
-import React, { ComponentProps } from 'react';
+import type { ComponentProps, JSX } from 'react';
+import React from 'react';
 import styles from './catalog/Catalog.module.scss';
 import type {
   ActiveItemProps,
@@ -14,20 +15,26 @@ import type {
 } from './catalog/types';
 import Hamburger from './hamburger';
 import { Input } from './input';
-import LoadingSpinner from './spinner';
 
-function CatalogHamburger({ className }: HamburgerProps) {
+function CatalogHamburger({ className }: HamburgerProps): JSX.Element {
   const { toggle } = useToggle();
   return (
     <Hamburger
       id={`hamburger-catalog`}
       className={cn(styles['hamburger'], className)}
-      onClick={() => toggle(Catalog.constants.toggleKey)}
+      onClick={() => {
+        toggle(Catalog.constants.toggleKey);
+      }}
     />
   );
 }
 
-function ActiveItem({ className, selectedItemLabel, itemPrefix, ...rest }: ActiveItemProps) {
+function ActiveItem({
+  className,
+  selectedItemLabel,
+  itemPrefix,
+  ...rest
+}: ActiveItemProps): JSX.Element {
   return (
     <div {...rest} className={cn(styles['active-item'], className)}>
       <span className={styles['active-item-name']}>
@@ -38,7 +45,7 @@ function ActiveItem({ className, selectedItemLabel, itemPrefix, ...rest }: Activ
   );
 }
 
-function SearchField({ className, ...rest }: SearchFieldProps) {
+function SearchField({ className, ...rest }: SearchFieldProps): JSX.Element {
   const { id = 'search-input', placeholder = 'Search primitives...' } = rest;
   return (
     <Input
@@ -51,7 +58,7 @@ function SearchField({ className, ...rest }: SearchFieldProps) {
   );
 }
 
-function HeaderSection({ className, title, children, ...rest }: HeaderSectionProps) {
+function HeaderSection({ className, title, children, ...rest }: HeaderSectionProps): JSX.Element {
   return (
     <div {...rest} className={cn(styles['heading-sticky'], className)}>
       <span className={styles['heading-title']}>{title}</span>
@@ -60,7 +67,12 @@ function HeaderSection({ className, title, children, ...rest }: HeaderSectionPro
   );
 }
 
-function CatalogItemComponent({ item, onSelect, active, ...rest }: CatalogItemComponentProps) {
+function CatalogItemComponent({
+  item,
+  onSelect,
+  active,
+  ...rest
+}: CatalogItemComponentProps): JSX.Element {
   const { title, url } = item;
 
   return (
@@ -68,7 +80,7 @@ function CatalogItemComponent({ item, onSelect, active, ...rest }: CatalogItemCo
       <a
         href={url}
         onClick={(e) => onSelect?.(item, e)}
-        className={cn(active ? styles['active'] : '')}
+        className={cn(active === true ? styles['active'] : '')}
       >
         {title}
       </a>
@@ -77,15 +89,21 @@ function CatalogItemComponent({ item, onSelect, active, ...rest }: CatalogItemCo
 }
 
 const ItemsList = React.forwardRef<HTMLUListElement, ItemsListProps>(
-  ({ className, items, onSelect, isSelected, isLoading }, ref) => {
-    if (isLoading) {
+  ({ className, items, onSelect, isSelected, isLoading }, ref): JSX.Element => {
+    if (isLoading === true) {
       return (
         <ul
           ref={ref}
           className={cn(styles['heading-items'], 'flex flex-col items-center', className)}
         >
-          <li className="pointer-events-none italic mx-auto">
-            <LoadingSpinner size="1em" />
+          <li className="pointer-events-none italic mx-auto w-full">
+            {Array(10)
+              .fill(0)
+              .map((_, i) => (
+                <a key={i} className="bg-red-400 w-full block my-1 animate-pulse animate-shimmer">
+                  <span className="opacity-0">Loading...</span>
+                </a>
+              ))}
           </li>
         </ul>
       );
@@ -120,7 +138,7 @@ function MobileHeader({
   selectedItemLabel,
   hamburgerProps,
   itemPrefix,
-}: MobileHeaderProps) {
+}: MobileHeaderProps): JSX.Element {
   return (
     <div className={cn(styles['heading-section'], styles['sidebar-folded'], className)}>
       <CatalogHamburger {...hamburgerProps} />
@@ -132,7 +150,7 @@ function MobileHeader({
 const Section = React.forwardRef<
   HTMLDivElement,
   { children?: React.ReactNode } & ComponentProps<'div'>
->(({ children, className, ...rest }, ref) => {
+>(({ children, className, ...rest }, ref): JSX.Element => {
   return (
     <div
       {...rest}
@@ -149,7 +167,7 @@ function TopLevelContainer({
   children,
   className,
   ...rest
-}: { children?: React.ReactNode } & ComponentProps<'div'>) {
+}: { children?: React.ReactNode } & ComponentProps<'div'>): JSX.Element {
   return (
     <div className={cn('sidebar-top-level', styles['sidebar-layout'], className)} {...rest}>
       {children}
@@ -157,7 +175,7 @@ function TopLevelContainer({
   );
 }
 
-function Root({ children, className, ...rest }: CatalogProps) {
+function Root({ children, className, ...rest }: CatalogProps): JSX.Element {
   const { toggles } = useToggle();
   const isHamburgerActive = toggles[Catalog.constants.toggleKey] ?? false;
   return (
@@ -189,7 +207,7 @@ function Root({ children, className, ...rest }: CatalogProps) {
  * ```
  */
 const Container = React.forwardRef<HTMLDivElement, CatalogProps>(
-  ({ children, className, ...rest }, ref) => {
+  ({ children, className, ...rest }, ref): JSX.Element => {
     return (
       <ToggleStateProvider>
         <Root ref={ref} className={className} {...rest}>
@@ -199,6 +217,7 @@ const Container = React.forwardRef<HTMLDivElement, CatalogProps>(
     );
   }
 );
+Container.displayName = 'Container';
 
 const Catalog = {
   TopLevelContainer,

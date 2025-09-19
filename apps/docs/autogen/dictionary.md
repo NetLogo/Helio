@@ -1,3 +1,6 @@
+{{#with dictionary}}
+{{#netlogoDictionary}}
+
 # NetLogo Dictionary
 
 {{> partials/dictionary/header.md }}
@@ -9,9 +12,11 @@ primitive might still be used by patches or the observer, and vice
 versa. To see which agents (turtles, patches, links, observer) can
 actually run a primitive, consult its dictionary entry.
 
-{{#dictionary.categories}}
+{{#categories}}
 
-<h3 id="{{{id}}}">{{{title}}}</h3>
+<h3 id="{{{id}}}">
+<a href="#{{{id}}}">{{{title}}}</a>
+</h3>
 
 {{#entries}}
 [[{{{name}}}|{{{id}}}]]
@@ -19,12 +24,12 @@ actually run a primitive, consult its dictionary entry.
 ({{#each additional_names}}[[{{{.}}}|{{{../id}}}]]{{#unless @last}}, {{/unless}}{{/each}})
 {{/if}}
 {{/entries}}
-{{/dictionary.categories}}
+{{/categories}}
 
 ## Built-In Variables
 <div>
 
-{{#each dictionary.variables}}
+{{#each variables}}
 <h3 id="{{{id}}}">{{{title}}}</h3>
 
 {{#each entries}}
@@ -36,18 +41,21 @@ actually run a primitive, consult its dictionary entry.
 </div>
 
 ## Keywords
-{{#each dictionary.keywords.entries}}
+{{#each keywords.entries}}
 [[{{{name}}}|{{{id}}}]]
 {{/each}}
 
 ## Constants
 
-{{#each dictionary.entries}}
+{{#each entries}}
 {{> partials/dictionary/constant.md }}
 {{/each}}
 
 ## Primitives and Commands
 
-{{#each dictionary.entries}}
+{{#each entries}}
 {{> partials/dictionary/entry.md }}
 {{/each}}
+
+{{/netlogoDictionary}}
+{{/with}}

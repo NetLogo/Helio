@@ -8,19 +8,20 @@ import { RenderError } from './errors.js';
 import { getFileExtension } from './utils.js';
 
 abstract class TemplateEngine {
-  abstract registerPartial(key: string, content: string): void;
-  abstract render(content: string, variables: Record<string, any>): string;
+  public abstract registerPartial(key: string, content: string): void;
+  public abstract render(content: string, variables: Record<string, unknown>): string;
+  public abstract get engine(): unknown;
 
-  async registerPartialsFromDirectory(
+  public async registerPartialsFromDirectory(
     directory: string,
     extensions: Array<string> = ['mustache', 'md'],
     rootDirectory = directory
-  ) {
+  ): Promise<Array<Record<string, string>>> {
     const files = await fs.readdir(directory, {
       withFileTypes: true,
       recursive: true,
     });
-    const partials: Record<string, string>[] = [];
+    const partials: Array<Record<string, string>> = [];
 
     for (const file of files) {
       if (!file.isFile()) continue;
@@ -46,45 +47,51 @@ abstract class TemplateEngine {
 
 class MustacheEngine extends TemplateEngine {
   private partials: Record<string, string> = {};
+  public get engine(): typeof mustache {
+    return mustache;
+  }
 
-  render(content: string, variables: Record<string, any>) {
-    let rendered;
+  public render(content: string, variables: Record<string, unknown>): string {
     try {
-      rendered = mustache.render(content, variables, this.partials);
+      const rendered = mustache.render(content, variables, this.partials);
 
       if (!rendered) {
         throw new RenderError('Rendered output is empty');
       }
-    } catch (error: any) {
-      throw new RenderError(`Failed to render Mustache template`, error.message);
+
+      return rendered;
+    } catch (error: unknown) {
+      throw new RenderError(`Failed to render Mustache template`, (error as Error).message);
     }
-    return rendered;
   }
 
-  registerPartial(key: string, content: string) {
+  public registerPartial(key: string, content: string): void {
     this.partials[key] = content;
   }
 }
 
 class HandlebarsEngine extends TemplateEngine {
-  registerPartial(key: string, content: string) {
+  public registerPartial(key: string, content: string): void {
     const template = Handlebars.compile(content);
     Handlebars.registerPartial(key, template);
   }
 
-  render(content: string, variables: Record<string, any>) {
-    let rendered;
+  public get engine(): typeof Handlebars {
+    return Handlebars;
+  }
+
+  public render(content: string, variables: Record<string, unknown>): string {
     try {
       const template = Handlebars.compile(content);
-      rendered = template(variables);
+      const rendered = template(variables);
 
       if (!rendered) {
         throw new RenderError('Rendered output is empty');
       }
-    } catch (error: any) {
-      throw new RenderError(`Failed to render Handlebars template`, error.message);
+      return rendered;
+    } catch (error: unknown) {
+      throw new RenderError(`Failed to render Handlebars template`, (error as Error).message);
     }
-    return rendered;
   }
 }
 

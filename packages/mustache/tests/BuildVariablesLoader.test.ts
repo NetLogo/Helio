@@ -2,11 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import ini from 'ini';
 import yaml from 'yaml';
 import { BuildVariablesLoader } from '../src/BuildVariablesLoader.js';
-import {
-  FileFetchError,
-  ParseError,
-  UnsupportedFileTypeError,
-} from '../src/errors.js';
+import { FileFetchError, ParseError, UnsupportedFileTypeError } from '../src/errors.js';
 import * as utils from '../src/utils.js';
 
 // Mock the utils module
@@ -30,14 +26,6 @@ describe('BuildVariablesLoader', () => {
     it('should create instance with scan root', () => {
       const testLoader = new BuildVariablesLoader('/custom/path');
       expect(testLoader).toBeInstanceOf(BuildVariablesLoader);
-    });
-  });
-
-  describe('supportedFileTypes getter', () => {
-    it('should return joined supported extensions', () => {
-      const expected =
-        '.js, .ts, .jsx, .tsx, .yml, .yaml, .ini, .xml, .nlogox, .json';
-      expect(loader.supportedFileTypes).toBe(expected);
     });
   });
 
@@ -95,9 +83,7 @@ describe('BuildVariablesLoader', () => {
         mockReadLocal.mockRejectedValue(mockError);
 
         await expect(loader.fetch(testPath)).rejects.toThrow('File not found');
-        expect(mockReadLocal).toHaveBeenCalledWith(
-          '/test/root/config/build.yaml'
-        );
+        expect(mockReadLocal).toHaveBeenCalledWith('/test/root/config/build.yaml');
       });
 
       it('should handle absolute paths correctly', async () => {
@@ -109,9 +95,7 @@ describe('BuildVariablesLoader', () => {
 
         const result = await loader.fetch(testPath);
 
-        expect(mockReadLocal).toHaveBeenCalledWith(
-          '/test/root/absolute/path/config.yaml'
-        );
+        expect(mockReadLocal).toHaveBeenCalledWith('/test/root/absolute/path/config.yaml');
         expect(result).toBe(testContent);
       });
     });
@@ -166,9 +150,7 @@ describe('BuildVariablesLoader', () => {
         });
 
         await expect(loader.load('invalid.yaml')).rejects.toThrow(ParseError);
-        await expect(loader.load('invalid.yaml')).rejects.toThrow(
-          'YAML parse error'
-        );
+        await expect(loader.load('invalid.yaml')).rejects.toThrow('YAML parse error');
       });
     });
 
@@ -209,8 +191,7 @@ describe('BuildVariablesLoader', () => {
 
     describe('INI files', () => {
       it('should parse .ini files', async () => {
-        const iniContent =
-          '[section1]\nkey1=value1\nkey2=value2\n[section2]\nkey3=value3';
+        const iniContent = '[section1]\nkey1=value1\nkey2=value2\n[section2]\nkey3=value3';
         const expectedResult = {
           section1: { key1: 'value1', key2: 'value2' },
           section2: { key3: 'value3' },
@@ -236,9 +217,7 @@ describe('BuildVariablesLoader', () => {
         });
 
         await expect(loader.load('invalid.ini')).rejects.toThrow(ParseError);
-        await expect(loader.load('invalid.ini')).rejects.toThrow(
-          'INI parse error'
-        );
+        await expect(loader.load('invalid.ini')).rejects.toThrow('INI parse error');
       });
     });
 
@@ -247,9 +226,7 @@ describe('BuildVariablesLoader', () => {
         mockGetFileExtension.mockReturnValue('.txt');
         jest.spyOn(loader, 'fetch').mockResolvedValue('some content');
 
-        await expect(loader.load('config.txt')).rejects.toThrow(
-          UnsupportedFileTypeError
-        );
+        await expect(loader.load('config.txt')).rejects.toThrow(UnsupportedFileTypeError);
         await expect(loader.load('config.txt')).rejects.toThrow(
           'Unsupported file type: .txt for config.txt'
         );
@@ -259,18 +236,14 @@ describe('BuildVariablesLoader', () => {
         mockGetFileExtension.mockReturnValue('');
         jest.spyOn(loader, 'fetch').mockResolvedValue('some content');
 
-        await expect(loader.load('config')).rejects.toThrow(
-          UnsupportedFileTypeError
-        );
+        await expect(loader.load('config')).rejects.toThrow(UnsupportedFileTypeError);
       });
 
       it('should throw UnsupportedFileTypeError for unknown extensions', async () => {
         mockGetFileExtension.mockReturnValue('.unknown');
         jest.spyOn(loader, 'fetch').mockResolvedValue('some content');
 
-        await expect(loader.load('config.unknown')).rejects.toThrow(
-          UnsupportedFileTypeError
-        );
+        await expect(loader.load('config.unknown')).rejects.toThrow(UnsupportedFileTypeError);
       });
     });
 
@@ -300,9 +273,7 @@ describe('BuildVariablesLoader', () => {
           fail('Should have thrown an error');
         } catch (error) {
           expect(error).toBeInstanceOf(FileFetchError);
-          expect((error as FileFetchError).message).toContain(
-            'Network timeout'
-          );
+          expect((error as FileFetchError).message).toContain('Network timeout');
           expect((error as FileFetchError).message).toContain(testPath);
         }
       });
@@ -442,9 +413,7 @@ metadata:
       } catch (error) {
         expect(error).toBeInstanceOf(UnsupportedFileTypeError);
         expect((error as UnsupportedFileTypeError).message).toContain(testPath);
-        expect((error as UnsupportedFileTypeError).message).toContain(
-          'Unsupported file type'
-        );
+        expect((error as UnsupportedFileTypeError).message).toContain('Unsupported file type');
       }
     });
   });

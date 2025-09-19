@@ -1,5 +1,5 @@
 import yaml from 'yaml';
-import z from 'zod';
+import type z from 'zod';
 
 import type { Warning } from '@repo/utils/algebriac/monads/warnable';
 import WarnableValue from '@repo/utils/algebriac/monads/warnable';
@@ -60,36 +60,31 @@ const stringToType = (s0: string | undefined): TypeName => {
         of: stringToType(s.slice('repeatable '.length)),
       };
     default:
-      return { kind: 'CustomType', name: s0! };
+      return { kind: 'CustomType', name: s0 ?? 'unknown' };
   }
 };
 
 type PrimWarnFunction = (msg: string) => (key: string, line?: number) => string;
-export const primWarning: PrimWarnFunction =
-  (msg: string) => (key: string, line?: number) =>
-    `Missing ${key} for primitive${line ? ` on line ${line}` : ''}, ${msg}`;
+export const primWarning: PrimWarnFunction = (msg: string) => (key: string, line?: number) =>
+  `Missing ${key} for primitive${typeof line === 'number' ? ` on line ${line}` : ''}, ${msg}`;
 
-type ArgWarnFunction = (
-  msg: string
-) => (key: string, arg?: string, line?: number) => string;
+type ArgWarnFunction = (msg: string) => (key: string, arg?: string, line?: number) => string;
 export const argWarning: ArgWarnFunction =
   (msg: string) => (key: string, arg?: string, line?: number) =>
-    `Argument ${arg ?? ''} ${line ? ` on line ${line}` : ''} has no ${key}, ${msg}`;
+    `Argument ${arg ?? ''} ${typeof line === 'number' ? ` on line ${line}` : ''} has no ${key}, ${msg}`;
 
 export const warn = (message: string, line?: number): Warning => ({
   message,
   line,
 });
 
-function parseNetLogoType(
-  input: z.infer<typeof NamedTypeSchema>
-): WarnableValue<NetLogoType> {
+function parseNetLogoType(input: z.infer<typeof NamedTypeSchema>): WarnableValue<NetLogoType> {
   const ln = undefined;
   const nameOpt = input.name;
   const typeStr = input.type ?? 'anything';
 
   const w: Array<Warning> = [];
-  if (!input.type)
+  if (!(typeof input.type === 'string'))
     w.push(warn(argWarning('assuming wildcard type')('type', nameOpt, ln), ln));
 
   const t = stringToType(typeStr);
@@ -98,30 +93,23 @@ function parseNetLogoType(
   return new WarnableValue(nt, w);
 }
 
-function foldArgs(
-  parsed: WarnableValue<NetLogoType>[]
-): WarnableValue<NetLogoType[]> {
+function foldArgs(parsed: Array<WarnableValue<NetLogoType>>): WarnableValue<Array<NetLogoType>> {
   return parsed.reduce(
     (acc, v) => acc.merge(v, (xs, x) => [...xs, x]),
-    new WarnableValue<NetLogoType[]>([])
+    new WarnableValue<Array<NetLogoType>>([])
   );
 }
 
-function parsePrimSyntax(
-  p: z.infer<typeof PrimitiveSchema>
-): WarnableValue<PrimSyntax> {
+function parsePrimSyntax(p: z.infer<typeof PrimitiveSchema>): WarnableValue<PrimSyntax> {
   const infix = !!p.infix;
 
-  const argsWV = foldArgs((p.arguments ?? []).map(parseNetLogoType));
+  const argsWV = foldArgs(p.arguments.map(parseNetLogoType));
 
-  const altArgumentsWV: WarnableValue<NetLogoType[] | undefined> =
-    p.alternateArguments
-      ? foldArgs(p.alternateArguments.map(parseNetLogoType)).map(
-          (args) => args as NetLogoType[]
-        )
-      : new WarnableValue(undefined);
+  const altArgumentsWV: WarnableValue<Array<NetLogoType> | undefined> = p.alternateArguments
+    ? foldArgs(p.alternateArguments.map(parseNetLogoType)).map((args) => args)
+    : new WarnableValue(undefined);
 
-  const primArgsWV: WarnableValue<NetLogoType[][]> = argsWV.flatMap((args) =>
+  const primArgsWV: WarnableValue<Array<Array<NetLogoType>>> = argsWV.flatMap((args) =>
     altArgumentsWV.map((altArgs) => {
       if (args.length === 0) {
         return [[]];
@@ -142,55 +130,25 @@ function parsePrimitive(
   const ln = undefined;
   const warnings: Array<Warning> = [];
 
-  if (!p.name) {
+  if (!(typeof p.name === 'string')) {
     warnings.push(warn(primWarning('excluding from results')('name', ln), ln));
     return new WarnableValue<Primitive | null>(null, warnings);
   }
 
-  // description default + warning if missing
-  if (p.description === undefined) {
+  if (!p.description) {
     warnings.push(
-      warn(
-        primWarning(`adding empty description for primitive ${p.name}`)(
-          'description',
-          ln
-        ),
-        ln
-      )
+      warn(primWarning(`adding empty description for primitive ${p.name}`)('description', ln), ln)
     );
   }
 
   // type & returns
-  let primitiveType: PrimitiveType;
-  if ((p.type ?? 'command') === 'command') {
-    if (p.type === undefined) {
-      warnings.push(
-        warn(
-          primWarning(`defaulting to command for primitive ${p.name}`)(
-            'type',
-            ln
-          ),
-          ln
-        )
-      );
-    }
+  let primitiveType: PrimitiveType = { kind: 'command' };
+  if (p.type === 'command') {
     primitiveType = { kind: 'command' };
   } else {
-    // reporter
-    if (p.returns === undefined) {
-      warnings.push(
-        warn(
-          primWarning(`assuming wildcard type for reporter ${p.name}`)(
-            'returns',
-            ln
-          ),
-          ln
-        )
-      );
-    }
     primitiveType = {
       kind: 'reporter',
-      returns: stringToType(p.returns ?? ''),
+      returns: stringToType(p.returns),
     };
   }
 
@@ -199,23 +157,20 @@ function parsePrimitive(
   const primWV = syntaxWV.map(
     (syntax) =>
       new Primitive(
-        p.name!,
+        p.name ?? 'Untitled',
         extensionName,
         primitiveType,
-        p.description ?? '',
+        p.description,
         syntax,
-        (p.tags ?? []).filter((t): t is string => typeof t === 'string')
+        p.tags.filter((t): t is string => typeof t === 'string')
       )
   );
 
-  return new WarnableValue(primWV.obtainedValue, [
-    ...warnings,
-    ...primWV.warnings,
-  ]);
+  return new WarnableValue(primWV.obtainedValue, [...warnings, ...primWV.warnings]);
 }
 
 export type ParsingResult = {
-  primitives: Primitive[];
+  primitives: Array<Primitive>;
   warnings: Array<Warning>;
 };
 
@@ -230,10 +185,10 @@ export function parsePrimitivesFromConfig(root: unknown): ParsingResult {
   }
 
   const data = v.data;
-  const extensionName = data.extensionName ?? '';
+  const extensionName = data.extensionName || 'unknown';
   const results = data.primitives.map((p) => parsePrimitive(extensionName, p));
 
-  const primitives: Primitive[] = [];
+  const primitives: Array<Primitive> = [];
   const warnings: Array<Warning> = [];
   for (const r of results) {
     warnings.push(...r.warnings);
@@ -243,9 +198,7 @@ export function parsePrimitivesFromConfig(root: unknown): ParsingResult {
 }
 
 // ---------- Documentation config (optional section) ----------
-export function parseExtensionConfig(
-  root: unknown
-): WarnableValue<ExtensionConfig | null> {
+export function parseExtensionConfig(root: unknown): WarnableValue<ExtensionConfig | null> {
   const v = RootDocumentSchema.safeParse(root);
   if (!v.success) {
     const ws = v.error.issues.map((i) =>
@@ -270,7 +223,7 @@ export function parseConfigText(text: string): unknown {
 }
 
 export function parseAllFromText(yamlRawString: string): {
-  primitives: Primitive[];
+  primitives: Array<Primitive>;
   documentation: ExtensionConfig | null;
   warnings: WarnableValue<null>;
 } {
@@ -286,9 +239,6 @@ export function parseAllFromText(yamlRawString: string): {
   return {
     primitives: primRes.primitives,
     documentation: docRes.obtainedValue,
-    warnings: new WarnableValue(null, [
-      ...primRes.warnings,
-      ...docRes.warnings,
-    ]),
+    warnings: new WarnableValue(null, [...primRes.warnings, ...docRes.warnings]),
   };
 }

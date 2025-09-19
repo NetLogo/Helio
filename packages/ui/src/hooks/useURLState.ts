@@ -16,10 +16,10 @@ export function useUrlState<T extends Record<string, string | undefined>>(): rea
     return paramsObj;
   }, [searchParams]);
 
-  function setQueryParams(s: Partial<T>) {
+  function setQueryParams(s: Partial<T>): void {
     const newSearchParams = new URLSearchParams(searchParams);
     Object.keys(s).forEach((k) => {
-      if (s[k]) {
+      if (typeof s[k] === 'string') {
         newSearchParams.set(k, s[k]);
       } else {
         newSearchParams.delete(k);

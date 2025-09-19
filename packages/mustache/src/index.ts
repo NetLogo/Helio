@@ -4,4 +4,5 @@ import Renderer from './Renderer.js';
 import type { PageConfig, ProjectConfig } from './schemas.js';
 
 export default Renderer;
-export { BuildResult, PageConfig, PageParser, PageResult, ProjectConfig };
+export type { BuildResult, PageConfig, PageResult, ProjectConfig };
+export { PageParser };

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export function saveToPublicDir(filePath: Array<string>, content: string) {
+export function saveToPublicDir(filePath: Array<string>, content: string | Buffer): void {
   const publicDir = path.join(process.cwd(), 'public');
   const fullPath = path.join(publicDir, ...filePath);
   const dir = path.dirname(fullPath);

@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import {
-  getDefaultWikiLinkOptions,
+import type {
   LinkType,
-  WikiLinkOptions,
+  WikiLinkOptions} from './wikilink.options';
+import {
+  getDefaultWikiLinkOptions
 } from './wikilink.options';
 
 describe('wikilink.options', () => {
@@ -11,7 +12,7 @@ describe('wikilink.options', () => {
       const options = getDefaultWikiLinkOptions();
 
       expect(options.hrefTemplate).toBeDefined();
-      expect(options.hrefTemplate!('test', 'wikiLink')).toBe('#test');
+      expect(options.hrefTemplate('test', 'wikiLink')).toBe('#test');
 
       expect(options.classNames).toEqual({
         wikiLink: 'wikilink',
@@ -48,19 +49,19 @@ describe('wikilink.options', () => {
 
       const options = getDefaultWikiLinkOptions(customOptions);
 
-      expect(options.classNames!.wikiLink).toBe('custom-link');
-      expect(options.classNames!.imageLink).toBe('wikilink-image'); // Default preserved
-      expect(options.classNames!.missingLink).toBe('wikilink-missing'); // Default preserved
+      expect(options.classNames.wikiLink).toBe('custom-link');
+      expect(options.classNames.imageLink).toBe('wikilink-image'); // Default preserved
+      expect(options.classNames.missingLink).toBe('wikilink-missing'); // Default preserved
 
-      expect(options.validation!.missingLinkBehavior).toBe('mark');
+      expect(options.validation.missingLinkBehavior).toBe('mark');
 
-      expect(options.imageOptions!.altTemplate).toBeDefined(); // Default preserved
+      expect(options.imageOptions.altTemplate).toBeDefined(); // Default preserved
     });
 
     it('should create HTML options for all link types', () => {
       const options = getDefaultWikiLinkOptions();
 
-      const linkTypes: LinkType[] = ['wikiLink', 'imageLink', 'missingLink'];
+      const linkTypes: Array<LinkType> = ['wikiLink', 'imageLink', 'missingLink'];
       linkTypes.forEach((type) => {
         expect(options.htmlOptions[type]).toBeDefined();
         expect(options.htmlOptions[type].target).toBe('_self');
@@ -96,21 +97,21 @@ describe('wikilink.options', () => {
   describe('default functions', () => {
     it('should have working default href template', () => {
       const options = getDefaultWikiLinkOptions();
-      expect(options.hrefTemplate!('my-page', 'wikiLink')).toBe('#my-page');
-      expect(options.hrefTemplate!('my-page', 'wikiLink', 'section')).toBe(
+      expect(options.hrefTemplate('my-page', 'wikiLink')).toBe('#my-page');
+      expect(options.hrefTemplate('my-page', 'wikiLink', 'section')).toBe(
         '#my-page#section'
       );
     });
 
     it('should have working default alt template for images', () => {
       const options = getDefaultWikiLinkOptions();
-      expect(options.imageOptions!.altTemplate!('image.png')).toBe('image.png');
+      expect(options.imageOptions.altTemplate!('image.png')).toBe('image.png');
     });
 
     it('should have working default encode function', () => {
       const options = getDefaultWikiLinkOptions();
-      expect(options.integration!.encode!('hello world')).toBe('hello+world');
-      expect(options.integration!.encode!('café & résumé')).toBe(
+      expect(options.integration.encode!('hello world')).toBe('hello+world');
+      expect(options.integration.encode!('café & résumé')).toBe(
         'caf%C3%A9+%26+r%C3%A9sum%C3%A9'
       );
     });
@@ -132,8 +133,8 @@ describe('wikilink.options', () => {
 
       const options = getDefaultWikiLinkOptions(customOptions);
 
-      expect(options.imageOptions!.altTemplate).toBeDefined(); // Should keep default
-      expect(options.imageOptions!.defaultSize).toEqual({}); // Should keep default
+      expect(options.imageOptions.altTemplate).toBeDefined(); // Should keep default
+      expect(options.imageOptions.defaultSize).toEqual({}); // Should keep default
     });
 
     it('should handle partial validation options', () => {
@@ -145,9 +146,9 @@ describe('wikilink.options', () => {
 
       const options = getDefaultWikiLinkOptions(customOptions);
 
-      expect(options.validation!.linkExists!('exists')).toBe(true);
-      expect(options.validation!.linkExists!('missing')).toBe(false);
-      expect(options.validation!.missingLinkBehavior).toBe('ignore'); // Should keep default
+      expect(options.validation.linkExists!('exists')).toBe(true);
+      expect(options.validation.linkExists!('missing')).toBe(false);
+      expect(options.validation.missingLinkBehavior).toBe('ignore'); // Should keep default
     });
 
     it('should handle partial class name options', () => {
@@ -160,15 +161,15 @@ describe('wikilink.options', () => {
 
       const options = getDefaultWikiLinkOptions(customOptions);
 
-      expect(options.classNames!.wikiLink).toBe('custom-wiki');
-      expect(options.classNames!.imageLink).toBe('wikilink-image'); // Default
-      expect(options.classNames!.missingLink).toBe('wikilink-missing'); // Default
+      expect(options.classNames.wikiLink).toBe('custom-wiki');
+      expect(options.classNames.imageLink).toBe('wikilink-image'); // Default
+      expect(options.classNames.missingLink).toBe('wikilink-missing'); // Default
     });
   });
 
   describe('LinkType enum behavior', () => {
     it('should support all expected link types', () => {
-      const linkTypes: LinkType[] = [
+      const linkTypes: Array<LinkType> = [
         'wikiLink',
         'imageLink',
         'missingLink',

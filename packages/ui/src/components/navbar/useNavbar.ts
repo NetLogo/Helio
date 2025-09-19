@@ -1,10 +1,10 @@
 import useHideOnScroll from '@/hooks/useHideOnScroll';
 import { isWindowDefined } from '@/lib/utils/client';
-import { NavbarDynamicProps, NavbarOptions } from './types';
+import type { NavbarDynamicProps, NavbarOptions } from './types';
 
 export function useNavbar(options: NavbarOptions): NavbarDynamicProps {
   if (isWindowDefined()) {
-    // Client-side logic
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const show = useHideOnScroll({
       enabled: Boolean(options.hideOnScroll),
       threshold: options.hideOnScroll?.threshold,

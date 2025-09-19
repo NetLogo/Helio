@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import { JSONParseError, ParseError, ValidationError } from './errors.js';
-import { ProjectConfig, ProjectConfigSchema } from './schemas.js';
+import type { ProjectConfig } from './schemas.js';
+import { ProjectConfigSchema } from './schemas.js';
 
 /**
  * @class ProjectConfigLoader
@@ -25,21 +26,22 @@ import { ProjectConfig, ProjectConfigSchema } from './schemas.js';
  * @see {@link https://github.com/colinhacks/zod} for schema validation
  * @see {@link https://nodejs.org/api/fs.html#fspromisesreadfilepath-options} for file loading
  */
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ProjectConfigLoader {
   /**
    * Loads and validates a config file from the given path.
    * @param configPath - Path to the config file (typically `conf.json`)
    * @returns Parsed and validated Config object
    */
-  static async load(configPath: string): Promise<ProjectConfig> {
-    let raw: string;
+  public static async load(configPath: string): Promise<ProjectConfig> {
+    let raw: string = '';
     try {
       raw = await fs.readFile(configPath, 'utf-8');
     } catch (err) {
       throw new ParseError(configPath, err);
     }
 
-    let parsed: unknown;
+    let parsed: unknown = null;
     try {
       parsed = JSON.parse(raw);
     } catch (err) {

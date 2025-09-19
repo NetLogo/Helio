@@ -1,11 +1,12 @@
 'use client';
+import type { JSX } from 'react';
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import Catalog from '@/components/catalog';
 import useSearchParams from '@/hooks/useSearchParams';
 import { useUrlState } from '../hooks/useURLState';
 
-export default function SideCatalog(props: SideCatalogProps) {
+export default function SideCatalog(props: SideCatalogProps): JSX.Element {
   const contentRef = useRef<HTMLDivElement>(null);
   const itemsList = useRef<HTMLDivElement>(null);
   const { filteredItems, queryText, setQueryText, onSelect } = useSideCatalog(
@@ -27,7 +28,9 @@ export default function SideCatalog(props: SideCatalogProps) {
             <Catalog.SearchField
               placeholder="Search..."
               value={queryText}
-              onChange={(e) => setQueryText(e.target.value)}
+              onChange={(e) => {
+                setQueryText(e.target.value);
+              }}
             />
           </Catalog.Header>
           <Catalog.ItemsList
@@ -54,7 +57,12 @@ function useSideCatalog(
   }: SideCatalogProps,
   contentRef: React.RefObject<HTMLDivElement | null>,
   itemsList: React.RefObject<HTMLDivElement | null>
-) {
+): {
+  filteredItems: Array<SideCatalogItem>;
+  queryText: string;
+  setQueryText: React.Dispatch<React.SetStateAction<string>>;
+  onSelect: (item: SideCatalogItem, e: React.MouseEvent<HTMLAnchorElement>) => void;
+} {
   const [queryText, setQueryText] = useState<string>('');
   const hasQuery = queryText.length > 0;
   const filteredItems = useMemo(() => {
@@ -68,12 +76,12 @@ function useSideCatalog(
   const { query: searchQueryFromUrl = '', parentScrollY = 0 } = urlState;
 
   useLayoutEffect(() => {
-    if (isLoading) return;
+    if (isLoading === true) return;
     if (searchQueryFromUrl) {
       setQueryText(searchQueryFromUrl);
     }
 
-    if (parentScrollY && contentRef.current) {
+    if (parentScrollY !== 0 && contentRef.current) {
       contentRef.current.scrollTop = Number(parentScrollY);
     }
 
@@ -104,13 +112,13 @@ function useSideCatalog(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentRef, isLoading]);
 
-  function onSelect(item: SideCatalogItem, e: React.MouseEvent<HTMLAnchorElement>) {
+  function onSelect(item: SideCatalogItem, e: React.MouseEvent<HTMLAnchorElement>): void {
     userOnSelect?.(item, e);
-    if (withRouteTransition) {
+    if (withRouteTransition === true) {
       e.preventDefault();
       const anchor = e.currentTarget;
       const href = anchor.getAttribute('href');
-      if (!href) return;
+      if (href === null) return;
       const newURL = new URL(href, window.location.href);
       newURL.searchParams.set('query', queryText);
       newURL.searchParams.set('parentScrollY', String(contentRef.current?.scrollTop ?? 0));
@@ -121,7 +129,7 @@ function useSideCatalog(
   return { filteredItems, queryText, setQueryText, onSelect };
 }
 
-interface SideCatalogProps {
+type SideCatalogProps = {
   label: string;
   items: Array<SideCatalogItem>;
   onSelect?: (item: SideCatalogItem, e: React.MouseEvent) => void;
@@ -133,10 +141,10 @@ interface SideCatalogProps {
   withRouteTransition?: boolean;
   scrollMarginTop?: number;
   children?: React.ReactNode;
-}
+};
 
-export interface SideCatalogItem {
+export type SideCatalogItem = {
   title: string;
   url?: string;
-  icon?: React.ComponentType<any>;
-}
+  icon?: JSX.Element;
+};

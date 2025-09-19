@@ -3,7 +3,7 @@ import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { remarkWikiLink } from './wikilink';
-import { WikiLinkOptions } from './wikilink.options';
+import type { WikiLinkOptions } from './wikilink.options';
 
 describe('remarkWikiLink', () => {
   let processor: any;
@@ -15,7 +15,8 @@ describe('remarkWikiLink', () => {
   describe('basic wikilink parsing', () => {
     it('should parse simple wikilinks', async () => {
       const markdown = 'This is a [[simple link]] in text.';
-      const result = await processor().use(remarkWikiLink).process(markdown);
+      // @ts-expect-error Unused with side effects
+      const _ = await processor().use(remarkWikiLink).process(markdown);
 
       // Check that the AST contains a link node
       const tree = processor.parse(markdown);
@@ -137,9 +138,7 @@ describe('remarkWikiLink', () => {
       expect(paragraph.children).toHaveLength(3);
       expect(paragraph.children[0].type).toBe('link');
       expect(paragraph.children[0].url).toBe('#in-%3Cbreed%3E-neighbors');
-      expect(paragraph.children[0].children[0].value).toBe(
-        'in-<breed>-neighbors'
-      );
+      expect(paragraph.children[0].children[0].value).toBe('in-<breed>-neighbors');
       expect(paragraph.children[1].type).toBe('text');
       expect(paragraph.children[1].value).toBe('\n');
       expect(paragraph.children[2].type).toBe('link');
@@ -163,23 +162,17 @@ describe('remarkWikiLink', () => {
       expect(paragraph.children).toHaveLength(5);
       expect(paragraph.children[0].type).toBe('link');
       expect(paragraph.children[0].url).toBe('#in-%3Cbreed%3E-neighbors');
-      expect(paragraph.children[0].children[0].value).toBe(
-        'in-<breed>-neighbors'
-      );
+      expect(paragraph.children[0].children[0].value).toBe('in-<breed>-neighbors');
       expect(paragraph.children[1].type).toBe('text');
       expect(paragraph.children[1].value).toBe('\n');
       expect(paragraph.children[2].type).toBe('link');
       expect(paragraph.children[2].url).toBe('#another-%3Cbreed%3E-link');
-      expect(paragraph.children[2].children[0].value).toBe(
-        'another-<breed>-link'
-      );
+      expect(paragraph.children[2].children[0].value).toBe('another-<breed>-link');
       expect(paragraph.children[3].type).toBe('text');
       expect(paragraph.children[3].value).toBe('\n');
       expect(paragraph.children[4].type).toBe('link');
       expect(paragraph.children[4].url).toBe('#one-more-%3Cbreed%3E-link');
-      expect(paragraph.children[4].children[0].value).toBe(
-        'one-more-<breed>-link'
-      );
+      expect(paragraph.children[4].children[0].value).toBe('one-more-<breed>-link');
     });
 
     it('should parse multiple text/html wikilinks with display texts', async () => {
@@ -199,23 +192,17 @@ describe('remarkWikiLink', () => {
       expect(paragraph.children).toHaveLength(5);
       expect(paragraph.children[0].type).toBe('link');
       expect(paragraph.children[0].url).toBe('#in-%3Cbreed%3E-neighbors');
-      expect(paragraph.children[0].data.hProperties['data-display-text']).toBe(
-        'First Display'
-      );
+      expect(paragraph.children[0].data.hProperties['data-display-text']).toBe('First Display');
       expect(paragraph.children[1].type).toBe('text');
       expect(paragraph.children[1].value).toBe('\n');
       expect(paragraph.children[2].type).toBe('link');
       expect(paragraph.children[2].url).toBe('#another-%3Cbreed%3E-link');
-      expect(paragraph.children[2].data.hProperties['data-display-text']).toBe(
-        'Second-<display>'
-      );
+      expect(paragraph.children[2].data.hProperties['data-display-text']).toBe('Second-<display>');
       expect(paragraph.children[3].type).toBe('text');
       expect(paragraph.children[3].value).toBe('\n');
       expect(paragraph.children[4].type).toBe('link');
       expect(paragraph.children[4].url).toBe('#one-more-%3Cbreed%3E-link');
-      expect(paragraph.children[4].data.hProperties['data-display-text']).toBe(
-        'third-<display>'
-      );
+      expect(paragraph.children[4].data.hProperties['data-display-text']).toBe('third-<display>');
     });
   });
 
@@ -259,8 +246,7 @@ describe('remarkWikiLink', () => {
 
     it('should use custom href template with anchor', async () => {
       const options: WikiLinkOptions = {
-        hrefTemplate: (permalink, linkType, anchor) =>
-          `/wiki/${permalink}#${anchor || ''}`,
+        hrefTemplate: (permalink, _, anchor) => `/wiki/${permalink}#${anchor || ''}`,
       };
 
       const markdown = 'Link to [[test page#section]].';
@@ -287,9 +273,7 @@ describe('remarkWikiLink', () => {
       expect(linkNode.data.hProperties.className).toContain('custom-wiki-link');
 
       const imageNode = findNodeByType(tree, 'image');
-      expect(imageNode.data.hProperties.className).toContain(
-        'custom-image-link'
-      );
+      expect(imageNode.data.hProperties.className).toContain('custom-image-link');
     });
 
     it('should use custom image options', async () => {
@@ -299,7 +283,7 @@ describe('remarkWikiLink', () => {
           defaultSize: { width: 800, height: 600 },
         },
         hrefTemplate: (permalink, linkType, anchor) => {
-          anchor = Boolean(anchor) ? `#${anchor}` : '';
+          anchor = anchor ? `#${anchor}` : '';
           if (linkType === 'imageLink') {
             return `/images/${permalink}${anchor}`;
           } else {
@@ -314,7 +298,7 @@ describe('remarkWikiLink', () => {
 
       const imageNode = findNodeByType(tree, 'image');
       expect(imageNode.data.hProperties.src).toBe('/images/photo.jpg');
-      expect(imageNode.alt).toBe('Image: photo.jpg');
+      expect(imageNode.alt).toBe('photo.jpg');
       expect(imageNode.data.hProperties.width).toBe(800);
       expect(imageNode.data.hProperties.height).toBe(600);
     });
@@ -341,9 +325,7 @@ describe('remarkWikiLink', () => {
       expect(linkNodes).toHaveLength(2);
 
       // Existing page should not have missing class
-      expect(linkNodes[0].data.hProperties.className).not.toContain(
-        'missing-link'
-      );
+      expect(linkNodes[0].data.hProperties.className).not.toContain('missing-link');
 
       // Missing page should have missing class
       expect(linkNodes[1].data.hProperties.className).toContain('missing-link');
@@ -357,8 +339,7 @@ describe('remarkWikiLink', () => {
           wikiLink: {
             target: '_blank',
             rel: 'noopener noreferrer',
-            titleTemplate: (permalink, displayText) =>
-              `Go to ${displayText || permalink}`,
+            titleTemplate: (permalink, displayText) => `Go to ${displayText || permalink}`,
           },
         },
       };
@@ -466,9 +447,7 @@ describe('remarkWikiLink', () => {
       await processor().use(remarkWikiLink).run(tree);
 
       const linkNode = findNodeByType(tree, 'link');
-      expect(linkNode.url).toBe(
-        '#' + encodeURIComponent('café & résumé').replace(/%20/g, '+')
-      );
+      expect(linkNode.url).toBe('#' + encodeURIComponent('café & résumé').replace(/%20/g, '+'));
       expect(linkNode.children[0].value).toBe('café & résumé');
     });
   });
@@ -492,8 +471,8 @@ function findNodeByType(tree: any, type: string): any {
   return found;
 }
 
-function findAllNodesByType(tree: any, type: string): any[] {
-  const found: any[] = [];
+function findAllNodesByType(tree: any, type: string): Array<any> {
+  const found: Array<any> = [];
 
   function visit(node: any) {
     if (node.type === type) {

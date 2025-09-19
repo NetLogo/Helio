@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: { unoptimized: true },
+  sassOptions: {
+    quiteDeps: true,
+  },
+  basePath: process.env['BASE_PATH'] ?? '',
 };
 
 export default nextConfig;

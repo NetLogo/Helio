@@ -1,13 +1,16 @@
 import AnchorTagElement from '@repo/ui/HOC/Anchor';
-import { Components } from 'react-markdown';
+import type { Components } from 'react-markdown';
 
-const Anchor: Components['a'] = ({ node, ...props }) => {
-  const href = props.href || '';
-  // external links
+const Anchor: Components['a'] = (props) => {
+  // eslint-disable-next-line react/prop-types, @typescript-eslint/no-unused-vars
+  const { node, ...rest } = props;
+  // eslint-disable-next-line react/prop-types
+  const href = props.href ?? '';
+
   if (/^https?:\/\//.test(href)) {
-    return <AnchorTagElement {...props} target="_blank" rel="noopener noreferrer" />;
+    return <AnchorTagElement {...rest} target="_blank" rel="noopener noreferrer" />;
   }
-  // docs link rewrite
+
   if (href.startsWith('https://ccl.northwestern.edu/netlogo/docs/')) {
     return (
       <AnchorTagElement

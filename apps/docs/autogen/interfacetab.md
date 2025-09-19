@@ -887,7 +887,7 @@ resulting file in another program.)
 When you create a plot, as with all widgets, the edit dialog automatically
 appears.
 
-![[interfacetab/Plot Editor|plot.png]]
+![[Plot Editor|interfacetab/plot.png]]
 
 Many of the fields are fairly self-explanatory, such as the name of the plot,
 labels for the x and y axes, ranges for the axes, and the "Show legend?"
@@ -929,7 +929,7 @@ dialog with additional pen settings. The trash can button deletes the pen.
 
 Clicking a pen's edit button will open this dialog:
 
-![[interfacetab/Plot Editor|plot-pen-advanced.png]]
+![[Plot Editor|interfacetab/plot-pen-advanced.png]]
 
 - Mode allows you to change the appearance of the plot pen: line, bar (for a bar
   chart), or point (a scatter plot of individual points).

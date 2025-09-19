@@ -51,7 +51,7 @@ entries:
         - name: distancexyz-nowrap
           since: "4.1"
       description: |
-        3D versions of [[distancexy|dictionary.html#distancexy]].
+        3D versions of [[distancexy|distancexy]].
 
         Reports the distance from this agent to the point (*xcor*, *ycor*, *zcor*). 
 
@@ -94,7 +94,7 @@ entries:
         NOTE: dz is simply the sine of the turtle's pitch. Both dx and dy have changed in this case. So, dx =
          cos(pitch) * sin(heading) and dy = cos(pitch) * cos(heading). 
 
-        See also [[dx|dictionary.html#dxy]], [[dy|dictionary.html#dxy]].
+        See also [[dx|dxy]], [[dy|dxy]].
 
       examples:
         - code: dz
@@ -142,7 +142,7 @@ entries:
         The turtle turns left by *number* degrees, relative to its current orientation. While left in a 2D
          world only modifies the turtle's heading, left in a 3D world may also modify the turtle's pitch and roll. 
 
-        See also [[left|dictionary.html#left]], [[tilt-up|tilt-cmds]], [[tilt-down|tilt-cmds]]
+        See also [[left|left]], [[tilt-up|tilt-cmds]], [[tilt-down|tilt-cmds]]
 
       examples:
         - code: left *number*
@@ -168,7 +168,7 @@ entries:
         ;; prints [[towards-pitch other-end] of end1] of link 0 1
 
         ```
-        See also [[link-heading|dictionary.html#link-heading]], [[pitch|pitch]]
+        See also [[link-heading|link-heading]], [[pitch|pitch]]
 
       examples:
         - code: link-pitch
@@ -219,7 +219,7 @@ entries:
 
         Note: You can set the size of the world only by editing the view -- these are reporters which cannot be set. 
 
-        See also [[max-pxcor|dictionary.html#max-pcor]], [[max-pycor|dictionary.html#max-pcor]], [[min-pxcor|dictionary.html#min-pcor]], [[min-pycor|dictionary.html#min-pcor]], and [[world-depth|world-depth]]. 
+        See also [[max-pxcor|max-pcor]], [[max-pycor|max-pcor]], [[min-pxcor|min-pcor]], [[min-pycor|min-pcor]], and [[world-depth|world-depth]]. 
 
       examples:
         - code: max-pzcor
@@ -238,7 +238,7 @@ entries:
         - name: neighbors6
           since: "4.1"
       description: |
-        3D versions of [[neighbors|dictionary.html#neighbors]] and [[neighbors4|dictionary.html#neighbors]]. 
+        3D versions of [[neighbors|neighbors]] and [[neighbors4|neighbors]]. 
 
         Reports an agentset containing the 26 surrounding patches (neighbors) or 6 surrounding patches (neighbors6). 
 
@@ -328,7 +328,7 @@ entries:
         - name: patch
           since: "4.1"
       description: |+
-        3D version of [[patch|dictionary.html#patch]].
+        3D version of [[patch|patch]].
 
         Given three integers, reports the single patch with the given pxcor, pycor and pzcor. *pxcor*, *pycor* and *pzcor*must be integers. 
 
@@ -337,7 +337,7 @@ entries:
         ;; patch with pxcor of 3 and pycor of -4 and pzcor of 2 turns green
 
         ```
-        See also [[patch|dictionary.html#patch]]
+        See also [[patch|patch]]
 
       examples:
         - code: patch *x* *y* *z*
@@ -361,7 +361,7 @@ entries:
         - name: patch-at
           since: "4.1"
       description: |
-        3D version of [[patch-at|dictionary.html#patch-at]].
+        3D version of [[patch-at|patch-at]].
 
         Reports the single patch at (dx, dy, dz) from the caller, that is, dx patches east, dy patches north and dz
          patches up from the caller. 
@@ -395,7 +395,7 @@ entries:
         - name: patch-at-heading-pitch-and-distance
           since: "4.1"
       description: |
-        3D version of [[patch-at-heading-and-distance|dictionary.html#patch-at-heading-and-distance]]. 
+        3D version of [[patch-at-heading-and-distance|patch-at-heading-and-distance]]. 
 
         patch-at-heading-pitch-and-distance reports the single patch that is the given distance from this turtle or
          patch, along the given absolute heading and pitch. (In contrast to patch-left-and-ahead and
@@ -440,7 +440,7 @@ entries:
         set heading heading + 10 ;; same effect as "tilt-up 10"
 
         ```
-        See also [[heading|dictionary.html#heading]], [[roll|roll]], [[tilt-up|tilt-cmds]], [[tilt-down|tilt-cmds]], [[right|right]], [[left|left]]
+        See also [[heading|heading]], [[roll|roll]], [[tilt-up|tilt-cmds]], [[tilt-down|tilt-cmds]], [[right|right]], [[left|left]]
 
       examples:
         - code: pitch
@@ -465,7 +465,7 @@ entries:
 
         All patch variables can be directly accessed by any turtle standing on the patch.
 
-        See also [[pxcor, pycor|dictionary.html#pcor]], [[zcor|zcor]].
+        See also [[pxcor, pycor|pcor]], [[zcor|zcor]].
 
       examples:
         - code: pzcor
@@ -495,7 +495,7 @@ entries:
         ]
 
         ```
-        See also [[random-pxcor|dictionary.html#random-pcor]], [[random-pycor|dictionary.html#random-pcor]]. 
+        See also [[random-pxcor|random-pcor]], [[random-pycor|random-pcor]]. 
 
       examples:
         - code: random-pzcor
@@ -522,7 +522,7 @@ entries:
         ]
 
         ```
-        See also [[random-xcor|dictionary.html#random-cor]], [[random-ycor|dictionary.html#random-cor]]. 
+        See also [[random-xcor|random-cor]], [[random-ycor|random-cor]]. 
 
       examples:
         - code: random-zcor
@@ -541,7 +541,7 @@ entries:
         The turtle turns right by *number* degrees, relative to its current orientation. While right in a 2D
          world only modifies the turtle's heading, right in a 3D world may also modify the turtle's pitch and roll. 
 
-        See also [[right|dictionary.html#right]] and [[left|left]]
+        See also [[right|right]] and [[left|left]]
 
       examples:
         - code: right *number*
@@ -573,7 +573,7 @@ entries:
         set roll roll + 10 ;; same effect as "roll-right 10"
 
         ```
-        See also [[heading|dictionary.html#heading]], [[pitch|pitch]], [[roll-left|roll-left]], [[roll-right|roll-right]]. 
+        See also [[heading|heading]], [[pitch|pitch]], [[roll-left|roll-left]], [[roll-right|roll-right]]. 
 
       examples:
         - code: roll
@@ -636,7 +636,7 @@ entries:
         - name: setxyz
           since: "4.1"
       description: |+
-        3D version of [[setxy|dictionary.html#setxy]].
+        3D version of [[setxy|setxy]].
 
         The agent, a turtle or the observer, sets its x-coordinate to *x*, its y-coordinate to *y* and its z-coordinate to *z*. When the observer uses `setxyz` it remains facing the same point so the heading, pitch, and roll, may also change. 
 
@@ -705,7 +705,7 @@ entries:
         Note: asking for the pitch from an agent to itself, or an agent on the same location, will cause a runtime
          error. 
 
-        See also [[towards|dictionary.html#towards]]
+        See also [[towards|towards]]
 
       examples:
         - code: towards-pitch *agent*
@@ -739,7 +739,7 @@ entries:
 
         Note: asking for the pitch from an agent to the location it is standing on will cause a runtime error.
 
-        See also [[towardsxy|dictionary.html#towardsxy]]
+        See also [[towardsxy|towardsxy]]
 
       examples:
         - code: towards-pitch-xyz *x* *y* *z*
@@ -767,7 +767,7 @@ entries:
           since: "4.1"
         - name: <breeds>-at
       description: |
-        3D versions of [[turtles-at|dictionary.html#turtles-at]] and [[breeds-at|dictionary.html#turtles-at]]. 
+        3D versions of [[turtles-at|turtles-at]] and [[breeds-at|turtles-at]]. 
 
         Reports an agentset containing the turtles on the patch (dx, dy, dz) from the caller (including the caller
          itself if it's a turtle). 
@@ -802,8 +802,8 @@ entries:
 
         The depth of the world is the same as max-pzcor - min-pzcor + 1.
 
-        See also [[max-pzcor|min-max-pzcor]], [[min-pzcor|min-max-pzcor]], [[world-width|dictionary.html#world-dim]],
-         and [[world-height|dictionary.html#world-dim]]
+        See also [[max-pzcor|min-max-pzcor]], [[min-pzcor|min-max-pzcor]], [[world-width|world-dim]],
+         and [[world-height|world-dim]]
 
       examples:
         - code: world-depth
@@ -823,7 +823,7 @@ entries:
 
         This variable is always greater than or equal to (- screen-edge-z) and strictly less than screen-edge-z. 
 
-        See also [[setxy|setxyz]], [[xcor|dictionary.html#xcor]], [[ycor|dictionary.html#ycor]], [[pxcor|dictionary.html#pcor]], [[pycor|dictionary.html#pcor]], [[pzcor|pzcor]]
+        See also [[setxy|setxyz]], [[xcor|xcor]], [[ycor|ycor]], [[pxcor|pcor]], [[pycor|pcor]], [[pzcor|pzcor]]
 
       examples:
         - code: zcor

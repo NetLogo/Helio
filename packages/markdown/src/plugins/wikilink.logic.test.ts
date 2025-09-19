@@ -190,15 +190,14 @@ describe('WikiLink parsing logic', () => {
       ];
 
       testCases.forEach(({ permalink, anchor, expected }) => {
-        const result = options.hrefTemplate!(permalink, 'wikiLink', anchor);
+        const result = options.hrefTemplate(permalink, 'wikiLink', anchor);
         expect(result).toBe(expected);
       });
     });
 
     it('should generate correct hrefs with custom template', () => {
       const options = getDefaultWikiLinkOptions({
-        hrefTemplate: (permalink, linkType, anchor) =>
-          `/wiki/${permalink}${anchor ? `#${anchor}` : ''}`,
+        hrefTemplate: (permalink, _, anchor) => `/wiki/${permalink}${anchor ? `#${anchor}` : ''}`,
       });
 
       const testCases = [
@@ -211,7 +210,7 @@ describe('WikiLink parsing logic', () => {
       ];
 
       testCases.forEach(({ permalink, anchor, expected }) => {
-        const result = options.hrefTemplate!(permalink, 'wikiLink', anchor);
+        const result = options.hrefTemplate(permalink, 'wikiLink', anchor);
         expect(result).toBe(expected);
       });
     });
@@ -224,8 +223,8 @@ describe('WikiLink parsing logic', () => {
         hrefTemplate: (encoded) => `/wiki/${encoded}`,
       });
 
-      const encoded = options.integration!.encode!('My Test Page');
-      const href = options.hrefTemplate!(encoded, 'wikiLink');
+      const encoded = options.integration.encode!('My Test Page');
+      const href = options.hrefTemplate(encoded, 'wikiLink');
 
       expect(encoded).toBe('my-test-page');
       expect(href).toBe('/wiki/my-test-page');
@@ -236,9 +235,9 @@ describe('WikiLink parsing logic', () => {
     it('should use default CSS classes', () => {
       const options = getDefaultWikiLinkOptions();
 
-      expect(options.classNames!.wikiLink).toBe('wikilink');
-      expect(options.classNames!.imageLink).toBe('wikilink-image');
-      expect(options.classNames!.missingLink).toBe('wikilink-missing');
+      expect(options.classNames.wikiLink).toBe('wikilink');
+      expect(options.classNames.imageLink).toBe('wikilink-image');
+      expect(options.classNames.missingLink).toBe('wikilink-missing');
     });
 
     it('should use custom CSS classes', () => {
@@ -250,9 +249,9 @@ describe('WikiLink parsing logic', () => {
         },
       });
 
-      expect(options.classNames!.wikiLink).toBe('custom-wiki');
-      expect(options.classNames!.imageLink).toBe('custom-image');
-      expect(options.classNames!.missingLink).toBe('custom-missing');
+      expect(options.classNames.wikiLink).toBe('custom-wiki');
+      expect(options.classNames.imageLink).toBe('custom-image');
+      expect(options.classNames.missingLink).toBe('custom-missing');
     });
   });
 
@@ -260,8 +259,8 @@ describe('WikiLink parsing logic', () => {
     it('should apply default image options', () => {
       const options = getDefaultWikiLinkOptions();
 
-      expect(options.imageOptions!.altTemplate!('test.jpg')).toBe('test.jpg');
-      expect(options.imageOptions!.defaultSize).toEqual({});
+      expect(options.imageOptions.altTemplate!('test.jpg')).toBe('test.jpg');
+      expect(options.imageOptions.defaultSize).toEqual({});
     });
 
     it('should apply custom image options', () => {
@@ -272,10 +271,8 @@ describe('WikiLink parsing logic', () => {
         },
       });
 
-      expect(options.imageOptions!.altTemplate!('test.jpg')).toBe(
-        'Image: test.jpg'
-      );
-      expect(options.imageOptions!.defaultSize).toEqual({
+      expect(options.imageOptions.altTemplate!('test.jpg')).toBe('Image: test.jpg');
+      expect(options.imageOptions.defaultSize).toEqual({
         width: 800,
         height: 600,
       });
@@ -292,14 +289,14 @@ describe('WikiLink parsing logic', () => {
         },
       });
 
-      expect(options.validation!.linkExists!('existing')).toBe(true);
-      expect(options.validation!.linkExists!('missing')).toBe(false);
-      expect(options.validation!.missingLinkBehavior).toBe('mark');
+      expect(options.validation.linkExists!('existing')).toBe(true);
+      expect(options.validation.linkExists!('missing')).toBe(false);
+      expect(options.validation.missingLinkBehavior).toBe('mark');
     });
 
     it('should default to ignore missing links', () => {
       const options = getDefaultWikiLinkOptions();
-      expect(options.validation!.missingLinkBehavior).toBe('ignore');
+      expect(options.validation.missingLinkBehavior).toBe('ignore');
     });
   });
 
@@ -308,8 +305,7 @@ describe('WikiLink parsing logic', () => {
       const options = getDefaultWikiLinkOptions();
 
       ['wikiLink', 'imageLink', 'missingLink'].forEach((linkType) => {
-        const htmlOpts =
-          options.htmlOptions[linkType as keyof typeof options.htmlOptions];
+        const htmlOpts = options.htmlOptions[linkType as keyof typeof options.htmlOptions];
         expect(htmlOpts.target).toBe('_self');
         expect(htmlOpts.titleTemplate).toBeDefined();
         expect(htmlOpts.parentNode).toBeUndefined();
@@ -323,8 +319,7 @@ describe('WikiLink parsing logic', () => {
           wikiLink: {
             target: '_blank',
             rel: 'noopener noreferrer',
-            titleTemplate: (permalink, displayText) =>
-              `Go to ${displayText || permalink}`,
+            titleTemplate: (permalink, displayText) => `Go to ${displayText || permalink}`,
             parentNode: {
               tagName: 'span',
               properties: { className: 'link-wrapper' },

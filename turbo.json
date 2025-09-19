@@ -2,6 +2,9 @@
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
   "concurrency": "15",
+
+  "globalDependencies": [".env", ".env.local", "tsconfig.json"],
+
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

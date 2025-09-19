@@ -1,6 +1,7 @@
 import Anchor from '@/HOC/Anchor';
 import { cn } from '@/lib/utils/cn';
 import { cssVariable, maybeCSSVariable } from '@/lib/utils/styles';
+import type { JSX } from 'react';
 import React from 'react';
 import styles from './Footer.module.scss';
 import type {
@@ -51,7 +52,7 @@ const Footer = ({
   className,
   style,
   ...rest
-}: FooterProps) => {
+}: FooterProps): JSX.Element | null => {
   if (!show) return null;
 
   return (
@@ -64,7 +65,7 @@ const Footer = ({
       )}
       style={{
         ...cssVariable('--section-span', 12 / sections),
-        ...(style || {}),
+        ...(style ?? {}),
       }}
       {...rest}
     >
@@ -76,20 +77,22 @@ const Footer = ({
 /**
  * Main container for footer content with responsive layout
  */
-Footer.Container = ({
+Footer.Container = function Container({
   children,
   className,
   ...rest
-}: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('mx-auto py-8', className)} {...rest}>
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">{children}</div>
-  </div>
-);
+}: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>): JSX.Element {
+  return (
+    <div className={cn('mx-auto py-8', className)} {...rest}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">{children}</div>
+    </div>
+  );
+};
 
 /**
  * Brand section with flexible content
  */
-Footer.BrandSection = ({
+Footer.BrandSection = function BrandSection({
   children,
   brand,
   brandHref,
@@ -97,95 +100,95 @@ Footer.BrandSection = ({
   className,
   style,
   ...rest
-}: FooterBrandSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      'px-1 py-2',
-      styles['section'],
-      styles['brandSection'],
-      className
-    )}
-    style={{ ...maybeCSSVariable('--section-span', span), ...style }}
-    {...rest}
-  >
-    <div className="flex flex-col items-start">
-      {brand && (
-        <Anchor href={brandHref} className="flex items-center space-x-2">
-          {brand}
-        </Anchor>
-      )}
-      {children}
+}: FooterBrandSectionProps & React.HTMLAttributes<HTMLDivElement>): JSX.Element {
+  return (
+    <div
+      className={cn('px-1 py-2', styles['section'], styles['brandSection'], className)}
+      style={{ ...maybeCSSVariable('--section-span', span), ...style }}
+      {...rest}
+    >
+      <div className="flex flex-col items-start">
+        {brand !== undefined && (
+          <Anchor href={brandHref} className="flex items-center space-x-2">
+            {brand}
+          </Anchor>
+        )}
+        {children}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /**
  * Links section with title and list of links
  */
-Footer.LinksSection = ({
+Footer.LinksSection = function LinksSection({
   title,
   links,
   span,
   className,
   style,
   ...rest
-}: FooterLinksSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn('px-1 py-2', styles['section'], className)}
-    style={{ ...maybeCSSVariable('--section-span', span), ...style }}
-    {...rest}
-  >
-    <div>
-      <h5 className="mt-0 mb-4 text-lg font-semibold text-gray-900">{title}</h5>
-      <ul className="space-y-2">
-        {links.map((link, index) => (
-          <Footer.Link key={index} {...link} />
-        ))}
-      </ul>
+}: FooterLinksSectionProps & React.HTMLAttributes<HTMLDivElement>): JSX.Element {
+  return (
+    <div
+      className={cn('px-1 py-2', styles['section'], className)}
+      style={{ ...maybeCSSVariable('--section-span', span), ...style }}
+      {...rest}
+    >
+      <div>
+        <h5 className="mt-0 mb-4 text-lg font-semibold text-gray-900">{title}</h5>
+        <ul className="space-y-2">
+          {links.map((link, index) => (
+            <Footer.Link key={index} {...link} />
+          ))}
+        </ul>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /**
  * Individual link item
  */
-Footer.Link = ({
+Footer.Link = function Link({
   title,
   href,
   external = false,
   className,
   ...rest
-}: FooterLink & React.HTMLAttributes<HTMLAnchorElement>) => (
-  <li>
-    <Anchor href={href} className={cn(className)} external={external} {...rest}>
-      {title}
-    </Anchor>
-  </li>
-);
+}: FooterLink & React.HTMLAttributes<HTMLAnchorElement>): JSX.Element {
+  return (
+    <li>
+      <Anchor href={href} className={cn(className)} external={external} {...rest}>
+        {title}
+      </Anchor>
+    </li>
+  );
+};
 
 /**
  * Copyright and legal information section
  */
-Footer.Section = ({
+Footer.Section = function Section({
   children,
   span,
   className,
   style = {},
   ...rest
-}: FooterSectionProps & React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn('lg:col-span-5 px-1 py-2', styles['section'], className)}
-    style={{ ...maybeCSSVariable('--section-span', span), ...style }}
-    {...rest}
-  >
-    <div className="text-gray-700 space-y-3">{children}</div>
-  </div>
-);
+}: FooterSectionProps & React.HTMLAttributes<HTMLDivElement>): JSX.Element {
+  return (
+    <div
+      className={cn('lg:col-span-5 px-1 py-2', styles['section'], className)}
+      style={{ ...maybeCSSVariable('--section-span', span), ...style }}
+      {...rest}
+    >
+      <div className="text-gray-700 space-y-3">{children}</div>
+    </div>
+  );
+};
 
-/**
- * Helper component for creating link elements within copyright text
- */
-Footer.CopyrightLink = ({
+Footer.CopyrightLink = function CopyrightLink({
   href,
   children,
   external = false,
@@ -195,18 +198,19 @@ Footer.CopyrightLink = ({
   href: string;
   children: React.ReactNode;
   external?: boolean;
-} & React.HTMLAttributes<HTMLAnchorElement>) => (
-  <Anchor
-    href={href}
-    className={cn(
-      'text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200',
-      className
-    )}
-    {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
-    {...rest}
-  >
-    {children}
-  </Anchor>
-);
-
+} & React.HTMLAttributes<HTMLAnchorElement>): JSX.Element {
+  return (
+    <Anchor
+      href={href}
+      className={cn(
+        'text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200',
+        className
+      )}
+      {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
+      {...rest}
+    >
+      {children}
+    </Anchor>
+  );
+};
 export default Footer;

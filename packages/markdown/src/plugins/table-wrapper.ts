@@ -1,26 +1,25 @@
-import type { Root } from 'hast';
+import type { Element, Root } from 'hast';
 import { h } from 'hastscript';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-interface TableWrapperOptions {
+type TableWrapperOptions = {
   tagName?: string;
   className?: string;
-}
+};
 
-const rehypeTableWrapper: Plugin<[], Root> = (
-  options: TableWrapperOptions = {}
-) => {
+const rehypeTableWrapper: Plugin<[], Root> = (options: TableWrapperOptions = {}) => {
   const { className = 'table-container', tagName = 'div' } = options;
   const selector = `${tagName}.${className}`;
   return (tree) => {
     visit(tree, 'element', (node, index, parent) => {
       if (!parent) return;
-      else if (!index) return;
+      else if (typeof index !== 'number') return;
 
       if (node.tagName === 'table') {
-        const wrapper = h(selector, node as any); // Create the wrapper div
-        parent.children[index] = wrapper as any; // Replace the table with the wrapper
+        // @ts-expect-error hast types are wrong
+        const wrapper = h(selector, node); // Create the wrapper div
+        parent.children[index] = wrapper as Element; // Replace the table with the wrapper
       }
     });
   };

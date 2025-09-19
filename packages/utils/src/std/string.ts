@@ -4,3 +4,7 @@ export function camelCaseToKebabCase(s0: string): string {
     .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')
     .toLowerCase();
 }
+
+export function isNonEmptyString(s: unknown): s is string {
+  return typeof s === 'string' && s.length > 0;
+}

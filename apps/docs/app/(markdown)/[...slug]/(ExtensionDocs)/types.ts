@@ -1,5 +1,5 @@
 import z from 'zod';
-import { Primitive } from './entities';
+import type { Primitive } from './entities';
 
 export type TypeName =
   | { kind: 'WildcardType' }
@@ -20,9 +20,7 @@ export type TypeName =
   | { kind: 'Repeatable'; of: TypeName }
   | { kind: 'CustomType'; name: string };
 
-export type PrimitiveType =
-  | { kind: 'command' }
-  | { kind: 'reporter'; returns: TypeName };
+export type PrimitiveType = { kind: 'command' } | { kind: 'reporter'; returns: TypeName };
 
 export const NamedTypeSchema = z.object({
   name: z.string().optional(), // argument name
@@ -59,7 +57,7 @@ export const RootDocumentSchema = z.object({
   filesToIncludeInManual: z.array(z.string()).optional().default([]),
 });
 
-export interface ExtensionConfig {
+export type ExtensionConfig = {
   extensionName: string;
   filesToIncludeInManual?: Array<string>;
   markdownTemplate?: string;
@@ -67,4 +65,4 @@ export interface ExtensionConfig {
   tableOfContents?: Record<string, string>;
   primitives: Array<Primitive>;
   additionalVariables?: Record<string, unknown>;
-}
+};

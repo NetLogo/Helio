@@ -3,7 +3,7 @@ tags:
   - Primitives
   - API
 buildVariables:
-  dictionary: data/dictionary.js
+  dictionary: data/dictionary.yaml
 ---
 output: True
 title: Dictionary

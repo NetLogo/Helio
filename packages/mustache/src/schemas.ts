@@ -86,10 +86,24 @@ const ProjectConfigSchema = z.object({
  */
 type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
 
+/**
+ * Metadata Schema
+ */
+const PageMetadataSchema = z
+  .object({
+    source: z.string(),
+    metadataOutputPath: z.string(),
+    projectConfig: ProjectConfigSchema,
+  })
+  .and(z.record(z.string(), z.unknown()));
+
+type PageMetadata = z.infer<typeof PageMetadataSchema>;
+
 export {
   AuthorDeclarationSchema,
   BuildVariablesDeclarationSchema,
   PageDeclarationSchema,
+  PageMetadataSchema,
   ProjectConfigSchema,
 };
-export type { PageConfig, ProjectConfig };
+export type { PageConfig, PageMetadata, ProjectConfig };

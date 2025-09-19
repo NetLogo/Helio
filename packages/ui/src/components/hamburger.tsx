@@ -1,15 +1,13 @@
 import { cn } from '@/lib/utils/cn';
+import type { JSX } from 'react';
 
 export default function Hamburger({
   className,
   ...rest
-}: React.ComponentProps<'label'>) {
+}: React.ComponentProps<'label'>): JSX.Element {
   return (
     <label
-      className={cn(
-        'xl:hidden flex flex-col gap-1 cursor-pointer transition-transform',
-        className
-      )}
+      className={cn('xl:hidden flex flex-col gap-1 cursor-pointer transition-transform', className)}
       {...rest}
     >
       {Array(3)

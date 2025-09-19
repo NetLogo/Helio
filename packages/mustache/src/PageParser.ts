@@ -2,11 +2,11 @@ import fs from 'fs/promises';
 import path from 'path';
 import yaml from 'yaml';
 
-import { BuildVariablesLoader } from './BuildVariablesLoader.js';
-import { PageResult } from './api.schemas.js';
-import { TemplateEngine } from './engines.js';
+import type { BuildVariablesLoader } from './BuildVariablesLoader.js';
+import type { PageResult } from './api.schemas.js';
+import type { TemplateEngine } from './engines.js';
 import { FileFetchError, ParseError } from './errors.js';
-import { PageConfig, ProjectConfig } from './schemas.js';
+import type { PageConfig, PageMetadata, ProjectConfig } from './schemas.js';
 import { joinIgnoreNone } from './utils.js';
 
 /**
@@ -24,14 +24,15 @@ import { joinIgnoreNone } from './utils.js';
  * - Writing output files
  */
 class PageParser {
-  static readonly METADATA_SUFFIX = '.metadata.json';
   private scannedForPartials?: boolean = false;
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  public static readonly METADATA_SUFFIX = '.metadata.json';
 
-  constructor(
-    private engine: TemplateEngine,
-    private buildVariablesLoader: BuildVariablesLoader,
-    private projectConfig: ProjectConfig,
-    private paths: { scanRoot: string; projectRoot: string }
+  public constructor(
+    private readonly engine: TemplateEngine,
+    private readonly buildVariablesLoader: BuildVariablesLoader,
+    private readonly projectConfig: ProjectConfig,
+    private readonly paths: { scanRoot: string; projectRoot: string }
   ) {}
 
   /**
@@ -56,7 +57,7 @@ class PageParser {
    * @param yamlFilePath - Path to the YAML file to process
    * @returns A promise that resolves when processing is complete
    */
-  async processYamlFile(
+  public async processYamlFile(
     yamlFilePath: string,
     sharedBuildVariables?: Record<string, unknown>
   ): Promise<Array<PageResult>> {
@@ -108,7 +109,7 @@ class PageParser {
    * );
    * ```
    */
-  async processConfigurations(
+  public async processConfigurations(
     pageConfigs: Array<Partial<PageConfig> | null | undefined>,
     baseFileName: string,
     fileContent?: string,
@@ -137,22 +138,15 @@ class PageParser {
   ): Promise<Array<PageResult>> {
     await this._loadPartialsIfNeeded();
 
-    let results: Array<PageResult> = [];
+    const results: Array<PageResult> = [];
     const defaults = { language: 'en', ...this.projectConfig.defaults };
     const configs = [...data];
 
     for (let index = 0; index < configs.length; index++) {
       try {
-        const mdConfig: PageConfig = this._applyCascadeInheritance(
-          configs,
-          defaults,
-          index
-        );
+        const mdConfig: PageConfig = this._applyCascadeInheritance(configs, defaults, index);
 
-        const buildVars = await this._prepareBuildVariables(
-          mdConfig,
-          sharedBuildVariables
-        );
+        const buildVars = await this._prepareBuildVariables(mdConfig, sharedBuildVariables);
 
         const language = this._getPageLanguage(mdConfig, defaults.language);
         const extension = mdConfig.extension || 'md';
@@ -164,59 +158,44 @@ class PageParser {
           defaults.language
         );
 
-        const { outputPath, jsonOutputPath } = this._generateOutputPaths(
+        const { outputPath, metadataOutputPath } = this._generateOutputPaths(
           relativeBaseName,
           extension,
           language,
           defaults.language
         );
 
-        if (mdConfig.output) {
+        if (mdConfig.output === true) {
           await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
-          if (fileContent) {
+          if (typeof fileContent === 'string') {
             // Use provided content directly
-            await this.generateOutputFileFromContent(
-              fileContent,
-              outputPath,
-              buildVars
-            );
+            await this.generateOutputFileFromContent(fileContent, outputPath, buildVars);
           } else {
             // Read source from file system as usual
-            await this.generateOutputFile(
-              sourceFileName,
-              outputPath,
-              buildVars
-            );
+            await this.generateOutputFile(sourceFileName, outputPath, buildVars);
           }
 
-          await this.generateMetadataJSON(
-            sourceFileName,
-            jsonOutputPath,
-            mdConfig
-          );
-        }
+          await this.generateMetadataJSON(sourceFileName, metadataOutputPath, mdConfig);
 
-        results.push({
-          baseName: relativeBaseName,
-          sourcePath: path.join(this.getProjectScanRoot(), sourceFileName),
-          outputPath,
-          language,
-          title: mdConfig.title,
-          description: mdConfig.description,
-          success: true,
-          metadataPath: jsonOutputPath,
-        });
-      } catch (err: any) {
-        console.error(
-          `Error processing item with base name ${relativeBaseName}:`,
-          err
-        );
+          results.push({
+            baseName: relativeBaseName,
+            sourcePath: path.join(this.getProjectScanRoot(), sourceFileName),
+            outputPath,
+            language,
+            title: mdConfig.title,
+            description: mdConfig.description,
+            success: true,
+            metadataPath: metadataOutputPath,
+          });
+        }
+      } catch (err: unknown) {
+        console.error(`Error processing item with base name ${relativeBaseName}:`, err);
         results.push({
           baseName: relativeBaseName,
           sourcePath: relativeBaseName,
           success: false,
-          error: err.message || String(err),
+          error: (err as Error).message || String(err),
         });
       }
     }
@@ -233,7 +212,7 @@ class PageParser {
   private async generateOutputFile(
     sourceFileName: string,
     outputPath: string,
-    buildVars: Record<string, any>
+    buildVars: Record<string, unknown>
   ): Promise<void> {
     // Read source mustache template
     const sourcePath = path.join(this.getProjectScanRoot(), sourceFileName);
@@ -251,7 +230,7 @@ class PageParser {
   private async generateOutputFileFromContent(
     fileContent: string,
     outputPath: string,
-    buildVars: Record<string, any>
+    buildVars: Record<string, unknown>
   ): Promise<void> {
     await this.renderAndWriteOutput(fileContent, outputPath, buildVars);
   }
@@ -266,7 +245,7 @@ class PageParser {
   private async renderAndWriteOutput(
     fileContent: string,
     outputPath: string,
-    buildVars: Record<string, any>
+    buildVars: Record<string, unknown>
   ): Promise<void> {
     // Render content to output
     const renderedOutput = this.engine.render(fileContent, buildVars);
@@ -283,23 +262,20 @@ class PageParser {
    */
   private async generateMetadataJSON(
     sourceFileName: string,
-    jsonOutputPath: string,
+    metadataOutputPath: string,
     mdConfig: PageConfig
   ): Promise<void> {
-    const metadata = {
+    const metadata: PageMetadata = {
       source: path.relative(
         this.getProjectRoot(),
         path.join(this.getProjectScanRoot(), sourceFileName)
       ),
-      jsonOutputPath: path.relative(this.getProjectRoot(), jsonOutputPath),
+      metadataOutputPath: path.relative(this.getProjectRoot(), metadataOutputPath),
+      projectConfig: this.projectConfig,
       ...mdConfig,
     };
 
-    await fs.writeFile(
-      jsonOutputPath,
-      JSON.stringify(metadata, null, 2),
-      'utf-8'
-    );
+    await fs.writeFile(metadataOutputPath, JSON.stringify(metadata, null, 2), 'utf-8');
   }
 
   // Helper methods
@@ -311,15 +287,13 @@ class PageParser {
     if (currentIndex < 0 || currentIndex >= configs.length) {
       throw new Error(`Invalid currentIndex ${currentIndex} for inheritance`);
     }
-    const currentConfig = configs[currentIndex]!;
+    const currentConfig = configs[currentIndex] ?? {};
     const baseConfig = { ...defaultConfiguration, ...currentConfig };
 
     if (Array.isArray(baseConfig.inheritFrom)) {
       for (const idx of baseConfig.inheritFrom) {
         if (idx < 0 || idx >= configs.length) {
-          throw new Error(
-            `Invalid inheritFrom index ${idx} in item at index ${currentIndex}`
-          );
+          throw new Error(`Invalid inheritFrom index ${idx} in item at index ${currentIndex}`);
         }
 
         if (idx > currentIndex) {
@@ -328,11 +302,11 @@ class PageParser {
           );
         }
 
-        Object.assign(baseConfig, configs[idx] || {});
+        Object.assign(baseConfig, configs[idx] ?? {});
       }
     }
 
-    Object.assign(baseConfig, currentConfig || {});
+    Object.assign(baseConfig, currentConfig);
     configs[currentIndex] = baseConfig;
 
     return baseConfig as PageConfig;
@@ -344,22 +318,20 @@ class PageParser {
   ): Promise<Record<string, unknown>> {
     const buildVars: Record<string, unknown> = {
       ...mdConfig,
-      ...(sharedBuildVariables || {}),
+      ...(sharedBuildVariables ?? {}),
     };
     if (mdConfig.buildVariables) {
       for (const [key, val] of Object.entries(mdConfig.buildVariables)) {
-        buildVars[key] = await this.buildVariablesLoader.load(val as string);
+        buildVars[key] = await this.buildVariablesLoader.load(val);
       }
     }
     return buildVars;
   }
 
-  private async _loadPartialsIfNeeded() {
-    if (this.scannedForPartials) return;
+  private async _loadPartialsIfNeeded(): Promise<void> {
+    if (this.scannedForPartials === true) return;
     try {
-      await this.engine.registerPartialsFromDirectory(
-        this.getProjectScanRoot()
-      );
+      await this.engine.registerPartialsFromDirectory(this.getProjectScanRoot());
       this.scannedForPartials = true;
     } catch (error) {
       console.error('Failed to load partials from directory:', error);
@@ -367,11 +339,8 @@ class PageParser {
     }
   }
 
-  private _getPageLanguage(
-    mdConfig: PageConfig,
-    defaultLanguage: string
-  ): string {
-    return mdConfig.language || defaultLanguage;
+  private _getPageLanguage(mdConfig: PageConfig, defaultLanguage: string): string {
+    return mdConfig.language ?? defaultLanguage;
   }
 
   private _getSourceFileName(
@@ -379,7 +348,7 @@ class PageParser {
     extension: string,
     language: string,
     defaultLanguage: string
-  ) {
+  ): string {
     const extensionNoDot = extension.replace(/^\./, '');
     return joinIgnoreNone(
       // Join + Filter
@@ -397,26 +366,24 @@ class PageParser {
     extension: string,
     language: string,
     defaultLanguage: string
-  ) {
+  ): { outputPath: string; metadataOutputPath: string } {
     const extensionNoDot = extension.replace(/^\./, '');
     const distDir = this.projectConfig.outputRoot || 'dist';
     const distDirWithLang =
-      language === defaultLanguage || !language
-        ? distDir
-        : path.join(distDir, language);
+      language === defaultLanguage || !language ? distDir : path.join(distDir, language);
     const outputPath = path.join(
       this.getProjectRoot(),
       distDirWithLang,
       relativeBaseName + '.' + extensionNoDot
     );
-    const jsonOutputPath = outputPath.replace(
+    const metadataOutputPath = outputPath.replace(
       new RegExp(`\\.${extensionNoDot}$`),
       PageParser.METADATA_SUFFIX
     );
 
     return {
       outputPath,
-      jsonOutputPath,
+      metadataOutputPath,
     };
   }
 
@@ -429,22 +396,24 @@ class PageParser {
    * @throws {ParseError} If the YAML file cannot be parsed.
    * @throws {FileFetchError} If the file cannot be read.
    */
-  private async loadYaml(filePath: string) {
-    let content: string;
+  private async loadYaml(filePath: string): Promise<Array<Record<string, unknown>>> {
+    let content: string = '';
     try {
       content = await fs.readFile(filePath, 'utf-8');
     } catch (err) {
       throw new FileFetchError(filePath, err);
     }
 
-    let docs;
+    let docs: ReturnType<typeof yaml.parseAllDocuments> = [];
     try {
       docs = yaml.parseAllDocuments(content);
     } catch (err) {
       throw new ParseError(filePath, err);
     }
 
-    return docs.map((doc) => doc.toJSON() || {}) || [];
+    return docs.map(
+      (doc) => (doc.toJSON() as unknown as Record<string, unknown> | undefined) ?? {}
+    );
   }
 
   /**

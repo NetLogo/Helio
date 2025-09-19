@@ -4,7 +4,7 @@ tags:
   - API
   - 3D
 buildVariables:
-  dictionary: data/dictionary-3D.json
+  dictionary: data/dictionary-3D.yaml
 ---
 output: True
 title: NetLogo 3D

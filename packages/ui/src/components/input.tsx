@@ -1,8 +1,9 @@
+import type { JSX } from 'react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils/cn';
 
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
+function Input({ className, type, ...props }: React.ComponentProps<'input'>): JSX.Element {
   return (
     <input
       type={type}

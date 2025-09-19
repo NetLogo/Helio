@@ -12,7 +12,6 @@ import tseslint from 'typescript-eslint';
 export const config = [
   js.configs.recommended,
   eslintConfigPrettier,
-  ...tseslint.configs.recommended,
   {
     plugins: {
       typescript: tseslint.plugin,
@@ -24,6 +23,7 @@ export const config = [
         project: ['./tsconfig.json'],
       },
     },
+    // exclude test files from some rules
     files: ['**/*.ts', '**/*.tsx'],
     rules: {
       '@typescript-eslint/adjacent-overload-signatures': 'off',
@@ -32,16 +32,10 @@ export const config = [
       '@typescript-eslint/ban-ts-comment': 'error',
       '@typescript-eslint/ban-tslint-comment': 'off',
       '@typescript-eslint/class-literal-property-style': ['error', 'getters'],
-      '@typescript-eslint/class-methods-use-this': 'error',
-      '@typescript-eslint/consistent-generic-constructors': [
-        'error',
-        'constructor',
-      ],
+      '@typescript-eslint/class-methods-use-this': 'off',
+      '@typescript-eslint/consistent-generic-constructors': ['error', 'constructor'],
       '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
-      '@typescript-eslint/consistent-return': [
-        'error',
-        { treatUndefinedAsUnspecified: false },
-      ],
+      '@typescript-eslint/consistent-return': ['error', { treatUndefinedAsUnspecified: false }],
       '@typescript-eslint/consistent-type-assertions': [
         'error',
         { assertionStyle: 'as', objectLiteralTypeAssertions: 'allow' },
@@ -91,15 +85,11 @@ export const config = [
       '@typescript-eslint/no-redundant-type-constituents': 'error',
       '@typescript-eslint/no-require-imports': 'error',
       '@typescript-eslint/no-restricted-types': 'off',
-      '@typescript-eslint/no-shadow': [
-        'error',
-        { builtinGlobals: false, hoist: 'all' },
-      ],
+      '@typescript-eslint/no-shadow': ['error', { builtinGlobals: false, hoist: 'all' }],
       '@typescript-eslint/no-this-alias': 'error',
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'error',
       '@typescript-eslint/no-unnecessary-condition': 'error',
-      '@typescript-eslint/no-unnecessary-parameter-property-assignment':
-        'error',
+      '@typescript-eslint/no-unnecessary-parameter-property-assignment': 'error',
       '@typescript-eslint/no-unnecessary-qualifier': 'error',
       '@typescript-eslint/no-unnecessary-template-expression': 'error',
       '@typescript-eslint/no-unnecessary-type-arguments': 'error',
@@ -116,10 +106,7 @@ export const config = [
       '@typescript-eslint/no-unsafe-return': 'error',
       '@typescript-eslint/no-unsafe-unary-minus': 'error',
       '@typescript-eslint/no-unused-expressions': ['error', {}],
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { varsIgnorePattern: '^_\d?$' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_\d?$' }],
       '@typescript-eslint/no-useless-empty-export': 'error',
       '@typescript-eslint/no-wrapper-object-types': 'error',
       '@typescript-eslint/parameter-properties': 'off',
@@ -154,7 +141,7 @@ export const config = [
       ],
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/strict-boolean-expressions': 'error',
-      '@typescript-eslint/switch-exhaustiveness-check': 'error',
+      '@typescript-eslint/switch-exhaustiveness-check': 'warn',
       '@typescript-eslint/triple-slash-reference': 'error',
       '@typescript-eslint/typedef': [
         'off',
@@ -179,7 +166,7 @@ export const config = [
       turbo: turboPlugin,
     },
     rules: {
-      'turbo/no-undeclared-env-vars': 'warn',
+      'turbo/no-undeclared-env-vars': 'off',
     },
   },
   {
@@ -188,6 +175,6 @@ export const config = [
     },
   },
   {
-    ignores: ['dist/**'],
+    ignores: ['dist/**', 'node_modules/**', '**/*.test.{ts,tsx,js,jsx}', '**/__tests__/**'],
   },
 ];

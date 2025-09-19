@@ -8,8 +8,8 @@ export const rehypeTocWrapper: Plugin<[], Root> = () => {
   return (tree) => {
     visit(tree, 'element', (node, index, parent) => {
       if (!parent) return;
-      if (!index) return;
-      if (isNodeHeading(node) && node.properties?.id === 'table-of-contents') {
+      if (typeof index !== 'number') return;
+      if (isNodeHeading(node) && node.properties['id'] === 'table-of-contents') {
         const [sibling, siblingIndex] = next(parent, index, isNodeElement);
         if (isNodeElement(sibling) && sibling.tagName === 'ul') {
           parent.children.splice(index, siblingIndex - index + 1, {

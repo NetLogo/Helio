@@ -1,27 +1,34 @@
+import { isNonEmptyString } from '@repo/utils/std/string';
+
+import type { Text } from 'hast';
 import type { Options as AutolinkHeadingsOptions } from 'rehype-autolink-headings';
-import { LinkType, WikiLinkOptions } from './plugins/wikilink.options';
+import type { LinkType, WikiLinkOptions } from './plugins/wikilink.options';
 
 export const tocConfig = {
-  maxDepth: 3,
+  maxDepth: 2,
   heading: 'Table of Contents',
-};
+} as const;
 
 export const wikiLinkConfig: WikiLinkOptions = {
   hrefTemplate: (permalink: string, linkType: LinkType, anchor?: string | null) => {
-    const dictionaryPermalink = permalink.replace(/^__|[\?]$/g, '');
-    const anchorQuery = anchor ? `?anchor=${encodeURIComponent(anchor)}` : '';
-    switch (linkType) {
-      case 'wikiLink':
-        return `dictionary.html#${dictionaryPermalink}${anchorQuery}`;
-      case 'imageLink':
-        return `images/${permalink}${anchorQuery}`;
-      case 'missingLink':
-        return `dictionary.html#${dictionaryPermalink}${anchorQuery}`;
-      case 'externalLink':
-        return permalink + (anchor ? `#${encodeURIComponent(anchor)}` : '');
-      default:
-        return `#${encodeURIComponent(permalink).replace(/%20/g, '+')}` + anchorQuery;
+    const sanitizeWikilink = (s0: string): string => s0.replace(/^__|[?]$/g, '');
+
+    if (['wikiLink', 'missingLink'].includes(linkType)) {
+      if (isNonEmptyString(anchor)) {
+        permalink = permalink.startsWith('/') ? permalink.slice(1) : permalink;
+        // This means permalink is a page and anchor is the # within that page
+        return `/${permalink}#${sanitizeWikilink(anchor)}`;
+      }
+      const dictionaryPermalink = sanitizeWikilink(permalink);
+      return `/dictionary.html#${dictionaryPermalink}`;
+    } else if (linkType === 'externalLink') {
+      const encodedAnchor = isNonEmptyString(anchor) ? `#${encodeURIComponent(anchor)}` : '';
+      return `${permalink}${encodedAnchor}`;
+    } else if (linkType === 'imageLink') {
+      return `/images/${permalink}`;
     }
+    // Fallback
+    return `#${encodeURIComponent(permalink).replace(/%20/g, '+')}`;
   },
   htmlOptions: {
     wikiLink: {
@@ -29,7 +36,7 @@ export const wikiLinkConfig: WikiLinkOptions = {
       target: '_self',
       rel: undefined,
       titleTemplate: (permalink: string, displayText?: string) => {
-        if (displayText) {
+        if (typeof displayText === 'string') {
           return displayText;
         }
         return permalink;
@@ -48,14 +55,14 @@ export const wikiLinkConfig: WikiLinkOptions = {
   greedyMatch: {
     maxIterations: 15,
     consumableTypes: ['text', 'html', 'link'],
-    accessor: (node: any) => {
+    accessor: (node: { type: string }) => {
       switch (node.type) {
         case 'text':
-          return node.value;
+          return (node as Text).value;
         case 'html':
-          return node.value;
+          return (node as { type: 'html'; value: string }).value;
         case 'link':
-          return node.url;
+          return (node as { type: 'link'; url: string }).url;
         default:
           return '';
       }
