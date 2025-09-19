@@ -1,7 +1,10 @@
 import fs from 'fs/promises';
+import yaml from 'yaml';
 
-const file = await fs.readFile('dictionary.json', 'utf8');
-const dictionary = JSON.parse(file);
+yaml;
+
+const file = await fs.readFile('dictionary.yaml', 'utf8');
+const dictionary = yaml.parse(file);
 
 // Derive the categories field from the entries
 const categories = {};
@@ -83,8 +86,7 @@ const categoryTitleOrder = [
 ];
 
 dictionary.categories = dictionary.categories.sort(
-  (a, b) =>
-    categoryTitleOrder.indexOf(a.title) - categoryTitleOrder.indexOf(b.title)
+  (a, b) => categoryTitleOrder.indexOf(a.title) - categoryTitleOrder.indexOf(b.title)
 );
 
 // Create fields for special categories

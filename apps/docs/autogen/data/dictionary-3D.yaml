@@ -1,0 +1,876 @@
+created_at: 2025-07-30T11:49:41.110218
+updated_at: 2025-07-30T11:49:41.110234
+entries:
+  - id: at-points-3d
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Agentset primitives
+          id: agentset-primitives
+    data:
+      syntax:
+        - name: at-points
+          since: "4.1"
+      description: |
+        Reports a subset of the given agentset that includes only the agents on the patches the given distances away
+         from this agent. The distances are specified as a list of three-item lists, where the three items are the x,
+         y, and z offsets. 
+
+        If the caller is the observer, then the points are measured relative to the origin, in other words, the
+         points are taken as absolute patch coordinates. 
+
+        If the caller is a turtle, the points are measured relative to the turtle's exact location, and not from the
+         center of the patch under the turtle. 
+
+        ```
+        ask turtles at-points [[2 4 0] [1 2 1] [10 15 10]]
+        [ fd 1 ]  ;; only the turtles on the patches at the
+                  ;; distances (2,4,0), (1,2,1) and (10,15,10),
+                  ;; relative to the caller, move
+
+        ```
+      examples:
+        - code: "*agentset* at-points [[*x1 y1 z1*] [*x2 y2 z2*] ...]"
+  - id: distance-3d
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Patch-related primitives
+          id: patch-related-primitives
+    data:
+      syntax:
+        - name: distancexyz
+          since: "4.1"
+        - name: distancexyz-nowrap
+          since: "4.1"
+      description: |
+        3D versions of [[distancexy|dictionary.html#distancexy]].
+
+        Reports the distance from this agent to the point (*xcor*, *ycor*, *zcor*). 
+
+        The distance from a patch is measured from the center of the patch.
+
+        distancexyz-nowrap always reports the in world distance, never a distance that would require wrapping around
+         the edges of the world. With distancexyz the wrapped distance (around the edges of the world) is used if
+         that distance is shorter than the in world distance. 
+
+        ```
+        if (distancexyz 0 0 0) < 10
+          [ set color green ]
+        ;; all turtles less than 10 units from
+        ;; the center of the screen turn green.
+
+        ```
+      examples:
+        - code: distancexyz *xcor* *ycor* *zcor*
+        - code: distancexyz-nowrap *xcor* *ycor* *zcor*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Patch Command
+        url: images/patch.png
+  - id: dz
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+    data:
+      syntax:
+        - name: dz
+          since: "4.1"
+      description: |+
+        Reports the z-increment (the amount by which the turtle's zcor would change) if the turtle were to take one
+         step forward at its current heading and pitch. 
+
+        NOTE: dz is simply the sine of the turtle's pitch. Both dx and dy have changed in this case. So, dx =
+         cos(pitch) * sin(heading) and dy = cos(pitch) * cos(heading). 
+
+        See also [[dx|dictionary.html#dxy]], [[dy|dictionary.html#dxy]].
+
+      examples:
+        - code: dz
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: face-3d
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Observer movement primitives
+          id: observer-movement-primitives
+    data:
+      syntax:
+        - name: face
+        - name: facexyz
+          since: "4.1"
+      description: |+
+        Set the caller's heading and pitch towards *agent* or towards the point *(x,y,z)*.
+
+        If the caller and the target are at the same x and y coordinates the caller's heading will not change. If
+         the caller and the target are also at the same z coordinate the pitch will not change either. 
+
+      examples:
+        - code: face *agent*
+        - code: facexyz *x* *y* *z*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Observer Movement Command
+        url: images/observermovement.png
+  - id: left
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+    data:
+      syntax:
+        - name: left
+          since: "4.1"
+      description: |+
+        The turtle turns left by *number* degrees, relative to its current orientation. While left in a 2D
+         world only modifies the turtle's heading, left in a 3D world may also modify the turtle's pitch and roll. 
+
+        See also [[left|dictionary.html#left]], [[tilt-up|tilt-cmds]], [[tilt-down|tilt-cmds]]
+
+      examples:
+        - code: left *number*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: link-pitch
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Link primitives
+          id: link-primitives
+    data:
+      syntax:
+        - name: link-pitch
+          since: 4.1.2
+      description: |+
+        Reports the pitch from end1 to end2 of this link.
+
+        ```
+        ask link 0 1 [ print link-pitch ]
+        ;; prints [[towards-pitch other-end] of end1] of link 0 1
+
+        ```
+        See also [[link-heading|dictionary.html#link-heading]], [[pitch|pitch]]
+
+      examples:
+        - code: link-pitch
+    icons:
+      - alt: Link Command
+        url: images/link.png
+  - id: load-shapes-3d
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: World primitives
+          id: world-primitives
+    data:
+      syntax:
+        - name: load-shapes-3d
+          since: "4.1"
+      description: |+
+        Loads custom 3D shapes from the given file. See the [3D guide](3d.html) for more details. You
+         must also add a 2D shape of the same name to the model using the Turtle Shapes Editor. Custom shapes
+         override built-in 3D shapes and converted 2D shapes. 
+
+      examples:
+        - code: load-shapes-3d *filename*
+    icons:
+      - alt: Observer Movement Command
+        url: images/observermovement.png
+  - id: min-max-pzcor
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: World primitives
+          id: world-primitives
+    data:
+      syntax:
+        - name: max-pzcor
+          since: "4.1"
+        - name: min-pzcor
+          since: "4.1"
+      description: |+
+        These reporters give the maximum and minimum z-coordinates (respectively) for patches, which determines the
+         size of the world. 
+
+        Unlike in older versions of NetLogo the origin does not have to be at the center of the world. However, the
+         minimum z-coordinate has to be less than or equal to 0 and the maximum z-coordinate has to be greater than
+         or equal to 0. 
+
+        Note: You can set the size of the world only by editing the view -- these are reporters which cannot be set. 
+
+        See also [[max-pxcor|dictionary.html#max-pcor]], [[max-pycor|dictionary.html#max-pcor]], [[min-pxcor|dictionary.html#min-pcor]], [[min-pycor|dictionary.html#min-pcor]], and [[world-depth|world-depth]]. 
+
+      examples:
+        - code: max-pzcor
+        - code: min-pzcor
+  - id: neighbors-3d
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Patch-related primitives
+          id: patch-related-primitives
+    data:
+      syntax:
+        - name: neighbors
+          since: "4.1"
+        - name: neighbors6
+          since: "4.1"
+      description: |
+        3D versions of [[neighbors|dictionary.html#neighbors]] and [[neighbors4|dictionary.html#neighbors]]. 
+
+        Reports an agentset containing the 26 surrounding patches (neighbors) or 6 surrounding patches (neighbors6). 
+
+        ```
+        show sum values-from neighbors [count turtles-here]
+          ;; prints the total number of turtles on the twenty-six
+          ;; patches around this turtle or patch
+        ask neighbors6 [ set pcolor red ]
+          ;; turns the six neighboring patches red
+
+        ```
+      examples:
+        - code: neighbors
+        - code: neighbors6
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Patch Command
+        url: images/patch.png
+  - id: orbit-cmds
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Observer movement primitives
+          id: observer-movement-primitives
+    data:
+      syntax:
+        - name: orbit-down
+          since: "4.1"
+        - name: orbit-left
+          since: "4.1"
+        - name: orbit-right
+          since: "4.1"
+        - name: orbit-up
+          since: "4.1"
+      description: |+
+        Rotate the observer around the last point faced. Imagine the observer is on the surface of a sphere, the
+         last point face is the center of that sphere. Up and down orbit along the lines of longitude and right and
+         left orbit along the lines of latitude. The observer will remain facing the last point faced so the heading
+         and pitch may change as result of orbiting. However, because we assume an absolute north pole (parallel to
+         the positive z-axis) the roll will never change. 
+
+        See also [[setxyz|setxyz]], [[face|face-3d]] and [[zoom|zoom]]
+
+      examples:
+        - code: orbit-down *number*
+        - code: orbit-left *number*
+        - code: orbit-right *number*
+        - code: orbit-up *number*
+    icons:
+      - alt: Observer Movement Command
+        url: images/observermovement.png
+  - id: observer-cors
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Observer movement primitives
+          id: observer-movement-primitives
+    data:
+      syntax:
+        - name: __oxcor
+        - name: __oycor
+        - name: __ozcor
+      description: |+
+        Reports the x-, y-, or z-coordinate of the observer.
+
+        See also [[setxyz|setxyz]]
+
+      examples:
+        - code: __oxcor
+        - code: __oycor
+        - code: __ozcor
+    icons:
+      - alt: Observer Movement Command
+        url: images/observermovement.png
+  - id: patch-3d
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Patch-related primitives
+          id: patch-related-primitives
+    data:
+      syntax:
+        - name: patch
+          since: "4.1"
+      description: |+
+        3D version of [[patch|dictionary.html#patch]].
+
+        Given three integers, reports the single patch with the given pxcor, pycor and pzcor. *pxcor*, *pycor* and *pzcor*must be integers. 
+
+        ```
+        ask (patch 3 -4 2) [ set pcolor green ]
+        ;; patch with pxcor of 3 and pycor of -4 and pzcor of 2 turns green
+
+        ```
+        See also [[patch|dictionary.html#patch]]
+
+      examples:
+        - code: patch *x* *y* *z*
+    icons:
+      - alt: Patch Command
+        url: images/patch.png
+  - id: patch-at-3d
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Patch-related primitives
+          id: patch-related-primitives
+    data:
+      syntax:
+        - name: patch-at
+          since: "4.1"
+      description: |
+        3D version of [[patch-at|dictionary.html#patch-at]].
+
+        Reports the single patch at (dx, dy, dz) from the caller, that is, dx patches east, dy patches north and dz
+         patches up from the caller. 
+
+        ```
+        ask patch-at 1 -1 1 [ set pcolor green ]
+        ;; turns the patch just southeast and up from the caller green
+
+        ```
+      examples:
+        - code: patch-at *dx* *dy* *dz*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Patch Command
+        url: images/patch.png
+  - id: patch-at-heading-pitch-and-distance
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Patch-related primitives
+          id: patch-related-primitives
+    data:
+      syntax:
+        - name: patch-at-heading-pitch-and-distance
+          since: "4.1"
+      description: |
+        3D version of [[patch-at-heading-and-distance|dictionary.html#patch-at-heading-and-distance]]. 
+
+        patch-at-heading-pitch-and-distance reports the single patch that is the given distance from this turtle or
+         patch, along the given absolute heading and pitch. (In contrast to patch-left-and-ahead and
+         patch-right-and-ahead, this turtle's current heading is not taken into account.) 
+
+        ```
+        ask patch-at-heading-pitch-and-distance 0 90 1 [ set pcolor green ]
+        ;; turns the patch directly above the caller green.
+
+        ```
+      examples:
+        - code: patch-at-heading-pitch-and-distance *heading* *pitch* *distance*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Patch Command
+        url: images/patch.png
+  - id: pitch
+    entry_categories:
+      - title: Built-In Variables
+        id: built-in-variables
+        subcategory:
+          title: Turtles
+          id: turtles
+    data:
+      syntax:
+        - name: pitch
+      description: |+
+        This is a built-in turtle variable. Pitch is the angle between the "nose" of the turtle and the
+         xy-plane. Heading and pitch together define the forward vector of the turtle or the direction that the
+         turtle is facing. 
+
+        This is a number greater than or equal to 0 and less than 360. 0 is parallel to the xy-plane, 90 is parallel
+         to the z-axis. While you can set pitch we recommend that you use the primitives to turn the turtle.
+         Depending on the position more than one relative angle (heading, pitch and roll) may change at once. 
+
+        Example:
+
+        ```
+        ;; assume roll and heading are 0
+        set pitch 45      ;; turtle is now north and up
+        set heading heading + 10 ;; same effect as "tilt-up 10"
+
+        ```
+        See also [[heading|dictionary.html#heading]], [[roll|roll]], [[tilt-up|tilt-cmds]], [[tilt-down|tilt-cmds]], [[right|right]], [[left|left]]
+
+      examples:
+        - code: pitch
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: pzcor
+    entry_categories:
+      - title: Built-In Variables
+        id: built-in-variables
+        subcategory:
+          title: Patches
+          id: patches
+    data:
+      syntax:
+        - name: pzcor
+      description: |+
+        This is a built-in patch variable. It holds the z coordinate of the patch. It is always an integer. You
+         cannot set this variable, because patches don't move. 
+
+        pzcor is greater than or equal to min-pzcor and less than or equal to max-pzcor.
+
+        All patch variables can be directly accessed by any turtle standing on the patch.
+
+        See also [[pxcor, pycor|dictionary.html#pcor]], [[zcor|zcor]].
+
+      examples:
+        - code: pzcor
+    icons:
+      - alt: Patch Command
+        url: images/patch.png
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: random-pzcor
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: World primitives
+          id: world-primitives
+    data:
+      syntax:
+        - name: random-pzcor
+          since: "4.1"
+      description: |+
+        Reports a random integer ranging from min-pzcor to max-pzcor inclusive.
+
+        ```
+        ask turtles [
+          ;; move each turtle to the center of a random patch
+          setxyz random-pxcor random-pycor random-pzcor
+        ]
+
+        ```
+        See also [[random-pxcor|dictionary.html#random-pcor]], [[random-pycor|dictionary.html#random-pcor]]. 
+
+      examples:
+        - code: random-pzcor
+  - id: random-zcor
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: World primitives
+          id: world-primitives
+    data:
+      syntax:
+        - name: random-zcor
+          since: "4.1"
+      description: |+
+        Reports a random floating point number from the allowable range of turtle coordinates along the z axis.
+
+        Turtle coordinates range from min-pzcor - 0.5 (inclusive) to max-pzcor + 0.5 (exclusive).
+
+        ```
+        ask turtles [
+          ;; move each turtle to a random point
+          setxyz random-xcor random-ycor random-zcor
+        ]
+
+        ```
+        See also [[random-xcor|dictionary.html#random-cor]], [[random-ycor|dictionary.html#random-cor]]. 
+
+      examples:
+        - code: random-zcor
+  - id: right
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+    data:
+      syntax:
+        - name: right
+          since: "4.1"
+      description: |+
+        The turtle turns right by *number* degrees, relative to its current orientation. While right in a 2D
+         world only modifies the turtle's heading, right in a 3D world may also modify the turtle's pitch and roll. 
+
+        See also [[right|dictionary.html#right]] and [[left|left]]
+
+      examples:
+        - code: right *number*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: roll
+    entry_categories:
+      - title: Built-In Variables
+        id: built-in-variables
+        subcategory:
+          title: Turtles
+          id: turtles
+    data:
+      syntax:
+        - name: roll
+      description: |+
+        This is a built-in turtle variable. Roll is the angle between the "wing-tip" of the turtle and the
+         xy-plane. 
+
+        This is a number greater than or equal to 0 and less than 360. You can set this variable to make a turtle
+         roll. Since roll is always from the turtle's point of view, rolling right and left only only change roll
+         regardless of turtle orientation. 
+
+        Example:
+
+        ```
+        set roll 45      ;; turtle rotated right
+        set roll roll + 10 ;; same effect as "roll-right 10"
+
+        ```
+        See also [[heading|dictionary.html#heading]], [[pitch|pitch]], [[roll-left|roll-left]], [[roll-right|roll-right]]. 
+
+      examples:
+        - code: roll
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: roll-left
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+    data:
+      syntax:
+        - name: roll-left
+          since: "4.1"
+      description: |+
+        The wingtip of the turtle rotates to the left *number* degrees with respect to the current heading and
+         pitch. 
+
+      examples:
+        - code: roll-left *number*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: roll-right
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+    data:
+      syntax:
+        - name: roll-right
+          since: "4.1"
+      description: |+
+        The wingtip of the turtle rotates to the right *number*degrees with respect to the current heading and pitch. 
+
+      examples:
+        - code: roll-right *number*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: setxyz
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Observer movement primitives
+          id: observer-movement-primitives
+    data:
+      syntax:
+        - name: setxyz
+          since: "4.1"
+      description: |+
+        3D version of [[setxy|dictionary.html#setxy]].
+
+        The agent, a turtle or the observer, sets its x-coordinate to *x*, its y-coordinate to *y* and its z-coordinate to *z*. When the observer uses `setxyz` it remains facing the same point so the heading, pitch, and roll, may also change. 
+
+        For turtles equivalent to `set xcor x set ycor y set zcor z`, except it happens in one time step
+         instead of three. 
+
+        ```
+        setxyz 0 0 0
+        ;; agent moves to the middle of the center patch
+
+        ```
+        See also [[face|face-3d]]
+
+      examples:
+        - code: setxyz *x y z*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Observer Movement Command
+        url: images/observermovement.png
+  - id: tilt-cmds
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+    data:
+      syntax:
+        - name: tilt-down
+          since: "4.1"
+        - name: tilt-up
+          since: "4.1"
+      description: |+
+        The nose of the turtle rotates by *number* degrees, relative to its current orientation. Depending on
+         the orientation of the turtle more than one of the relative angles (heading, pitch, and roll) may change
+         when a turtle turns. 
+
+      examples:
+        - code: tilt-down *number*
+        - code: tilt-up *number*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: towards-pitch-cmd
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+    data:
+      syntax:
+        - name: towards-pitch
+          since: "4.1"
+        - name: towards-pitch-nowrap
+          since: "4.1"
+      description: |+
+        Reports the pitch from this agent to the given agent.
+
+        If the wrapped distance (around the edges of the screen) is shorter than the on-screen distance,
+         towards-pitch will report the pitch of the wrapped path. towards-pitch-nowrap never uses the wrapped path. 
+
+        Note: In order to get one turtle to face another you need to use both towards-pitch and towards.
+
+        Note: asking for the pitch from an agent to itself, or an agent on the same location, will cause a runtime
+         error. 
+
+        See also [[towards|dictionary.html#towards]]
+
+      examples:
+        - code: towards-pitch *agent*
+        - code: towards-pitch-nowrap *agent*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Patch Command
+        url: images/patch.png
+  - id: towards-pitch-xyz-cmd
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+    data:
+      syntax:
+        - name: towards-pitch-xyz
+          since: "4.1"
+        - name: towards-pitch-xyz-nowrap
+          since: "4.1"
+      description: |+
+        Reports the pitch from this agent to the coordinates x, y, z
+
+        If the wrapped distance (around the edges of the screen) is shorter than the on-screen distance,
+         towards-pitch will report the pitch of the wrapped path. towards-pitch-nowrap never uses the wrapped path. 
+
+        Note: In order to get a turtle to face a given location you need to use both towards-pitch-xyz and
+         towardsxy. 
+
+        Note: asking for the pitch from an agent to the location it is standing on will cause a runtime error.
+
+        See also [[towardsxy|dictionary.html#towardsxy]]
+
+      examples:
+        - code: towards-pitch-xyz *x* *y* *z*
+        - code: towards-pitch-xyz-no-wrap *x* *y* *z*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Patch Command
+        url: images/patch.png
+  - id: turtles-at-3d
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Turtle-related primitives
+          id: turtle-related-primitives
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Agentset primitives
+          id: agentset-primitives
+    data:
+      syntax:
+        - name: turtles-at
+          since: "4.1"
+        - name: <breeds>-at
+      description: |
+        3D versions of [[turtles-at|dictionary.html#turtles-at]] and [[breeds-at|dictionary.html#turtles-at]]. 
+
+        Reports an agentset containing the turtles on the patch (dx, dy, dz) from the caller (including the caller
+         itself if it's a turtle). 
+
+        ```
+        ;; suppose I have 40 turtles at the origin
+        show [count turtles-at 0 0 0] of turtle 0
+        => 40
+
+        ```
+      examples:
+        - code: turtles-at *dx* *dy* *dz*
+        - code: <breeds>-at *dx* *dy* *dz*
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+      - alt: Patch Command
+        url: images/patch.png
+  - id: world-depth
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: World primitives
+          id: world-primitives
+    data:
+      syntax:
+        - name: world-depth
+          since: "4.1"
+      description: |+
+        Reports the total depth of the NetLogo world.
+
+        The depth of the world is the same as max-pzcor - min-pzcor + 1.
+
+        See also [[max-pzcor|min-max-pzcor]], [[min-pzcor|min-max-pzcor]], [[world-width|dictionary.html#world-dim]],
+         and [[world-height|dictionary.html#world-dim]]
+
+      examples:
+        - code: world-depth
+  - id: zcor
+    entry_categories:
+      - title: Built-In Variables
+        id: built-in-variables
+        subcategory:
+          title: Turtles
+          id: turtles
+    data:
+      syntax:
+        - name: zcor
+      description: |+
+        This is a built-in turtle variable. It holds the current z coordinate of the turtle. This is a floating
+         point number, not an integer. You can set this variable to change the turtle's location. 
+
+        This variable is always greater than or equal to (- screen-edge-z) and strictly less than screen-edge-z. 
+
+        See also [[setxy|setxyz]], [[xcor|dictionary.html#xcor]], [[ycor|dictionary.html#ycor]], [[pxcor|dictionary.html#pcor]], [[pycor|dictionary.html#pcor]], [[pzcor|pzcor]]
+
+      examples:
+        - code: zcor
+    icons:
+      - alt: Turtle Command
+        url: images/turtle.png
+  - id: zoom
+    entry_categories:
+      - title: Commands and Reporters
+        id: commands-and-reporters
+        subcategory:
+          title: Observer movement primitives
+          id: observer-movement-primitives
+    data:
+      syntax:
+        - name: zoom
+          since: "4.1"
+      description: |+
+        Move the observer toward the point it is facing, *number* steps. The observer will never move beyond
+         the point it is facing so if *number* is greater than the distance to that point it will only move as
+         far as the point it is facing. 
+
+      examples:
+        - code: zoom *number*
+    icons:
+      - alt: Observer Movement Command
+        url: images/observermovement.png
+categories:
+  - title: Commands and Reporters
+    id: commands-and-reporters
+    subcategories:
+      - title: Turtle-related primitives
+        id: turtle-related-primitives
+      - title: Patch-related primitives
+        id: patch-related-primitives
+      - title: Observer movement primitives
+        id: observer-movement-primitives
+      - title: Agentset primitives
+        id: agentset-primitives
+      - title: World primitives
+        id: world-primitives
+      - title: Link primitives
+        id: link-primitives
+  - title: Built-In Variables
+    id: built-in-variables
+    subcategories:
+      - title: Turtles
+        id: turtles
+      - title: Patches
+        id: patches
