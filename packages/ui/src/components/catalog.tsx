@@ -29,7 +29,7 @@ function CatalogHamburger({ className }: HamburgerProps) {
 
 function ActiveItem({ className, selectedItemLabel, itemPrefix, ...rest }: ActiveItemProps) {
   return (
-    <div id="active-item" {...rest} className={cn('', className)}>
+    <div {...rest} className={cn(styles['active-item'], className)}>
       <span className={styles['active-item-name']}>
         <i>{itemPrefix} </i>
         {selectedItemLabel ?? ''}

@@ -187,7 +187,7 @@
     margin-top: 0;
   }
 
-  .sidebar #active-item {
+  .sidebar .active-item {
     max-width: calc(90% - 2 * var(--space-lg));
     overflow: hidden;
     text-overflow: ellipsis;
@@ -198,8 +198,9 @@
 /* --------- Desktop: min-width 1215px --------- */
 @media (min-width: 1215px) {
   .sidebar-layout .sidebar {
-    min-height: 100vh; /* full-height */
-    max-height: 100vh;
+    --height: calc(100vh - var(--line-height) - var(--space-lg));
+    min-height: var(--height);
+    max-height: var(--height);
     margin-top: 0;
   }
   .sidebar-layout .content {
