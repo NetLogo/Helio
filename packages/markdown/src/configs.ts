@@ -12,11 +12,11 @@ export const wikiLinkConfig: WikiLinkOptions = {
     const anchorQuery = anchor ? `?anchor=${encodeURIComponent(anchor)}` : '';
     switch (linkType) {
       case 'wikiLink':
-        return `/dictionary.html#${dictionaryPermalink}${anchorQuery}`;
+        return `dictionary.html#${dictionaryPermalink}${anchorQuery}`;
       case 'imageLink':
-        return `/images/${permalink}${anchorQuery}`;
+        return `images/${permalink}${anchorQuery}`;
       case 'missingLink':
-        return `/dictionary.html#${dictionaryPermalink}${anchorQuery}`;
+        return `dictionary.html#${dictionaryPermalink}${anchorQuery}`;
       case 'externalLink':
         return permalink + (anchor ? `#${encodeURIComponent(anchor)}` : '');
       default:

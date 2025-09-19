@@ -10,9 +10,9 @@ export default function ErrorPage({
 }: ErrorPageProps) {
   return (
     <div className={cn('flex flex-col items-center justify-center min-h-screen', className)}>
-      <h1 className="text-4xl bg-red-500 mt-0">{status}</h1>
+      <h1 className="text-4xl bg-red-500 mt-[-3rem] w-200 text-center">{status}</h1>
       <p className="mt-4 text-xl text-gray-600">{title}</p>
-      {children && <div className="mt-6">{children}</div>}
+      {children}
     </div>
   );
 }

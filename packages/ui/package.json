@@ -21,12 +21,12 @@
   },
   "license": "MIT",
   "scripts": {
-    "build:styles": "tailwindcss -i ./src/styles.scss -o ./dist/styles.scss",
+    "build:styles": "tailwindcss -i ./src/styles.scss -o ./dist/styles.scss --minify --optimize",
     "build:components": "tsc && tsc-alias && npm run copy:scss",
     "copy:scss": "find src -name '*.scss' -not -name 'styles.scss' | while read file; do mkdir -p \"dist/$(dirname \"${file#src/}\")\"; cp \"$file\" \"dist/${file#src/}\"; done",
     "check-types": "tsc --noEmit",
     "dev": "npm run dev:components & npm run dev:styles & npm run dev:scss",
-    "dev:styles": "tailwindcss -i ./src/styles.scss -o ./dist/styles.scss --watch",
+    "dev:styles": "tailwindcss -i ./src/styles.scss -o ./dist/styles.scss --map --watch",
     "dev:components": "tsc --watch & tsc-alias --watch",
     "dev:scss": "chokidar 'src/**/*.scss' -c 'npm run copy:scss'",
     "lint": "eslint src --max-warnings 0"

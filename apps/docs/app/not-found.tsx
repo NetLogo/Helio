@@ -1,4 +1,5 @@
 import { Button } from '@repo/ui/components/button';
+import Link from 'next/link';
 import ErrorPage from './error';
 
 export default function NotFound() {
@@ -8,16 +9,12 @@ export default function NotFound() {
         Sorry, we couldn't find the page you're looking for.
       </p>
       <div className="mt-6 flex gap-4">
-        <a href="/">
-          <Button variant="default" asChild>
-            Go to Home
-          </Button>
-        </a>
-        <a href="/search">
-          <Button variant="outline" asChild>
-            Search Documentation
-          </Button>
-        </a>
+        <Button variant="default" asChild>
+          <Link href="/">Go to Home</Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/search">Search Documentation</Link>
+        </Button>
       </div>
     </ErrorPage>
   );

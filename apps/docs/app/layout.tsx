@@ -33,7 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 async function getNavbarLinks(): Promise<Array<NavbarLink>> {
   const extensionList = (await getDocumentedExtensionBuilders()).map((ext) => ({
     title: ext.fullName,
-    href: `extensions/${ext.name.toLowerCase()}.html`,
+    href: `/extensions/${ext.name.toLowerCase()}.html`,
   }));
 
   return [

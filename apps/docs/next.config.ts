@@ -9,10 +9,6 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: { unoptimized: true },
-  basePath: `/${process.env['PRODUCT_VERSION']}`,
-  publicRuntimeConfig: {
-    basePath: `/${process.env['PRODUCT_VERSION']}`,
-  },
 };
 
 export default nextConfig;

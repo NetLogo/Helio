@@ -36,4 +36,3 @@ const Image = NextImage || FallbackImage;
 export { Image };
 
 export { isNextEnvironment } from '@repo/next-utils/detect-environment';
-export { applyNextBasePath } from '@repo/next-utils/url';

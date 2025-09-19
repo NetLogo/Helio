@@ -17,7 +17,7 @@ export function rebaseURL(url?: string | null): string {
   }
 }
 
-export function flatBaseFromDepth(depth: number) {
+export function flatHrefFromDepth(depth: number) {
   if (depth <= 0) return './';
   return '../'.repeat(depth);
 }

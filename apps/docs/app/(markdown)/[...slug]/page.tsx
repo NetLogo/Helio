@@ -2,7 +2,6 @@
 import '@repo/markdown/styles.scss';
 
 import NetLogoMarkdown from '@repo/markdown';
-import { applyNextBasePath } from '@repo/next-utils/url';
 
 import autogenConfig from './autogen.config';
 import * as NetLogoDocs from './NetLogoDocs';
@@ -10,17 +9,10 @@ import * as NetLogoDocs from './NetLogoDocs';
 import PrimitiveCatalog from './(PrimitiveCatalog)';
 import { PrimitiveCatalogPropsSchema } from './(PrimitiveCatalog)/types';
 
-export default async function Page({
-  params,
-}: {
-  params: { slug: Array<string> };
-}) {
+export default async function Page({ params }: { params: { slug: Array<string> } }) {
   const { slug } = await params;
   const { content } = await NetLogoDocs.getPageContent(slug, autogenConfig);
-  const { layout, ...metadata } = await NetLogoDocs.getPageMetadata(
-    slug,
-    autogenConfig
-  );
+  const { layout, ...metadata } = await NetLogoDocs.getPageMetadata(slug, autogenConfig);
 
   const children = (
     <main className="min-h-screen prose">
@@ -42,7 +34,7 @@ export default async function Page({
         <PrimitiveCatalog
           dictionaryDisplayName={dictionaryDisplayName}
           dictionaryHomeDirectory={dictionaryHomeDirectory}
-          indexFileURI={applyNextBasePath(indexFileURI)}
+          indexFileURI={indexFileURI}
           currentItemLabel={currentItemLabel}
           currentItemId={currentItemId}
         >
@@ -78,11 +70,7 @@ export async function generateStaticParams() {
   return generatedSlugs;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: Array<string> };
-}) {
+export async function generateMetadata({ params }: { params: { slug: Array<string> } }) {
   // https://nextjs.org/docs/messages/sync-dynamic-apis
   const { slug } = await params;
   return NetLogoDocs.getPageMetadata(slug, autogenConfig);
