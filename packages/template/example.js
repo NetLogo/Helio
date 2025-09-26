@@ -1,4 +1,4 @@
-import MustacheRenderer from './dist/Renderer.js';
+import TemplateRenderer from './dist/Renderer.js';
 
 const config = {
   projectRoot: '.',
@@ -13,7 +13,7 @@ const config = {
   },
 };
 
-const renderer = new MustacheRenderer(config);
+const renderer = new TemplateRenderer(config);
 renderer.build().catch((error) => {
   console.error('Build failed:', error);
   process.exit(1);
@@ -35,15 +35,13 @@ renderer
         output: true,
         language: 'fr',
         title: 'Page de configuration directe',
-        content:
-          "Cette page a été construite à partir d'une configuration directe.",
+        content: "Cette page a été construite à partir d'une configuration directe.",
       },
       {
         output: true,
         language: 'es',
         title: 'Página de configuración directa',
-        content:
-          'Esta página se construyó a partir de una configuración directa.',
+        content: 'Esta página se construyó a partir de una configuración directa.',
       },
     ],
     'direct-config',

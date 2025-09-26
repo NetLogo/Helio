@@ -1,0 +1,12 @@
+{
+  "source": "test-data/counter/counter-4.md",
+  "jsonOutputPath": "test-dist/counter/counter-4.metadata.json",
+  "language": "en",
+  "extension": "md",
+  "output": true,
+  "title": "Counter Page 4",
+  "inheritFrom": [
+    0
+  ],
+  "count": 4
+}

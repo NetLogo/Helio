@@ -1,0 +1,12 @@
+{
+  "source": "test-data/direct-config.md",
+  "jsonOutputPath": "test-dist/direct-config.metadata.json",
+  "language": "en",
+  "extension": "md",
+  "output": true,
+  "title": "Direct Config Page",
+  "inheritFrom": [
+    0
+  ],
+  "content": "This page was built from direct configuration."
+}

@@ -1,5 +1,5 @@
 {
-  "name": "@repo/mustache",
+  "name": "@repo/template",
   "version": "0.0.0",
   "sideEffects": [
     "**/*.css"

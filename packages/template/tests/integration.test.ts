@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import fs from 'fs/promises';
 
 import type { PageResult } from '../src/api.schemas.js';
-import MustacheRenderer from '../src/Renderer.js';
+import TemplateRenderer from '../src/Renderer.js';
 import type { PageConfig, ProjectConfig } from '../src/schemas.js';
 
 // Mock dependencies for controlled testing
@@ -15,9 +15,7 @@ const mockFs = fs as jest.Mocked<typeof fs>;
 
 // Mock PageParser interface
 interface MockPageParser {
-  processYamlFile: jest.MockedFunction<
-    (yamlPath: string) => Promise<Array<PageResult>>
-  >;
+  processYamlFile: jest.MockedFunction<(yamlPath: string) => Promise<Array<PageResult>>>;
   processConfigurations: jest.MockedFunction<
     (
       config: Array<Partial<PageConfig>>,
@@ -27,8 +25,8 @@ interface MockPageParser {
   >;
 }
 
-describe('MustacheRenderer Integration Tests', () => {
-  let renderer: MustacheRenderer;
+describe('TemplateRenderer Integration Tests', () => {
+  let renderer: TemplateRenderer;
   let config: ProjectConfig;
 
   beforeEach(() => {
@@ -52,19 +50,17 @@ describe('MustacheRenderer Integration Tests', () => {
     // Setup file system mocks
     mockFs.readdir.mockImplementation(async (dir: any) => {
       if (typeof dir === 'string' && dir.includes('test-data')) {
-        return [
-          { name: 'test.yaml', isFile: () => true, isDirectory: () => false },
-        ] as any;
+        return [{ name: 'test.yaml', isFile: () => true, isDirectory: () => false }] as any;
       }
       return [];
     });
 
-    renderer = new MustacheRenderer(config);
+    renderer = new TemplateRenderer(config);
   });
 
   describe('Basic Configuration and Setup', () => {
     it('should create renderer with example.js configuration', () => {
-      expect(renderer).toBeInstanceOf(MustacheRenderer);
+      expect(renderer).toBeInstanceOf(TemplateRenderer);
       expect(renderer.paths.projectRoot).toContain('mustache');
       expect(renderer.paths.scanRoot).toContain('test-data');
       expect(renderer.paths.outputRoot).toContain('test-dist');
@@ -120,16 +116,12 @@ describe('MustacheRenderer Integration Tests', () => {
       };
       (renderer as any)._pageParser = mockPageParser;
 
-      const consoleSpy = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(() => {});
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       const results = await renderer.buildSingle('nonexistent.yaml');
 
       expect(results).toEqual([]);
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Error processing')
-      );
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Error processing'));
 
       consoleSpy.mockRestore();
     });
@@ -147,15 +139,13 @@ describe('MustacheRenderer Integration Tests', () => {
           output: true,
           language: 'fr',
           title: 'Page de configuration directe',
-          content:
-            "Cette page a été construite à partir d'une configuration directe.",
+          content: "Cette page a été construite à partir d'une configuration directe.",
         },
         {
           output: true,
           language: 'es',
           title: 'Página de configuración directa',
-          content:
-            'Esta página se construyó a partir de una configuración directa.',
+          content: 'Esta página se construyó a partir de una configuración directa.',
         },
       ];
 
@@ -244,10 +234,7 @@ describe('MustacheRenderer Integration Tests', () => {
         },
       ];
 
-      const results = await renderer.buildFromConfiguration(
-        configurations,
-        'error-config'
-      );
+      const results = await renderer.buildFromConfiguration(configurations, 'error-config');
 
       expect(results).toEqual([]);
     });
@@ -430,9 +417,7 @@ This is counter page number **{{count}}**.
       const variables = {};
 
       // This should render to empty string, which should throw RenderError
-      expect(() => renderer.render(template, variables)).toThrow(
-        'Rendered output is empty'
-      );
+      expect(() => renderer.render(template, variables)).toThrow('Rendered output is empty');
     });
   });
 
@@ -574,28 +559,20 @@ This is counter page number **{{count}}**.
         processConfigurations: jest.fn(),
         processYamlFile: jest
           .fn<(yamlPath: string) => Promise<Array<PageResult>>>()
-          .mockResolvedValueOnce([
-            { baseName: 'good1', sourcePath: 'good1.md', success: true },
-          ])
+          .mockResolvedValueOnce([{ baseName: 'good1', sourcePath: 'good1.md', success: true }])
           .mockRejectedValueOnce(new Error('Processing failed'))
-          .mockResolvedValueOnce([
-            { baseName: 'good2', sourcePath: 'good2.md', success: true },
-          ]),
+          .mockResolvedValueOnce([{ baseName: 'good2', sourcePath: 'good2.md', success: true }]),
       };
       (renderer as any)._pageParser = mockPageParser;
 
-      const consoleSpy = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(() => {});
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       const buildResult = await renderer.build();
 
       expect(buildResult.totalPages).toBe(2); // Only successful pages counted
       expect(buildResult.successfulPages).toBe(2);
       expect(buildResult.failedPages).toBe(0);
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Error processing')
-      );
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Error processing'));
 
       consoleSpy.mockRestore();
     });

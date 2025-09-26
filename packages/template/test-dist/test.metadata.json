@@ -1,0 +1,12 @@
+{
+  "source": "test-data/test.md",
+  "jsonOutputPath": "test-dist/test.metadata.json",
+  "language": "en",
+  "extension": "md",
+  "output": true,
+  "title": "Test Document",
+  "inheritFrom": [
+    0
+  ],
+  "description": "This is a test YAML configuration"
+}
