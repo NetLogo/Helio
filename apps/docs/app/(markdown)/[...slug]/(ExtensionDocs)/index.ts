@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-import type { PageConfig, PageResult } from '@repo/mustache';
-import MustacheRenderer from '@repo/mustache';
+import type { PageConfig, PageResult } from '@repo/template';
+import TemplateRenderer from '@repo/template';
 
 import * as ArrayUtils from '@repo/utils/std/array';
 import autogenConfig from '../autogen.config';
@@ -28,7 +28,7 @@ export class ExtensionDocumentationBuilder {
   public readonly postPrimitiveSections: Array<string>;
   public readonly primitives: Array<Primitive>;
 
-  private readonly _renderer: MustacheRenderer;
+  private readonly _renderer: TemplateRenderer;
 
   public constructor(extensionDir: string) {
     this.dirPath = path.resolve(extensionDir);
@@ -190,8 +190,8 @@ export class ExtensionDocumentationBuilder {
     return results as [Array<string>, Array<string>];
   }
 
-  private _createRenderer(): MustacheRenderer {
-    const renderer = new MustacheRenderer({
+  private _createRenderer(): TemplateRenderer {
+    const renderer = new TemplateRenderer({
       ...autogenConfig,
       scanRoot: this.dirPath,
       engine: 'mustache',

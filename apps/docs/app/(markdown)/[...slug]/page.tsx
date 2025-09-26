@@ -7,7 +7,7 @@ import type { JSX } from 'react';
 import type { NetLogoMarkdownProps } from '@repo/markdown';
 import NetLogoMarkdown, { defaultComponents, getDefaultRemarkPlugins } from '@repo/markdown';
 
-import type { PageResult } from '@repo/mustache';
+import type { PageResult } from '@repo/template';
 
 import Image from '@repo/ui/HOC/Image';
 import { defined } from '@repo/utils/std/null';
@@ -130,7 +130,7 @@ export async function generateSlugs(
     .map((slug) => ({ slug: slug.split('/') }))
     .reduce<Array<{ slug: Array<string> }>>((acc, { slug }) => {
       acc.push({ slug });
-      // eslint-disable-next-line turbo/no-undeclared-env-vars
+
       if (process.env.NODE_ENV !== 'production') {
         const versionedSlug = [Env.productVersion, ...slug];
         [slug, versionedSlug].forEach((s) => {

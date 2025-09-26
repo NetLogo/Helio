@@ -68,7 +68,7 @@ const fetcher = async (
     .map((parts) => ({
       id: parts[1]?.split('/').pop()?.replace('.html', '') ?? parts[0],
       title: parts[0],
-      url: parts[1],
+      url: encodeURIComponent(parts[1] ?? ''),
     }));
 };
 

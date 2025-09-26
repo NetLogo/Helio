@@ -1,9 +1,9 @@
 import fs from 'fs/promises';
 
-import type { ProjectConfig as MustacheProjectConfig, PageResult } from '@repo/mustache';
-import MustacheRenderer from '@repo/mustache';
+import type { ProjectConfig as MustacheProjectConfig, PageResult } from '@repo/template';
+import TemplateRenderer from '@repo/template';
 
-import type { PageMetadata } from '@repo/mustache/schemas';
+import type { PageMetadata } from '@repo/template/schemas';
 import * as Dictionary from './(Dictionary)';
 import * as ExtensionDocs from './(ExtensionDocs)';
 import * as Constants from './constants';
@@ -12,7 +12,7 @@ import { DocumentMetadataSchema, MinimalDocumentMetadataSchema } from './NetLogo
 import { generatePrimitiveIndex } from './PrimIndex';
 
 export async function generateBetweenDirectoriesPages(
-  renderer: MustacheRenderer,
+  renderer: TemplateRenderer,
   sharedBuildVariables: Record<string, unknown> = {}
 ): Promise<Array<PageResult>> {
   const buildResults = await renderer.build(sharedBuildVariables);
@@ -20,7 +20,7 @@ export async function generateBetweenDirectoriesPages(
 }
 
 export async function generateDictionaryPrimitivePages(
-  renderer: MustacheRenderer,
+  renderer: TemplateRenderer,
   sharedBuildVariables: Record<string, unknown> = {}
 ): Promise<Array<PageResult>> {
   const dictionary = Constants.dictionary;
@@ -38,7 +38,7 @@ export async function generateDictionaryPrimitivePages(
 }
 
 export async function generateDictionary3DPrimitivePages(
-  renderer: MustacheRenderer,
+  renderer: TemplateRenderer,
   sharedBuildVariables: Record<string, unknown> = {}
 ): Promise<Array<PageResult>> {
   const dictionary = Constants.dictionary3D;
@@ -58,7 +58,7 @@ export async function generateDictionary3DPrimitivePages(
 export async function generateMarkdownPages(
   config: MustacheProjectConfig
 ): Promise<Array<PageResult>> {
-  const renderer = new MustacheRenderer(config);
+  const renderer = new TemplateRenderer(config);
 
   const handlebarsEngine = renderer.getNamedEngine('handlebars');
   if (!handlebarsEngine) {
@@ -100,7 +100,7 @@ export async function getPageMetadata(
   slug: Array<string>,
   config: MustacheProjectConfig
 ): Promise<DocumentMetadata> {
-  const renderer = new MustacheRenderer(config);
+  const renderer = new TemplateRenderer(config);
 
   const slugPath = slug.join('/').replace(/\.html$/, '');
   const metadataPath = decodeURIComponent(renderer.getMetadataFilePath(slugPath));
@@ -122,7 +122,7 @@ export async function getPageContent(
   content: string | null;
   notFound?: boolean;
 }> {
-  const renderer = new MustacheRenderer(config);
+  const renderer = new TemplateRenderer(config);
 
   const slugPath = slug.join('/').replace(/\.html$/, '');
   const outputPath = decodeURIComponent(renderer.getOutputFilePath(slugPath, 'md'));

@@ -378,7 +378,9 @@ table th:first-child {
 table th {
   border-top: 1px solid var(--table-border-color); /* Add top border to header */
 }
-table tr:last-child td {
+
+table tr td {
+  border-top: 1px solid var(--table-border-color); /* Add bottom border to last row */
   border-bottom: 1px solid var(--table-border-color); /* Add bottom border to last row */
 }
 

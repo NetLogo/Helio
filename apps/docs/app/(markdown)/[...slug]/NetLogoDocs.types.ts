@@ -1,4 +1,4 @@
-import { ProjectConfigSchema } from '@repo/mustache/schemas';
+import { ProjectConfigSchema } from '@repo/template/schemas';
 import z from 'zod';
 
 const MinimalDocumentMetadataSchema = z.object({

@@ -1,3 +1,5 @@
+import { defined } from '@repo/utils/std/null';
+
 const envVars = {
   productName: process.env['PRODUCT_NAME'],
   productVersion: process.env['PRODUCT_VERSION'],
@@ -9,16 +11,16 @@ const envVars = {
 };
 
 for (const [key, value] of Object.entries(envVars)) {
-  if (!value) {
+  if (!defined(value)) {
     throw new Error(`Environment variable ${key} is not set`);
   }
 }
 
-if (envVars.productWebsite!.endsWith('/')) {
+if ((envVars.productWebsite ?? '').endsWith('/')) {
   throw new Error(`Environment variable PRODUCT_WEBSITE must not end with a slash`);
 }
 
-const basePath = process.env['BASE_PATH'] || '';
+const basePath = process.env['BASE_PATH'] ?? '';
 if (basePath.length > 0 && !basePath.startsWith('/')) {
   throw new Error(`Environment variable BASE_PATH must be empty or start with a slash`);
 }
@@ -43,12 +45,18 @@ if (basePath.length > 0 && !basePath.startsWith('/')) {
  *             versioned path, and handle both cases.
  */
 export const Env = {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   productName: envVars.productName!,
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   productVersion: envVars.productVersion!,
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   productBuildDate: envVars.productBuildDate!,
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   productWebsite: envVars.productWebsite!,
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   repoRoot: envVars.repoRoot!,
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   extensionDir: envVars.extensionDir!,
 
   basePath,

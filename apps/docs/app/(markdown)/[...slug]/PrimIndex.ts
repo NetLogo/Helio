@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
-import type MustacheRenderer from '@repo/mustache';
-import type { PageConfig, PageResult } from '@repo/mustache';
 import { saveToPublicDir } from '@repo/next-utils/files';
+import type TemplateRenderer from '@repo/template';
+import type { PageConfig, PageResult } from '@repo/template';
 import type { PrimitiveCatalogProps } from './(PrimitiveCatalog)/types';
 
 export async function generatePrimitiveIndexEntry({
@@ -22,7 +22,7 @@ export async function generatePrimitiveIndexEntry({
   dictionaryHomeDirectory: string;
   primitivesDirectory: string;
   template: string;
-  renderer: MustacheRenderer;
+  renderer: TemplateRenderer;
   buildVariables: Record<string, unknown>;
   indexOutputURI: string;
   currentItemLabel: string;
@@ -75,7 +75,7 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
   primitivesDirectory?: string;
   indexFileName: string;
   template: string;
-  renderer: MustacheRenderer;
+  renderer: TemplateRenderer;
   buildVariables: Record<string, unknown>;
   getEntryNames: (entry: T) => Array<string>;
 }): Promise<Array<PageResult>> {
