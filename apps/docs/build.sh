@@ -11,9 +11,16 @@ cp -r _public $PUBLIC_DIR
 rm -rf $BUILD_DIR && mkdir -p $BUILD_DIR
 
 BASE_PATH="/$PRODUCT_VERSION" next build --turbopack
+OUTDIR=out yarn run postbuild
+
 mv out "$BUILD_DIR/${PRODUCT_VERSION}"
 
+rm -rf $PUBLIC_DIR
+cp -r _public $PUBLIC_DIR
+
 next build --turbopack
+OUTDIR=out yarn run postbuild
+
 mv out/** "$BUILD_DIR/"
 
 rm -rf out

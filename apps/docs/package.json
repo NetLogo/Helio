@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --port 3000 --turbopack",
     "build": "bash build.sh",
+    "postbuild": "node scripts/postbuild.js",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
     "check-types": "tsc --noEmit"
@@ -27,7 +28,8 @@
     "@next/eslint-plugin-next": "^15.4.2",
     "@repo/eslint-config": "*",
     "@repo/markdown": "*",
-    "@repo/mustache": "*",
+    "@repo/template": "*",
+    "@repo/documenter": "*",
     "@repo/tailwind-config": "*",
     "@repo/typescript-config": "*",
     "@tailwindcss/postcss": "^4.1.5",
