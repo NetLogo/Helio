@@ -2,6 +2,7 @@ import React from 'react';
 
 import { saveToPublicDir } from '@repo/next-utils/files';
 import { getBlurredPlaceholder, getImageBuffer, getImageDimensions } from '@repo/next-utils/image';
+import { createDefault } from '@repo/utils/algebraic/monads/defaults';
 import { defined, truthy } from '@repo/utils/std/null';
 
 import type { MaybeNextImageProps } from '../lib/utils/next';
@@ -38,8 +39,15 @@ const imageCache = (function (): { getInstance: () => ImageCache } {
 })();
 
 const Image = React.forwardRef<HTMLImageElement, ImageProps>(
-  async ({ nextOptions, ...props }: ImageProps, ref) => {
-    // This is confusing because it is validated. --Omar I. Sep 25 2025
+  async ({ nextOptions: _nextOptions, ...props }: ImageProps, ref) => {
+    const nextOptions = createDefault({
+      root: [process.cwd(), 'public'],
+      copy: false,
+      publicSubdir: [] as Array<string>,
+      basePath: undefined as string | undefined,
+      shareImages: false,
+    })(_nextOptions);
+
     let src = props.src ?? '';
     if (src.startsWith('http') || src.startsWith('data:')) return <img {...props} ref={ref} />;
 
@@ -53,26 +61,26 @@ const Image = React.forwardRef<HTMLImageElement, ImageProps>(
       }
 
       try {
-        const buffer = await getImageBuffer(src, nextOptions?.root);
+        const buffer = await getImageBuffer(src, nextOptions.root);
         if (!buffer) throw new Error(`Could not load image at path: ${src}`);
 
-        if (truthy(nextOptions?.copy)) {
+        if (truthy(nextOptions.copy)) {
           const cache = imageCache.getInstance();
-          if (truthy(nextOptions?.shareImages) && cache.has(src)) {
+          if (truthy(nextOptions.shareImages) && cache.has(src)) {
             src = cache.get(src) ?? src;
           } else {
             const oldSrc = src;
             const imageBasename = src.split('/').pop()?.split('?')[0] ?? 'image';
-            const publicSubdir = nextOptions?.publicSubdir ?? [];
+            const publicSubdir = nextOptions.publicSubdir ?? [];
             const publicPath = [...publicSubdir, imageBasename];
             saveToPublicDir(publicPath, buffer);
             src = `/${publicPath.join('/')}`;
 
-            if (truthy(nextOptions?.shareImages)) cache.set(oldSrc, src);
+            if (truthy(nextOptions.shareImages)) cache.set(oldSrc, src);
           }
         }
 
-        if (defined(nextOptions?.basePath) && src.startsWith('/')) {
+        if (defined(nextOptions.basePath) && src.startsWith('/')) {
           src = `${nextOptions.basePath}${src}`;
         }
 
