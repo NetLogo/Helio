@@ -41,6 +41,7 @@ export default async function Page({
       root: assetsRoot,
       copy: true,
       publicSubdir: [
+        '_media',
         'images',
         ...slug
           .join('/')

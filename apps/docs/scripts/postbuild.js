@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { generateSitemap } from '@repo/documenter/sitemap';
+import { generateSitemap } from '@repo/utils/export-html/sitemap';
 import { defined } from '@repo/utils/std/null';
 
 // eslint-disable-next-line no-undef

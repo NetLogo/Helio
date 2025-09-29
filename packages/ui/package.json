@@ -22,6 +22,7 @@
   },
   "license": "MIT",
   "scripts": {
+    "build": "npm run check-types && npm run build:components && npm run build:styles",
     "build:styles": "tailwindcss -i ./src/styles.scss -o ./dist/styles.scss",
     "build:components": "tsc && tsc-alias && npm run copy:scss",
     "copy:scss": "find src -name '*.scss' -not -name 'styles.scss' | while read file; do mkdir -p \"dist/$(dirname \"${file#src/}\")\"; cp \"$file\" \"dist/${file#src/}\"; done",

@@ -1,8 +1,8 @@
 import yaml from 'yaml';
 import type z from 'zod';
 
-import type { Warning } from '@repo/utils/algebriac/monads/warnable';
-import WarnableValue from '@repo/utils/algebriac/monads/warnable';
+import type { Warning } from '@repo/utils/algebraic/monads/warnable';
+import WarnableValue from '@repo/utils/algebraic/monads/warnable';
 
 import { NetLogoType, Primitive, PrimSyntax } from './entities';
 import type {

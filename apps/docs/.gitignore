@@ -17,6 +17,7 @@
 
 # artifacts
 /public/generated
+/public/_**
 
 # misc
 .DS_Store

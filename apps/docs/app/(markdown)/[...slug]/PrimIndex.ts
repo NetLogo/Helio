@@ -30,7 +30,7 @@ export async function generatePrimitiveIndexEntry({
   const reactRenderMetadata: PrimitiveCatalogProps = {
     dictionaryDisplayName,
     dictionaryHomeDirectory,
-    indexFileURI: path.join('/', 'generated', `${indexOutputURI}.txt`),
+    indexFileURI: indexOutputURI,
     currentItemId: source.id,
     currentItemLabel: currentItemLabel,
   };
@@ -88,6 +88,7 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
     fs.mkdirSync(path.dirname(indexOutputPath), { recursive: true });
   }
 
+  const indexFilePathParts = ['_index', indexFileName + '.txt'];
   for (const entry of dictionary.entries) {
     const entryNames = getEntryNames(entry);
     const currentItemLabel = entryNames.join(', ');
@@ -99,7 +100,7 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
       template,
       renderer,
       buildVariables,
-      indexOutputURI: indexFileName,
+      indexOutputURI: `/${indexFilePathParts.join('/')}`,
       currentItemLabel,
     });
     primitiveIndex.push(...entryNames.map((name) => [name, entry.id + '.html'] as const));
@@ -110,7 +111,7 @@ export async function generatePrimitiveIndex<T extends PrimIndexEntry>({
   const indexFileContent = primitiveIndex.map((e) => e.join(' ')).join('\n');
   await fs.promises.writeFile(indexOutputPath, indexFileContent, 'utf-8');
 
-  saveToPublicDir(['generated', indexFileName + '.txt'], indexFileContent);
+  saveToPublicDir(indexFilePathParts, indexFileContent);
 
   return allResults;
 }
