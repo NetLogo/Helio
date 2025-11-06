@@ -1,0 +1,23 @@
+tags:
+  - Behavior Space
+icon: i-lucide-grid-3x3
+---
+output: True
+title: Behavior Space
+description:
+  BehaviorSpace is a software tool integrated with NetLogo that allows you to
+  perform experiments with models.
+keywords:
+  - Behavior Space
+  - NetLogo
+---
+output: True
+language: es
+title: BehaviorSpace
+description:
+  BehaviorSpace es una herramienta de software integrada con NetLogo que permite
+  realizar experimentos con modelos.
+keywords:
+  - BehaviorSpace
+  - NetLogo
+  - Behavior Space

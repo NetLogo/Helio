@@ -1,0 +1,12 @@
+{
+  "source": "test-data/counter/counter-5.es.md",
+  "jsonOutputPath": "test-dist/es/counter/counter-5.metadata.json",
+  "language": "es",
+  "extension": "md",
+  "output": true,
+  "title": "Página de contador 5",
+  "inheritFrom": [
+    0
+  ],
+  "count": 5
+}

@@ -1,0 +1,57 @@
+#!/bin/bash
+
+function echo() {
+  command echo "[$(date +'%H:%M')] $*"
+}
+
+function realEcho() {
+  command echo "$@"
+}
+
+function rmDirOrLink() {
+  local path="$1"
+
+  if [ -L "$path" ]; then
+    echo "💡 Removing existing symlink: $path"
+    rm -f -- "$path"
+    return
+  fi
+
+  if [ -d "$path" ]; then
+    echo "💡 Removing existing directory: $path"
+    rm -rf -- "$path"
+    return
+  fi
+
+  if [ -e "$path" ]; then
+    echo "💡 Removing existing file: $path"
+    rm -f -- "$path"
+  fi
+}
+
+function resolveDirOrLink() {
+  if [ -L "$1" ]; then
+    readlink "$1"
+  else
+    printf '%s\n' "$1"
+  fi
+}
+
+function unroll() {
+  local targetDir="$(resolveDirOrLink "$1")"
+  local currentDir
+  currentDir=$(pwd)
+
+  cp -r "$targetDir"/* "$currentDir"/
+  rmDirOrLink "$targetDir"
+}
+
+function confirmUnlessHeadless() {
+  if [ "$HEADLESS" != "true" ]; then
+    read -p "⚠️ $1 (y/n): " response
+    if [ "$response" != "y" ]; then
+      echo "💡 Operation cancelled by user."
+      exit 0
+    fi
+  fi
+}

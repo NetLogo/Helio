@@ -1,0 +1,16 @@
+tags:
+  - Code Tab
+  - Programming
+  - Editor
+icon: i-lucide-file-code
+---
+output: True
+title: Code Tab
+description:
+  The Code tab is where the code for the model is stored and where you can edit
+  and manage your NetLogo programs.
+keywords:
+  - Code Tab
+  - Programming
+  - Code Editor
+  - NetLogo

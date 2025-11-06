@@ -1,0 +1,16 @@
+tags:
+  - Programming
+  - Language Reference
+  - Coding
+icon: i-lucide-code
+---
+output: True
+title: Programming Guide
+description:
+  Comprehensive guide to the NetLogo programming language, covering syntax,
+  commands, reporters, and programming concepts.
+keywords:
+  - Programming
+  - Language Reference
+  - Coding
+  - NetLogo

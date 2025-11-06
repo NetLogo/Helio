@@ -1,0 +1,17 @@
+tags:
+  - Extension Manager
+  - Extensions
+  - Installation
+icons: i-lucide-puzzle
+
+---
+output: True
+title: Extension Manager
+description:
+  The Extension Manager allows you to browse, install, and manage NetLogo
+  extensions to add new functionality to your models.
+keywords:
+  - Extension Manager
+  - Extensions
+  - Installation
+  - NetLogo

@@ -1,0 +1,70 @@
+{
+  "name": "@repo/template",
+  "version": "0.0.0",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./extras/nuxt-content-bridge": {
+      "types": "./extras/nuxt-content-bridge/dist/types.d.ts",
+      "import": "./extras/nuxt-content-bridge/dist/module.mjs",
+      "require": "./extras/nuxt-content-bridge/dist/module.cjs"
+    },
+    "./*": {
+      "import": "./dist/*.js",
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
+  },
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch & tsc-alias --watch",
+    "build": "tsc && tsc-alias",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src --max-warnings 0",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/ini": "^4.1.1",
+    "@types/jest": "^29.5.12",
+    "@types/markdown-it": "^14.1.2",
+    "@types/mustache": "^4.2.6",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "chokidar-cli": "^3.0.0",
+    "copyfiles": "^2.4.1",
+    "eslint": "^9.31.0",
+    "jest": "^29.7.0",
+    "jest-environment-node": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.4.0",
+    "typescript-eslint": "^8.46.1"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "chevron": "^0.2.0",
+    "fast-xml-parser": "^5.2.5",
+    "handlebars": "^4.7.8",
+    "ini": "^5.0.0",
+    "markdown-it": "^14.1.0",
+    "mustache": "^4.2.0",
+    "yaml": "^2.8.1",
+    "zod": "^4.0.15"
+  }
+}

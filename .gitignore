@@ -34,3 +34,11 @@ yarn-error.log*
 
 # ui
 dist/
+
+# mustache
+packages/mustache/test-dist/
+
+# Special prefix for work artifacts that
+# should not be tracked
+GITIGNORE_*
+GITIGNORE_*/**/*

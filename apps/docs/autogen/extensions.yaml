@@ -1,0 +1,16 @@
+tags:
+  - Extensions
+  - Add-ons
+  - Functionality
+icons: i-lucide-puzzle
+---
+output: True
+title: Extensions
+description:
+  NetLogo extensions provide additional functionality beyond the core language,
+  allowing you to add new commands, reporters, and capabilities to your models.
+keywords:
+  - Extensions
+  - Add-ons
+  - Functionality
+  - NetLogo

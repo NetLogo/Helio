@@ -1,0 +1,78 @@
+{
+  "name": "@repo/markdown",
+  "version": "0.0.0",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./styles.scss": "./dist/index.scss",
+    ".": {
+      "default": "./dist/markdown.js",
+      "types": "./dist/markdown.d.ts"
+    },
+    "./components/**/*": {
+      "default": "./dist/components/*.js",
+      "types": "./dist/components/*.d.ts"
+    },
+    "./plugins/**/*": {
+      "default": "./dist/plugins/*.js",
+      "types": "./dist/plugins/*.d.ts"
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run build:styles && npm run build:components",
+    "build:styles": "tailwindcss -i ./src/styles.scss -o ./dist/index.scss",
+    "build:components": "tsc && tsc-alias && npm run copy:scss",
+    "copy:scss": "find src -name '*.scss' -not -name 'styles.scss' | while read file; do mkdir -p \"dist/$(dirname \"${file#src/}\")\"; cp \"$file\" \"dist/${file#src/}\"; done",
+    "check-types": "tsc --noEmit",
+    "dev": "npm run dev:components & npm run dev:styles & npm run dev:scss",
+    "dev:styles": "tailwindcss -i ./src/styles.scss -o ./dist/index.scss --watch",
+    "dev:components": "tsc --watch & tsc-alias --watch",
+    "dev:scss": "chokidar 'src/**/*.scss' -c 'npm run copy:scss'",
+    "lint": "eslint src --max-warnings 0",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/tailwind-config": "*",
+    "@repo/typescript-config": "*",
+    "@repo/utils": "*",
+    "@tailwindcss/cli": "^4.1.5",
+    "@types/prismjs": "^1.26.5",
+    "@types/unist": "^3.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@vitest/coverage-v8": "^2.0.5",
+    "chokidar-cli": "^3.0.0",
+    "copyfiles": "^2.4.1",
+    "eslint": "^9.31.0",
+    "jsdom": "^25.0.0",
+    "tailwindcss": "^4.1.5",
+    "typescript": "^5.4.0",
+    "unified": "^11.0.5",
+    "vitest": "^2.0.5"
+  },
+  "dependencies": {
+    "prismjs": "^1.30.0",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-raw": "^7.0.0",
+    "rehype-slug": "^6.0.0",
+    "remark": "^15.0.1",
+    "remark-directive": "^4.0.0",
+    "remark-directive-rehype": "^0.4.2",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-smartypants": "^3.0.2",
+    "remark-stringify": "^11.0.0",
+    "remark-toc": "^9.0.0",
+    "remark-toc-inline": "^1.0.0",
+    "tsc-alias": "^1.8.16",
+    "unist-builder": "^4.0.0",
+    "unist-util-visit": "^5.0.0"
+  }
+}

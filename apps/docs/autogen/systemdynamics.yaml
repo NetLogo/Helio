@@ -1,0 +1,15 @@
+tags:
+  - System Dynamics
+  - Stock and Flow
+  - Modeling
+---
+output: True
+title: System Dynamics Modeler
+description:
+  Guide to using NetLogo's System Dynamics Modeler for creating stock and flow
+  models with aggregate modeling approaches.
+keywords:
+  - System Dynamics
+  - Stock and Flow
+  - Modeling
+  - NetLogo

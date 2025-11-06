@@ -1,0 +1,40 @@
+@use 'sass:meta';
+
+@include meta.load-css('./styles/legacy-sidebar-compat.css');
+
+@keyframes shimmer {
+  0% {
+    background-position: -700px 0;
+  }
+  100% {
+    background-position: 700px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(to right, #ebebf0 0%, #e3e3ea 20%, #dde3e8 40%, #ebebf0 100%);
+  background-size: 1000px 100%;
+}
+
+.reporter {
+  color: #660096;
+}
+
+.command {
+  color: #0000aa;
+}
+
+.keyword {
+  color: #007f69;
+}
+
+.comment {
+  color: #5a5a5a;
+}
+
+.string,
+.number,
+.constant {
+  color: #963700;
+}

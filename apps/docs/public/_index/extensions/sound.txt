@@ -1,0 +1,5 @@
+sound:drums drums.html
+sound:instruments instruments.html
+sound:play-drum play-drum.html
+sound:play-note play-note.html
+sound:play-note-later play-note-later.html

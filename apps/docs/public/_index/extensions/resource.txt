@@ -1,0 +1,2 @@
+resource:get get.html
+resource:list list.html

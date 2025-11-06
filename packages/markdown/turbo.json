@@ -1,0 +1,14 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["build:styles", "build:components"]
+    },
+    "build:styles": {
+      "outputs": ["dist/**"]
+    },
+    "build:components": {
+      "outputs": ["dist/**"]
+    }
+  }
+}

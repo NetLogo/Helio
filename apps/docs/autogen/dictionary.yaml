@@ -1,0 +1,21 @@
+tags:
+  - Dictionary
+  - Primitives
+  - API
+buildVariables:
+  dictionary: data/dictionary.yaml
+icon: i-lucide-square-code
+---
+output: True
+title: Dictionary
+description:
+  Reference for NetLogo primitives, including their usage, parameters, and
+  examples.
+specialChars: '< >'
+keywords:
+  - API Reference
+  - Dictionary
+  - Primitives
+  - Input/Output
+  - Turtles
+  - Patches

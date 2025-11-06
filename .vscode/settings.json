@@ -1,0 +1,59 @@
+{
+  "files.watcherExclude": {
+    "**/target": true
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "always",
+    "files.trimTrailingWhitespace": "always",
+    "files.insertFinalNewline": "always"
+  },
+
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.rulers": [80, 100, 120],
+
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "es5",
+  "prettier.semi": true,
+  "prettier.bracketSpacing": true,
+  "prettier.arrowParens": "always",
+  "prettier.endOfLine": "lf",
+  "prettier.printWidth": 100,
+  "prettier.proseWrap": "always",
+  "prettier.jsxSingleQuote": false,
+
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "[mustache]": {
+    "editor.formatOnSave": false
+  },
+  "[yaml]": {
+    "editor.formatOnSave": false
+  },
+
+  "files.exclude": {
+    "**/.next": true,
+    "**/.nuxt": true,
+    "**/node_modules": true,
+    "**/.out": true,
+    "**/.turbo": true,
+    "external/": true,
+    ".git*": true,
+    ".npmrc": true,
+    "**/out": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/test-dist": true,
+    "**/.output": true,
+    "**/.data": true
+  },
+
+  "cSpell.words": ["autogen", "iconify", "netlogo", "Nuxt", "Pathnames", "reka", "vueuse"]
+}

@@ -1,0 +1,16 @@
+tags:
+  - FAQ
+  - Frequently Asked Questions
+  - Help
+icon: i-lucide-circle-question-mark
+---
+output: True
+title: Frequently Asked Questions
+description:
+  Answers to frequently asked questions about NetLogo, covering common issues,
+  usage patterns, and troubleshooting tips.
+keywords:
+  - FAQ
+  - Frequently Asked Questions
+  - Help
+  - NetLogo

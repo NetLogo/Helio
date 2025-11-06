@@ -1,0 +1,6 @@
+rnd:weighted-one-of weighted-one-of.html
+rnd:weighted-n-of weighted-n-of.html
+rnd:weighted-n-of-with-repeats weighted-n-of-with-repeats.html
+rnd:weighted-one-of-list weighted-one-of-list.html
+rnd:weighted-n-of-list weighted-n-of-list.html
+rnd:weighted-n-of-list-with-repeats weighted-n-of-list-with-repeats.html

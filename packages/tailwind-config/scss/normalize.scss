@@ -1,0 +1,260 @@
+/* ==========================================================================
+   RESET & BASE
+   ========================================================================== */
+
+/**
+ * 1. Correct the line height in all browsers.
+ */
+
+html {
+  line-height: 1.1; /* 1 */
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+}
+
+/* Sections
+   ========================================================================== */
+body {
+  background-color: var(--color-background);
+  color: var(--color-black);
+  line-height: var(--line-height);
+  min-height: 90vh;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+}
+
+body,
+input,
+button,
+select,
+textarea {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-style: normal;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+/**
+ * Render the `main` element consistently in IE.
+ */
+
+main {
+  display: block;
+  min-height: 90vh;
+}
+
+/**
+ * Correct typographic defaults
+ */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+ul,
+ol,
+pre,
+code,
+hr,
+table {
+  margin-top: 0;
+  margin-bottom: var(--block-bottom);
+  line-height: normal;
+}
+
+h1,
+h2,
+h3 {
+  margin-top: var(--block-top);
+}
+
+/* Grouping content
+   ========================================================================== */
+
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+pre {
+  font-family: monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/* Text-level semantics
+   ========================================================================== */
+
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+
+a {
+  background-color: transparent;
+}
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+  color: inherit; /* Ensure links in headings inherit color */
+  text-decoration: none; /* Remove underline from links in headings */
+  font-size: inherit; /* Ensure links in headings inherit font size */
+  letter-spacing: inherit; /* Ensure links in headings inherit letter spacing */
+  white-space: inherit; /* Ensure links in headings inherit white space */
+  text-transform: inherit; /* Ensure links in headings inherit text transform */
+}
+
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+
+abbr[title] {
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
+}
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+
+b,
+strong {
+  font-weight: bolder;
+  letter-spacing: inherit; /* Ensure strong elements inherit letter spacing */
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/**
+ * Add the correct font size in all browsers.
+ */
+
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+p {
+  line-height: var(--line-height);
+  hyphens: auto;
+  hyphenate-limit-chars: 6 3 3;
+  hyphenate-limit-lines: 2;
+  hyphenate-limit-last: always;
+  hyphenate-limit-zone: 8%;
+  hyphenate-character: "‑"; /* U+2011 NON-BREAKING HYPHEN */
+  font-weight: 400;
+}
+
+p,
+pre {
+  max-width: min(100%, var(--max-width-ch));
+}
+
+p:first-of-type {
+  margin-top: 0; /* Remove top margin for first paragraph */
+}
+
+ul,
+ol,
+dl {
+  padding-inline: var(--space-md);
+}
+
+ul,
+dl {
+  max-width: var(--max-width-ch);
+}
+
+li,
+dd {
+  margin: 0 0 0.5em 1em;
+  line-height: var(--line-height);
+}
+
+dt {
+  font-weight: 700;
+}
+
+pre,
+code {
+  font-family: var(--font-mono);
+}
+
+/* Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove the border on images inside links in IE 10.
+ * 2. Correct the overflow in Edge and IE.
+ */
+
+img {
+  border-style: none; /* 1 */
+  display: block; /* 2 */
+}
+
+/* Misc
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 10+.
+ */
+
+template {
+  display: none;
+}
+
+/**
+ * Add the correct display in IE 10.
+ */
+
+[hidden] {
+  display: none;
+}

@@ -1,0 +1,39 @@
+[
+  {
+    "label": "Learn NetLogo",
+    "icon": "i-lucide-book-open",
+    "to": "/whatis",
+    "description": "Get started with tutorials and sample models"
+  },
+  {
+    "label": "Your First Model",
+    "icon": "i-lucide-rocket",
+    "to": "/sample",
+    "description": "Build your first NetLogo model"
+  },
+  {
+    "label": "Download",
+    "icon": "i-lucide-download",
+    "to": "https://www.netlogo.org/download",
+    "description": "Get the latest version of NetLogo"
+  },
+  {
+    "label": "Dictionary",
+    "icon": "i-lucide-square-code",
+    "to": "/dictionary",
+    "description": "Find detailed information on primitives and commands"
+  },
+  {
+    "label": "Extensions",
+    "icon": "i-lucide-puzzle",
+    "to": "/extensions",
+    "description": "Explore built-in NetLogo extensions"
+  },
+  {
+    "label": "Donate",
+    "icon": "i-lucide-heart",
+    "to": "https://netlogo.org/donate",
+    "external": true,
+    "description": "Support NetLogo"
+  }
+]

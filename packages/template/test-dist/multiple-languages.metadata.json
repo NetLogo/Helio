@@ -1,0 +1,15 @@
+{
+  "source": "test-data/multiple-languages.md",
+  "jsonOutputPath": "test-dist/multiple-languages.metadata.json",
+  "language": "en",
+  "extension": "md",
+  "output": true,
+  "title": "Test Document",
+  "inheritFrom": [
+    0
+  ],
+  "description": "This is a test YAML configuration",
+  "tags": [
+    "Multiple Languages"
+  ]
+}

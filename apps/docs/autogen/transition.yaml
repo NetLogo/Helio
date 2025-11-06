@@ -1,0 +1,16 @@
+tags:
+  - Transition
+  - Migration
+  - Version Changes
+icon: i-lucide-circle-fading-arrow-up
+---
+output: True
+title: Transition Guide
+description:
+  Guide to transitioning between different versions of NetLogo, including
+  migration tips and information about breaking changes.
+keywords:
+  - Transition
+  - Migration
+  - Version Changes
+  - NetLogo

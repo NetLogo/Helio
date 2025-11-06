@@ -1,0 +1,11 @@
+tags:
+  - Multiple Languages
+---
+title: Test Document
+description: This is a test YAML configuration
+output: true
+---
+language: es
+title: Documento de Prueba
+description: Esta es una configuración de YAML de prueba
+output: true

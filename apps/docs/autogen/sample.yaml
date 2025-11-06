@@ -1,0 +1,16 @@
+tags:
+  - Sample Model
+  - Example
+  - Tutorial
+icon: i-fluent-mdl2-learning-tools
+---
+output: True
+title: Sample Model
+description:
+  Walkthrough of a sample NetLogo model to demonstrate key concepts and features
+  of the modeling environment.
+keywords:
+  - Sample Model
+  - Example
+  - Tutorial
+  - NetLogo

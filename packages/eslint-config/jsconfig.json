@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "checkJs": true
+  },
+  "include": ["../**/*.js", "../**/*.ts", "rules/custom-typescript-eslint/helpers.js"],
+  "exclude": ["node_modules"]
+}

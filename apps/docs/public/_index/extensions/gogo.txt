@@ -1,0 +1,17 @@
+gogo:primitives primitives.html
+gogo:howmany-gogos howmany-gogos.html
+gogo:init init.html
+gogo:talk-to-output-ports talk-to-output-ports.html
+gogo:talk-to-servo-ports talk-to-servo-ports.html
+gogo:set-output-port-power set-output-port-power.html
+gogo:output-port-on output-port-on.html
+gogo:output-port-off output-port-off.html
+gogo:output-port-clockwise output-port-clockwise.html
+gogo:output-port-counterclockwise output-port-counterclockwise.html
+gogo:set-servo set-servo.html
+gogo:led led.html
+gogo:beep beep.html
+gogo:read-sensors read-sensors.html
+gogo:read-sensor read-sensor.html
+gogo:read-all read-all.html
+gogo:send-bytes send-bytes.html

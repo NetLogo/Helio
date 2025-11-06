@@ -1,0 +1,40 @@
+{
+  "name": "@repo/netlogo-docs",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./*": {
+      "import": "./dist/*/index.js",
+      "default": "./dist/*/index.js",
+      "types": "./dist/*/index.d.ts"
+    }
+  },
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "check-types": "tsc --noEmit",
+    "dev:components": "tsc --watch & tsc-alias --watch",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/tailwind-config": "*",
+    "@repo/template": "*",
+    "@repo/typescript-config": "*",
+    "@repo/utils": "*",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "eslint": "^9.31.0",
+    "jsdom": "^25.0.0",
+    "tailwindcss": "^4.1.5",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "slugify": "^1.6.6",
+    "tsc-alias": "^1.8.16"
+  }
+}

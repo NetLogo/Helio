@@ -1,0 +1,20 @@
+#!/bin/bash
+
+usage() {
+  cat <<'EOF'
+Usage: yarn run docs:generate-manual [options]
+
+Options
+  -h, --help    Show this help message and exit.
+
+Environment
+  PORT             Preview server port                    (default: 3002)
+  PRODUCT_VERSION  Version string used for output paths   (default: from .env)
+  REPO_ROOT        Repository root directory              (default: from .env)
+EOF
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi

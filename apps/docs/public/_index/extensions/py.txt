@@ -1,0 +1,7 @@
+py:setup setup.html
+py:python python.html
+py:python2 python2.html
+py:python3 python3.html
+py:run run.html
+py:runresult runresult.html
+py:set set.html

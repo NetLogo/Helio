@@ -1,0 +1,14 @@
+bitmap:average-color average-color.html
+bitmap:channel channel.html
+bitmap:copy-to-drawing copy-to-drawing.html
+bitmap:copy-to-pcolors copy-to-pcolors.html
+bitmap:difference-rgb difference-rgb.html
+bitmap:export export.html
+bitmap:from-base64 from-base64.html
+bitmap:to-base64 to-base64.html
+bitmap:from-view from-view.html
+bitmap:to-grayscale to-grayscale.html
+bitmap:height height.html
+bitmap:import import.html
+bitmap:scaled scaled.html
+bitmap:width width.html

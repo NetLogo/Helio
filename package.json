@@ -1,6 +1,9 @@
 {
-  "name": "with-tailwind",
+  "name": "helio",
   "private": true,
+  "engine": {
+    "node": "^22.0.0"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -11,10 +14,17 @@
   "devDependencies": {
     "prettier": "^3.6.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "turbo": "^2.5.0"
+    "turbo": "^2.5.5"
   },
-  "packageManager": "pnpm@8.15.6",
   "engines": {
     "node": ">=18"
+  },
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "npm-run-parallel": "^0.6.0"
   }
 }

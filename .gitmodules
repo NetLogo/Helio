@@ -1,0 +1,75 @@
+[submodule "external/extensions/array"]
+	path = external/extensions/array
+	url = https://github.com/NetLogo/Array-Extension.git
+[submodule "external/extensions/bitmap"]
+	path = external/extensions/bitmap
+	url = https://github.com/NetLogo/Bitmap-Extension.git
+[submodule "external/extensions/gis"]
+	path = external/extensions/gis
+	url = https://github.com/NetLogo/GIS-Extension.git
+[submodule "external/extensions/matrix"]
+	path = external/extensions/matrix
+	url = https://github.com/NetLogo/Matrix-Extension.git
+[submodule "external/extensions/profiler"]
+	path = external/extensions/profiler
+	url = https://github.com/NetLogo/Profiler-Extension.git
+[submodule "external/extensions/sample"]
+	path = external/extensions/sample
+	url = https://github.com/NetLogo/Sample-Extension.git
+[submodule "external/extensions/sample-scala"]
+	path = external/extensions/sample-scala
+	url = https://github.com/NetLogo/Sample-Scala-Extension.git
+[submodule "external/extensions/sound"]
+	path = external/extensions/sound
+	url = https://github.com/NetLogo/Sound-Extension.git
+[submodule "external/extensions/table"]
+	path = external/extensions/table
+	url = https://github.com/NetLogo/Table-Extension.git
+[submodule "Mathematica-Link"]
+	path = Mathematica-Link
+	url = https://github.com/NetLogo/Mathematica-Link.git
+[submodule "external/extensions/nw"]
+	path = external/extensions/nw
+	url = https://github.com/NetLogo/NW-Extension
+[submodule "external/extensions/csv"]
+	path = external/extensions/csv
+	url = https://github.com/NetLogo/CSV-Extension
+[submodule "gogo-hid"]
+	path = external/extensions/gogo
+	url = https://github.com/NetLogo/GoGo-HID-Extension
+[submodule "external/extensions/palette"]
+	path = external/extensions/palette
+	url = https://github.com/NetLogo/Palette-Extension
+[submodule "external/extensions/arduino"]
+	path = external/extensions/arduino
+	url = https://github.com/NetLogo/Arduino-Extension/
+[submodule "external/extensions/vid"]
+	path = external/extensions/vid
+	url = https://github.com/NetLogo/vid.git
+[submodule "external/extensions/view2.5d"]
+	path = external/extensions/view2.5d
+	url = https://github.com/NetLogo/View2.5D.git
+[submodule "external/extensions/ls"]
+	path = external/extensions/ls
+	url = https://github.com/NetLogo/LevelSpace.git
+[submodule "external/extensions/rnd"]
+	path = external/extensions/rnd
+	url = https://github.com/NetLogo/Rnd-Extension.git
+[submodule "behaviorsearch"]
+	path = behaviorsearch
+	url = https://github.com/NetLogo/behaviorsearch.git
+[submodule "external/extensions/py"]
+	path = external/extensions/py
+	url = https://github.com/NetLogo/Python-Extension
+[submodule "external/extensions/time"]
+	path = external/extensions/time
+	url = https://github.com/NetLogo/Time-Extension
+[submodule "external/extensions/resource"]
+	path = external/extensions/resource
+	url = https://github.com/NetLogo/Resource-Extension
+[submodule "external/extensions/sr"]
+	path = external/extensions/sr
+	url = https://github.com/NetLogo/SimpleR-Extension
+[submodule "external/extensions/gogo"]
+	path = external/extensions/gogo
+	url = https://github.com/NetLogo/GoGo-HID-Extension

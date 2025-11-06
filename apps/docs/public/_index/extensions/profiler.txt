@@ -1,0 +1,8 @@
+profiler:calls calls.html
+profiler:exclusive-time exclusive-time.html
+profiler:inclusive-time inclusive-time.html
+profiler:start start.html
+profiler:stop stop.html
+profiler:reset reset.html
+profiler:report report.html
+profiler:data data.html

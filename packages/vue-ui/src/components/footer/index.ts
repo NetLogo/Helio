@@ -1,0 +1,7 @@
+export { default as Footer } from './Footer.vue'
+export { default as FooterBrandSection } from './FooterBrandSection.vue'
+export { default as FooterContainer } from './FooterContainer.vue'
+export { default as FooterLink } from './FooterLink.vue'
+export { default as FooterLinksSection } from './FooterLinksSection.vue'
+export { default as FooterSection } from './FooterSection.vue'
+export type * from './types.js'

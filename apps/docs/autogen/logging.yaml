@@ -1,0 +1,16 @@
+tags:
+  - Logging
+  - Data Collection
+  - Output
+icon: i-lucide-database-backup
+---
+output: True
+title: Logging
+description:
+  Guide to logging and data collection features in NetLogo for recording
+  simulation data and model outputs.
+keywords:
+  - Logging
+  - Data Collection
+  - Output
+  - NetLogo

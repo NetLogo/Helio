@@ -1,0 +1,16 @@
+tags:
+  - Preferences
+  - Settings
+  - Configuration
+icon: i-lucide-settings-2
+---
+output: True
+title: NetLogo Preferences
+description:
+  Guide to configuring NetLogo preferences and settings to customize the
+  environment for your workflow and needs.
+keywords:
+  - Preferences
+  - Settings
+  - Configuration
+  - NetLogo
