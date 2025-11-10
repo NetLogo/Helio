@@ -1,5 +1,16 @@
 {
-  "extends": "../../apps/docs/.nuxt/tsconfig.json",
-  "include": ["src/**/*", "*.d.ts"],
-  "exclude": ["node_modules", "dist", "../../app"]
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "ignoreDeprecations": "5.0",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
+    "paths": {
+      "@repo/vue-ui/*": ["./src/*"],
+    },
+    "types": ["node"],
+    "jsx": "preserve"
+  },
+  "include": ["src/**/*", "**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
 }
