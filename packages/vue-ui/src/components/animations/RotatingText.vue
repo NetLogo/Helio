@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { AnimatePresence, Motion, type Target, type Transition, type VariantLabels } from 'motion-v'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { cn } from '../../utils'
 
 type StaggerFrom = 'first' | 'last' | 'center' | 'random' | number
 type SplitBy = 'characters' | 'words' | 'lines'
@@ -31,10 +32,6 @@ type RotatingTextProps = {
   elementLevelClassName?: string
 }
 
-const cn = (...classes: Array<string | undefined | null | boolean>): string => {
-  return classes.filter(Boolean).join(' ')
-}
-
 const props = withDefaults(defineProps<RotatingTextProps>(), {
   transition: () =>
     ({
@@ -53,6 +50,10 @@ const props = withDefaults(defineProps<RotatingTextProps>(), {
   loop: true,
   auto: true,
   splitBy: 'characters',
+  onNext: undefined,
+  mainClassName: '',
+  splitLevelClassName: '',
+  elementLevelClassName: '',
 })
 
 const currentTextIndex = ref(0)
@@ -250,7 +251,7 @@ onUnmounted(() => {
           >
             {{ char }}
           </Motion>
-          <span v-if="wordObj.needsSpace" class="whitespace-pre"></span>
+          <span v-if="wordObj.needsSpace" class="whitespace-pre">{{ ' ' }}</span>
         </span>
       </Motion>
     </AnimatePresence>
