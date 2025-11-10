@@ -23,7 +23,8 @@ You also need to install `radix-vue` as a dependency (you only need it as a dev 
 resolve some built-in Nuxt overrides).
 
 ```bash
-$> yarn add --dev radix-vue@^2.6.0         # Ensure version matches that in @repo/vue-ui
+$> yarn add --dev radix-vue@1.9.17         # Ensure version matches that in @repo/vue-ui
+$> yarn add reka-ui                        # Newer version of radix-vue.
 $> yarn install
 ```
 
@@ -79,7 +80,6 @@ export default defineNuxtConfig({
 # ...
 @source "../../../../../packages/vue-ui/src";
 ```
-
 
 ## Structure
 
@@ -164,24 +164,31 @@ Assets can be imported and used in your Vue files.
 ```
 
 ## Development
+
 There is one thing to keep in mind: this package does not build itself. Instead, it relies on
 a Nuxt context to provide certain features (like module resolution, runtime config, etc). However, you might want
 to test non-Nuxt component in isolation or export types for use in your Nuxt app.
 
 ### Type-checking
+
 You can check types by running:
+
 ```bash
 $> yarn run check-types
 ```
+
 in the `@repo/vue-ui` package directory.
 
 This will use the generated type file in the `docs` application to check types against a Nuxt context.
 
 ### Emitting types
+
 You can emit type declaration files by running:
+
 ```bash
 $> yarn run emit-types
 ```
+
 in the `@repo/vue-ui` package directory.
 
 This will generate type declaration files in the `dist` directory of the package. This uses a custom

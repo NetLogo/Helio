@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ContentSurroundLink } from '#ui/types/content'
+import type { ContentSurroundLink } from '@nuxt/ui/components/content/ContentSurround.vue.js'
 import { computed } from 'vue'
 
 const ui = {
