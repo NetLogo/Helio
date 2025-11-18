@@ -271,3 +271,6 @@ export async function buildDocs(config: ProjectConfig): Promise<Array<PageResult
   const results = await Promise.all(extensions.map(async (ext) => ext.buildAll()));
   return results.flat(1);
 }
+
+export type { ExtensionConfig } from "./types";
+export { parseAllFromText };

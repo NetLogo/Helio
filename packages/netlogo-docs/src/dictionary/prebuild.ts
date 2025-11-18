@@ -1,6 +1,6 @@
-import { getEntryAdditionalNames, getEntryTitle } from ".";
 import { toSlug } from "../helpers";
 import type { DictionaryType } from "./types";
+import { getEntryAdditionalNames, getEntryTitle } from "./utils";
 
 type Category = {
   id: string;

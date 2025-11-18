@@ -7,13 +7,20 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node src/prepare.js"
+    "build": "tsc && node src/prepare.js"
   },
   "type": "module",
   "devDependencies": {
     "yaml": "^2.8.1",
+    "zod": "^4.1.12",
     "@repo/netlogo-docs": "*"
   }
 }
