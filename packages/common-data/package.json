@@ -1,0 +1,19 @@
+{
+  "name": "@repo/common-data",
+  "version": "1.0.0",
+  "engines": {
+    "node": "^22.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "node src/prepare.js"
+  },
+  "type": "module",
+  "devDependencies": {
+    "yaml": "^2.8.1",
+    "@repo/netlogo-docs": "*"
+  }
+}
