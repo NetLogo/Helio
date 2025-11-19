@@ -12,3 +12,4 @@
 }
 
 @include meta.load-css("@repo/vue-ui/styles.scss");
+@include meta.load-css("./BlockHero.css");

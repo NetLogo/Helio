@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import { vueUiSrc, vueUiStyles } from "./turbo";
+import { vueUIAssets, vueUiSrc, vueUiStyles } from "./turbo";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -48,6 +48,13 @@ export default defineNuxtConfig({
   icon: {
     mode: "css",
     cssLayer: "base",
+    customCollections: [
+      {
+        prefix: "logo",
+        dir: vueUIAssets,
+        normalizeIconName: true,
+      },
+    ],
   },
 
   components: [
@@ -77,9 +84,6 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: ["@repo/vue-ui"],
-    },
-    server: {
-      hmr: false,
     },
   },
 

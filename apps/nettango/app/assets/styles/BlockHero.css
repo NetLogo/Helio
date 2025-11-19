@@ -1,0 +1,69 @@
+.text-label {
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-weight: 700;
+  fill: white;
+  font-size: 16px;
+  pointer-events: none;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.block-group {
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+@keyframes wiggle-anim {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  25% {
+    rotate: -2deg;
+  }
+  75% {
+    rotate: 2deg;
+  }
+}
+
+#wiggle-block {
+  transform-origin: center;
+  animation: wiggle-anim 2s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes pulse-flow {
+  0% {
+    opacity: 0;
+    stroke-width: 0;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 3;
+  }
+  100% {
+    opacity: 0;
+    stroke-width: 0;
+  }
+}
+
+.block-svg {
+  width: 100%;
+  overflow: visible;
+}
+
+.block-group {
+  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover-target {
+  transition:
+    all 0.2s ease,
+    filter 0.2s ease;
+}
+.hover-target:hover {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+  scale: 1.01;
+  translate: 0 0 20px;
+  rotate: 0 -20deg 0;
+}
