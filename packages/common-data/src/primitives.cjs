@@ -35,10 +35,10 @@ function loadYAMLFile(filePath) {
 /**
  * Transforms a dictionary from the docs data into the standardized format.
  * @param {import("@repo/netlogo-docs/dictionary").DictionaryType} dictionary
- * @param {import("./primitives.types.ts").Source} source
+ * @param {import("./primitives.types.js").Source} source
  * @param {(entry: import("@repo/netlogo-docs/dictionary").DictionaryEntry,
- *          source: import("./primitives.types.ts").Source) => string} urlFunction
- * @returns {Array<import("./primitives.types.ts").Primitive>} Transformed primitive entries.
+ *          source: import("./primitives.types.js").Source) => string} urlFunction
+ * @returns {Array<import("./primitives.types.js").Primitive>} Transformed primitive entries.
  */
 function transformDocsDictionary({ entries }, source, urlFunction) {
   return entries
@@ -74,7 +74,7 @@ function transformDocsDictionary({ entries }, source, urlFunction) {
 /**
  *
  * @param {import("@repo/netlogo-docs/extension-docs").ExtensionConfig} config
- * @returns {Array<import("./primitives.types.ts").Primitive>}
+ * @returns {Array<import("./primitives.types.js").Primitive>}
  */
 function transformExtensionConfiguration({ extensionName, primitives }) {
   return primitives.map((primitive) => ({
@@ -90,7 +90,7 @@ function transformExtensionConfiguration({ extensionName, primitives }) {
 }
 
 function loadPrimitives() {
-  /** @type {Array<import("./primitives.types.ts").Primitive>} */
+  /** @type {Array<import("./primitives.types.js").Primitive>} */
   let primitives = [];
 
   /** @type {import("@repo/netlogo-docs/dictionary").DictionaryType} */
@@ -113,6 +113,8 @@ function loadPrimitives() {
     ].flat(),
   );
 
+  console.info(`Loaded ${primitives.length} primitives from NetLogo dictionaries.`);
+
   for (const extConfigPath of extensionsConfigPaths) {
     const yamlRaw = fs.readFileSync(extConfigPath, "utf8");
     const extensionConfig = parseAllFromText(yamlRaw).documentation;
@@ -125,7 +127,7 @@ function loadPrimitives() {
 
 /**
  *
- * @param {import("./primitives.types.ts").Primitive[]} primitives
+ * @param {import("./primitives.types.js").Primitive[]} primitives
  * @param {string} outputPath
  */
 function savePrimitivesYAML(primitives, outputPath) {

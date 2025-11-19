@@ -1,3 +1,3 @@
-import * as Primitives from "./primitives.js";
+import * as Primitives from "./primitives.cjs";
 
 Primitives.main();

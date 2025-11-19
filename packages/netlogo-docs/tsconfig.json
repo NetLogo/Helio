@@ -1,7 +1,13 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "target": "ES2022",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "outDir": "./dist/esm",
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "esModuleInterop": true
   },
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules"]

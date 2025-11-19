@@ -8,14 +8,16 @@
       "types": "./dist/index.d.ts"
     },
     "./*": {
-      "import": "./dist/*/index.js",
-      "default": "./dist/*/index.js",
-      "types": "./dist/*/index.d.ts"
+      "import": "./dist/esm/*/index.js",
+      "require": "./dist/cjs/*/index.js",
+      "types": "./dist/types/*/index.d.ts"
     }
   },
   "license": "UNLICENSED",
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build:esm": "tsc && tsc-alias",
+    "build:cjs": "tsc -p tsconfig.cjs.json && tsc-alias -p tsconfig.cjs.json",
+    "build": "yarn run build:esm && yarn run build:cjs",
     "check-types": "tsc --noEmit",
     "dev:components": "tsc --watch & tsc-alias --watch",
     "lint": "eslint src --max-warnings 0"

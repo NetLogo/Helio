@@ -16,7 +16,7 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "build": "tsc && node src/prepare.js"
+    "build": "tsc && node dist/prepare.js"
   },
   "type": "module",
   "devDependencies": {
