@@ -33,7 +33,10 @@
       "types": "./src/widgets/*.d.ts"
     },
     "./**/*": {
-      "default": "./src/**/*.ts",
+      "default": [
+        "./src/**/*.ts",
+        "./src/**/*.vue"
+      ],
       "types": "./dist/**/*.d.ts"
     },
     "./*": "./src/*.ts"
