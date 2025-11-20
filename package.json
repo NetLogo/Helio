@@ -54,6 +54,7 @@
     "remark-stringify": "11.0.0",
     "remark-toc": "9.0.0",
     "remark-toc-inline": "1.0.0",
-    "tailwindcss": "4.1.13"
+    "tailwindcss": "4.1.13",
+    "motion-v": "1.7.2"
   }
 }
