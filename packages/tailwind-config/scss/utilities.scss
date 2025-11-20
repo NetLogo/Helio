@@ -16,12 +16,21 @@
   border: 1px solid red;
   pointer-events: none;
 }
-.no-stylized-heading {
+
+.unprose,
+.no-stylized-heading,
+.no-stylized-heading h1,
+.no-stylized-heading h2,
+.no-stylized-heading h3,
+.no-stylized-heading h4,
+.no-stylized-heading h5,
+.no-stylized-heading h6 {
   background: transparent;
   color: var(--color-text);
   line-height: normal;
   padding: 0;
 }
+
 .bootstrap {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
