@@ -56,6 +56,15 @@
   --color-focus: var(--color-brand);
   --color-rule: var(--color-grey-accent);
 
+  /* Functional Colors (@nuxt/ui) */
+  --ui-primary: var(--color-primary);
+  --ui-secondary: var(--color-secondary);
+  --ui-success: var(--color-success);
+  --ui-info: var(--color-blue);
+  --ui-warning: var(--color-warning);
+  --ui-error: var(--color-error);
+  --ui-accented: var(--color-brand);
+
   /* Functional colors (shadcn) */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
