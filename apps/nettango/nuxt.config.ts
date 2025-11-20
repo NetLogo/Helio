@@ -84,6 +84,7 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: ["@repo/vue-ui"],
+      exclude: ["@nuxt/hints"],
     },
   },
 
