@@ -1,0 +1,59 @@
+name: Deploy NetTango
+
+on:
+  push:
+    branches:
+      - main
+      - app/nettango
+
+jobs:
+  deploy:
+    if: startsWith(github.event.head_commit.message, '#build app/nettango')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build monorepo
+        run: yarn build
+
+      - name: Generate NetTango
+        working-directory: apps/nettango
+        run: yarn run nuxt:prepare && yarn run nuxt:generate
+
+      - name: Deploy to target repository
+        working-directory: apps/nettango
+        run: |
+          # Read .env file
+          if [ -f .env ]; then
+            export $(grep -v '^#' .env | xargs)
+          else
+            echo ".env file not found"
+            exit 1
+          fi
+
+          if [ -z "$REPO_URL" ]; then
+            echo "REPO_URL not found in .env"
+            exit 1
+          fi
+
+          echo "Deploying to $REPO_URL"
+
+          git clone "$REPO_URL" .repo
+          cd .repo
+          rm -rf * .*
+          cp -r .output/public/ .
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git commit -m "Deploy from commit"
+          git push -f "$REPO_URL" main
