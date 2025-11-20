@@ -15,7 +15,6 @@
         :columns="link.columns"
         :active="link.active"
       >
-        <!-- eslint-disable-next-line vue/no-use-v-if-with-v-for -->
         <template v-if="link.children && link.children.length > 0">
           <NavbarDropdownItem
             v-for="child in link.children"
