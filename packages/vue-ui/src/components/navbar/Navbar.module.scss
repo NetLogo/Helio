@@ -4,7 +4,6 @@
   z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-lg);
   padding: var(--space-sm) var(--space-md);
   background: var(--color-nav-background);
@@ -181,6 +180,8 @@
   align-items: center;
   gap: var(--space-xs);
   justify-content: center;
+  justify-self: last baseline;
+  margin-left: auto;
 }
 :not(.row) > .actions {
   display: none;
