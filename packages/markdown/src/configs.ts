@@ -1,4 +1,4 @@
-import { isNonEmptyString } from "@repo/utils/std/string";
+import { isNonEmptyString } from "./utils";
 
 import type { Text } from "hast";
 import type { Options as AutolinkHeadingsOptions } from "rehype-autolink-headings";

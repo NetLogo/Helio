@@ -1,5 +1,5 @@
-import { isNonEmptyString } from '@repo/utils/std/string';
-import type { Content } from './utils';
+import { isNonEmptyString } from "../utils";
+import type { Content } from "./utils";
 /**
  * HTML element configuration for different link types
  */
@@ -13,7 +13,7 @@ type LinkHtmlOptions = {
 /**
  * Link type identifiers
  */
-type LinkType = 'wikiLink' | 'imageLink' | 'missingLink' | 'externalLink';
+type LinkType = "wikiLink" | "imageLink" | "missingLink" | "externalLink";
 
 /**
  * Configuration options for WikiLink processing
@@ -36,7 +36,7 @@ type WikiLinkOptions = {
     /** Function to check if a link target exists */
     linkExists?: (permalink: string) => boolean | Promise<boolean>;
     /** How to handle missing links: 'ignore', 'warn', 'error', or 'mark' */
-    missingLinkBehavior?: 'ignore' | 'warn' | 'error' | 'mark';
+    missingLinkBehavior?: "ignore" | "warn" | "error" | "mark";
   };
 
   /**
@@ -89,14 +89,14 @@ type WikiLinkOptions = {
 export const greedyAccessor = (node: Content): string => {
   // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (node.type) {
-    case 'text':
-      return (node as { type: 'text'; value: string }).value;
-    case 'html':
-      return (node as { type: 'html'; value: string }).value;
-    case 'link':
-      return (node as { type: 'link'; url: string }).url;
+    case "text":
+      return (node as { type: "text"; value: string }).value;
+    case "html":
+      return (node as { type: "html"; value: string }).value;
+    case "link":
+      return (node as { type: "link"; url: string }).url;
     default:
-      return '';
+      return "";
   }
 };
 
@@ -108,35 +108,35 @@ const DEFAULT_OPTIONS = {
     const isAnchorDefined = isNonEmptyString(anchor);
     // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
     switch (linkType) {
-      case 'imageLink':
-        return `${permalink}${isAnchorDefined ? `#${anchor}` : ''}`;
-      case 'missingLink':
-        return `#${permalink}${isAnchorDefined ? `#${anchor}` : ''}`;
+      case "imageLink":
+        return `${permalink}${isAnchorDefined ? `#${anchor}` : ""}`;
+      case "missingLink":
+        return `#${permalink}${isAnchorDefined ? `#${anchor}` : ""}`;
       default:
-        return `#${permalink}${isAnchorDefined ? `#${anchor}` : ''}`;
+        return `#${permalink}${isAnchorDefined ? `#${anchor}` : ""}`;
     }
   },
   classNames: {
-    wikiLink: 'wikilink',
-    imageLink: 'wikilink-image',
-    missingLink: 'wikilink-missing',
+    wikiLink: "wikilink",
+    imageLink: "wikilink-image",
+    missingLink: "wikilink-missing",
   } as Record<LinkType, string>,
   validation: {
-    missingLinkBehavior: 'ignore' as const,
+    missingLinkBehavior: "ignore" as const,
   },
   imageOptions: {
     altTemplate: (filename: string): string => filename,
     defaultSize: {},
   },
   integration: {
-    fileExtension: '.md',
-    encode: (permalink: string): string => encodeURIComponent(permalink).replace(/%20/g, '+'),
+    fileExtension: ".md",
+    encode: (permalink: string): string => encodeURIComponent(permalink).replace(/%20/g, "+"),
     greedyMatch: false,
   },
   greedyMatch: {
     maxIterations: 10,
     maxNodes: 25,
-    consumableTypes: ['text', 'html'],
+    consumableTypes: ["text", "html"],
     accessor: greedyAccessor,
   },
 };
@@ -146,10 +146,10 @@ const DEFAULT_OPTIONS = {
  */
 const createDefaultHtmlOptions = (): LinkHtmlOptions => ({
   parentNode: undefined,
-  target: '_self',
+  target: "_self",
   rel: undefined,
   titleTemplate: (permalink: string, displayText?: string) =>
-    typeof displayText === 'string' && displayText !== ''
+    typeof displayText === "string" && displayText !== ""
       ? `Link to ${displayText} (${permalink})`
       : `Link to ${permalink}`,
 });
@@ -158,13 +158,13 @@ const createDefaultHtmlOptions = (): LinkHtmlOptions => ({
  * Creates default HTML options for all link types
  */
 const createDefaultHtmlOptionsForAllTypes = (): Record<LinkType, LinkHtmlOptions> => {
-  const linkTypes: Array<LinkType> = ['wikiLink', 'imageLink', 'missingLink'];
+  const linkTypes: Array<LinkType> = ["wikiLink", "imageLink", "missingLink"];
   return linkTypes.reduce(
     (acc, type) => ({
       ...acc,
       [type]: createDefaultHtmlOptions(),
     }),
-    {} as Record<LinkType, LinkHtmlOptions>
+    {} as Record<LinkType, LinkHtmlOptions>,
   );
 };
 
@@ -172,7 +172,7 @@ const createDefaultHtmlOptionsForAllTypes = (): Record<LinkType, LinkHtmlOptions
  * Merges user options with defaults using deep merge
  */
 const getDefaultWikiLinkOptions = (
-  providedOptions: Partial<WikiLinkOptions> = {}
+  providedOptions: Partial<WikiLinkOptions> = {},
 ): Required<WikiLinkOptions> & { htmlOptions: Record<LinkType, LinkHtmlOptions> } => {
   return {
     hrefTemplate: providedOptions.hrefTemplate ?? DEFAULT_OPTIONS.hrefTemplate,

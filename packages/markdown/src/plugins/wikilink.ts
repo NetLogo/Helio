@@ -1,7 +1,7 @@
-import { isNonEmptyString } from "@repo/utils/std/string";
 import type { ElementContent, Root, RootContent } from "hast";
 import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
+import { isNonEmptyString } from "../utils";
 import type { Content } from "./utils";
 import { next } from "./utils";
 import type { LinkType, WikiLinkOptions } from "./wikilink.options";

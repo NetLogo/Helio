@@ -10,7 +10,6 @@ import remarkSmartypants from "remark-smartypants";
 import type { Options as RemarkTocOptions } from "remark-toc";
 import remarkToc from "remark-toc";
 import remarkTocInline from "remark-toc-inline";
-import type { Options as RemarkSmartypantsOptions } from "retext-smartypants";
 import { autoLinkHeadingsConfig, tocConfig, wikiLinkConfig } from "./configs";
 import { remarkHighlightNL } from "./plugins/highlight-nl";
 import { remarkRehypeQuestion } from "./plugins/question";
@@ -36,7 +35,7 @@ const getDefaultRemarkPluginsObject = () => {
   return {
     remarkWikiLink: { instance: remarkWikiLink, options: wikiLinkConfig as WikiLinkOptions },
     remarkGfm: { instance: remarkGfm, options: {} as RemarkGfmOptions },
-    remarkSmartypants: { instance: remarkSmartypants, options: {} as RemarkSmartypantsOptions },
+    remarkSmartypants: { instance: remarkSmartypants as unknown, options: {} as unknown },
     remarkRehypeQuestion: { instance: remarkRehypeQuestion, options: {} },
     remarkHighlightNL: { instance: remarkHighlightNL, options: {} },
     remarkToc: { instance: remarkToc, options: tocConfig as RemarkTocOptions },
