@@ -27,5 +27,33 @@
   ],
   "dependencies": {
     "npm-run-parallel": "^0.6.0"
+  },
+  "resolutions": {
+    "vue": "3.5.24",
+    "@vue/runtime-core": "3.5.24",
+    "@vue/server-renderer": "3.5.24",
+    "@vue/compiler-sfc": "3.5.24",
+    "@vue/reactivity": "3.5.24",
+    "@vue/shared": "3.5.24",
+    "reka-ui": "2.6.0",
+    "typescript": "^5.4.0",
+    "@nuxt/content": "3.7.1",
+    "nuxt": "4.1.2",
+    "eslint": "9.31.0",
+    "better-sqlite3": "12.4.1",
+    "prettier": "3.6.2",
+    "rehype-autolink-headings": "7.1.0",
+    "rehype-raw": "7.0.0",
+    "rehype-slug": "6.0.0",
+    "remark": "15.0.1",
+    "remark-directive": "4.0.0",
+    "remark-directive-rehype": "0.4.2",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
+    "remark-smartypants": "3.0.2",
+    "remark-stringify": "11.0.0",
+    "remark-toc": "9.0.0",
+    "remark-toc-inline": "1.0.0",
+    "tailwindcss": "4.1.13"
   }
 }

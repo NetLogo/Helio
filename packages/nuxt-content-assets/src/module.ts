@@ -154,7 +154,7 @@ export default defineNuxtModule<ModuleOptions>({
     addPlugin(resolve("./runtime/sockets/plugin"));
     const socket =
       // @ts-ignore -- @nuxt/content is available in peer
-      isDev && nuxt.options.content?.watch.enabled !== false
+      isDev && nuxt.options.content?.watch?.enabled !== false
         ? await setupSocketServer("content-assets")
         : null;
 
