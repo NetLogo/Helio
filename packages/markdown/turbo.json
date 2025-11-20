@@ -1,14 +1,28 @@
 {
-  "extends": ["//"],
+  "$schema": "https://turborepo.com/schema.json",
+  "extends": [
+    "//"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["build:styles", "build:components"]
+      "dependsOn": [
+        "build:styles",
+        "build:components",
+        "@repo/utils#build",
+        "^build"
+      ]
     },
     "build:styles": {
-      "outputs": ["dist/**"]
+      "outputs": [
+        "dist/**",
+        "^build"
+      ]
     },
     "build:components": {
-      "outputs": ["dist/**"]
+      "outputs": [
+        "dist/**",
+        "^build"
+      ]
     }
   }
 }
