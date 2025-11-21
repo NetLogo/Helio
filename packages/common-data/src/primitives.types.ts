@@ -51,5 +51,31 @@ type SomeNamedExtension =
 
 type Source = "netlogo" | "netlogo-3d" | SomeNamedExtension | string; // extension name
 
-export { PrimitiveSchema };
+class Primitives {
+  static instance: Primitives | null = null;
+  public readonly primsKeyMap: Record<string, Primitive>;
+  public readonly primsNameMap: Record<string, Primitive>;
+
+  static getInstance(prims: Array<Primitive>) {
+    if (!Primitives.instance) {
+      Primitives.instance = new Primitives(prims);
+    }
+    return Primitives.instance;
+  }
+
+  public constructor(public readonly prims: Array<Primitive>) {
+    this.primsKeyMap = Object.fromEntries(prims.map((prim) => [prim.key, prim]));
+    this.primsNameMap = Object.fromEntries(prims.map((prim) => [prim.name, prim]));
+  }
+
+  public getPrimByName(name: string): Primitive | undefined {
+    return this.primsNameMap[name];
+  }
+
+  public getPrimByKey(key: string): Primitive | undefined {
+    return this.primsNameMap[key];
+  }
+}
+
+export { Primitives, PrimitiveSchema };
 export type { Primitive, Source };

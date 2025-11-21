@@ -1,3 +1,3 @@
-import { PrimitiveSchema } from "./primitives.types";
+import { Primitives, PrimitiveSchema } from "./primitives.types";
 
-export { PrimitiveSchema };
+export { Primitives, PrimitiveSchema };
