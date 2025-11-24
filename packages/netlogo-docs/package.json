@@ -4,13 +4,13 @@
   "private": true,
   "exports": {
     ".": {
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
     },
     "./*": {
+      "types": "./src/*/index.ts",
       "import": "./dist/esm/*/index.js",
-      "require": "./dist/cjs/*/index.js",
-      "types": "./dist/types/*/index.d.ts"
+      "require": "./dist/cjs/*/index.js"
     }
   },
   "license": "UNLICENSED",

@@ -4,12 +4,12 @@ import { PageMetadataSchemaFields } from "@repo/template/schemas";
 
 import { Schemas } from "./schemas";
 
-const MinimalDocumentMetadataSchema = z
-  .object({
+const MinimalDocumentMetadataSchema = PageMetadataSchemaFields.and(
+  z.object({
     title: z.string().default("Documentation"),
     description: z.string().default("Documentation page"),
-  })
-  .and(PageMetadataSchemaFields);
+  }),
+);
 
 const DocumentMetadataSchema = MinimalDocumentMetadataSchema.and(z.record(z.string(), z.unknown()));
 
