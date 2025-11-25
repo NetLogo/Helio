@@ -1,5 +1,5 @@
 created_at: 2025-08-20T12:58:52.564354
-updated_at: 2025-08-20T12:58:52.564370
+updated_at: 2025-11-25T12:58:52.564370
 entries:
   - id: mathconstants
     entry_categories:
@@ -4509,82 +4509,6 @@ entries:
         sidewalks-own [pedestrians]
         streets-own [cars bikes]
         ```
-
-
-        ### list1.0
-
-        #### list *value1* *value2*(list *value1* ...)
-
-        Reports a list containing the given items. The items can be of
-         any type, produced by any kind of reporter.
-
-        ```
-        show list (random 10) (random 10)
-        => [4 9]  ;; or similar list
-        show (list 5)
-        => [5]
-        show (list (random 10) 1 2 3 (random 10))
-        => [4 1 2 3 9]  ;; or similar list
-        ```
-
-
-        ### ln1.0
-
-        #### ln *number*
-
-        Reports the natural logarithm of *number*, that is, the
-         logarithm to the base e (2.71828...).
-
-        See also [[e|mathematical-constants]], [[log|log]].
-
-        ### log1.0
-
-        #### log *number* *base*
-
-        Reports the logarithm of *number* in base *base*.
-
-        ```
-        show log 64 2
-        => 6
-        ```
-
-        See also [[ln|ln]].
-
-        ### loop1.0
-
-        #### loop [ *commands* ]
-
-        Repeats the commands forever, or until the enclosing procedure
-         exits through use of the [[stop|stop]] or [[report|report]] commands.
-
-        ```
-        to move-to-world-edge  ;; turtle procedure
-          loop [
-            if not can-move? 1 [ stop ]
-            fd 1
-          ]
-        end
-        ```
-
-        In this example, `stop` exits not just the loop,
-         but the entire procedure.
-
-        Note: in many circumstances, it is more appropriate to use
-         a forever button to repeat something indefinitely. See [Buttons](/programming#buttons) in the
-         Programming Guide.
-
-        ### lput1.0
-
-        #### lput *value list*
-
-        Adds *value* to the end of a list and reports the new list.
-
-        ```
-        ;; suppose mylist is [2 7 10 "Bob"]
-        set mylist lput 42 mylist
-        ;; mylist now is [2 7 10 "Bob" 42]
-        ```
-
       examples:
         - code: links-own [*var1* ...]
         - code: <link-breeds>-own [*var1* ...]
