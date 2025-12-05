@@ -139,6 +139,7 @@ const navbarLinks = ref<NavbarLink[]>([
       { title: 'Controlling', href: '/controlling' },
       { title: 'Mathematica Link', href: '/mathematica' },
       { title: 'NetLogo 3D', href: '/3d' },
+      { title: 'NetLogoLab', href: '/lab' },
       { title: 'Cluster Computing (HPC)', href: '/hpc' },
     ],
   },

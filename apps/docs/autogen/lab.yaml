@@ -1,0 +1,13 @@
+tags:
+  - Add-ons
+  - Functionality
+icon: i-lucide-flask-conical
+---
+output: True
+title: NetLogoLab
+description:
+  NetLogoLab is a collection of extensions that allows you to control physical devices with NetLogo.
+keywords:
+  - Input/Output
+  - Physical
+  - Lab
