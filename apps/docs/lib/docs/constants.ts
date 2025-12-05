@@ -22,7 +22,7 @@ let dictionary3D: DictionaryType;
 if (import.meta.client !== true) {
   primitiveIndexTemplate = fs.readFileSync('autogen/primIndex.md', 'utf-8');
   dictionaryData = fs.readFileSync('autogen/data/dictionary.yaml', 'utf-8');
-  dictionary3DData = fs.readFileSync('autogen/data/dictionary-3d.yaml', 'utf-8');
+  dictionary3DData = fs.readFileSync('autogen/data/dictionary-3D.yaml', 'utf-8');
 
   dictionary = yaml.parse(dictionaryData) as unknown as DictionaryType;
   dictionary3D = yaml.parse(dictionary3DData) as unknown as DictionaryType;
