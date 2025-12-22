@@ -1,6 +1,6 @@
 import type { Element, RootContent as HastRootContent, Root } from "hast";
 import type { RootContent as MDRootContent } from "mdast";
-import { TestFunction } from "unist-util-is";
+import type { TestFunction } from "unist-util-is";
 
 export type Content = HastRootContent | MDRootContent;
 
@@ -27,16 +27,16 @@ export const hasNoChild = (test: TestFunction, { recursive = false } = {}): Test
     if (!isNodeElement(node)) return true;
     if (node.children.length === 0) return true;
     if (!recursive) {
-      return !node.children.some((child) => test(child));
+      return !node.children.some((child) => test(child) ?? false);
     }
-    const next = (children: Content[]): boolean => {
+    const _next = (children: Array<Content>): boolean => {
       for (const child of children) {
-        if (test(child)) return true;
-        if (isNodeElement(child) && next(child.children)) return true;
+        if (test(child) ?? false) return true;
+        if (isNodeElement(child) && _next(child.children)) return true;
       }
       return false;
     };
-    return !next(node.children);
+    return !_next(node.children);
   };
 };
 

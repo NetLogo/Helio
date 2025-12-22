@@ -86,7 +86,7 @@ type WikiLinkOptions = {
 /**
  * Default greedy accessor
  */
-export const greedyAccessor = (node: Content): string => {
+const greedyAccessor = (node: Content): string => {
   // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (node.type) {
     case "text":
@@ -203,5 +203,5 @@ const getDefaultWikiLinkOptions = (
   };
 };
 
-export { getDefaultWikiLinkOptions };
+export { getDefaultWikiLinkOptions, greedyAccessor };
 export type { LinkHtmlOptions, LinkType, WikiLinkOptions };

@@ -1,4 +1,3 @@
-import type { Options as RehypeAutolinkHeadingsOptions } from "rehype-autolink-headings";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeRaw from "rehype-raw";
 import type { Options as RehypeSlugOptions } from "rehype-slug";
@@ -13,14 +12,15 @@ import { remarkRehypeQuestion } from "./plugins/question";
 import rehypeTableWrapper from "./plugins/table-wrapper";
 import { rehypeTocWrapper } from "./plugins/toc";
 import { remarkWikiLink } from "./plugins/wikilink";
-import type { WikiLinkOptions } from "./plugins/wikilink.options";
 
-const getDefaultRehypePluginsObject = () => {
+type MarkdownPlugin = Record<string, { instance?: unknown; options?: unknown; src?: string }>;
+
+const getDefaultRehypePluginsObject = (): MarkdownPlugin => {
   return {
     "rehype-slug": { instance: rehypeSlug, options: {} as RehypeSlugOptions, src: "rehype-slug" },
     "rehype-autolink-headings": {
       instance: rehypeAutolinkHeadings,
-      options: autoLinkHeadingsConfig as RehypeAutolinkHeadingsOptions,
+      options: autoLinkHeadingsConfig,
       src: "rehype-autolink-headings",
     },
     "rehype-raw": { instance: rehypeRaw, options: {}, src: "rehype-raw" },
@@ -37,11 +37,11 @@ const getDefaultRehypePluginsObject = () => {
   };
 };
 
-const getDefaultRemarkPluginsObject = () => {
+const getDefaultRemarkPluginsObject = (): MarkdownPlugin => {
   return {
     "@repo/markdown/plugins/wikilink": {
       instance: remarkWikiLink,
-      options: wikiLinkConfig as WikiLinkOptions,
+      options: wikiLinkConfig,
     },
     "remark-gfm": {},
     "remark-smartypants": {

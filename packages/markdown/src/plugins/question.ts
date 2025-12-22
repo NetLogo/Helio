@@ -15,7 +15,7 @@ export const remarkRehypeQuestion: Plugin = () => {
       else if (node.children.length === 0) return;
 
       const firstChild = node.children[0];
-      if (!firstChild || firstChild.type !== "text") return;
+      if (firstChild?.type !== "text") return;
 
       const textNode = node.children[0] as Literal;
       const match = /^\s?\| (.*)?/.exec(textNode.value as string);

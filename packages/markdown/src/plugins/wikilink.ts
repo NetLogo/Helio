@@ -10,7 +10,7 @@ import {
   getDefaultWikiLinkOptions,
 } from "./wikilink.options";
 
-export const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (options = undefined) => {
+const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (options = undefined) => {
   const opts = getDefaultWikiLinkOptions(options);
 
   return (tree) => {
@@ -245,5 +245,5 @@ class WikiLink {
 }
 
 export default remarkWikiLink;
-export { remarkWikiLink as plugin };
+export { remarkWikiLink as plugin, remarkWikiLink };
 export type { LinkType, WikiLinkOptions as Options };
