@@ -1,8 +1,7 @@
-import { addPlugin, createResolver, defineNuxtModule } from "@nuxt/kit";
+import { createResolver, defineNuxtModule } from "@nuxt/kit";
 import type { ModuleMeta, Nuxt } from "@nuxt/schema";
 import Path from "crosspath";
 import * as Fs from "fs";
-import { setupSocketServer } from "./build/sockets/setup";
 import { makeAssetsManager } from "./runtime/assets/public";
 import { makeDynamicSourceManager } from "./runtime/assets/source";
 import createContentParser from "./runtime/content/plugin";
@@ -123,39 +122,12 @@ export default defineNuxtModule<ModuleOptions>({
      * @param absTrg  The absolute path to the copied asset
      */
     function onAssetChange(event: "update" | "remove", absTrg: string): void {
-      let src: string = "";
-      let width: number | undefined = undefined;
-      let height: number | undefined = undefined;
-
-      // update
       if (event === "update") {
-        const newAsset = assets.setAsset(absTrg);
-
-        width = newAsset.width;
-        height = newAsset.height;
-
-        src = newAsset.srcAttr;
+        assets.setAsset(absTrg);
       } else {
-        const asset = assets.removeAsset(absTrg);
-        if (asset) {
-          src = asset.srcAttr;
-        }
-      }
-
-      if (src && socket) {
-        socket.send({ event, src, width, height });
+        assets.removeAsset(absTrg);
       }
     }
-
-    /**
-     * Socket to communicate changes to client
-     */
-    addPlugin(resolve("./runtime/sockets/plugin"));
-    const socket =
-      // @ts-expect-error -- @nuxt/content is available in peer
-      isDev && nuxt.options.content?.watch?.enabled !== false
-        ? await setupSocketServer("content-assets")
-        : null;
 
     // ---------------------------------------------------------------------------------------------------------------------
     // nuxt hooks

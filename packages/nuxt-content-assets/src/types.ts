@@ -49,21 +49,3 @@ export type AssetConfig = {
   width?: number;
   height?: number;
 };
-
-export type AssetMessage = {
-  event: "update" | "remove" | "refresh";
-  src?: string;
-  width?: string;
-  height?: string;
-};
-
-// ---------------------------------------------------------------------------------------------------------------------
-// sockets
-// ---------------------------------------------------------------------------------------------------------------------
-
-export type Callback = (data: unknown) => void;
-
-export type SocketInstance = {
-  send: (data: unknown) => SocketInstance;
-  addHandler: (handler: Callback) => SocketInstance;
-};
