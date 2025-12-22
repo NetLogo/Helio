@@ -176,7 +176,7 @@ class PageParser {
 
           await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
-          let outputContent: string;
+          let outputContent: string = "";
           if (typeof fileContent === "string") {
             outputContent = await this.generateOutputContent(fileContent, buildVars);
           } else {
@@ -275,8 +275,7 @@ class PageParser {
     const currentConfig = configs[currentIndex] ?? {};
     const baseConfig = { ...defaultConfiguration, ...currentConfig };
 
-    const isUndefinedOrNull =
-      baseConfig.inheritFrom === undefined || baseConfig.inheritFrom === null;
+    const isUndefinedOrNull = baseConfig.inheritFrom === undefined;
     const isEmptyArray =
       Array.isArray(baseConfig.inheritFrom) && baseConfig.inheritFrom.length === 0;
 
@@ -374,7 +373,7 @@ class PageParser {
     return outputPath;
   }
 
-  private _writeFile(...args: Parameters<typeof fs.writeFile>) {
+  private async _writeFile(...args: Parameters<typeof fs.writeFile>): Promise<void> {
     if (this.projectConfig.dedupeIdenticalDiskWrites === true) return fsWriteFileDedupe(...args);
     return fs.writeFile(...args);
   }

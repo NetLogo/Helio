@@ -91,7 +91,7 @@ const needProjectConfig = {
     "@typescript-eslint/no-unsafe-return": "error",
     "@typescript-eslint/no-unsafe-unary-minus": "error",
     "@typescript-eslint/no-unused-expressions": ["error", {}],
-    "@typescript-eslint/no-unused-vars": ["error", { varsIgnorePattern: "^_\d?$" }],
+    "@typescript-eslint/no-unused-vars": ["error", { varsIgnorePattern: "^_\\d?$" }],
     "@typescript-eslint/no-useless-empty-export": "error",
     "@typescript-eslint/no-wrapper-object-types": "error",
     "@typescript-eslint/parameter-properties": "off",

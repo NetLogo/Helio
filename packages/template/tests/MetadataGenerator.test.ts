@@ -3,6 +3,7 @@ import fs from "fs/promises";
 
 import { MetadataGenerator } from "../src/MetadataGenerator.js";
 import type { PageConfig, PageMetadata, ProjectConfig } from "../src/schemas.js";
+import { ProjectConfigSchema } from "../src/schemas.js";
 
 // Mock fs
 jest.mock("fs/promises");
@@ -19,7 +20,7 @@ describe("MetadataGenerator", () => {
     mockFs.mkdir.mockResolvedValue(undefined);
     mockFs.writeFile.mockResolvedValue(undefined);
 
-    baseProjectConfig = {
+    baseProjectConfig = ProjectConfigSchema.parse({
       projectRoot: ".",
       scanRoot: "./src",
       outputRoot: "./dist",
@@ -36,7 +37,7 @@ describe("MetadataGenerator", () => {
       metadata: {
         enabled: false,
       },
-    };
+    });
   });
 
   const testPaths = { projectRoot: ".", outputRoot: "./dist" };
@@ -55,7 +56,9 @@ describe("MetadataGenerator", () => {
 
     it("should return false when metadata config is undefined", () => {
       const { metadata, ...configWithoutMetadata } = baseProjectConfig;
-      generator = new MetadataGenerator(configWithoutMetadata as ProjectConfig);
+      generator = new MetadataGenerator(
+        ProjectConfigSchema.parse(configWithoutMetadata) as ProjectConfig,
+      );
       expect(generator.isEnabled()).toBe(false);
     });
   });

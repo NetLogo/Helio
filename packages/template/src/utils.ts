@@ -55,11 +55,11 @@ const getFileExtension = (value: string): string => {
 /**
  * Dedupe identical file writes.
  */
-const fsWriteFileDedupe = async (...args: Parameters<typeof fs.writeFile>) => {
+const fsWriteFileDedupe = async (...args: Parameters<typeof fs.writeFile>): Promise<void> => {
   const [file, data, options] = args;
   try {
     const existingData = await fs.readFile(file, options);
-    if (existingData.toString() === data.toString()) {
+    if (JSON.stringify({ data: existingData }) === JSON.stringify({ data })) {
       return;
     }
     await fs.writeFile(file, data, options);

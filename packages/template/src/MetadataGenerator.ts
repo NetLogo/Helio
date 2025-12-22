@@ -4,17 +4,19 @@ import yaml from "yaml";
 
 import type { PageConfig, PageMetadata, ProjectConfig } from "./schemas.js";
 
-/**
+/**https://typescript-eslint.io/rules/class-literal-property-style
  * Handles metadata generation for pages based on project configuration.
  * Supports multiple output formats: separate file, prepended YAML, or prepended JSON.
  */
 export class MetadataGenerator {
-  public static readonly METADATA_SUFFIX = ".metadata";
+  public static get METADATA_SUFFIX(): string {
+    return ".metadata";
+  }
 
-  constructor(private readonly projectConfig: ProjectConfig) {}
+  public constructor(private readonly projectConfig: ProjectConfig) {}
 
   public isEnabled(): boolean {
-    return this.projectConfig.metadata?.enabled ?? false;
+    return this.projectConfig.metadata.enabled;
   }
 
   /**
@@ -35,7 +37,7 @@ export class MetadataGenerator {
   public prependMetadata(content: string, metadata: Record<string, unknown>): string {
     const config = this.projectConfig.metadata;
 
-    if (!config || config.kind !== "prepend") {
+    if (config.kind !== "prepend") {
       return content;
     }
 
@@ -46,7 +48,7 @@ export class MetadataGenerator {
     const separator = config.prepend?.separator ?? "---";
     const format = config.prepend?.format ?? "yaml";
 
-    let metadataString: string;
+    let metadataString: string = "";
     if (format === "json") {
       metadataString = JSON.stringify(metadata, null, 2);
     } else {
@@ -69,7 +71,7 @@ export class MetadataGenerator {
     metadataOutputPath: string,
     pageConfig: PageConfig,
   ): PageMetadata {
-    const { metadata: _, locale, ...projectConfig } = this.projectConfig;
+    const { metadata: _, locale: _1, ...projectConfig } = this.projectConfig;
 
     let metadata: PageMetadata = {
       source,
@@ -78,7 +80,7 @@ export class MetadataGenerator {
       ...pageConfig,
     };
 
-    const transform = this.projectConfig.metadata?.transform;
+    const transform = this.projectConfig.metadata.transform;
     if (transform) {
       metadata = transform(metadata) as PageMetadata;
     }
@@ -93,7 +95,7 @@ export class MetadataGenerator {
    */
   public generateMetadataOutputPath(outputPath: string): string {
     const ext = path.extname(outputPath);
-    const format = this.projectConfig.metadata?.prepend?.format ?? "json";
+    const format = this.projectConfig.metadata.prepend?.format ?? "json";
     return outputPath.replace(
       new RegExp(`${ext.replace(".", "\\.")}$`),
       `${MetadataGenerator.METADATA_SUFFIX}.${format}`,
@@ -120,7 +122,7 @@ export class MetadataGenerator {
    */
   public shouldWriteMetadataFile(): boolean {
     const config = this.projectConfig.metadata;
-    return config?.enabled === true && (config.kind === "file" || !config.kind);
+    return config.enabled && (config.kind === "file" || !config.kind);
   }
 
   /**
@@ -128,6 +130,6 @@ export class MetadataGenerator {
    */
   public shouldPrependMetadata(): boolean {
     const config = this.projectConfig.metadata;
-    return config?.enabled === true && config.kind === "prepend";
+    return config.enabled && config.kind === "prepend";
   }
 }
