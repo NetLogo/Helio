@@ -14,7 +14,10 @@ export function appendAssetsRootToMetadata(
   return metadata;
 }
 
-export function addNuxtContentAssetsRoot(file: { body: string; assetsRoot?: string }): void {
+export function addNuxtContentAssetsRoot(
+  file: { body: string; assetsRoot?: string },
+  fallbackRoute?: string,
+): void {
   const keyword = "assetsRoot: ";
   const index = file.body.indexOf(keyword);
   if (index !== -1) {
@@ -23,7 +26,10 @@ export function addNuxtContentAssetsRoot(file: { body: string; assetsRoot?: stri
       const assetsRoot = line.split(": ")[1];
       file.assetsRoot = assetsRoot;
     }
+  } else if (fallbackRoute) {
+    file.assetsRoot = fallbackRoute;
+    console.info(`No assetsRoot found. Using fallback route: ${fallbackRoute}`);
   } else {
-    console.log(`No assetsRoot found in ${file.body}`);
+    console.log(`No assetsRoot found.`);
   }
 }

@@ -38,9 +38,11 @@ function loadYAMLFile(filePath) {
  * @param {import("./primitives.types.js").Source} source
  * @param {(entry: import("@repo/netlogo-docs/dictionary").DictionaryEntry,
  *          source: import("./primitives.types.js").Source) => string} urlFunction
+ * @param {string} urlHome -- URL to the home page for this source's documentation
+ * @param {string} sourceIcon -- Icon associated with this source
  * @returns {Array<import("./primitives.types.js").Primitive>} Transformed primitive entries.
  */
-function transformDocsDictionary({ entries }, source, urlFunction) {
+function transformDocsDictionary({ entries }, source, urlFunction, urlHome, sourceIcon) {
   return entries
     .map((entry) => {
       if (isConstantEntry(entry)) {
@@ -51,7 +53,13 @@ function transformDocsDictionary({ entries }, source, urlFunction) {
           source: source,
           url: urlFunction(entry, source),
           isFromExtension: false,
-          metadata: entry,
+          metadata: {
+            ...entry.data,
+            isConstant: true,
+            constantValue: constant.value,
+          },
+          urlHome,
+          sourceIcon,
         }));
       } else {
         return entry.data.syntax.map((syntax) => ({
@@ -65,6 +73,8 @@ function transformDocsDictionary({ entries }, source, urlFunction) {
           isFromExtension: false,
           isConstant: false,
           metadata: entry,
+          urlHome,
+          sourceIcon,
         }));
       }
     })
@@ -76,7 +86,7 @@ function transformDocsDictionary({ entries }, source, urlFunction) {
  * @param {import("@repo/netlogo-docs/extension-docs").ExtensionConfig} config
  * @returns {Array<import("./primitives.types.js").Primitive>}
  */
-function transformExtensionConfiguration({ extensionName, primitives }) {
+function transformExtensionConfiguration({ icon, extensionName, primitives }) {
   return primitives.map((primitive) => ({
     id: `${extensionName}-${primitive.name}`,
     key: `${extensionName}:${primitive.name}`,
@@ -85,7 +95,10 @@ function transformExtensionConfiguration({ extensionName, primitives }) {
     source: extensionName,
     isFromExtension: true,
     url: `https://docs.netlogo.org/${extensionName}/${toSlug(primitive.name)}.html`,
+    description: primitive.description || "",
     metadata: { ...primitive },
+    urlHome: `https://docs.netlogo.org/${extensionName}.html`,
+    sourceIcon: icon || "i-lucide-puzzle",
   }));
 }
 
@@ -104,11 +117,15 @@ function loadPrimitives() {
         netlogoDesktopDictionary,
         "netlogo",
         (entry) => `https://docs.netlogo.org/dictionary.html#${toSlug(entry.id)}`,
+        "https://docs.netlogo.org/dictionary.html",
+        "netlogo-netlogo-desktop",
       ),
       transformDocsDictionary(
         netlogo3DDictionary,
         "netlogo3D",
         (entry) => `https://docs.netlogo.org/3d.html#${toSlug(entry.id)}`,
+        "https://docs.netlogo.org/3d.html",
+        "netlogo-netlogo-3d",
       ),
     ].flat(),
   );

@@ -1,0 +1,78 @@
+title: GIS Extension for NetLogo
+fullName: NetLogo GIS Extension - Geographic Information Systems Integration
+shortName: GIS Extension
+description: |
+  The GIS Extension allows NetLogo models to load and display GIS data, including vector data (points, lines, polygons) and raster data. Integrate real-world geographic data into your agent-based models.
+longDescription: |
+  **The GIS Extension** provides powerful tools for integrating Geographic Information Systems (GIS) data into NetLogo models. This extension allows you to work with real-world geographic data and create spatially-explicit agent-based models.
+
+  **Key Features:**
+  - Load and display vector data (shapefiles) including points, lines, and polygons
+  - Import raster data (ASCII Grid and other formats)
+  - Project and transform coordinate systems
+  - Query spatial relationships between agents and GIS features
+  - Extract data from raster layers to patches
+  - Visualize real-world geographic contexts for your models
+
+  **Common Use Cases:**
+  - Urban planning and traffic simulation with real street networks
+  - Epidemiological models with actual city layouts
+  - Environmental modeling with real terrain and land use data
+  - Wildlife movement with habitat data
+  - Climate and weather pattern visualization
+
+  The extension is included with NetLogo and provides comprehensive documentation with example models showing how to integrate GIS data into your simulations.
+
+  **Technical Details:**
+  - Supports ESRI Shapefiles (.shp)
+  - Reads ASCII Grid raster format
+  - Built-in coordinate system transformations
+  - Efficient spatial querying for large datasets
+url: https://ccl.northwestern.edu/netlogo/docs/gis.html
+thumbnail:
+  url: images/resources/extensions/gis-extension-thumb.png
+  alt: Thumbnail image for GIS Extension
+type: software resource
+softwareResourceKind: extension
+pricing: free
+endorsement: official
+level:
+  - intermediate
+  - advanced
+targetAudience:
+  - researchers
+  - educators
+  - students
+yearPublished: 2007
+authors:
+  - name: Eric Russell
+    url: https://ccl.northwestern.edu
+publisher: Center for Connected Learning, Northwestern University
+containsModels: true
+citation: |
+  Russell, E. (2007). NetLogo GIS Extension. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+languages:
+  - en
+formats:
+  - netlogo-extension
+netLogoVersion: 5.0+
+compatibleWith:
+  - NetLogo 6.0+
+  - NetLogo 6.1+
+  - NetLogo 6.2+
+  - NetLogo 6.3+
+  - NetLogo 6.4+
+screenshots:
+  - url: images/resources/extensions/gis-example-1.png
+    alt: Example screenshot showing GIS data in NetLogo
+  - url: images/resources/extensions/gis-example-2.png
+    alt: Another example screenshot of GIS Extension features
+tags:
+  - GIS
+  - geographic data
+  - spatial analysis
+  - mapping
+  - geospatial
+  - vector data
+  - raster data
+  - shapefiles

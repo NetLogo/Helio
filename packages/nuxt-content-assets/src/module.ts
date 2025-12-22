@@ -180,6 +180,7 @@ export default defineNuxtModule<ModuleOptions>({
     });
 
     nuxt.hook("content:file:afterParse", async (ctx) => {
+      console.info("Processing file:", ctx.file.path);
       await parser(ctx);
     });
 

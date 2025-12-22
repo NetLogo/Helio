@@ -58,6 +58,7 @@
     "motion-v": "1.7.4",
     "motion-dom": "12.23.12",
     "eslint": "9.31.0",
-    "regjsparser": "0.13.0"
+    "regjsparser": "^0.12.0",
+    "vite": "^7.1.5"
   }
 }

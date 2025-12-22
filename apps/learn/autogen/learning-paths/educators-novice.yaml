@@ -1,0 +1,44 @@
+title: Educators Learning Path (Novice)
+subtitle: A Beginner's Guide to Using NetLogo in the Classroom
+icon: i-lucide-school
+family: educators
+level: novice
+thumbnail: /images/default-thumbnail.png
+description: |
+  For educators who are new to NetLogo or want to introduce interactive lessons and simulations to their classrooms,
+  this learning path provides a structured approach to get started with NetLogo and its educational resources.
+
+  In this learning path, you will learn:
+    - How to download and install NetLogo on your computer.
+    - How to use NetLogo Web to access simulations online without installation.
+    - Basic navigation of the NetLogo interface, including the Command Center, Interface tab, and
+      Model Library.
+    - How to find models relevant to your teaching needs in the Model Library.
+    - An introduction to the NetLogo programming language and how to create simple models.
+    - How to use NetLogo's built-in features to run and analyze simulations.
+    - Tips and best practices for integrating NetLogo simulations into your curriculum.
+    - Step-by-step tutorials on creating a model from a textbook example.
+    - Access to additional resources and communities for ongoing support and learning.
+
+sections:
+  - title: Getting Started with NetLogo
+    description: Learn how to download, install, and navigate NetLogo.
+    articles:
+      - /articles/getting-started-with-netlogo
+      - /articles/first-11-netlogo-primitives-to-learn
+    icon: i-lucide-download
+  - title: Exploring the Model Library
+    description: Discover how to find and use models from the NetLogo Model Library.
+    articles:
+      - /video-tutorials/exploring-the-modeling-library
+    icon: i-lucide-book-open
+  - title: Your First Model
+    description: Create your first NetLogo model with step-by-step guidance.
+    articles:
+      - /getting-started/tutorial-0
+      - /getting-started/tutorial-1
+      - /getting-started/tutorial-2
+      - /getting-started/tutorial-3
+    icon: i-lucide-rocket
+  - title: Integrating NetLogo into Your Curriculum
+    description: Tips and best practices for using NetLogo in the classroom.

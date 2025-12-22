@@ -1,0 +1,19 @@
+tags:
+  - Article
+  - Getting Started
+  - NetLogo
+  - NetLogo Web
+  - Turtle Universe
+  - Primitives
+  - Beginner
+icon: i-lucide-book-open
+thumbnail: /images/default-thumbnail.png
+---
+output: True
+title: "The First 11 NetLogo Primitives to Learn"
+description:
+  NetLogo has numerous primitives. If you are an absolute beginner to NetLogo, it may be overwhelming to look at the beginner's dictionary page and figure out where to begin. This article compiles a list to help you get started with the very first 11 primitives you should learn to begin creating your own agent-based models in NetLogo.
+keywords:
+  - Article
+  - Getting Started
+  - NetLogo

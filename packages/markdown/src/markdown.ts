@@ -1,11 +1,8 @@
 import type { Options as RehypeAutolinkHeadingsOptions } from "rehype-autolink-headings";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import type { Options as RehypeRawOptions } from "rehype-raw";
 import rehypeRaw from "rehype-raw";
 import type { Options as RehypeSlugOptions } from "rehype-slug";
 import rehypeSlug from "rehype-slug";
-import type { Options as RemarkGfmOptions } from "remark-gfm";
-import remarkGfm from "remark-gfm";
 import remarkSmartypants from "remark-smartypants";
 import type { Options as RemarkTocOptions } from "remark-toc";
 import remarkToc from "remark-toc";
@@ -20,26 +17,58 @@ import type { WikiLinkOptions } from "./plugins/wikilink.options";
 
 const getDefaultRehypePluginsObject = () => {
   return {
-    rehypeSlug: { instance: rehypeSlug, options: {} as RehypeSlugOptions },
-    rehypeAutolinkHeadings: {
+    "rehype-slug": { instance: rehypeSlug, options: {} as RehypeSlugOptions, src: "rehype-slug" },
+    "rehype-autolink-headings": {
       instance: rehypeAutolinkHeadings,
       options: autoLinkHeadingsConfig as RehypeAutolinkHeadingsOptions,
+      src: "rehype-autolink-headings",
     },
-    rehypeRaw: { instance: rehypeRaw, options: {} as RehypeRawOptions },
-    rehypeTocWrapper: { instance: rehypeTocWrapper, options: {} },
-    rehypeTableWrapper: { instance: rehypeTableWrapper, options: {} },
+    "rehype-raw": { instance: rehypeRaw, options: {}, src: "rehype-raw" },
+    "@repo/markdown/plugins/toc": {
+      instance: rehypeTocWrapper,
+      options: {},
+      src: "@repo/markdown/plugins/toc",
+    },
+    "@repo/markdown/plugins/table-wrapper": {
+      instance: rehypeTableWrapper,
+      options: {},
+      src: "@repo/markdown/plugins/table-wrapper",
+    },
   };
 };
 
 const getDefaultRemarkPluginsObject = () => {
   return {
-    remarkWikiLink: { instance: remarkWikiLink, options: wikiLinkConfig as WikiLinkOptions },
-    remarkGfm: { instance: remarkGfm, options: {} as RemarkGfmOptions },
-    remarkSmartypants: { instance: remarkSmartypants as unknown, options: {} as unknown },
-    remarkRehypeQuestion: { instance: remarkRehypeQuestion, options: {} },
-    remarkHighlightNL: { instance: remarkHighlightNL, options: {} },
-    remarkToc: { instance: remarkToc, options: tocConfig as RemarkTocOptions },
-    remarkTocInline: { instance: remarkTocInline, options: { normalizeQuotes: true } },
+    "@repo/markdown/plugins/wikilink": {
+      instance: remarkWikiLink,
+      options: wikiLinkConfig as WikiLinkOptions,
+    },
+    "remark-gfm": {},
+    "remark-smartypants": {
+      instance: remarkSmartypants as unknown,
+      options: {},
+      src: "remark-smartypants",
+    },
+    "@repo/markdown/plugins/question": {
+      instance: remarkRehypeQuestion,
+      options: {},
+      src: "@repo/markdown/plugins/question",
+    },
+    "@repo/markdown/plugins/highlight-nl": {
+      instance: remarkHighlightNL,
+      options: {},
+      src: "@repo/markdown/plugins/highlight-nl",
+    },
+    "remark-toc": {
+      instance: remarkToc,
+      options: tocConfig as RemarkTocOptions,
+      src: "remark-toc",
+    },
+    "remark-toc-inline": {
+      instance: remarkTocInline,
+      options: { normalizeQuotes: true },
+      src: "remark-toc-inline",
+    },
   };
 };
 

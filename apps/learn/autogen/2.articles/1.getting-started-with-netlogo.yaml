@@ -1,0 +1,17 @@
+tags:
+  - Article
+  - Getting Started
+  - NetLogo
+  - NetLogo Web
+  - Turtle Universe
+icon: i-lucide-book-open
+thumbnail: images/articles/getting-started-with-netlogo/download-netlogo.png
+---
+output: True
+title: "Getting Started with NetLogo"
+description:
+  NetLogo is an open-source multi-platform agent-based modeling environment that is available on all major desktop operating systems (MacOS, Linux, Windows). Read this article to get started with NetLogo and learn how to create and run your first model.
+keywords:
+  - Article
+  - Getting Started
+  - NetLogo

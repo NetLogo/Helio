@@ -24,6 +24,15 @@ Handlebars will scan any file added to `autogen/` with the `.md` extension. You 
 ### Format expected by `@nuxt/content`
 The format expected by `@nuxt/content` is markdown files with frontmatter metadata. The frontmatter is written in YAML format and is delimited by `---` at the start and end of the metadata block. The metadata schema is defined in `lib/docs/schema.ts` and passed to `@nuxt/content` via `content.config.ts`. This schema is strictly enforced during content generation.
 
+### Notes on Content Assets
+Any images or other assets referenced in the documentation can exist in one of two places:
+1. Under `autogen/`: These assets will be copied to `public/_content` during the build step. You do not need to explicitly reference `_content` in your markdown. For example, an image at `autogen/images/example.png` can be referenced in markdown as `![alt text](images/example.png)`.
+  - Do NOT include a leading slash when referencing these assets; use `images/example.png` instead of `/images/example.png`. Leading slashes are reserved for `public/` assets rather than `public/_content/` assets.
+  - Further, if you are using the WikiLink syntax `![[...]]` you do not need to specify the `images/` prefix; just use `![[example.png]]`.
+2. Under `public/`: These assets will be served as-is. You must use a leading slash when referencing these assets. For example, an image at `public/images/example.png` must be referenced in markdown as `![alt text](/images/example.png)`. You cannot use the WikiLink syntax for these assets.
+
+Any DOM element with `src` or `href` attributes pointing to relative paths will be processed internally to resolve to the correct location based on the above rules. Similarly, any metadata field that is a URL (e.g. `meta.thumbnail`) will also be processed to resolve to the correct location. Note that CSS `url(...)` references are not processed and must be manually specified to point to the correct location.
+
 ## Scripts
 Most scripts are prefixed. Scripts `docs:*` are scripts intended for CI/CD while `nuxt:*` scripts are a mirror of `*` built-in scripts from `nuxt`.
 

@@ -1,0 +1,19 @@
+tags:
+  - Tutorial
+  - Video Tutorial
+  - NetLogo
+  - NetLogo Web
+  - Models
+icon: i-lucide-video
+thumbnail: images/thumbnails/disease.jpg
+---
+output: True
+title: "Creating a Disease Model in NetLogo"
+video: videos/disease.mp4
+description:
+  Create a simple infectious disease model from scratch in this step-by-step video tutorial. Learn how to set up agents, define interactions, and visualize the spread of disease using NetLogo.
+keywords:
+  - Disease Model
+  - Agent-Based Modeling
+  - Infectious Disease
+  - Simulation

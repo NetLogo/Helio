@@ -1,0 +1,19 @@
+tags:
+  - Tutorial
+  - Video Tutorial
+  - NetLogo
+  - NetLogo Web
+  - Models
+icon: i-lucide-video
+thumbnail: images/thumbnails/fire.jpg
+---
+output: True
+title: "Creating a Forest Fire Model in NetLogo"
+video: videos/fire.mp4
+description:
+  Create a simple fire model from scratch in this step-by-step video tutorial. Learn how to set up agents, define interactions, and visualize the spread of fire using NetLogo.
+keywords:
+  - Fire Model
+  - Agent-Based Modeling
+  - Fire Spread
+  - Simulation

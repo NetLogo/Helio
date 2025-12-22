@@ -10,7 +10,6 @@ const MinimalDocumentMetadataSchema = PageMetadataSchemaFields.and(
     description: z.string().default("Documentation page"),
   }),
 );
-
 const DocumentMetadataSchema = MinimalDocumentMetadataSchema.and(z.record(z.string(), z.unknown()));
 
 export { DocumentMetadataSchema, MinimalDocumentMetadataSchema, Schemas };

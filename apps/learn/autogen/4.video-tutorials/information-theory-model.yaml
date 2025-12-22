@@ -1,0 +1,20 @@
+tags:
+  - Tutorial
+  - Video Tutorial
+  - NetLogo
+  - NetLogo Web
+  - Models
+icon: i-lucide-video
+thumbnail: images/thumbnails/information-network.jpg
+---
+output: True
+title: "Creating an Information Theory Model in NetLogo"
+video: videos/information-network.mp4
+description:
+  Create a simple information theory model from scratch in this step-by-step video tutorial. Learn how to set up agents, define interactions, and visualize the spread of information using NetLogo.
+keywords:
+  - Information Theory Model
+  - Agent-Based Modeling
+  - Information Spread
+  - Information Theory
+  - Simulation

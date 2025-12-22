@@ -8,9 +8,9 @@
       "default": "./dist/index.js"
     },
     "./*": {
-      "types": "./src/*/index.ts",
       "import": "./dist/esm/*/index.js",
-      "require": "./dist/cjs/*/index.js"
+      "require": "./dist/cjs/*/index.js",
+      "types": "./src/*/index.ts"
     }
   },
   "license": "UNLICENSED",
@@ -31,6 +31,7 @@
     "@repo/utils": "*",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
     "eslint": "^9.31.0",
+    "glob": "^13.0.0",
     "jsdom": "^25.0.0",
     "tailwindcss": "^4.1.5",
     "typescript": "^5.4.0"

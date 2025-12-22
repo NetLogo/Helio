@@ -1,18 +1,18 @@
 class CachedLocalStorage<T> {
-  constructor(
-    private key: string,
-    private lifetimeMs: number | null = null,
+  public constructor(
+    private readonly key: string,
+    private readonly lifetimeMs: number | null = null,
   ) {}
 
-  get(): T | null {
+  public get(): T | null {
     const item: CachedLocalStorageItem<T> | null = JSON.parse(
-      localStorage.getItem(this.key) || "null",
-    );
+      localStorage.getItem(this.key) ?? "null",
+    ) as CachedLocalStorageItem<T> | null;
     if (item && this.checkValidity(item)) return item.data;
     return null;
   }
 
-  set(data: T): void {
+  public set(data: T): void {
     const item: CachedLocalStorageItem<T> = {
       data,
       timestamp: Date.now(),
@@ -20,11 +20,11 @@ class CachedLocalStorage<T> {
     localStorage.setItem(this.key, JSON.stringify(item));
   }
 
-  delete(): void {
+  public delete(): void {
     localStorage.removeItem(this.key);
   }
 
-  checkValidity(item: CachedLocalStorageItem<T>): boolean {
+  public checkValidity(item: CachedLocalStorageItem<T>): boolean {
     if (this.lifetimeMs === null) return true;
     const isExpired = Date.now() - item.timestamp > this.lifetimeMs;
     return !isExpired;
@@ -34,7 +34,9 @@ class CachedLocalStorage<T> {
 function wrapCacheLocalStorage<T>(
   key: string,
   lifetimeMs: number | null = null,
-  fallback: () => Promise<T>,
+  fallback: () => Promise<T> = async () => {
+    throw new Error("No fallback function provided");
+  },
 ): () => Promise<T> {
   return async (): Promise<T> => {
     const cache = new CachedLocalStorage<T>(key, lifetimeMs);
@@ -43,15 +45,17 @@ function wrapCacheLocalStorage<T>(
       return cachedData;
     }
     const data = await fallback();
-    setTimeout(() => cache.set(data), 0);
+    setTimeout(() => {
+      cache.set(data);
+    }, 0);
     return data;
   };
 }
 
-interface CachedLocalStorageItem<T> {
+type CachedLocalStorageItem<T> = {
   data: T;
   timestamp: number;
-}
+};
 
 export { CachedLocalStorage, wrapCacheLocalStorage };
 export type { CachedLocalStorageItem };

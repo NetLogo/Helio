@@ -177,12 +177,16 @@ const buildOptions: Partial<ModuleOptions>['build'] = {
   markdown: {
     remarkPlugins: {
       ...(getDefaultRemarkPluginsObject() as MarkdownPluginCollection),
-      remarkToc: { instance: remarkToc, options: tocConfig },
-      remarkWikiLink: { instance: NetLogoRemarkWikiLink.plugin, options: wikiLinkConfig },
+      'remark-toc': { instance: remarkToc, options: tocConfig, src: 'remark-toc' },
+      '@repo/markdown/plugins/wikilink': { instance: NetLogoRemarkWikiLink.plugin, options: wikiLinkConfig },
     },
     rehypePlugins: {
       ...(getDefaultRehypePluginsObject() as MarkdownPluginCollection),
-      rehypeAutolinkHeadings: { instance: rehypeAutolinkHeadings, options: autoLinkHeadingsConfig },
+      'rehype-autolink-headings': {
+        instance: rehypeAutolinkHeadings,
+        options: autoLinkHeadingsConfig,
+        src: 'rehype-autolink-headings',
+      },
     },
     toc: {
       depth: 3,

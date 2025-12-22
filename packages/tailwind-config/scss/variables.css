@@ -114,7 +114,7 @@
   --space-xs: 0.5rem; /* formerly level-2 inset Y */
   --space-xxs: 0.25rem; /* formerly level-2 inset Y */
 
-  --max-width-ch: min(90vw, 115ch); /* Maximum width for text content */
+  --max-width-ch: min(90vw, 110ch); /* Maximum width for text content */
 
   /* Derived spacing */
   --block-bottom: var(--space-md);

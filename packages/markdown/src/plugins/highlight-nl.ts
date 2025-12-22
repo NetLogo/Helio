@@ -30,3 +30,5 @@ export const remarkHighlightNL: Plugin<[], Root> = () => {
     });
   };
 };
+
+export default remarkHighlightNL;

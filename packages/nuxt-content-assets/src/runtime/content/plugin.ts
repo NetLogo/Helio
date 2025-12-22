@@ -139,15 +139,22 @@ function createContentParser({
 
   const { resolveAsset, dispose } = makeAssetsManager(
     publicPath,
-    // @ts-expect-error - virtual module
     import.meta.dev,
     dynamicSourceManager,
     mirrorTarget,
   );
 
+  const parsableExtensions = new Set<string | undefined>([
+    ".md",
+    ".mdx",
+    ".markdown",
+    ".yml",
+    ".yaml",
+  ]);
+
   return [
     async (ctx: FileAfterParseHook) => {
-      if (ctx.file.extension === ".md") {
+      if (parsableExtensions.has(ctx.file.extension)) {
         const updated: string[] = [];
         processMeta(ctx, imageSizes, updated);
         await processBody(ctx, imageSizes, updated);

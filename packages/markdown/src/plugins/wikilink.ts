@@ -229,7 +229,11 @@ class WikiLink {
         type: "containerDirective",
         data: {
           hName: parentNode.tagName,
-          hProperties: parentNode.properties ?? {},
+          hProperties: {
+            permalink: this.permalink,
+            displayText: this.displayText ?? undefined,
+            ...(parentNode.properties ?? {}),
+          },
         },
         children: [el],
       };
@@ -240,5 +244,6 @@ class WikiLink {
   }
 }
 
+export default remarkWikiLink;
 export { remarkWikiLink as plugin };
 export type { LinkType, WikiLinkOptions as Options };

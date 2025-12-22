@@ -1,0 +1,20 @@
+tags:
+  - Tutorial
+  - Getting Started
+  - NetLogo
+  - NetLogo Web
+  - Procedures
+  - Programming
+icon: i-fluent-mdl2-learning-tools
+thumbnail: images/tutorial3/eating-grass.png
+---
+output: True
+title: "Getting Started – Tutorial #3: Procedures"
+description:
+  Third tutorial in the NetLogo learning series, focusing on creating and using
+  procedures in NetLogo programming.
+keywords:
+  - Tutorial
+  - Procedures
+  - Advanced Programming
+  - NetLogo

@@ -8,6 +8,7 @@
     "paths": {
       "@repo/vue-ui/*": ["./src/*"],
     },
+    "allowArbitraryExtensions": true,
     "types": ["node"],
     "jsx": "preserve"
   },

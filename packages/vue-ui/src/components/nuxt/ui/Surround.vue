@@ -1,5 +1,5 @@
 <template>
-  <aside v-if="shouldRender" class="px-5 lg:px-0">
+  <aside v-if="shouldRender" class="px-[var(--space-md)] lg:px-0">
     <USeparator decorative class="my-8" />
     <UContentSurround :surround="surround" :ui="ui" />
   </aside>

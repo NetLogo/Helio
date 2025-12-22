@@ -1,0 +1,120 @@
+title: UN World Population Dataset for NetLogo
+fullName: United Nations World Population Prospects Dataset (NetLogo-Ready)
+shortName: UN Population Dataset
+description: |
+  A comprehensive dataset of world population statistics from 1950-2100, formatted and optimized for use with NetLogo models. Includes historical data and projections by country, region, and demographic indicators.
+longDescription: |
+  This dataset provides **NetLogo-ready CSV files** derived from the United Nations World Population Prospects database, the most authoritative source for global demographic data.
+
+  **What's Included:**
+  - Population by country and region (1950-2100)
+  - Age distribution data (by 5-year age groups)
+  - Birth rates, death rates, and fertility rates
+  - Migration statistics
+  - Urban/rural population breakdowns
+  - Life expectancy data
+
+  **NetLogo Integration:**
+  All data is pre-formatted with NetLogo-compatible CSV structures, including example code snippets for importing data into your models. The dataset includes a sample NetLogo model demonstrating population dynamics visualization.
+
+  **Data Source:**
+  United Nations Department of Economic and Social Affairs, Population Division (2022). World Population Prospects 2022.
+
+  **Use Cases:**
+  - Demographic modeling and simulation
+  - Population growth predictions
+  - Migration pattern analysis
+  - Age structure visualizations
+  - Educational projects on global development
+  - Policy scenario modeling
+
+  This dataset is particularly useful for teaching demography, geography, social sciences, and for research projects examining long-term population trends.
+url: https://population.un.org/wpp/
+thumbnail:
+  url: images/resources/datasets/population-dataset-thumb.png
+  alt: Thumbnail image for UN World Population Dataset
+type: dataset
+pricing: free
+endorsement: community
+level:
+  - intermediate
+  - advanced
+targetAudience:
+  - educators
+  - researchers
+  - students
+yearPublished: 2023
+authors:
+  - name: UN Population Division
+    url: https://population.un.org/
+publisher: United Nations
+containsModels: true
+citation: |
+  United Nations, Department of Economic and Social Affairs, Population Division (2022). World Population Prospects 2022, Online Edition.
+  NetLogo dataset prepared by CCL Community, 2023.
+languages:
+  - en
+formats:
+  - csv
+datasetSizeKB: 15360
+datasetFormats:
+  - csv
+  - json
+  - nlogo
+datasetContents:
+  name: world-population-netlogo
+  type: directory
+  children:
+    - name: README.md
+      type: file
+      sizeKB: 12
+    - name: data
+      type: directory
+      children:
+        - name: population-by-country.csv
+          type: file
+          sizeKB: 4500
+        - name: population-by-region.csv
+          type: file
+          sizeKB: 850
+        - name: age-distribution.csv
+          type: file
+          sizeKB: 6200
+        - name: demographic-indicators.csv
+          type: file
+          sizeKB: 2800
+        - name: migration-data.csv
+          type: file
+          sizeKB: 1000
+    - name: models
+      type: directory
+      children:
+        - name: population-dynamics.nlogo
+          type: file
+          sizeKB: 45
+        - name: age-pyramid-viewer.nlogo
+          type: file
+          sizeKB: 38
+    - name: docs
+      type: directory
+      children:
+        - name: data-dictionary.pdf
+          type: file
+          sizeKB: 250
+        - name: usage-guide.pdf
+          type: file
+          sizeKB: 180
+        - name: code-examples.md
+          type: file
+          sizeKB: 25
+compatibleWith:
+  - NetLogo 6.0+
+  - NetLogo Web
+netLogoVersion: 6.0+
+tags:
+  - demographics
+  - population
+  - social science
+  - united nations
+  - time series
+  - global data

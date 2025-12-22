@@ -1,3 +1,17 @@
-import config from "@repo/eslint-config/typescript";
+import config from "@repo/eslint-config/base";
+import typescriptConfig from "@repo/eslint-config/typescript";
+import tseslint from "typescript-eslint";
 
-export default config;
+/** @type {import("eslint").Linter.Config} */
+export default [
+  ...config,
+  {
+    ...typescriptConfig,
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: "./tsconfig.json",
+      },
+    },
+  },
+];

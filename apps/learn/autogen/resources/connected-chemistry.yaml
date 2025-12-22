@@ -1,0 +1,74 @@
+title: Connected Chemistry Curriculum
+fullName: Connected Chemistry - Exploring Chemistry through Agent-Based Modeling
+shortName: Connected Chemistry
+description: |
+  A comprehensive NetLogo-based curriculum for teaching chemistry concepts through agent-based modeling, covering topics from gas laws to molecular interactions.
+longDescription: |
+  **Connected Chemistry** is an innovative curriculum that uses NetLogo agent-based models to help students visualize and understand fundamental chemistry concepts.
+
+  This curriculum includes over 15 interactive NetLogo models that allow students to explore:
+  - Gas laws and molecular motion
+  - Phase changes and states of matter
+  - Chemical reactions and equilibrium
+  - Molecular interactions and bonding
+  - Diffusion and osmosis
+
+  Each module includes detailed lesson plans, student worksheets, assessment materials, and teacher guides. The curriculum is designed to be flexible and can be used in middle school through undergraduate chemistry courses.
+
+  Students engage with models to test hypotheses, collect data, and develop deeper understanding of particulate-level phenomena that are otherwise invisible. The curriculum aligns with Next Generation Science Standards (NGSS) and has been extensively field-tested in classrooms.
+
+  All NetLogo models are freely available and can be customized to meet specific classroom needs.
+url: https://ccl.northwestern.edu/curriculum/chemistry/
+thumbnail:
+  url: images/resources/curricula/connected-chemistry-thumb.png
+  alt: Thumbnail image for Connected Chemistry Curriculum
+type: sample curriculum
+pricing: free
+endorsement: official
+level:
+  - novice
+  - intermediate
+targetAudience:
+  - educators
+  - students
+yearPublished: 2005
+authors:
+  - name: Uri Wilensky
+    url: https://ccl.northwestern.edu/Uri.shtml
+  - name: Center for Connected Learning
+    url: https://ccl.northwestern.edu
+publisher: Northwestern University
+containsModels: true
+citation: |
+  Wilensky, U. (2005). Connected Chemistry curriculum. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+languages:
+  - en
+formats:
+  - online
+  - pdf
+netLogoVersion: 6.0+
+gradeLevels:
+  - Middle School (6-8)
+  - High School (9-12)
+  - Undergraduate
+subjectAreas:
+  - Chemistry
+  - Physical Science
+  - Molecular Science
+curriculumStandards:
+  - NGSS MS-PS1-4 (Develop a model that predicts and describes changes in particle motion)
+  - NGSS HS-PS1-1 (Use the periodic table as a model to predict properties of elements)
+  - NGSS HS-PS1-5 (Apply scientific principles to design a process for chemical reactions)
+curriculumMaterialsIncluded:
+  - Lesson Plans
+  - Student Worksheets
+  - NetLogo Models
+  - Teacher Guides
+  - Assessment Materials
+  - Answer Keys
+curriculumDurationHours: 30
+tags:
+  - chemistry
+  - molecular modeling
+  - NGSS
+  - inquiry-based learning

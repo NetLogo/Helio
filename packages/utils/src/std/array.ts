@@ -42,9 +42,21 @@ export function zip<T, U>(
     .map((_, i) => [array1[i], array2[i]]);
 }
 
-export function wrapInArray<T>(value: T | T[] | undefined): T[] {
+export function wrapInArray<T>(value: T | Array<T> | undefined): Array<T> {
   if (value === undefined) {
     return [];
   }
   return Array.isArray(value) ? value : [value];
+}
+
+export function surround<T>(arr: Array<T>, eq: (a: T) => boolean): Array<T> {
+  const itemIndex = arr.findIndex(eq);
+  if (itemIndex === -1) {
+    return [];
+  }
+  return [arr.at(itemIndex - 1), arr.at(itemIndex + 1)].filter((i): i is T => i !== undefined);
+}
+
+export function isValidIndex(array: Array<unknown>, index: number): boolean {
+  return index >= 0 && index < array.length;
 }

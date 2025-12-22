@@ -201,6 +201,10 @@ p:first-of-type {
   margin-top: 0; /* Remove top margin for first paragraph */
 }
 
+p:last-of-type {
+  margin-bottom: 0; /* Remove bottom margin for last paragraph */
+}
+
 ul,
 ol,
 dl {

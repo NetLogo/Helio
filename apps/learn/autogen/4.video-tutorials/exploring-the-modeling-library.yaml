@@ -1,0 +1,18 @@
+tags:
+  - Tutorial
+  - Video Tutorial
+  - NetLogo
+  - NetLogo Web
+  - Models
+icon: i-lucide-video
+thumbnail: images/thumbnails/modelslibrary.jpg
+---
+output: True
+title: "Exploring the Modeling Library in NetLogo"
+video: videos/modelslibrary.mp4
+description:
+  Explore the NetLogo modeling library in this step-by-step video tutorial. Learn how to access and use pre-built models, understand their structure, and customize them for your own research.
+keywords:
+  - Modeling Library
+  - Agent-Based Modeling
+  - Simulation

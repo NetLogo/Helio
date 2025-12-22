@@ -1,0 +1,22 @@
+{
+  "name": "NetLogo Learn Guide",
+  "description": "A comprehensive guide to learning NetLogo, the multi-agent programmable modeling environment.",
+  "longDescription": "The official learning resources for NetLogo, the multi-agent programmable modeling environment. Explore tutorials, documentation, and guides to get started with NetLogo and enhance your modeling skills.",
+  "url": "https://learn.netlogo.org",
+  "keywords": [
+    "NetLogo",
+    "NetLogo Web",
+    "NetLogo 3D",
+    "HubNet Web",
+    "Turtle Universe",
+    "Behavior Search",
+    "Extensions",
+    "Modeling Environment",
+    "Learning",
+    "Modeling",
+    "Programming",
+    "Agent-based Modeling",
+    "Tutorials",
+    "Documentation"
+  ]
+}

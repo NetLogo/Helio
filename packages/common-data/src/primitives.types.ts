@@ -1,3 +1,4 @@
+import { toSlug } from "@repo/netlogo-docs/helpers";
 import { z } from "zod";
 
 const PrimitiveSchema = z.object({
@@ -15,6 +16,10 @@ const PrimitiveSchema = z.object({
   source: z.string().min(1),
   /** URL to the primitive's documentation */
   url: z.string(),
+  /** URL to the primitive's documentation home page (e.g. arduino:ports -> arduino) */
+  urlHome: z.string(),
+  /** Associated source icon */
+  sourceIcon: z.string().default("i-lucide-code"),
   /** Description of the primitive (Markdown) */
   description: z.string().optional(),
   /** Syntax of the primitive */
@@ -69,7 +74,16 @@ class Primitives {
   }
 
   public getPrimByName(name: string): Primitive | undefined {
-    return this.primsNameMap[name];
+    return (
+      this.primsNameMap[name] ??
+      this.primsNameMap[toSlug(name)] ??
+      this.prims.find(
+        (prim) =>
+          prim.alternativeNames?.includes(name) ||
+          prim.alternativeNames?.includes(toSlug(name)) ||
+          (prim.examples && prim.examples.some((ex) => ex.startsWith(name))),
+      )
+    );
   }
 
   public getPrimByKey(key: string): Primitive | undefined {

@@ -1,0 +1,15 @@
+tags:
+  - Article
+  - Getting Started
+  - NetLogo
+  - NetLogo Web
+icon: i-lucide-book-open
+---
+output: True
+title: "What is a Primitive?"
+description:
+  In NetLogo, a primitive is a built-in command or reporter that performs a specific function. Primitives are the basic building blocks of NetLogo code, allowing users to create models and simulations by combining these predefined operations. This article provides an overview of what primitives are and how they are used in NetLogo.
+keywords:
+  - Article
+  - Getting Started
+  - NetLogo

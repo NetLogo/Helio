@@ -1,0 +1,43 @@
+title: An Introduction to Agent-Based Modeling
+fullName: "An Introduction to Agent-Based Modeling: Modeling Natural, Social, and Engineered Complex Systems with NetLogo"
+shortName: IABM
+description: |
+  A comprehensive and hands-on introduction to the core concepts, methods, and applications of agent-based modeling, including detailed NetLogo examples.
+longDescription: |
+  **A comprehensive and hands-on introduction to the core concepts, methods, and applications of agent-based modeling, including detailed NetLogo examples.**
+
+  The advent of widespread fast computing has enabled us to work on more complex problems and to build and analyze more complex models. This book provides an introduction to one of the primary methodologies for research in this new field of knowledge. Agent-based modeling (ABM) offers a new way of doing science: by conducting computer-based experiments. ABM is applicable to complex systems embedded in natural, social, and engineered contexts, across domains that range from engineering to ecology. An Introduction to Agent-Based Modeling offers a comprehensive description of the core concepts, methods, and applications of ABM. Its hands-on approach—with hundreds of examples and exercises using NetLogo—enables readers to begin constructing models immediately, regardless of experience or discipline.
+
+  The book first describes the nature and rationale of agent-based modeling, then presents the methodology for designing and building ABMs, and finally discusses how to utilize ABMs to answer complex questions. Features in each chapter include step-by-step guides to developing models in the main text; text boxes with additional information and concepts; end-of-chapter explorations; and references and lists of relevant reading. There is also an accompanying website with all the models and code.
+url: https://www.intro-to-abm.com/
+thumbnail:
+  url: images/resources/books/iabm-cover.jpg
+  alt: Cover of the book An Introduction to Agent-Based Modeling
+type: book
+pricing: paid
+endorsement: official
+level:
+  - novice
+  - intermediate
+targetAudience:
+  - educators
+  - researchers
+  - students
+yearPublished: 2015
+authors:
+  - name: Uri Wilensky
+    url: https://ccl.northwestern.edu/Uri.shtml
+  - name: William (Bill) Rand
+    url: https://sites.google.com/view/billrand
+publisher: The MIT Press
+containsModels: true
+citation: |
+  Wilensky, Uri, and William Rand. An Introduction to Agent-Based Modeling: Modeling Natural, Social, and Engineered Complex Systems with NetLogo. The MIT Press, 2015. http://www.jstor.org/stable/j.ctt17kk851.
+languages:
+  - en
+formats:
+  - print
+  - ebook
+isbn: 0262731894
+isbn13: 978-0262731898
+printLength: 504

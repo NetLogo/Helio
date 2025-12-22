@@ -8,18 +8,16 @@
     "dist"
   ],
   "exports": {
+    "./plugins/*": {
+      "import": "./dist/plugins/*.js",
+      "require": "./dist/plugins/*.js",
+      "default": "./dist/plugins/*.js",
+      "types": "./dist/plugins/*.d.ts"
+    },
     "./styles.scss": "./dist/index.scss",
     ".": {
       "default": "./dist/markdown.js",
       "types": "./dist/markdown.d.ts"
-    },
-    "./components/**/*": {
-      "default": "./dist/components/*.js",
-      "types": "./dist/components/*.d.ts"
-    },
-    "./plugins/**/*": {
-      "default": "./dist/plugins/*.js",
-      "types": "./dist/plugins/*.d.ts"
     }
   },
   "license": "MIT",

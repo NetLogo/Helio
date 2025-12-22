@@ -1,0 +1,3 @@
+# Nuxt development configuration
+shamefullyHoist=true
+autoInstall=true

@@ -23,7 +23,7 @@
     </NavbarLinksContainer>
 
     <NavbarActionsContainer>
-      <UContentSearchButton :collapsed="isMobileScreen" size="lg" />
+      <SSRUContentSearchButton />
 
       <VersionSelectDropdown
         :versions="versions"

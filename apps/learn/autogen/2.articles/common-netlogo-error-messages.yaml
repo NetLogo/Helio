@@ -1,0 +1,16 @@
+tags:
+  - Article
+  - Getting Started
+  - NetLogo
+  - NetLogo Web
+  - Beginner
+icon: i-lucide-book-open
+---
+output: True
+title: "Common NetLogo Error Messages and How to Fix Them"
+description:
+  It is inevitable to make errors when coding. That's why it is important to develop a good vocabulary of NetLogo error messages to avoid these errors from slowing us down or spoiling the fun of agent-based modeling with NetLogo. We compiled a list of the most common NetLogo error messages below. Each entry will tell you what the error message means, suggestions to fix it, and a code example that shows both the erroneous code and the corected code.
+keywords:
+  - Article
+  - Getting Started
+  - NetLogo
