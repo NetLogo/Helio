@@ -1,117 +1,121 @@
-import type { Callback } from '../../types'
+import type { Callback } from "../../types";
+
+type Error = { code?: string | number; [key: string]: unknown };
 
 export interface Logger {
-  log: (...args: any[]) => void
-  warn: (...args: any[]) => void
+  log: (...args: Array<unknown>) => void;
+  warn: (...args: Array<unknown>) => void;
 }
 
-let ws: WebSocket | undefined
+export let ws: WebSocket | undefined = undefined;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function log (...args: any[]) {}
+export function log(...args: Array<unknown>): void {}
 
-export function createWebSocket (url: string, logger: Logger = { log, warn: log }) {
+export function createWebSocket(
+  url: string,
+  logger: Logger = { log, warn: log },
+): {
+  connect: (retry?: boolean) => void;
+  send: (data: any) => void;
+  addHandler: (callback: Callback) => void;
+} | null {
   if (!window.WebSocket) {
-    logger.warn('Your browser does not support WebSocket')
-    return null
+    logger.warn("Your browser does not support WebSocket");
+    return null;
   }
 
-  const onOpen = () => logger.log('WS connected!')
+  const onOpen = (): void => logger.log("WS connected!");
 
-  const onError = (e: any) => {
-    switch (e.code) {
-      case 'ECONNREFUSED':
-        connect(true)
-        break
+  const onError = (e: unknown): void => {
+    switch ((e as Error).code) {
+      case "ECONNREFUSED":
+        connect(true);
+        break;
       default:
-        logger.warn('Socket error:', e)
-        break
+        logger.warn("Socket error:", e);
+        break;
     }
-  }
+  };
 
-  const onClose = (e: any) => {
+  const onClose = (e: unknown): void => {
     // https://tools.ietf.org/html/rfc6455#section-11.7
-    if (e.code === 1000 || e.code === 1005) {
+    if ((e as Error).code === 1000 || (e as Error).code === 1005) {
       // normal close
-      logger.log('Socket closed')
-    }
-    else {
+      logger.log("Socket closed");
+    } else {
       // unknown error
-      connect(true)
+      connect(true);
     }
-  }
+  };
 
-  const handlers: Callback[] = []
-  const onMessage = (message: any) => {
-    let data: any
+  const handlers: Array<Callback> = [];
+  const onMessage = (message: { data: string }): void => {
+    let data: object = {};
     try {
-      data = JSON.parse(message.data)
+      data = JSON.parse(message.data);
+    } catch (err) {
+      logger.warn("Error parsing message:", message.data);
+      return;
     }
-    catch (err) {
-      logger.warn('Error parsing message:', message.data)
-      return
-    }
-    handlers.forEach(handler => handler(data))
-  }
+    handlers.forEach((handler) => handler(data));
+  };
 
-  const send = (data: any) => {
+  const send = (data: unknown): void => {
     if (ws) {
-      ws.send(JSON.stringify(data))
+      ws.send(JSON.stringify(data));
     }
-  }
+  };
 
-  let retries = 0
-  const connect = (retry = false) => {
+  let retries = 0;
+  const connect = (retry = false): void => {
     if (retry) {
-      retries++
+      retries++;
       if (retries < 5) {
-        logger.log('Reconnecting...')
-        setTimeout(connect, 1000)
+        logger.log("Reconnecting...");
+        setTimeout(connect, 1000);
+      } else {
+        logger.warn("Giving up!");
       }
-      else {
-        logger.warn('Giving up!')
-      }
-      return
+      return;
     }
 
     if (ws) {
       try {
-        ws.close()
-      }
-      catch (err) {
+        ws.close();
+      } catch (err) {
         // empty
       }
-      ws = undefined
+      ws = undefined;
     }
 
     // websocket base url
     if (url) {
-      const wsUrl = `${url}ws`
+      const wsUrl = `${url}ws`;
 
       // debug
-      logger.log(`WS connect to ${wsUrl}`)
+      logger.log(`WS connect to ${wsUrl}`);
 
       // do it
-      ws = new WebSocket(wsUrl)
-      ws.onopen = onOpen
-      ws.onmessage = onMessage
-      ws.onerror = onError
-      ws.onclose = onClose
+      ws = new WebSocket(wsUrl);
+      ws.onopen = onOpen;
+      ws.onmessage = onMessage;
+      ws.onerror = onError;
+      ws.onclose = onClose;
     }
-  }
+  };
 
   // automatically connect on use
   if (!ws) {
-    connect()
+    connect();
   }
 
   return {
     connect,
     send,
-    addHandler (callback: Callback) {
-      if (typeof callback === 'function') {
-        handlers.push(callback)
+    addHandler(callback: Callback): void {
+      if (typeof callback === "function") {
+        handlers.push(callback);
       }
     },
-  }
+  };
 }

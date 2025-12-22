@@ -1,7 +1,7 @@
-import { FileAfterParseHook } from "@nuxt/content";
+import type { FileAfterParseHook } from "@nuxt/content";
 import type { ImageSize } from "../../types";
 import { makeAssetsManager } from "../assets/public";
-import { DynamicSourceManager } from "../assets/source";
+import type { DynamicSourceManager } from "../assets/source";
 import {
   buildQuery,
   buildStyle,
@@ -14,6 +14,7 @@ import {
 } from "../utils";
 import { NuxtAST } from "../utils/nuxt-ast";
 
+// eslint-disable-next-line
 function createContentParser({
   imageSizes,
   publicPath,
@@ -30,7 +31,7 @@ function createContentParser({
   /**
    * Assign missing props
    */
-  function assignMissingProp(props: Record<string, any>, key: string, value: any) {
+  function assignMissingProp(props: Record<string, any>, key: string, value: unknown): void {
     if (
       [undefined, null, ""].includes(props[key]) ||
       ["undefined", "null"].includes(typeof props[key]) ||
@@ -46,12 +47,12 @@ function createContentParser({
   function processMeta(
     ctx: FileAfterParseHook,
     imageSizes: ImageSize = [],
-    updated: string[] = [],
-  ) {
+    updated: Array<string> = [],
+  ): void {
     walkMeta(
       ctx.content,
-      (value: string | number, parent: Record<string, any>, key: string | number) => {
-        if (isValidAsset(value)) {
+      (value: unknown, parent: Record<string, any>, key: string | number): void => {
+        if (isValidAsset(value as string | number | undefined)) {
           const { srcAttr, width, height } = resolveAsset(ctx, removeQuery(value as string), true);
           if (srcAttr) {
             const query =
@@ -75,8 +76,8 @@ function createContentParser({
   async function processBody(
     ctx: NuxtAST.AfterParseHook,
     imageSizes: ImageSize = [],
-    updated: string[] = [],
-  ) {
+    updated: Array<string> = [],
+  ): Promise<void> {
     if (!NuxtAST.isMinimarkBody(ctx.content.body)) {
       console.warn(
         `No AST found or AST is not minimark format in content body of /${ctx.file.path}`,
@@ -85,7 +86,7 @@ function createContentParser({
     }
 
     const ast = ctx.content.body.value;
-    await walkBody(ast, function (node: NuxtAST.Node) {
+    await walkBody(ast, function (node: NuxtAST.Node): void {
       if (!NuxtAST.hasProps(node)) {
         return;
       }
@@ -153,9 +154,9 @@ function createContentParser({
   ]);
 
   return [
-    async (ctx: FileAfterParseHook) => {
+    async (ctx: FileAfterParseHook): Promise<void> => {
       if (parsableExtensions.has(ctx.file.extension)) {
-        const updated: string[] = [];
+        const updated: Array<string> = [];
         processMeta(ctx, imageSizes, updated);
         await processBody(ctx, imageSizes, updated);
         if (updated.length) {

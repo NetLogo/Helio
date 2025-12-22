@@ -6,7 +6,7 @@ import { hash } from "ohash";
 import type { AssetConfig } from "../../types";
 import { isImage, log, removeEntry, warn } from "../utils";
 import { NuxtAST } from "../utils/nuxt-ast";
-import { DynamicSourceManager, makeSourceStorage } from "./source";
+import { type DynamicSourceManager, makeSourceStorage } from "./source";
 
 /**
  * Manages the public assets
@@ -16,7 +16,18 @@ export function makeAssetsManager(
   shouldWatch = true,
   dynamicSourceManager?: DynamicSourceManager,
   mirrorTarget?: string,
-) {
+): {
+  init: () => void;
+  setAsset: (path: string) => AssetConfig;
+  getAsset: (path: string) => AssetConfig | undefined;
+  removeAsset: (path: string) => AssetConfig | undefined;
+  resolveAsset: (
+    ctx: NuxtAST.AfterParseHook,
+    relAsset: string,
+    registerContent?: boolean,
+  ) => Partial<AssetConfig>;
+  dispose: () => Promise<void>;
+} {
   // ---------------------------------------------------------------------------------------------------------------------
   // storage - updates asset index file, watches for changes from other processes
   // ---------------------------------------------------------------------------------------------------------------------
@@ -38,13 +49,13 @@ export function makeAssetsManager(
 
   // assets
   const assets: Record<string, AssetConfig> = {};
-  async function load() {
+  async function load(): Promise<void> {
     const data = await storage.getItem(assetsKey);
     // console.log('load:', data)
     Object.assign(assets, data || {});
   }
 
-  function mirror() {
+  function mirror(): void {
     if (mirrorTarget) {
       // ensure target exists
       if (!Fs.existsSync(mirrorTarget)) {
@@ -146,7 +157,7 @@ export function makeAssetsManager(
    */
   function getAsset(path: string): AssetConfig | undefined {
     const { srcRel } = getAssetPaths(publicPath, path, mirrorTarget);
-    return srcRel ? { ...assets[srcRel] } : undefined;
+    return srcRel && assets[srcRel] ? { ...assets[srcRel] } : undefined;
   }
   /**
    * Remove a cached asset by its absolute public path
@@ -164,7 +175,7 @@ export function makeAssetsManager(
   /**
    * Remove public asset files
    */
-  const init = () => {
+  const init = (): void => {
     if (Fs.existsSync(publicPath)) {
       const names = Fs.readdirSync(publicPath);
       for (const name of names) {
@@ -185,7 +196,7 @@ export function makeAssetsManager(
     getAsset,
     removeAsset,
     resolveAsset,
-    dispose: async () => {
+    dispose: async (): Promise<void> => {
       await storage.unwatch();
       await storage.dispose();
     },
@@ -243,7 +254,14 @@ export function interpolatePattern(pattern: string, src: string, warn = false): 
  * @param srcDir    The absolute path to the asset's source folder
  * @param srcAbs    The absolute path to the asset itself
  */
-export function getAssetPaths(srcDir: string, srcAbs: string, mirrorTarget?: string) {
+export function getAssetPaths(
+  srcDir: string,
+  srcAbs: string,
+  mirrorTarget?: string,
+): {
+  srcRel: string;
+  srcAttr: string;
+} {
   // relative asset path
   const srcRel = Path.relative(srcDir, srcAbs);
 

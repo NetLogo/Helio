@@ -1,56 +1,75 @@
-import type { IncomingMessage } from 'http'
-import { WebSocket, WebSocketServer } from 'ws'
-import { Callback } from '../../types'
+import type { IncomingMessage } from "http";
+import { WebSocket, WebSocketServer } from "ws";
+import type { Callback } from "../../types";
 
 /**
  * WebSocket Server
  * @see https://www.npmjs.com/package/ws
  */
-export function createWebSocket () {
-  const wss = new WebSocketServer({ noServer: true })
+export function createWebSocket(): {
+  wss: WebSocketServer;
 
-  const serve = (req: IncomingMessage, socket = req.socket, head: any = '') =>
-    wss.handleUpgrade(req, socket, head, (client: any) => wss.emit('connection', client, req))
+  serve: (req: IncomingMessage, socket?: import("net").Socket, head?: Buffer) => void;
+  broadcast: (data: unknown) => void;
+  addHandler: (callback: Callback) => void;
+  close: () => Promise<void>;
+} {
+  const wss = new WebSocketServer({ noServer: true });
 
-  const broadcast = (data: any) => {
-    data = JSON.stringify(data)
+  const serve = (
+    req: IncomingMessage,
+    socket = req.socket,
+    head: Buffer = Buffer.alloc(0),
+  ): void => {
+    wss.handleUpgrade(req, socket, head, (client: WebSocket) =>
+      wss.emit("connection", client, req),
+    );
+  };
+
+  const broadcast = (data: unknown): void => {
+    data = JSON.stringify(data);
     for (const client of wss.clients) {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(data)
+        client.send(data as string);
       }
     }
-  }
+  };
 
-  const handlers: Callback[] = []
-  const addHandler = (callback: Callback) => {
-    handlers.push(callback)
-  }
+  const handlers: Array<Callback> = [];
+  const addHandler = (callback: Callback): void => {
+    handlers.push(callback);
+  };
 
-  wss.on('connection', (socket) => {
-    socket.addEventListener('message', event => {
-      let data: any
+  wss.on("connection", (socket) => {
+    socket.addEventListener("message", (event): void => {
+      let data: object | undefined = undefined;
       try {
-        data = JSON.parse(event.data as string || '{}')
-      }
-      catch (err) {
+        // @ts-expect-error -- Handled
+        data = JSON.parse(event.data ?? "{}");
+      } catch {
         // empty
       }
+
       if (data) {
-        handlers.forEach(callback => callback(data))
+        handlers.forEach((callback) => {
+          callback(data);
+        });
       }
-    })
-  })
+    });
+  });
 
   return {
     wss,
     serve,
     broadcast,
     addHandler,
-    close: () => {
-      // disconnect all clients
-      wss.clients.forEach((client: any) => client.close())
-      // close the server
-      return new Promise(resolve => wss.close(resolve))
-    }
-  }
+    close: async (): Promise<void> => {
+      wss.clients.forEach((client: WebSocket) => {
+        client.close();
+      });
+      return new Promise((resolve) => {
+        wss.close(resolve as unknown as () => void);
+      });
+    },
+  };
 }

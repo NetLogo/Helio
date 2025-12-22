@@ -1,8 +1,8 @@
 import { useNuxt } from "@nuxt/kit";
-import { Server } from "http";
+import type { Server } from "http";
 import { listen } from "listhen";
 import { isObject, log } from "../../runtime/utils";
-import { Callback, SocketInstance } from "../../types";
+import type { Callback, SocketInstance } from "../../types";
 import { createWebSocket } from "./factory";
 
 type SocketServer = ReturnType<typeof createWebSocket>;
@@ -12,25 +12,28 @@ type Handler = {
   callback: Callback;
 };
 
-function makeChannelBroker(ws: SocketServer) {
-  const handlers: Handler[] = [];
+function makeChannelBroker(ws: SocketServer): {
+  broadcast: (channel: string, data: unknown) => void;
+  addHandler: (channel: string, callback: Callback) => void;
+} {
+  const handlers: Array<Handler> = [];
 
-  const broadcast = (channel: string, data: any) => {
+  const broadcast = (channel: string, data: unknown): void => {
     ws.broadcast({ channel, data });
   };
 
-  const addHandler = (channel: string, callback: Callback) => {
+  const addHandler = (channel: string, callback: Callback): void => {
     handlers.push({ channel, callback });
   };
 
-  ws.addHandler(function (message: any) {
+  ws.addHandler(function (message: unknown): void {
     if (isObject(message)) {
       const { channel } = message;
       handlers
-        .filter(
-          (handler) => handler.channel === channel || handler.channel === "*",
-        )
-        .forEach((handler) => handler.callback(message));
+        .filter((handler) => handler.channel === channel || handler.channel === "*")
+        .forEach((handler) => {
+          handler.callback(message);
+        });
     }
   });
 
@@ -44,14 +47,11 @@ const ws = createWebSocket();
 
 const broker = makeChannelBroker(ws);
 
-export async function setupSocketServer(
-  channel: string,
-  handler?: Callback,
-): Promise<SocketInstance> {
+async function setupSocketServer(channel: string, handler?: Callback): Promise<SocketInstance> {
   const nuxt = useNuxt();
   nuxt.hook("nitro:init", async (nitro) => {
     if (!nuxt._socketServer) {
-      // server
+      // @ts-expect-error -- Peer dependency
       const defaults = nuxt.options.runtimeConfig.content.watch || {
         port: 4001,
       };
@@ -88,11 +88,11 @@ export async function setupSocketServer(
 
   // return
   const instance = {
-    send(data: any) {
+    send(data: unknown): SocketInstance {
       broker.broadcast(channel, data);
       return this;
     },
-    addHandler(callback: Callback) {
+    addHandler(callback: Callback): SocketInstance {
       broker.addHandler(channel, callback);
       return this;
     },
@@ -112,3 +112,5 @@ declare module "@nuxt/schema" {
     _socketServer: Server;
   }
 }
+
+export { setupSocketServer };

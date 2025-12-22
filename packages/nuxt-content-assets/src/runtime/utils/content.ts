@@ -1,42 +1,7 @@
-import { FileAfterParseHook } from "@nuxt/content";
+import type { FileAfterParseHook } from "@nuxt/content";
 import { NuxtAST } from "./nuxt-ast";
 import { type WalkCallback, walk } from "./object";
 import { matchTokens } from "./string";
-
-/**
- * Walk parsed content meta, only processing relevant properties
- *
- * @param content
- * @param callback
- */
-export function walkMeta(content: FileAfterParseHook["content"], callback: WalkCallback) {
-  walk(content, callback, (value, key) => !(String(key).startsWith("_") || key === "body"));
-}
-
-/**
- * Walk parsed content body, only visiting relevant tags
- *
- * @param content
- * @param callback
- */
-export function walkBody(body: NuxtAST.Tree, callback: (node: NuxtAST.Node) => void) {
-  return NuxtAST.walk(body, (node: NuxtAST.Node) => {
-    if (typeof node === "string") return NuxtAST.WalkOptions.CONTINUE;
-    const [tag, props] = node;
-
-    const excluded = tags.exclude.includes(tag);
-    if (excluded) {
-      return NuxtAST.WalkOptions.SKIP;
-    }
-
-    const included = tags.include.includes(tag);
-    if (included || !props) {
-      return NuxtAST.WalkOptions.CONTINUE;
-    }
-
-    callback(node);
-  });
-}
 
 const tags = {
   exclude: matchTokens({
@@ -63,3 +28,41 @@ const tags = {
 
   assets: "img audio source track video embed",
 };
+
+/**
+ * Walk parsed content meta, only processing relevant properties
+ *
+ * @param content
+ * @param callback
+ */
+export function walkMeta(content: FileAfterParseHook["content"], callback: WalkCallback): void {
+  walk(content, callback, (value, key) => !(String(key).startsWith("_") || key === "body"));
+}
+
+/**
+ * Walk parsed content body, only visiting relevant tags
+ *
+ * @param content
+ * @param callback
+ */
+export function walkBody(
+  body: NuxtAST.Tree,
+  callback: (node: NuxtAST.Node) => void,
+): Promise<Boolean> {
+  return NuxtAST.walk(body, (node: NuxtAST.Node): NuxtAST.WalkOptions | void => {
+    if (typeof node === "string") return NuxtAST.WalkOptions.CONTINUE;
+    const [tag, props] = node;
+
+    const excluded = tags.exclude.includes(tag);
+    if (excluded) {
+      return NuxtAST.WalkOptions.SKIP;
+    }
+
+    const included = tags.include.includes(tag);
+    if (included || !props) {
+      return NuxtAST.WalkOptions.CONTINUE;
+    }
+
+    callback(node);
+  });
+}

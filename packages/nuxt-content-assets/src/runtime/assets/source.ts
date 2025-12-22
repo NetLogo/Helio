@@ -7,7 +7,7 @@ import { copyFile, deKey, isAsset, isExcluded, removeFile, toPath } from "../uti
 /**
  * Helper function to determine valid ids
  */
-function isAssetId(id: string) {
+function isAssetId(id: string): boolean {
   const path = toPath(id);
   return !isExcluded(path) && isAsset(path);
 }
@@ -61,19 +61,19 @@ export function makeDynamicSourceManager(
   // rootPath/relPath -> publicPath/relPath
   const collisionMap: Record<string, string> = {};
 
-  function _getTrgPath(relPath: string) {
+  function _getTrgPath(relPath: string): string {
     return Path.join(publicPath, Path.normalize(relPath));
   }
 
-  function _getAbsPath(rootPath: string, relPath: string) {
+  function _getAbsPath(rootPath: string, relPath: string): string {
     return Path.join(Path.normalize(rootPath), Path.normalize(relPath));
   }
 
-  function _getRelPathFromKey(key: string) {
+  function _getRelPathFromKey(key: string): string {
     return Path.normalize(toPath(deKey(key)));
   }
 
-  function copyItem(rootPath: string, relPath: string) {
+  function copyItem(rootPath: string, relPath: string): string {
     const absSrc = _getAbsPath(rootPath, relPath);
     const absTrg = _getTrgPath(relPath);
 
@@ -89,24 +89,24 @@ export function makeDynamicSourceManager(
     return absTrg;
   }
 
-  function removeItem(relPath: string) {
+  function removeItem(relPath: string): string {
     const absTrg = _getTrgPath(relPath);
     removeFile(absTrg);
     delete watchedAssets[Path.normalize(relPath)];
     return absTrg;
   }
 
-  function getAsset(relPath: string) {
+  function getAsset(relPath: string): string | undefined {
     const normPath = Path.normalize(relPath);
     return watchedAssets[normPath];
   }
 
-  function hasAsset(relPath: string) {
+  function hasAsset(relPath: string): boolean {
     const normPath = Path.normalize(relPath);
     return Object.prototype.hasOwnProperty.call(watchedAssets, normPath);
   }
 
-  function createWatchEventListener(rootPath: string) {
+  function createWatchEventListener(rootPath: string): (event: WatchEvent, key: string) => void {
     return (event: WatchEvent, key: string) => {
       const relPath = _getRelPathFromKey(key);
       if (isAssetId(key) && hasAsset(relPath)) {
@@ -118,7 +118,7 @@ export function makeDynamicSourceManager(
     };
   }
 
-  function watchAsset(rootPath: string, relPath: string) {
+  function watchAsset(rootPath: string, relPath: string): string | false {
     const normRoot = Path.normalize(rootPath);
     const normRel = Path.normalize(relPath);
 
@@ -138,7 +138,7 @@ export function makeDynamicSourceManager(
     return _getTrgPath(normRel);
   }
 
-  function removeAsset(relPath: string) {
+  function removeAsset(relPath: string): string | undefined {
     const normRel = Path.normalize(relPath);
     if (hasAsset(normRel)) {
       return removeItem(normRel);
@@ -146,7 +146,7 @@ export function makeDynamicSourceManager(
     return undefined;
   }
 
-  async function dispose() {
+  async function dispose(): Promise<void> {
     const tasks = Object.values(storages).map(async (storage) => {
       try {
         await storage.unwatch?.();

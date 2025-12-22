@@ -2,14 +2,14 @@
 // module
 // ---------------------------------------------------------------------------------------------------------------------
 
-export interface ModuleOptions {
+export type ModuleOptions = {
   /**
    * Image size hints
    *
    * @example 'attrs style url'
    * @default 'style'
    */
-  imageSize?: string | string[] | false;
+  imageSize?: string | Array<string> | false;
 
   /**
    * List of content extensions; anything else as an asset
@@ -17,7 +17,7 @@ export interface ModuleOptions {
    * @example 'md'
    * @default 'md csv ya?ml json'
    */
-  contentExtensions?: string | string[];
+  contentExtensions?: string | Array<string>;
 
   /**
    * Display debug messages
@@ -35,7 +35,7 @@ export interface ModuleOptions {
    * @default true
    */
   overrideStaticDimensions?: boolean;
-}
+};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // assets
@@ -45,25 +45,25 @@ export type ImageSize = Array<"style" | "src" | "url" | "attrs">;
 
 export type AssetConfig = {
   srcAttr: string;
-  content: string[];
+  content: Array<string>;
   width?: number;
   height?: number;
 };
 
-export interface AssetMessage {
+export type AssetMessage = {
   event: "update" | "remove" | "refresh";
   src?: string;
   width?: string;
   height?: string;
-}
+};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // sockets
 // ---------------------------------------------------------------------------------------------------------------------
 
-export type Callback = (data: any) => void;
+export type Callback = (data: unknown) => void;
 
-export interface SocketInstance {
-  send: (data: any) => SocketInstance;
+export type SocketInstance = {
+  send: (data: unknown) => SocketInstance;
   addHandler: (handler: Callback) => SocketInstance;
-}
+};

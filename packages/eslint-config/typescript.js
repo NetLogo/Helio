@@ -17,6 +17,15 @@ const needProjectConfig = {
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-implied-eval": "error",
     "@typescript-eslint/no-misused-promises": "error",
+    "@typescript-eslint/consistent-return": ["error", { treatUndefinedAsUnspecified: false }],
+    "@typescript-eslint/consistent-generic-constructors": ["error", "constructor"],
+    "@typescript-eslint/consistent-indexed-object-style": ["error", "record"],
+    "@typescript-eslint/consistent-type-assertions": [
+      "error",
+      { assertionStyle: "as", objectLiteralTypeAssertions: "allow" },
+    ],
+    "@typescript-eslint/consistent-type-exports": "error",
+    "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/restrict-plus-operands": [
       "error",
       {
@@ -28,50 +37,12 @@ const needProjectConfig = {
       },
     ],
     "@typescript-eslint/strict-boolean-expressions": "error",
-  },
-};
-
-/**
- * @type {import('eslint').Linter.Config}
- */
-const noNeedProjectConfig = {
-  files: typescriptFileGlobs,
-  plugins: typescriptPlugins,
-  rules: {
-    "custom-typescript-eslint/end-of-file-exports": "warn",
-    "@typescript-eslint/adjacent-overload-signatures": "off",
-    "@typescript-eslint/array-type": ["error", { default: "generic" }],
-    "@typescript-eslint/ban-ts-comment": "error",
-    "@typescript-eslint/ban-tslint-comment": "off",
-    "@typescript-eslint/class-literal-property-style": ["error", "getters"],
-    "@typescript-eslint/class-methods-use-this": "off",
-    "@typescript-eslint/consistent-generic-constructors": ["error", "constructor"],
-    "@typescript-eslint/consistent-indexed-object-style": ["error", "record"],
-    "@typescript-eslint/consistent-return": ["error", { treatUndefinedAsUnspecified: false }],
-    "@typescript-eslint/consistent-type-assertions": [
-      "error",
-      { assertionStyle: "as", objectLiteralTypeAssertions: "allow" },
-    ],
-    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-    "@typescript-eslint/consistent-type-exports": "error",
-    "@typescript-eslint/consistent-type-imports": "error",
-    "@typescript-eslint/default-param-last": "error",
     "@typescript-eslint/dot-notation": [
       "error",
       {
         allowKeywords: true,
         allowIndexSignaturePropertyAccess: true,
       },
-    ],
-    "@typescript-eslint/explicit-function-return-type": "error",
-    "@typescript-eslint/explicit-member-accessibility": "error",
-    "@typescript-eslint/explicit-module-boundary-types": "error",
-    "@typescript-eslint/init-declarations": ["error", "always"],
-    "@typescript-eslint/member-ordering": "off",
-    "@typescript-eslint/method-signature-style": ["error", "property"],
-    "@typescript-eslint/naming-convention": [
-      "error",
-      { selector: ["enumMember"], format: ["PascalCase"] },
     ],
     "@typescript-eslint/no-array-delete": "error",
     "@typescript-eslint/no-base-to-string": "error",
@@ -143,18 +114,41 @@ const noNeedProjectConfig = {
     "@typescript-eslint/prefer-string-starts-ends-with": "error",
     "@typescript-eslint/promise-function-async": "error",
     "@typescript-eslint/require-array-sort-compare": "error",
-    "@typescript-eslint/restrict-plus-operands": [
-      "error",
-      {
-        allowAny: false,
-        allowBoolean: false,
-        allowNullish: false,
-        allowNumberAndString: false,
-        allowRegExp: false,
-      },
-    ],
+
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/switch-exhaustiveness-check": "warn",
+    "@typescript-eslint/unbound-method": "error",
+    "@typescript-eslint/use-unknown-in-catch-callback-variable": "error",
+  },
+};
+
+/**
+ * @type {import('eslint').Linter.Config}
+ */
+const noNeedProjectConfig = {
+  files: typescriptFileGlobs,
+  plugins: typescriptPlugins,
+  rules: {
+    "custom-typescript-eslint/end-of-file-exports": "warn",
+    "@typescript-eslint/adjacent-overload-signatures": "off",
+    "@typescript-eslint/array-type": ["error", { default: "generic" }],
+    "@typescript-eslint/ban-ts-comment": "error",
+    "@typescript-eslint/ban-tslint-comment": "off",
+    "@typescript-eslint/class-literal-property-style": ["error", "getters"],
+    "@typescript-eslint/class-methods-use-this": "off",
+
+    "@typescript-eslint/default-param-last": "error",
+
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/explicit-member-accessibility": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "error",
+    "@typescript-eslint/init-declarations": ["error", "always"],
+    "@typescript-eslint/member-ordering": "off",
+    "@typescript-eslint/method-signature-style": ["error", "property"],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      { selector: ["enumMember"], format: ["PascalCase"] },
+    ],
     "@typescript-eslint/triple-slash-reference": "error",
     "@typescript-eslint/typedef": [
       "off",
@@ -169,9 +163,7 @@ const noNeedProjectConfig = {
         variableDeclarationIgnoreFunction: false,
       },
     ],
-    "@typescript-eslint/unbound-method": "error",
     "@typescript-eslint/unified-signatures": "error",
-    "@typescript-eslint/use-unknown-in-catch-callback-variable": "error",
   },
 };
 

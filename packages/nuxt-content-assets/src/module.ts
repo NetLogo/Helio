@@ -9,7 +9,6 @@ import createContentParser from "./runtime/content/plugin";
 import { log, makeIgnores, matchTokens, removeEntry, warn } from "./runtime/utils";
 import type { ImageSize, ModuleOptions } from "./types";
 
-// @ts-expect-error - virtual module
 const resolve = createResolver(import.meta.url).resolve;
 
 const meta: ModuleMeta = {
@@ -85,12 +84,12 @@ export default defineNuxtModule<ModuleOptions>({
     // set up content ignores
     const { contentExtensions } = options;
     if (contentExtensions) {
-      // @ts-ignore -- @nuxt/content is available in peer
+      // @ts-expect-error -- @nuxt/content is available in peer
       nuxt.options.content ||= {};
-      // @ts-ignore -- @nuxt/content is available in peer
+      // @ts-expect-error -- @nuxt/content is available in peer
       nuxt.options.content.ignores ||= [];
       const ignores = makeIgnores(contentExtensions);
-      // @ts-ignore -- @nuxt/content is available in peer
+      // @ts-expect-error -- @nuxt/content is available in peer
       nuxt.options.content?.ignores.push(ignores);
     }
 
@@ -123,10 +122,10 @@ export default defineNuxtModule<ModuleOptions>({
      * @param event   The type of update
      * @param absTrg  The absolute path to the copied asset
      */
-    function onAssetChange(event: "update" | "remove", absTrg: string) {
+    function onAssetChange(event: "update" | "remove", absTrg: string): void {
       let src: string = "";
-      let width: number | undefined;
-      let height: number | undefined;
+      let width: number | undefined = undefined;
+      let height: number | undefined = undefined;
 
       // update
       if (event === "update") {
@@ -153,7 +152,7 @@ export default defineNuxtModule<ModuleOptions>({
      */
     addPlugin(resolve("./runtime/sockets/plugin"));
     const socket =
-      // @ts-ignore -- @nuxt/content is available in peer
+      // @ts-expect-error -- @nuxt/content is available in peer
       isDev && nuxt.options.content?.watch?.enabled !== false
         ? await setupSocketServer("content-assets")
         : null;

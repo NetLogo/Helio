@@ -21,7 +21,7 @@ export function removeQuery(path: string): string {
  * Gets the extension of a path
  * @param path
  */
-export function getExt(path: string) {
+export function getExt(path: string): string {
   return Path.extname(removeQuery(path)).substring(1);
 }
 
@@ -36,10 +36,8 @@ export function isRelative(path: string): boolean {
  * Test if path is excluded (_partial or .ignored)
  * @param path
  */
-export function isExcluded(path: string) {
-  return path
-    .split("/")
-    .some((segment) => segment.startsWith(".") || segment.startsWith("_"));
+export function isExcluded(path: string): boolean {
+  return path.split("/").some((segment) => segment.startsWith(".") || segment.startsWith("_"));
 }
 
 /**
