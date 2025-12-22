@@ -38,9 +38,8 @@
     "@vue/shared": "3.5.24",
     "reka-ui": "2.6.0",
     "typescript": "^5.4.0",
-    "@nuxt/content": "3.7.1",
     "nuxt": "4.1.2",
-    "eslint": "9.31.0",
+    "@nuxt/content": "3.7.1",
     "better-sqlite3": "12.4.1",
     "prettier": "3.6.2",
     "rehype-autolink-headings": "7.1.0",
@@ -57,6 +56,8 @@
     "remark-toc-inline": "1.0.0",
     "tailwindcss": "^4.1.13",
     "motion-v": "1.7.4",
-    "motion-dom": "12.23.12"
+    "motion-dom": "12.23.12",
+    "eslint": "9.31.0",
+    "regjsparser": "0.13.0"
   }
 }

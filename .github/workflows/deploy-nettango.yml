@@ -1,0 +1,84 @@
+name: Deploy NetTango
+
+on:
+  push:
+    branches:
+      - main
+      - app/nettango
+
+jobs:
+  deploy:
+    if: startsWith(github.event.head_commit.message, '#build app/nettango')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --ignore-scripts
+
+      - name: Build monorepo
+        run: yarn build
+
+      - name: Generate NetTango
+        working-directory: apps/nettango
+        run: |
+          yarn install --force
+
+          if [ -f .env ]; then
+            export $(grep -v '^#' .env | xargs)
+          else
+            echo ".env file not found"
+            exit 1
+          fi
+
+          yarn run nuxt:generate
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy to Isolated Orphan Branch
+        run: |
+          DEPLOY_DIR="/tmp/deploy-nettango"
+          BRANCH_NAME="deploy/nettango"
+
+          mkdir -p $DEPLOY_DIR
+          cd $DEPLOY_DIR
+
+          git clone --depth 1 \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" \
+            .
+
+          if git rev-parse --verify $BRANCH_NAME >/dev/null 2>&1; then
+            echo "Checking out existing branch: $BRANCH_NAME"
+            git checkout $BRANCH_NAME
+            find . -mindepth 1 ! -name '.git' ! -name '.git*' -exec rm -rf {} +
+          else
+            # Branch does not exist, create it as an orphan
+            echo "Creating orphan branch: $BRANCH_NAME"
+            git checkout --orphan $BRANCH_NAME
+            git rm -rf .
+          fi
+
+          cp -r "${{ github.workspace }}"/apps/nettango/.output/public/. .
+
+          git add --all
+          CURRENT_SHA="${{ github.sha }}"
+          COMMIT_MSG="Deploy NetTango site from Monorepo commit $CURRENT_SHA"
+
+          if git diff-index --quiet HEAD --; then
+            echo "No changes found. Deployment skipped."
+          else
+            git commit -m "$COMMIT_MSG"
+            echo "$COMMIT_MSG"
+            git push origin $BRANCH_NAME --force-with-lease
+          fi

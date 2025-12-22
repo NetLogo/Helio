@@ -5,13 +5,6 @@
 .nitro
 .cache
 dist
-content
-.build/
-.site-root/
-.build-static
-.preview
-.repo
-/public/_content
 
 # Node dependencies
 node_modules

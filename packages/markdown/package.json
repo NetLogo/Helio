@@ -34,8 +34,8 @@
     "dev:components": "tsc --watch & tsc-alias --watch",
     "dev:scss": "chokidar 'src/**/*.scss' -c 'npm run copy:scss'",
     "lint": "eslint src --max-warnings 0",
-    "test": "vitest",
-    "test:run": "vitest run",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
