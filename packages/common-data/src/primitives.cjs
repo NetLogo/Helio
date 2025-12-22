@@ -1,12 +1,12 @@
 // @ts-check
 
-import { isConstantEntry } from "@repo/netlogo-docs/dictionary";
-import { parseAllFromText } from "@repo/netlogo-docs/extension-docs";
-import { toSlug } from "@repo/netlogo-docs/helpers";
+const { isConstantEntry } = require("@repo/netlogo-docs/dictionary");
+const { parseAllFromText } = require("@repo/netlogo-docs/extension-docs");
+const { toSlug } = require("@repo/netlogo-docs/helpers");
 
-import fs from "node:fs";
-import path from "node:path";
-import yaml from "yaml";
+const fs = require("node:fs");
+const path = require("node:path");
+const yaml = require("yaml");
 
 const repoRoot = path.join(process.cwd(), "..", "..");
 const docsDataPath = path.join(repoRoot, "apps", "docs", "autogen", "data");
@@ -152,11 +152,17 @@ function savePrimitivesYAML(primitives, outputPath) {
   fs.writeFileSync(outputPath, yamlContent, "utf8");
 }
 
-export function main() {
+function main() {
   const primitives = loadPrimitives();
   const outputPath = path.join(repoRoot, "packages", "common-data", "datasets", "primitives.yaml");
   savePrimitivesYAML(primitives, outputPath);
 
   const relativeOutputPath = path.relative(process.cwd(), outputPath);
   console.log(`Saved ${primitives.length} primitives to ${relativeOutputPath}`);
+
+  return primitives.length;
 }
+
+module.exports = {
+  main,
+};

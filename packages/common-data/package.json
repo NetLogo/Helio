@@ -9,20 +9,24 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./datasets/*": "./datasets/*"
   },
   "license": "UNLICENSED",
   "scripts": {
     "build": "tsc && tsc-alias",
-    "prepare": "node dist/prepare.js"
+    "prepare": "node dist/prepare.js",
+    "lint": "eslint src --max-warnings 0",
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
   },
   "type": "module",
   "devDependencies": {
+    "@repo/netlogo-docs": "*",
+    "vitest": "^4.0.16",
     "yaml": "^2.8.1",
-    "zod": "^4.1.12",
-    "@repo/netlogo-docs": "*"
+    "zod": "^4.1.12"
   }
 }

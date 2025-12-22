@@ -57,14 +57,12 @@ type SomeNamedExtension =
 type Source = "netlogo" | "netlogo-3d" | SomeNamedExtension | string; // extension name
 
 class Primitives {
-  static instance: Primitives | null = null;
+  public static instance: Primitives | null = null;
   public readonly primsKeyMap: Record<string, Primitive>;
   public readonly primsNameMap: Record<string, Primitive>;
 
-  static getInstance(prims: Array<Primitive>) {
-    if (!Primitives.instance) {
-      Primitives.instance = new Primitives(prims);
-    }
+  public static getInstance(prims: Array<Primitive>): Primitives {
+    Primitives.instance ??= new Primitives(prims);
     return Primitives.instance;
   }
 
@@ -79,9 +77,10 @@ class Primitives {
       this.primsNameMap[toSlug(name)] ??
       this.prims.find(
         (prim) =>
-          prim.alternativeNames?.includes(name) ||
-          prim.alternativeNames?.includes(toSlug(name)) ||
-          (prim.examples && prim.examples.some((ex) => ex.startsWith(name))),
+          prim.alternativeNames?.includes(name) ??
+          prim.alternativeNames?.includes(toSlug(name)) ??
+          prim.examples?.some((ex) => ex.startsWith(name)) ??
+          false,
       )
     );
   }
