@@ -20,7 +20,8 @@
   ],
   "scripts": {
     "build": "nuxt-module-build build",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "cd ./playground && yarn run postinstall"
   },
   "dependencies": {
     "@nuxt/kit": "^3.11.2",
