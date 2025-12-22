@@ -10,7 +10,7 @@ const PrimitiveIndexMetadataSchema = z
     return;
 
     // TODO: re-enable this when the renderer pipeline implements it
-    // @ts-expect-error
+    // @ts-expect-error -- IGNORE --
     if (obj.layout === "catalog" && obj.primitiveCatalog === undefined) {
       ctx.addIssue({
         code: "custom",

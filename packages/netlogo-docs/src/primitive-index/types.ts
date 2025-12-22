@@ -20,5 +20,5 @@ export type PrimitiveCatalog = {
   currentItemId: string;
   currentItemLabel: string;
   primRoot: string;
-  surround?: any;
+  surround?: object;
 };

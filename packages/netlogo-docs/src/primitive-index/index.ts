@@ -5,8 +5,8 @@ import type TemplateRenderer from "@repo/template";
 import type { PageConfig, PageResult } from "@repo/template";
 import { saveToPublicDir } from "@repo/utils/lib/server";
 
-import { PrimitiveCatalogSchema, type PrimitiveCatalog } from "./types";
 import { toSlug } from "../helpers";
+import { PrimitiveCatalogSchema, type PrimitiveCatalog } from "./types";
 
 async function generatePrimitiveIndexEntry({
   source,
@@ -55,7 +55,7 @@ async function generatePrimitiveIndexEntry({
     template,
     {
       entry: source,
-      dictionaryHome: `${dictionaryHomeDirectory}`,
+      dictionaryHome: dictionaryHomeDirectory,
       dictionaryDisplayName,
       ...buildVariables,
     },

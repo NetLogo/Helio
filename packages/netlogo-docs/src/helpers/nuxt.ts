@@ -1,4 +1,4 @@
-import { PageMetadata } from "@repo/template/schemas";
+import type { PageMetadata } from "@repo/template/schemas";
 import path from "path";
 export function appendAssetsRootToMetadata(
   metadata: Record<string, unknown>,
@@ -8,7 +8,7 @@ export function appendAssetsRootToMetadata(
   const isScanRootRelative = typeof scanRoot === "string" && !scanRoot.startsWith(slash);
   const assetsRoot = isScanRootRelative
     ? path.join(process.cwd(), ...scanRoot.split(slash))
-    : path.join(slash, ...(scanRoot?.split(slash).slice(1) ?? []));
+    : path.join(slash, ...scanRoot.split(slash).slice(1));
 
   metadata["assetsRoot"] = assetsRoot;
   return metadata;
@@ -21,12 +21,12 @@ export function addNuxtContentAssetsRoot(
   const keyword = "assetsRoot: ";
   const index = file.body.indexOf(keyword);
   if (index !== -1) {
-    const line = file.body.split("\n").find((line) => line.includes(keyword));
-    if (line) {
+    const line = file.body.split("\n").find((l) => l.includes(keyword));
+    if (line !== undefined) {
       const assetsRoot = line.split(": ")[1];
       file.assetsRoot = assetsRoot;
     }
-  } else if (fallbackRoute) {
+  } else if (fallbackRoute !== undefined) {
     file.assetsRoot = fallbackRoute;
     console.info(`No assetsRoot found. Using fallback route: ${fallbackRoute}`);
   } else {

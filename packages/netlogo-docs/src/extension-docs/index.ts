@@ -142,7 +142,7 @@ export class ExtensionDocumentationBuilder {
   }
 
   protected get additionalVariables(): Record<string, unknown> {
-    return this.config.additionalVariables || {};
+    return this.config.additionalVariables ?? {};
   }
 
   protected get metaVariables(): Record<string, unknown> {
@@ -244,7 +244,6 @@ export class ExtensionDocumentationBuilder {
 
 export async function getDocumentedExtensionBuilders(
   config: ProjectConfig,
-  // eslint-disable-next-line turbo/no-undeclared-env-vars
   extensionDir: string | undefined = process.env["EXTENSIONS_DIR"],
 ): Promise<Array<ExtensionDocumentationBuilder>> {
   if (!(typeof extensionDir === "string")) {

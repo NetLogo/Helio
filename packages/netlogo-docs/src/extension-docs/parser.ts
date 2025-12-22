@@ -65,15 +65,14 @@ const stringToType = (s0: string | undefined): TypeName => {
 };
 
 type PrimWarnFunction = (msg: string) => (key: string, line?: number) => string;
-export const primWarning: PrimWarnFunction = (msg: string) => (key: string, line?: number) =>
+const primWarning: PrimWarnFunction = (msg: string) => (key: string, line?: number) =>
   `Missing ${key} for primitive${typeof line === "number" ? ` on line ${line}` : ""}, ${msg}`;
 
 type ArgWarnFunction = (msg: string) => (key: string, arg?: string, line?: number) => string;
-export const argWarning: ArgWarnFunction =
-  (msg: string) => (key: string, arg?: string, line?: number) =>
-    `Argument ${arg ?? ""} ${typeof line === "number" ? ` on line ${line}` : ""} has no ${key}, ${msg}`;
+const argWarning: ArgWarnFunction = (msg: string) => (key: string, arg?: string, line?: number) =>
+  `Argument ${arg ?? ""} ${typeof line === "number" ? ` on line ${line}` : ""} has no ${key}, ${msg}`;
 
-export const warn = (message: string, line?: number): Warning => ({
+const warn = (message: string, line?: number): Warning => ({
   message,
   line,
 });
@@ -169,12 +168,12 @@ function parsePrimitive(
   return new WarnableValue(primWV.obtainedValue, [...warnings, ...primWV.warnings]);
 }
 
-export type ParsingResult = {
+type ParsingResult = {
   primitives: Array<Primitive>;
   warnings: Array<Warning>;
 };
 
-export function parsePrimitivesFromConfig(root: unknown): ParsingResult {
+function parsePrimitivesFromConfig(root: unknown): ParsingResult {
   const v = RootDocumentSchema.safeParse(root);
   if (!v.success) {
     // surface zod issues as “warnings”, keep going with empty
@@ -198,7 +197,7 @@ export function parsePrimitivesFromConfig(root: unknown): ParsingResult {
 }
 
 // ---------- Documentation config (optional section) ----------
-export function parseExtensionConfig(root: unknown): WarnableValue<ExtensionConfig | null> {
+function parseExtensionConfig(root: unknown): WarnableValue<ExtensionConfig | null> {
   const v = RootDocumentSchema.safeParse(root);
   if (!v.success) {
     const ws = v.error.issues.map((i) =>
@@ -219,11 +218,11 @@ export function parseExtensionConfig(root: unknown): WarnableValue<ExtensionConf
   });
 }
 
-export function parseConfigText(text: string): unknown {
+function parseConfigText(text: string): unknown {
   return yaml.parse(text);
 }
 
-export function parseAllFromText(yamlRawString: string): {
+function parseAllFromText(yamlRawString: string): {
   primitives: Array<Primitive>;
   documentation: ExtensionConfig | null;
   warnings: WarnableValue<null>;
@@ -243,3 +242,14 @@ export function parseAllFromText(yamlRawString: string): {
     warnings: new WarnableValue(null, [...primRes.warnings, ...docRes.warnings]),
   };
 }
+
+export {
+  argWarning,
+  parseAllFromText,
+  parseConfigText,
+  parseExtensionConfig,
+  parsePrimitivesFromConfig,
+  primWarning,
+  warn,
+};
+export type { ArgWarnFunction, ParsingResult, PrimWarnFunction };

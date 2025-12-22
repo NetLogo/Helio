@@ -59,12 +59,9 @@ export function prebuildHandlebarsHelper(options: {
   data: { root: { dictionary?: DictionaryType } };
   fn: (context: ReturnType<typeof prebuild>) => string;
 }): string {
-  // Types in Handlebars are not very well defined.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const context = options.data.root.dictionary;
   if (context === undefined) {
     throw new Error("No dictionary context provided to prebuild helper");
   }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   return options.fn(prebuild(context));
 }

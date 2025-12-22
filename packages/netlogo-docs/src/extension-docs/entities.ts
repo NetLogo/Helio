@@ -2,7 +2,7 @@ import { camelCaseToKebabCase } from "@repo/utils/std/string";
 import { toSlug } from "../helpers";
 import type { PrimitiveType, TypeName } from "./types";
 
-export class NetLogoType {
+class NetLogoType {
   public readonly kind: "UnnamedType" | "DescribedType";
   public readonly explicitName: string | undefined;
   public constructor(
@@ -30,8 +30,10 @@ export class NetLogoType {
     }
     return camelCaseToKebabCase(
       typeName.endsWith("Type")
-        ? typeName.slice(0, typeName.length - "Type".length).toLowerCase()
-        : typeName.toLowerCase(),
+        ? typeName.slice(0, typeName.length - "Type".length)
+        : typeName.startsWith("NetLogo")
+          ? "Netlogo" + typeName.slice("NetLogo".length)
+          : typeName,
     );
   }
 
@@ -202,6 +204,7 @@ class TableOfContents {
 export {
   InfixPrimExample,
   MustachePrimitiveWrapper,
+  NetLogoType,
   PrefixPrimExample,
   Primitive,
   PrimitiveArgument,

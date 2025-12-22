@@ -21,7 +21,7 @@ const autoDocumentedExtensions = new Map<string, string>([
   ["view2.5d", "View2.5D"],
 ]);
 
-export const configFileName = "documentation.yaml";
+const configFileName = "documentation.yaml";
 
 const markdownTemplate = `
 # {{extensionName}}
@@ -86,4 +86,10 @@ ${primTemplate}
 {{/entry}}
 `;
 
-export { autoDocumentedExtensions, markdownTemplate, primIndexTemplate, primTemplate };
+export {
+  autoDocumentedExtensions,
+  configFileName,
+  markdownTemplate,
+  primIndexTemplate,
+  primTemplate,
+};

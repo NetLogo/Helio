@@ -3,7 +3,7 @@
 import child_process from "child_process";
 import fs from "fs";
 import path from "path";
-import z from "zod";
+import type z from "zod";
 import { GitMetadataSchema, type GitMetadata } from "./public-schema";
 class GitLog {
   public readonly date: string;
@@ -14,6 +14,7 @@ class GitLog {
       throw Error(
         `Incorrect Git Log Format. Expected {{ YYYY-MM-DD }} {{ author_name }}. Received ${line}.`,
       );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.date = parts[0]!;
     this.author = parts.slice(1).join(" ");
   }
@@ -44,9 +45,10 @@ export function generateGitMetadata(
           let unparsed: Partial<z.infer<typeof GitMetadataSchema>> = {};
 
           const firstGitEntry = gitLog.at(-1);
-          unparsed.createdDate = firstGitEntry
-            ? new GitLog(firstGitEntry).date
-            : dateFormatter.format(new Date());
+          unparsed.createdDate =
+            firstGitEntry !== undefined
+              ? new GitLog(firstGitEntry).date
+              : dateFormatter.format(new Date());
 
           unparsed.authors = Array.from(
             new Set(
@@ -58,7 +60,7 @@ export function generateGitMetadata(
           );
 
           const lastGitEntry = gitLog[0];
-          if (!lastGitEntry) {
+          if (lastGitEntry === undefined) {
             return [filePath, GitMetadataSchema.parse(unparsed)];
           }
 
@@ -68,7 +70,13 @@ export function generateGitMetadata(
           return [filePath, GitMetadataSchema.parse(unparsed)];
         } catch (error) {
           console.error(`Error generating git metadata for file: ${filePath}`, error);
-          return [filePath, GitMetadataSchema.parse({})];
+          return [
+            filePath,
+            GitMetadataSchema.parse({
+              createdDate: dateFormatter.format(new Date()),
+              authors: [],
+            }),
+          ];
         }
       }),
   );

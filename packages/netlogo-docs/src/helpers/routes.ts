@@ -1,4 +1,5 @@
-import TemplateRenderer, { PageResult } from "@repo/template";
+import type TemplateRenderer from "@repo/template";
+import type { PageResult } from "@repo/template";
 import fs from "fs/promises";
 import path from "path";
 import slugify from "slugify";
@@ -30,7 +31,7 @@ export async function generateRoutesFile(
 
 export async function getRoutes(baseUrl: string = "/"): Promise<Array<string> | []> {
   const routesPath = path.join(process.cwd(), "routes.json");
-  if (!(await fs.stat(routesPath).catch(() => false))) {
+  if (!Boolean(await fs.stat(routesPath).catch(() => false))) {
     console.warn("No routes.json file found");
     return [];
   }
