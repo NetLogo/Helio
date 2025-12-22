@@ -9,15 +9,15 @@
   ],
   "exports": {
     "./plugins/*": {
+      "types": "./src/plugins/*.ts",
       "import": "./dist/plugins/*.js",
       "require": "./dist/plugins/*.js",
-      "default": "./dist/plugins/*.js",
-      "types": "./dist/plugins/*.d.ts"
+      "default": "./dist/plugins/*.js"
     },
     "./styles.scss": "./dist/index.scss",
     ".": {
-      "default": "./dist/markdown.js",
-      "types": "./dist/markdown.d.ts"
+      "types": "./src/markdown.ts",
+      "default": "./dist/markdown.js"
     }
   },
   "license": "MIT",
@@ -53,7 +53,7 @@
     "tailwindcss": "^4.1.5",
     "typescript": "^5.4.0",
     "unified": "^11.0.5",
-    "vitest": "^2.0.5"
+    "vitest": "^4.0.0"
   },
   "dependencies": {
     "prismjs": "^1.30.0",
