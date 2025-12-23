@@ -43,7 +43,6 @@ const buttonVariants = cva(
 
 type ButtonVariants = VariantProps<typeof buttonVariants>
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface Props extends /* @vue-ignore */ PrimitiveProps {
   variant?: ButtonVariants['variant']
   size?: ButtonVariants['size']

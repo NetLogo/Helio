@@ -44,7 +44,6 @@ type MenuToggleInstance = InstanceType<typeof NavbarMenuToggle>
 const menuToggleRef = useTemplateRef<MenuToggleInstance>('menuToggleRef')
 const blur = (): void => {
   if (menuToggleRef.value) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     menuToggleRef.value.blur()
   }
 }

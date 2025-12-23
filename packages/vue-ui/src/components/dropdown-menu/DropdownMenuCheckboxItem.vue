@@ -11,7 +11,6 @@ const props = defineProps<DropdownMenuCheckboxItemProps & { class?: HTMLAttribut
 const emits = defineEmits<DropdownMenuCheckboxItemEmits>()
 
 const delegatedProps = computed<DropdownMenuCheckboxItemProps>(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { class: _, ...delegated } = props as DropdownMenuCheckboxItemProps & { class?: HTMLAttributes['class'] }
   return delegated
 })

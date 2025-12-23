@@ -21,10 +21,6 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: true,
-
-    timeline: {
-      enabled: true,
-    },
   },
   ssr: true,
   // prettier-ignore

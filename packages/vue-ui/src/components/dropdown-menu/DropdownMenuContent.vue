@@ -13,7 +13,6 @@ const props = withDefaults(defineProps<DropdownMenuContentProps & { class?: HTML
 const emits = defineEmits<DropdownMenuContentEmits>()
 
 const delegatedProps = computed(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { class: _, ...delegated } = props
 
   return delegated

@@ -22,6 +22,7 @@
 import { computed, onMounted, ref, useCssModule, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import { onBeforeMount } from 'vue'
 import Catalog from '../components/catalog/Catalog.vue'
 import CatalogHeader from '../components/catalog/CatalogHeader.vue'
 import CatalogItemsList from '../components/catalog/CatalogItemsList.vue'
@@ -29,7 +30,6 @@ import CatalogMobileHeader from '../components/catalog/CatalogMobileHeader.vue'
 import CatalogSearchField from '../components/catalog/CatalogSearchField.vue'
 import CatalogSection from '../components/catalog/CatalogSection.vue'
 import CatalogTopLevelContainer from '../components/catalog/CatalogTopLevelContainer.vue'
-import { onBeforeMount } from 'vue'
 
 const props = withDefaults(defineProps<SideCatalogProps>(), {
   isLoading: false,
@@ -49,9 +49,8 @@ const emit = defineEmits<{
 const route = useRoute()
 const router = useRouter()
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
 const contentRef = ref<InstanceType<typeof CatalogTopLevelContainer>>()
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
+
 const itemsList = ref<InstanceType<typeof CatalogSection>>()
 const queryText = ref<string>('')
 
@@ -74,7 +73,7 @@ function onItemSelect(item: SideCatalogItem, e: Event): void {
 
     const newURL = new URL(href, window.location.href)
     newURL.searchParams.set('query', queryText.value)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
     newURL.searchParams.set('parentScrollY', String(contentRef.value?.$el?.scrollTop ?? 0))
 
     const baseURL = router.options.history.base
@@ -97,9 +96,8 @@ const onMountHasStarted = (): void => {
   if (!(contentRef.value || itemsList.value)) return
 
   const parentScrollY = route.query['parentScrollY']
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
   if (parentScrollY !== undefined && parentScrollY !== '0' && contentRef.value?.$el) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     contentRef.value.$el.scrollTop = Number(parentScrollY)
   }
 
@@ -115,11 +113,8 @@ const onMountHasStarted = (): void => {
 const scrollToActive = (): void => {
   const scrollMarginTopValue = props.scrollMarginTop
   setTimeout(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (!(contentRef.value?.$el && itemsList.value?.$el)) return
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const contentEl: HTMLElement = contentRef.value.$el
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const itemsEl: HTMLElement = itemsList.value.$el
 
     const targetLink = document.querySelector(`a.${style['active']}`)

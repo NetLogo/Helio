@@ -74,7 +74,7 @@ const themeRgb = computed(() => {
 
 const siteConfig = useSiteConfig()
 const siteName = computed<string | undefined>(() => {
-  return props.siteName ?? (typeof siteConfig.name === 'string' ? siteConfig.name : undefined)
+  return props.siteName ?? (typeof siteConfig['name'] === 'string' ? siteConfig['name'] : undefined)
 })
 const siteLogo = computed<string | undefined>(() => {
   return props.siteLogo ?? (typeof siteConfig['logo'] === 'string' ? siteConfig['logo'] : undefined)

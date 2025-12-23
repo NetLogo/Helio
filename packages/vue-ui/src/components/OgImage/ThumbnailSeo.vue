@@ -25,7 +25,7 @@ const props = withDefaults(
 
 const siteConfig = useSiteConfig()
 const siteName = computed<string | undefined>(() => {
-  return props.siteName ?? (isNonEmptyString(siteConfig.name) ? siteConfig.name : undefined)
+  return props.siteName ?? (isNonEmptyString(siteConfig['name']) ? siteConfig['name'] : undefined)
 })
 const siteLogo = computed<string | undefined>(() => {
   return props.siteLogo ?? (isNonEmptyString(siteConfig['logo']) ? siteConfig['logo'] : undefined)
