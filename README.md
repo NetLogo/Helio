@@ -46,23 +46,22 @@ cd Helio
 
 2. **Install Dependencies**
 ```bash
-yarn install --frozen-lockfile
-```
-3. **Build the packages**
-```bash
-source scripts/build-packages.sh
+yarn install --frozen-lockfile --ignore-scripts
 ```
 
-or build all with turborepo:
+> You have to ignore scripts on the first install to avoid build errors due to unbuilt packages. You can also install and ignore the errors with `yarn install || true`.
+
+3. **Build the packages**
 ```bash
 yarn turbo run build
 ```
-
 or build them manually (must start with `@repo/utils`).
 
-4. **Install dependencies and run an app**
+4. **Install dependencies again and run an app**
 ```bash
 cd apps/<some-app>
-yarn install
+yarn install --frozen-lockfile --force
 yarn ...
 ```
+
+> Installing the dependencies again triggers the postinstall scripts needed for some apps to work.
