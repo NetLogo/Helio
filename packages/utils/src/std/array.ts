@@ -8,18 +8,21 @@ export function takeWhile<T>(array: Array<T>, predicate: (item: T) => boolean): 
   return index === -1 ? array : array.slice(0, index);
 }
 
-export function groupBy<T, K extends keyof unknown>(
+export function groupBy<T, K extends keyof Record<string | number | symbol, unknown>>(
   array: Array<T>,
   keyFn: (item: T) => K,
 ): Record<K, Array<T>> {
-  return array.reduce<Record<K, Array<T>>>((acc, item) => {
-    const key = keyFn(item);
-    if (!Array.isArray(acc[key])) {
-      acc[key] = [];
-    }
-    acc[key].push(item);
-    return acc;
-  }, {});
+  return array.reduce<Record<K, Array<T>>>(
+    (acc, item) => {
+      const key = keyFn(item);
+      if (!Array.isArray(acc[key])) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    },
+    {} as Record<K, Array<T>>,
+  );
 }
 
 export function mapBy<T, K>(array: Array<T>, keyFn: (item: T) => K): Map<K, T> {
