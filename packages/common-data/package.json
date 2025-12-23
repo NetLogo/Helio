@@ -24,7 +24,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "@repo/netlogo-docs": "*",
+    "@repo/netlogo-docs": "0.0.0",
     "vitest": "^4.0.16",
     "yaml": "^2.8.1",
     "zod": "^4.1.12"

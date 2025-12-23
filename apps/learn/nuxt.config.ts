@@ -146,6 +146,7 @@ export default defineNuxtConfig({
 
   mdc: {
     components: {
+      prose: false,
       map: {
         primitive: 'MDCPrimitive',
         a: 'ProseA',
@@ -156,6 +157,11 @@ export default defineNuxtConfig({
         netlogoCommand: 'NetLogoCommand',
       },
     },
+  },
+
+  ui: {
+    mdc: false,
+    content: false,
   },
 
   ogImage: {

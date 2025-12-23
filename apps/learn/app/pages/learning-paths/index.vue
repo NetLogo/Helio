@@ -18,7 +18,7 @@ const breadcrumb = useLearnBreadcrumb(
 </script>
 
 <template>
-  <UContainer class="my-[var(--block-top)] flex flex-col gap-8">
+  <UContainer class="my-(--block-top) flex flex-col gap-8">
     <UBreadcrumb v-if="breadcrumb.length" :items="breadcrumb" class="[&_li]:m-0" />
 
     <UPageHero

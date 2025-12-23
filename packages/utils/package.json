@@ -23,8 +23,8 @@
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@repo/eslint-config": "0.0.0",
+    "@repo/typescript-config": "0.0.0",
     "minimatch": "^10.0.3",
     "typescript": "^5.4.0"
   },

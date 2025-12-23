@@ -19,7 +19,7 @@ const isVideoTutorial = computed(() => {
 
     <StickyHeader>
       <CollapsibleHeader :label="article?.title || 'Learning Content'">
-        <ArticleRelevantFor :article="article" class="m-0! p-0! mt-5! mb-2! lg:hidden ml-[var(--space-xl)]! mr-auto" />
+        <ArticleRelevantFor :article="article" class="m-0! p-0! mt-5! mb-2! lg:hidden ml-(--space-xl)! mr-auto" />
         <ArticleNavigation class="block" />
       </CollapsibleHeader>
     </StickyHeader>
