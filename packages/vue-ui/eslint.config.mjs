@@ -4,14 +4,17 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 import vueParser from 'vue-eslint-parser'
 
+import baseConfig from '@repo/eslint-config/base'
 import { customIgnores } from '@repo/eslint-config/ignores'
 import { customRulesVue, nuxtTypescriptOverrides } from '@repo/eslint-config/nuxt'
 
 export default [
+  ...baseConfig,
   customIgnores,
   prettierConfig,
   ...pluginVue.configs['flat/recommended'],
   {
+    files: ['**/*.vue'],
     rules: {
       ...customRulesVue.rules,
       'vue/max-attributes-per-line': ['error', { singleline: 5, multiline: 1 }],

@@ -4,6 +4,8 @@ import { AnimatePresence, Motion, type Target, type Transition, type VariantLabe
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { cn } from '../../utils'
 
+import { isNonEmptyString } from '@repo/utils/std/string'
+
 type StaggerFrom = 'first' | 'last' | 'center' | 'random' | number
 type SplitBy = 'characters' | 'words' | 'lines'
 
@@ -77,7 +79,7 @@ const splitIntoCharacters = (text: string): Array<string> => {
 }
 const elements = computed((): Array<WordElement> => {
   const currentText = props.texts[currentTextIndex.value]
-  if (!currentText) {
+  if (!isNonEmptyString(currentText)) {
     return []
   }
 

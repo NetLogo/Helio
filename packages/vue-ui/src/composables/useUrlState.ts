@@ -21,10 +21,14 @@ export function useSearchParams(): readonly [
       query[key] = value
     })
 
-    if (options?.replace) {
-      router.replace({ query })
+    if (options?.replace ?? false) {
+      router.replace({ query }).catch(() => {
+        /* ignore */
+      })
     } else {
-      router.push({ query })
+      router.push({ query }).catch(() => {
+        /* ignore */
+      })
     }
   }
 
@@ -36,7 +40,7 @@ export function useUrlState(): readonly [ComputedRef<UrlState>, (newState: Parti
   const router = useRouter()
 
   const urlState = computed<UrlState>(() => ({
-    parentScrollY: route.query['parentScrollY'] ? Number(route.query['parentScrollY']) : 0,
+    parentScrollY: Boolean(route.query['parentScrollY']) ? Number(route.query['parentScrollY']) : 0,
     query: route.query['query'] as string,
   }))
 
@@ -59,7 +63,9 @@ export function useUrlState(): readonly [ComputedRef<UrlState>, (newState: Parti
       }
     }
 
-    router.replace({ query: newQuery })
+    router.replace({ query: newQuery }).catch(() => {
+      /* ignore */
+    })
   }
 
   return [urlState, updateUrlState] as const

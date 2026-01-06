@@ -49,9 +49,9 @@ const emit = defineEmits<{
 const route = useRoute()
 const router = useRouter()
 
-const contentRef = ref<InstanceType<typeof CatalogTopLevelContainer>>()
+const contentRef = ref<{ $el?: HTMLElement }>()
 
-const itemsList = ref<InstanceType<typeof CatalogSection>>()
+const itemsList = ref<{ $el?: HTMLElement }>()
 const queryText = ref<string>('')
 
 const hasQuery = computed(() => queryText.value.length > 0)
@@ -78,7 +78,9 @@ function onItemSelect(item: SideCatalogItem, e: Event): void {
 
     const baseURL = router.options.history.base
     const pathname = newURL.pathname.replace(baseURL, '/').replace('//', '/')
-    router.push(pathname + newURL.search + newURL.hash)
+    router.push(pathname + newURL.search + newURL.hash).catch(() => {
+      // ignore
+    })
   }
 }
 
@@ -106,8 +108,14 @@ const onMountHasStarted = (): void => {
   const newQuery = { ...route.query }
   delete newQuery['parentScrollY']
 
-  router.replace({ query: newQuery })
-  haveCompletedMount.value = true
+  router
+    .replace({ query: newQuery })
+    .then(() => {
+      haveCompletedMount.value = true
+    })
+    .catch(() => {
+      // ignore
+    })
 }
 
 const scrollToActive = (): void => {
@@ -156,7 +164,9 @@ onBeforeMount(() => {
   const newQuery = { ...route.query }
   delete newQuery['query']
 
-  router.replace({ query: newQuery })
+  router.replace({ query: newQuery }).catch(() => {
+    // ignore
+  })
 })
 
 export type SideCatalogItem = {

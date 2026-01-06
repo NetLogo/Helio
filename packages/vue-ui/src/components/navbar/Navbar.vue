@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import { defined } from '@repo/utils/std/null'
 import { cn } from '@repo/vue-ui/utils'
 
 import type { NavbarProps } from './types'
@@ -43,7 +44,7 @@ type MenuToggleInstance = InstanceType<typeof NavbarMenuToggle>
 
 const menuToggleRef = useTemplateRef<MenuToggleInstance>('menuToggleRef')
 const blur = (): void => {
-  if (menuToggleRef.value) {
+  if (defined(menuToggleRef.value)) {
     menuToggleRef.value.blur()
   }
 }

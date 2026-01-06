@@ -16,6 +16,7 @@ import { cn } from '@repo/vue-ui/utils'
 
 import type { NavbarAction } from './types'
 
+import { isNonEmptyString } from '@repo/utils/std/string'
 import Anchor from '../html/Anchor.vue'
 
 type Props = NavbarAction & {}
@@ -23,7 +24,7 @@ type Props = NavbarAction & {}
 const props = defineProps<Props>()
 
 // Validate props
-if (!props.href && !props.onClick) {
+if (!isNonEmptyString(props.href) && !props.onClick) {
   console.warn('NavbarAction requires either href or onClick prop.')
 }
 </script>
