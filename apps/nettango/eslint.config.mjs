@@ -1,6 +1,12 @@
-// @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import { customIgnores } from "@repo/eslint-config/ignores";
+import { customRulesVue } from "@repo/eslint-config/nuxt";
 
-export default withNuxt(
-  // Your custom configs here
-)
+import withNuxt from "./.nuxt/eslint.config.mjs";
+
+export default withNuxt()
+  .append(customIgnores)
+  .override("nuxt/vue/rules", {
+    rules: {
+      ...customRulesVue.rules,
+    },
+  });

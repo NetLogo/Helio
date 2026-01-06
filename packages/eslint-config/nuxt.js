@@ -8,7 +8,7 @@ const customRulesVue = {
   rules: {
     "vue/multi-word-component-names": "off",
     "vue/no-use-v-if-with-v-for": "warn",
-    "vue/max-attributes-per-line": ["error", { singleline: 5, multiline: 1 }],
+    "vue/max-attributes-per-line": ["error", { singleline: 6, multiline: 1 }],
     "vue/singleline-html-element-content-newline": "off",
     "vue/html-self-closing": "off",
     "vue/attributes-order": [

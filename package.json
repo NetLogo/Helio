@@ -10,7 +10,8 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "check-types": "turbo run check-types",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "before-push": "sh ./scripts/before-push.sh"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

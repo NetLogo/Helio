@@ -11,7 +11,7 @@
       badge: badgeClass,
     }"
   >
-    <template #footer v-if="showMetadata">
+    <template v-if="showMetadata" #footer>
       <span class="flex gap-1 items-center text-xs text-gray-600 italic">
         <Icon :name="kind.icon" class="w-3 h-3 inline-block align-middle text-gray-400" />
         {{ kind.label }}

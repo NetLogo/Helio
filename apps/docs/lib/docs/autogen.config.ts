@@ -1,7 +1,7 @@
 import { appendAssetsRootToMetadata } from '@repo/netlogo-docs/helpers';
-import type { ProjectConfig } from '@repo/template';
+import type { ProjectConfigInput } from '@repo/template/schemas';
 
-const autogenConfig: ProjectConfig = {
+const autogenConfig: ProjectConfigInput = {
   defaults: {
     language: 'en',
     output: false,
@@ -14,7 +14,7 @@ const autogenConfig: ProjectConfig = {
   outputRoot: 'content',
   scanRoot: 'autogen',
   engine: 'handlebars',
-  version: process.env['PRODUCT_VERSION'],
+  version: process.env['PRODUCT_VERSION'] as string,
   metadata: {
     enabled: true,
     kind: 'prepend',

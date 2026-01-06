@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="my-[var(--block-top)] flex flex-col gap-8">
+  <UContainer class="my-(--block-top) flex flex-col gap-8">
     <UBreadcrumb v-if="breadcrumb.length" :items="breadcrumb" class="[&_li]:m-0" />
 
     <UPageHero
@@ -13,7 +13,7 @@
     />
 
     <div v-else>
-      <Heading as="h1" class="no-stylized-heading mt-0" id="title">{{ title }}</Heading>
+      <Heading id="title" as="h1" class="no-stylized-heading mt-0">{{ title }}</Heading>
       <p class="text-lg text-base-content/70 mt-2 mb-6 text-slate-500">{{ subtitle }}</p>
     </div>
 
@@ -67,7 +67,8 @@
 <script setup lang="ts">
 import type { RouteLocationRaw } from 'vue-router';
 import type { Product } from '~/assets/products';
-import { ObjectModel, Service, Utility } from '~/data';
+import type { Utility } from '~/data';
+import { ObjectModel, Service } from '~/data';
 
 type Props = {
   page?: number;

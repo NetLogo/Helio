@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import type { PageConfig, PageResult, ProjectConfig } from "@repo/template";
+import type { PageConfig, PageResult } from "@repo/template";
 import TemplateRenderer from "@repo/template";
 
 import * as ArrayUtils from "@repo/utils/std/array";
@@ -9,6 +9,7 @@ import * as ArrayUtils from "@repo/utils/std/array";
 import { saveNavigationMetadata } from "../helpers/navigation";
 import { generatePrimitiveIndex } from "../primitive-index";
 
+import type { ProjectConfigInput } from "@repo/template/schemas";
 import type { Primitive } from "./entities";
 import { MustachePrimitiveWrapper, TableOfContents } from "./entities";
 import * as Fixtures from "./fixtures";
@@ -34,7 +35,7 @@ export class ExtensionDocumentationBuilder {
 
   public constructor(
     extensionDir: string,
-    private readonly autogenConfig: ProjectConfig,
+    private readonly autogenConfig: ProjectConfigInput,
   ) {
     this.dirPath = path.resolve(extensionDir);
     this.shortName = path.basename(this.dirPath);
@@ -243,7 +244,7 @@ export class ExtensionDocumentationBuilder {
 }
 
 export async function getDocumentedExtensionBuilders(
-  config: ProjectConfig,
+  config: ProjectConfigInput,
   extensionDir: string | undefined = process.env["EXTENSIONS_DIR"],
 ): Promise<Array<ExtensionDocumentationBuilder>> {
   if (!(typeof extensionDir === "string")) {
@@ -264,7 +265,7 @@ export async function getDocumentedExtensionBuilders(
     .map((dirPath) => new ExtensionDocumentationBuilder(dirPath, config));
 }
 
-export async function buildDocs(config: ProjectConfig): Promise<Array<PageResult>> {
+export async function buildDocs(config: ProjectConfigInput): Promise<Array<PageResult>> {
   const extensions = await getDocumentedExtensionBuilders(config);
   console.log("[ExtensionDocs] Found extensions: ", extensions.map((e) => e.shortName).join(", "));
   const results = await Promise.all(extensions.map(async (ext) => ext.buildAll()));

@@ -1,9 +1,10 @@
+import type { ContentSurroundLink } from '@nuxt/ui';
 import { PrimitiveCatalogSchema, type PrimitiveCatalog } from '@repo/netlogo-docs/primitive-index';
 import type { CatalogItem } from '@repo/vue-ui/components/catalog/types';
 import type { SideCatalogItem } from '@repo/vue-ui/widgets/SideCatalog.vue';
 
 type PrimitiveCatalogProps = {
-  surround?: unknown;
+  surround?: Array<ContentSurroundLink>;
 } & PrimitiveCatalog;
 
 type CatalogItemData = {

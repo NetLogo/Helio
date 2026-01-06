@@ -5,6 +5,7 @@ import { addNuxtContentAssetsRoot, getRoutes } from '@repo/netlogo-docs/helpers'
 import * as MarkdownConfig from './lib/docs/markdown.config';
 import runDocsAutogen from './lib/docs/runDocsAutogen';
 
+import { ProjectConfigSchema } from '@repo/template/schemas';
 import path from 'node:path';
 import { publicEnvironmentVariables, verifyEnvironmentVariables } from './env.public';
 import autogenConfig from './lib/docs/autogen.config';
@@ -200,7 +201,8 @@ export default defineNuxtConfig({
       await runDocsAutogen();
     },
     'content:file:beforeParse'(ctx) {
-      const fallbackRoute = path.resolve(path.join(process.cwd(), autogenConfig.scanRoot));
+      const config = ProjectConfigSchema.parse(autogenConfig);
+      const fallbackRoute = path.resolve(path.join(process.cwd(), config.scanRoot));
       addNuxtContentAssetsRoot(ctx.file, fallbackRoute);
     },
   },

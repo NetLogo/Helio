@@ -1,13 +1,15 @@
 import TemplateRenderer from '@repo/template';
 import path from 'path';
 
-import config from './autogen.config';
+import _config from './autogen.config';
 
 import { appendGitMetadata, generateGitMetadata } from '@repo/netlogo-docs/git';
 import { appendAssetsRootToMetadata, generateRoutesFile } from '@repo/netlogo-docs/helpers';
+import { ProjectConfigSchema } from '@repo/template/schemas';
 import { generateBetweenDirectoriesPages } from './NetLogoDocs';
 
 export default async function runDocsAutogen() {
+  const config = ProjectConfigSchema.parse(_config);
   const scanRoot = path.join(process.cwd(), config.scanRoot);
   const projectRoot = path.join(process.cwd(), config.projectRoot);
 

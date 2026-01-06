@@ -9,7 +9,7 @@
       variant="subtle"
       trailing-icon="i-lucide-chevron-down"
       block
-      class="px-[var(--space-xl)]"
+      class="px-(--space-xl)"
     />
 
     <template #content>
@@ -25,5 +25,5 @@ type Props = {
   label: string;
 };
 
-const props = defineProps<Props>();
+defineProps<Props>();
 </script>

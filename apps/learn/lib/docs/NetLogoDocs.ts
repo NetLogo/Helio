@@ -1,6 +1,7 @@
 import type TemplateRenderer from '@repo/template';
 import type { PageResult } from '@repo/template';
 import fs from 'fs';
+// @ts-expect-error TS7016: Could not find a declaration file for module 'glob'.
 import glob from 'glob';
 import path from 'path';
 import process from 'process';

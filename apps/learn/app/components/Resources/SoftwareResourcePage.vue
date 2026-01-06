@@ -6,7 +6,7 @@
     :contains-models-text="`This ${kindLabel} includes NetLogo model files and examples.`"
   >
     <template #metadata>
-      <div class="flex flex-col gap-[var(--space-sm)] text-sm">
+      <div class="flex flex-col gap-(--space-sm) text-sm">
         <div v-if="resource.softwareResourceKind" class="flex gap-2 items-start">
           <span class="font-semibold min-w-24">Type:</span>
           <UBadge variant="soft" class="capitalize">{{ resource.softwareResourceKind }}</UBadge>
@@ -57,8 +57,8 @@
     </template>
 
     <template #content>
-      <section v-if="resource.screenshots?.length" class="mt-[var(--block-top)]">
-        <h2 class="text-2xl font-bold mb-[var(--space-md)] no-stylized-heading">Screenshots</h2>
+      <section v-if="resource.screenshots?.length" class="mt-(--block-top)">
+        <h2 class="text-2xl font-bold mb-(--space-md) no-stylized-heading">Screenshots</h2>
         <UCarousel
           v-slot="{ item }"
           :items="resource.screenshots"
@@ -67,10 +67,12 @@
           arrows
           :ui="{ item: `basis-1/${Math.min(resource.screenshots.length, 3)}` }"
         >
+          <!-- @vue-ignore -- This might show as "unused" via TSPlugin
+                              and Volar but Nuxi fails on it --Omar Ibrahim, Jan 06 26 -->
           <img
             :src="item.url"
             :alt="item.alt ?? `${resource.title} screenshot`"
-            class="object-fit shrink-1 grow-0 h-[400px] rounded-lg border border-gray-200 shadow-sm hover:shadow-xl transition-shadow"
+            class="object-fit shrink grow-0 h-100 rounded-lg border border-gray-200 shadow-sm hover:shadow-xl transition-shadow"
           />
         </UCarousel>
       </section>

@@ -160,6 +160,9 @@ const ProjectConfigSchema = z.object({
 type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
 type ProjectConfigInput = Partial<ProjectConfig> & {
   defaults: Partial<PageConfig>;
+  partials?: Partial<ProjectConfig["partials"]>;
+  metadata?: Partial<ProjectConfig["metadata"]>;
+  locale?: Partial<ProjectConfig["locale"]>;
 };
 
 /**

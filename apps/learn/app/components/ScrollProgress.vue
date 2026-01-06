@@ -1,9 +1,9 @@
 <template>
   <ClientOnly>
     <UProgress
-      class="fixed top-[var(--ui-header-height)] left-0 w-full h-1 z-20"
-      color="primary"
       v-model="scrollPercentage"
+      class="fixed top-(--ui-header-height) left-0 w-full h-1 z-20"
+      color="primary"
     />
   </ClientOnly>
 </template>

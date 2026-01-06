@@ -11,7 +11,6 @@ const route = useRoute();
 const nameParam = route.params.name as string;
 
 const resource = await useResource(nameParam);
-const crumb = useResourceBreadcrumb();
 
 useSeoMeta({
   title: resource.value.title,

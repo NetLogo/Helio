@@ -42,7 +42,7 @@ class FamilyOrLevelRoute {
   }
 
   get title(): string {
-    let titleParts = ['Learning Paths'];
+    const titleParts = ['Learning Paths'];
     if (this.family) {
       titleParts.push(`for ${this.family.charAt(0).toUpperCase() + this.family.slice(1)}`);
     }
@@ -53,7 +53,7 @@ class FamilyOrLevelRoute {
   }
 
   get subtitle(): string {
-    let subtitleParts = [];
+    const subtitleParts = [];
     switch (this.state) {
       case 'family':
         subtitleParts.push(`Curated articles, tutorials and videos to help ${this.family} enhance their skills.`);
@@ -71,7 +71,7 @@ class FamilyOrLevelRoute {
   }
 
   get description(): string {
-    let descriptionParts = [];
+    const descriptionParts = [];
     switch (this.state) {
       case 'family':
         descriptionParts.push(

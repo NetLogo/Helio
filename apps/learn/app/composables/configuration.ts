@@ -17,7 +17,6 @@ function useProductInfo() {
 }
 
 function useRuntimeInfo() {
-  const productInfo = useProductInfo();
   return {
     noAutogen: getEnvironmentVariable<string>('NO_AUTOGEN', 'false', false),
   };

@@ -1,11 +1,7 @@
 <template>
   <Footer :sections="3">
     <FooterContainer>
-      <FooterBrandSection
-        :brand="BrandLogo"
-        brand-href="https://www.netlogo.org/"
-        href-aria-label="NetLogo Home"
-      >
+      <FooterBrandSection :brand="BrandLogo" brand-href="https://www.netlogo.org/" href-aria-label="NetLogo Home">
         <hr class="w-full border-gray-300 my-4" />
         <p>
           Domain-centric block-based programming, powered by NetLogo Web for agent-based modeling
@@ -18,25 +14,17 @@
       <FooterSection :span="5">
         <p class="text-gray-600 max-w-3xl">
           NetTango Web is developed as a collaboration between the
-          <a
-            href="https://ccl.northwestern.edu/"
-            class="underline decoration-dotted hover:text-primary"
-            >Center for Connected Learning</a
-          >
+          <a href="https://ccl.northwestern.edu/" class="underline decoration-dotted hover:text-primary">Center for
+            Connected Learning</a>
           and the
-          <a
-            href="https://tidal.northwestern.edu/"
-            class="underline decoration-dotted hover:text-primary"
-            >TIDAL lab</a
-          >, both at Northwestern University.
+          <a href="https://tidal.northwestern.edu/" class="underline decoration-dotted hover:text-primary">TIDAL
+            lab</a>, both at Northwestern University.
         </p>
         <p class="text-sm text-gray-500 mt-4">
           NetTango Web is open source software. The NetTango Web builder is part of the
           <a href="#" class="text-primary hover:underline">Galapagos project</a> for NetLogo Web.
           The NetTango blocks interface has its own
-          <a href="https://github.com/NetLogo/NetTango" class="text-primary hover:underline"
-            >repository</a
-          >.
+          <a class="text-primary hover:underline" href="https://github.com/NetLogo/NetTango">repository</a>.
         </p>
       </FooterSection>
     </FooterContainer>

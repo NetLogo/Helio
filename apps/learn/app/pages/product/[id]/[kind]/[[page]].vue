@@ -17,13 +17,13 @@
 </template>
 
 <script lang="ts">
+import { toSlug } from '@repo/netlogo-docs/helpers';
+import { products } from '~/assets/products';
+
 const availableKinds = getTagsRecord();
 </script>
 
 <script setup lang="ts">
-import { toSlug } from '@repo/netlogo-docs/helpers';
-import { products } from '~/assets/products';
-
 const route = useRoute();
 const productId = toSlug(decodeURIComponent(route.params.id as string));
 

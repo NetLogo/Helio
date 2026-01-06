@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="my-[var(--block-top)] flex flex-col gap-[var(--space-lg)]">
+  <UContainer class="my-(--block-top) flex flex-col gap-(--space-lg)">
     <UBreadcrumb :items="crumb" class="no-stylized-heading" />
 
     <UPageHero
@@ -11,7 +11,7 @@
       }"
     />
 
-    <div class="flex flex-col lg:flex-row gap-4 bg-gray-50 border border-gray-200 rounded-lg p-[var(--space-lg)]">
+    <div class="flex flex-col lg:flex-row gap-4 bg-gray-50 border border-gray-200 rounded-lg p-(--space-lg)">
       <USelectMenu
         v-model="selectedType"
         value-key="value"
@@ -42,7 +42,7 @@
       />
     </div>
 
-    <UBlogPosts v-if="filteredResources.length > 0" class="no-stylized-heading mt-[var(--space-lg)]">
+    <UBlogPosts v-if="filteredResources.length > 0" class="no-stylized-heading mt-(--space-lg)">
       <ResourceCard v-for="resource in filteredResources" :key="resource.stem" :resource="resource" class="basis-1/4" />
     </UBlogPosts>
 
@@ -119,11 +119,13 @@ const filteredResources = computed<ResourcesCollectionItem[]>(() => {
   }
 
   if (selectedLevel.value) {
-    resources = resources.filter((r) => r.level?.includes(selectedLevel.value as any));
+    // @ts-expect-error -- level type is narrow
+    resources = resources.filter((r) => r.level?.includes(selectedLevel.value));
   }
 
   if (selectedAudience.value) {
-    resources = resources.filter((r) => r.targetAudience?.includes(selectedAudience.value as any));
+    // @ts-expect-error -- audience type is narrow
+    resources = resources.filter((r) => r.targetAudience?.includes(selectedAudience.value));
   }
 
   return resources;

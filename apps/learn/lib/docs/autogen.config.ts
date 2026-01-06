@@ -1,7 +1,7 @@
 import { appendAssetsRootToMetadata } from '@repo/netlogo-docs/helpers';
-import type { ProjectConfig } from '@repo/template';
+import type { ProjectConfigInput } from '@repo/template/schemas';
 
-const autogenConfig: ProjectConfig = {
+const autogenConfig: ProjectConfigInput = {
   defaults: {
     language: 'en',
     output: false,
