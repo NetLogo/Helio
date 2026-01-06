@@ -1,28 +1,26 @@
 <template>
-  <DropdownMenu>
-    <DropdownMenuTrigger class="line-clamp-1 ellipsis" :class="focusVisibleRingClass">
+  <UDropdownMenu
+    :items
+    :external-icon="true"
+    :ui="{
+      content: 'w-fit max-h-[70vh]',
+      item: 'rounded-md hover:not-[disabled]:bg-neutral-200 focus:bg-neutral-200/90',
+    }"
+    :loop="true"
+  >
+    <UButton :class="focusVisibleRingClass" trailing-icon="i-lucide:chevron-down" variant="outline">
       {{ selectedVersionDisplay }}
-      <Icon name="i-lucide:chevron-down" class="align-middle" />
-    </DropdownMenuTrigger>
+    </UButton>
 
-    <DropdownMenuContent>
-      <DropdownMenuItem
-        v-for="(value, key) in processedVersions"
-        :key="key"
-        :variant="value.selected ? 'selected' : 'default'"
-        :disabled="value.disabled"
-        class="not-last:mb-1"
-        :class="[focusVisibleRingClass, 'focus-visible:bg-primary']"
-        @click="emit('versionChange', key)"
-      >
-        {{ value.displayName }}
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
+    <template #selected-trailing>
+      <Icon name="i-lucide-badge-check" class="shrink-0 size-5 text-primary" />
+    </template>
+  </UDropdownMenu>
 </template>
 
 <script setup lang="ts">
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/dropdown-menu'
+import type { DropdownMenuItem } from '@nuxt/ui'
+
 import { ObjectFunctor } from '@repo/utils/std/objects'
 import { computed } from 'vue'
 
@@ -63,5 +61,15 @@ const selectedVersionDisplay = computed(() => {
   return selected?.displayName ?? props.selectedVersion
 })
 
-export type { VersionSelectDropdownProps, VersionProps }
+const items = computed<Array<DropdownMenuItem>>(() =>
+  Object.entries(processedVersions.value).map(([key, value]) => ({
+    label: value.displayName,
+    value: key,
+    disabled: value.disabled,
+    slot: value.selected ? 'selected' : 'not-selected',
+    onSelect: (): void => emit('versionChange', key),
+  }))
+)
+
+export type { VersionProps, VersionSelectDropdownProps }
 </script>
