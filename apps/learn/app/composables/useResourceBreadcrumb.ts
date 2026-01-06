@@ -12,7 +12,7 @@ function useResourceBreadcrumb(resource?: ResourcesCollectionItem) {
       crumb.value = [
         { label: 'NetLogo Learn', to: '/', icon: 'i-lucide-box' },
         { label: 'Resources', to: '/resources', icon: 'i-lucide-bookmark' },
-        { label: kind.value.label, to: `/resources?type=${kind.value.label}`, icon: kind.value.icon },
+        { label: kind.value.label, to: '/resources', icon: kind.value.icon },
         { label: resource.title, to: addLeadingSlash(resource.stem), icon: 'i-lucide-file-text' },
       ];
     }

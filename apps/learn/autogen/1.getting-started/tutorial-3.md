@@ -672,11 +672,11 @@ something to do.
 That's where this tutorial leaves off.
 
 If you'd like to look at some more documentation about NetLogo, the
-[Interface Guide](interface) section of the manual walks you through every
+[Interface Guide](https://docs.netlogo.org/interface) section of the manual walks you through every
 element of the NetLogo interface in order and explains its function. For a
 detailed description and specifics about writing procedures, refer to the
 [Programming Guide](https://docs.netlogo.org/programming). All of the primitives are listed and
-described in the [NetLogo Dictionary](dictionary).
+described in the [NetLogo Dictionary](https://docs.netlogo.org/dictionary).
 
 Also, you can continue experimenting with and expanding this model if you'd
 like, experimenting with different variables and behaviors for the agents.

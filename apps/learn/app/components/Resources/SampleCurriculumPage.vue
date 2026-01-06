@@ -6,7 +6,7 @@
     contains-models-text="This curriculum includes NetLogo model files and examples."
   >
     <template #metadata>
-      <div class="flex flex-col gap-[var(--space-sm)] text-sm">
+      <div class="flex flex-col gap-(--space-sm) text-sm">
         <div v-if="resource.gradeLevels?.length" class="flex gap-2 items-start">
           <span class="font-semibold min-w-24">Grade Levels:</span>
           <div class="flex gap-2 flex-wrap">
@@ -63,9 +63,9 @@
     <template #content>
       <section
         v-if="resource.curriculumStandards?.length"
-        class="bg-blue-50 border border-blue-200 p-[var(--space-lg)] rounded"
+        class="bg-blue-50 border border-blue-200 p-(--space-lg) rounded"
       >
-        <h3 class="text-lg font-semibold mt-0 mb-[var(--space-sm)] no-stylized-heading">Educational Standards</h3>
+        <h3 class="text-lg font-semibold mt-0 mb-(--space-sm) no-stylized-heading">Educational Standards</h3>
         <ul class="list-disc pl-5 space-y-1 m-0">
           <li v-for="standard in resource.curriculumStandards" :key="standard">{{ standard }}</li>
         </ul>

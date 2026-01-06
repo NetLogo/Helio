@@ -1,9 +1,9 @@
 <template>
-  <UContainer class="my-[var(--block-top)] px-[var(--space-xl)] lg:px-0 nl-container-width mx-auto">
+  <UContainer class="my-(--block-top) px-(--space-xl) lg:px-0 nl-container-width mx-auto">
     <UBreadcrumb :items="crumb" class="no-stylized-heading" />
 
-    <article class="flex flex-col gap-[var(--space-lg)]">
-      <div class="grid lg:grid-cols-3 gap-[var(--space-lg)] items-start mt-[var(--block-top)]">
+    <article class="flex flex-col gap-(--space-lg)">
+      <div class="grid lg:grid-cols-3 gap-(--space-lg) items-start mt-(--block-top)">
         <div class="lg:col-span-1">
           <img
             :src="resource.thumbnail?.url ?? '/images/default-thumbnail.png'"
@@ -15,12 +15,12 @@
           </span>
         </div>
 
-        <div class="lg:col-span-2 flex flex-col gap-[var(--space-md)]">
+        <div class="lg:col-span-2 flex flex-col gap-(--space-md)">
           <div>
             <UBadge v-if="badgeText" :class="badgeClass" class="mb-2">
               {{ badgeText }}
             </UBadge>
-            <h1 class="text-4xl font-bold mt-0 mb-[var(--space-sm)] no-stylized-heading">
+            <h1 class="text-4xl font-bold mt-0 mb-(--space-sm) no-stylized-heading">
               {{ resource.fullName || resource.title }}
             </h1>
             <p v-if="resource.shortName && resource.shortName !== resource.title" class="text-lg text-gray-600 italic">

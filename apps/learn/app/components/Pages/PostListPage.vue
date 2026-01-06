@@ -30,7 +30,6 @@
         :image="article.thumbnail"
         variant="outline"
         orientation="horizontal"
-        :authors="productsWrapper(article.productTags)"
         :to="article.path"
         :ui="{
           title: 'my-3',
@@ -39,7 +38,20 @@
           body: 'lg:col-span-2 h-full',
           description: 'lg:line-clamp-3  text-ellipsis overflow-hidden',
         }"
-      />
+      >
+        <template #authors>
+          <UAvatarGroup>
+            <PageTag
+              v-for="tag in article.productTags"
+              :key="tag.id"
+              :src="tag.iconUrl"
+              :alt="tag.name"
+              :title="tag.name"
+              :href="getProductHome(tag.id)"
+            />
+          </UAvatarGroup>
+        </template>
+      </UBlogPost>
     </div>
 
     <UEmpty
@@ -66,7 +78,6 @@
 
 <script setup lang="ts">
 import type { RouteLocationRaw } from 'vue-router';
-import type { Product } from '~/assets/products';
 import type { Utility } from '~/data';
 import { ObjectModel, Service } from '~/data';
 
@@ -142,10 +153,6 @@ const section = computed(() => ({
   pageCount: Math.ceil((data.value?.count ?? 0) / pageSize.value),
   items: data.value?.articles?.map((item) => new ObjectModel.Article(item)) ?? [],
 }));
-
-function productsWrapper(products: Array<Product>) {
-  return products.map(productToUserProps);
-}
 
 function checkValidPageNumber(n: number): void | never {
   if (n < 1 || n > section.value.pageCount) {

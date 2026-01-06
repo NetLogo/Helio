@@ -4,7 +4,7 @@
 This guide shows how to understand and modify the code of existing HubNet
 activities and write your own new ones. It assumes you are familiar with running
 HubNet activities, basic NetLogo code and NetLogo interface elements. For more
-general information about HubNet see the [HubNet Guide](/hubnet).
+general information about HubNet see the [HubNet Guide](https://docs.netlogo.org/hubnet).
 
 #### Table of Contents
 

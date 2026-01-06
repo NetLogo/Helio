@@ -38,7 +38,7 @@ const netLogoWebProduct: Product = {
   iconName: 'netlogo-netlogo-desktop',
   productExternalHomePage: 'https://www.netlogoweb.org',
   ctaPrimaryLabel: 'Start with a Tutorial',
-  ctaPrimaryUrl: '/netlogo/party-tutorial',
+  ctaPrimaryUrl: '/getting-started/tutorial-0',
   ctaSecondaryLabel: 'Try NetLogo Web',
   ctaSecondaryUrl: 'https://www.netlogoweb.org',
   prerequisites: [

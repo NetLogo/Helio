@@ -148,8 +148,8 @@ useSeoMeta({
 
           <ul>
             <li v-for="req in prerequisites" :key="req.title" class="flex items-center gap-2 mb-2">
-              <Icon :name="req.icon" class="w-5 h-5 flex-shrink-0" />
-              <NuxtLink v-if="req.path" :to="req.path">
+              <Icon :name="req.icon" class="w-5 h-5 shrink-0" />
+              <NuxtLink v-if="req.path" :to="req.path" aria-label="Prerequisite Link">
                 {{ req.title }}
               </NuxtLink>
               <span v-else class="bold line-clamp-1 text-ellipsis" :title="req.title">{{ req.title }}</span>

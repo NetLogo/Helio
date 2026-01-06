@@ -1,6 +1,6 @@
 # {{title}}
 
-If you read the [Sample Model: Party](sample) section, you got a brief
+If you read the [Sample Model: Party](tutorial-0) section, you got a brief
 introduction to what it's like to explore a NetLogo model. This section will go
 into more depth about the features that are available while you're exploring the
 models in the Models Library.
@@ -387,7 +387,7 @@ For example, if you wanted to add a histogram to your model, you'd look at
 ### HubNet Activities
 
 This section contains participatory simulations for use with groups. For more
-information about HubNet, see the [HubNet Guide](/hubnet).
+information about HubNet, see the [HubNet Guide](https://docs.netlogo.org/hubnet).
 
 ## What's Next?
 

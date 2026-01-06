@@ -1,6 +1,6 @@
 <template>
   <component :is="as" v-bind="$attrs" :id="id">
-    <a :href>
+    <a :href aria-label="`Link to ${id} section`">
       <slot />
     </a>
   </component>

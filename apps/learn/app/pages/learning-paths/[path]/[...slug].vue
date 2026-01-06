@@ -13,7 +13,7 @@ useHead({
   link: [
     {
       rel: 'canonical',
-      href: `${useRuntimeConfig().public.siteUrl}${addLeadingSlash(learningPathRoute)}`,
+      href: `${useProductInfo().productWebsite}${addLeadingSlash(articlePath)}`,
     },
   ],
   meta: [

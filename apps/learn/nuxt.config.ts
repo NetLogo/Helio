@@ -11,14 +11,11 @@ import { publicEnvironmentVariables, verifyEnvironmentVariables } from './env.pu
 import autogenConfig from './lib/docs/autogen.config';
 import { vueUiIconPack, vueUiSrc, vueUiStyles } from './turbo';
 
-const basePath = process.env['BASE_PATH'] ?? '/';
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   app: {
     rootId: '__netlogo',
-    baseURL: basePath,
   },
   devtools: {
     enabled: true,
@@ -117,9 +114,6 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ['@repo/vue-ui', '@repo/utils', '@repo/netlogo-docs', ...MarkdownConfig.externalImports],
     },
-    build: {
-      sourcemap: true,
-    },
     server: {
       watch: { usePolling: true },
       hmr: true,
@@ -210,12 +204,12 @@ export default defineNuxtConfig({
   nitro: {
     static: true,
     serveStatic: true,
-    baseURL: basePath,
     prerender: {
       autoSubfolderIndex: false,
       crawlLinks: true,
       concurrency: 1,
       routes: await getRoutes(),
+      failOnError: false,
     },
   },
 });

@@ -11,8 +11,8 @@ function getEnvironmentVariable<T>(key: string, defaultValue: T, showWarning: bo
 
 function useProductInfo() {
   return {
-    productName: getEnvironmentVariable<string>('PRODUCT_NAME', 'NetLogo Documentation'),
-    productWebsite: getEnvironmentVariable<string>('PRODUCT_WEBSITE', 'https://docs.netlogo.org'),
+    productName: getEnvironmentVariable<string>('PRODUCT_NAME', 'NetLogo Learning'),
+    productWebsite: getEnvironmentVariable<string>('PRODUCT_WEBSITE', 'https://learn.netlogo.org'),
   };
 }
 

@@ -27,7 +27,13 @@ export default async function runDocsAutogen() {
 
   const result = await Promise.all([generateBetweenDirectoriesPages(renderer, buildVariables)]);
 
-  await generateRoutesFile(renderer, result.flat());
+  await generateRoutesFile(
+    renderer,
+    result.flat().map((r) => {
+      r.baseName = r.baseName.replace(/\/\d+\./g, '/').replace(/^\d+\./g, '');
+      return r;
+    }),
+  );
 
   if (global.gc) {
     global.gc();

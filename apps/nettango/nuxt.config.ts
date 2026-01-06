@@ -123,6 +123,7 @@ export default defineNuxtConfig({
   nitro: {
     static: true,
     serveStatic: true,
+    baseURL: "/",
     prerender: {
       autoSubfolderIndex: false,
       crawlLinks: true,

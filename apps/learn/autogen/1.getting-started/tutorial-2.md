@@ -35,7 +35,7 @@ shape of the cars, adding a house or street light, creating a stop light, or
 even creating another lane of traffic. Some of these suggested changes are
 visual, to enhance the look of the model, while others are more behavioral. We
 will be focusing more on the simpler or cosmetic changes throughout most of this
-tutorial. ([Tutorial #3](tutorial3) will go into greater detail about
+tutorial. ([Tutorial #3](tutorial-3) will go into greater detail about
 behavioral changes, which require changing the Code tab.)
 
 To make these simple changes we will be using the Command Center.
@@ -192,7 +192,7 @@ You can use this technique on any of the colors listed in the chart. NetLogo
 allows you to use the whole spectrum of For information on the different ways
 colors are represented in NetLogo see the [Colors](https://docs.netlogo.org/programming#colors)
 section of the NetLogo Programming Guide. The
-[Color Picker Guide](colorpicker) explains how to choose colors using a
+[Color Picker Guide](https://docs.netlogo.org/colorpicker) explains how to choose colors using a
 dialog.
 
 ## Agent Monitors and Agent Commanders
@@ -291,8 +291,8 @@ designated in the same way as plotting a point.
 > ![[tutorial2/patch-inspector.png]]
 >
 > The monitor shows that for the patch in the picture, its
-> [pxcor](dictionary#pcor) variable is -19 and its
-> [pycor](dictionary#pcor) variable is 0. If we go back to the analogy of
+> [[pxcor]] variable is -19 and its
+> [[pycor]] variable is 0. If we go back to the analogy of
 > the coordinate plane and wanted to plot this point, the point would be found
 > on the x axis left of the origin, where x=-19 and y=0.
 >
