@@ -7,6 +7,7 @@
     "node": "^22.0.0"
   },
   "scripts": {
+    "init": "nuxt prepare",
     "nuxt:build": "nuxt build",
     "nuxt:dev": "nuxt dev --port 3002",
     "nuxt:dev:no-autogen": "NO_AUTOGEN=true nuxt dev --port 3002",

@@ -428,5 +428,17 @@
   "/dict/turtles-at-3d",
   "/dict/world-depth",
   "/dict/zcor",
-  "/dict/zoom"
+  "/dict/zoom",
+  "/arduino",
+  "/arduino/primitives",
+  "/arduino/ports",
+  "/arduino/open",
+  "/arduino/close",
+  "/arduino/get",
+  "/arduino/write-string",
+  "/arduino/write-int",
+  "/arduino/write-byte",
+  "/arduino/is-open",
+  "/arduino/debug-to-arduino",
+  "/arduino/debug-from-arduino"
 ]

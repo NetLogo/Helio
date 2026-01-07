@@ -25,14 +25,9 @@ jobs:
           node-version: 22
           cache: "yarn"
 
-      - name: Install dependencies
+      - name: Initialize Repository
         run: |
-          yarn install --frozen-lockfile --ignore-scripts
-
-      - name: Build Packages
-        run: |
-          yarn run build
-          yarn install --force
+          sh ./scripts/initialize.sh
 
       - name: Run ${{ matrix.command }}
         run: yarn ${{ matrix.command }}

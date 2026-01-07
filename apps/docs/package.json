@@ -7,6 +7,7 @@
     "node": "^22.0.0"
   },
   "scripts": {
+    "init": "nuxt prepare",
     "docs:build": "NODE_OPTIONS=--max-old-space-size=8192 ./scripts/generate.sh",
     "docs:deploy": "NODE_OPTIONS=--max-old-space-size=8192 bash ./scripts/deploy.sh",
     "docs:preview": "bash ./scripts/preview.sh",
