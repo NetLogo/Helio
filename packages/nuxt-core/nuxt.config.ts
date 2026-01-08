@@ -4,7 +4,9 @@ import { vueUiIconPack, vueUiSrc, vueUiStyles } from "./turbo";
 
 import { getRoutes } from "@repo/netlogo-docs/helpers";
 
-export default defineNuxtConfig({
+type NuxtBaseConfig = Parameters<typeof defineNuxtConfig>[0];
+
+export const nuxtBaseConfig: NuxtBaseConfig = {
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   app: {
@@ -25,7 +27,11 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts", // Google Fonts
   ],
 
-  css: [vueUiStyles],
+  colorMode: {
+    preference: "light",
+  },
+
+  css: ["~/assets/styles/main.scss", "~/assets/styles/tailwind.css", vueUiStyles],
 
   imports: {
     autoImport: true,
@@ -139,6 +145,21 @@ export default defineNuxtConfig({
       html: process.env["CHECK"] === "true",
     },
   },
+
+  hooks: {
+    async ready() {
+      console.info(`[repo] Using @repo/vue-ui source path: ${vueUiSrc}`);
+      console.info(`[repo] Using @repo/vue-ui styles path: ${vueUiStyles}`);
+      console.info(`[repo] Using @repo/vue-ui icon path: ${vueUiIconPack}`);
+      console.info(
+        `[repo] Using primitives.yaml from ${import.meta.resolve("@repo/common-data/datasets/primitives.yaml")}`,
+      );
+
+      const noAutogen = process.env["NO_AUTOGEN"] === "true";
+      if (noAutogen === true) return;
+    },
+  },
+
   nitro: {
     static: true,
     serveStatic: true,
@@ -149,4 +170,6 @@ export default defineNuxtConfig({
       routes: await getRoutes(),
     },
   },
-});
+};
+
+export default defineNuxtConfig(nuxtBaseConfig);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { toSlug } from "./routes";
+import { toSlug } from "./slugify";
 
 describe("Routes Helper", () => {
   describe("toSlug", () => {

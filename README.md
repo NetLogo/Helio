@@ -20,22 +20,26 @@ For development guides, contribution instructions, and more, please refer to the
 ### Directory Structure
 
 ```
-Helio/
-├── apps/
-│   ├── docs/                    # Nuxt.js v4 documentation website
-├── packages/
-│   ├── vue-ui/                  # Vue component library with Reka UI in Nuxt
-│   ├── markdown/                # NetLogo markdown renderer
-│   ├── template/                # Mustache/Handlebars template engine
-│   ├── netlogo-docs/            # NetLogo documentation shared generators
-│   ├── utils/                   # Shared utilities
-│   ├── nuxt-content-assets/     # Nuxt content asset management
-│   ├── tailwind-config/         # Shared Tailwind CSS 4+ configuration
-│   ├── typescript-config/       # Shared TypeScript configurations
-│   └── eslint-config/           # Shared ESLint configurations
-├── external/
-│   └── extensions/              # NetLogo extension documentation
-└── static/                      # Static assets and favicons
+📂 Helio/
+├── 📂 apps/
+│   ├── 📁 docs/                    # Nuxt.js v4 documentation website
+│   ├── 📁 netlogo/                 # NetLogo.org website
+│   ├── 📁 learn/                   # NetLogo tutorials and guides
+│   └── 📁 nettango/                # NetTango landing page
+├── 📂 packages/
+│   ├── 📁 vue-ui/                  # Vue component library with Reka UI in Nuxt
+│   ├── 📁 markdown/                # NetLogo markdown renderer
+│   ├── 📁 template/                # Mustache/Handlebars template engine
+│   ├── 📁 netlogo-docs/            # NetLogo documentation shared generators
+│   ├── 📁 utils/                   # Shared utilities
+│   ├── 📁 nuxt-content-assets/     # Nuxt content asset management
+│   ├── 📁 nuxt-core/               # Template for Nuxt sites including common modules and plugins
+│   ├── 📁 tailwind-config/         # Shared Tailwind CSS 4+ configuration
+│   ├── 📁 typescript-config/       # Shared TypeScript configurations
+│   └── 📁 eslint-config/           # Shared ESLint configurations
+├── 📂 external/
+│   └── extensions/                 # NetLogo extension documentation
+└── 📂 static/                      # Static assets and favicons
 ```
 
 ### Getting Started

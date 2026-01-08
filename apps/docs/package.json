@@ -28,7 +28,8 @@
     "check-types": "nuxi typecheck",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "node-version": "node -v && npm -v"
+    "node-version": "node -v && npm -v",
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "@nuxt/content": "^3.7.1",

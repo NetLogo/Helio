@@ -23,7 +23,7 @@ export async function getRoutes(baseUrl: string = "/"): Promise<Array<string> | 
   const routesPath = path.join(process.cwd(), "routes.json");
   if (!Boolean(await fs.stat(routesPath).catch(() => false))) {
     console.warn("No routes.json file found");
-    return [];
+    return ["/"];
   }
   const routesContent = await fs.readFile(routesPath, "utf-8");
   const routes = JSON.parse(routesContent) as Array<string>;

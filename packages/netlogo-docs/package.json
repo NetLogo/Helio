@@ -13,7 +13,6 @@
       "require": "./dist/cjs/*/index.js"
     }
   },
-  "type": "module",
   "license": "UNLICENSED",
   "scripts": {
     "build:esm": "tsc && tsc-alias",

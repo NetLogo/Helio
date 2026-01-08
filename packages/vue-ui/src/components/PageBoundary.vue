@@ -9,6 +9,6 @@
 
 <script setup lang="ts">
 const logError = (error: Error): void => {
-  console.error('An error occurred:', error);
-};
+  console.error('An error occurred:', error)
+}
 </script>
