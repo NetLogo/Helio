@@ -2,17 +2,7 @@ import type TemplateRenderer from "@repo/template";
 import type { PageResult } from "@repo/template";
 import fs from "fs/promises";
 import path from "path";
-import slugify from "slugify";
-
-export const slugifyOptions = {
-  lower: true,
-  replacement: "--",
-  remove: /[*+~()'"!:@\?&<>"'`]/g,
-};
-
-export function toSlug(name: string): string {
-  return slugify(name, slugifyOptions);
-}
+import { toSlug } from "./slugify";
 
 export async function generateRoutesFile(
   renderer: TemplateRenderer,
