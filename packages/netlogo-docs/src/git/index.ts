@@ -5,18 +5,27 @@ import fs from "fs";
 import path from "path";
 import type z from "zod";
 import { GitMetadataSchema, type GitMetadata } from "./public-schema";
+
 class GitLog {
   public readonly date: string;
   public readonly author: string;
   public constructor(line: string) {
-    const parts = line.split(" ");
-    if (parts.length < 2)
-      throw Error(
-        `Incorrect Git Log Format. Expected {{ YYYY-MM-DD }} {{ author_name }}. Received ${line}.`,
+    if (line.trim().length === 0) {
+      console.warn(
+        "Git Log returned an empty line. This may indicate no git history for the file.",
       );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.date = parts[0]!;
-    this.author = parts.slice(1).join(" ");
+      this.date = new Date().toISOString().split("T")[0] ?? "2026-01-01";
+      this.author = "NetLogo Team";
+    } else {
+      const parts = line.split(" ");
+      if (parts.length < 2)
+        throw Error(
+          `Incorrect Git Log Format. Expected {{ YYYY-MM-DD }} {{ author_name }}. Received ${line}.`,
+        );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.date = parts[0]!;
+      this.author = parts.slice(1).join(" ");
+    }
   }
 }
 
