@@ -8,6 +8,8 @@
 
 **Helio** is a monorepo for NetLogo-related website, web  applications and shared packages, maintained by the Center for Connected Learning (CCL) at Northwestern University. This project represents the modern web ecosystem for NetLogo documentation, tools, and educational resources.
 
+For development guides, contribution instructions, and more, please refer to the [guides section](./docs/guides/index.md).
+
 ### Architecture
 
 **Monorepo Structure** - Turborepo-managed workspace with:
@@ -37,31 +39,19 @@ Helio/
 ```
 
 ### Getting Started
-1. **Clone the Repository**
+1. **Install Requirements**
+   - [Node.js v22](https://nodejs.org/en/download/)
+   - [Yarn v1](https://classic.yarnpkg.com/lang/en/docs/install/)
+   - [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) (for Windows users)
+
+2. **Clone the Repository**
 
 ```bash
 git clone https://github.com/NetLogo/Helio.git
 cd Helio
 ```
 
-2. **Install Dependencies**
+3. **Run the initialization script**
 ```bash
-yarn install --frozen-lockfile --ignore-scripts
+yarn run init
 ```
-
-> You have to ignore scripts on the first install to avoid build errors due to unbuilt packages. You can also install and ignore the errors with `yarn install || true`.
-
-3. **Build the packages**
-```bash
-yarn turbo run build
-```
-or build them manually (must start with `@repo/utils`).
-
-4. **Install dependencies again and run an app**
-```bash
-cd apps/<some-app>
-yarn install --frozen-lockfile --force
-yarn ...
-```
-
-> Installing the dependencies again triggers the postinstall scripts needed for some apps to work.
