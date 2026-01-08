@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -e
+
+branch="$(git symbolic-ref --short HEAD)"
+
+if [ "$branch" = "main" ]; then
+  if [ "${IGNORE_BRANCH_PROTECTION_RULES}" = "1" ]; then
+    exit 0
+  fi
+
+  echo "Direct pushes to main are blocked."
+  echo "Set IGNORE_BRANCH_PROTECTION_RULES=1 to bypass intentionally."
+  exit 1
+fi
+
+echo "Running pre-push checks…"
+yarn run pre-push

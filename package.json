@@ -5,14 +5,14 @@
     "node": "^22.0.0"
   },
   "scripts": {
+    "init": "sh ./scripts/initialize.sh && NUXT_TELEMETRY_DISABLED=1 sh ./scripts/check-repo.sh",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "init": "sh ./scripts/initialize.sh && NUXT_TELEMETRY_DISABLED=1 sh ./scripts/check-repo.sh",
-    "before-push": "sh ./scripts/check-repo.sh"
+    "pre-push": "sh ./scripts/check-repo.sh"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
