@@ -2,6 +2,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeRaw from "rehype-raw";
 import type { Options as RehypeSlugOptions } from "rehype-slug";
 import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
 import remarkSmartypants from "remark-smartypants";
 import type { Options as RemarkTocOptions } from "remark-toc";
 import remarkToc from "remark-toc";
@@ -12,7 +13,6 @@ import { remarkRehypeQuestion } from "./plugins/question";
 import rehypeTableWrapper from "./plugins/table-wrapper";
 import { rehypeTocWrapper } from "./plugins/toc";
 import { remarkWikiLink } from "./plugins/wikilink";
-
 type MarkdownPlugin = Record<string, { instance?: unknown; options?: unknown; src?: string }>;
 
 const getDefaultRehypePluginsObject = (): MarkdownPlugin => {
@@ -43,7 +43,11 @@ const getDefaultRemarkPluginsObject = (): MarkdownPlugin => {
       instance: remarkWikiLink,
       options: wikiLinkConfig,
     },
-    "remark-gfm": {},
+    "remark-gfm": {
+      instance: remarkGfm,
+      options: {},
+      src: "remark-gfm",
+    },
     "remark-smartypants": {
       instance: remarkSmartypants as unknown,
       options: {},
