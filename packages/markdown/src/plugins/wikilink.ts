@@ -11,6 +11,13 @@ import {
 } from "./wikilink.options";
 
 const createWikilinkRegex = (): RegExp => {
+  // Possibilities include
+  // - [[permalink]] -> displayText = permalink
+  // - [[displayText|permalink]]
+  // - [[displayText|permalink#anchor]]
+  // - [[permalink#anchor]] -> displayText = permalink#anchor
+  // - ![[permalink]] (image)
+  // - [[displayText|#anchor]] -> permalink = "", anchor = anchor, displayText = displayText
   return new RegExp(/(!?\[\[([^\]|]+)(?:\|([^\]#]+)?)?(#[^\]]+)?\]\])/g);
 };
 
@@ -93,9 +100,13 @@ const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (options = undefined) =
             const parts = display.split("#");
             permalink = parts[0] ?? "";
             anchor = parts[1] ?? null;
+          } else if (isHeadingDefined) {
+            permalink = permalinkRaw?.trim() ?? "";
+            anchor = heading.slice(1); // Remove the '#' if present
+            display = displayText?.trim() ?? anchor;
           } else {
             permalink = (permalinkRaw ?? displayText ?? "").trim();
-            anchor = isHeadingDefined ? heading.slice(1) : null; // Remove the '#' if present
+            anchor = null;
             display = displayText?.trim() ?? permalink;
           }
 
