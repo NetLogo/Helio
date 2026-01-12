@@ -31,6 +31,7 @@ mkdir -p "$TARGET_DIR"
 echo "🧹 Emptied target directory: $TARGET_DIR"
 
 echo "💡 Preparing Nuxt for generation..."
+npx nuxi cleanup >> .stdout.log 2>> .stderr.log
 BASE_PATH="/" yarn run nuxt:prepare >> .stdout.log 2>> .stderr.log
 echo "==== end of prepare step ====" >> .stdout.log
 echo "" >> .stdout.log

@@ -348,7 +348,7 @@ shapes.
 <img src="./images/nl7intro/turtleshapeseditor.png" style="width:3" />
 </td>
 <td>
-<img src="./images/nl7intro/linkshapeseditor.png " style="width:3" />
+<img src="./images/nl7intro/linkshapeseditor.png" style="width:3" />
 </td>
 </tr>
 </tbody>

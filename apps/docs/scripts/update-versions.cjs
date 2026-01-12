@@ -58,8 +58,8 @@ if (existingIndex >= 0) {
   versions[existingIndex] = versionEntry;
   console.log(`Updated version ${productVersion}`);
 } else {
-  // Add new entry
-  versions.push(versionEntry);
+  // Add new entry at TOP
+  versions.unshift(versionEntry);
   console.log(`Added new version ${productVersion}`);
 }
 

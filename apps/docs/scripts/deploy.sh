@@ -43,6 +43,7 @@ if [ -d .build ]; then
   if [ "$use_existing" != "y" ]; then
     echo "💡 (Re)building documentation site..."
     yarn run docs:build
+    yarn run docs:generate-manual
   else
     echo "💡 Using existing .build directory."
   fi

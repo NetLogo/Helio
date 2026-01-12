@@ -88,13 +88,7 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ['@repo/vue-ui'],
-    },
-    build: {
-      rollupOptions: {
-        external: MarkdownConfig.externalImports,
-      },
-      sourcemap: true,
+      include: ['@repo/vue-ui', ...MarkdownConfig.externalImports],
     },
     server: {
       hmr: {
