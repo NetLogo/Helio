@@ -744,7 +744,7 @@ report the value you want to report.
         [ report (- number) ]
     end
 
-### Ask
+### ask
 
 NetLogo uses the [[ask]] command to give commands to turtles, patches, and
 links. All code to be run by turtles _must_ be located in a turtle "context".
@@ -842,7 +842,7 @@ But if you write it this way:
 
 first all the turtles move, then they all turn red.
 
-### Ask-Concurrent
+### ask-concurrent
 
 **NOTE:** The following information is included only for backwards
 compatibility. We don't recommend using the `ask-concurrent` primitive at all in
