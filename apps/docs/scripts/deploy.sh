@@ -49,6 +49,7 @@ if [ -d .build ]; then
 else
   echo "💡 Building documentation site..."
   yarn run docs:build
+  yarn run docs:generate-manual
 fi
 
 echo ""
