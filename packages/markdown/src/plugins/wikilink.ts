@@ -10,6 +10,10 @@ import {
   getDefaultWikiLinkOptions,
 } from "./wikilink.options";
 
+const createWikilinkRegex = (): RegExp => {
+  return new RegExp(/(!?\[\[([^\]|]+)(?:\|([^\]#]+)?)?(#[^\]]+)?\]\])/g);
+};
+
 const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (options = undefined) => {
   const opts = getDefaultWikiLinkOptions(options);
 
@@ -23,7 +27,7 @@ const remarkWikiLink: Plugin<[WikiLinkOptions?], Root> = (options = undefined) =
       hasChanges = false;
       iterations++;
 
-      const regex = /(!?\[\[([^\]|]+)(?:\|([^\]#]+))?(#[^\]]+)?\]\])/g;
+      const regex = createWikilinkRegex();
 
       // eslint-disable-next-line @typescript-eslint/no-loop-func
       visit(tree, "text", (node, index, parent) => {
@@ -245,5 +249,5 @@ class WikiLink {
 }
 
 export default remarkWikiLink;
-export { remarkWikiLink as plugin, remarkWikiLink };
+export { createWikilinkRegex, remarkWikiLink as plugin, remarkWikiLink };
 export type { LinkType, WikiLinkOptions as Options };
