@@ -20,13 +20,17 @@ jobs:
 
       - name: Install dependencies
         shell: bash
+        env:
+          HELIO_SKIP_CHECKS: 1
+          NEXT_TELEMETRY_DISABLED: 1
         run: NEXT_TELEMETRY_DISABLED=1 yarn run init
 
       - name: Build and deploy
         working-directory: apps/docs
         shell: bash
         env:
-          PRINT_DEBUG: 1
+          HELIO_HEADLESS: 1
+          HELIO_SKIP_CHECKS: 1
+          NEXT_TELEMETRY_DISABLED: 1
           GITHUB_TOKEN: ${{ secrets.NETLOGO_HELIO_CI_TOKEN }}
-        run: |
-          yes | yarn run docs:deploy
+        run: yarn run docs:deploy

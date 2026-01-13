@@ -39,10 +39,11 @@ fi
 
 echo "=== Step 1: Build documentation site ==="
 if [ -d .build ]; then
-  read -p "⚠️  Do you want to use the existing build? (y/n): " use_existing
+  use_existing=$(_read "⚠️  Do you want to use the existing build? (y/n): " "y")
   if [ "$use_existing" != "y" ]; then
     echo "💡 (Re)building documentation site..."
     yarn run docs:build
+    echo "💡 Generating the PDF Manual"
     yarn run docs:generate-manual
   else
     echo "💡 Using existing .build directory."
@@ -50,13 +51,14 @@ if [ -d .build ]; then
 else
   echo "💡 Building documentation site..."
   yarn run docs:build
+  echo "💡 Generating the PDF Manual"
   yarn run docs:generate-manual
 fi
 
 echo ""
 echo "=== Step 2: Clone documentation repository ==="
 if [ "$(ls -A .repo)" ]; then
-  read -p "⚠️  .repo directory already exists and is not empty. Do you want to use it? (y/n): " use_repo
+  use_repo=$(_read "⚠️  .repo directory already exists and is not empty. Do you want to use it? (y/n): " "y")
   if [ "$use_repo" != "y" ]; then
     echo "💡 Removing existing .repo directory..."
     rm -rf .repo
@@ -106,7 +108,7 @@ fi
 echo ""
 echo "=== Step 5: Commit and push changes ==="
 
-read -p "⚠️  Are you sure you want to commit and push changes to the $BUILD_BRANCH branch? (y/n): " confirm_push
+confirm_push=$(_read "⚠️  Are you sure you want to commit and push changes to the $BUILD_BRANCH branch? (y/n): " "y")
 if [ "$confirm_push" != "y" ]; then
   echo "💡 Deployment aborted by user."
   exit 0
