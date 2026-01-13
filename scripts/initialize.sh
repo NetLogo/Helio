@@ -18,7 +18,7 @@ if [ "$(basename $REPO_HOME)" = "scripts" ]; then
   REPO_HOME=$(dirname $REPO_HOME)
 fi
 
-git submodule update --init --recursive || true
+git submodule update --init --recursive
 yarn install --ignore-scripts --frozen-lockfile
 yarn turbo run build
 yarn install --force
