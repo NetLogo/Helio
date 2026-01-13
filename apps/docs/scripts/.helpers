@@ -1,5 +1,11 @@
 #!/bin/bash
 
+HELIO_HEADLESS="${HELIO_HEADLESS:-0}"
+
+if [ "$HELIO_HEADLESS" = "1" ]; then
+  echo "💡 Running in headless mode."
+fi
+
 function echo() {
   command echo "[$(date +'%H:%M')] $*"
 }
@@ -47,11 +53,20 @@ function unroll() {
 }
 
 function confirmUnlessHeadless() {
-  if [ "$HEADLESS" != "true" ]; then
+  if [ "$HELIO_HEADLESS" != "1" ]; then
     read -p "⚠️ $1 (y/n): " response
     if [ "$response" != "y" ]; then
       echo "💡 Operation cancelled by user."
       exit 0
     fi
+  fi
+}
+
+_read() {
+  if [ "$HELIO_HEADLESS" = "1" ]; then
+    realEcho $2
+  else
+    read -p "$1" response
+    realEcho "$response"
   fi
 }
