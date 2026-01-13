@@ -64,6 +64,14 @@ const onMouseLeave = (): void => {
     dropdownOpen.value = false
   }, 150)
 }
+
+const route = useRoute()
+watch(
+  () => route.path,
+  () => {
+    dropdownOpen.value = false
+  }
+)
 </script>
 
 <style module src="./Navbar.module.scss"></style>

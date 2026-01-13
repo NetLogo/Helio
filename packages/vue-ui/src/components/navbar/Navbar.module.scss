@@ -126,8 +126,7 @@
 .dropdown a:hover {
   background: var(--color-nav-hover);
 }
-.item:hover > .dropdown,
-.dropdown:hover,
+.item:hover:not(> .dropdown:hover) > .dropdown,
 .dropdown.open,
 .dropdown:has(> *:focus-visible) {
   opacity: 1;
