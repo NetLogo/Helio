@@ -31,10 +31,7 @@ import { cn } from '@repo/vue-ui/utils'
 import type { NavbarProps } from './types'
 
 import { useTemplateRef } from 'vue'
-import NavbarAnchorContainer from './NavbarAnchorContainer.vue'
-import NavbarBrandContainer from './NavbarBrandContainer.vue'
-import NavbarMenuToggle from './NavbarMenuToggle.vue'
-import NavbarRow from './NavbarRow.vue'
+import type NavbarMenuToggle from './NavbarMenuToggle.vue'
 
 type Props = NavbarProps & {
   brandAttrs?: Record<string, unknown>
