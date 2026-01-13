@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TurtlesSVG from '@repo/vue-ui/assets/brands/Turtles.svg';
-import { useDebounceFn } from '@vueuse/core';
 import type { IFuseOptions } from 'fuse.js';
 import links from './links.json';
 import { filters, getNavigationItems } from './navigation';
@@ -29,8 +28,7 @@ const { data: files } = await useLazyAsyncData(
 const fuseOptions: IFuseOptions<unknown> = {
   ignoreDiacritics: true,
   shouldSort: true,
-  threshold: 0.3,
-  distance: 5,
+  threshold: 0,
   isCaseSensitive: false,
   ignoreFieldNorm: true,
   findAllMatches: false,
@@ -45,9 +43,6 @@ const fuseOptions: IFuseOptions<unknown> = {
 };
 
 const searchTerm = ref('');
-const updateSearchTerm = useDebounceFn((term: string) => {
-  searchTerm.value = term;
-}, 50);
 </script>
 
 <template>
@@ -63,12 +58,18 @@ const updateSearchTerm = useDebounceFn((term: string) => {
       v-bind="$attrs"
       :search-term="searchTerm"
       :loading="!files"
-      @update:search-term="updateSearchTerm($event)"
+      @update:search-term="searchTerm = $event"
     >
       <template #empty>
-        <div class="p-4 text-center text-sm text-gray-500 flex flex-col gap-2">
-          <!-- prettier-ignore -->
-          <span>No results found for "<strong>{{ searchTerm }}</strong>"</span>
+        <div class="p-4 text-center text-sm text-gray-500 flex flex-col gap-2 pb-[50vh]">
+          <template v-if="searchTerm.length > 1">
+            <!-- prettier-ignore -->
+            <span>No results found for "<strong>{{ searchTerm }}</strong>"</span>
+          </template>
+          <template v-else>
+            <!-- prettier-ignore -->
+            <span class="text-gray-400">You need to enter at least 2 characters to search.</span>
+          </template>
           <!-- prettier-ignore -->
           <span>Try searching for a NetLogo primitive, command, or a concept. <br>For example, type in <strong>“setup”</strong> or <strong>“repeat”</strong>.</span>
         </div>
