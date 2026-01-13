@@ -22,4 +22,4 @@ git submodule update --init --recursive
 yarn install --ignore-scripts --frozen-lockfile
 yarn turbo run build
 yarn install --force
-yarn turbo run init
+NUXT_TELEMETRY_DISABLED=1 yarn turbo run init

@@ -1,0 +1,32 @@
+name: Deploy docs.netlogo.org
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy documentation site
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: Install dependencies
+        shell: bash
+        run: NEXT_TELEMETRY_DISABLED=1 yarn run init
+
+      - name: Build and deploy
+        working-directory: apps/docs
+        shell: bash
+        env:
+          PRINT_DEBUG: 1
+          GITHUB_TOKEN: ${{ secrets.NETLOGO_HELIO_CI_TOKEN }}
+        run: |
+          yes | yarn run docs:deploy
