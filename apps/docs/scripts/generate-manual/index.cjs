@@ -41,6 +41,10 @@ async function main() {
   // Import the required modules
   const puppeteer = require('puppeteer');
   const fs = require('fs-extra');
+  const environments = require('./env-options.cjs');
+
+  // Check the environment
+  const environmentOptions = environments.find((env) => env.test());
 
   // Parse command line arguments
   const args = process.argv.slice(2);
@@ -57,11 +61,12 @@ async function main() {
   let htmlFiles = args.slice(3); // middle args are the HTML files
 
   // Run puppeteer in headless mode
-  const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox'] });
+  await environmentOptions.beforeAll();
+  const browser = await puppeteer.launch(environmentOptions.launch);
   const page = await browser.newPage();
 
   // Increase timeout
-  page.setDefaultTimeout(120000); // 120 seconds
+  page.setDefaultTimeout(environmentOptions.timeout); // 120 seconds
 
   /**
    * @typedef {Object} TocEntry

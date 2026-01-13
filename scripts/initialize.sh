@@ -12,6 +12,7 @@
 set -e
 
 NUXT_TELEMETRY_DISABLED=1
+HELIO_SKIP_CHECKS=1
 
 REPO_HOME=$(pwd)
 if [ "$(basename $REPO_HOME)" = "scripts" ]; then

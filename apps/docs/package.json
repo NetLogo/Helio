@@ -8,8 +8,8 @@
   },
   "scripts": {
     "init": "nuxt prepare",
-    "docs:build": "NODE_OPTIONS=--max-old-space-size=8192 ./scripts/generate.sh",
-    "docs:deploy": "NODE_OPTIONS=--max-old-space-size=8192 bash ./scripts/deploy.sh",
+    "docs:build": "./scripts/generate.sh",
+    "docs:deploy": "bash ./scripts/deploy.sh",
     "docs:preview": "bash ./scripts/preview.sh",
     "docs:clean-up": "bash ./scripts/clean-up.sh",
     "docs:generate-manual": "bash ./scripts/generate-manual/run.sh",

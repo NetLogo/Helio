@@ -81,7 +81,7 @@ EOF
 )
 
 echo "💡 Generating title page."
-echo "$title" > "$fileDirectory/title.html"
+realEcho "$title" > "$fileDirectory/title.html"
 
 files=(
   "title"
