@@ -197,8 +197,12 @@ export function makeAssetsManager(
     removeAsset,
     resolveAsset,
     dispose: async (): Promise<void> => {
+      save.flush?.();
       await storage.unwatch();
       await storage.dispose();
+      if (dynamicSourceManager) {
+        await dynamicSourceManager.dispose();
+      }
     },
   };
 }
