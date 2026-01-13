@@ -12,4 +12,10 @@ if [ "$branch" = "main" ]; then
 fi
 
 echo "Running pre-push checks…"
+
+if [ "${IGNORE_PRE_PUSH}" = "1" ]; then
+  echo "Skipping pre-push checks."
+  exit 0
+fi
+
 yarn run pre-push

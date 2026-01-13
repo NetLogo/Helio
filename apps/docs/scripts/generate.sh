@@ -22,6 +22,7 @@ else
 fi
 
 TARGET_DIR="$(pwd)/.build"     # Define target directory for generated files
+PRINT_DEBUG="${PRINT_DEBUG:-0}"
 
 rm .stdout.log 2>/dev/null || true         # Clear previous logs
 rm .stderr.log 2>/dev/null || true
@@ -40,7 +41,12 @@ echo "✅ Nuxt prepared."
 if [ "$BUILD_LATEST" = "true" ]; then
   echo "💡 Building no-prefix version"
   # 1) Generate for base path "/"
-  BASE_PATH="/" yarn run nuxt:generate >> .stdout.log 2>> .stderr.log
+
+  if [ "$PRINT_DEBUG" -eq 1 ]; then
+    BASE_PATH="/" yarn run nuxt:generate
+  else
+    BASE_PATH="/" yarn run nuxt:generate >> .stdout.log 2>> .stderr.log
+  fi
 
   # 2) Copy to "<TARGET_DIR>/latest"
   mkdir -p "$TARGET_DIR/latest"
@@ -55,7 +61,11 @@ fi
 echo "💡 Building version ${PRODUCT_VERSION}"
 
 # 3) Generate for versioned path "/<PRODUCT_VERSION>/"
-BASE_PATH="/$PRODUCT_VERSION/" yarn run nuxt:generate >> .stdout.log 2>> .stderr.log
+if [ "$PRINT_DEBUG" -eq 1 ]; then
+  BASE_PATH="/$PRODUCT_VERSION/" yarn run nuxt:generate
+else
+  BASE_PATH="/$PRODUCT_VERSION/" yarn run nuxt:generate >> .stdout.log 2>> .stderr.log
+fi
 
 # 4) Copy to "<TARGET_DIR>/<PRODUCT_VERSION>/"
 mkdir -p "$TARGET_DIR/$PRODUCT_VERSION"
