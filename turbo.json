@@ -2,47 +2,28 @@
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
   "concurrency": "15",
-  "globalDependencies": [
-    ".env",
-    ".env.local",
-    "tsconfig.json"
-  ],
+  "globalDependencies": [".env", ".env.local", "tsconfig.json"],
   "tasks": {
+    "postinstall": {
+      "dependsOn": ["^turbo:postinstall"]
+    },
+    "turbo:postinstall": {},
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env*"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "!.next/cache/**"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "init": {
-      "dependsOn": [
-        "^build",
-        "^init"
-      ]
+      "dependsOn": ["^build", "^init"]
     },
     "lint": {
-      "dependsOn": [
-        "^lint"
-      ]
+      "dependsOn": ["^lint"]
     },
     "test": {
-      "dependsOn": [
-        "^build",
-        "^test"
-      ]
+      "dependsOn": ["^build", "^test"]
     },
     "check-types": {
-      "dependsOn": [
-        "^check-types"
-      ]
+      "dependsOn": ["^check-types"]
     },
     "dev": {
       "cache": false,

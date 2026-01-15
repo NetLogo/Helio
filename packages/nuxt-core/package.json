@@ -8,7 +8,7 @@
     "./nuxt/tsconfig.json": "./.nuxt/tsconfig.json"
   },
   "scripts": {
-    "postinstall": "nuxt prepare"
+    "turbo:postinstall": "nuxt prepare"
   },
   "dependencies": {
     "nuxt": "^4.1.2",
