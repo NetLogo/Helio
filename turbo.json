@@ -8,6 +8,15 @@
     "tsconfig.json"
   ],
   "tasks": {
+    "turbo:postinstall": {
+      "cache": false,
+      "outputs": [
+        ".nuxt/**",
+        ".output/**",
+        "node_modules/.cache/**",
+        "content/**"
+      ]
+    },
     "build": {
       "dependsOn": [
         "^build"

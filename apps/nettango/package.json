@@ -17,7 +17,7 @@
     "check-types": "nuxi typecheck",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "postinstall": "nuxt prepare",
+    "turbo:postinstall": "nuxt prepare",
     "node-version": "node -v && npm -v"
   },
   "dependencies": {

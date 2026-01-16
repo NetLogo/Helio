@@ -21,7 +21,7 @@
   "scripts": {
     "build": "nuxt-module-build build",
     "lint": "eslint .",
-    "postinstall": "cd ./playground && yarn run postinstall"
+    "turbo:postinstall": "cd ./playground && nuxt prepare"
   },
   "dependencies": {
     "@nuxt/kit": "^4.2.1",
