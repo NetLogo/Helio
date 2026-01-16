@@ -1,6 +1,6 @@
 <template>
   <main>
-    <h1>Welcome to {{ meta.name }}</h1>
+    <h1>Welcome to ToDo!!!!</h1>
     <p>This is the home page for the NetLogo application.</p>
   </main>
 </template>
