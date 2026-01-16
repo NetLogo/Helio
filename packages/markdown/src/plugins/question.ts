@@ -21,14 +21,14 @@ export const remarkRehypeQuestion: Plugin = () => {
       const match = /^\s?\| (.*)?/.exec(textNode.value as string);
 
       if (match) {
-        const questionContent = match[1];
+        const questionContent = (textNode.value as string).replace(/^\s?\| /, "");
 
         const questionNode = u("containerDirective", {
           data: {
             hName: "p",
             hProperties: { className: ["question"] },
           },
-          children: [{ type: "text", value: questionContent }],
+          children: [{ type: "text", value: questionContent }, ...node.children.slice(1)],
         });
 
         parent.children.splice(index, 1, questionNode);
