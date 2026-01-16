@@ -7,6 +7,7 @@ import mustache from "mustache";
 import { RenderError } from "./errors.js";
 import { getFileExtension } from "./utils.js";
 
+import { convertPath } from "@repo/utils/std/path";
 abstract class TemplateEngine {
   public abstract registerPartial(key: string, content: string): void;
   public abstract render(content: string, variables: Record<string, unknown>): string;
@@ -31,11 +32,12 @@ abstract class TemplateEngine {
 
       const filePath = path.join(file.parentPath, file.name);
       const fileNameRelativeToRoot = path.relative(rootDirectory, filePath);
+      const fileKey: string = convertPath(fileNameRelativeToRoot, "posix");
 
       try {
         const content = await fs.readFile(filePath, "utf-8");
-        this.registerPartial(fileNameRelativeToRoot, content);
-        partials.push({ [fileNameRelativeToRoot]: content });
+        this.registerPartial(fileKey, content);
+        partials.push({ [fileKey]: content });
       } catch (error) {
         console.error(`Failed to read partial file: ${file.name}`, error);
         continue;

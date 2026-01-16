@@ -4,6 +4,7 @@ module.exports = {
   extensionsToTreatAsEsm: [".ts"],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^@repo/utils/(.*)$": "<rootDir>/../utils/src/$1",
   },
   transform: {
     "^.+\\.ts$": [
