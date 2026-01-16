@@ -24,8 +24,7 @@
   "scripts": {
     "build": "npm run build:styles && npm run build:components",
     "build:styles": "tailwindcss -i ./src/styles.scss -o ./dist/index.scss",
-    "build:components": "tsc && tsc-alias && npm run copy:scss",
-    "copy:scss": "find src -name '*.scss' -not -name 'styles.scss' | while read file; do mkdir -p \"dist/$(dirname \"${file#src/}\")\"; cp \"$file\" \"dist/${file#src/}\"; done",
+    "build:components": "tsc && tsc-alias",
     "check-types": "tsc --noEmit",
     "dev": "npm run dev:components & npm run dev:styles & npm run dev:scss",
     "dev:styles": "tailwindcss -i ./src/styles.scss -o ./dist/index.scss --watch",
