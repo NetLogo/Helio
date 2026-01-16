@@ -12,7 +12,8 @@
     "test": "turbo run test",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "pre-push": "sh ./scripts/check-repo.sh"
+    "pre-push": "sh ./scripts/check-repo.sh",
+    "clean-up": "sh ./scripts/clean-file-watchers.sh"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
