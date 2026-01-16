@@ -13,7 +13,8 @@
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "pre-push": "sh ./scripts/check-repo.sh",
-    "clean-up": "sh ./scripts/clean-file-watchers.sh"
+    "clean-up": "sh ./scripts/clean-file-watchers.sh",
+    "postinstall": "turbo run turbo:postinstall"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

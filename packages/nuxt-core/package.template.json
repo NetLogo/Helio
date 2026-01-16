@@ -22,7 +22,7 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "node-version": "node -v && npm -v",
-    "postinstall": "nuxt prepare"
+    "turbo:postinstall": "nuxt prepare"
   },
   "dependencies": {
     "nuxt": "^4.1.2",
