@@ -50,12 +50,9 @@ module.exports = [
       ],
       headless: false,
     },
-    test: () => process.env.CI === 'true',
-    beforeAll: async () => {
-      const { install } = await import('@puppeteer/browsers');
-      await install('chromium', 'latest');
-    },
-    timeout: 200000,
+    test: () => typeof process.env.CI !== 'undefined',
+    beforeAll: async () => {},
+    timeout: 800000,
   },
   {
     environmentName: 'default',

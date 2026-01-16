@@ -17,7 +17,7 @@ if [ ! -d ".build/latest" ] && [ ! -d ".build/${PRODUCT_VERSION}" ]; then
   exit 1
 fi
 
-(yarn run docs:preview --port $PORT) &
+(yarn run docs:preview --port $PORT > /dev/null 2>&1) &
 PREVIEW_PID=$!
 echo "🚀 Started preview server (PID $PREVIEW_PID)"
 

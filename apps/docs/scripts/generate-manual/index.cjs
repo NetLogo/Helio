@@ -45,6 +45,7 @@ async function main() {
 
   // Check the environment
   const environmentOptions = environments.find((env) => env.test());
+  console.info('Using Options:', JSON.stringify(environmentOptions, null, 2));
 
   // Parse command line arguments
   const args = process.argv.slice(2);
@@ -66,7 +67,7 @@ async function main() {
   const page = await browser.newPage();
 
   // Increase timeout
-  page.setDefaultTimeout(environmentOptions.timeout); // 120 seconds
+  page.setDefaultTimeout(environmentOptions.timeout);
 
   /**
    * @typedef {Object} TocEntry
@@ -236,7 +237,7 @@ async function main() {
       const fileBaseName = path.basename(file);
       const fileUrl = 'http://' + serverHost + ':' + serverPort + '/' + urlPrefix + fileBaseName;
       console.log(`Handling: ${fileBaseName} (=> ${fileUrl})`);
-      await myPage.goto(fileUrl, { waitUntil: 'networkidle0' });
+      await myPage.goto(fileUrl, { waitUntil: 'domcontentloaded', timeout: 120000 });
 
       /**
        * Extract the table of contents entries from the page.
@@ -441,7 +442,8 @@ ${combinedHtml.filter(Boolean).join('')}
   const tempHtmlUrl = 'http://' + serverHost + ':' + serverPort + '/' + urlPrefix + 'tmp.html';
 
   await page.setJavaScriptEnabled(false);
-  await page.goto(tempHtmlUrl, { waitUntil: 'networkidle0' });
+  await page.emulateMediaType('print');
+  await page.goto(tempHtmlUrl, { waitUntil: 'domcontentloaded', timeout: environmentOptions.timeout });
   const pdfBuffer = await page.pdf({
     format: 'A4',
     printBackground: true,
