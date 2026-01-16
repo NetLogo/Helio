@@ -48,7 +48,7 @@ module.exports = [
         '--enable-logging',
         '--v=2',
       ],
-      headless: false,
+      headless: 'new',
     },
     test: () => typeof process.env.CI !== 'undefined',
     beforeAll: async () => {},
