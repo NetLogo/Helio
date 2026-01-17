@@ -41,22 +41,25 @@ export function useNavigation() {
     });
   });
 
-  /**
-   * Get footer navigation items (items with in_footer = true)
-   */
-  const footerLinks = computed(() => {
-    const links: Array<{ title: string; href: string }> = [];
-    navigationSections.value.forEach((section) => {
-      section.items
-        .filter((item) => item.in_footer)
-        .forEach((item) => {
-          links.push({
+  const footerSections = computed(() => {
+    return navigationSections.value
+      .map((section) => {
+        const links = section.items
+          .filter((item) => item.in_footer)
+          .map((item) => ({
             title: item.display_title,
             href: item.url,
-          });
-        });
-    });
-    return links;
+            external: false,
+          }));
+
+        return links.length > 0
+          ? {
+              title: section.name,
+              links,
+            }
+          : null;
+      })
+      .filter((section) => section !== null);
   });
 
   /**
@@ -83,7 +86,7 @@ export function useNavigation() {
   return {
     navigationSections,
     navbarLinks,
-    footerLinks,
+    footerSections,
     isLoading,
     error,
     fetchNavigation,
