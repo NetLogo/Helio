@@ -38,14 +38,7 @@ import type { Navbar as _Navbar } from "@repo/vue-ui/components/navbar/index";
 import { useMediaQuery } from "@vueuse/core";
 import { onMounted, ref, watch } from "vue";
 import { WebsiteLogo } from "~/assets/website-logo";
-
-interface NavbarLink {
-  title: string;
-  href: string;
-  columns?: number;
-  children?: Array<Omit<NavbarLink, "children">>;
-  active?: boolean;
-}
+import { useNavigation, type NavbarLink } from "~/composables/useNavigation";
 
 const route = useRoute();
 
@@ -72,13 +65,19 @@ const handleMediaQueryChange = (): void => {
   }
 };
 
-const navbarLinks = ref<Array<NavbarLink>>([
+// Use the navigation composable to fetch from Directus
+const { navbarLinks: apiNavbarLinks, fetchNavigation, isLoading } = useNavigation();
+
+// Default fallback navigation (shown while loading or on error)
+const defaultNavbarLinks: NavbarLink[] = [
   {
     title: "Home",
     href: "/",
-    columns: 2,
   },
-]);
+];
+
+// Reactive navbar links that update once API data is loaded
+const navbarLinks = ref<NavbarLink[]>(defaultNavbarLinks);
 
 const updateActiveStates = () => {
   navbarRef.value?.blur();
@@ -120,10 +119,22 @@ const isLinkParentActive = (link: NavbarLink, currentPath: string): boolean => {
   );
 };
 
-updateActiveStates();
+// Watch for API data to load and update navbarLinks
+watch(
+  apiNavbarLinks,
+  (newLinks) => {
+    if (newLinks.length > 0) {
+      navbarLinks.value = newLinks;
+      updateActiveStates();
+    }
+  },
+  { immediate: true },
+);
 
-onMounted(() => {
+onMounted(async () => {
   if (import.meta.client) {
+    // Fetch navigation data from Directus
+    await fetchNavigation();
     updateActiveStates();
     handleMediaQueryChange();
   }
