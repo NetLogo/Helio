@@ -126,8 +126,10 @@ watch(
   { immediate: true },
 );
 
-onMounted(() => {
+onMounted(async () => {
   if (import.meta.client) {
+    // Fetch navigation data from Directus
+    await fetchNavigation();
     updateActiveStates();
     handleMediaQueryChange();
   }
