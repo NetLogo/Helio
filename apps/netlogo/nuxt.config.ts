@@ -7,5 +7,10 @@ export default defineNuxtConfig(
       enabled: true,
     },
     ssr: true,
+    runtimeConfig: {
+      public: {
+        backendUrl: process.env.PUBLIC_BACKEND_URL || "https://backend.netlogo.org",
+      },
+    },
   }),
 );
