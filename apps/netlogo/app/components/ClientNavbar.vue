@@ -39,7 +39,6 @@ import { useMediaQuery } from "@vueuse/core";
 import { onMounted, ref, watch } from "vue";
 import { WebsiteLogo } from "~/assets/website-logo";
 import { useNavigation, type NavbarLink } from "~/composables/useNavigation";
-import Button from "../../../../packages/vue-ui/src/components/Button.vue";
 
 const route = useRoute();
 
@@ -66,14 +65,19 @@ const handleMediaQueryChange = (): void => {
   }
 };
 
-const navigateToDonate = () => {
-  navigateTo("/donate");
-};
+// Use the navigation composable to fetch from Directus
+const { navbarLinks: apiNavbarLinks, fetchNavigation, isLoading } = useNavigation();
 
-const { navbarLinks: apiNavbarLinks } = await useNavigation();
+// Default fallback navigation (shown while loading or on error)
+const defaultNavbarLinks: NavbarLink[] = [
+  {
+    title: "Home",
+    href: "/",
+  },
+];
 
-// Reactive navbar links with active states
-const navbarLinks = ref<NavbarLink[]>(apiNavbarLinks.value);
+// Reactive navbar links that update once API data is loaded
+const navbarLinks = ref<NavbarLink[]>(defaultNavbarLinks);
 
 const updateActiveStates = () => {
   navbarRef.value?.blur();
@@ -115,6 +119,7 @@ const isLinkParentActive = (link: NavbarLink, currentPath: string): boolean => {
   );
 };
 
+// Watch for API data to load and update navbarLinks
 watch(
   apiNavbarLinks,
   (newLinks) => {
@@ -126,8 +131,10 @@ watch(
   { immediate: true },
 );
 
-onMounted(() => {
+onMounted(async () => {
   if (import.meta.client) {
+    // Fetch navigation data from Directus
+    await fetchNavigation();
     updateActiveStates();
     handleMediaQueryChange();
   }
