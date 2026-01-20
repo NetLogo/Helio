@@ -17,6 +17,8 @@
  *   * SBT scripts invoking this script: project/Docs.scala and project/NetLogoDocs.scala
  */
 
+require('./log.cjs');
+
 const path = require('path');
 const PRINT_TOC_FOR_DEBUGGING = false; // Set to true to print the table of contents for debugging purposes
 const EXPORT_DEBUG_HTML = false; // Set to true to export the combined HTML for debugging purposes
@@ -432,7 +434,7 @@ ${combinedHtml.filter(Boolean).join('')}
     const debugHtmlPath = path.join(__dirname, 'tmp', 'combined.html');
     fs.ensureDirSync(path.dirname(debugHtmlPath));
     fs.writeFileSync(debugHtmlPath, fullHtmlContent);
-    console.log(`Debug HTML exported to: ${debugHtmlPath}`);
+    console.info(`Debug HTML exported to: ${debugHtmlPath}`);
   }
 
   const dirname = path.dirname(htmlFiles[0]);
@@ -441,6 +443,7 @@ ${combinedHtml.filter(Boolean).join('')}
   fs.writeFileSync(tempHtmlPath, fullHtmlContent);
   const tempHtmlUrl = 'http://' + serverHost + ':' + serverPort + '/' + urlPrefix + 'tmp.html';
 
+  console.info('Generating PDF... This may take a few minutes.');
   await page.setJavaScriptEnabled(false);
   await page.emulateMediaType('print');
   await page.goto(tempHtmlUrl, { waitUntil: 'domcontentloaded', timeout: environmentOptions.timeout });

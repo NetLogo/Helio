@@ -1,0 +1,18 @@
+name: Setup SSH
+description: Configure SSH with a private key for Git operations
+
+inputs:
+  ssh-private-key:
+    description: The SSH private key to use for authentication
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup SSH
+      shell: bash
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ inputs.ssh-private-key }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan github.com >> ~/.ssh/known_hosts

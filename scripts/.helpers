@@ -1,0 +1,139 @@
+#!/bin/bash
+
+set -euo pipefail
+export WINDOWS_OS="$(uname -s | grep -i cygwin || true)"
+export HELIO_HEADLESS="${HELIO_HEADLESS:-0}"
+export HELIO_LOG_INDENT_LEVEL="${HELIO_LOG_INDENT_LEVEL:-0}"
+export HELIO_LOG_STRING="${HELIO_LOG_STRING:-"  "}"
+export HELIO_LOG_TARGET="${HELIO_LOG_TARGET:-stdout}"
+export HELIO_REPO_URL="https://github.com/NetLogo/Helio"
+export HELIO_GH_REPO_REF="NetLogo/Helio"
+export SOURCE_COMMIT="$HELIO_GH_REPO_REF@$(git rev-parse --short=7 HEAD)"
+export BOT_NAME="${BOT_NAME:-"[helio-ci]"}"
+export GIT_TERMINAL_PROMPT="${GIT_TERMINAL_PROMPT:-$HELIO_HEADLESS}"
+export GIT_USERNAME="${GIT_USERNAME:-"HELIO CI"}"
+export GIT_EMAIL="${GIT_EMAIL:-"helio-noreply@netlogo.org"}"
+
+BASH_SOURCE="${BASH_SOURCE:-$0}"
+source ${BASH_SOURCE%/*}/.log-helpers
+source ${BASH_SOURCE%/*}/.git-helpers
+
+# void -> bool
+function is_headless() {
+  [[ "${HELIO_HEADLESS}" == "1" ]]
+}
+
+function is_interactive() {
+  [[ "${HELIO_HEADLESS}" != "1" ]]
+}
+
+if is_headless; then
+  log_info "Running in headless mode."
+fi
+
+# dirOrSymlink -> void
+function rm_dir_or_link() {
+  local path="$1"
+
+  if [ -L "$path" ]; then
+    log_info "Removing existing symlink: $path"
+    rm -f -- "$path"
+    return
+  fi
+
+  if [ -d "$path" ]; then
+    log_info "Removing existing directory: $path"
+    rm -rf -- "$path"
+    return
+  fi
+
+  if [ -e "$path" ]; then
+    log_info "Removing existing file: $path"
+    rm -f -- "$path"
+  fi
+}
+
+# dirOrSymlink -> resolvedPath
+function resolve_dir_or_link() {
+  if [ -L "$1" ]; then
+    readlink "$1"
+  else
+    printf '%s\n' "$1"
+  fi
+}
+
+# dir -> void
+function unroll() {
+  local targetDir="$(resolve_dir_or_link "$1")"
+  local currentDir
+  currentDir=$(pwd)
+
+  cp -r "$targetDir"/* "$currentDir"/
+  rm_dir_or_link "$targetDir"
+}
+
+upsert_dir() {
+  local src="$1"
+  local dest="$2"
+
+  if [ ! -d "$src" ]; then
+    log_error "Source directory '$src' does not exist."
+    exit 1
+  fi
+
+  rm_dir_or_link "$dest"
+  cp -R "$src" "$dest"
+}
+
+# prompt [default] -> response
+yn() {
+  local prompt="${1:?prompt required}"
+  local response=""
+
+  if is_headless; then
+    printf '%s\n' "y"
+    return 0
+  fi
+
+  while true; do
+    read -r -p "$(timestamp) $prompt (y/n): " response
+    case "$response" in
+      [Yy]* ) printf '%s\n' "y"; return 0;;
+      [Nn]* ) printf '%s\n' "n"; return 0;;
+      * ) echo "Please answer y or n.";;
+    esac
+  done
+}
+
+# list(var_name) -> void (throws)
+function require_env() {
+  local var_name
+  for var_name in "$@"; do
+    if [ -z "${!var_name:-}" ]; then
+      log_error "Environment variable '$var_name' is not set."
+      exit 1
+    fi
+  done
+}
+
+# list(processes_names) -> void
+function kill_processes_by_name() {
+  local processes_names=("$@")
+  local process
+  for process in "${processes_names[@]}"; do
+    pgrep $process | xargs -r kill -9 >/dev/null 2>/dev/null || true
+  done
+}
+
+# list(ports) -> void
+function kill_processes_by_port() {
+  local ports=("$@")
+  local port
+  for port in "${ports[@]}"; do
+    if [ -n "$WINDOWS_OS" ]; then
+      netstat -ano | grep ":$port " | awk '{print $5}' | xargs -r taskkill /F /PID >/dev/null 2>/dev/null || true
+    else
+      lsof -ti:$port | xargs -r kill -9 >/dev/null 2>/dev/null || true
+    fi
+  done
+}

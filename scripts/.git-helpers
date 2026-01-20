@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# dir -> void
+function sync_branch() {
+  local branch="$1"
+  git fetch origin "$branch"
+  git checkout "$branch"
+  git reset --hard "origin/$branch"
+  git clean -fdx
+}
+
+# repo branch targetDir -> void
+function clone_branch() {
+  local repo="$1"
+  local branch="$2"
+  local targetDir="$3"
+
+  rm -rf "$targetDir" || true
+  git clone "$repo" --branch "$branch" "$targetDir"
+  cd "$targetDir" || exit 1
+}
+
+# filePath -> void
+function git_rm() {
+  if git ls-files --error-unmatch "$1" > /dev/null 2>&1; then
+    git rm -r "$1"
+  fi
+}
+
+# commit_message, branch -> void
+function commit_repo_changes() {
+  local commit_message="$1"
+  local branch=$2
+  local bot_name=$BOT_NAME
+  local source_commit=$SOURCE_COMMIT
+  local username=$GIT_USERNAME
+  local email=$GIT_EMAIL
+
+  git config user.name "$username"
+  git config user.email "$email"
+
+  git add .
+
+  if git diff --staged --quiet; then
+    log_info "No changes to commit"
+  else
+    git commit \
+      -m "$bot_name $commit_message" \
+      -m "Source: $source_commit"
+    git push origin $branch
+    log_launched "Successfully pushed changes to $branch branch"
+  fi
+}

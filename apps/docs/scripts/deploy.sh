@@ -2,129 +2,91 @@
 # Deploy script for documentation
 # This script follows the steps outlined in ./deploy.md
 
-set -ea
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/../../../scripts/.helpers"
 source .env
-source scripts/.helpers
 
-# Validate required environment variables
-if [ -z "$PROJECT_ROOT" ]; then
-  echo "Error: PROJECT_ROOT is not set in .env"
-  exit 1
-fi
+require_env \
+  "PROJECT_ROOT" \
+  "BUILD_REPO" \
+  "PRODUCT_VERSION" \
+  "PRODUCT_DISPLAY_NAME" \
+  "BUILD_LATEST" \
+  "BUILD_BRANCH"
 
-if [ -z "$BUILD_REPO" ]; then
-  echo "Error: BUILD_REPO is not set in .env"
-  exit 1
-fi
+export PRODUCT_VERSION="${PRODUCT_VERSION}"
+export PRODUCT_DISPLAY_NAME="${PRODUCT_DISPLAY_NAME}"
+export BUILD_LATEST="${BUILD_LATEST}"
+export BUILD_REPO="${BUILD_REPO}"
+export BUILD_BRANCH="${BUILD_BRANCH}"
 
-if [ -z "$PRODUCT_VERSION" ]; then
-  echo "Error: PRODUCT_VERSION is not set in .env"
-  exit 1
-fi
+BUILD_DIRNAME=".build"
+REPO_DIRNAME=".repo"
+UPDATE_VERSIONS_SCRIPT_PATH="scripts/update-versions.cjs"
 
-if [ -z "$PRODUCT_DISPLAY_NAME" ]; then
-  echo "Error: PRODUCT_DISPLAY_NAME is not set in .env"
-  exit 1
-fi
+export BUILD_REPO_COMMIT_HASH=$(git rev-parse HEAD)
 
-if [ -z "$BUILD_LATEST" ]; then
-  echo "Error: BUILD_LATEST is not set in .env"
-  exit 1
-fi
-
-if [ -z "$BUILD_BRANCH" ]; then
-  echo "Error: BUILD_BRANCH is not set in .env"
-  exit 1
-fi
-
-echo "=== Step 1: Build documentation site ==="
-if [ -d .build ]; then
-  use_existing=$(_read "⚠️  Do you want to use the existing build? (y/n): " "y")
-  if [ "$use_existing" != "y" ]; then
-    echo "💡 (Re)building documentation site..."
-    yarn run docs:build
-    echo "💡 Generating the PDF Manual"
-    yarn run docs:generate-manual
-  else
-    echo "💡 Using existing .build directory."
-  fi
-else
-  echo "💡 Building documentation site..."
+# ... -> void
+function build_site() {
+  log_info "Building documentation site..."
   yarn run docs:build
-  echo "💡 Generating the PDF Manual"
+  log_info "Generating the PDF Manual"
   yarn run docs:generate-manual
-fi
+}
 
-echo ""
-echo "=== Step 2: Clone documentation repository ==="
-if [ "$(ls -A .repo)" ]; then
-  use_repo=$(_read "⚠️  .repo directory already exists and is not empty. Do you want to use it? (y/n): " "y")
-  if [ "$use_repo" != "y" ]; then
-    echo "💡 Removing existing .repo directory..."
-    rm -rf .repo
-    git clone $BUILD_REPO --branch $BUILD_BRANCH .repo
-    cd .repo
+log_title "Step 1: Build documentation site"
+if [ -d "$BUILD_DIRNAME" ]; then
+  if [ $(yn "⚠️  Do you want to use the existing build?") == "y" ]; then
+    log_info "Using existing $BUILD_DIRNAME directory."
   else
-    echo "💡 Using existing .repo directory."
-    cd .repo
-    git fetch origin $BUILD_BRANCH
-    git reset --hard origin/$BUILD_BRANCH
+    build_site
   fi
 else
-  echo "💡 Cloning documentation repository..."
-  rm -rf .repo || true
-  git clone $BUILD_REPO --branch $BUILD_BRANCH .repo
-  cd .repo
+  build_site
 fi
 
-echo ""
-echo "=== Step 3: Update versions.json ==="
-COMMIT_HASH=$(git rev-parse HEAD) BUILD_REPO_COMMIT_HASH=$(cd ..; git rev-parse HEAD) node ../scripts/update-versions.cjs
+log_title "Step 2: Clone documentation repository"
+if [ "$(ls -A $REPO_DIRNAME)" ]; then
+  if [ $(yn "⚠️  $REPO_DIRNAME directory already exists and is not empty. Do you want to use it?") == "y" ]; then
+    log_info "Using existing $REPO_DIRNAME directory."
+    cd $REPO_DIRNAME
+    sync_branch $BUILD_BRANCH
+  else
+    log_info "Removing existing $REPO_DIRNAME directory..."
+    clone_branch $BUILD_REPO $BUILD_BRANCH $REPO_DIRNAME
+  fi
+else
+  log_info "Cloning documentation repository..."
+  clone_branch $BUILD_REPO $BUILD_BRANCH $REPO_DIRNAME
+fi
 
-echo ""
-echo "=== Step 4: Copy build files ==="
-BUILD_DIR="../.build"
+log_title "Step 3: Update versions.json"
+COMMIT_HASH=$(git rev-parse HEAD) node ../$UPDATE_VERSIONS_SCRIPT_PATH
+
+log_title "Step 4: Copy build files"
+BUILD_DIR="../$BUILD_DIRNAME"
 
 # Copy versioned directory
-rm -rf $PRODUCT_VERSION/
-cp -R $BUILD_DIR/$PRODUCT_VERSION/ $PRODUCT_VERSION/
-echo "💡 Copied $PRODUCT_VERSION/ directory"
+upsert_dir $BUILD_DIR/$PRODUCT_VERSION/ $PRODUCT_VERSION/
+log_info "Copied $PRODUCT_VERSION/ directory"
 
 # Copy latest directory if BUILD_LATEST is true
 if [ "$BUILD_LATEST" = "true" ]; then
-  rmDirOrLink ./latest
-  if git ls-files --error-unmatch latest >/dev/null 2>&1; then
-    git rm -rf latest
-  fi
-  if [ -d "$BUILD_DIR/latest" ]; then
-    cp -R "$BUILD_DIR/latest" latest/
-    echo "💡 Copied latest/ from $BUILD_DIR/latest"
-  else
-    echo "❌ Error: resolved latest target is not a directory"
-    exit 1
-  fi
+  rm_dir_or_link ./latest
+  git_rm latest
+  upsert_dir $BUILD_DIR/latest/ latest/
+  log_info "Copied latest/ directory"
 fi
 
-echo ""
-echo "=== Step 5: Commit and push changes ==="
+log_title "Step 5: Commit and push changes"
 
-confirm_push=$(_read "⚠️  Are you sure you want to commit and push changes to the $BUILD_BRANCH branch? (y/n): " "y")
-if [ "$confirm_push" != "y" ]; then
-  echo "💡 Deployment aborted by user."
+if [ $(yn "⚠️  Are you sure you want to commit and push changes to the $BUILD_BRANCH branch?") == "y" ]; then
+  commit_repo_changes "Deploy docs v$PRODUCT_VERSION" $BUILD_BRANCH
+else
+  log_info "Deployment aborted by user."
   exit 0
 fi
 
-git add .
-
-if git diff --staged --quiet; then
-  echo "💡 No changes to commit"
-else
-  git commit -m "[NETLOGO-BOT] Deploy documentation for version $PRODUCT_VERSION"
-  git push origin $BUILD_BRANCH
-  echo "🚀 Successfully pushed changes to $BUILD_BRANCH branch"
-fi
-
-echo ""
-echo "=== Deployment complete ==="
-echo "💬 Version: $PRODUCT_VERSION"
-echo "💬 Built latest: $BUILD_LATEST"
+log_title "Deployment complete"
+log_speak "Version: $PRODUCT_VERSION"
+log_speak "Built latest: $BUILD_LATEST"

@@ -52015,3 +52015,1154 @@ primitives:
         `vid:reset-recording` to to change the recording format without saving.
     urlHome: https://docs.netlogo.org/vid.html
     sourceIcon: i-lucide-video
+  - id: view2.5d-patch-view
+    key: view2.5d:patch-view
+    name: view2.5d:patch-view
+    alternateNames:
+      - patch-view
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/patch-view.html
+    description: >
+      
+      This command must be called from the Observer context.  (Attempting to
+      call from another context causes an error)
+
+      The Title is a string, which will be used to label the new Window and to
+      call for subsequent updates and modifications.
+
+      Specification of the Reporter uses the NetLogo anonymous procedure syntax,
+      from the Observer perspective.
+
+
+      Example:
+
+
+      ```NetLogo
+
+      view2.5d:patch-view "Test"  [ [the-patch] -> [pxcor] of the-patch ]
+
+      ```
+    metadata:
+      name: patch-view
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: ReporterType
+              kind: DescribedType
+              explicitName: Reporter
+        isInfix: false
+      tags: []
+      fullName: view2.5d:patch-view
+      description: >
+        
+        This command must be called from the Observer context.  (Attempting to
+        call from another context causes an error)
+
+        The Title is a string, which will be used to label the new Window and to
+        call for subsequent updates and modifications.
+
+        Specification of the Reporter uses the NetLogo anonymous procedure
+        syntax, from the Observer perspective.
+
+
+        Example:
+
+
+        ```NetLogo
+
+        view2.5d:patch-view "Test"  [ [the-patch] -> [pxcor] of the-patch ]
+
+        ```
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-decorate-patch-view
+    key: view2.5d:decorate-patch-view
+    name: view2.5d:decorate-patch-view
+    alternateNames:
+      - decorate-patch-view
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/decorate-patch-view.html
+    description: >
+      
+      This command must be called from the Observer context.  (Attempting to
+      call from another context causes an error)
+
+      The Title is a string, the label of an existing Patch View Window.
+
+      Effect:  draws the turtles of the model at their current location, on top
+      of the Patch view display
+
+
+      > NOTE: only has an effect in the "structures" patch view (in the others,
+      the patch value is inclined based on neighbors & gradient)
+
+
+      > NOTE: for negative patch values, the turtle shapes are drawn below
+      (orbit underneath to see them)
+
+
+      Example:
+
+
+      ```NetLogo
+
+      view2.5d:decorate-patch-view "Test"
+
+      ```
+    metadata:
+      name: decorate-patch-view
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:decorate-patch-view
+      description: >
+        
+        This command must be called from the Observer context.  (Attempting to
+        call from another context causes an error)
+
+        The Title is a string, the label of an existing Patch View Window.
+
+        Effect:  draws the turtles of the model at their current location, on
+        top of the Patch view display
+
+
+        > NOTE: only has an effect in the "structures" patch view (in the
+        others, the patch value is inclined based on neighbors & gradient)
+
+
+        > NOTE: for negative patch values, the turtle shapes are drawn below
+        (orbit underneath to see them)
+
+
+        Example:
+
+
+        ```NetLogo
+
+        view2.5d:decorate-patch-view "Test"
+
+        ```
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-undecorate-patch-view
+    key: view2.5d:undecorate-patch-view
+    name: view2.5d:undecorate-patch-view
+    alternateNames:
+      - undecorate-patch-view
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/undecorate-patch-view.html
+    description: >
+      
+      This command must be called from the Observer context.  (Attempting to
+      call from another context causes an error)
+
+
+      The Title is a string, the label of an existing Patch View Window.
+
+      Effect:  STOPS drawing the turtles of the model at their current location,
+      on top of the Patch view display
+
+
+      Example:
+
+
+      ```NetLogo
+
+      view2.5d:undecorate-patch-view "Test"
+
+      ```
+    metadata:
+      name: undecorate-patch-view
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:undecorate-patch-view
+      description: >
+        
+        This command must be called from the Observer context.  (Attempting to
+        call from another context causes an error)
+
+
+        The Title is a string, the label of an existing Patch View Window.
+
+        Effect:  STOPS drawing the turtles of the model at their current
+        location, on top of the Patch view display
+
+
+        Example:
+
+
+        ```NetLogo
+
+        view2.5d:undecorate-patch-view "Test"
+
+        ```
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-turtle-view
+    key: view2.5d:turtle-view
+    name: view2.5d:turtle-view
+    alternateNames:
+      - turtle-view
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/turtle-view.html
+    description: >
+      
+      This command must be called from the Observer context.  (Attempting to
+      call from another context causes an error)
+
+      The Title is a string, which will be used to label the new Window and to
+      call for subsequent updates.
+
+      The turtle-set is any selector for turtles.
+
+      Reporter is an anonymous reporter that should take a turtle as input, and
+      report some number from it.
+
+
+      Example:
+
+
+      ```
+
+      view2.5d:turtle-view "Test" turtles with [color = red] [ the-turtle ->
+      [energy] of the-turtle]
+
+      ; This would create a new 2.5d window, plotting the ENERGY value of all
+      turtles that are red.
+
+      ```
+    metadata:
+      name: turtle-view
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: Agentset
+                of: Turtle
+              kind: DescribedType
+              explicitName: Agents
+            - type:
+                kind: ReporterType
+              kind: DescribedType
+              explicitName: Reporter
+        isInfix: false
+      tags: []
+      fullName: view2.5d:turtle-view
+      description: >
+        
+        This command must be called from the Observer context.  (Attempting to
+        call from another context causes an error)
+
+        The Title is a string, which will be used to label the new Window and to
+        call for subsequent updates.
+
+        The turtle-set is any selector for turtles.
+
+        Reporter is an anonymous reporter that should take a turtle as input,
+        and report some number from it.
+
+
+        Example:
+
+
+        ```
+
+        view2.5d:turtle-view "Test" turtles with [color = red] [ the-turtle ->
+        [energy] of the-turtle]
+
+        ; This would create a new 2.5d window, plotting the ENERGY value of all
+        turtles that are red.
+
+        ```
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-update-all-patch-views
+    key: view2.5d:update-all-patch-views
+    name: view2.5d:update-all-patch-views
+    alternateNames:
+      - update-all-patch-views
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/update-all-patch-views.html
+    description: |
+      
+      This command must be called from the Observer context.
+      Updates all existing patch-view windows according to the latest values.
+    metadata:
+      name: update-all-patch-views
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - []
+        isInfix: false
+      tags: []
+      fullName: view2.5d:update-all-patch-views
+      description: |
+        
+        This command must be called from the Observer context.
+        Updates all existing patch-view windows according to the latest values.
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-update-patch-view
+    key: view2.5d:update-patch-view
+    name: view2.5d:update-patch-view
+    alternateNames:
+      - update-patch-view
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/update-patch-view.html
+    description: |
+      
+      This command must be called from the Observer context.
+      Updates only the patch-view window with the specified title (if any).
+    metadata:
+      name: update-patch-view
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:update-patch-view
+      description: |
+        
+        This command must be called from the Observer context.
+        Updates only the patch-view window with the specified title (if any).
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-update-turtle-view
+    key: view2.5d:update-turtle-view
+    name: view2.5d:update-turtle-view
+    alternateNames:
+      - update-turtle-view
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/update-turtle-view.html
+    description: |
+      
+      This command must be called from the Observer context.
+      Updates only the turtle-view window with the specified title (if any).
+      The turtle-set selector must be supplied to refresh the set of turtles.
+    metadata:
+      name: update-turtle-view
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: Agentset
+                of: Turtle
+              kind: DescribedType
+              explicitName: Agents
+        isInfix: false
+      tags: []
+      fullName: view2.5d:update-turtle-view
+      description: |
+        
+        This command must be called from the Observer context.
+        Updates only the turtle-view window with the specified title (if any).
+        The turtle-set selector must be supplied to refresh the set of turtles.
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-get-z-scale
+    key: view2.5d:get-z-scale
+    name: view2.5d:get-z-scale
+    alternateNames:
+      - get-z-scale
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/get-z-scale.html
+    description: >
+      
+      This reporter must be called from the Observer context.
+
+      Returns the current z-scale of the turtle-view or patch-view window with
+      the specified title (if any).
+    metadata:
+      name: get-z-scale
+      extensionName: view2.5d
+      primitiveType:
+        kind: reporter
+        returns:
+          kind: NetLogoNumber
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:get-z-scale
+      description: >
+        
+        This reporter must be called from the Observer context.
+
+        Returns the current z-scale of the turtle-view or patch-view window with
+        the specified title (if any).
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-set-z-scale
+    key: view2.5d:set-z-scale
+    name: view2.5d:set-z-scale
+    alternateNames:
+      - set-z-scale
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/set-z-scale.html
+    description: >
+      
+      This command must be called from the Observer context.
+
+      Updates only the turtle-view or patch-view window with the specified title
+      (if any).
+
+      The view is now displayed with the new z-scale.
+    metadata:
+      name: set-z-scale
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: NetLogoNumber
+              kind: DescribedType
+              explicitName: new-z-scale
+        isInfix: false
+      tags: []
+      fullName: view2.5d:set-z-scale
+      description: >
+        
+        This command must be called from the Observer context.
+
+        Updates only the turtle-view or patch-view window with the specified
+        title (if any).
+
+        The view is now displayed with the new z-scale.
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-set-turtle-stem-thickness
+    key: view2.5d:set-turtle-stem-thickness
+    name: view2.5d:set-turtle-stem-thickness
+    alternateNames:
+      - set-turtle-stem-thickness
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/set-turtle-stem-thickness.html
+    description: >
+      
+      This command must be called from the Observer context.
+
+      Updates only the turtle-view window with the specified title (if any).
+
+      Turtles are now drawn with "pins" or "stems" that have the specified
+      thickness (instead of the hairline default).
+    metadata:
+      name: set-turtle-stem-thickness
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: NetLogoNumber
+              kind: DescribedType
+              explicitName: thickness
+        isInfix: false
+      tags: []
+      fullName: view2.5d:set-turtle-stem-thickness
+      description: >
+        
+        This command must be called from the Observer context.
+
+        Updates only the turtle-view window with the specified title (if any).
+
+        Turtles are now drawn with "pins" or "stems" that have the specified
+        thickness (instead of the hairline default).
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-set-turtle-stem-color
+    key: view2.5d:set-turtle-stem-color
+    name: view2.5d:set-turtle-stem-color
+    alternateNames:
+      - set-turtle-stem-color
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/set-turtle-stem-color.html
+    description: >
+      
+      This command must be called from the Observer context.
+
+      Updates only the turtle-view window with the specified title (if any).
+
+      colorReporter is an anonymous reporter that should take a turtle as input,
+      and report some number representing a color from it.
+
+      Turtles are now drawn with "pins" or "stems" that have the specified color
+      (instead of the grey default).
+
+
+      Example:
+
+
+      ```
+
+      ;; setup view with 2 turtles
+
+      crt 1 [ set color green  setxy 2 3]
+
+      crt 1 [ set color red  setxy 5 4]
+
+      view2.5d:turtle-view "Test" turtles [ the-turtle -> [ xcor] of the-turtle
+      ]
+
+      view2.5d:set-observer-distance "Test" 40
+
+      view2.5d:set-z-scale "Test" 2
+
+      view2.5d:set-observer-angles "Test" 25 30
+
+
+      ;; increase the stem thickness
+
+      view2.5d:set-turtle-stem-thickness "Test" .2
+
+
+      ;; change the stem color to  match the turtle-color
+
+      view2.5d:set-turtle-stem-color "Test" [ the-turtle -> [ color ] of
+      the-turtle ]
+
+
+      ; now make the stems orange
+
+      view2.5d:set-turtle-stem-color "Test" [ orange ]
+
+      ```
+    metadata:
+      name: set-turtle-stem-color
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: ReporterType
+              kind: DescribedType
+              explicitName: colorReporter
+        isInfix: false
+      tags: []
+      fullName: view2.5d:set-turtle-stem-color
+      description: >
+        
+        This command must be called from the Observer context.
+
+        Updates only the turtle-view window with the specified title (if any).
+
+        colorReporter is an anonymous reporter that should take a turtle as
+        input, and report some number representing a color from it.
+
+        Turtles are now drawn with "pins" or "stems" that have the specified
+        color (instead of the grey default).
+
+
+        Example:
+
+
+        ```
+
+        ;; setup view with 2 turtles
+
+        crt 1 [ set color green  setxy 2 3]
+
+        crt 1 [ set color red  setxy 5 4]
+
+        view2.5d:turtle-view "Test" turtles [ the-turtle -> [ xcor] of
+        the-turtle ]
+
+        view2.5d:set-observer-distance "Test" 40
+
+        view2.5d:set-z-scale "Test" 2
+
+        view2.5d:set-observer-angles "Test" 25 30
+
+
+        ;; increase the stem thickness
+
+        view2.5d:set-turtle-stem-thickness "Test" .2
+
+
+        ;; change the stem color to  match the turtle-color
+
+        view2.5d:set-turtle-stem-color "Test" [ the-turtle -> [ color ] of
+        the-turtle ]
+
+
+        ; now make the stems orange
+
+        view2.5d:set-turtle-stem-color "Test" [ orange ]
+
+        ```
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-show-links-xy-plane
+    key: view2.5d:show-links-xy-plane
+    name: view2.5d:show-links-xy-plane
+    alternateNames:
+      - show-links-xy-plane
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/show-links-xy-plane.html
+    description: "
+
+      \  This command must be called from the Observer context.
+
+      \  Updates only the turtle-view  or patch-view window with the specified
+      title (if any).
+
+      \  Links are drawn in the xy-plane (instead of the turtle to turtle
+      default).
+
+      \  This option can be selected using the Link Options xy-plane radio
+      Button in the 3D view.
+
+      \  "
+    metadata:
+      name: show-links-xy-plane
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:show-links-xy-plane
+      description: "
+
+        \  This command must be called from the Observer context.
+
+        \  Updates only the turtle-view  or patch-view window with the specified
+        title (if any).
+
+        \  Links are drawn in the xy-plane (instead of the turtle to turtle
+        default).
+
+        \  This option can be selected using the Link Options xy-plane radio
+        Button in the 3D view.
+
+        \  "
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-show-links-xyz
+    key: view2.5d:show-links-xyz
+    name: view2.5d:show-links-xyz
+    alternateNames:
+      - show-links-xyz
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/show-links-xyz.html
+    description: "
+
+      \  This command must be called from the Observer context.
+
+      \  Updates only the turtle-view  or patch-view window with the specified
+      title (if any).
+
+      \  Links are drawn from turtle to turtle (this is the default way links
+      are displayed).
+
+      \  This option can be selected using the Link Options xyz radio Button in
+      the 3D view.
+
+      \  "
+    metadata:
+      name: show-links-xyz
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:show-links-xyz
+      description: "
+
+        \  This command must be called from the Observer context.
+
+        \  Updates only the turtle-view  or patch-view window with the specified
+        title (if any).
+
+        \  Links are drawn from turtle to turtle (this is the default way links
+        are displayed).
+
+        \  This option can be selected using the Link Options xyz radio Button
+        in the 3D view.
+
+        \  "
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-get-observer-angles
+    key: view2.5d:get-observer-angles
+    name: view2.5d:get-observer-angles
+    alternateNames:
+      - get-observer-angles
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/get-observer-angles.html
+    description: >
+      
+      This reporter must be called from the Observer context.
+
+      Returns a list reflecting the observer's angular perspective { heading
+      pitch } (the place on an imaginary sphere at the zoom distance is updated
+      to obey heading & pitch given)
+    metadata:
+      name: get-observer-angles
+      extensionName: view2.5d
+      primitiveType:
+        kind: reporter
+        returns:
+          kind: NetLogoList
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:get-observer-angles
+      description: >
+        
+        This reporter must be called from the Observer context.
+
+        Returns a list reflecting the observer's angular perspective { heading
+        pitch } (the place on an imaginary sphere at the zoom distance is
+        updated to obey heading & pitch given)
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-set-observer-angles
+    key: view2.5d:set-observer-angles
+    name: view2.5d:set-observer-angles
+    alternateNames:
+      - set-observer-angles
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/set-observer-angles.html
+    description: >
+      
+      This command must be called from the Observer context.
+
+      Updates only the turtle-view window with the specified title (if any).
+
+      Sets the observer's angular perspective (the place on an imaginary sphere
+      at the zoom distance is updated to obey heading & pitch given)
+    metadata:
+      name: set-observer-angles
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: NetLogoNumber
+              kind: DescribedType
+              explicitName: heading
+            - type:
+                kind: NetLogoNumber
+              kind: DescribedType
+              explicitName: pitch
+        isInfix: false
+      tags: []
+      fullName: view2.5d:set-observer-angles
+      description: >
+        
+        This command must be called from the Observer context.
+
+        Updates only the turtle-view window with the specified title (if any).
+
+        Sets the observer's angular perspective (the place on an imaginary
+        sphere at the zoom distance is updated to obey heading & pitch given)
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-get-observer-xy-focus
+    key: view2.5d:get-observer-xy-focus
+    name: view2.5d:get-observer-xy-focus
+    alternateNames:
+      - get-observer-xy-focus
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/get-observer-xy-focus.html
+    description: >
+      
+      This reporter must be called from the Observer context.
+
+      Returns a list reflecting the x and y coordinates the observer is "looking
+      at" in the patch plane.
+    metadata:
+      name: get-observer-xy-focus
+      extensionName: view2.5d
+      primitiveType:
+        kind: reporter
+        returns:
+          kind: NetLogoList
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:get-observer-xy-focus
+      description: >
+        
+        This reporter must be called from the Observer context.
+
+        Returns a list reflecting the x and y coordinates the observer is
+        "looking at" in the patch plane.
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-set-observer-xy-focus
+    key: view2.5d:set-observer-xy-focus
+    name: view2.5d:set-observer-xy-focus
+    alternateNames:
+      - set-observer-xy-focus
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/set-observer-xy-focus.html
+    description: >
+      
+      This command must be called from the Observer context.
+
+      Updates only the turtle-view window with the specified title (if any).
+
+      Sets the x and y coordinates the observer that is "looking at" in the
+      patch plane.
+    metadata:
+      name: set-observer-xy-focus
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: NetLogoNumber
+              kind: UnnamedType
+            - type:
+                kind: NetLogoNumber
+              kind: DescribedType
+              explicitName: ycor
+        isInfix: false
+      tags: []
+      fullName: view2.5d:set-observer-xy-focus
+      description: >
+        
+        This command must be called from the Observer context.
+
+        Updates only the turtle-view window with the specified title (if any).
+
+        Sets the x and y coordinates the observer that is "looking at" in the
+        patch plane.
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-get-observer-distance
+    key: view2.5d:get-observer-distance
+    name: view2.5d:get-observer-distance
+    alternateNames:
+      - get-observer-distance
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/get-observer-distance.html
+    description: |
+      
+      This reporter must be called from the Observer context.
+      Returns the observer's distance from its "focus point"
+    metadata:
+      name: get-observer-distance
+      extensionName: view2.5d
+      primitiveType:
+        kind: reporter
+        returns:
+          kind: NetLogoNumber
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:get-observer-distance
+      description: |
+        
+        This reporter must be called from the Observer context.
+        Returns the observer's distance from its "focus point"
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-set-observer-distance
+    key: view2.5d:set-observer-distance
+    name: view2.5d:set-observer-distance
+    alternateNames:
+      - set-observer-distance
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/set-observer-distance.html
+    description: |
+      
+      This command must be called from the Observer context.
+      Updates only the turtle-view window with the specified title (if any).
+      Sets the observer's distance from its "focus point"
+    metadata:
+      name: set-observer-distance
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+            - type:
+                kind: NetLogoNumber
+              kind: DescribedType
+              explicitName: new-distance
+        isInfix: false
+      tags: []
+      fullName: view2.5d:set-observer-distance
+      description: |
+        
+        This command must be called from the Observer context.
+        Updates only the turtle-view window with the specified title (if any).
+        Sets the observer's distance from its "focus point"
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-remove-patch-view
+    key: view2.5d:remove-patch-view
+    name: view2.5d:remove-patch-view
+    alternateNames:
+      - remove-patch-view
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/remove-patch-view.html
+    description: >
+      
+      This command closes and removes the specified patch view programmatically
+      (equivalent to closing the window manually).
+    metadata:
+      name: remove-patch-view
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:remove-patch-view
+      description: >
+        
+        This command closes and removes the specified patch view
+        programmatically (equivalent to closing the window manually).
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-remove-turtle-view
+    key: view2.5d:remove-turtle-view
+    name: view2.5d:remove-turtle-view
+    alternateNames:
+      - remove-turtle-view
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/remove-turtle-view.html
+    description: >
+      
+      This command closes and removes the specified turtle view programmatically
+      (equivalent to closing the window manually).
+    metadata:
+      name: remove-turtle-view
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - - type:
+                kind: NetLogoString
+              kind: DescribedType
+              explicitName: Title
+        isInfix: false
+      tags: []
+      fullName: view2.5d:remove-turtle-view
+      description: >
+        
+        This command closes and removes the specified turtle view
+        programmatically (equivalent to closing the window manually).
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-remove-all-patch-views
+    key: view2.5d:remove-all-patch-views
+    name: view2.5d:remove-all-patch-views
+    alternateNames:
+      - remove-all-patch-views
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/remove-all-patch-views.html
+    description: >
+      
+      This command closes and removes all patch views programmatically
+      (equivalent to closing the windows manually).
+    metadata:
+      name: remove-all-patch-views
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - []
+        isInfix: false
+      tags: []
+      fullName: view2.5d:remove-all-patch-views
+      description: >
+        
+        This command closes and removes all patch views programmatically
+        (equivalent to closing the windows manually).
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-remove-all-turtle-views
+    key: view2.5d:remove-all-turtle-views
+    name: view2.5d:remove-all-turtle-views
+    alternateNames:
+      - remove-all-turtle-views
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/remove-all-turtle-views.html
+    description: >
+      
+      This command closes and removes all turtle views programmatically
+      (equivalent to closing the windows manually).
+    metadata:
+      name: remove-all-turtle-views
+      extensionName: view2.5d
+      primitiveType:
+        kind: command
+      syntax:
+        args:
+          - []
+        isInfix: false
+      tags: []
+      fullName: view2.5d:remove-all-turtle-views
+      description: >
+        
+        This command closes and removes all turtle views programmatically
+        (equivalent to closing the windows manually).
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d
+  - id: view2.5d-count-windows
+    key: view2.5d:count-windows
+    name: view2.5d:count-windows
+    alternateNames:
+      - count-windows
+    source: view2.5d
+    isFromExtension: true
+    url: https://docs.netlogo.org/view2.5d/count-windows.html
+    description: >
+      
+      This reporter returns the number of turtle and patch views that are
+      currently active.
+    metadata:
+      name: count-windows
+      extensionName: view2.5d
+      primitiveType:
+        kind: reporter
+        returns:
+          kind: NetLogoNumber
+      syntax:
+        args:
+          - []
+        isInfix: false
+      tags: []
+      fullName: view2.5d:count-windows
+      description: >
+        
+        This reporter returns the number of turtle and patch views that are
+        currently active.
+    urlHome: https://docs.netlogo.org/view2.5d.html
+    sourceIcon: i-lucide-move-3d

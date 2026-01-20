@@ -1,18 +1,24 @@
 #!/bin/bash
 
 source .env
-set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/../../../scripts/.helpers"
 
-echo "💡 Removing all build artifacts..."
+log_info "Removing all build artifacts..."
+increase_indent
+
 targets=(.build .repo .output .preview .build-static)
 for target in "${targets[@]}"; do
   if [ -d "$target" ]; then
     rm -rf "$target"
-    echo "  🚀 Removed $target directory."
+    log_launched "Removed $target directory."
   else
-    echo "  ℹ️  $target directory does not exist, skipping."
+    log_speak "$target directory does not exist, skipping."
   fi
 done
 
 rm .stdout.log 2>/dev/null || true
 rm .stderr.log 2>/dev/null || true
+
+log_speak "Clean-up completed."
+
+reset_indent

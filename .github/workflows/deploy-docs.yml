@@ -12,24 +12,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Helio
+        uses: ./.github/actions/setup-helio
         with:
-          node-version: "22"
-          cache: "yarn"
-
-      - name: Install dependencies
-        shell: bash
-        env:
-          HELIO_SKIP_CHECKS: 1
-          NUXT_TELEMETRY_DISABLED: 1
-        run: NUXT_TELEMETRY_DISABLED=1 yarn run init
-
-      - name: Configure Git
-        shell: bash
-        run: |
-          git config --global user.name "Helio CI"
-          git config --global user.email "noreply@netlogo.org"
+          ssh-private-key: ${{ secrets.DOCS_DEPLOY_PRIVATE_KEY }}
 
       - name: Build and deploy
         working-directory: apps/docs
@@ -38,5 +24,4 @@ jobs:
           HELIO_HEADLESS: 1
           HELIO_SKIP_CHECKS: 1
           NUXT_TELEMETRY_DISABLED: 1
-          GITHUB_TOKEN: ${{ secrets.NETLOGO_HELIO_CI_TOKEN }}
         run: yarn run docs:deploy

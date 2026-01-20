@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# void [env: HELIO_LOG_INDENT_LEVEL, HELIO_LOG_STRING] -> indentStr
+function indent() {
+  local indentStr=""
+  for ((i=0; i<HELIO_LOG_INDENT_LEVEL; i++)); do
+    indentStr+="$HELIO_LOG_STRING"
+  done
+  echo "$indentStr"
+}
+
+# void -> void
+function increase_indent() {
+  HELIO_LOG_INDENT_LEVEL=$((HELIO_LOG_INDENT_LEVEL + 1))
+}
+
+# void -> void
+function decrease_indent() {
+  if [ "$HELIO_LOG_INDENT_LEVEL" -gt 0 ]; then
+    HELIO_LOG_INDENT_LEVEL=$((HELIO_LOG_INDENT_LEVEL - 1))
+  fi
+}
+
+# void -> void
+function reset_indent() {
+  HELIO_LOG_INDENT_LEVEL=0
+}
+
+# void -> timestampStr
+function timestamp() {
+  echo "[$(date +'%H:%M')]"
+}
+
+# ... -> void
+function log() {
+  local str="[$(date +'%H:%M')] $(indent)$*"
+  if [ "$HELIO_LOG_TARGET" = "stdout" ]; then
+    echo "$str"
+  elif [ "$HELIO_LOG_TARGET" = "stderr" ]; then
+    >&2 echo "$str"
+  fi
+}
+
+# ... -> void
+function log_info() {
+  log 💡 "$*"
+}
+# ... -> void
+function log_warn() {
+  log "⚠️ "  "$*"
+}
+# ... -> void
+function log_error() {
+  log ❌ "$*"
+}
+# ... -> void
+function log_success() {
+  log ✅ "$*"
+}
+# ... -> void
+function log_debug() {
+  log 🐞 "$*"
+}
+# ... -> void
+function log_launched() {
+  log 🚀 "$*"
+}
+# ... -> void
+function log_finished() {
+  log 🏁 "$*"
+}
+# ... -> void
+function log_speak() {
+  log 💬 "$*"
+}
+# ... -> void
+function log_wait() {
+  log "⏳ " "$*"
+}
+# ... -> void
+function log_processing() {
+  log "⚙️ " "$*"
+}
+# ... -> void
+function log_title() {
+  log ""
+  log "=== $* ==="
+}
+# ... -> void
+die() {
+  log_error "$*"
+  exit 1
+}
+
+# ... -> void
+noisy() {
+  STDOUT_LOG=${STDOUT_LOG:-/dev/stdout}
+  STDERR_LOG=${STDERR_LOG:-/dev/stderr}
+  if [[ -n "${STDOUT_LOG}" || -n "${STDERR_LOG}" ]]; then
+    # If one is unset, discard that stream (or set both)
+    local out="${STDOUT_LOG:-/dev/null}"
+    local err="${STDERR_LOG:-/dev/null}"
+    "$@" >>"$out" 2>>"$err"
+  else
+    "$@"
+  fi
+}

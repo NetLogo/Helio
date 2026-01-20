@@ -2,16 +2,19 @@
 
 PORT=${PORT:-3002}
 
-source scripts/.helpers
 source .env
-set -euo pipefail
+source ${BASH_SOURCE%/*}/../../../scripts/.helpers
+
 
 if [ ! -d .build ]; then
-  echo "Error: Build directory './build' does not exist. Please run the build script first."
+  log "Error: Build directory './build' does not exist. Please run the build script first."
   exit 1
 fi
 
-echo "💡 Starting preview server for built documentation..."
+log_warn "This script will kill any process using port $PORT."
+kill_processes_by_port $PORT
+
+log_info "Starting preview server for built documentation..."
 
 rm -rf .preview || true
 mkdir .preview

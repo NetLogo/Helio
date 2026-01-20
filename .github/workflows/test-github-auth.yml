@@ -1,0 +1,34 @@
+name: Test GitHub authentication for git@github.com:NetLogo/docs.git
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Test GitHub authentication for git@github.com:NetLogo/docs.git
+
+    steps:
+      - name: Setup SSH
+        uses: ./.github/actions/setup-ssh
+        with:
+          ssh-private-key: ${{ secrets.DOCS_DEPLOY_PRIVATE_KEY }}
+
+      - name: Checkout and attempt to push a new branch
+        shell: bash
+        run: |
+          git config --global user.name "HELIO CI"
+          git config --global user.email "helio-noreply@netlogo.org"
+          git clone git@github.com:NetLogo/docs.git
+          cd docs
+          git checkout -b test-github-auth-branch
+          touch test-github-auth-file.txt
+          git add test-github-auth-file.txt
+          git commit -m "Testing GitHub authentication"
+          git push origin test-github-auth-branch
+
+      - name: Delete Test Branch
+        shell: bash
+        run: |
+          cd docs
+          git push origin --delete test-github-auth-branch

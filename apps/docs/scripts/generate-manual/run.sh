@@ -1,37 +1,37 @@
 #!/bin/bash
 
+source "$(dirname "${BASH_SOURCE[0]}")/../../../../scripts/.helpers"
 source scripts/generate-manual/.help
-source scripts/.helpers
 
 PORT=${PORT:-3002}
 MANUAL_NAME="NetLogo_User_Manual.pdf"
 
-echo "⚠️  This script will kill any process using port $PORT."
+log "⚠️  This script will kill any process using port $PORT."
 lsof -ti:$PORT | xargs -r kill -9 >/dev/null 2>/dev/null || true
 
 set -ea
 source .env
 
 if [ ! -d ".build/latest" ] && [ ! -d ".build/${PRODUCT_VERSION}" ]; then
-  echo "❌ .build/latest or .build/${PRODUCT_VERSION} does not exist. Please run 'yarn run docs:build' first."
+  log "❌ .build/latest or .build/${PRODUCT_VERSION} does not exist. Please run 'yarn run docs:build' first."
   exit 1
 fi
 
 (yarn run docs:preview --port $PORT > /dev/null 2>&1) &
 PREVIEW_PID=$!
-echo "🚀 Started preview server (PID $PREVIEW_PID)"
+log "🚀 Started preview server (PID $PREVIEW_PID)"
 
 until curl -fsS "http://localhost:$PORT" >/dev/null 2>/dev/null; do
-  echo "⏳ Waiting for http://localhost:$PORT..."
+  log "⏳ Waiting for http://localhost:$PORT..."
   sleep 2
 done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 extensions=$(find $REPO_ROOT/external/extensions -name documentation.yaml | awk -F'/' '{print $(NF-1)}' | paste -sd' ' -)
-extensionCount=$(realEcho $extensions | wc -w | tr -d ' ')
-echo "💡 Found $extensionCount extensions."
-echo ""
+extensionCount=$(echo $extensions | wc -w | tr -d ' ')
+log "💡 Found $extensionCount extensions."
+log ""
 
 if [ -d ".build/latest" ]; then
   fileDirectory="$(pwd)/.preview"
@@ -80,8 +80,8 @@ title=$(cat <<EOF
 EOF
 )
 
-echo "💡 Generating title page."
-realEcho "$title" > "$fileDirectory/title.html"
+log "💡 Generating title page."
+echo "$title" > "$fileDirectory/title.html"
 
 files=(
   "title"
@@ -126,38 +126,38 @@ for ext in $extensions; do
 done
 files+=("faq" "dictionary")
 
-echo "💡 Generating manual for files: ${files[*]}"
-echo ""
+log "💡 Generating manual for files: ${files[*]}"
+log ""
 
 
 for f in "${files[@]}"; do
   if [ ! -f "$fileDirectory/${f}.html" ]; then
-    echo "❌ File not found: $fileDirectory/${f}.html"
+    log "❌ File not found: $fileDirectory/${f}.html"
     exit 1
   fi
-  echo "✅ Found file: $fileDirectory/${f}.html"
+  log "✅ Found file: $fileDirectory/${f}.html"
 done
-echo ""
+log ""
 
 node scripts/generate-manual/index.cjs \
   "localhost" "$PORT" \
   $urlPrefix \
-  $(for f in "${files[@]}"; do realEcho "$fileDirectory/${f}.html"; done) \
+  $(for f in "${files[@]}"; do echo "$fileDirectory/${f}.html"; done) \
   ".build/$MANUAL_NAME"
 
-echo "✅ Generated .build/$MANUAL_NAME"
+log "✅ Generated .build/$MANUAL_NAME"
 
 cp ".build/$MANUAL_NAME" .build/${PRODUCT_VERSION}/$MANUAL_NAME
-echo "✅ Copied to .build/${PRODUCT_VERSION}/$MANUAL_NAME"
+log "✅ Copied to .build/${PRODUCT_VERSION}/$MANUAL_NAME"
 
 if [ -d ".build/latest" ]; then
   cp ".build/$MANUAL_NAME" .build/latest/$MANUAL_NAME
 fi
-echo "✅ Copied to .build/latest/$MANUAL_NAME"
+log "✅ Copied to .build/latest/$MANUAL_NAME"
 
 if [[ -n "$PREVIEW_PID" ]]; then
   kill "$PREVIEW_PID"
-  echo "✅ Killed preview server (PID $PREVIEW_PID)"
+  log "✅ Killed preview server (PID $PREVIEW_PID)"
 fi
 
 exit 0
