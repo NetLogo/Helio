@@ -228,8 +228,10 @@ const selectedVersion = ref<string>(productInfo.productVersion);
 onMounted(() => {
   if (import.meta.client) {
     updateActiveStates();
-    pullVersionsFromSource(versions.value, runtimeInfo.versionsSrc);
     handleMediaQueryChange();
+    setTimeout(async () => {
+      versions.value = await pullVersionsFromSource(versions.value, runtimeInfo.versionsSrc);
+    }, 0);
   }
 });
 

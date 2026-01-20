@@ -6,6 +6,20 @@ type LiveVersionData = {
   disabled?: boolean;
 };
 
+function toNumericVersion(version: string): number {
+  const versionPattern = /^(?<major>\d+)(\.(?<minor>\d+))?(\.(?<patch>\d+))?(?<extra>.*)?$/;
+  const match = version.trim().match(versionPattern);
+  if (match && match.groups) {
+    const major = parseInt(match.groups.major || '0');
+    const minor = parseInt(match.groups.minor || '0');
+    const patch = parseInt(match.groups.patch || '0');
+    const extra = match.groups.extra ? 0 : 1;
+
+    return major * 100 + minor * 10 + patch + extra * 0.1;
+  }
+  return 0;
+}
+
 const pullVersionsFromSource = async (
   currentVersions: Record<string, VersionProps>,
   url: string,
@@ -30,6 +44,14 @@ const pullVersionsFromSource = async (
       const sortedEntries = Object.entries(versions).sort((a, b) => {
         const versionA = a[0];
         const versionB = b[0];
+
+        const numericA = toNumericVersion(versionA);
+        const numericB = toNumericVersion(versionB);
+
+        if (numericA !== 0 && numericB !== 0) {
+          return numericB - numericA;
+        }
+
         return versionB.localeCompare(versionA, undefined, { numeric: true, sensitivity: 'base' });
       });
       return Object.fromEntries(sortedEntries);
