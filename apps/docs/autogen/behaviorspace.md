@@ -497,10 +497,10 @@ separate column, with each row corresponding to a measurement step that applies 
 run finishes before another due to a **stop condition**, then its step numbers after that
 point will be blank. At the top of the file there is a `[run number]` row that will have the run
 number repeated for each metric at the top of the file.  After that are rows for the initial values
-given to each variable for the run.  The spreadsheet output also calculates the min, mean, max, and
-final values for the step numbers as well as each metric and lists those after the initial values
-before the individual run measurements. Then it lists the actual number of steps a run went through
-in a `[total steps]` row.
+given to each variable for the run.  If data is recorded for more than one step, the spreadsheet output
+also calculates the min, mean, max, and final values for the step numbers as well as each metric and
+lists those after the initial values before the individual run measurements. Then it lists the actual
+number of steps a run went through in a `[total steps]` row.
 
 The **Spreadsheet output** data makes it easier to quickly compare runs against each other, as they
 will be aligned vertically when imported into a spreadsheet application.  It can also make
@@ -677,7 +677,8 @@ When all the runs have finished, the experiment is complete. Spreadsheet, Lists 
 Paused experiments will appear in the BehaviorSpace window marked with "In Progress".
 To resume an experiment where you paused it, select it and press the "Run" button.
 To reset a paused experiment to its initial state, select it and press the "Abort"
-button.
+button. Note that paused experiments are not saved with the model and can therefore
+only be resumed within the current session.
 
 If you are using Spreadsheet output a file containing the data up until the experiment is
  paused will be written. This data will be used as part of the creation of a complete
