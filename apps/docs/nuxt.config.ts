@@ -81,6 +81,8 @@ export default defineNuxtConfig({
     },
   ],
 
+  ignore: ['.build/', '.latest/', '.static/', '.preview/'],
+
   svgo: {
     customComponent: 'SvgImport',
   },
