@@ -101,7 +101,7 @@ or (at your option) any later version.
 
 Commercial licenses are also available. To inquire about commercial licenses,
 please contact Uri Wilensky at
-<a href="mailto:netlogo-commercial-admin@ccl.northwestern.edu">netlogo-commercial-admin@ccl.northwestern.edu</a>.
+<a href="mailto:netlogo@northwestern.edu">netlogo@northwestern.edu</a>.
 
 The source code is [on GitHub, here](https://github.com/NetLogo/NetLogo).
 Development discussion is on the
@@ -285,7 +285,7 @@ We also maintain an
 [advanced installation wiki page](https://github.com/NetLogo/NetLogo/wiki/Advanced-Installation)
 which may have additional tips and tricks. We encourage users who have problems
 with unattended installation or ideas on how it could be improved to email
-[feedback@ccl.northwestern.edu](mailto:feedback@ccl.northwestern.edu?subject=Unattended%20Installation).
+[netlogo@northwestern.edu](mailto:netlogo@northwestern.edu?subject=Unattended%20Installation).
 
 ## Running
 
@@ -395,7 +395,7 @@ determine a root cause for this problem, but we're continuing to investigate.
 We're looking for assistance from you if you run into this problem. It would be
 extremely helpful if you could run the following command in the "Terminal"
 application and send the output in an email to
-[bugs@ccl.northwestern.edu](mailto:bugs@ccl.northwestern.edu?subject=Sierra%20NetLogo%206%20Bug).
+[netlogo@northwestern.edu](mailto:netlogo@northwestern.edu?subject=Sierra%20NetLogo%206%20Bug).
 
     xattr -pl com.apple.quarantine /Applications/NetLogo\ {{version}}/NetLogo\ {{version}}.app
 
@@ -413,7 +413,7 @@ off. The command is:
 Note that if you plan to run NetLogo 3D or HubNet Client you may also need to
 re-run that command once for each of those applications. If the workaround was
 not effective for you, please
-[send us an email and let us know](mailto:bugs@ccl.northwestern.edu?subject=Sierra%20NetLogo%206%20Bug%20Workaround).
+[send us an email and let us know](mailto:netlogo@northwestern.edu?subject=Sierra%20NetLogo%206%20Bug%20Workaround).
 
 ### NetLogo won't start on Windows or crashes suddenly on Mac OS Sierra
 
@@ -427,7 +427,7 @@ settings or drivers. If you are unable to open NetLogo on Windows, you might be
 able to fix this by updating or reinstalling your graphics driver and/or
 disabling any graphics card utilities. Because NetLogo might be unable to start
 for a number of reasons, we encourage you to
-[contact us](mailto:bugs@ccl.northwestern.edu?subject=NetLogo%206%20Launch%20Problem%20in%20Windows)
+[contact us](mailto:netlogo@northwestern.edu?subject=NetLogo%206%20Launch%20Problem%20in%20Windows)
 if these steps aren't effective in resolving the problem.
 
 ### How can I speed up the launching of NetLogo on a remote server that is behind a proxy?

@@ -127,7 +127,7 @@ information is analyzed by the NetLogo team in order to understand how often
 certain NetLogo features are being used, so as to inform development priorities.
 No personal or identifying information will be collected. If you have any
 questions or concerns about the collection and storage of this data, feel free
-to contact the NetLogo team at feedback@ccl.northwestern.edu.
+to contact the NetLogo team at netlogo@northwestern.edu.
 
 ## Code Preferences
 

@@ -25,7 +25,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## Commercial licenses
 
-Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at [netlogo-commercial-admin@ccl.northwestern.edu](mailto:netlogo-commercial-admin@ccl.northwestern.edu).
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at [netlogo@northwestern.edu](mailto:netlogo@northwestern.edu).
 
 ## NetLogo User Manual license
 

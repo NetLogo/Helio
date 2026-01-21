@@ -17,7 +17,7 @@ For help using NetLogo, ask questions on the
 http://groups.google.com/d/forum/netlogo-users.
 
 If you have feedback, suggestions, or questions, you may write us at
-feedback@ccl.northwestern.edu.
+netlogo@northwestern.edu.
 
 ## Reporting bugs
 
@@ -41,7 +41,7 @@ information as possible:
   message into your email, or make a screen capture if you are unable to copy
   and paste.
 
-We also accept bug reports by email at bugs@ccl.northwestern.edu.
+We also accept bug reports by email at netlogo@northwestern.edu.
 
 ## Open source
 

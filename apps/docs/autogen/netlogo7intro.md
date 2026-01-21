@@ -371,4 +371,4 @@ the
 option of the [NetLogo Preferences Dialog](netlogopreferences#overview) to
 enable or disable data collection. If you have any questions or concerns about
 the collection and storage of this data, feel free to contact the NetLogo team
-at feedback@ccl.northwestern.edu.
+at netlogo@northwestern.edu.

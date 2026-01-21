@@ -74,7 +74,7 @@ All primitives have been removed from the `cf` extension and replaced by the
 to use these primitives as an example on which to remodel NetLogo's existing
 `ifelse` and `ifelse-value` primitives. Because this would be a relatively large
 language change, we would love to hear any
-[feedback address](mailto:ccl-feedback@ccl.northwestern.edu) you may have from
+[feedback address](mailto:netlogo@northwestern.edu) you may have from
 using these `cf` extension primitives.
 
 ## Changes for NetLogo 6.0
@@ -118,7 +118,7 @@ cases it doesn't cover.
 
 If your model doesn't fall into the above categories and doesn't convert or
 converts incorrectly, please email our
-[feedback address](mailto:ccl-feedback@ccl.northwestern.edu) and we'll be happy
+[feedback address](mailto:netlogo@northwestern.edu) and we'll be happy
 to offer whatever assistance we can.
 
 ### Link reporters overhauled to be more consistent and flexible

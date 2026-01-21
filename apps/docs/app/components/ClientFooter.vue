@@ -33,9 +33,7 @@
         </p>
         <p>
           Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at
-          <Anchor href="mailto:netlogo-commercial-admin@ccl.northwestern.edu">
-            netlogo-commercial-admin@ccl.northwestern.edu
-          </Anchor>
+          <Anchor href="mailto:netlogo@northwestern.edu"> netlogo@northwestern.edu </Anchor>
           .
         </p>
         <p>
