@@ -15,7 +15,7 @@ specifications are allowed, as will be described later.
 ## Colors in NetLogo
 
 For information on the different ways colors are represented in NetLogo see the
-[Colors](/programming#colors)
+[Color](/programming#color)
 section of the NetLogo Programming Guide. The NetLogo primitives for working
 with colors are
 [approximate-hsb](dictionary#approximate-hsb) [approximate-rgb](dictionary#approximate-rgb) [base-colors](dictionary#base-colors) [color](dictionary#color) [extract-hsb](dictionary#extract-hsb) [extract-rgb](dictionary#extract-rgb) [hsb](dictionary#hsb) [import-pcolors](dictionary#import-pcolors) [import-pcolors-rgb](dictionary#import-pcolors-rgb) [pcolor](dictionary#pcolor) [rgb](dictionary#rgb) [scale-color](dictionary#scale-color) [shade-of?](dictionary#shade-of) [wrap-color](dictionary#wrap-color).
