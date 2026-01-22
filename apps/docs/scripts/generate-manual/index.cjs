@@ -20,8 +20,11 @@
 require('./log.cjs');
 
 const path = require('path');
-const PRINT_TOC_FOR_DEBUGGING = false; // Set to true to print the table of contents for debugging purposes
-const EXPORT_DEBUG_HTML = false; // Set to true to export the combined HTML for debugging purposes
+
+// Set to true to print the table of contents for debugging purposes
+const PRINT_TOC_FOR_DEBUGGING = false;
+// Set to true to export the combined HTML for debugging purposes
+const EXPORT_DEBUG_HTML = false;
 
 async function main() {
   // Check if required dependencies are installed

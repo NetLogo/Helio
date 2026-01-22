@@ -160,4 +160,8 @@ if [[ -n "$PREVIEW_PID" ]]; then
   log "✅ Killed preview server (PID $PREVIEW_PID)"
 fi
 
+log "💡 Generating manual links CSV."
+node scripts/generate-manual/generate-links-csv.cjs ".build/$MANUAL_NAME" --output ".build/manual-links.csv"
+log "✅ Generated .build/manual-links.csv"
+
 exit 0
