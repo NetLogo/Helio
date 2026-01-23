@@ -13,7 +13,7 @@ const pageRestOptions = {
 </script>
 
 <template>
-  <PageRest :v-bind="pageRestOptions">
+  <PageRest :v-bind="pageRestOptions" class="docs">
     <ErrorScreen v-bind="props" @handle="handleError" />
   </PageRest>
 </template>
