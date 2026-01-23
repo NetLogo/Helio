@@ -1,0 +1,226 @@
+@mixin default {
+  /* HR */
+  hr {
+    color: var(--netlogo-black);
+    height: 0.0625rem; /* 1px */
+    border: none;
+    background-color: var(--color-grey-accent);
+  }
+
+  /* Links */
+  .landing a,
+  a:has(code):not(h3 > a),
+  code a,
+  a.code,
+  a.modern-anchor,
+  a:not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
+    text-decoration: none;
+    color: var(--color-link);
+    font-weight: 600;
+  }
+
+  .landing a:hover,
+  a:has(code:hover),
+  code a:hover,
+  a.code:hover,
+  a.modern-anchor:hover,
+  a:not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a):hover {
+    color: var(--color-link-hover);
+  }
+
+  /* External links */
+  span.external-link {
+    font-size: 0.7rem;
+    color: var(--color-link);
+    text-decoration: none;
+    vertical-align: top;
+    font-weight: bold;
+  }
+
+  /* Pre/Code */
+  pre {
+    overflow: auto;
+    padding-block: var(--space-sm);
+    font-size: 0.9rem;
+    line-height: var(--line-height-code);
+    background-color: var(--color-background-overlay);
+  }
+
+  p code,
+  li code,
+  table code,
+  a.code {
+    padding: calc(0.3 * var(--space-xxs)) var(--space-xxs);
+    font-size: 0.9rem;
+    border-radius: var(--radius-md);
+    line-height: var(--line-height-code);
+    background-color: var(--color-background-overlay);
+    font-family: var(--font-mono);
+  }
+
+  li pre {
+    margin-top: var(--space-md);
+  }
+
+  /* Question */
+  p.question {
+    font-style: italic;
+    font-weight: bold;
+    margin-left: var(--space-sm) !important;
+    margin-bottom: var(--space-sm);
+  }
+
+  /* Blockquotes */
+  blockquote,
+  div.blockquote,
+  .highlight {
+    border-left: 0.4rem solid var(--color-primary);
+    background: var(--color-background-overlay);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    margin: var(--space-md) 0;
+    box-shadow: var(--shadow-md);
+    width: min(100%, min(max(85vw, 30ch), var(--max-width-ch)));
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--color-black);
+  }
+
+  blockquote p:last-child,
+  div.blockquote p:last-child,
+  .highlight p:last-child {
+    margin-bottom: 0;
+  }
+
+  .highlight-warning {
+    border-left-color: var(--color-warning);
+  }
+
+  .highlight-success {
+    border-left-color: var(--color-success);
+  }
+
+  .highlight-error {
+    border-left-color: var(--color-error);
+  }
+
+  // Lists
+  ul.no-bullets {
+    list-style-type: none;
+    list-style-position: outside;
+  }
+}
+
+@mixin table {
+  table {
+    width: 100%;
+    overflow: auto;
+
+    border-collapse: collapse;
+    /* 1 px outline that matches the header colour */
+    font-family: var(--font-sans);
+    line-height: var(--line-height);
+
+    --table-background: rgb(30, 30, 30);
+    --table-border-color: rgb(40, 50, 80);
+  }
+
+  /* Workaround because max-width does not work on table */
+  div.table-container table {
+    margin: 0;
+    padding: 0;
+  }
+
+  div.table-container,
+  table:not(.table-container table) {
+    display: block;
+    padding: 0;
+    margin-bottom: var(--block-bottom);
+    max-width: min(calc(var(--max-width-ch) - 2 * (var(--space-xl))), 100%) !important;
+    overflow-x: auto; /* Allow horizontal scrolling */
+  }
+
+  @media (max-width: 1214px) {
+    div.table-container,
+    table:not(.table-container table) {
+      max-width: min(
+        100vw - 2 * (var(--space-xl)),
+        calc(var(--max-width-ch) - 2 * (var(--space-md)))
+      ) !important;
+    }
+  }
+
+  /* --- HEADER ROW -------------------------------------------------- */
+  table thead {
+    width: 100%;
+  }
+  table thead th,
+  table th {
+    background: var(--table-background);
+    color: var(--color-white);
+    font-weight: 600;
+    text-align: left;
+    padding: var(--space-xs) var(--space-md);
+    border-bottom: 2px solid var(--table-border-color);
+  }
+
+  /* --- BODY CELLS --------------------------------------------------- */
+  table td {
+    padding: var(--space-md) var(--space-md);
+    vertical-align: top;
+  }
+
+  table td,
+  table th {
+    border-right: 1px solid var(--table-border-color);
+  }
+
+  table td:first-child,
+  table th:first-child {
+    border-left: 1px solid var(--table-border-color); /* Add left border to first column */
+  }
+
+  table th {
+    border-top: 1px solid var(--table-border-color); /* Add top border to header */
+  }
+
+  table tr td {
+    border-top: 1px solid var(--table-border-color); /* Add bottom border to last row */
+    border-bottom: 1px solid var(--table-border-color); /* Add bottom border to last row */
+  }
+
+  /* command-name column */
+  table td:first-child {
+    width: 11rem; /* fixed width for alignment */
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* description column links */
+  table a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+  table a:hover {
+    text-decoration: underline;
+  }
+
+  /* zebra-striping */
+  table tbody tr:nth-child(even) td {
+    background: #f5f6f8;
+  }
+  table tbody tr:nth-child(odd) td {
+    background: #ffffff;
+  }
+
+  table thead th code {
+    background-color: #161616;
+  }
+
+  /* optional: subtle hover highlight for the entire row */
+  @media (hover: hover) {
+    table tbody tr:hover td {
+      background: var(--color-background-overlay);
+    }
+  }
+}
