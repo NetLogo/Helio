@@ -38,6 +38,10 @@
   }
 
   /* Pre/Code */
+  p ~ pre {
+    margin-top: var(--space-md);
+  }
+
   pre {
     overflow: auto;
     padding-block: var(--space-sm);
@@ -60,6 +64,30 @@
 
   li pre {
     margin-top: var(--space-md);
+  }
+
+  pre {
+    overflow: auto;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  a.code,
+  li code,
+  p code,
+  pre,
+  table code {
+    background-color: var(--color-background-overlay);
+    font-size: 0.9rem;
+    line-height: var(--line-height-code);
+  }
+
+  a.code,
+  li code,
+  p code,
+  table code {
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    padding: calc(var(--space-xxs) * 0.3) var(--space-xxs);
   }
 
   /* Question */
