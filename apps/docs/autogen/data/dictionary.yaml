@@ -2954,7 +2954,7 @@ entries:
         This broadcasts *value* from NetLogo to the interface element
          with the name *tag-name* on the clients.
 
-        See the [HubNet Authoring Guide](/hubnet-authoring)for details and instructions.
+        See the [HubNet Authoring Guide](/hubnet-authoring) for details and instructions.
 
       examples:
         - code: hubnet-broadcast *tag-name value*
@@ -3037,7 +3037,7 @@ entries:
          false otherwise. [[hubnet-message-source|hubnet-message-source]] will contain the
          user name of the client that just logged on.
 
-        See the [HubNet Authoring Guide](/hubnet-authoring)for details and instructions.
+        See the [HubNet Authoring Guide](/hubnet-authoring) for details and instructions.
 
       examples:
         - code: hubnet-enter-message?
@@ -3054,7 +3054,7 @@ entries:
          otherwise. [[hubnet-message-source|hubnet-message-source]] will contain the
          user name of the client that just logged off.
 
-        See the [HubNet Authoring Guide](/hubnet-authoring)for details and instructions.
+        See the [HubNet Authoring Guide](/hubnet-authoring) for details and instructions.
 
       examples:
         - code: hubnet-exit-message?
