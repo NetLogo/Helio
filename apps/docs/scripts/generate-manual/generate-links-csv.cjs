@@ -1,45 +1,62 @@
 #!/usr/bin/env node
+// @ts-check
+
+'use strict';
 
 require('./log.cjs');
 
 const NULL = 'null';
 
+/** @typedef {Object} TaskEntry
+ *  @property {string} primitiveName
+ *  @property {string} htmlFile
+ */
+
+/** @typedef {Object} ProcessedEntry
+ *  @property {string} primitiveName
+ *  @property {string} source
+ *  @property {string} htmlFile
+ *  @property {number|string} pageNumber
+ *  @property {string} destinationName
+ *  @property {string} pdfUrl
+ *  @property {string} docsUrl
+ */
+
 async function main() {
   const fs = await import('fs');
   const path = await import('path');
+
   const mupdf = await import('mupdf');
 
   const stats = new Statistics();
 
-  /** @typedef {Object} TaskEntry
-   *  @property {string} primitiveName
-   *  @property {string} htmlFile
-   */
-
-  /** @typedef {Object} ProcessedEntry
-   *  @property {string} primitiveName
-   *  @property {string} htmlFile
-   *  @property {number|string} pageNumber
-   *  @property {string} destinationName
-   *  @property {string} pdfUrl
-   *  @property {string} docsUrl
-   */
-
   /* CSV Utilities */
-  const csvFile = new CSVFile(['primitiveName', 'htmlFile', 'pageNumber', 'destinationName', 'pdfUrl', 'docsUrl']);
+  const csvFile = new CSVFile([
+    'primitiveName',
+    'source',
+    'htmlFile',
+    'pageNumber',
+    'destinationName',
+    'pdfUrl',
+    'docsUrl',
+  ]);
 
   /**
    * @param {PDFFile} doc
    * @param {object} task
    * @param {string} task.prefix
    * @param {string} task.file
-   * @param {object} [task.rewrites]
+   * @param {Object<string, string>} [task.rewrites]
    * @param {string} [task.docsUrlPrefix]
    * @returns {Array<ProcessedEntry>}
    */
   function processTask(doc, task) {
     const { prefix, file, rewrites = {}, docsUrlPrefix = prefix } = task;
     const entries = new TaskFile(fs.readFileSync(file, 'utf8')).getEntries();
+
+    /**
+     * @type {Array<ProcessedEntry>}
+     */
     const results = [];
 
     console.log(`Processing task: prefix="${prefix}", file="${path.basename(file)}"`);
@@ -52,16 +69,26 @@ async function main() {
 
       filename = rewrites[filename] ?? filename;
 
-      const [dest, destName] = [`${prefix}-${filename}`, `${prefix}-${prefix}${filename}`]
+      const possibleNames = [`${prefix}-${filename}`, `${prefix}-${prefix}${filename}`];
+      const [dest, destName] = possibleNames
         .map((name) => (doc.getDestination(name) ? [doc.getDestination(name), name] : null))
-        .filter(Boolean)[0] || [null, `${prefix}-${filename}`];
+        .filter(Boolean)[0] ?? [null, `${prefix}-${filename}`];
 
+      // @ts-expect-error -- the typechecker is confused
+      // the canonical type is import('mupdf').PDFObject | null
       const pageNum = doc.getPageNumberFromDestination(dest);
       const docsUrl = `/${docsUrlPrefix}/${filename}`;
+
+      /**
+       * @type {ProcessedEntry}
+       */
       const commonFields = {
         primitiveName,
+        source: prefix,
         htmlFile,
         pageNumber: 'N/A',
+        // @ts-expect-error -- the typechecker is confused
+        // the canonical type is string
         destinationName: destName,
         pdfUrl: 'N/A',
         docsUrl,
@@ -95,7 +122,13 @@ async function main() {
   }
 
   const pdfFile = args[0];
-  const doc = new PDFFile(mupdf.Document.openDocument(fs.readFileSync(pdfFile), 'application/pdf'));
+
+  const pdf = mupdf.Document.openDocument(fs.readFileSync(pdfFile), 'application/pdf').asPDF();
+  if (!pdf) {
+    console.error(`Error: Unable to open PDF file "${pdfFile}"`);
+    process.exit(1);
+  }
+  const doc = new PDFFile(pdf);
 
   const outputFile = args.includes('--output') ? args[args.indexOf('--output') + 1] : null;
 
@@ -126,6 +159,10 @@ async function main() {
         docsUrlPrefix: f.name.replace('.txt', ''),
       })),
   ];
+
+  /**
+   * @type {Array<ProcessedEntry>}
+   */
   let allResults = [];
 
   tasks.forEach((task) => {
@@ -159,11 +196,19 @@ main().catch((err) => {
 });
 
 class CSVFile {
+  /**
+   * @param {Array<string>} headerFields
+   * @param {string} [separator]
+   * @param {string} [quoteChar]
+   * @param {string} [newline]
+   */
   constructor(headerFields, separator = ',', quoteChar = '"', newline = '\n') {
     this.headerFields = headerFields;
     this.separator = separator;
     this.quoteChar = quoteChar;
     this.newline = newline;
+
+    /** @type {Array<any>} */
     this.rows = [];
   }
 
@@ -172,11 +217,10 @@ class CSVFile {
    * @returns {string}
    */
   escape(value) {
-    return value.replace(new RegExp(this.quote, 'g'), `\\${this.quote}`);
+    return value.replace(new RegExp(this.quoteChar, 'g'), `\\${this.quoteChar}`);
   }
 
   /**
-   *
    * @param {any} value
    * @returns {string}
    */
@@ -189,7 +233,6 @@ class CSVFile {
   }
 
   /**
-   *
    * @param {Array<any>} values
    * @returns {string}
    */
@@ -198,7 +241,7 @@ class CSVFile {
   }
 
   /**
-   * @param {Object} values
+   * @param {Object<string, any>} values
    */
   addRow(values) {
     const row = this.headerFields.map((field) => values[field]);
@@ -212,13 +255,17 @@ class CSVFile {
 
 class PDFFile {
   /**
-   * @param {mupdf.PDFDocument} doc
+   * @param {import('mupdf').PDFDocument} doc
    */
   constructor(doc) {
     this.doc = doc;
     this.destinations = doc.getTrailer().get('Root').get('Dests');
   }
 
+  /**
+   * @param {string} name
+   * @returns {import('mupdf').PDFObject|undefined}
+   */
   getDestination(name) {
     const result = this.destinations.get(name);
     if (result.toString() === NULL) {
@@ -227,6 +274,10 @@ class PDFFile {
     return result;
   }
 
+  /**
+   * @param {import('mupdf').PDFObject} dest
+   * @returns {number|undefined}
+   */
   getPageNumberFromDestination(dest) {
     if (dest.toString() === NULL) return undefined;
 
@@ -247,6 +298,9 @@ class TaskFile {
    * @param {string} fileString
    */
   constructor(fileString) {
+    /**
+     * @type {Array<TaskEntry>}
+     */
     this.entries = [];
     const lines = fileString.split('\n').filter((line) => line.trim());
     lines.forEach((line) => {
@@ -260,6 +314,9 @@ class TaskFile {
     });
   }
 
+  /**
+   * @returns {Array<TaskEntry>}
+   */
   getEntries() {
     return this.entries;
   }
