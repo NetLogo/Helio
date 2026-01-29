@@ -32,9 +32,15 @@ type DictionaryCategory = {
   subcategory?: DictionaryCategory;
 };
 
+type PrimtiveAliases = {
+  category_id: string;
+  aliases: Array<string>;
+};
+
 type DictionaryEntryGeneric<T> = {
   id: string;
   entry_categories?: Array<DictionaryCategory>;
+  primitive_aliases?: Array<PrimtiveAliases>;
   data: T;
   icons: Array<Array<string>>;
 };
@@ -70,6 +76,7 @@ export type {
   DictionarySyntax,
   DictionarySyntaxEntry,
   DictionaryType,
+  PrimtiveAliases,
 };
 
 export default DictionaryClass;

@@ -1,15 +1,16 @@
 import { toSlug } from "../helpers";
-import type { DictionaryType } from "./types";
+import type { DictionaryType, PrimtiveAliases } from "./types";
 import { getEntryAdditionalNames, getEntryTitle } from "./utils";
 
+type Entry = {
+  id: string;
+  name: string;
+  additional_names: Array<string>;
+};
 type Category = {
   id: string;
   title: string;
-  entries: Array<{
-    id: string;
-    name: string;
-    additional_names: Array<string>;
-  }>;
+  entries: Array<Entry>;
 };
 type FullDictionary = DictionaryType &
   Partial<{
@@ -19,11 +20,29 @@ type FullDictionary = DictionaryType &
     variables: Array<Category>;
   }>;
 
+function createAliasLookupTable(
+  primAliases: Array<PrimtiveAliases>,
+): Record<string, Omit<Entry, "id">> {
+  return primAliases.reduce<Record<string, Omit<Entry, "id">>>((acc, curr) => {
+    const name = curr.aliases[0];
+    if (typeof name === "undefined") {
+      return acc;
+    }
+    acc[curr.category_id] = {
+      name,
+      additional_names: curr.aliases.slice(1),
+    };
+    return acc;
+  }, {});
+}
+
 export function prebuild(_dictionary: DictionaryType): Required<FullDictionary> {
   const dictionary: FullDictionary = { ..._dictionary };
   const categories: Record<string, Category> = {};
 
   for (const entry of dictionary.entries) {
+    const primitiveAliases = createAliasLookupTable(entry.primitive_aliases ?? []);
+
     const value = {
       id: toSlug(entry.id),
       name: getEntryTitle(entry),
@@ -31,13 +50,22 @@ export function prebuild(_dictionary: DictionaryType): Required<FullDictionary> 
     };
 
     const entryCategories = entry.entry_categories ?? [];
+
     for (const category of entryCategories) {
       const categoryId = category.id;
       categories[categoryId] ??= {
         ...category,
         entries: [],
       };
-      categories[categoryId].entries.push(value);
+
+      if (primitiveAliases[categoryId]) {
+        categories[categoryId].entries.push({
+          ...value,
+          ...primitiveAliases[categoryId],
+        });
+      } else {
+        categories[categoryId].entries.push(value);
+      }
     }
   }
 
