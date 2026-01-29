@@ -35,10 +35,8 @@ const currentYear = ref(new Date().getFullYear());
 
 const hrefAriaLabel = computed(() => `Navigate to the homepage of ${meta.value.name}`);
 
-// Fetch footer navigation from Directus
 const { footerSections, fetchNavigation } = useNavigation();
 
-// Calculate span based on number of sections (remaining space after brand section)
 const calculateSpan = (sectionCount: number) => {
   if (sectionCount === 0) return 10;
   return Math.floor(10 / sectionCount);
