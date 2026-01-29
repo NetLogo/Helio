@@ -12,5 +12,20 @@ export default defineNuxtConfig(
         backendUrl: process.env.PUBLIC_BACKEND_URL || "https://backend.netlogo.org",
       },
     },
+    app: {
+      head: {
+        script: [
+          {
+            src: "https://unpkg.com/bsky-embed/dist/bsky-embed.es.js",
+            type: "module",
+          },
+        ],
+      },
+    },
+    vue: {
+      compilerOptions: {
+        isCustomElement: (tag: string) => tag === "bsky-embed",
+      },
+    },
   }),
 );
