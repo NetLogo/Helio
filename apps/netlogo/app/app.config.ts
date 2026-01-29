@@ -6,7 +6,7 @@ export default defineAppConfig({
     },
 
     container: {
-      base: "max-w-[110ch] mx-auto px-0 mx-auto px-[var(--space-xl)] lg:px-0",
+      base: "max-w-[150ch] mx-auto px-0 mx-auto px-[var(--space-xl)] lg:px-0",
     },
 
     breadcrumb: {
