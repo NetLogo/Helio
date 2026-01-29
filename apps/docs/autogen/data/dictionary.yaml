@@ -760,8 +760,8 @@ entries:
         - code: breed [<breeds> <breed>]
   - id: but-first-and-last
     entry_categories:
-      - title: String
-        id: stringgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: but-first
@@ -1710,6 +1710,8 @@ entries:
         url: images/turtle.png
   - id: empty
     entry_categories:
+      - title: List
+        id: listgroup
       - title: String
         id: stringgroup
     data:
@@ -2478,6 +2480,8 @@ entries:
     entry_categories:
       - title: Anonymous Procedures
         id: anonproceduresgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: filter
@@ -2503,6 +2507,8 @@ entries:
         - code: filter *reporter* *list*
   - id: first
     entry_categories:
+      - title: List
+        id: listgroup
       - title: String
         id: stringgroup
     data:
@@ -2588,6 +2594,8 @@ entries:
     entry_categories:
       - title: Anonymous Procedures
         id: anonproceduresgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: foreach
@@ -2660,6 +2668,9 @@ entries:
       - alt: Turtle Command
         url: images/turtle.png
   - id: fput
+    entry_categories:
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: fput
@@ -2851,6 +2862,8 @@ entries:
     entry_categories:
       - title: Plotting
         id: plottinggroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: histogram
@@ -3813,6 +3826,8 @@ entries:
     entry_categories:
       - title: String
         id: stringgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: insert-item
@@ -3900,6 +3915,8 @@ entries:
         id: agentsetgroup
       - title: Mathematical
         id: mathematicalgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: is-agent?
@@ -3960,6 +3977,8 @@ entries:
     entry_categories:
       - title: String
         id: stringgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: item
@@ -4092,6 +4111,8 @@ entries:
     entry_categories:
       - title: String
         id: stringgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: last
@@ -4305,6 +4326,8 @@ entries:
     entry_categories:
       - title: String
         id: stringgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: length
@@ -4513,6 +4536,9 @@ entries:
         - code: links-own [*var1* ...]
         - code: <link-breeds>-own [*var1* ...]
   - id: list
+    entry_categories:
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: list
@@ -4600,6 +4626,9 @@ entries:
       examples:
         - code: loop [ *commands* ]
   - id: lput
+    entry_categories:
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: lput
@@ -4619,6 +4648,8 @@ entries:
     entry_categories:
       - title: Anonymous Procedures
         id: anonproceduresgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: map
@@ -4657,6 +4688,8 @@ entries:
     entry_categories:
       - title: Mathematical
         id: mathematicalgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: max
@@ -4816,6 +4849,8 @@ entries:
         id: stringgroup
       - title: Agentset
         id: agentsetgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: member?
@@ -4853,6 +4888,8 @@ entries:
     entry_categories:
       - title: Mathematical
         id: mathematicalgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: min
@@ -4995,6 +5032,8 @@ entries:
     entry_categories:
       - title: Mathematical
         id: mathematicalgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: modes
@@ -5275,6 +5314,8 @@ entries:
     entry_categories:
       - title: Agentset
         id: agentsetgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: n-of
@@ -5309,6 +5350,8 @@ entries:
     entry_categories:
       - title: Anonymous Procedures
         id: anonproceduresgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: n-values
@@ -5625,6 +5668,8 @@ entries:
         id: turtlegroup
       - title: Agentset
         id: agentsetgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: of
@@ -5663,6 +5708,8 @@ entries:
     entry_categories:
       - title: Agentset
         id: agentsetgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: one-of
@@ -6490,6 +6537,8 @@ entries:
     entry_categories:
       - title: String
         id: stringgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: position
@@ -8048,6 +8097,9 @@ entries:
       - alt: Link Command
         url: images/link.png
   - id: shuffle
+    entry_categories:
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: shuffle
@@ -8109,6 +8161,8 @@ entries:
     entry_categories:
       - title: Agentset
         id: agentsetgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: sort
@@ -8172,6 +8226,8 @@ entries:
         id: anonproceduresgroup
       - title: Agentset
         id: agentsetgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: sort-by
@@ -8211,6 +8267,8 @@ entries:
     entry_categories:
       - title: Agentset
         id: agentsetgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: sort-on
@@ -8477,6 +8535,8 @@ entries:
     entry_categories:
       - title: String
         id: stringgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: sublist
@@ -9189,6 +9249,8 @@ entries:
     entry_categories:
       - title: Agentset
         id: agentsetgroup
+      - title: List
+        id: listgroup
     data:
       syntax:
         - name: up-to-n-of
