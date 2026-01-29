@@ -20,23 +20,21 @@
           </p>
           <div class="flex flex-row gap-3 items-start">
             <div class="flex flex-col items-center">
-              <button
-                type="button"
+              <!-- <button
                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded text-sm uppercase tracking-wide transition-colors"
                 @click="scrollToGetNetLogo"
               >
                 GET NETLOGO
-              </button>
+              </button> -->
+              <Button variant="default" size="lg" class="mt-2" @click="scrollToGetNetLogo">
+                GET NETLOGO
+              </Button>
               <span class="text-gray-500 text-sm mt-1">100% Free</span>
             </div>
             <div class="flex flex-col items-center">
-              <button
-                type="button"
-                class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-8 rounded text-sm transition-colors"
-                @click="navigateToDonate"
-              >
-                Donate
-              </button>
+              <Button variant="outline" size="lg" class="mt-2" @click="navigateToDonate">
+                DONATE
+              </Button>
             </div>
           </div>
         </div>
@@ -47,6 +45,7 @@
 
 <script setup lang="ts">
 import TurtlesLogo from "@repo/vue-ui/assets/brands/Turtles.svg";
+import Button from "../../../../packages/vue-ui/src/components/Button.vue";
 
 interface Props {
   description?: string;
