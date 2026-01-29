@@ -238,6 +238,16 @@ entries:
         id: stringgroup
       - title: Mathematical
         id: mathematicalgroup
+    primitive_aliases:
+      - category_id: stringgroup
+        aliases:
+          - String Operators
+          - "<"
+          - ">"
+          - "="
+          - "!="
+          - "<="
+          - ">="
     data:
       syntax:
         - name: Arithmetic Operators
@@ -761,7 +771,7 @@ entries:
   - id: but-first-and-last
     entry_categories:
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: but-first
@@ -1711,7 +1721,7 @@ entries:
   - id: empty
     entry_categories:
       - title: List
-        id: listgroup
+        id: listsgroup
       - title: String
         id: stringgroup
     data:
@@ -2481,7 +2491,7 @@ entries:
       - title: Anonymous Procedures
         id: anonproceduresgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: filter
@@ -2508,7 +2518,7 @@ entries:
   - id: first
     entry_categories:
       - title: List
-        id: listgroup
+        id: listsgroup
       - title: String
         id: stringgroup
     data:
@@ -2595,7 +2605,7 @@ entries:
       - title: Anonymous Procedures
         id: anonproceduresgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: foreach
@@ -2670,7 +2680,7 @@ entries:
   - id: fput
     entry_categories:
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: fput
@@ -2863,7 +2873,7 @@ entries:
       - title: Plotting
         id: plottinggroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: histogram
@@ -3827,7 +3837,7 @@ entries:
       - title: String
         id: stringgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: insert-item
@@ -3916,7 +3926,41 @@ entries:
       - title: Mathematical
         id: mathematicalgroup
       - title: List
-        id: listgroup
+        id: listsgroup
+    primitive_aliases:
+      - category_id: anonymousproceduresgroup
+        aliases:
+          - is-anonymous-command?
+          - is-anonymous-reporter?
+      - category_id: linkgroup
+        aliases:
+          - is-directed-link?
+          - is-link?
+          - is-link-set?
+          - is-undirected-link?
+      - category_id: patchgroup
+        aliases:
+          - is-patch?
+          - is-patch-set?
+      - category_id: turtlegroup
+        aliases:
+          - is-agent?
+          - is-agentset?
+          - is-turtle?
+          - is-turtle-set?
+      - category_id: stringgroup
+        aliases:
+          - is-string?
+      - category_id: agentsetgroup
+        aliases:
+          - is-list?
+      - category_id: mathematicalgroup
+        aliases:
+          - is-number?
+          - is-boolean?
+      - category_id: listsgroup
+        aliases:
+          - is-list?
     data:
       syntax:
         - name: is-agent?
@@ -3978,7 +4022,7 @@ entries:
       - title: String
         id: stringgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: item
@@ -4112,7 +4156,7 @@ entries:
       - title: String
         id: stringgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: last
@@ -4327,7 +4371,7 @@ entries:
       - title: String
         id: stringgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: length
@@ -4538,7 +4582,7 @@ entries:
   - id: list
     entry_categories:
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: list
@@ -4628,7 +4672,7 @@ entries:
   - id: lput
     entry_categories:
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: lput
@@ -4649,7 +4693,7 @@ entries:
       - title: Anonymous Procedures
         id: anonproceduresgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: map
@@ -4689,7 +4733,7 @@ entries:
       - title: Mathematical
         id: mathematicalgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: max
@@ -4850,7 +4894,7 @@ entries:
       - title: Agentset
         id: agentsetgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: member?
@@ -4889,7 +4933,7 @@ entries:
       - title: Mathematical
         id: mathematicalgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: min
@@ -5033,7 +5077,7 @@ entries:
       - title: Mathematical
         id: mathematicalgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: modes
@@ -5315,7 +5359,7 @@ entries:
       - title: Agentset
         id: agentsetgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: n-of
@@ -5351,7 +5395,7 @@ entries:
       - title: Anonymous Procedures
         id: anonproceduresgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: n-values
@@ -5669,7 +5713,7 @@ entries:
       - title: Agentset
         id: agentsetgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: of
@@ -5709,7 +5753,7 @@ entries:
       - title: Agentset
         id: agentsetgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: one-of
@@ -6538,7 +6582,7 @@ entries:
       - title: String
         id: stringgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: position
@@ -8099,7 +8143,7 @@ entries:
   - id: shuffle
     entry_categories:
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: shuffle
@@ -8162,7 +8206,7 @@ entries:
       - title: Agentset
         id: agentsetgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: sort
@@ -8227,7 +8271,7 @@ entries:
       - title: Agentset
         id: agentsetgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: sort-by
@@ -8268,7 +8312,7 @@ entries:
       - title: Agentset
         id: agentsetgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: sort-on
@@ -8536,7 +8580,7 @@ entries:
       - title: String
         id: stringgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: sublist
@@ -9250,7 +9294,7 @@ entries:
       - title: Agentset
         id: agentsetgroup
       - title: List
-        id: listgroup
+        id: listsgroup
     data:
       syntax:
         - name: up-to-n-of
@@ -10103,6 +10147,10 @@ entries:
     entry_categories:
       - title: Anonymous Procedures
         id: anonproceduresgroup
+    primitive_aliases:
+      - category_id: anonproceduresgroup
+        aliases:
+          - "-> (anonymous procedure)"
     data:
       syntax:
         - name: ->
