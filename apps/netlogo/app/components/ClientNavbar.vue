@@ -65,19 +65,10 @@ const handleMediaQueryChange = (): void => {
   }
 };
 
-// Use the navigation composable to fetch from Directus
-const { navbarLinks: apiNavbarLinks, fetchNavigation, isLoading } = useNavigation();
+const { navbarLinks: apiNavbarLinks } = await useNavigation();
 
-// Default fallback navigation (shown while loading or on error)
-const defaultNavbarLinks: NavbarLink[] = [
-  {
-    title: "Home",
-    href: "/",
-  },
-];
-
-// Reactive navbar links that update once API data is loaded
-const navbarLinks = ref<NavbarLink[]>(defaultNavbarLinks);
+// Reactive navbar links with active states
+const navbarLinks = ref<NavbarLink[]>(apiNavbarLinks.value);
 
 const updateActiveStates = () => {
   navbarRef.value?.blur();
@@ -119,7 +110,6 @@ const isLinkParentActive = (link: NavbarLink, currentPath: string): boolean => {
   );
 };
 
-// Watch for API data to load and update navbarLinks
 watch(
   apiNavbarLinks,
   (newLinks) => {
@@ -131,10 +121,8 @@ watch(
   { immediate: true },
 );
 
-onMounted(async () => {
+onMounted(() => {
   if (import.meta.client) {
-    // Fetch navigation data from Directus
-    await fetchNavigation();
     updateActiveStates();
     handleMediaQueryChange();
   }
