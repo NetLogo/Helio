@@ -1,7 +1,13 @@
 <template>
+  <Intro :description="introData?.description" />
+  <Newsfeed :news-data="newsData" />
+  <div class="bg-zinc-200">
+    <UContainer>
+      <GetNetLogo :products="getNetLogoData" />
+    </UContainer>
+  </div>
   <UContainer>
-    <Intro :description="introData?.description" />
-    <Newsfeed :news-data="newsData" />
+    <Community :communities="communityData" />
   </UContainer>
 </template>
 
@@ -23,5 +29,7 @@ const { data: news } = await useAsyncData("news-data", async () => {
 });
 
 const introData = computed(() => mainData.value?.introduction ?? null);
+const getNetLogoData = computed(() => mainData.value?.get_netlogo ?? []);
+const communityData = computed(() => mainData.value?.community ?? []);
 const newsData = computed(() => news.value ?? []);
 </script>
