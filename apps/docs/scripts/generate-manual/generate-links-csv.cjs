@@ -15,11 +15,8 @@ const NULL = 'null';
 /** @typedef {Object} ProcessedEntry
  *  @property {string} primitiveName
  *  @property {string} source
- *  @property {string} htmlFile
- *  @property {number|string} pageNumber
- *  @property {string} destinationName
- *  @property {string} pdfUrl
  *  @property {string} docsUrl
+ *  @property {string} pdfAnchor
  */
 
 async function main() {
@@ -34,11 +31,8 @@ async function main() {
   const csvFile = new CSVFile([
     'primitiveName',
     'source',
-    'htmlFile',
-    'pageNumber',
-    'destinationName',
-    'pdfUrl',
     'docsUrl',
+    'pdfAnchor'
   ]);
 
   /**
@@ -77,7 +71,7 @@ async function main() {
       // @ts-expect-error -- the typechecker is confused
       // the canonical type is import('mupdf').PDFObject | null
       const pageNum = doc.getPageNumberFromDestination(dest);
-      const docsUrl = `/${docsUrlPrefix}/${filename}`;
+      const docsUrl = `${docsUrlPrefix}/${filename}`;
 
       /**
        * @type {ProcessedEntry}
@@ -85,23 +79,16 @@ async function main() {
       const commonFields = {
         primitiveName,
         source: prefix,
-        htmlFile,
-        pageNumber: 'N/A',
-        // @ts-expect-error -- the typechecker is confused
-        // the canonical type is string
-        destinationName: destName,
-        pdfUrl: 'N/A',
         docsUrl,
+        pdfAnchor: ""
       };
 
       stats.incrementEntries();
 
       if (pageNum !== undefined) {
-        const pdfUrl = `#page=${pageNum}&nameddest=${destName}`;
         results.push({
           ...commonFields,
-          pageNumber: pageNum,
-          pdfUrl,
+          pdfAnchor: `${destName}`
         });
       } else {
         console.warn(`Destination "${destName}" not found`);
@@ -249,7 +236,7 @@ class CSVFile {
   }
 
   toString() {
-    return [this.formatRow(this.headerFields), ...this.rows].join(this.newline);
+    return this.rows.join(this.newline);
   }
 }
 
