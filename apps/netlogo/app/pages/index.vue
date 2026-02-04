@@ -1,5 +1,5 @@
 <template>
-  <Intro :description="introData?.description" />
+  <Intro :description="introData?.description" :intro-splash-data="introSplashData" />
   <Newsfeed :news-data="newsData" />
   <div class="bg-zinc-200">
     <UContainer>
@@ -29,6 +29,7 @@ const { data: news } = await useAsyncData("news-data", async () => {
 });
 
 const introData = computed(() => mainData.value?.introduction ?? null);
+const introSplashData = computed(() => mainData.value?.intro_splash ?? []);
 const getNetLogoData = computed(() => mainData.value?.get_netlogo ?? []);
 const communityData = computed(() => mainData.value?.community ?? []);
 const newsData = computed(() => news.value ?? []);

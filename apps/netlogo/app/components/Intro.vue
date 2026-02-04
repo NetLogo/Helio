@@ -49,6 +49,8 @@
             </div>
           </div>
         </div>
+
+        <IntroSplash :page-data="introSplashData" />
       </div>
     </section>
   </UContainer>
@@ -57,15 +59,18 @@
 <script setup lang="ts">
 import IntroTurtlesSvg from "@repo/vue-ui/assets/brands/intro-turtles.svg";
 import LogoTextSvg from "@repo/vue-ui/assets/brands/logo-text.svg";
+import type { IntroSplashEntry } from "~/utils/api";
 import Button from "../../../../packages/vue-ui/src/components/Button.vue";
 
 interface Props {
   description?: string;
+  introSplashData?: IntroSplashEntry[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
   description:
     "Powerful yet easy-to-learn environment for agent-based modeling in both research and education.",
+  introSplashData: () => [],
 });
 
 const scrollToGetNetLogo = () => {
