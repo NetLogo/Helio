@@ -23,9 +23,9 @@
     </NavbarLinksContainer>
 
     <NavbarActionsContainer>
-      <ClientOnly>
-        <SSRUContentSearchButton />
-      </ClientOnly>
+      <Button variant="default" size="sm" class="text-sm px-4 py-2" @click="navigateToDonate">
+        DONATE
+      </Button>
     </NavbarActionsContainer>
   </Navbar>
 
@@ -39,6 +39,7 @@ import { useMediaQuery } from "@vueuse/core";
 import { onMounted, ref, watch } from "vue";
 import { WebsiteLogo } from "~/assets/website-logo";
 import { useNavigation, type NavbarLink } from "~/composables/useNavigation";
+import Button from "../../../../packages/vue-ui/src/components/Button.vue";
 
 const route = useRoute();
 
@@ -63,6 +64,10 @@ const handleMediaQueryChange = (): void => {
       { immediate: true },
     );
   }
+};
+
+const navigateToDonate = () => {
+  navigateTo("/donate");
 };
 
 const { navbarLinks: apiNavbarLinks } = await useNavigation();
