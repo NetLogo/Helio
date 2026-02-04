@@ -2,40 +2,47 @@
   <UContainer>
     <section class="w-full bg-white pt-2">
       <div class="container mx-auto py-12 px-4">
-        <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+        <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <div class="flex-1 flex items-center justify-center lg:justify-end">
-            <div class="intro-logo-container flex items-center gap-4">
-              <component :is="TurtlesLogo" class="intro-turtles w-24 md:w-32 lg:w-40" />
-              <div class="flex flex-col">
-                <span class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800"
-                  >NetLogo</span
-                >
-                <span class="text-lg md:text-xl lg:text-2xl font-medium text-red-500 italic">
-                  Simulate, Explore, Understand
-                </span>
+            <div class="intro-logo-container flex items-center gap-6">
+              <component :is="IntroTurtlesSvg" class="intro-turtles w-32 md:w-40 lg:w-52" />
+              <div class="flex flex-col gap-2">
+                <component :is="LogoTextSvg" class="w-56 md:w-72 lg:w-96 h-auto" />
               </div>
             </div>
           </div>
 
-          <div class="flex-1 flex flex-col items-center lg:items-start gap-4">
-            <p class="text-lg font-medium leading-relaxed text-center lg:text-left max-w-lg">
+          <div class="flex-1 flex flex-col items-center lg:items-start gap-5">
+            <p
+              class="text-lg md:text-xl font-medium leading-relaxed text-center lg:text-left max-w-lg px-3"
+            >
               {{ description }}
             </p>
-            <div class="flex flex-row gap-3 items-start">
-              <div class="flex flex-col items-center">
+            <div class="flex flex-row gap-4 items-start">
+              <div class="flex flex-col items-center px-3">
                 <!-- <button
                   class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded text-sm uppercase tracking-wide transition-colors"
                   @click="scrollToGetNetLogo"
                 >
                   GET NETLOGO
                 </button> -->
-                <Button variant="default" size="lg" class="mt-2" @click="scrollToGetNetLogo">
+                <Button
+                  variant="default"
+                  size="lg"
+                  class="mt-2 text-base px-6 py-3"
+                  @click="scrollToGetNetLogo"
+                >
                   GET NETLOGO
                 </Button>
-                <span class="text-gray-500 text-sm mt-1">100% Free</span>
+                <span class="text-gray-500 text-base mt-1">100% Free</span>
               </div>
               <div class="flex flex-col items-center">
-                <Button variant="outline" size="lg" class="mt-2" @click="navigateToDonate">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  class="mt-2 text-base px-6 py-3"
+                  @click="navigateToDonate"
+                >
                   DONATE
                 </Button>
               </div>
@@ -48,7 +55,8 @@
 </template>
 
 <script setup lang="ts">
-import TurtlesLogo from "@repo/vue-ui/assets/brands/Turtles.svg";
+import IntroTurtlesSvg from "@repo/vue-ui/assets/brands/intro-turtles.svg";
+import LogoTextSvg from "@repo/vue-ui/assets/brands/logo-text.svg";
 import Button from "../../../../packages/vue-ui/src/components/Button.vue";
 
 interface Props {
