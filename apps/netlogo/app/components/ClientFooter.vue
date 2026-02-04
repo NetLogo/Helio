@@ -8,6 +8,9 @@
         :span="2"
         class="w-fit"
       >
+        <p class="text-md text-gray-600 mt-2">
+          © {{ currentYear }} NetLogo Center at Northwestern University
+        </p>
       </FooterBrandSection>
 
       <FooterLinksSection
