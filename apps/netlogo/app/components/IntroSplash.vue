@@ -24,6 +24,52 @@
         class="mb-6 text-center"
       />
 
+      <!-- Right side section now on the top for mobile -->
+      <div
+        v-if="activeEntry.featured_items && activeEntry.featured_items.length > 0"
+        class="lg:hidden mb-6"
+      >
+        <div v-for="item in activeEntry.featured_items" :key="item.id" class="mb-4">
+          <div v-if="item.column_words && item.column_words.length > 0" class="text-center">
+            <h4 class="text-gray-700 font-medium mb-3">
+              {{ item.word_column_title || "Example Topics" }}
+            </h4>
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 w-full">
+              <div class="flex flex-wrap justify-center items-center gap-x-4 gap-y-2">
+                <span v-for="word in item.column_words" :key="word.word" class="text-blue-600">
+                  {{ word.word }}
+                </span>
+                <span class="text-gray-500 text-sm">and many more...</span>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="item.column_images && item.column_images.length > 0" class="text-center mt-4">
+            <h4 v-if="item.image_column_title" class="text-gray-700 font-medium mb-3">
+              {{ item.image_column_title }}
+            </h4>
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 inline-block">
+              <div class="flex flex-wrap justify-center items-center gap-x-2 gap-y-1">
+                <button
+                  v-for="(img, imgIndex) in item.column_images"
+                  :key="img.word"
+                  class="transition-colors"
+                  :class="
+                    selectedImageIndex === imgIndex
+                      ? 'text-blue-800 font-medium'
+                      : 'text-blue-600 hover:text-blue-800'
+                  "
+                  @click="selectedImageIndex = imgIndex"
+                >
+                  {{ img.word }}
+                </button>
+                <span class="text-gray-500 text-sm">and many more...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="flex flex-col lg:flex-row items-center lg:items-start">
         <!-- Demo Image (Left Side) -->
         <div class="flex-1 flex justify-center">
@@ -42,10 +88,10 @@
           </div>
         </div>
 
-        <!-- (Right Side) -->
+        <!-- Right side sections on lg screens -->
         <div
           v-if="activeEntry.featured_items && activeEntry.featured_items.length > 0"
-          class="flex-shrink-0 w-full lg:w-auto"
+          class="hidden lg:block flex-shrink-0 w-full lg:w-auto"
         >
           <div v-for="item in activeEntry.featured_items" :key="item.id" class="mb-4">
             <!-- Example subject area column-->
