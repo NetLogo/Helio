@@ -7,6 +7,14 @@
 <script setup lang="ts">
 import NetLogoAPI from "~/utils/api";
 
+useHead({
+  title: "NetLogo Contact",
+  titleTemplate: "%s",
+  meta: [
+    { name: "description", content: "Information for how to contact NetLogo" },
+  ],
+});
+
 const config = useRuntimeConfig();
 
 const { data: contact } = await useAsyncData("contact-data", async () => {
