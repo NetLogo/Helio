@@ -37,15 +37,13 @@
         </template>
 
         <template #footer>
-          <Button
-            variant="default"
-            size="lg"
-            class="mt-2"
-            :href="community.link"
-            :target="isExternalLink(community.link) ? '_blank' : '_self'"
+          <NuxtLink
+            :to="community.link"
+            :external="isExternalLink(community.link)"
+            :target="isExternalLink(community.link) ? '_blank' : undefined"
           >
-            Go
-          </Button>
+            <Button variant="default" size="lg" class="mt-2"> Go </Button>
+          </NuxtLink>
         </template>
       </UPageCard>
     </div>

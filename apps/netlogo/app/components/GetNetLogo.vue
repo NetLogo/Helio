@@ -37,15 +37,15 @@
         </template>
 
         <template #footer>
-          <Button
-            variant="default"
-            size="lg"
-            class="mt-2"
-            :href="product.link"
-            :target="isExternalLink(product.link) ? '_blank' : '_self'"
+          <NuxtLink
+            :to="product.link"
+            :external="isExternalLink(product.link)"
+            :target="isExternalLink(product.link) ? '_blank' : undefined"
           >
-            {{ product.button_text || "Learn More" }}
-          </Button>
+            <Button variant="default" size="lg" class="mt-2">
+              {{ product.button_text || "Learn More" }}
+            </Button>
+          </NuxtLink>
         </template>
       </UPageCard>
     </div>
