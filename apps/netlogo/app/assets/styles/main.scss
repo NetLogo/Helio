@@ -16,6 +16,14 @@
   h5 {
     margin-bottom: 0;
   }
+
+  a {
+    color: var(--color-link);
+  }
+
+  a:hover {
+    color: var(--color-link-hover);
+  }
   // @include meta.load-css('@repo/tailwind-config/scss/docs-theme.scss');
 }
 

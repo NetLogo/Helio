@@ -473,6 +473,7 @@ span.external-link {
 
 // Links
 
+a,
 .landing a,
 a:has(code):not(h3 > a),
 code a,
@@ -484,6 +485,7 @@ a:not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
   font-weight: 600;
 }
 
+a:hover,
 .landing a:hover,
 a:has(code:hover),
 code a:hover,
