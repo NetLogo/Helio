@@ -45,5 +45,8 @@ defineProps<{
 
 :deep(iframe) {
   margin-top: 1rem;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
 }
 </style>
