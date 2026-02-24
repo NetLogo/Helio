@@ -21,10 +21,11 @@ defineProps<{
 
 :deep(h1) {
   font-size: 2.5rem;
-  line-height: 2.5rem;
+  line-height: 3rem;
   font-weight: 500;
   margin-top: 1.5rem;
   margin-bottom: 1rem;
+  /* text-align: center; */
 }
 
 :deep(h2) {
