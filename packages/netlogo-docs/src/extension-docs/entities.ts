@@ -159,11 +159,25 @@ class MustachePrimitiveWrapper {
   }
 }
 
+class TOCPrimitiveWrapper extends MustachePrimitiveWrapper {
+  public readonly last: boolean;
+  public constructor(primitive: Primitive, last = false) {
+    super(primitive);
+    this.last = last;
+  }
+
+  public static fromPrims(prims: Array<MustachePrimitiveWrapper>): Array<TOCPrimitiveWrapper> {
+    return prims.map(
+      (prim, index) => new TOCPrimitiveWrapper(prim.primitive, index === prims.length - 1),
+    );
+  }
+}
+
 class TableOfContentsSection {
   public constructor(
     public readonly fullCategoryName: string,
     public readonly shortCategoryName: string,
-    public readonly prims: Array<MustachePrimitiveWrapper>,
+    public readonly prims: Array<TOCPrimitiveWrapper>,
   ) {}
 
   public static fromCategoryName(
@@ -173,7 +187,11 @@ class TableOfContentsSection {
   ): TableOfContentsSection | null {
     const prims = unfilteredPrims.filter((prim) => prim.primitive.tags.includes(shortCategoryName));
     if (prims.length === 0) return null;
-    return new TableOfContentsSection(fullCategoryName, shortCategoryName, prims);
+    return new TableOfContentsSection(
+      fullCategoryName,
+      shortCategoryName,
+      TOCPrimitiveWrapper.fromPrims(prims),
+    );
   }
 }
 
@@ -194,7 +212,11 @@ class TableOfContents {
       .filter((section): section is TableOfContentsSection => section !== null);
     if (sections.length === 0) {
       return new TableOfContents([
-        new TableOfContentsSection("All Primitives", "all", unfilteredPrims),
+        new TableOfContentsSection(
+          "All Primitives",
+          "all",
+          TOCPrimitiveWrapper.fromPrims(unfilteredPrims),
+        ),
       ]);
     }
     return new TableOfContents(sections);

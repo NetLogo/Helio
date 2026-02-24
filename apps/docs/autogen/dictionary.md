@@ -23,6 +23,7 @@ actually run a primitive, consult its dictionary entry.
 {{#if additional_names.length}}
 ({{#each additional_names}}[[{{{.}}}|{{{../id}}}]]{{#unless @last}}, {{/unless}}{{/each}})
 {{/if}}
+{{#unless @last}} <span class="font-bold"> · </span> {{/unless}}
 {{/entries}}
 {{/categories}}
 

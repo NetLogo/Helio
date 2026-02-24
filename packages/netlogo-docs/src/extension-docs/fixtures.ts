@@ -37,6 +37,7 @@ Looking for the primitive reference for the {{extensionName}} extension? You can
 <div id="{{shortCategoryName}}">
   {{#prims}}
   <a class="code" href="#{{id}}"><code>{{primitive.fullName}}</code></a>
+  {{^last}} <span class="font-bold"> · </span> {{/last}}
   {{/prims}}
 </div>
 
@@ -46,6 +47,7 @@ Looking for the primitive reference for the {{extensionName}} extension? You can
 <div id="{{shortCategoryName}}" class="prose">
   {{#prims}}
   <a class="code" href="#{{id}}"><code>{{primitive.fullName}}</code></a>
+  {{^last}} <span class="font-bold"> · </span> {{/last}}
   {{/prims}}
 </div>
 {{/contents}}{{/emptyTableOfContents}}
