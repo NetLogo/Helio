@@ -164,6 +164,12 @@ instead of by manually pressing the Tab key to change the indentation of a line.
 
 When selected line numbers will be shown on the left edge of the Code Tab.
 
+### Code Font
+
+This preference allows you to apply any font installed on your system to all
+code editors in NetLogo, such as the Code Tab and the Button Widget commands
+field.
+
 ## Logging Preferences
 
 ### Enable logging
@@ -215,3 +221,8 @@ example of each theme.
 ### Classic
 
 <img src="./images/nl7intro/inttabclassic.png" style="width:5in" />
+
+### Automatic
+
+If this option is selected, NetLogo will use either the Light theme or the Dark
+theme, based on the system setting.
