@@ -10,9 +10,7 @@ import NetLogoAPI from "~/utils/api";
 useHead({
   title: "NetLogo Center Campaign",
   titleTemplate: "%s",
-  meta: [
-    { name: "description", content: "About The NetLogo Center Campaign" },
-  ],
+  meta: [{ name: "description", content: "About The NetLogo Center Campaign" }],
 });
 
 const config = useRuntimeConfig();
@@ -22,3 +20,9 @@ const { data: campaignData } = await useAsyncData("campaign-data", async () => {
   return await api.getCampaignContent();
 });
 </script>
+
+<style scoped>
+:deep(h1) {
+  text-align: center;
+}
+</style>
