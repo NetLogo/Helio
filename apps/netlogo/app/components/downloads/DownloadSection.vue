@@ -5,7 +5,7 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mt-6">
         <div>
-          <p>Download form here....</p>
+          <DownloadForm :versions="downloadData" :dev-os="devOs" />
         </div>
 
         <div class="text-start text-lg ps-5 mt-4">
