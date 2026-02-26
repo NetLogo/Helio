@@ -83,7 +83,9 @@ export function makeAssetsManager(
 
   const save = debounce(function () {
     // console.log('save:', assets)
-    void storage.setItem(assetsKey, assets);
+    void storage.setItem(assetsKey, assets).finally(() => {
+      if (mirrorTarget) mirror();
+    });
   }, 50);
 
   // ---------------------------------------------------------------------------------------------------------------------
