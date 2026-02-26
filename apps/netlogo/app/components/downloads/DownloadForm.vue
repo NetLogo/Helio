@@ -1,6 +1,107 @@
 <template>
-  <div class="download-form">
-    <form @submit.prevent="handleFormSubmission" class="mt-1">
+  <UForm
+    :schema="FormDataSchema"
+    :state="formData"
+    class="space-y-8"
+    @submit="handleFormSubmission"
+  >
+    <UFormField
+      orientation="horizontal"
+      label="First Name"
+      name="first_name"
+      :required="formData.subscribe"
+    >
+      <UInput id="first_name" v-model="formData.first_name" type="text" />
+    </UFormField>
+
+    <UFormField
+      orientation="horizontal"
+      label="Last Name"
+      name="last_name"
+      :required="formData.subscribe"
+    >
+      <UInput id="last_name" v-model="formData.last_name" type="text" />
+    </UFormField>
+
+    <UFormField orientation="horizontal" label="Email" name="email" :required="formData.subscribe">
+      <UInput id="email" v-model="formData.email" type="email" />
+      <div class="flex items-center mt-2">
+        <UCheckbox id="subscribe" v-model="formData.subscribe" class="mr-2" />
+        <label for="subscribe" class="text-sm">
+          Update me on NetLogo news (including new releases)
+        </label>
+      </div>
+    </UFormField>
+
+    <UFormField orientation="horizontal" label="Organization" name="organization">
+      <UInput id="organization" v-model="formData.organization" type="text" />
+    </UFormField>
+
+    <UFormField orientation="horizontal" label="Comments" name="comments">
+      <UTextarea id="comments" v-model="formData.comments" :rows="3" class="w-full" />
+      <p class="text-sm text-gray-500 mt-1">
+        For a response, write
+        <a class="underline text-blue-600 ms-1" href="mailto:feedback@ccl.northwestern.edu">
+          feedback@ccl.northwestern.edu
+        </a>
+      </p>
+    </UFormField>
+
+    <div class="mt-2">
+      <span class="mr-4 font-bold">Version {{ formData.version }}</span>
+      <span class="text-sm text-gray-500 mx-2">
+        previous versions
+        <a
+          target="_blank"
+          class="underline text-blue-600"
+          href="https://ccl.northwestern.edu/netlogo/oldversions.shtml"
+          >here</a
+        >
+      </span>
+    </div>
+
+    <div class="flex flex-row flex-wrap gap-2 mt-4 mb-3 items-center">
+      <template v-for="link in filteredPlatforms" :key="link.platform">
+        <Button
+          v-if="link.primary"
+          as="button"
+          type="submit"
+          size="lg"
+          class="px-5 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xl font-medium flex items-center gap-2"
+          @click="selectedPlatform = link.platform"
+        >
+          <img :src="createImageURL(link.platform_icon.icon.id)" class="w-5 h-5" alt="" />
+          Download {{ link.subplatform }}
+        </Button>
+
+        <button
+          v-else-if="!link.subplatform.includes('32-bit')"
+          type="submit"
+          class="border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg text-lg font-medium flex items-center gap-2"
+          @click="selectedPlatform = link.platform"
+        >
+          <img :src="createImageURL(link.platform_icon.icon.id)" class="w-5 h-5" alt="" />
+          Download {{ link.subplatform }}
+        </button>
+
+        <Button
+          v-else
+          as="button"
+          variant="link"
+          type="submit"
+          size="lg"
+          class="px-5 py-4 border-0 text-blue-600 flex items-center gap-1 text-lg cursor-pointer"
+          icon="logos:microsoft-windows-icon"
+          @click="selectedPlatform = link.platform"
+        >
+          <img :src="createImageURL(link.platform_icon.icon.id)" class="w-5 h-5" alt="" />
+          Download {{ link.subplatform }} <span class="text-gray-500">(rare)</span>
+        </Button>
+      </template>
+    </div>
+  </UForm>
+  <!-- <div class="download-form"> -->
+  <!-- <form @submit.prevent="handleFormSubmission" class="mt-1">
       <div class="grid grid-cols-12 items-center gap-x-4 my-4">
         <div class="col-span-12 sm:col-span-3">
           <label for="first_name" class="text-lg font-semibold whitespace-nowrap">
@@ -136,10 +237,11 @@
         </template>
       </div>
     </form>
-  </div>
+  </div>  -->
 </template>
 
 <script setup lang="ts">
+import { z } from "zod";
 import type { DownloadLink, NetLogoVersion } from "~/utils/api";
 
 const props = defineProps<{
@@ -153,6 +255,24 @@ const backendUrl = config.public.backendUrl as string;
 const createImageURL = (imageId: string) => `${backendUrl}/assets/${imageId}`;
 
 // Form data
+const FormDataSchema = z
+  .object({
+    version: z.string(),
+    platform: z.string(),
+    first_name: z.string().optional(),
+    last_name: z.string().optional(),
+    organization: z.string().optional(),
+    email: z.string().optional(),
+    subscribe: z.boolean(),
+    comments: z.string().optional(),
+    ip: z.string().optional(),
+    country: z.string().optional(),
+    time_stamp: z.string().optional(),
+  })
+  .refine((data) => !data.subscribe || (data.first_name && data.last_name && data.email), {
+    message: "First name, last name, and email are required if subscribing",
+  });
+
 const formData = reactive({
   version: "",
   platform: "",
@@ -238,6 +358,7 @@ const getFormattedTimestamp = () => {
 };
 
 const handleFormSubmission = async () => {
+  console.log("Form submitted with data:", formData);
   // Update the platform from the clicked button
   formData.platform = selectedPlatform.value;
 
