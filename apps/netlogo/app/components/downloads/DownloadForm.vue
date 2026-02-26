@@ -2,35 +2,45 @@
   <div class="download-form">
     <form @submit.prevent="handleFormSubmission" class="mt-1">
       <div class="grid grid-cols-12 items-center gap-x-4 my-4">
-        <label for="first_name" class="text-lg font-semibold whitespace-nowrap sm:col-span-3">
-          First Name<span v-if="formData.subscribe" class="text-red-500 ms-1">*</span>
-        </label>
-        <input
-          id="first_name"
-          v-model="formData.first_name"
-          type="text"
-          class="form-input sm:col-span-9"
-          :required="formData.subscribe"
-        />
+        <div class="col-span-12 sm:col-span-3">
+          <label for="first_name" class="text-lg font-semibold whitespace-nowrap">
+            First Name<span v-if="formData.subscribe" class="text-red-500 ms-1">*</span>
+          </label>
+        </div>
+        <div class="col-span-12 sm:col-span-9">
+          <input
+            id="first_name"
+            v-model="formData.first_name"
+            type="text"
+            class="form-input"
+            :required="formData.subscribe"
+          />
+        </div>
       </div>
 
       <div class="grid grid-cols-12 items-center gap-x-4 my-4">
-        <label for="last_name" class="text-lg font-semibold whitespace-nowrap sm:col-span-3">
+        <label
+          for="last_name"
+          class="col-span-12 sm:col-span-3 text-lg font-semibold whitespace-nowrap"
+        >
           Last Name<span v-if="formData.subscribe" class="text-red-500 ms-1">*</span>
         </label>
         <input
           id="last_name"
           v-model="formData.last_name"
           type="text"
-          class="form-input sm:col-span-9"
+          class="form-input col-span-12 sm:col-span-9"
         />
       </div>
 
       <div class="grid grid-cols-12 items-center gap-x-4 my-4">
-        <label for="email" class="text-lg font-semibold whitespace-nowrap sm:col-span-3">
+        <label
+          for="email"
+          class="col-span-12 sm:col-span-3 text-lg font-semibold whitespace-nowrap"
+        >
           Email<span v-if="formData.subscribe" class="text-red-500 ms-1">*</span>
         </label>
-        <div class="sm:col-span-9">
+        <div class="col-span-12 sm:col-span-9">
           <input
             id="email"
             v-model="formData.email"
@@ -48,22 +58,26 @@
       </div>
 
       <div class="grid grid-cols-12 items-center gap-x-4 my-4">
-        <label for="organization" class="text-lg font-semibold whitespace-nowrap sm:col-span-3"
+        <label
+          for="organization"
+          class="col-span-12 sm:col-span-3 text-lg font-semibold whitespace-nowrap"
           >Organization</label
         >
         <input
           id="organization"
           v-model="formData.organization"
           type="text"
-          class="form-input sm:col-span-9"
+          class="form-input col-span-12 sm:col-span-9"
         />
       </div>
 
       <div class="grid grid-cols-12 items-start gap-x-4 my-4">
-        <label for="comments" class="text-lg font-semibold whitespace-nowrap sm:col-span-3 mt-1"
+        <label
+          for="comments"
+          class="col-span-12 sm:col-span-3 text-lg font-semibold whitespace-nowrap mt-1"
           >Comments</label
         >
-        <div class="sm:col-span-9">
+        <div class="col-span-12 sm:col-span-9">
           <textarea id="comments" v-model="formData.comments" class="form-input w-full" rows="2" />
           <p class="text-sm text-gray-500 mt-1">
             For a response, write
@@ -89,35 +103,36 @@
 
       <div class="flex flex-row flex-wrap gap-2 mt-4 mb-3 items-center">
         <template v-for="link in filteredPlatforms" :key="link.platform">
-          <button
+          <Button
             v-if="link.primary"
             type="submit"
-            class="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-lg font-semibold flex items-center gap-2"
+            class="px-5 py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xl font-medium flex items-center gap-2"
             @click="selectedPlatform = link.platform"
           >
             <img :src="createImageURL(link.platform_icon.icon.id)" class="w-5 h-5" alt="" />
             Download {{ link.subplatform }}
-          </button>
+          </Button>
 
           <button
             v-else-if="!link.subplatform.includes('32-bit')"
             type="submit"
-            class="px-5 py-3 border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg text-lg font-semibold flex items-center gap-2"
+            class="px-5 py-3 border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg text-lg font-medium flex items-center gap-2"
             @click="selectedPlatform = link.platform"
           >
             <img :src="createImageURL(link.platform_icon.icon.id)" class="w-5 h-5" alt="" />
             Download {{ link.subplatform }}
           </button>
 
-          <button
+          <Button
             v-else
+            variant="outline"
             type="submit"
-            class="p-0 m-0 border-0 bg-transparent mx-4 mt-2 text-blue-600 flex items-center gap-1 cursor-pointer"
+            class="p-0 m-0 px-1 py-4 border-0 mx-4 mt-2 text-blue-600 flex items-center gap-1 text-lg cursor-pointer"
             @click="selectedPlatform = link.platform"
           >
             <img :src="createImageURL(link.platform_icon.icon.id)" class="w-5 h-5" alt="" />
             Download {{ link.subplatform }} <span class="text-gray-500">(rare)</span>
-          </button>
+          </Button>
         </template>
       </div>
     </form>
