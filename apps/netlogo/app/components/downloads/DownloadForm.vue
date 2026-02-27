@@ -1,10 +1,20 @@
 <template>
   <UForm
+    ref="form"
     :schema="FormDataSchema"
     :state="formData"
     class="space-y-8"
     @submit="handleFormSubmission"
   >
+    <UAlert
+      v-if="form?.errors.find((e: FormError<string>) => e.name === 'root')"
+      icon="i-heroicons-exclamation-triangle"
+      color="error"
+      variant="soft"
+      title="Input Error"
+      :description="form?.errors.find((e: FormError<string>) => e.name === 'root')?.message"
+      class="mb-4"
+    />
     <UFormField
       orientation="horizontal"
       label="First Name"
@@ -103,6 +113,7 @@
 </template>
 
 <script setup lang="ts">
+import type { FormError } from "#ui/types";
 import { z } from "zod";
 import type { DownloadLink, NetLogoVersion } from "~/utils/api";
 
@@ -133,6 +144,7 @@ const FormDataSchema = z
   })
   .refine((data) => !data.subscribe || (data.first_name && data.last_name && data.email), {
     message: "First name, last name, and email are required if subscribing",
+    path: ["root"],
   });
 
 const formData = reactive({
@@ -148,6 +160,9 @@ const formData = reactive({
   country: "",
   time_stamp: "",
 });
+
+// Form ref for accessing validation errors
+const form = ref();
 
 // Track which download button was clicked
 const selectedPlatform = ref("");
