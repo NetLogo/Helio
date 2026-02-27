@@ -31,18 +31,14 @@
           >.
         </p>
 
-        <img
-          :src="netlogoIcon"
-          class="mt-0 mb-0 max-w-[65%] block mx-auto"
-          alt="Download NetLogo Turtle"
-        />
+        <component :is="NetlogoIcon" class="mt-8 mb-0 max-w-[50%] block mx-auto" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import netlogoIcon from "@repo/vue-ui/assets/icon-pack/netlogo-desktop.png";
+import NetlogoIcon from "@repo/vue-ui/assets/brands/NetlogoIcon.svg";
 import type { NetLogoVersion } from "~/utils/api";
 
 defineProps<{
