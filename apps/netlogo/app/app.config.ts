@@ -23,7 +23,7 @@ export default defineAppConfig({
       variants: {
         orientation: {
           horizontal: {
-            root: "grid grid-cols-12 gap-4 items-center [&>:first-child]:col-span-3 [&>:nth-child(2)]:col-span-9 [&>:nth-child(2)]:w-full",
+            root: "grid grid-cols-12 gap-4 items-center [&>:first-child]:col-span-12 sm:[&>:first-child]:col-span-3 [&>:nth-child(2)]:col-span-12 sm:[&>:nth-child(2)]:col-span-9 [&>:nth-child(2)]:w-full",
           },
         },
       },
