@@ -1,5 +1,13 @@
 type Key = string | number | symbol;
-type GenericObject<A> = Record<Key, A>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type IsObject<T> = T extends object ? (T extends Array<any> ? false : true) : false;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type GenericObject = object | Array<any>;
+type Merge<T, U> = IsObject<T> & IsObject<U> extends true
+  ? {
+      [K in keyof T]: K extends keyof U ? Merge<T[K], U[K]> : T[K];
+    } & U
+  : U;
 
 class ObjectFunctor<T extends Record<PropertyKey, unknown>> {
   public constructor(private readonly internal: T) {}
@@ -47,24 +55,31 @@ class ObjectFunctor<T extends Record<PropertyKey, unknown>> {
   }
 }
 
-function isRecord(value: unknown): value is GenericObject<unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+function isRecord<T>(v: T): IsObject<T> {
+  return (typeof v === "object" && v !== null && !Array.isArray(v)) as IsObject<T>;
 }
 
-function deepMerge<A, B>(a: GenericObject<A>, b: GenericObject<B>): GenericObject<A | B> {
-  const result: GenericObject<A | B> = { ...a };
-
-  for (const [key, value] of Object.entries(b)) {
-    if (isRecord(result[key]) && isRecord(value)) {
-      result[key] = deepMerge(result[key], value) as A | B;
-    } else if (Array.isArray(result[key]) && Array.isArray(value)) {
-      result[key] = [...result[key], ...value] as A | B;
-    } else {
-      result[key] = value;
-    }
-  }
-
-  return result;
+function deepMerge<T extends object, U extends object>(
+  a: T,
+  b: U,
+  { mergeArrays = true }: { mergeArrays?: boolean } = {},
+): Merge<T, U> {
+  return (
+    isRecord(a) && isRecord(b)
+      ? Object.assign(
+          {},
+          a,
+          Object.fromEntries(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            Object.entries(b).map(([k, v]) => [k, deepMerge((a as any)[k], v, { mergeArrays })]),
+          ),
+        )
+      : Array.isArray(a) && Array.isArray(b)
+        ? mergeArrays
+          ? [...a, ...b]
+          : b
+        : b
+  ) as Merge<T, U>;
 }
 
 export { deepMerge, isRecord, ObjectFunctor };
