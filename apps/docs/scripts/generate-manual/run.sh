@@ -28,7 +28,7 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-extensions=$(find $REPO_ROOT/external/extensions -name documentation.yaml | awk -F'/' '{print $(NF-1)}' | paste -sd' ' -)
+source ${BASH_SOURCE%/*}/content
 extensionCount=$(echo $extensions | wc -w | tr -d ' ')
 log "💡 Found $extensionCount extensions."
 log ""
@@ -82,49 +82,6 @@ EOF
 
 log "💡 Generating title page."
 echo "$title" > "$fileDirectory/title.html"
-
-files=(
-  "title"
-  "whatis"
-  "copyright"
-  "versions"
-  "requirements"
-  "contact"
-  "sample"
-  "tutorial1"
-  "tutorial2"
-  "tutorial3"
-  "interface"
-  "interfacetab"
-  "infotab"
-  "codetab"
-  "programming"
-  "netlogo7intro"
-  "netlogopreferences"
-  "transition"
-  "extension-manager"
-  "shapes"
-  "behaviorspace"
-  "systemdynamics"
-  "colorpicker"
-  "hubnet"
-  "hubnet-authoring"
-  "modelingcommons"
-  "logging"
-  "controlling"
-  "mathematica"
-  "3d"
-  "hpc"
-  "extensions"
-  "extension-authoring"
-  "colorpicker"
-  "netlogo7intro"
-  "netlogopreferences"
-)
-for ext in $extensions; do
-  files+=("$ext")
-done
-files+=("faq" "dictionary")
 
 log "💡 Generating manual for files: ${files[*]}"
 log ""

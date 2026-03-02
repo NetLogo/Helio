@@ -12,6 +12,7 @@
     "docs:deploy": "bash ./scripts/deploy.sh",
     "docs:preview": "bash ./scripts/preview.sh",
     "docs:clean-up": "bash ./scripts/clean-up.sh",
+    "docs:build-and-generate-manual": "bash ./scripts/generate-manual/build-html.sh && yarn run docs:generate-manual",
     "docs:generate-manual": "bash ./scripts/generate-manual/run.sh",
     "docs:make-static-site": "bash ./scripts/make-static/run.sh .build/latest .build-static",
     "docs:all": "npm run docs:clean-up && npm run docs:build && npm run docs:generate-manual && npm run docs:deploy",
