@@ -31,3 +31,33 @@ jobs:
 
       - name: Run ${{ matrix.command }}
         run: yarn ${{ matrix.command }}
+
+  test-builds:
+    name: Test Builds
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - docs:
+              command: "yarn run docs:generate"
+              path: "./apps/docs"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "yarn"
+
+      - name: Initialize Repository
+        run: |
+          yarn run init
+
+      - name: Build ${{ matrix.app }}
+        working-directory: ${{ matrix.app.path }}
+        run: ${{ matrix.app.command }}

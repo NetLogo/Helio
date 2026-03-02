@@ -1,0 +1,53 @@
+#!/bin/bash
+source .env
+
+extensions=$(find $EXTENSIONS_DIR -name documentation.yaml | awk -F'/' '{print $(NF-1)}' | paste -sd' ' -)
+files=(
+  "title"
+  "whatis"
+  "copyright"
+  "versions"
+  "requirements"
+  "contact"
+  "sample"
+  "tutorial1"
+  "tutorial2"
+  "tutorial3"
+  "interface"
+  "interfacetab"
+  "infotab"
+  "codetab"
+  "programming"
+  "netlogo7intro"
+  "netlogopreferences"
+  "transition"
+  "extension-manager"
+  "shapes"
+  "behaviorspace"
+  "systemdynamics"
+  "colorpicker"
+  "hubnet"
+  "hubnet-authoring"
+  "modelingcommons"
+  "logging"
+  "controlling"
+  "mathematica"
+  "3d"
+  "hpc"
+  "extensions"
+  "extension-authoring"
+  "colorpicker"
+  "netlogo7intro"
+  "netlogopreferences"
+)
+for ext in $extensions; do
+  files+=("$ext")
+done
+files+=("faq" "dictionary")
+
+routes=()
+for f in "${files[@]}"; do
+  routes+=("/$f")
+done
+
+export NITRO_PRERENDER_ROUTES=$(IFS=,; echo "${routes[*]}")

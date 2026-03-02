@@ -28,7 +28,7 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source ${BASH_SOURCE%/*}/content
+source ${BASH_SOURCE%/*}/pdf-content
 extensionCount=$(echo $extensions | wc -w | tr -d ' ')
 log "💡 Found $extensionCount extensions."
 log ""
