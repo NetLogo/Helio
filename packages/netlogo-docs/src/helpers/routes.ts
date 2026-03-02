@@ -1,6 +1,7 @@
 import type TemplateRenderer from "@repo/template";
 import type { PageResult } from "@repo/template";
 import fs from "fs/promises";
+import { minimatch } from "minimatch";
 import path from "path";
 import { toSlug } from "./slugify";
 
@@ -31,4 +32,12 @@ export async function getRoutes(baseUrl: string = "/"): Promise<Array<string> | 
   return routes
     .map((route) => (route.startsWith("/") ? route.slice(1) : route))
     .map((route) => baseUrl + route);
+}
+
+export async function getRoutesSubset(
+  patterns: Array<string>,
+  baseUrl: string = "/",
+): Promise<Array<string>> {
+  const routes = await getRoutes(baseUrl);
+  return routes.filter((route) => patterns.some((pattern) => minimatch(route, pattern)));
 }
