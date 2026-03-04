@@ -12,7 +12,7 @@ runs:
     - name: Setup Node.js and dependencies
       uses: ./.github/actions/setup-node-deps
 
-    - name: Setup SSH
-      uses: ./.github/actions/setup-ssh
-      with:
-        ssh-private-key: ${{ inputs.ssh-private-key }}
+    # - name: Setup SSH
+    #   uses: ./.github/actions/setup-ssh
+    #   with:
+    #     ssh-private-key: ${{ inputs.ssh-private-key }}
