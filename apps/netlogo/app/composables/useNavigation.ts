@@ -9,14 +9,18 @@ export interface NavbarLink {
   active?: boolean;
 }
 
-/**
- * Composable to fetch and manage navigation data from the Directus backend
- */
-export function useNavigation() {
+export async function useNavigation() {
   const config = useRuntimeConfig();
   const navigationSections = ref<NavigationSection[]>([]);
-  const isLoading = ref(true);
-  const error = ref<Error | null>(null);
+
+  const { data } = await useAsyncData("nav-data", async () => {
+    const api = new NetLogoAPI(config.public.backendUrl as string);
+    return await api.getNavigationData();
+  });
+
+  if (data.value) {
+    navigationSections.value = data.value.navigation_sections;
+  }
 
   /**
    * Transform API navigation sections into NavbarLink format
@@ -41,51 +45,30 @@ export function useNavigation() {
     });
   });
 
-  /**
-   * Get footer navigation items (items with in_footer = true)
-   */
-  const footerLinks = computed(() => {
-    const links: Array<{ title: string; href: string }> = [];
-    navigationSections.value.forEach((section) => {
-      section.items
-        .filter((item) => item.in_footer)
-        .forEach((item) => {
-          links.push({
+  const footerSections = computed(() => {
+    return navigationSections.value
+      .map((section) => {
+        const links = section.items
+          .filter((item) => item.in_footer)
+          .map((item) => ({
             title: item.display_title,
             href: item.url,
-          });
-        });
-    });
-    return links;
+            external: false,
+          }));
+
+        return links.length > 0
+          ? {
+              title: section.name,
+              links,
+            }
+          : null;
+      })
+      .filter((section) => section !== null);
   });
-
-  /**
-   * Fetch navigation data from the Directus backend
-   */
-  async function fetchNavigation() {
-    isLoading.value = true;
-    error.value = null;
-
-    try {
-      const api = new NetLogoAPI(config.public.backendUrl as string);
-      const data = await api.getNavigationData();
-      navigationSections.value = data.navigation_sections;
-    } catch (e) {
-      console.error("Failed to fetch navigation data:", e);
-      error.value = e instanceof Error ? e : new Error("Unknown error");
-      // Fallback to default navigation
-      navigationSections.value = [];
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
   return {
     navigationSections,
     navbarLinks,
-    footerLinks,
-    isLoading,
-    error,
-    fetchNavigation,
+    footerSections,
   };
 }

@@ -34,6 +34,7 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
 
   colorMode: {
     preference: "light",
+    fallback: "light",
   },
 
   css: ["~/assets/styles/main.scss", "~/assets/styles/tailwind.css", vueUiStyles],
@@ -142,6 +143,7 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   ui: {
     mdc: false,
     content: false,
+    colorMode: false,
   },
 
   ogImage: {

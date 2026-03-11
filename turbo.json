@@ -56,6 +56,10 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "nuxt:dev:no-autogen": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
