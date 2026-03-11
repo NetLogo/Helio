@@ -28,7 +28,11 @@ import { wrapCacheLocalStorage } from '@repo/utils/lib/storage/cached-local-stor
 import { removeHtmlExtension } from '~/utils/url';
 import type { CatalogItemData, PrimitiveCatalogProps, SideCatalogItem } from './types';
 
-const productInfo = useProductInfo();
+const {
+  public: {
+    website: { productVersion },
+  },
+} = useRuntimeConfig();
 
 const { dictionaryDisplayName, dictionaryHomeDirectory, indexFileURI, currentItemId, currentItemLabel, primRoot } =
   defineProps<PrimitiveCatalogProps>();
@@ -69,7 +73,7 @@ const {
   error,
 } = await useLazyAsyncData(
   indexFileURI,
-  wrapCacheLocalStorage([productInfo.productVersion, 'primitive-catalog', indexFileURI].join('-'), null, () =>
+  wrapCacheLocalStorage([productVersion, 'primitive-catalog', indexFileURI].join('-'), null, () =>
     fetcher(indexFileURI),
   ),
   { server: false },

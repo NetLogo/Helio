@@ -39,6 +39,7 @@
     "@repo/typescript-config": "0.0.0",
     "@repo/utils": "0.0.0",
     "@repo/vue-ui": "1.0.0",
+    "@repo/nuxt-core": "0.0.0",
     "@vueuse/core": "^14.1.0",
     "better-sqlite3": "^12.4.1",
     "eslint": "^9.31.0",

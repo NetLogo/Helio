@@ -36,3 +36,8 @@ packages/mustache/test-dist/
 # should not be tracked
 GITIGNORE_*
 GITIGNORE_*/**/*
+
+.env
+.env.local
+.env.development
+.env.production

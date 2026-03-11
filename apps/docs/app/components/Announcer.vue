@@ -31,14 +31,18 @@ const fetcher = async () => {
 const { data: announcements } = await useLazyAsyncData<Announcements>('announcements', fetcher, { server: false });
 
 const route = useRoute();
-const productInfo = useProductInfo();
+const {
+  public: {
+    website: { productVersion },
+  },
+} = useRuntimeConfig();
 const toast = useToast();
 
 const visibleAnnouncements = computed(() => {
   if (!announcements.value) return [];
 
   return announcements.value.filter((item) => {
-    return item.appliesTo(route.path, productInfo.productVersion);
+    return item.appliesTo(route.path, productVersion);
   });
 });
 

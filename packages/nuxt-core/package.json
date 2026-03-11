@@ -5,7 +5,14 @@
   "private": true,
   "exports": {
     "./nuxt.config.ts": "./nuxt.config.ts",
-    "./nuxt/tsconfig.json": "./.nuxt/tsconfig.json"
+    "./nuxt/tsconfig.json": "./.nuxt/tsconfig.json",
+    "./runtime.config.schema": "./runtime.config.schema.ts",
+    "./markdown.config": "./markdown.config.ts",
+    "./content.config": "./content.config.ts",
+    "./app/**/*": [
+      "./app/**/*.ts",
+      "./app/**/*.vue"
+    ]
   },
   "scripts": {
     "turbo:postinstall": "nuxt prepare"

@@ -1,4 +1,5 @@
 <template>
+
   <UTooltip
     v-if="primitive && primitive.name"
     :ui="{ content: 'primitive-tooltip ring-0 bg-transparent shadow-none ' }"
@@ -25,13 +26,13 @@
     <template #content>
       <UPageCard
         varian="outline"
-        class="primitive-tooltip-content animate-scale-in relative p-0 min-w-[300px] lg:min-w-[500px] max-w-[600px] max-h-[250px] [&_p]:mb-3 overflow-y-auto no-stylized-heading"
+        class="primitive-tooltip-content animate-scale-in relative p-0 min-w-75 lg:min-w-125 max-w-150 max-h-62.5 [&_p]:mb-3 overflow-y-auto no-stylized-heading"
         as="div"
         :ui="{
           container: 'p-4! pt-0!  gap-y-1! h-full max-w-[600px] [&_pre]:max-w-[550px]',
         }"
       >
-        <div class="sticky top-0 z-[10] bg-white flex flex-col gap-0">
+        <div class="sticky top-0 z-10 bg-white flex flex-col gap-0">
           <div class="flex justify-between items-center">
             <code class="w-fit bg-slate-100 px-2 py-1 rounded-md text-lg my-2 font-mono">
               <NuxtLink :to="primitive.url" class="netlogo-wiki-link" :external> {{ primitive.name }}</NuxtLink>
@@ -72,6 +73,7 @@
             class="dict_entry"
             :value="examples"
           />
+
           <MDC tag="div" :cache-key="`${primitive.name}-description`" :value="primitive.description ?? ''" />
           <div v-if="primitive.metadata?.isConstant" class="mt-2">
             <h2 class="mt-1 text-sm">
@@ -102,10 +104,19 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * TODO:
+ * - [ ] Reduce memory footprint
+ * - [ ] Fix hydration issues
+ * - [ ] Figure out why MDC can't see the components
+ */
 import { escapeHTML } from '@repo/utils/std/string';
+import { useNoPrimitive } from '../composables/usePrimitive';
 
 defineOptions({
-  client: false,
+  // Allowing client-side renderer to avoid SSR
+  // hydration issues in the development server.
+  client: import.meta.dev ? true : false,
 });
 
 type Props = {
@@ -114,7 +125,9 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const { primitive } = await usePrimitive({ name: props.name });
+const isDisabled = inject<boolean>('prim-tooltip-disabled', false);
+
+const { primitive } = isDisabled ? useNoPrimitive() : await usePrimitive({ name: props.name });
 
 const isNested = inject<boolean>('prim-tooltip-nested', false);
 provide('prim-tooltip-nested', true);

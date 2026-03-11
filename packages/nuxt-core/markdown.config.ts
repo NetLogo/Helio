@@ -1,6 +1,6 @@
-import type { MarkdownPlugin, ModuleOptions } from '@nuxt/content';
+import type { MarkdownPlugin, ModuleOptions } from "@nuxt/content";
 
-import { isNonEmptyString } from '@repo/utils/std/string';
+import { isNonEmptyString } from "@repo/utils/std/string";
 
 import {
   getDefaultRehypePluginsObject,
@@ -8,30 +8,32 @@ import {
   type Hast,
   NetLogoRemarkWikiLink,
   Utilities,
-} from '@repo/markdown';
-import { slugifyOptions, toSlug } from '@repo/netlogo-docs/helpers';
+} from "@repo/markdown";
+import { slugifyOptions, toSlug } from "@repo/netlogo-docs/helpers";
 
-import rehypeAutolinkHeadings, { type Options as RehypeAutolinkHeadingsOptions } from 'rehype-autolink-headings';
-import remarkToc from 'remark-toc';
+import rehypeAutolinkHeadings, {
+  type Options as RehypeAutolinkHeadingsOptions,
+} from "rehype-autolink-headings";
+import remarkToc from "remark-toc";
 
 const { hasNoChild, isNodeElement } = Utilities;
 
 const tocConfig = {
   maxDepth: 2,
-  heading: 'Table of Contents',
+  heading: "Table of Contents",
 } as const;
 
 class WikiLinkWrapper {
   private _internalType:
-    | 'absolute'
-    | 'absolute-anchor'
-    | 'relative'
-    | 'relative-anchor'
-    | 'dictionary'
-    | 'external'
-    | 'external-anchor'
-    | 'image'
-    | 'unknown' = 'unknown';
+    | "absolute"
+    | "absolute-anchor"
+    | "relative"
+    | "relative-anchor"
+    | "dictionary"
+    | "external"
+    | "external-anchor"
+    | "image"
+    | "unknown" = "unknown";
   constructor(
     public permalink: string,
     public linkType: NetLogoRemarkWikiLink.LinkType,
@@ -43,45 +45,45 @@ class WikiLinkWrapper {
 
   private _setInternalType() {
     const hasAnchor = isNonEmptyString(this.anchor);
-    const isRelative = this.permalink.startsWith('./');
-    const isAbsoluteWithoutSlashes = !this.permalink.includes('/') && !isRelative && hasAnchor;
-    const isAbsolute = this.permalink.startsWith('/') || isAbsoluteWithoutSlashes;
-    if (['wikiLink', 'missingLink'].includes(this.linkType)) {
+    const isRelative = this.permalink.startsWith("./");
+    const isAbsoluteWithoutSlashes = !this.permalink.includes("/") && !isRelative && hasAnchor;
+    const isAbsolute = this.permalink.startsWith("/") || isAbsoluteWithoutSlashes;
+    if (["wikiLink", "missingLink"].includes(this.linkType)) {
       // Absolute Anchor: /Page#Anchor, /Page# or Page#Anchor   <== Common.
       // Absolute: /Page (not Page)
       // Relative Anchor: ./Page#Anchor or ./Page#              <== Not common. Only one relative case supported.
       // Relative: ./Page
       // Dictionary: Page (no slashes) or Page/                 <== Most common.
       if (isAbsolute && hasAnchor) {
-        this._internalType = 'absolute-anchor';
+        this._internalType = "absolute-anchor";
       } else if (isAbsolute) {
-        this._internalType = 'absolute';
+        this._internalType = "absolute";
       } else if (isRelative && hasAnchor) {
-        this._internalType = 'relative-anchor';
+        this._internalType = "relative-anchor";
       } else if (isRelative) {
-        this._internalType = 'relative';
+        this._internalType = "relative";
       } else {
-        this._internalType = 'dictionary';
+        this._internalType = "dictionary";
       }
-    } else if (this.linkType === 'externalLink' && isNonEmptyString(this.anchor)) {
-      this._internalType = 'external-anchor';
-    } else if (this.linkType === 'externalLink') {
-      this._internalType = 'external';
-    } else if (this.linkType === 'imageLink') {
-      this._internalType = 'image';
+    } else if (this.linkType === "externalLink" && isNonEmptyString(this.anchor)) {
+      this._internalType = "external-anchor";
+    } else if (this.linkType === "externalLink") {
+      this._internalType = "external";
+    } else if (this.linkType === "imageLink") {
+      this._internalType = "image";
     }
   }
 
   private _normalize() {
-    if (this._internalType.startsWith('absolute') && this.permalink.startsWith('/')) {
+    if (this._internalType.startsWith("absolute") && this.permalink.startsWith("/")) {
       this.permalink = this.permalink.slice(1);
     }
 
-    if (this._internalType.startsWith('relative') && this.permalink.startsWith('./')) {
+    if (this._internalType.startsWith("relative") && this.permalink.startsWith("./")) {
       this.permalink = this.permalink.slice(2);
     }
 
-    if (isNonEmptyString(this.anchor) && this.anchor!.startsWith('#')) {
+    if (isNonEmptyString(this.anchor) && this.anchor!.startsWith("#")) {
       this.anchor = this.anchor!.slice(1);
     }
   }
@@ -95,21 +97,21 @@ class WikiLinkWrapper {
   // - Omar I (Oct 23 2025)
   toString(): string {
     switch (this._internalType) {
-      case 'absolute-anchor':
+      case "absolute-anchor":
         return `/${this.permalink}#${encodeURIComponent(toSlug(this.anchor as string))}`;
-      case 'absolute':
+      case "absolute":
         return `/${this.permalink}`;
-      case 'relative-anchor':
+      case "relative-anchor":
         return `${this.permalink}#${encodeURIComponent(toSlug(this.anchor as string))}`;
-      case 'relative':
+      case "relative":
         return `${this.permalink}`;
-      case 'dictionary':
+      case "dictionary":
         return `/dictionary#${encodeURIComponent(toSlug(this.permalink))}`;
-      case 'external-anchor':
+      case "external-anchor":
         return `${this.permalink}#${encodeURIComponent(this.anchor as string)}`;
-      case 'external':
+      case "external":
         return `${this.permalink}`;
-      case 'image':
+      case "image":
         return `images/${this.permalink}`;
       default:
         return `#${encodeURIComponent(toSlug(this.permalink))}`;
@@ -118,17 +120,21 @@ class WikiLinkWrapper {
 }
 
 const wikiLinkConfig: NetLogoRemarkWikiLink.Options = {
-  hrefTemplate: (permalink: string, linkType: NetLogoRemarkWikiLink.LinkType, anchor?: string | null) => {
+  hrefTemplate: (
+    permalink: string,
+    linkType: NetLogoRemarkWikiLink.LinkType,
+    anchor?: string | null,
+  ) => {
     const wrapper = new WikiLinkWrapper(permalink, linkType, anchor);
     return wrapper.toString();
   },
   htmlOptions: {
     wikiLink: {
-      parentNode: { tagName: 'code', properties: { class: 'netlogo-command' } },
-      target: '_self',
+      parentNode: { tagName: "primitive" },
+      target: "_self",
       rel: undefined,
       titleTemplate: (permalink: string, displayText?: string) => {
-        if (typeof displayText === 'string') {
+        if (typeof displayText === "string") {
           return displayText;
         }
         return permalink;
@@ -136,9 +142,9 @@ const wikiLinkConfig: NetLogoRemarkWikiLink.Options = {
     },
   },
   classNames: {
-    wikiLink: 'netlogo-wiki-link',
-    missingLink: 'missing-wiki-link',
-    imageLink: 'netlogo-image',
+    wikiLink: "netlogo-wiki-link",
+    missingLink: "missing-wiki-link",
+    imageLink: "netlogo-image",
   },
   integration: {
     encode: (permalink: string) => permalink,
@@ -146,17 +152,17 @@ const wikiLinkConfig: NetLogoRemarkWikiLink.Options = {
   },
   greedyMatch: {
     maxIterations: 15,
-    consumableTypes: ['text', 'html', 'link'],
+    consumableTypes: ["text", "html", "link"],
     accessor: (node: { type: string }) => {
       switch (node.type) {
-        case 'text':
+        case "text":
           return (node as Hast.Text).value;
-        case 'html':
-          return (node as { type: 'html'; value: string }).value;
-        case 'link':
-          return (node as { type: 'link'; url: string }).url;
+        case "html":
+          return (node as { type: "html"; value: string }).value;
+        case "link":
+          return (node as { type: "link"; url: string }).url;
         default:
-          return '';
+          return "";
       }
     },
   },
@@ -164,28 +170,31 @@ const wikiLinkConfig: NetLogoRemarkWikiLink.Options = {
 
 const autoLinkHeadingsConfig: RehypeAutolinkHeadingsOptions = {
   headingProperties: {
-    className: ['section-heading'],
+    className: ["section-heading"],
   },
   properties: {
-    className: ['section-anchor'],
+    className: ["section-anchor"],
   },
-  behavior: 'wrap',
-  test: hasNoChild((node) => isNodeElement(node) && node.tagName === 'a', { recursive: true }),
+  behavior: "wrap",
+  test: hasNoChild((node) => isNodeElement(node) && node.tagName === "a", { recursive: true }),
 };
 
-const buildOptions: Partial<ModuleOptions>['build'] = {
+const buildOptions: Partial<ModuleOptions>["build"] = {
   markdown: {
     remarkPlugins: {
       ...(getDefaultRemarkPluginsObject() as MarkdownPluginCollection),
-      'remark-toc': { instance: remarkToc, options: tocConfig, src: 'remark-toc' },
-      '@repo/markdown/plugins/wikilink': { instance: NetLogoRemarkWikiLink.plugin, options: wikiLinkConfig },
+      "remark-toc": { instance: remarkToc, options: tocConfig, src: "remark-toc" },
+      "@repo/markdown/plugins/wikilink": {
+        instance: NetLogoRemarkWikiLink.plugin,
+        options: wikiLinkConfig,
+      },
     },
     rehypePlugins: {
       ...(getDefaultRehypePluginsObject() as MarkdownPluginCollection),
-      'rehype-autolink-headings': {
+      "rehype-autolink-headings": {
         instance: rehypeAutolinkHeadings,
         options: autoLinkHeadingsConfig,
-        src: 'rehype-autolink-headings',
+        src: "rehype-autolink-headings",
       },
     },
     toc: {
@@ -199,7 +208,10 @@ const buildOptions: Partial<ModuleOptions>['build'] = {
 };
 
 const externalImports: Array<string> = Array.from(
-  new Set([...Object.keys(getDefaultRemarkPluginsObject()), ...Object.keys(getDefaultRehypePluginsObject())]),
+  new Set([
+    ...Object.keys(getDefaultRemarkPluginsObject()),
+    ...Object.keys(getDefaultRehypePluginsObject()),
+  ]),
 );
 
 type MarkdownPluginCollection = Record<string, false | object | MarkdownPlugin>;

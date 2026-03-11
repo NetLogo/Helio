@@ -11,14 +11,18 @@
 </template>
 
 <script setup lang="ts">
-const productInfo = useProductInfo();
-const pageProductName = `NetLogo ${productInfo.productVersion} User Manual`;
+const {
+  public: {
+    website: { productVersion, productWebsite },
+  },
+} = useRuntimeConfig();
+const pageProductName = `NetLogo ${productVersion} User Manual`;
 
 const route = useRoute();
 const canonical = computed(() => {
-  const routeWithoutVersion = route.fullPath.replace(`/${productInfo.productVersion}`, '');
-  const routeWithVersion = ['/', productInfo.productVersion, routeWithoutVersion].join('');
-  return new URL(routeWithVersion, productInfo.productWebsite).toString();
+  const routeWithoutVersion = route.fullPath.replace(`/${productVersion}`, '');
+  const routeWithVersion = ['/', productVersion, routeWithoutVersion].join('');
+  return new URL(routeWithVersion, productWebsite).toString();
 });
 
 useHead({
