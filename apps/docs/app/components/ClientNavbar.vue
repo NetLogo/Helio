@@ -28,7 +28,7 @@
       <VersionSelectDropdown
         :versions="versions"
         :selected-version="selectedVersion"
-        @version-change="(version) => onVersionChange(version, productInfo)"
+        @version-change="(version) => onVersionChange(version, { productVersion, productWebsite })"
       />
 
       <NavbarAction href="https://github.com/NetLogo" aria-label="NetLogo GitHub Repository">
@@ -57,8 +57,11 @@ import { useMediaQuery } from '@vueuse/core';
 import { onMounted, ref, watch } from 'vue';
 import { onVersionChange, pullVersionsFromSource } from '~~/shared/versions';
 
-const productInfo = useProductInfo();
-const runtimeInfo = useRuntimeInfo();
+const {
+  public: {
+    website: { productWebsite, productVersion, versionsSrc },
+  },
+} = useRuntimeConfig();
 
 interface NavbarLink {
   title: string;
@@ -174,7 +177,7 @@ const arePathnamesCongruent = (windowPathname: string, candidatePathname: string
     pathname
       .split('/')
       .filter((p) => p.length > 0)
-      .filter((p) => p !== productInfo.productVersion)
+      .filter((p) => p !== productVersion)
       .map((p) => p.replace(/\$/, ''))
       .map((p) => p.trim().split('#')[0] ?? '')
       .join('/');
@@ -196,7 +199,7 @@ const isLinkParentActive = (link: NavbarLink, currentPath: string): boolean => {
 
 // Version selection
 const versions = ref<Record<string, VersionProps>>({
-  [productInfo.productVersion]: { displayName: productInfo.productVersion },
+  [productVersion]: { displayName: productVersion },
   '7.0.2': { displayName: '7.0.2' },
   '7.0.1': { displayName: '7.0.1' },
   '7.0.0': { displayName: '7.0.0' },
@@ -223,14 +226,14 @@ const versions = ref<Record<string, VersionProps>>({
   '1.0': { disabled: true },
 });
 
-const selectedVersion = ref<string>(productInfo.productVersion);
+const selectedVersion = ref<string>(productVersion);
 
 onMounted(() => {
   if (import.meta.client) {
     updateActiveStates();
     handleMediaQueryChange();
     setTimeout(async () => {
-      versions.value = await pullVersionsFromSource(versions.value, runtimeInfo.versionsSrc);
+      versions.value = await pullVersionsFromSource(versions.value, versionsSrc);
     }, 0);
   }
 });

@@ -4,13 +4,25 @@ import PrimitiveCatalog from '~/components/PrimitiveCatalog/PrimitiveCatalog.vue
 import { PrimitiveCatalogSchema } from '~/components/PrimitiveCatalog/types';
 import type { DocumentMetadata } from '~~/lib/docs/schema';
 
-const productInfo = useProductInfo();
+const {
+  public: {
+    website: { productName },
+  },
+} = useRuntimeConfig();
 
 const route = useRoute();
 const path = decodeURIComponent(route.path).replace(/\?/, '');
 const { data: page } = await useAsyncData(path, () => {
   return queryCollection('content').path(path).first();
 });
+
+// Special case due to the large number of
+// primitives on the dictionary page, which causes too many
+// tooltips to be rendered and results in degraded performance.
+// --Omar I. (05-10-2026)
+if (['/dictionary', '/3d'].includes(path)) {
+  provide('prim-tooltip-disabled', true);
+}
 
 const { data: surround } = await useAsyncData(`${path}-surround`, () => {
   return queryCollectionItemSurroundings('content', path, {
@@ -44,7 +56,7 @@ defineOgImageComponent('DocsSeo', {
   description,
   theme: '#f31500',
   siteLogo: '/turtles.png',
-  siteName: productInfo.productName,
+  siteName: productName,
 });
 
 useSeoMeta({

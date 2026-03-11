@@ -36,6 +36,7 @@
     "@repo/eslint-config": "0.0.0",
     "@repo/markdown": "0.0.0",
     "@repo/netlogo-docs": "0.0.0",
+    "@repo/nuxt-core": "0.0.0",
     "@repo/nuxt-content-assets": "1.5.0",
     "@repo/tailwind-config": "0.0.0",
     "@repo/template": "0.0.0",

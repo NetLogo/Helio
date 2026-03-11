@@ -10,11 +10,14 @@
 </template>
 
 <script setup lang="ts">
-const productInfo = useProductInfo();
-const pageProductName = productInfo.productName;
+const {
+  public: {
+    website: { productName },
+  },
+} = useRuntimeConfig();
 
 useHead({
-  titleTemplate: (chunk) => (chunk ? `${chunk} - ${pageProductName}` : pageProductName),
+  titleTemplate: (chunk) => (chunk ? `${chunk} - ${productName}` : productName),
   link: () => [
     {
       rel: 'preconnect',
@@ -24,7 +27,7 @@ useHead({
 });
 
 useSeoMeta({
-  ogSiteName: pageProductName,
+  ogSiteName: productName,
   ogType: 'website',
   twitterCard: 'summary_large_image',
 });

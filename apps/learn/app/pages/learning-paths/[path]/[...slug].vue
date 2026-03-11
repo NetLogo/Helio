@@ -9,11 +9,17 @@ useArticleOgImage(article.value);
 const learningPathRoute = route.path.split('/').slice(0, 3).join('/');
 const lp = await useLearningPath(learningPathRoute);
 
+const {
+  public: {
+    website: { productWebsite },
+  },
+} = useRuntimeConfig();
+
 useHead({
   link: [
     {
       rel: 'canonical',
-      href: `${useProductInfo().productWebsite}${addLeadingSlash(articlePath)}`,
+      href: `${productWebsite}${addLeadingSlash(articlePath)}`,
     },
   ],
   meta: [

@@ -1,7 +1,10 @@
 import { createSharedComposable } from "@vueuse/core";
-import WebsiteMeta from "~/assets/website-meta.json";
+import { WebsiteLogo } from "~/assets/website-logo";
 
 function _useWebsite() {
+  const {
+    public: { website: websiteConfig },
+  } = useRuntimeConfig();
   return ref<{
     name: string;
     fullName: string;
@@ -10,7 +13,15 @@ function _useWebsite() {
     longDescription: string;
     url: string;
     keywords: Array<string>;
-  }>(WebsiteMeta);
+  }>({
+    name: websiteConfig.productName,
+    fullName: websiteConfig.productDisplayName,
+    logo: WebsiteLogo,
+    description: websiteConfig.productDescription,
+    longDescription: websiteConfig.productLongDescription,
+    url: websiteConfig.productWebsite,
+    keywords: websiteConfig.productKeywords,
+  });
 }
 
 const useWebsite = import.meta.client ? createSharedComposable(_useWebsite) : _useWebsite;

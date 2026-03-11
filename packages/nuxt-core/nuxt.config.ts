@@ -1,18 +1,21 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from "@tailwindcss/vite";
-import { vueUiIconPack, vueUiSrc, vueUiStyles } from "./turbo";
-
 import { getRoutes } from "@repo/netlogo-docs/helpers";
+import tailwindcss from "@tailwindcss/vite";
+import { websiteConfigSchema } from "./runtime.config.schema";
+import { vueUiIconPack, vueUiSrc, vueUiStyles } from "./turbo";
 
 type NuxtBaseConfig = Parameters<typeof defineNuxtConfig>[0];
 
+const website = websiteConfigSchema.parse(process.env);
+
 export const nuxtBaseConfig: NuxtBaseConfig = {
+  extends: ["./layers/mdc", "./layers/primitive-tooltip"],
+
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
   app: {
     rootId: "__netlogo",
   },
   modules: [
+    "@nuxt/devtools", // Nuxt Devtools for enhanced development experience
     "@nuxtjs/sitemap", // Adds sitemap.xml
     "@repo/nuxt-content-assets", // Local asset loading based on relative paths in Markdowns
     "@nuxt/content", // Query, navigation, search, and rendering of Markdown files
@@ -26,6 +29,8 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     "nuxt-link-checker", // Link checking post-build
     "@nuxtjs/google-fonts", // Google Fonts
   ],
+
+  site: { url: website.productWebsite, name: website.productName },
 
   colorMode: {
     preference: "light",
@@ -41,6 +46,8 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   },
 
   $development: {
+    devtools: { enabled: true },
+
     experimental: {
       payloadExtraction: false,
     },
@@ -75,6 +82,8 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
       watch: true,
     },
   ],
+
+  ignore: [".build/", ".latest/", ".static/", ".preview/"],
 
   svgo: {
     customComponent: "SvgImport",
@@ -124,6 +133,9 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   mdc: {
     components: {
       prose: false,
+      map: {
+        a: "ProseA",
+      },
     },
   },
 
@@ -134,7 +146,10 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
 
   ogImage: {
     defaults: {
-      extension: "png",
+      extension: "jpeg",
+      sharp: {
+        quality: 70,
+      },
     },
   },
 
@@ -154,9 +169,12 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
       console.info(
         `[repo] Using primitives.yaml from ${import.meta.resolve("@repo/common-data/datasets/primitives.yaml")}`,
       );
+    },
+  },
 
-      const noAutogen = process.env["NO_AUTOGEN"] === "true";
-      if (noAutogen === true) return;
+  runtimeConfig: {
+    public: {
+      website,
     },
   },
 

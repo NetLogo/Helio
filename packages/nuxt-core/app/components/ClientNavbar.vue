@@ -32,14 +32,14 @@
   <NavbarHeightTracker navbar-selector="#main-navbar" />
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import TurtlesLogo from "@repo/vue-ui/assets/brands/Turtles.svg";
 import type { Navbar as _Navbar } from "@repo/vue-ui/components/navbar/index";
 import { useMediaQuery } from "@vueuse/core";
 import { onMounted, ref, watch } from "vue";
 import { WebsiteLogo } from "~/assets/website-logo";
 
-interface NavbarLink {
+export interface NavbarLink {
   title: string;
   href: string;
   columns?: number;
@@ -47,6 +47,48 @@ interface NavbarLink {
   active?: boolean;
 }
 
+export const updateActiveStates = (navbarRef: Ref<InstanceType<typeof _Navbar> | null>, navbarLinks: Ref<Array<NavbarLink>>, route: ReturnType<typeof useRoute>) => {
+  navbarRef.value?.blur();
+  const currentPath = route.path;
+
+  navbarLinks.value = navbarLinks.value.map((link) => ({
+    ...link,
+    active: isLinkParentActive(link, currentPath),
+    children: link.children?.map((child) => ({
+      ...child,
+      active: isSublinkActive(child.href, currentPath),
+    })),
+  }));
+};
+
+export const arePathnamesCongruent = (windowPathname: string, candidatePathname: string): boolean => {
+  const normalize = (pathname: string) =>
+    pathname
+      .split("/")
+      .filter((p) => p.length > 0)
+      .map((p) => p.replace(/\$/, ""))
+      .map((p) => p.trim().split("#")[0] ?? "")
+      .join("/");
+
+  return normalize(windowPathname) === normalize(candidatePathname);
+};
+
+export const isSublinkActive = (href: string | undefined, currentPath: string): boolean => {
+  if (typeof href !== "string") return false;
+  return arePathnamesCongruent(currentPath, href);
+};
+
+export const isLinkParentActive = (link: NavbarLink, currentPath: string): boolean => {
+  const isParentActiveOnItsOwn = arePathnamesCongruent(currentPath, link.href);
+  return (
+    isParentActiveOnItsOwn ||
+    (link.children ?? []).some((child) => isSublinkActive(child.href, currentPath)) ||
+    false
+  );
+};
+</script>
+
+<script setup lang="ts">
 const route = useRoute();
 
 const isMobileScreen = ref(false);
@@ -80,51 +122,12 @@ const navbarLinks = ref<Array<NavbarLink>>([
   },
 ]);
 
-const updateActiveStates = () => {
-  navbarRef.value?.blur();
-  const currentPath = route.path;
 
-  navbarLinks.value = navbarLinks.value.map((link) => ({
-    ...link,
-    active: isLinkParentActive(link, currentPath),
-    children: link.children?.map((child) => ({
-      ...child,
-      active: isSublinkActive(child.href, currentPath),
-    })),
-  }));
-};
-
-const arePathnamesCongruent = (windowPathname: string, candidatePathname: string): boolean => {
-  const normalize = (pathname: string) =>
-    pathname
-      .split("/")
-      .filter((p) => p.length > 0)
-      .map((p) => p.replace(/\$/, ""))
-      .map((p) => p.trim().split("#")[0] ?? "")
-      .join("/");
-
-  return normalize(windowPathname) === normalize(candidatePathname);
-};
-
-const isSublinkActive = (href: string | undefined, currentPath: string): boolean => {
-  if (typeof href !== "string") return false;
-  return arePathnamesCongruent(currentPath, href);
-};
-
-const isLinkParentActive = (link: NavbarLink, currentPath: string): boolean => {
-  const isParentActiveOnItsOwn = arePathnamesCongruent(currentPath, link.href);
-  return (
-    isParentActiveOnItsOwn ||
-    (link.children ?? []).some((child) => isSublinkActive(child.href, currentPath)) ||
-    false
-  );
-};
-
-updateActiveStates();
+updateActiveStates(navbarRef, navbarLinks, route);
 
 onMounted(() => {
   if (import.meta.client) {
-    updateActiveStates();
+    updateActiveStates(navbarRef, navbarLinks, route);
     handleMediaQueryChange();
   }
 });
@@ -133,7 +136,7 @@ watch(
   () => route.path,
   () => {
     if (import.meta.client) {
-      updateActiveStates();
+      updateActiveStates(navbarRef, navbarLinks, route);
     }
   },
 );
