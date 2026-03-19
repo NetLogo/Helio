@@ -6,22 +6,20 @@
     class="space-y-8"
     @submit="handleFormSubmission"
   >
-    <UAlert
-      v-if="form?.errors.find((e: FormError<string>) => e.name === 'root')"
-      icon="i-heroicons-exclamation-triangle"
-      color="error"
-      variant="soft"
-      title="Input Error"
-      :description="form?.errors.find((e: FormError<string>) => e.name === 'root')?.message"
-      class="mb-4"
-    />
     <UFormField
       orientation="horizontal"
       label="First Name"
       name="first_name"
       :required="formData.subscribe"
     >
-      <UInput id="first_name" v-model="formData.first_name" type="text" />
+      <UInput
+        id="first_name"
+        v-model="formData.first_name"
+        type="text"
+        :required="formData.subscribe"
+        oninvalid="this.setCustomValidity('Please put in your first name here')"
+        oninput="this.setCustomValidity('')"
+      />
     </UFormField>
 
     <UFormField
@@ -30,11 +28,25 @@
       name="last_name"
       :required="formData.subscribe"
     >
-      <UInput id="last_name" v-model="formData.last_name" type="text" />
+      <UInput
+        id="last_name"
+        v-model="formData.last_name"
+        type="text"
+        :required="formData.subscribe"
+        oninvalid="this.setCustomValidity('Please put in your last name here')"
+        oninput="this.setCustomValidity('')"
+      />
     </UFormField>
 
     <UFormField orientation="horizontal" label="Email" name="email" :required="formData.subscribe">
-      <UInput id="email" v-model="formData.email" type="email" />
+      <UInput
+        id="email"
+        v-model="formData.email"
+        type="email"
+        :required="formData.subscribe"
+        oninvalid="this.setCustomValidity('Please put in your email here')"
+        oninput="this.setCustomValidity('')"
+      />
       <div class="flex items-center mt-2">
         <UCheckbox id="subscribe" v-model="formData.subscribe" class="mr-2" />
         <label for="subscribe" class="text-sm">
@@ -113,7 +125,6 @@
 </template>
 
 <script setup lang="ts">
-import type { FormError } from "#ui/types";
 import { z } from "zod";
 import type { DownloadLink, NetLogoVersion } from "~/utils/api";
 
