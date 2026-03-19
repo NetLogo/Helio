@@ -1,6 +1,6 @@
 <template>
   <div class="text-start pt-4 px-5 pb-8 mx-auto w-3/4">
-    <MDC :value="aboutData.body" class="about-content" />
+    <MDC :value="aboutData.body" class="typography about-content" />
   </div>
 </template>
 
@@ -12,7 +12,7 @@ defineProps<{
 }>();
 </script>
 
-<style scoped>
+<!-- <style scoped>
 :deep(img) {
   display: block;
   margin: 1rem auto;
@@ -50,4 +50,4 @@ defineProps<{
   aspect-ratio: 16 / 9;
   height: auto;
 }
-</style>
+</style> -->
