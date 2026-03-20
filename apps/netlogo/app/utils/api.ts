@@ -286,7 +286,7 @@ class NetLogoAPI {
     }>(queries.referenceData);
 
     // ***new fix stores is ccl and the refrence not jsut ref
-    let groupedReferences: Map<number, { reference: string; is_ccl: boolean }[]> = new Map();
+    const groupedReferences: Map<number, { reference: string; is_ccl: boolean }[]> = new Map();
 
     //let groupedReferences: Map<number, string[]> = new Map();
 

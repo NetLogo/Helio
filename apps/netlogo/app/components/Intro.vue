@@ -67,7 +67,7 @@ interface Props {
   introSplashData?: IntroSplashEntry[];
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   description:
     "Powerful yet easy-to-learn environment for agent-based modeling in both research and education.",
   introSplashData: () => [],

@@ -1,5 +1,5 @@
 <template>
-  <section class="py-12" id="get-netlogo">
+  <section id="get-netlogo" class="py-12">
     <div class="mb-8">
       <h1 class="font-bold text-4xl lg:text-5xl text-gray-600 mb-4">Get NetLogo</h1>
       <p class="text-gray-600 dark:text-gray-400">
@@ -56,7 +56,7 @@
 import type { GetNetLogoEntry } from "~/utils/api";
 import Button from "../../../../packages/vue-ui/src/components/Button.vue";
 
-const props = defineProps<{
+defineProps<{
   products: GetNetLogoEntry[];
 }>();
 
