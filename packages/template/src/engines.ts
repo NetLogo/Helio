@@ -30,7 +30,7 @@ abstract class TemplateEngine {
 
       const filePath = path.join(file.parentPath, file.name);
       const fileNameRelativeToRoot = path.relative(rootDirectory, filePath);
-      const fileKey = fileNameRelativeToRoot.split(path.sep).join("/");
+      const fileKey = fileNameRelativeToRoot.replace(/\\/g, "/");
 
       try {
         const content = await fs.readFile(filePath, "utf-8");
