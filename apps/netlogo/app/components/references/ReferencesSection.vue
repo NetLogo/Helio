@@ -24,15 +24,28 @@
     </p>
     <p class="mb-8 text-xl"><strong>Bold</strong> = Publications authored by the CCL</p>
 
-    <div class="mb-8 flex items-center gap-3">
-      <span class="text-base font-semibold">Years:</span>
-      <USelectMenu
-        v-model="selectedYears"
-        multiple
-        :items="yearOptions"
-        placeholder="Filter by year(s)"
-        class="w-56"
-      />
+    <div class="flex-row lg:flex items-start gap-12">
+      <div class="mb-4 flex items-center gap-3">
+        <span class="text-base font-semibold">Years:</span>
+        <USelectMenu
+          v-model="selectedYears"
+          multiple
+          :items="yearOptions"
+          placeholder="Filter by year(s)"
+          class="w-56"
+        />
+      </div>
+
+      <div class="mb-4 flex items-center gap-3">
+        <span class="text-base font-semibold">Subjects:</span>
+        <USelectMenu
+          v-model="selectedSubjects"
+          multiple
+          :items="subjectOptions"
+          placeholder="Filter by subject(s)"
+          class="w-80"
+        />
+      </div>
     </div>
 
     <div v-for="yearGroup in filteredReferences" :key="yearGroup.year" class="year-block mb-6">
@@ -58,6 +71,7 @@ interface ReferenceItem {
   year: number;
   is_ccl: boolean;
   reference: string;
+  subject?: string;
 }
 
 interface YearGroup {
@@ -65,7 +79,38 @@ interface YearGroup {
   references: ReferenceItem[];
 }
 
+const ALLOWED_SUBJECTS = [
+  "Biology",
+  "Ecology",
+  "Archaeology",
+  "Computer Science",
+  "Economics",
+  "History",
+  "Physics",
+  "Chemistry",
+  "Urban Studies",
+  "Social Science",
+  "Education",
+  "Epidemiology",
+  "Miscellaneous",
+] as const;
+
 const selectedYears = ref<number[]>([]);
+type AllowedSubject = (typeof ALLOWED_SUBJECTS)[number];
+const selectedSubjects = ref<AllowedSubject[]>([]);
+
+const allowedSubjectsSet = new Set<string>(ALLOWED_SUBJECTS);
+
+const extractAllowedSubjects = (subjectText?: string): AllowedSubject[] => {
+  if (!subjectText) {
+    return [];
+  }
+
+  return subjectText
+    .split(/[\n,]+/)
+    .map((part) => part.trim())
+    .filter((part): part is AllowedSubject => allowedSubjectsSet.has(part));
+};
 
 const groupedReferences = computed<YearGroup[]>(() => {
   const groups = new Map<number, ReferenceItem[]>();
@@ -86,13 +131,27 @@ const groupedReferences = computed<YearGroup[]>(() => {
 });
 
 const yearOptions = computed<number[]>(() => groupedReferences.value.map((group) => group.year));
+const subjectOptions = [...ALLOWED_SUBJECTS];
 
 const filteredReferences = computed<YearGroup[]>(() => {
-  if (selectedYears.value.length === 0) {
-    return groupedReferences.value;
+  const byYear =
+    selectedYears.value.length === 0
+      ? groupedReferences.value
+      : groupedReferences.value.filter((group) => selectedYears.value.includes(group.year));
+
+  if (selectedSubjects.value.length === 0) {
+    return byYear;
   }
 
-  return groupedReferences.value.filter((group) => selectedYears.value.includes(group.year));
+  return byYear
+    .map((group) => ({
+      ...group,
+      references: group.references.filter((reference) => {
+        const subjects = extractAllowedSubjects(reference.subject);
+        return selectedSubjects.value.some((subject) => subjects.includes(subject));
+      }),
+    }))
+    .filter((group) => group.references.length > 0);
 });
 </script>
 
