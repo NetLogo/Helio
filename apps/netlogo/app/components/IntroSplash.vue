@@ -188,8 +188,9 @@ const demoImageId = computed(() => {
   }
 
   // Fallback to selected column_image if available
-  if (featuredItem.column_images?.[selectedImageIndex.value]?.image?.id) {
-    return featuredItem.column_images[selectedImageIndex.value].image.id;
+  const selectedColumnImage = featuredItem.column_images?.[selectedImageIndex.value];
+  if (selectedColumnImage?.image?.id) {
+    return selectedColumnImage.image.id;
   }
 
   return null;

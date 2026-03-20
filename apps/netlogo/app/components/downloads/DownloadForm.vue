@@ -180,8 +180,9 @@ const selectedPlatform = ref("");
 
 // Set default version on mount
 onMounted(() => {
-  if (props.versions.length > 0) {
-    formData.version = props.versions[0].version;
+  const firstVersion = props.versions[0];
+  if (firstVersion) {
+    formData.version = firstVersion.version;
   }
 });
 
@@ -189,8 +190,9 @@ onMounted(() => {
 watch(
   () => props.versions,
   (newVersions) => {
-    if (newVersions.length > 0 && !formData.version) {
-      formData.version = newVersions[0].version;
+    const firstVersion = newVersions[0];
+    if (firstVersion && !formData.version) {
+      formData.version = firstVersion.version;
     }
   },
   { immediate: true },
