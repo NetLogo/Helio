@@ -227,6 +227,7 @@ a.code {
   line-height: var(--line-height-code);
   background-color: var(--color-background-overlay);
   font-family: var(--font-mono);
+  white-space: nowrap;
 }
 
 li pre {
