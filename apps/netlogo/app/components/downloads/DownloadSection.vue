@@ -16,7 +16,10 @@
             href="https://docs.netlogo.org/requirements.html"
             >system requirements</a
           >). If you would like to run NetLogo on a Chromebook or in a web browser, use
-          <a class="underline text-blue-600" target="_blank" href="http://netlogoweb.org/"
+          <a
+            class="underline text-blue-600"
+            target="_blank"
+            href="http://netlogoweb.org/"
             >NetLogo Web</a
           >.
         </p>

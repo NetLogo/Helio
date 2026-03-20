@@ -97,7 +97,7 @@ import { computed, ref } from "vue";
 import type { NewsEntry } from "~/utils/api";
 
 interface Props {
-  newsData: NewsEntry[];
+  newsData?: NewsEntry[];
 }
 
 const props = withDefaults(defineProps<Props>(), {

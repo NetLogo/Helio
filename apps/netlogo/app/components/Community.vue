@@ -54,7 +54,7 @@
 import type { CommunityEntry } from "~/utils/api";
 import Button from "../../../../packages/vue-ui/src/components/Button.vue";
 
-const props = defineProps<{
+defineProps<{
   communities: CommunityEntry[];
 }>();
 
