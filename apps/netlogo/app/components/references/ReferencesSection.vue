@@ -24,7 +24,18 @@
     </p>
     <p class="mb-8 text-xl"><strong>Bold</strong> = Publications authored by the CCL</p>
 
-    <div v-for="yearGroup in groupedReferences" :key="yearGroup.year" class="year-block mb-6">
+    <div class="mb-8 flex items-center gap-3">
+      <span class="text-base font-semibold">Years:</span>
+      <USelectMenu
+        v-model="selectedYears"
+        multiple
+        :items="yearOptions"
+        placeholder="Filter by year(s)"
+        class="w-56"
+      />
+    </div>
+
+    <div v-for="yearGroup in filteredReferences" :key="yearGroup.year" class="year-block mb-6">
       <h3 class="year-heading text-3xl font-semibold mb-5">{{ yearGroup.year }}</h3>
       <ul id="reference-entries" class="space-y-4">
         <li
@@ -54,6 +65,8 @@ interface YearGroup {
   references: ReferenceItem[];
 }
 
+const selectedYears = ref<number[]>([]);
+
 const groupedReferences = computed<YearGroup[]>(() => {
   const groups = new Map<number, ReferenceItem[]>();
 
@@ -70,6 +83,16 @@ const groupedReferences = computed<YearGroup[]>(() => {
       year,
       references: [...refs].sort((a, b) => a.reference.localeCompare(b.reference)),
     }));
+});
+
+const yearOptions = computed<number[]>(() => groupedReferences.value.map((group) => group.year));
+
+const filteredReferences = computed<YearGroup[]>(() => {
+  if (selectedYears.value.length === 0) {
+    return groupedReferences.value;
+  }
+
+  return groupedReferences.value.filter((group) => selectedYears.value.includes(group.year));
 });
 </script>
 
