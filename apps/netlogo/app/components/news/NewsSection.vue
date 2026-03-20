@@ -28,7 +28,7 @@ import type { NewsEntry } from "~/utils/api";
 
 const props = withDefaults(
   defineProps<{
-    newsData: NewsEntry[];
+    newsData?: NewsEntry[];
   }>(),
   {
     newsData: () => [],

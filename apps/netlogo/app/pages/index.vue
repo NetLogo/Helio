@@ -1,21 +1,23 @@
 <template>
-  <Intro :description="introData?.description" :intro-splash-data="introSplashData" />
-  <Newsfeed :news-data="newsData" />
-  <div class="bg-zinc-200">
+  <div>
+    <Intro :description="introData?.description" :intro-splash-data="introSplashData" />
+    <Newsfeed :news-data="newsData" />
+    <div class="bg-zinc-200">
+      <UContainer>
+        <GetNetLogo :products="getNetLogoData" />
+      </UContainer>
+    </div>
     <UContainer>
-      <GetNetLogo :products="getNetLogoData" />
+      <Community :communities="communityData" />
     </UContainer>
   </div>
-  <UContainer>
-    <Community :communities="communityData" />
-  </UContainer>
 </template>
 
 <script setup lang="ts">
 import { useWebsite } from "~/composables/useWebsite";
 import NetLogoAPI from "~/utils/api";
 
-const meta = useWebsite();
+const _meta = useWebsite();
 const config = useRuntimeConfig();
 
 const { data: mainData } = await useAsyncData("main-page-data", async () => {
