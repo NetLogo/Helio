@@ -1,0 +1,17 @@
+{
+  "$schema": "https://www.schemastore.org/tsconfig.json",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ES2022"],
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true,
+    "incremental": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo",
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src", "tests"],
+  "exclude": ["**/*.k6.ts"]
+}

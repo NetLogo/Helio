@@ -1,0 +1,15 @@
+# Build
+dist
+.turbo
+
+# Dependencies
+node_modules
+
+# Development
+.env.local
+
+# Editor
+.vscode
+.idea
+*.swp
+*.swo

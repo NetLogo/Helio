@@ -6,8 +6,15 @@
     role="menuitem"
     :aria-current="active ? 'page' : null"
   >
-    <span v-if="icon" :class="$style['icon']">{{ icon }}</span>
-    {{ title }}
+    <template v-if="icon">
+      <div class="flex gap-2 items-center">
+        <Icon :class="[$style['icon'], 'align-middle']" :name="icon" />
+        <span>{{ title }}</span>
+      </div>
+    </template>
+    <template v-else>
+      {{ title }}
+    </template>
   </Anchor>
 </template>
 

@@ -1,0 +1,13 @@
+{
+  "extends": "@repo/typescript-config/fastify",
+  "compilerOptions": {
+    "paths": {
+      "#src/*": ["./src/*"],
+      "#modules/*": ["./src/modules/*"],
+      "#tests/*": ["./tests/*"],
+      "#prisma/*": ["./generated/prisma/*.js"]
+    }
+  },
+  "include": ["src", "tests"],
+  "exclude": ["**/*.k6.ts"]
+}

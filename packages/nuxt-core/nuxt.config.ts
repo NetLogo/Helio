@@ -115,6 +115,12 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     },
   },
 
+  postcss: {
+    plugins: {
+      "@tailwindcss/postcss": {},
+    },
+  },
+
   content: {
     renderer: {
       anchorLinks: false,

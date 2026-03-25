@@ -1,0 +1,60 @@
+import type {
+  Action,
+  EventBus,
+  EventBusOptions,
+  EventHandler,
+  EventMiddleware,
+} from '#src/shared/cqrs/bus.types.ts';
+import { composeMiddlewares } from '#src/shared/utils/compose-middlewares.ts';
+
+export function eventBus({ logger }: EventBusOptions): EventBus {
+  const handlers = new Map<string, Array<EventHandler>>();
+  const middlewares: Array<EventMiddleware> = [];
+
+  function dispatch(event: Action<unknown>, handler: EventHandler): void {
+    if (middlewares.length > 0) {
+      composeMiddlewares(middlewares)(event, handler);
+    } else {
+      handler(event);
+    }
+  }
+
+  function on<P>(type: string, handler: (event: Action<P>) => void): void {
+    if (typeof type !== 'string') {
+      throw new TypeError('type must be a string');
+    }
+    if (typeof handler !== 'function') {
+      throw new TypeError('handler must be a function');
+    }
+    const existing = handlers.get(type) ?? [];
+    existing.push(handler as EventHandler);
+    handlers.set(type, existing);
+  }
+
+  function emit(event: Action<unknown>): void {
+    if (!event || typeof event !== 'object') {
+      throw new TypeError('event must be an object');
+    }
+    if (typeof event.type !== 'string') {
+      throw new TypeError('event.type must be a string');
+    }
+    const eventHandlers = handlers.get(event.type);
+    if (!eventHandlers || eventHandlers.length === 0) {
+      logger.debug(`No handlers registered for event "${event.type}"`);
+      return;
+    }
+    for (const handler of eventHandlers) {
+      dispatch(event, handler);
+    }
+  }
+
+  function addMiddleware(fn: EventMiddleware) {
+    middlewares.push(fn);
+  }
+
+  return {
+    on,
+    emit,
+    addMiddleware,
+  };
+}

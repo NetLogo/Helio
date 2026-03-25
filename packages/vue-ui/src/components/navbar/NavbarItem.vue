@@ -12,8 +12,8 @@
     @keydown.esc.capture="dropdownOpen = false"
     @blur="dropdownOpen = false"
   >
-    <span v-if="icon" :class="$style['icon']">{{ icon }}</span>
     <Anchor :href="href">
+      <Icon v-if="icon" :class="$style['icon']" :name="icon"/>
       {{ title }}
     </Anchor>
     <div

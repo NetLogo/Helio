@@ -1,0 +1,306 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Enums
+
+enum ModelVisibility {
+  public
+  private
+  unlisted
+}
+
+enum SystemRole {
+  admin
+  moderator
+  user
+}
+
+enum UserKind {
+  student
+  teacher
+  researcher
+  other
+}
+
+enum AuthorRole {
+  owner
+  contributor
+}
+
+enum PermissionLevel {
+  read
+  write
+  admin
+}
+
+// Better Auth core tables
+
+model User {
+  id            String   @id @default(uuid())
+  name          String?
+  email         String?  @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(3)
+
+  // Extended fields
+  systemRole      SystemRole @default(user)
+  userKind        UserKind   @default(other)
+  isProfilePublic Boolean    @default(false)
+  deletedAt       DateTime?
+
+  // Better Auth relations
+  accounts      Account[]
+  sessions      Session[]
+  verifications Verification[]
+
+  // Domain relations
+  authoredModels     ModelAuthor[]
+  grantedPermissions ModelPermission[]
+  events             Event[]
+
+  // Better Auth Admin plugin
+  role       String?
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime? @db.Timestamptz(3)
+
+  // Passkey relations
+  passkeys Passkey[]
+}
+
+model Account {
+  id                    String    @id @default(uuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime? @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @db.Timestamptz(3)
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Better Auth Admin plugin fields
+  impersonatedBy String?
+
+  @@index([userId])
+}
+
+model Verification {
+  id         String    @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime? @updatedAt @db.Timestamptz(3)
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+
+  @@index([userId])
+}
+
+model Passkey {
+  id           String    @id
+  name         String?
+  publicKey    String
+  userId       String
+  credentialID String
+  counter      Int
+  deviceType   String
+  backedUp     Boolean
+  transports   String?
+  createdAt    DateTime? @default(now()) @db.Timestamptz(3)
+  aaguid       String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Domain models
+
+model Model {
+  id              String          @id @default(uuid())
+  latestVersionId String?         @unique
+  parentModelId   String?
+  parentVersionId String?
+  visibility      ModelVisibility @default(public)
+  isEndorsed      Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  deletedAt       DateTime?
+
+  latestVersion ModelVersion? @relation("LatestVersion", fields: [latestVersionId], references: [id])
+  parentModel   Model?        @relation("ModelParent", fields: [parentModelId], references: [id])
+  childModels   Model[]       @relation("ModelParent")
+  parentVersion ModelVersion? @relation("ParentVersion", fields: [parentVersionId], references: [id])
+
+  versions        ModelVersion[]        @relation("ModelVersions")
+  authors         ModelAuthor[]
+  permissions     ModelPermission[]
+  additionalFiles ModelAdditionalFile[]
+
+  @@index([parentModelId])
+  @@index([parentVersionId])
+}
+
+model ModelVersion {
+  id             String    @id @default(uuid())
+  modelId        String
+  versionNumber  Int
+  title          String
+  description    String?
+  previewImage   Bytes?
+  nlogoxFileId   String
+  netlogoVersion String?
+  infoTab        String?
+  createdAt      DateTime  @default(now())
+  finalizedAt    DateTime?
+
+  model      Model @relation("ModelVersions", fields: [modelId], references: [id], onDelete: Cascade)
+  nlogoxFile File  @relation("NlogoxFile", fields: [nlogoxFileId], references: [id])
+
+  // Reverse relations
+  latestOfModel  Model?  @relation("LatestVersion")
+  parentOfModels Model[] @relation("ParentVersion")
+
+  files                 ModelVersionFile[]
+  tags                  ModelVersionTag[]
+  taggedAdditionalFiles ModelAdditionalFile[]
+
+  @@unique([modelId, versionNumber])
+  @@index([modelId])
+}
+
+model ModelVersionFile {
+  id             String @id @default(uuid())
+  modelVersionId String
+  fileId         String
+
+  modelVersion ModelVersion @relation(fields: [modelVersionId], references: [id], onDelete: Cascade)
+  file         File         @relation(fields: [fileId], references: [id])
+
+  @@index([modelVersionId])
+  @@index([fileId])
+}
+
+model ModelVersionTag {
+  modelVersionId String
+  tagId          String
+  createdAt      DateTime @default(now())
+
+  modelVersion ModelVersion @relation(fields: [modelVersionId], references: [id], onDelete: Cascade)
+  tag          Tag          @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([modelVersionId, tagId])
+  @@index([tagId])
+}
+
+model File {
+  id          String   @id @default(uuid())
+  filename    String
+  contentType String
+  sizeBytes   BigInt
+  blob        Bytes
+  createdAt   DateTime @default(now())
+
+  nlogoxVersions    ModelVersion[]        @relation("NlogoxFile")
+  modelVersionFiles ModelVersionFile[]
+  additionalFiles   ModelAdditionalFile[]
+}
+
+model ModelAdditionalFile {
+  id              String   @id @default(uuid())
+  modelId         String
+  taggedVersionId String
+  fileId          String
+  createdAt       DateTime @default(now())
+
+  model         Model        @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  taggedVersion ModelVersion @relation(fields: [taggedVersionId], references: [id])
+  file          File         @relation(fields: [fileId], references: [id])
+
+  @@index([modelId])
+  @@index([taggedVersionId])
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  modelVersions ModelVersionTag[]
+}
+
+model ModelAuthor {
+  modelId   String
+  userId    String
+  role      AuthorRole
+  createdAt DateTime   @default(now())
+
+  model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([modelId, userId])
+  @@index([userId])
+}
+
+model ModelPermission {
+  id              String          @id @default(uuid())
+  modelId         String
+  granteeUserId   String?
+  permissionLevel PermissionLevel
+  createdAt       DateTime        @default(now())
+
+  model       Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  granteeUser User? @relation(fields: [granteeUserId], references: [id], onDelete: Cascade)
+
+  @@unique([modelId, granteeUserId])
+  @@index([modelId])
+  @@index([granteeUserId])
+}
+
+model Event {
+  id           String    @id @default(uuid())
+  type         String
+  actorId      String
+  resourceType String
+  resourceId   String
+  payload      Json
+  createdAt    DateTime  @default(now())
+  processedAt  DateTime?
+
+  actor User @relation(fields: [actorId], references: [id])
+
+  @@index([actorId])
+  @@index([resourceType, resourceId])
+  @@index([type])
+  @@index([processedAt])
+}

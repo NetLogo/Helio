@@ -1,0 +1,65 @@
+# Dependencies
+node_modules
+
+# Version control
+.git
+.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Documentation
+*.md
+doc/
+
+# Tests
+tests/
+coverage/
+reports/
+screenshots/
+
+# IDE / Editor
+.vscode/
+.idea/
+.cursor/
+.DS_Store
+
+# Dev tooling
+.specstory
+.history
+
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+Dockerfile
+.dockerignore
+
+# Turbo cache
+.turbo/
+.nuxt/
+
+# Misc
+*.log
+.cache
+traces
+.nvmrc
+
+# Exclude other apps (only need this frontend)
+apps/
+
+# Exclude unnecessary packages (keep only shared ones)
+packages/*
+!packages/modeling-commons-shared/
+!packages/typescript-config/
+!packages/tailwind-config/
+!packages/nuxt-core/
+!packages/vue-ui/
+!packages/markdown/
+!packages/eslint-config/
+!packages/utils/
+!packages/common-data/
+!packages/template/
+!packages/nuxt-content-assets/
+!packages/netlogo-docs/

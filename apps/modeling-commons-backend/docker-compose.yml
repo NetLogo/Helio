@@ -1,0 +1,12 @@
+# # Production image reference
+# # Deploy to K3s instead — use docker-compose.dev.yml for local dev
+# # Build: docker build -t app:latest .
+
+# services:
+#   app:
+#     image: app:latest
+#     ports:
+#       - 3000:3000
+#     env_file:
+#       - path: ./.env
+#         required: true
