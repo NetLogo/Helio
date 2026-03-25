@@ -1,0 +1,14 @@
+@use "netlogo-mixins.scss" as netlogo;
+@use "docs-mixins.scss" as docs;
+
+@include netlogo.default;
+@include netlogo.table;
+
+.docs {
+  & {
+    @include docs.default;
+    @include docs.headings;
+    @include docs.toc;
+    @include docs.prose;
+  }
+}
