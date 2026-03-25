@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "customManagers:biomeVersions"],
+  "packageRules": [
+    {
+      "updateTypes": ["minor", "patch"],
+      "automerge": true
+    }
+  ],
+  "timezone": "Europe/Rome",
+  "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
+}

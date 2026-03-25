@@ -1,0 +1,55 @@
+# Dependencies
+node_modules
+
+# Version control
+.git
+.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Documentation
+*.md
+doc/
+
+# Tests
+tests/
+coverage/
+reports/
+screenshots/
+
+# IDE / Editor
+.vscode/
+.idea/
+.cursor/
+.DS_Store
+
+# Dev tooling
+.dependency-cruiser.cjs
+.specstory
+.history
+
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+docker-build.sh
+Dockerfile
+
+# DB migrations (run separately)
+db/
+
+# Misc
+*.log
+.cache
+traces
+.nvmrc
+client.schema.d.ts
+
+# Exclude other apps (only need this backend)
+apps/
+
+# Exclude unnecessary packages (keep only modeling-commons-shared)
+packages/*
+!packages/modeling-commons-shared/

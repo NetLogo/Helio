@@ -12,7 +12,7 @@ export function groupBy<T, K extends keyof Record<string | number | symbol, unkn
   array: Array<T>,
   keyFn: (item: T) => K,
 ): Record<K, Array<T>> {
-  return array.reduce<Record<K, Array<T>>>(
+  return array.reduce(
     (acc, item) => {
       const key = keyFn(item);
       if (!Array.isArray(acc[key])) {
