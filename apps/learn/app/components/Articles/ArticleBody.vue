@@ -4,7 +4,6 @@
       :value="article.item"
       tag="article"
       class="prose mt-4 prose-medium prose-text-medium"
-      :components="MDCComponents"
       v-bind="dProps.contentRenderer"
     />
     <Surround :surround="surround" v-bind="dProps.surround" />
@@ -14,7 +13,6 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content';
 import type { ObjectModel } from '~/data';
-import MDCComponents from '../mdc/components';
 
 type Props = {
   article: ObjectModel.Article;
