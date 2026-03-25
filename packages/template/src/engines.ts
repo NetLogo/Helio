@@ -4,6 +4,8 @@ import path from "path";
 import Handlebars from "handlebars";
 import mustache from "mustache";
 
+import { convertPath } from "@repo/utils/std/path";
+
 import { RenderError } from "./errors.js";
 import { getFileExtension } from "./utils.js";
 abstract class TemplateEngine {
@@ -30,7 +32,7 @@ abstract class TemplateEngine {
 
       const filePath = path.join(file.parentPath, file.name);
       const fileNameRelativeToRoot = path.relative(rootDirectory, filePath);
-      const fileKey = fileNameRelativeToRoot.replace(/\\/g, "/");
+      const fileKey: string = convertPath(fileNameRelativeToRoot, "posix");
 
       try {
         const content = await fs.readFile(filePath, "utf-8");
