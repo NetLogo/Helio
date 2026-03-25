@@ -5,20 +5,29 @@
 </template>
 
 <script lang="ts">
-const rewrites = [
-  {
-    title: 'Rewrite CCL links to archived versions',
-    match: (href: string): boolean =>
-      href.startsWith('https://ccl.northwestern.edu/') || href.startsWith('http://ccl.northwestern.edu/'),
-    rewrite: (href: string): string => {
-      return `https://web.archive.org/web/${encodeURIComponent(href)}`
-    },
-  },
-]
+type RewriteRule = {
+  title: string
+  match: (href: string) => boolean
+  rewrite: (href: string) => string
+}
 </script>
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
+
+const {
+  public: {
+    website: { productWebsite },
+  },
+} = useRuntimeConfig()
+
+const rewrites: Array<RewriteRule> = [
+  {
+    title: 'no-absolute-site-urls',
+    match: (href) => href.startsWith(productWebsite as string),
+    rewrite: (href) => href.replace((productWebsite as string).replace(/\/$/, ''), ''),
+  },
+]
 
 const props = defineProps({
   href: {

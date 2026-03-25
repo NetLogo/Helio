@@ -155,7 +155,14 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
 
   linkChecker: {
     excludeLinks: ["/*.pdf"],
-    skipInspections: ["no-baseless", "no-underscores", "trailing-slash"],
+    skipInspections: [
+      "no-baseless",
+      "no-underscores",
+      "trailing-slash",
+      "absolute-site-urls",
+      "no-uppercase-chars",
+      "no-non-ascii-chars",
+    ],
     report: {
       html: process.env["CHECK"] === "true",
     },

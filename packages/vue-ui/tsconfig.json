@@ -5,10 +5,9 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./dist",
-    "baseUrl": ".",
     "paths": {
+      "@repo/vue-ui": ["./src"],
       "@repo/vue-ui/*": ["./src/*"],
-      "@repo/utils/*": ["../utils/src/*"],
       "nitropack/types": ["../../node_modules/nitropack/types"],
       "nitropack/runtime": ["../../node_modules/nitropack/runtime"],
       "nitropack": ["../../node_modules/nitropack"],
@@ -81,11 +80,11 @@
     "noEmit": true,
     "lib": ["ESNext", "dom", "dom.iterable", "webworker"],
     "jsxImportSource": "vue",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "useDefineForClassFields": true,
     "noImplicitThis": true,
     "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*", "**/*.d.ts", "../nuxt-core/.nuxt/nuxt.d.ts"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "../nuxt-core/app/**/*", "../nuxt-core/layers/**/*"]
 }
