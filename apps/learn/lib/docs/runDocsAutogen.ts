@@ -4,7 +4,7 @@ import path from 'path';
 import _config from './autogen.config';
 
 import { appendGitMetadata, generateGitMetadata } from '@repo/netlogo-docs/git';
-import { appendAssetsRootToMetadata, generateRoutesFile } from '@repo/netlogo-docs/helpers';
+import { appendAssetsRootToMetadata, generateRoutesFile } from '@repo/netlogo-docs/helpers-node';
 import { ProjectConfigSchema } from '@repo/template/schemas';
 import { generateBetweenDirectoriesPages } from './NetLogoDocs';
 

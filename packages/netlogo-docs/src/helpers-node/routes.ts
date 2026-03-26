@@ -3,7 +3,7 @@ import type { PageResult } from "@repo/template";
 import fs from "fs/promises";
 import { minimatch } from "minimatch";
 import path from "path";
-import { toSlug } from "./slugify";
+import { toSlug } from "../helpers/slugify";
 
 export async function generateRoutesFile(
   renderer: TemplateRenderer,

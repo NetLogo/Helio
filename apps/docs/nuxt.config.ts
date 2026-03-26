@@ -1,4 +1,4 @@
-import { addNuxtContentAssetsRoot } from '@repo/netlogo-docs/helpers';
+import { addNuxtContentAssetsRoot } from '@repo/netlogo-docs/helpers-node';
 import type { DefineNuxtConfig } from 'nuxt/config';
 
 import { getDocumentedExtensionBuilders } from '@repo/netlogo-docs/extension-docs';

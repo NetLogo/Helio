@@ -1,4 +1,4 @@
-import { appendAssetsRootToMetadata } from '@repo/netlogo-docs/helpers';
+import { appendAssetsRootToMetadata } from '@repo/netlogo-docs/helpers-node';
 import type { ProjectConfigInput } from '@repo/template/schemas';
 
 const autogenConfig: ProjectConfigInput = {

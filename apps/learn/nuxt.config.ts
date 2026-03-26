@@ -1,4 +1,4 @@
-import { addNuxtContentAssetsRoot } from '@repo/netlogo-docs/helpers';
+import { addNuxtContentAssetsRoot } from '@repo/netlogo-docs/helpers-node';
 
 import * as MarkdownConfig from './lib/docs/markdown.config';
 import runDocsAutogen from './lib/docs/runDocsAutogen';

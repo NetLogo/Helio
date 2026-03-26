@@ -1,4 +1,4 @@
-import { getRoutes } from "@repo/netlogo-docs/helpers";
+import { getRoutes } from "@repo/netlogo-docs/helpers-node";
 import tailwindcss from "@tailwindcss/vite";
 import { websiteConfigSchema } from "./runtime.config.schema";
 import { vueUiIconPack, vueUiSrc, vueUiStyles } from "./turbo";
@@ -107,6 +107,7 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: ["@repo/vue-ui", "@repo/utils", "@repo/netlogo-docs"],
+      exclude: ["@repo/netlogo-docs/primitive-index", "@repo/utils/lib/server"],
     },
     build: {
       sourcemap: true,
