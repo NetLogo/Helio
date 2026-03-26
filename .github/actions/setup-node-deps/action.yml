@@ -1,5 +1,5 @@
 name: Setup Node.js and Dependencies
-description: Sets up Node.js 22 with yarn cache and installs dependencies
+description: Sets up Node.js 24 with yarn cache and installs dependencies
 
 runs:
   using: composite
@@ -7,7 +7,7 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: "22"
+        node-version: "24"
         cache: "yarn"
 
     - name: Install dependencies

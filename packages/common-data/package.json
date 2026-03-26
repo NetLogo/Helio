@@ -2,7 +2,7 @@
   "name": "@repo/common-data",
   "version": "1.0.0",
   "engines": {
-    "node": "^22.0.0"
+    "node": "^24.0.0"
   },
   "files": [
     "dist"

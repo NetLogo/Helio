@@ -757,6 +757,16 @@ primitives:
           id: stringgroup
         - title: Mathematical
           id: mathematicalgroup
+      primitive_aliases:
+        - category_id: stringgroup
+          aliases:
+            - String Operators
+            - <
+            - ">"
+            - =
+            - "!="
+            - <=
+            - ">="
       data:
         syntax:
           - name: Arithmetic Operators
@@ -2825,8 +2835,8 @@ primitives:
     metadata: &a8
       id: but-first-and-last
       entry_categories:
-        - title: String
-          id: stringgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: but-first
@@ -6388,6 +6398,8 @@ primitives:
     metadata:
       id: empty
       entry_categories:
+        - title: List
+          id: listsgroup
         - title: String
           id: stringgroup
       data:
@@ -8712,6 +8724,8 @@ primitives:
       entry_categories:
         - title: Anonymous Procedures
           id: anonproceduresgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: filter
@@ -8765,6 +8779,8 @@ primitives:
     metadata:
       id: first
       entry_categories:
+        - title: List
+          id: listsgroup
         - title: String
           id: stringgroup
       data:
@@ -8999,6 +9015,8 @@ primitives:
       entry_categories:
         - title: Anonymous Procedures
           id: anonproceduresgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: foreach
@@ -9165,6 +9183,9 @@ primitives:
     isConstant: false
     metadata:
       id: fput
+      entry_categories:
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: fput
@@ -9620,6 +9641,8 @@ primitives:
       entry_categories:
         - title: Plotting
           id: plottinggroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: histogram
@@ -9784,7 +9807,7 @@ primitives:
       This broadcasts *value* from NetLogo to the interface element
        with the name *tag-name* on the clients.
 
-      See the [HubNet Authoring Guide](/hubnet-authoring)for details and
+      See the [HubNet Authoring Guide](/hubnet-authoring) for details and
       instructions.
 
     examples:
@@ -9804,7 +9827,7 @@ primitives:
           This broadcasts *value* from NetLogo to the interface element
            with the name *tag-name* on the clients.
 
-          See the [HubNet Authoring Guide](/hubnet-authoring)for details and
+          See the [HubNet Authoring Guide](/hubnet-authoring) for details and
           instructions.
 
         examples:
@@ -9986,7 +10009,7 @@ primitives:
        false otherwise. [[hubnet-message-source|hubnet-message-source]] will contain the
        user name of the client that just logged on.
 
-      See the [HubNet Authoring Guide](/hubnet-authoring)for details and
+      See the [HubNet Authoring Guide](/hubnet-authoring) for details and
       instructions.
 
     examples:
@@ -10007,7 +10030,7 @@ primitives:
            false otherwise. [[hubnet-message-source|hubnet-message-source]] will contain the
            user name of the client that just logged on.
 
-          See the [HubNet Authoring Guide](/hubnet-authoring)for details and
+          See the [HubNet Authoring Guide](/hubnet-authoring) for details and
           instructions.
 
         examples:
@@ -10024,7 +10047,7 @@ primitives:
        otherwise. [[hubnet-message-source|hubnet-message-source]] will contain the
        user name of the client that just logged off.
 
-      See the [HubNet Authoring Guide](/hubnet-authoring)for details and
+      See the [HubNet Authoring Guide](/hubnet-authoring) for details and
       instructions.
 
     examples:
@@ -10045,7 +10068,7 @@ primitives:
            otherwise. [[hubnet-message-source|hubnet-message-source]] will contain the
            user name of the client that just logged off.
 
-          See the [HubNet Authoring Guide](/hubnet-authoring)for details and
+          See the [HubNet Authoring Guide](/hubnet-authoring) for details and
           instructions.
 
         examples:
@@ -11868,6 +11891,8 @@ primitives:
       entry_categories:
         - title: String
           id: stringgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: insert-item
@@ -12066,6 +12091,42 @@ primitives:
           id: agentsetgroup
         - title: Mathematical
           id: mathematicalgroup
+        - title: List
+          id: listsgroup
+      primitive_aliases:
+        - category_id: anonymousproceduresgroup
+          aliases:
+            - is-anonymous-command?
+            - is-anonymous-reporter?
+        - category_id: linkgroup
+          aliases:
+            - is-directed-link?
+            - is-link?
+            - is-link-set?
+            - is-undirected-link?
+        - category_id: patchgroup
+          aliases:
+            - is-patch?
+            - is-patch-set?
+        - category_id: turtlegroup
+          aliases:
+            - is-agent?
+            - is-agentset?
+            - is-turtle?
+            - is-turtle-set?
+        - category_id: stringgroup
+          aliases:
+            - is-string?
+        - category_id: agentsetgroup
+          aliases:
+            - is-list?
+        - category_id: mathematicalgroup
+          aliases:
+            - is-number?
+            - is-boolean?
+        - category_id: listsgroup
+          aliases:
+            - is-list?
       data:
         syntax:
           - name: is-agent?
@@ -12640,6 +12701,8 @@ primitives:
       entry_categories:
         - title: String
           id: stringgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: item
@@ -12900,6 +12963,8 @@ primitives:
       entry_categories:
         - title: String
           id: stringgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: last
@@ -13381,6 +13446,8 @@ primitives:
       entry_categories:
         - title: String
           id: stringgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: length
@@ -13908,6 +13975,9 @@ primitives:
     isConstant: false
     metadata:
       id: list
+      entry_categories:
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: list
@@ -14094,6 +14164,9 @@ primitives:
     isConstant: false
     metadata:
       id: lput
+      entry_categories:
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: lput
@@ -14166,6 +14239,8 @@ primitives:
       entry_categories:
         - title: Anonymous Procedures
           id: anonproceduresgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: map
@@ -14243,6 +14318,8 @@ primitives:
       entry_categories:
         - title: Mathematical
           id: mathematicalgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: max
@@ -14667,6 +14744,8 @@ primitives:
           id: stringgroup
         - title: Agentset
           id: agentsetgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: member?
@@ -14742,6 +14821,8 @@ primitives:
       entry_categories:
         - title: Mathematical
           id: mathematicalgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: min
@@ -15112,6 +15193,8 @@ primitives:
       entry_categories:
         - title: Mathematical
           id: mathematicalgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: modes
@@ -15846,6 +15929,8 @@ primitives:
       entry_categories:
         - title: Agentset
           id: agentsetgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: n-of
@@ -15933,6 +16018,8 @@ primitives:
       entry_categories:
         - title: Anonymous Procedures
           id: anonproceduresgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: n-values
@@ -16676,6 +16763,8 @@ primitives:
           id: turtlegroup
         - title: Agentset
           id: agentsetgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: of
@@ -16749,6 +16838,8 @@ primitives:
       entry_categories:
         - title: Agentset
           id: agentsetgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: one-of
@@ -18944,6 +19035,8 @@ primitives:
       entry_categories:
         - title: String
           id: stringgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: position
@@ -22940,6 +23033,9 @@ primitives:
     isConstant: false
     metadata:
       id: shuffle
+      entry_categories:
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: shuffle
@@ -23126,6 +23222,8 @@ primitives:
       entry_categories:
         - title: Agentset
           id: agentsetgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: sort
@@ -23264,6 +23362,8 @@ primitives:
           id: anonproceduresgroup
         - title: Agentset
           id: agentsetgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: sort-by
@@ -23346,6 +23446,8 @@ primitives:
       entry_categories:
         - title: Agentset
           id: agentsetgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: sort-on
@@ -23915,6 +24017,8 @@ primitives:
       entry_categories:
         - title: String
           id: stringgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: sublist
@@ -25467,6 +25571,8 @@ primitives:
       entry_categories:
         - title: Agentset
           id: agentsetgroup
+        - title: List
+          id: listsgroup
       data:
         syntax:
           - name: up-to-n-of
@@ -27472,6 +27578,10 @@ primitives:
       entry_categories:
         - title: Anonymous Procedures
           id: anonproceduresgroup
+      primitive_aliases:
+        - category_id: anonproceduresgroup
+          aliases:
+            - -> (anonymous procedure)
       data:
         syntax:
           - name: ->

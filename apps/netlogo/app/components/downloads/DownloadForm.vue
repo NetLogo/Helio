@@ -48,7 +48,6 @@
         oninput="this.setCustomValidity('')"
       />
       <div class="flex items-center mt-2">
-        <!-- @vue-expect-error -->
         <UCheckbox id="subscribe" v-model="formData.subscribe" class="mr-2" />
         <label for="subscribe" class="text-sm">
           Update me on NetLogo news (including new releases)

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "engines": {
-    "node": "^22.0.0"
+    "node": "^24.0.0"
   },
   "sideEffects": [
     "**/*.css",
@@ -59,7 +59,7 @@
     "@nuxt/ui": "^4.2.1",
     "@repo/eslint-config": "0.0.0",
     "@repo/utils": "0.0.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vueuse/core": "^14.1.0",
     "eslint": "^9.31.0",

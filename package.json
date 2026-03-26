@@ -2,7 +2,7 @@
   "name": "helio",
   "private": true,
   "engine": {
-    "node": "^22.0.0"
+    "node": "^24.0.0"
   },
   "scripts": {
     "init": "sh ./scripts/initialize.sh && NUXT_TELEMETRY_DISABLED=1 sh ./scripts/check-repo.sh",
