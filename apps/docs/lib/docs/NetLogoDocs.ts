@@ -2,7 +2,7 @@ import type TemplateRenderer from "@repo/template";
 import type { PageResult } from "@repo/template";
 
 import { getEntryNames } from "@repo/netlogo-docs/dictionary";
-import { saveNavigationMetadata } from "@repo/netlogo-docs/helpers";
+import { saveNavigationMetadata } from "@repo/netlogo-docs/helpers-node";
 import { generatePrimitiveIndex } from "@repo/netlogo-docs/primitive-index";
 
 import * as Constants from "./constants";

@@ -4,7 +4,7 @@ import config from "./autogen.config";
 
 import { prebuildHandlebarsHelper } from "@repo/netlogo-docs/dictionary";
 import * as ExtensionDocs from "@repo/netlogo-docs/extension-docs";
-import { generateRoutesFile } from "@repo/netlogo-docs/helpers";
+import { generateRoutesFile } from "@repo/netlogo-docs/helpers-node";
 import {
   generateBetweenDirectoriesPages,
   generateDictionary3DPrimitivePages,

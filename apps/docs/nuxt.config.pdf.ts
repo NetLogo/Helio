@@ -1,4 +1,4 @@
-import { getRoutesSubset } from '@repo/netlogo-docs/helpers';
+import { getRoutesSubset } from '@repo/netlogo-docs/helpers-node';
 import type { DefineNuxtConfig } from 'nuxt/config';
 
 const pdfOverrides: Parameters<DefineNuxtConfig>[0] = {
