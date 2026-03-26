@@ -44,7 +44,7 @@ For development guides, contribution instructions, and more, please refer to the
 
 ### Getting Started
 1. **Install Requirements**
-   - [Node.js v22](https://nodejs.org/en/download/)
+   - [Node.js v24](https://nodejs.org/en/download/)
    - [Yarn v1](https://classic.yarnpkg.com/lang/en/docs/install/)
    - [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) (for Windows users)
 
