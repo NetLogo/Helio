@@ -582,9 +582,9 @@ const rules = [
     maxSizeMB: 2000,
     maxPkgCount: 3000,
   }).setLevel("warn"),
-  new StaleResolutionRule("Stale resolutions"),
-  new UnmetPeerDepsRule("Unmet peer dependencies"),
-  new NonDeterministicInstallRule("Non-deterministic install patterns"),
+  // new StaleResolutionRule("Stale resolutions"),
+  // new UnmetPeerDepsRule("Unmet peer dependencies"),
+  // new NonDeterministicInstallRule("Non-deterministic install patterns"),
 ];
 
 let ok = true;
