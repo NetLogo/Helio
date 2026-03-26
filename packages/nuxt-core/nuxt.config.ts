@@ -1,4 +1,4 @@
-import { getRoutes } from "@repo/netlogo-docs/helpers-node";
+import { getRoutesSubset } from "@repo/netlogo-docs/helpers-node";
 import tailwindcss from "@tailwindcss/vite";
 import { websiteConfigSchema } from "./runtime.config.schema";
 import { vueUiIconPack, vueUiSrc, vueUiStyles } from "./turbo";
@@ -31,11 +31,6 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   ],
 
   site: { url: website.productWebsite, name: website.productName },
-
-  colorMode: {
-    preference: "light",
-    fallback: "light",
-  },
 
   css: ["~/assets/styles/main.scss", "~/assets/styles/tailwind.css", vueUiStyles],
 
@@ -195,7 +190,9 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
       autoSubfolderIndex: false,
       crawlLinks: true,
       concurrency: 1,
-      routes: await getRoutes(),
+      routes: await getRoutesSubset(
+        process.env.NITRO_PRERENDER_ROUTES?.split(",").map((route) => route.trim()) || [],
+      ),
     },
   },
 };

@@ -39,5 +39,8 @@ export async function getRoutesSubset(
   baseUrl: string = "/",
 ): Promise<Array<string>> {
   const routes = await getRoutes(baseUrl);
+  if (patterns.length === 0) {
+    return routes;
+  }
   return routes.filter((route) => patterns.some((pattern) => minimatch(route, pattern)));
 }

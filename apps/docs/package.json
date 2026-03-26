@@ -22,7 +22,7 @@
     "nuxt:dev:no-autogen": "NO_AUTOGEN=true nuxt dev --port 3001",
     "nuxt:dev:watch": "nuxt dev --port 3001 --dotenv .env.development",
     "nuxt:dev:no-autogen:watch": "NO_AUTOGEN=true nuxt dev --port 3001 --dotenv .env.development",
-    "nuxt:generate": "nuxt prepare && nuxt generate",
+    "nuxt:generate": "NODE_OPTIONS=\"--max-old-space-size=6144\" nuxt prepare && nuxt generate",
     "nuxt:preview": "nuxt preview",
     "nuxt:postinstall": "nuxt prepare",
     "nuxt:prepare": "nuxt prepare",
