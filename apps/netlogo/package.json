@@ -8,7 +8,8 @@
     "./nuxt/tsconfig.json": "./.nuxt/tsconfig.json"
   },
   "scripts": {
-    "init": "nuxt prepare",
+    "create:env": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.example')) { if (!fs.existsSync('.env')) { fs.copyFileSync('.env.example', '.env'); console.log('✓ .env created from .env.example'); } else { console.log('✓ .env already exists'); } } else { console.log('⚠ .env.example not found'); }\"",
+    "init": "npm run create:env && nuxt prepare",
     "nuxt:build": "nuxt build",
     "nuxt:dev": "nuxt dev --port 3004",
     "nuxt:dev:no-autogen": "NO_AUTOGEN=true nuxt dev --port 3004",

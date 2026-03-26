@@ -7,7 +7,8 @@
     "node": "^24.0.0"
   },
   "scripts": {
-    "init": "nuxt prepare",
+    "create:env": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.example')) { if (!fs.existsSync('.env')) { fs.copyFileSync('.env.example', '.env'); console.log('✓ .env created from .env.example'); } else { console.log('✓ .env already exists'); } } else { console.log('⚠ .env.example not found'); }\"",
+    "init": "npm run create:env && nuxt prepare",
     "docs:build": "./scripts/generate.sh",
     "docs:deploy": "bash ./scripts/deploy.sh",
     "docs:preview": "bash ./scripts/preview.sh",
