@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 
 import { PageMetadataSchemaFields } from "@repo/template/schemas";
 import ExtensionMetadataSchema from "../extension-docs/public-schema";

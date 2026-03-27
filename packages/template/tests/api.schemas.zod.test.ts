@@ -1,7 +1,6 @@
-import { describe, expect, it } from '@jest/globals';
-import { z } from 'zod';
-
-describe('api.schemas Zod Validation', () => {
+import { describe, expect, it } from "@jest/globals";
+import * as z from "zod";
+describe("api.schemas Zod Validation", () => {
   // We need to access the schemas directly to test validation
   // Since they're not exported, we'll create them locally for testing
   const PageResultSchema = z.object({
@@ -32,17 +31,17 @@ describe('api.schemas Zod Validation', () => {
       .optional(),
   });
 
-  describe('PageResultSchema validation', () => {
-    it('should validate a valid page result', () => {
+  describe("PageResultSchema validation", () => {
+    it("should validate a valid page result", () => {
       const validPageResult = {
-        baseName: 'test-page',
-        sourcePath: 'test.md',
-        outputPath: 'test.html',
-        language: 'en',
-        title: 'Test Page',
-        description: 'A test page',
+        baseName: "test-page",
+        sourcePath: "test.md",
+        outputPath: "test.html",
+        language: "en",
+        title: "Test Page",
+        description: "A test page",
         success: true,
-        metadataPath: 'test.json',
+        metadataPath: "test.json",
       };
 
       expect(() => PageResultSchema.parse(validPageResult)).not.toThrow();
@@ -50,47 +49,47 @@ describe('api.schemas Zod Validation', () => {
       expect(parsed).toEqual(validPageResult);
     });
 
-    it('should validate minimal page result with required fields only', () => {
+    it("should validate minimal page result with required fields only", () => {
       const minimalPageResult = {
-        baseName: 'minimal',
-        sourcePath: 'minimal.md',
+        baseName: "minimal",
+        sourcePath: "minimal.md",
         success: true,
       };
 
       expect(() => PageResultSchema.parse(minimalPageResult)).not.toThrow();
     });
 
-    it('should reject page result missing required baseName', () => {
+    it("should reject page result missing required baseName", () => {
       const invalidPageResult = {
-        sourcePath: 'test.md',
+        sourcePath: "test.md",
         success: true,
       };
 
       expect(() => PageResultSchema.parse(invalidPageResult)).toThrow();
     });
 
-    it('should reject page result missing required sourcePath', () => {
+    it("should reject page result missing required sourcePath", () => {
       const invalidPageResult = {
-        baseName: 'test',
+        baseName: "test",
         success: true,
       };
 
       expect(() => PageResultSchema.parse(invalidPageResult)).toThrow();
     });
 
-    it('should reject page result missing required success', () => {
+    it("should reject page result missing required success", () => {
       const invalidPageResult = {
-        baseName: 'test',
-        sourcePath: 'test.md',
+        baseName: "test",
+        sourcePath: "test.md",
       };
 
       expect(() => PageResultSchema.parse(invalidPageResult)).toThrow();
     });
 
-    it('should reject page result with wrong types', () => {
+    it("should reject page result with wrong types", () => {
       const invalidPageResult = {
         baseName: 123, // should be string
-        sourcePath: 'test.md',
+        sourcePath: "test.md",
         success: true,
       };
 
@@ -98,13 +97,13 @@ describe('api.schemas Zod Validation', () => {
     });
   });
 
-  describe('BuildResultSchema validation', () => {
-    it('should validate a valid build result', () => {
+  describe("BuildResultSchema validation", () => {
+    it("should validate a valid build result", () => {
       const validBuildResult = {
         pages: {
-          'test.md': {
-            baseName: 'test',
-            sourcePath: 'test.md',
+          "test.md": {
+            baseName: "test",
+            sourcePath: "test.md",
             success: true,
           },
         },
@@ -123,7 +122,7 @@ describe('api.schemas Zod Validation', () => {
       expect(() => BuildResultSchema.parse(validBuildResult)).not.toThrow();
     });
 
-    it('should validate build result without stats', () => {
+    it("should validate build result without stats", () => {
       const buildResult = {
         pages: {},
         totalPages: 0,
@@ -136,12 +135,12 @@ describe('api.schemas Zod Validation', () => {
       expect(() => BuildResultSchema.parse(buildResult)).not.toThrow();
     });
 
-    it('should reject build result with invalid pages', () => {
+    it("should reject build result with invalid pages", () => {
       const invalidBuildResult = {
         pages: {
-          'test.md': {
+          "test.md": {
             // Missing required fields
-            sourcePath: 'test.md',
+            sourcePath: "test.md",
           },
         },
         totalPages: 1,
@@ -154,10 +153,10 @@ describe('api.schemas Zod Validation', () => {
       expect(() => BuildResultSchema.parse(invalidBuildResult)).toThrow();
     });
 
-    it('should reject build result with wrong types', () => {
+    it("should reject build result with wrong types", () => {
       const invalidBuildResult = {
         pages: {},
-        totalPages: '1', // should be number
+        totalPages: "1", // should be number
         successfulPages: 1,
         failedPages: 0,
         success: true,
@@ -167,7 +166,7 @@ describe('api.schemas Zod Validation', () => {
       expect(() => BuildResultSchema.parse(invalidBuildResult)).toThrow();
     });
 
-    it('should reject build result with invalid stats', () => {
+    it("should reject build result with invalid stats", () => {
       const invalidBuildResult = {
         pages: {},
         totalPages: 0,
@@ -176,7 +175,7 @@ describe('api.schemas Zod Validation', () => {
         success: true,
         errors: [],
         stats: {
-          buildTimeMs: '1000', // should be number
+          buildTimeMs: "1000", // should be number
           startTime: new Date(),
           endTime: new Date(),
         },
@@ -186,20 +185,20 @@ describe('api.schemas Zod Validation', () => {
     });
   });
 
-  describe('Type inference', () => {
-    it('should infer correct types from schemas', () => {
+  describe("Type inference", () => {
+    it("should infer correct types from schemas", () => {
       type PageResult = z.infer<typeof PageResultSchema>;
       type BuildResult = z.infer<typeof BuildResultSchema>;
 
       // This test ensures the type exports work correctly
       const pageResult: PageResult = {
-        baseName: 'test',
-        sourcePath: 'test.md',
+        baseName: "test",
+        sourcePath: "test.md",
         success: true,
       };
 
       const buildResult: BuildResult = {
-        pages: { 'test.md': pageResult },
+        pages: { "test.md": pageResult },
         totalPages: 1,
         successfulPages: 1,
         failedPages: 0,
@@ -207,7 +206,7 @@ describe('api.schemas Zod Validation', () => {
         errors: [],
       };
 
-      expect(pageResult.baseName).toBe('test');
+      expect(pageResult.baseName).toBe("test");
       expect(buildResult.totalPages).toBe(1);
     });
   });
