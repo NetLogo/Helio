@@ -101,11 +101,15 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ["@repo/vue-ui", "@repo/utils", "@repo/netlogo-docs"],
+      include: ["@repo/vue-ui", "@repo/utils", "@repo/netlogo-docs", "zod"],
       exclude: ["@repo/netlogo-docs/primitive-index", "@repo/utils/lib/server"],
     },
+
     build: {
       sourcemap: true,
+      rollupOptions: {
+        external: ["parse5", "prismjs", "zod/locales", "zod/v4/locales"],
+      },
     },
     server: {
       watch: { usePolling: true },
@@ -116,6 +120,14 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   content: {
     renderer: {
       anchorLinks: false,
+    },
+    build: {
+      markdown: {
+        highlight: false,
+        remarkPlugins: {
+          "remark-emoji": false,
+        },
+      },
     },
     watch: { enabled: false },
   },
@@ -151,20 +163,23 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     },
   },
 
-  linkChecker: {
-    excludeLinks: ["/*.pdf"],
-    skipInspections: [
-      "no-baseless",
-      "no-underscores",
-      "trailing-slash",
-      "absolute-site-urls",
-      "no-uppercase-chars",
-      "no-non-ascii-chars",
-    ],
-    report: {
-      html: process.env["CHECK"] === "true",
-    },
-  },
+  linkChecker:
+    process.env.NUXT_BUILD_LINK_CHECKER === "0"
+      ? { enabled: false }
+      : {
+          excludeLinks: ["/*.pdf"],
+          skipInspections: [
+            "no-baseless",
+            "no-underscores",
+            "trailing-slash",
+            "absolute-site-urls",
+            "no-uppercase-chars",
+            "no-non-ascii-chars",
+          ],
+          report: {
+            html: process.env["CHECK"] === "true",
+          },
+        },
 
   hooks: {
     async ready() {
@@ -188,7 +203,7 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     serveStatic: true,
     prerender: {
       autoSubfolderIndex: false,
-      crawlLinks: true,
+      crawlLinks: process.env.NITRO_PRERENDER_CRAWL_LINKS === "0" ? false : true,
       concurrency: 1,
       routes: await getRoutesSubset(
         process.env.NITRO_PRERENDER_ROUTES?.split(",").map((route) => route.trim()) || [],
