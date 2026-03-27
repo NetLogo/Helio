@@ -1,7 +1,7 @@
 import { defineCollection, defineContentConfig } from "@nuxt/content";
 import { PrimitiveSchema } from "@repo/common-data";
 import { fileURLToPath } from "url";
-import z from "zod";
+import * as z from "zod";
 
 const PrimitiveDataSchema = z.object({
   primitives: z.array(PrimitiveSchema),

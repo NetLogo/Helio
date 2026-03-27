@@ -1,6 +1,5 @@
 import { toSlug } from "@repo/netlogo-docs/helpers";
-import { z } from "zod";
-
+import * as z from "zod";
 const PrimitiveSchema = z.object({
   /** Unique identifier for the primitive */
   id: z.string(),

@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from "zod";
 export const PageResultSchema = z.object({
   /** Base file name */
   baseName: z.string(),

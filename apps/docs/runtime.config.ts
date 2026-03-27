@@ -1,5 +1,5 @@
 import { websiteConfigSchema as rootWebsiteConfigSchema } from '@repo/nuxt-core/runtime.config.schema';
-import z from 'zod';
+import * as z from 'zod';
 
 const extraWebsiteConfig = z
   .object({

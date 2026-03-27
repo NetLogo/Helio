@@ -1,5 +1,4 @@
-import { z } from "zod";
-
+import * as z from "zod";
 const GitMetadataSchema = z.object({
   lastModifiedDate: z.string().optional(),
   lastModifiedAuthor: z.string().optional(),
