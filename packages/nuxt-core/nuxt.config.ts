@@ -63,7 +63,6 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   components: [
     {
       path: vueUiSrc,
-      global: true,
       pattern: "**/*.vue",
       ignore: ["**/examples/*.vue", "**/tests/*.vue"],
       pathPrefix: false,
@@ -71,7 +70,6 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     },
     {
       path: "~/components",
-      global: true,
       pattern: "**/*.vue",
       ignore: ["**/examples/*.vue", "**/tests/*.vue"],
       pathPrefix: false,
@@ -137,15 +135,6 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     contentExtensions: "md",
     debug: true,
     overrideStaticDimensions: false,
-  },
-
-  mdc: {
-    components: {
-      prose: false,
-      map: {
-        a: "ProseA",
-      },
-    },
   },
 
   ui: {

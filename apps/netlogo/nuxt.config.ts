@@ -23,13 +23,17 @@ export default defineNuxtConfig({
   components: [
     {
       path: "~/components",
-      global: true,
       pattern: "**/*.vue",
       ignore: ["**/examples/*.vue", "**/tests/*.vue"],
       pathPrefix: false,
       watch: true,
     },
   ],
+  mdc: {
+    components: {
+      prose: true,
+    },
+  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag: string) => tag === "bsky-embed",
