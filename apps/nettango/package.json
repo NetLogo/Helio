@@ -32,7 +32,6 @@
     "@nuxtjs/google-fonts": "3.2.0",
     "@nuxtjs/sitemap": "7.4.7",
     "@repo/eslint-config": "0.0.0",
-    "@repo/markdown": "0.0.0",
     "@repo/netlogo-docs": "0.0.0",
     "@repo/tailwind-config": "0.0.0",
     "@repo/template": "0.0.0",
@@ -58,6 +57,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.68",
     "@repo/nuxt-content-assets": "1.5.0",
+    "@repo/markdown": "0.0.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/vite": "^4.1.18",
     "rehype-autolink-headings": "^7.1.0",

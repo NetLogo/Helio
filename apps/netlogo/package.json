@@ -35,7 +35,6 @@
     "@nuxtjs/sitemap": "7.4.7",
     "@repo/common-data": "1.0.0",
     "@repo/eslint-config": "0.0.0",
-    "@repo/markdown": "0.0.0",
     "@repo/netlogo-docs": "0.0.0",
     "@repo/nuxt-core": "0.0.0",
     "@repo/tailwind-config": "0.0.0",
@@ -60,6 +59,7 @@
   "devDependencies": {
     "@nuxt/kit": "^4.2.1",
     "@repo/nuxt-content-assets": "1.5.0",
+    "@repo/markdown": "0.0.0",
     "eslint": "^9.31.0",
     "sass": "^1.93.3",
     "turbo-meta-utilities": "^1.0.1",
