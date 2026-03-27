@@ -54,7 +54,6 @@ export default defineNuxtConfig({
     {
       path: vueUiSrc,
       // Recommended options
-      global: true,
       pathPrefix: false,
       pattern: '**/*.vue',
       ignore: ['**/examples/*.vue', '**/tests/*.vue'],

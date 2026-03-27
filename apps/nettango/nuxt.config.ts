@@ -18,7 +18,6 @@ export default defineNuxtConfig({
   components: [
     {
       path: "~/components",
-      global: true,
       pattern: "**/*.vue",
       ignore: ["**/examples/*.vue", "**/tests/*.vue"],
       pathPrefix: false,
