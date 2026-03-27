@@ -20,6 +20,12 @@ const optionalPdfLayer = isUsingPdfConfig ? pdfOverrides : {};
 if (isUsingPdfConfig) {
   console.info('[repo] Running with PDF generation configuration overrides');
 }
+
+const extensions = (await getDocumentedExtensionBuilders(autogenConfig)).map((ext) => ({
+  title: ext.fullName,
+  href: `/${ext.name.toLowerCase()}`,
+}));
+
 export default defineNuxtConfig(
   deepMerge<NuxtConfigInput, NuxtConfigInput>(
     {
@@ -31,6 +37,13 @@ export default defineNuxtConfig(
 
       ssr: true,
 
+      routeRules:
+        process.env.DOCS_BUILD_SSR_CATALOG === '1'
+          ? {}
+          : {
+              '/dict/**': { ssr: false, prerender: true },
+              ...Object.fromEntries(extensions.map((ext) => [`${ext.href}/**`, { ssr: false, prerender: true }])),
+            },
       components: [
         {
           path: '~/components',
@@ -61,10 +74,7 @@ export default defineNuxtConfig(
 
       runtimeConfig: {
         public: {
-          extensions: (await getDocumentedExtensionBuilders(autogenConfig)).map((ext) => ({
-            title: ext.fullName,
-            href: `/${ext.name.toLowerCase()}`,
-          })),
+          extensions,
           website: websiteConfigSchema.parse(process.env),
         },
       },
@@ -81,6 +91,8 @@ export default defineNuxtConfig(
       },
 
       nitro: {
+        static: true,
+        serveStatic: true,
         baseURL: basePath,
       },
     },
