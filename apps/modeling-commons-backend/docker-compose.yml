@@ -1,30 +1,12 @@
-services:
-  postgres:
-    image: postgres:18
-    ports:
-      - 5432:5432
-    env_file:
-      - path: ./.env
-        required: true
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+# # Production image reference
+# # Deploy to K3s instead — use docker-compose.dev.yml for local dev
+# # Build: docker build -t app:latest .
 
-  app:
-    build:
-      context: ../..
-      dockerfile: apps/modeling-commons-backend/Dockerfile
-    ports:
-      - 3000:3000
-    env_file:
-      - path: ./.env
-        required: true
-    environment:
-      HOST: 0.0.0.0
-      NODE_ENV: production
-      POSTGRES_URL: postgres:5432
-    depends_on:
-      postgres:
-        condition: service_healthy
+# services:
+#   app:
+#     image: app:latest
+#     ports:
+#       - 3000:3000
+#     env_file:
+#       - path: ./.env
+#         required: true

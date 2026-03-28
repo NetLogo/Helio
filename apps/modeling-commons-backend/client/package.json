@@ -1,20 +1,14 @@
 {
-  "name": "@marcoturi/fastify-boilerplate",
+  "name": "modeling-commons-client",
   "version": "0.0.1",
-  "description": "Auto-generated REST (OpenAPI) and GraphQL client types for fastify-boilerplate",
+  "description": "Auto-generated REST (OpenAPI) types for modeling-commons-backend",
   "type": "module",
   "exports": {
-    "./rest": "./rest.d.ts",
-    "./graphql": "./graphql.ts"
+    "./rest": "./rest.d.ts"
   },
-  "files": ["rest.d.ts", "graphql.ts"],
+  "files": ["rest.d.ts"],
   "publishConfig": {
     "access": "public"
   },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/marcoturi/fastify-boilerplate.git",
-    "directory": "client"
-  }
+  "license": "MIT"
 }

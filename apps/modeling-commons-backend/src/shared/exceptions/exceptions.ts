@@ -2,6 +2,8 @@ import { ExceptionBase } from './exception-base.ts';
 
 const ExceptionError = {
   BAD_REQUEST: 'Bad Request',
+  UNAUTHORIZED: 'Unauthorized',
+  FORBIDDEN: 'Forbidden',
   CONFLICT: 'Conflict',
   NOT_FOUND: 'Not Found',
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
@@ -17,6 +19,16 @@ const ExceptionError = {
 export class ArgumentInvalidException extends ExceptionBase {
   readonly statusCode = 400;
   readonly error = ExceptionError.BAD_REQUEST;
+}
+
+export class UnauthorizedException extends ExceptionBase {
+  readonly statusCode = 401;
+  readonly error = ExceptionError.UNAUTHORIZED;
+}
+
+export class ForbiddenException extends ExceptionBase {
+  readonly statusCode = 403;
+  readonly error = ExceptionError.FORBIDDEN;
 }
 
 /**

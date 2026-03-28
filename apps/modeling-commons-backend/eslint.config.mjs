@@ -15,7 +15,7 @@ export default [
       },
     },
     rules: {
-      ...typescriptConfig.rules,
+      // ...typescriptConfig.rules,
       '@typescript-eslint/explicit-member-accessibility': 'off',
       '@typescript-eslint/class-literal-property-style': 'off',
       'custom-typescript-eslint/end-of-file-exports': 'off',

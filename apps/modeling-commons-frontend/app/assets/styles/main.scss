@@ -8,7 +8,7 @@
 
 @layer website {
   @include meta.load-css("@repo/tailwind-config/scss/normalize.scss");
-  @include meta.load-css("@repo/tailwind-config/scss/docs-theme.scss");
+  @include meta.load-css("@repo/tailwind-config/scss/netlogo-theme.scss");
 }
 
 @include meta.load-css("@repo/vue-ui/styles.scss");

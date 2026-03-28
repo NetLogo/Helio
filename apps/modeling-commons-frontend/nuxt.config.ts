@@ -2,11 +2,9 @@
 export default defineNuxtConfig({
   extends: ["@repo/nuxt-core/nuxt.config.ts"],
 
-  ssr: true,
-
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3000/api',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3000",
     },
   },
 
@@ -23,7 +21,6 @@ export default defineNuxtConfig({
   components: [
     {
       path: "~/components",
-      global: true,
       pattern: "**/*.vue",
       ignore: ["**/examples/*.vue", "**/tests/*.vue"],
       pathPrefix: false,
@@ -32,6 +29,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
+    static: false,
     prerender: {
       failOnError: false,
     },

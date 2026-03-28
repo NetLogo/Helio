@@ -2,6 +2,7 @@
 # Starts the server, generates REST client types, then stops the server.
 # Used by CI (release pipeline) and can be run locally.
 set -euo pipefail
+source .env
 
 SERVER_URL="http://127.0.0.1:3000"
 MAX_WAIT=30  # seconds
@@ -27,5 +28,11 @@ echo "Server is ready (took ${elapsed}s)"
 # ── Generate REST types (OpenAPI) ───────────────────────────────────────────
 echo "Generating REST client types…"
 openapi-typescript "$SERVER_URL/api-docs/json" -o ./client/rest.d.ts
-
 echo "Done — client types written to client/"
+
+# if env CLIENT_TYPES_OUTPUT_DIR is set, also write to that location (for CI)
+if [ -n "${CLIENT_TYPES_OUTPUT_DIR:-}" ]; then
+  echo "Also writing REST client types to ${CLIENT_TYPES_OUTPUT_DIR}"
+  openapi-typescript "$SERVER_URL/api-docs/json" -o "${CLIENT_TYPES_OUTPUT_DIR}"
+  echo "Done — client types written to ${CLIENT_TYPES_OUTPUT_DIR}"
+fi

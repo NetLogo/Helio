@@ -4,32 +4,41 @@
   "type": "module",
   "imports": {
     "#src/*": "./src/*",
-    "#tests/*": "./tests/*"
+    "#modules/*": "./src/modules/*",
+    "#tests/*": "./tests/*",
+    "#prisma/*": {
+      "types": "./generated/prisma/*.d.ts",
+      "default": "./generated/prisma/*.js"
+    }
   },
   "license": "UNLICENSED",
   "scripts": {
-    "create:env": "node -e \"require('fs').copyFileSync('.env.example', '.env', require('fs').constants.COPYFILE_EXCL)\"",
-    "dev": "node --env-file=.env --import ./src/instrumentation.ts --watch src/index.ts | pino-pretty -clSt",
-    "dev:prod": "node --env-file=.env --import ./src/instrumentation.ts ./src/index.ts",
+    "create:env": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.example')) { if (!fs.existsSync('.env')) { fs.copyFileSync('.env.example', '.env'); console.log('✓ .env created from .env.example'); } else { console.log('✓ .env already exists'); } } else { console.log('⚠ .env.example not found'); }\"",
+    "init": "yarn run create:env && yarn run db:generate && yarn run generate:types",
+    "staging:init": "yarn run init && yarn run db:migrate:dev && yarn run db:seed",
+    "dev": "yarn run app & yarn run db",
+    "app": "node --env-file=.env --import ./src/instrumentation.ts --watch src/index.ts | pino-pretty -clSt",
+    "app:prod": "node --env-file=.env --import ./src/instrumentation.ts ./src/index.ts",
+    "db": "docker-compose -f docker-compose.dev.yml up",
+    "db:down": "docker-compose -f docker-compose.dev.yml down",
+    "generate:types": "bash scripts/generate-types.sh",
     "test": "yarn run test:unit",
-    "test:coverage": "c8 node --test src/**/*.spec.ts",
-    "test:unit": "node --test src/**/*.spec.ts",
+    "test:coverage": "vitest run --coverage",
+    "test:unit": "vitest run",
     "test:e2e": "FASTIFY_AUTOLOAD_TYPESCRIPT=1 cucumber-js --exit",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit",
-    "db:migrate": "prisma migrate deploy",
-    "db:seed:users": "k6 run ./tests/user/create-user/create-user.k6.ts",
     "prisma": "prisma",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate deploy",
-    "prisma:migrate:dev": "prisma migrate dev",
-    "prisma:seed": "prisma db seed",
+    "db:migrate": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:seed": "prisma db seed",
     "deps:validate": "depcruise src --config .dependency-cruiser.cjs --output-type err-long",
     "deps:graph": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > doc/dependency-graph.svg"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=24.0.0"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -40,6 +49,7 @@
     "@fastify/cors": "11.2.0",
     "@fastify/helmet": "13.0.2",
     "@fastify/otel": "0.17.1",
+    "@fastify/rate-limit": "^10.3.0",
     "@fastify/request-context": "6.2.1",
     "@fastify/swagger": "9.7.0",
     "@fastify/swagger-ui": "5.2.5",
@@ -49,6 +59,7 @@
     "@opentelemetry/instrumentation": "0.213.0",
     "@opentelemetry/instrumentation-http": "0.213.0",
     "@opentelemetry/sdk-node": "0.213.0",
+    "@prisma/adapter-pg": "^7.6.0",
     "@prisma/client": "latest",
     "@repo/modeling-commons-shared": "0.0.0",
     "ajv": "8.18.0",
@@ -59,6 +70,7 @@
     "fastify": "5.8.4",
     "fastify-plugin": "5.1.0",
     "pg": "^8.20.0",
+    "pg-boss": "^12.14.0",
     "typebox": "1.1.6"
   },
   "devDependencies": {
@@ -80,6 +92,7 @@
     "prettier": "^3.6.2",
     "prisma": "latest",
     "tsx": "^4.7.0",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.2"
   }
 }

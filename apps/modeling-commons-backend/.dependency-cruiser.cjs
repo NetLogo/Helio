@@ -9,12 +9,7 @@ const applicationLayerPaths = [
   '\\.event-handler\\.ts$',
 ];
 
-const infrastructureLayerPaths = [
-  'infrastructure',
-  'infra',
-  'database',
-  'repository',
-];
+const infrastructureLayerPaths = ['infrastructure', 'infra', 'database', 'repository'];
 
 const domainLayerPaths = ['domain'];
 
@@ -227,7 +222,7 @@ module.exports = {
         'from.pathNot re of the not-to-dev-dep rule in the dependency-cruiser configuration',
       from: {
         path: '^(src)',
-        pathNot: '[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$',
+        pathNot: '[.](?:spec|test|mock)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$',
       },
       to: {
         dependencyTypes: ['npm-dev'],

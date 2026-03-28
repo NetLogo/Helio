@@ -42,6 +42,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
     options: {
       prefix: '/api',
     },
+    indexPattern: /^$/, // Ignore index files
     matchFilter: (thisPath) => /\.(route|resolver)\.ts$/.test(thisPath),
   });
 

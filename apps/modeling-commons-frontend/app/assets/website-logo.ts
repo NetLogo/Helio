@@ -1,3 +1,3 @@
-import WebsiteLogo from "@repo/vue-ui/assets/brands/NetLogoLearnGuide.svg";
+import WebsiteLogo from "@repo/vue-ui/assets/brands/ModelingCommons.svg";
 
 export { WebsiteLogo };

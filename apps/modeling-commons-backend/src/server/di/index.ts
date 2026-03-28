@@ -9,8 +9,6 @@ export async function di(fastify: FastifyInstance): Promise<void> {
   diContainer.register({
     ...makeDependencies({
       logger: fastify.log,
-      queryBus: fastify.queryBus,
-      commandBus: fastify.commandBus,
       eventBus: fastify.eventBus,
     }),
   });
@@ -19,7 +17,7 @@ export async function di(fastify: FastifyInstance): Promise<void> {
     [
       path.join(
         import.meta.dirname,
-        '../../modules/**/*.{repository,mapper,service,domain}.{js,ts}',
+        '../../modules/**/*.{repository,mapper,service,domain,query}.{js,ts}',
       ),
     ],
     {

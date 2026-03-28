@@ -108,7 +108,7 @@ const brand = computed(() => (isMobileScreen.value ? TurtlesLogo : WebsiteLogo))
 const brandAttrs = computed(() =>
   isMobileScreen.value
     ? { style: { width: "2rem" } }
-    : { width: "auto", style: { marginLeft: "1rem" } },
+    : { width: "15rem", style: { width: "15rem", marginLeft: "1rem" }, class: "[&>svg]:w-full!" },
 );
 
 const handleMediaQueryChange = (): void => {

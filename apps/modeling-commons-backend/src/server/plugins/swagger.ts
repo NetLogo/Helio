@@ -1,3 +1,4 @@
+import env from '#src/config/env.ts';
 import Swagger from '@fastify/swagger';
 import SwaggerUI from '@fastify/swagger-ui';
 import type { FastifyInstance } from 'fastify';
@@ -8,23 +9,22 @@ async function swaggerGeneratorPlugin(fastify: FastifyInstance) {
     openapi: {
       openapi: '3.1.0',
       info: {
-        title: 'fastify-boilerplate',
-        description: 'The Swagger API documentation for the fastify-boilerplate project.',
-        version: process.env['npm_package_version'] ?? '0.0.0',
+        title: env.product.name,
+        description: `The OpenAPI documentation for the ${env.product.name} API.`,
+        version: env.product.version,
       },
     },
     // If you don't need to generate client types you could keep swagger
-    // swagger: {
-    //   info: {
-    //     title: 'fastify-boilerplate',
-    //     description:
-    //       'The Swagger API documentation for the fastify-boilerplate project.',
-    //     version: '0.1.0',
-    //   },
-    //   schemes: ['http', 'https'],
-    //   consumes: ['application/json'],
-    //   produces: ['application/json'],
-    // },
+    swagger: {
+      info: {
+        title: env.product.name,
+        description: `The Swagger API documentation for the ${env.product.name} project.`,
+        version: env.product.version,
+      },
+      schemes: ['http', 'https'],
+      consumes: ['application/json'],
+      produces: ['application/json'],
+    },
   });
 
   await fastify.register(SwaggerUI, {

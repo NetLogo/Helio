@@ -2,7 +2,7 @@ import env from '#src/config/env.ts';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 
-import { prisma } from './prisma.js';
+import { prisma } from './prisma.ts';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {

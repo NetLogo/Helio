@@ -38,7 +38,7 @@
             <div class="space-y-4">
               <div>
                 <h2 class="text-sm font-semibold uppercase text-slate-500">Message</h2>
-                <p class="mt-1 text-lg text-slate-900">{{ data.message }}</p>
+                <p class="mt-1 text-lg text-slate-900">{{ data.data.message }}</p>
               </div>
 
               <div>
@@ -46,15 +46,15 @@
                 <div class="mt-3 space-y-2 rounded-lg bg-slate-50 p-4 font-mono text-sm">
                   <div>
                     <span class="text-slate-500">greeting:</span>
-                    <span class="ml-2 text-blue-600">"{{ data.greeting }}"</span>
+                    <span class="ml-2 text-blue-600">"{{ data.data.greeting }}"</span>
                   </div>
                   <div>
                     <span class="text-slate-500">version:</span>
-                    <span class="ml-2 text-blue-600">"{{ data.version }}"</span>
+                    <span class="ml-2 text-blue-600">"{{ data.data.version }}"</span>
                   </div>
                   <div>
                     <span class="text-slate-500">environment:</span>
-                    <span class="ml-2 text-blue-600">"{{ data.environment }}"</span>
+                    <span class="ml-2 text-blue-600">"{{ data.data.environment }}"</span>
                   </div>
                 </div>
               </div>
@@ -93,14 +93,16 @@
 
 <script setup lang="ts">
 interface TestData {
-  greeting: string;
-  version: string;
-  environment: string;
-  timestamp?: string;
-  message?: string;
+  data: {
+    greeting: string;
+    version: string;
+    environment: string;
+    message: string;
+  };
+  timestamp: string;
 }
 
-const { get } = useApi();
+const { GET } = useApi();
 const config = useRuntimeConfig();
 const apiBase = config.public.apiBase;
 
@@ -114,8 +116,8 @@ async function fetchData() {
   data.value = null;
 
   try {
-    const response = await get<TestData>("/v1/test");
-    data.value = response;
+    const res = await GET("/api/v1/test");
+    data.value = res.data as unknown as TestData;
   } catch (err) {
     error.value = err instanceof Error ? err.message : "Failed to fetch test data";
     console.error("Test API error:", err);

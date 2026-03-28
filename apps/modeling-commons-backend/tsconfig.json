@@ -3,7 +3,9 @@
   "compilerOptions": {
     "paths": {
       "#src/*": ["./src/*"],
-      "#tests/*": ["./tests/*"]
+      "#modules/*": ["./src/modules/*"],
+      "#tests/*": ["./tests/*"],
+      "#prisma/*": ["./generated/prisma/*.js"]
     }
   },
   "include": ["src", "tests"],
