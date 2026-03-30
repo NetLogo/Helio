@@ -36,12 +36,12 @@ export const userSearchQuerySchema = Type.Intersect([
   paginatedQueryRequestDtoSchema,
   Type.Object({
     userKind: Type.Optional(
-      Type.String({
+      Type.Enum(UserKindDto, {
         description: Object.values(UserKindDto).join(' | '),
       }),
     ),
     systemRole: Type.Optional(
-      Type.String({
+      Type.Enum(SystemRoleDto, {
         description: Object.values(SystemRoleDto).join(' | '),
       }),
     ),

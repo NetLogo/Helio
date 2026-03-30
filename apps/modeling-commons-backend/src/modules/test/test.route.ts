@@ -22,6 +22,7 @@ export default async function testRoutes(fastify: FastifyInstance): Promise<void
         200: testResponseSchema,
       },
       tags: ['test'],
+      hide: true,
     },
     handler: async (_req, res) => {
       return res.status(200).send({

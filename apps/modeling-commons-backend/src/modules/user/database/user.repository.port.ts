@@ -1,5 +1,14 @@
-import type { UserEntity, UserSearchFilters } from '#src/modules/user/domain/user.types.ts';
-import type { Paginated, PaginatedQueryParams, RepositoryPort } from '#src/shared/db/repository.port.ts';
+import type {
+  UserEntity,
+  UserSearchFilters,
+  UserKind,
+  SystemRole,
+} from '#src/modules/user/domain/user.types.ts';
+import type {
+  Paginated,
+  PaginatedQueryParams,
+  RepositoryPort,
+} from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export interface UserRepository extends RepositoryPort<UserEntity> {
@@ -8,7 +17,7 @@ export interface UserRepository extends RepositoryPort<UserEntity> {
   updateFields(
     ctx: TransactionContext,
     id: string,
-    data: { userKind?: string; isProfilePublic?: boolean; systemRole?: string },
+    data: { userKind?: UserKind; isProfilePublic?: boolean; systemRole?: SystemRole },
   ): Promise<void>;
   search(
     filters: UserSearchFilters,

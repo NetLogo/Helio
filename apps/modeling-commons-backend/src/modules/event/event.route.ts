@@ -1,10 +1,7 @@
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import { requireRole } from '#src/shared/hooks/require-role.ts';
 import type { FastifyInstance } from 'fastify';
-import {
-  eventAdminQuerySchema,
-  type EventAdminQuery,
-} from '#src/modules/event/event.schemas.ts';
+import { eventAdminQuerySchema, type EventAdminQuery } from '#src/modules/event/event.schemas.ts';
 import { eventPaginatedResponseSchema } from '#src/modules/event/dtos/event.paginated.response.dto.ts';
 
 export default async function eventRoutes(fastify: FastifyInstance) {

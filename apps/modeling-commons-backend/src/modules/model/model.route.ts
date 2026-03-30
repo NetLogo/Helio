@@ -26,6 +26,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       schema: {
         body: createModelRequestDtoSchema,
         response: { 201: idDtoSchema },
+        tags: ['Model'],
       },
       preHandler: [requireAuth],
     },
@@ -41,6 +42,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       schema: {
         params: modelIdParamsSchema,
         body: updateModelRequestDtoSchema,
+        tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('write')],
     },
@@ -53,7 +55,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
   fastify.delete<{ Params: ModelIdParams }>(
     '/v1/models/:id',
     {
-      schema: { params: modelIdParamsSchema },
+      schema: { params: modelIdParamsSchema, tags: ['Model'] },
       preHandler: [requireAuth, resolveModel('admin')],
     },
     async (request, reply) => {
@@ -68,6 +70,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       schema: {
         params: modelIdParamsSchema,
         response: { 200: modelResponseDtoSchema },
+        tags: ['Model'],
       },
       preHandler: [resolveModel('read')],
     },
@@ -83,6 +86,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     schema: {
       querystring: modelSearchQuerySchema,
       response: { 200: modelPaginatedResponseSchema },
+      tags: ['Model', 'Search'],
     },
     handler: async (req, res) => {
       const { limit, page, ...filters } = req.query;
@@ -105,6 +109,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
         params: modelIdParamsSchema,
         querystring: modelSearchQuerySchema,
         response: { 200: modelPaginatedResponseSchema },
+        tags: ['Model'],
       },
       preHandler: [resolveModel('read')],
     },

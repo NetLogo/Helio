@@ -7,7 +7,11 @@ export default function makeFileService({
   fileDomain,
 }: Dependencies) {
   return {
-    async upload(buffer: Buffer, filename: string, contentType: string): Promise<string> {
+    async upload(
+      buffer: Buffer<ArrayBuffer>,
+      filename: string,
+      contentType: string,
+    ): Promise<string> {
       const entity = fileDomain.createFile({ buffer, filename, contentType });
       return transactionManager.run(async (ctx) => {
         await fileRepository.insertTx(ctx, entity);

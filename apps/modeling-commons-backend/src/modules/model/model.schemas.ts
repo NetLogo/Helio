@@ -35,10 +35,19 @@ export const modelVersionParamsSchema = Type.Object({
 });
 export type ModelVersionParams = Static<typeof modelVersionParamsSchema>;
 
+export const modelVisibilityDto = {
+  public: 'public',
+  private: 'private',
+  unlisted: 'unlisted',
+} as const;
+export type ModelVisibilityDto = (typeof modelVisibilityDto)[keyof typeof modelVisibilityDto];
+
 export const modelSearchQuerySchema = Type.Intersect([
   paginatedQueryRequestDtoSchema,
   Type.Object({
-    visibility: Type.Optional(Type.String()),
+    visibility: Type.Optional(
+      Type.Union([...Object.values(modelVisibilityDto).map((v) => Type.Literal(v))]),
+    ),
     tag: Type.Optional(Type.String()),
     authorId: Type.Optional(Type.String({ format: 'uuid' })),
     parentModelId: Type.Optional(Type.String({ format: 'uuid' })),

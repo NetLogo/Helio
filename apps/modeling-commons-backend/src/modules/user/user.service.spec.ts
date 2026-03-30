@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeUserService from '#src/modules/user/user.service.ts';
 import userDomain from '#src/modules/user/domain/user.domain.ts';
-import { UserNotFoundError, UserProfilePrivateError } from '#src/modules/user/domain/user.errors.ts';
+import {
+  UserNotFoundError,
+  UserProfilePrivateError,
+} from '#src/modules/user/domain/user.errors.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
@@ -48,11 +51,9 @@ describe('userService', () => {
 
       await service.updateProfile('user-1', 'user-1', 'user', { userKind: 'student' });
 
-      expect(userRepository.updateFields).toHaveBeenCalledWith(
-        expect.anything(),
-        'user-1',
-        { userKind: 'student' },
-      );
+      expect(userRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'user-1', {
+        userKind: 'student',
+      });
     });
 
     it('allows admin to update another user', async () => {
@@ -84,19 +85,17 @@ describe('userService', () => {
 
       await service.updateProfile('user-1', 'admin-1', 'admin', { systemRole: 'moderator' });
 
-      expect(userRepository.updateFields).toHaveBeenCalledWith(
-        expect.anything(),
-        'user-1',
-        { systemRole: 'moderator' },
-      );
+      expect(userRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'user-1', {
+        systemRole: 'moderator',
+      });
     });
 
     it('throws if user not found', async () => {
       userRepository.findOneById.mockResolvedValue(undefined);
 
-      await expect(
-        service.updateProfile('missing', 'user-1', 'user', {}),
-      ).rejects.toThrow(UserNotFoundError);
+      await expect(service.updateProfile('missing', 'user-1', 'user', {})).rejects.toThrow(
+        UserNotFoundError,
+      );
     });
   });
 
@@ -112,9 +111,9 @@ describe('userService', () => {
     it('rejects non-self non-admin delete', async () => {
       userRepository.findOneById.mockResolvedValue(makeUser());
 
-      await expect(
-        service.softDelete('user-1', 'other-user', 'user'),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(service.softDelete('user-1', 'other-user', 'user')).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 
@@ -131,9 +130,9 @@ describe('userService', () => {
     it('throws for private profile when not self or admin', async () => {
       userRepository.findOneById.mockResolvedValue(makeUser({ isProfilePublic: false }));
 
-      await expect(
-        service.findById('user-1', 'other', 'user'),
-      ).rejects.toThrow(UserProfilePrivateError);
+      await expect(service.findById('user-1', 'other', 'user')).rejects.toThrow(
+        UserProfilePrivateError,
+      );
     });
 
     it('allows self to view private profile', async () => {
@@ -170,11 +169,7 @@ describe('userService', () => {
 
       await service.findAll({}, {}, 'admin');
 
-      expect(userRepository.search).toHaveBeenCalledWith(
-        {},
-        expect.anything(),
-        false,
-      );
+      expect(userRepository.search).toHaveBeenCalledWith({}, expect.anything(), false);
     });
   });
 });

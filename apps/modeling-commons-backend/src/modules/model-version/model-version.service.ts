@@ -16,7 +16,7 @@ export default function makeModelVersionService({
     async create(
       modelId: string,
       userId: string,
-      nlogoxFile: { buffer: Buffer; filename: string; contentType: string },
+      nlogoxFile: { buffer: Buffer<ArrayBuffer>; filename: string; contentType: string },
       input: CreateVersionProps,
     ): Promise<string> {
       return transactionManager.run(async (ctx) => {

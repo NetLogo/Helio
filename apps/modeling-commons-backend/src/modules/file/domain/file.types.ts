@@ -17,6 +17,6 @@ export type FileEntity = {
   filename: string;
   contentType: string;
   sizeBytes: bigint;
-  blob: Buffer;
+  blob: Buffer<ArrayBuffer>;
   createdAt: Date;
 };

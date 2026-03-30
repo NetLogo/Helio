@@ -6,7 +6,9 @@
   "exports": {
     "./rest": "./rest.d.ts"
   },
-  "files": ["rest.d.ts"],
+  "files": [
+    "rest.d.ts"
+  ],
   "publishConfig": {
     "access": "public"
   },

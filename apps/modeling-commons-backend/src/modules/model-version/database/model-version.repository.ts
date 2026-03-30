@@ -58,7 +58,7 @@ export default function modelVersionRepository({
     async updateFields(
       ctx: TransactionContext,
       versionId: string,
-      data: { title?: string; description?: string; previewImage?: Buffer },
+      data: { title?: string; description?: string; previewImage?: Buffer<ArrayBuffer> },
     ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelVersion.update({ where: { id: versionId }, data });
@@ -82,9 +82,7 @@ export default function modelVersionRepository({
         count,
         limit: params.limit,
         page: params.page,
-        data: records.map((r: unknown) =>
-          modelVersionMapper.toDomain(r as ModelVersionRecord),
-        ),
+        data: records.map((r: unknown) => modelVersionMapper.toDomain(r as ModelVersionRecord)),
       };
     },
 

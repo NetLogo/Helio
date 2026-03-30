@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import fileDomain from '#src/modules/file/domain/file.domain.ts';
-import { FileTooLargeError, FileTypeNotAllowedError } from '#src/modules/file/domain/file.errors.ts';
+import {
+  FileTooLargeError,
+  FileTypeNotAllowedError,
+} from '#src/modules/file/domain/file.errors.ts';
 import { MAX_FILE_SIZE } from '#src/modules/file/domain/file.types.ts';
 
 const domain = fileDomain();

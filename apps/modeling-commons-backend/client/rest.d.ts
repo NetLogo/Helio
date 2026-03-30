@@ -179,7 +179,7 @@ export interface paths {
                     limit?: number;
                     /** @description Page number */
                     page?: number;
-                    visibility?: string;
+                    visibility?: "public" | "private" | "unlisted";
                     tag?: string;
                     authorId?: string;
                     parentModelId?: string;
@@ -416,7 +416,7 @@ export interface paths {
                     limit?: number;
                     /** @description Page number */
                     page?: number;
-                    visibility?: string;
+                    visibility?: "public" | "private" | "unlisted";
                     tag?: string;
                     authorId?: string;
                     parentModelId?: string;
@@ -545,6 +545,7 @@ export interface paths {
             };
         };
         put?: never;
+        /** @description Upload an additional file for a model. The file is sent as multipart/form-data with the file field named "file". */
         post: {
             parameters: {
                 query?: never;
@@ -1500,51 +1501,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/test": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Test endpoint */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Default Response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success: boolean;
-                            message: string;
-                            timestamp: string;
-                            data: {
-                                greeting: string;
-                                version: string;
-                                environment: string;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/users/{id}": {
         parameters: {
             query?: never;
@@ -1672,9 +1628,9 @@ export interface paths {
                     /** @description Page number */
                     page?: number;
                     /** @description student | teacher | researcher | other */
-                    userKind?: string;
+                    userKind?: "student" | "teacher" | "researcher" | "other";
                     /** @description admin | moderator | user */
-                    systemRole?: string;
+                    systemRole?: "admin" | "moderator" | "user";
                 };
                 header?: never;
                 path?: never;

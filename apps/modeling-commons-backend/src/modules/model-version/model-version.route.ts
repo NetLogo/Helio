@@ -16,12 +16,8 @@ import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.
 import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/model.schemas.ts';
 
 export default async function modelVersionRoutes(fastify: FastifyInstance) {
-  const {
-    modelVersionService,
-    modelVersionMapper,
-    listVersionsQuery,
-    getVersionQuery,
-  } = fastify.diContainer.cradle;
+  const { modelVersionService, modelVersionMapper, listVersionsQuery, getVersionQuery } =
+    fastify.diContainer.cradle;
 
   fastify.post<{ Params: ModelIdParams; Body: CreateVersionRequestDto }>(
     '/v1/models/:id/versions',
@@ -30,6 +26,7 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
         params: modelIdParamsSchema,
         body: createVersionRequestDtoSchema,
         response: { 201: idDtoSchema },
+        tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('write')],
     },
@@ -50,15 +47,12 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
       schema: {
         params: modelIdParamsSchema,
         body: updateCurrentVersionRequestDtoSchema,
+        tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('write')],
     },
     async (request, reply) => {
-      await modelVersionService.updateCurrent(
-        request.params.id,
-        request.user!.id,
-        request.body,
-      );
+      await modelVersionService.updateCurrent(request.params.id, request.user!.id, request.body);
       return reply.code(204).send();
     },
   );
@@ -70,6 +64,7 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
         params: modelIdParamsSchema,
         querystring: paginatedQueryRequestDtoSchema,
         response: { 200: modelVersionPaginatedResponseSchema },
+        tags: ['Model'],
       },
       preHandler: [resolveModel('read')],
     },
@@ -88,14 +83,12 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
       schema: {
         params: versionParamsSchema,
         response: { 200: modelVersionResponseDtoSchema },
+        tags: ['Model'],
       },
       preHandler: [resolveModel('read')],
     },
     async (request) => {
-      const entity = await getVersionQuery.execute(
-        request.params.id,
-        request.params.version,
-      );
+      const entity = await getVersionQuery.execute(request.params.id, request.params.version);
       return modelVersionMapper.toResponse(entity);
     },
   );

@@ -10,7 +10,9 @@ import { mockPermissionRepository } from '#src/modules/model-permission/database
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import type { ModelForPermissionCheck } from '#src/modules/model-permission/domain/permission.types.ts';
 
-function makeModelForCheck(overrides: Partial<ModelForPermissionCheck> = {}): ModelForPermissionCheck {
+function makeModelForCheck(
+  overrides: Partial<ModelForPermissionCheck> = {},
+): ModelForPermissionCheck {
   return { id: 'model-1', visibility: 'public', deletedAt: null, ...overrides };
 }
 
@@ -90,21 +92,33 @@ describe('permissionService', () => {
 
   describe('check', () => {
     it('returns false for deleted model when not logged in', async () => {
-      const result = await service.check(null, makeModelForCheck({ deletedAt: new Date() }), 'read');
+      const result = await service.check(
+        null,
+        makeModelForCheck({ deletedAt: new Date() }),
+        'read',
+      );
       expect(result).toBe(false);
     });
 
     it('returns true for deleted model owner', async () => {
       permissionRepository.findAuthor.mockResolvedValue({ role: 'owner' });
 
-      const result = await service.check('user-1', makeModelForCheck({ deletedAt: new Date() }), 'read');
+      const result = await service.check(
+        'user-1',
+        makeModelForCheck({ deletedAt: new Date() }),
+        'read',
+      );
       expect(result).toBe(true);
     });
 
     it('returns false for deleted model non-owner', async () => {
       permissionRepository.findAuthor.mockResolvedValue({ role: 'contributor' });
 
-      const result = await service.check('user-1', makeModelForCheck({ deletedAt: new Date() }), 'read');
+      const result = await service.check(
+        'user-1',
+        makeModelForCheck({ deletedAt: new Date() }),
+        'read',
+      );
       expect(result).toBe(false);
     });
 
@@ -136,19 +150,27 @@ describe('permissionService', () => {
     });
 
     it('returns true for public model read without auth', async () => {
-      expect(await service.check(null, makeModelForCheck({ visibility: 'public' }), 'read')).toBe(true);
+      expect(await service.check(null, makeModelForCheck({ visibility: 'public' }), 'read')).toBe(
+        true,
+      );
     });
 
     it('returns true for unlisted model read without auth', async () => {
-      expect(await service.check(null, makeModelForCheck({ visibility: 'unlisted' }), 'read')).toBe(true);
+      expect(await service.check(null, makeModelForCheck({ visibility: 'unlisted' }), 'read')).toBe(
+        true,
+      );
     });
 
     it('returns false for private model without auth', async () => {
-      expect(await service.check(null, makeModelForCheck({ visibility: 'private' }), 'read')).toBe(false);
+      expect(await service.check(null, makeModelForCheck({ visibility: 'private' }), 'read')).toBe(
+        false,
+      );
     });
 
     it('returns false for public model write without auth', async () => {
-      expect(await service.check(null, makeModelForCheck({ visibility: 'public' }), 'write')).toBe(false);
+      expect(await service.check(null, makeModelForCheck({ visibility: 'public' }), 'write')).toBe(
+        false,
+      );
     });
   });
 });

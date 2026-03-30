@@ -1,0 +1,6661 @@
+[
+  {
+    "description": "  As a user\n  I want to sign up and sign in\n  So that I can access protected resources",
+    "elements": [
+      {
+        "description": "",
+        "id": "authentication;sign-up-with-valid-credentials",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "Sign up with valid credentials",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 117982708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 7,
+            "name": "I sign up with name \"Alice\" email \"alice@test.local\" and password \"StrongPass1!\"",
+            "match": {
+              "location": "tests/api/auth.steps.ts:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 147567665
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 8,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 76082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "the response body should have property \"user\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 44875
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 141834
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "authentication;sign-up-with-weak-password",
+        "keyword": "Scenario",
+        "line": 11,
+        "name": "Sign up with weak password",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 65844458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 12,
+            "name": "I sign up with name \"Weak\" email \"weak@test.local\" and password \"short\"",
+            "match": {
+              "location": "tests/api/auth.steps.ts:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2610333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 13,
+            "name": "the signup should be rejected",
+            "match": {
+              "location": "tests/api/auth.steps.ts:52"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 37542
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 50959
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "authentication;sign-in-with-valid-credentials",
+        "keyword": "Scenario",
+        "line": 15,
+        "name": "Sign in with valid credentials",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 50437999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 16,
+            "name": "a verified user with email \"bob@test.local\" and password \"StrongPass1!\"",
+            "match": {
+              "location": "tests/api/auth.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 84881874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 17,
+            "name": "I sign in with email \"bob@test.local\" and password \"StrongPass1!\"",
+            "match": {
+              "location": "tests/api/auth.steps.ts:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 70087083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 18,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 59041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 19,
+            "name": "the response should include a session cookie",
+            "match": {
+              "location": "tests/api/auth.steps.ts:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 54625
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 64624
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "authentication;sign-in-with-wrong-password",
+        "keyword": "Scenario",
+        "line": 21,
+        "name": "Sign in with wrong password",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 61301375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 22,
+            "name": "a verified user with email \"carol@test.local\" and password \"StrongPass1!\"",
+            "match": {
+              "location": "tests/api/auth.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 78028709
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 23,
+            "name": "I sign in with email \"carol@test.local\" and password \"WrongPass1!\"",
+            "match": {
+              "location": "tests/api/auth.steps.ts:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 58376875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 24,
+            "name": "the signin should be rejected",
+            "match": {
+              "location": "tests/api/auth.steps.ts:60"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 64332
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 57542
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "authentication",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Authentication",
+    "tags": [],
+    "uri": "tests/api/auth.feature"
+  },
+  {
+    "description": "  As an admin\n  I want to view system events\n  So that I can audit activity on the platform",
+    "elements": [
+      {
+        "description": "",
+        "id": "admin-events;admin-can-list-events",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "Admin can list events",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 62195709
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "an authenticated admin user \"admin\"",
+            "match": {
+              "location": "tests/api/event.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138621874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "a public model \"Audited Model\" created by \"admin\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13719541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
+            "name": "\"admin\" lists admin events",
+            "match": {
+              "location": "tests/api/event.steps.ts:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13057666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 10,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 37125
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 53875
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "admin-events;admin-can-filter-events-by-type",
+        "keyword": "Scenario",
+        "line": 13,
+        "name": "Admin can filter events by type",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 55897292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 14,
+            "name": "an authenticated admin user \"admin\"",
+            "match": {
+              "location": "tests/api/event.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 135581333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 15,
+            "name": "a public model \"Event Filter Model\" created by \"admin\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9292541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 16,
+            "name": "\"admin\" lists admin events with type \"model.created\"",
+            "match": {
+              "location": "tests/api/event.steps.ts:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3674500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 17,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 21291
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 48500
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "admin-events;regular-user-cannot-access-admin-events",
+        "keyword": "Scenario",
+        "line": 20,
+        "name": "Regular user cannot access admin events",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 69265792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 21,
+            "name": "an authenticated user \"regular\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 133782417
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 22,
+            "name": "\"regular\" lists admin events",
+            "match": {
+              "location": "tests/api/event.steps.ts:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3897249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 23,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24667
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 70165
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "admin-events;unauthenticated-user-cannot-access-admin-events",
+        "keyword": "Scenario",
+        "line": 25,
+        "name": "Unauthenticated user cannot access admin events",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 70065500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 26,
+            "name": "I send a GET request to \"/api/v1/admin/events\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1233957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 27,
+            "name": "the response status should be 401",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23874
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 41583
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "admin-events",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Admin Events",
+    "tags": [],
+    "uri": "tests/api/event.feature"
+  },
+  {
+    "description": "  As a client\n  I want to verify the API is running\n  So that I can confirm the service is available",
+    "elements": [
+      {
+        "description": "",
+        "id": "health-check;test-endpoint-returns-success",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "Test endpoint returns success",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 62236792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 7,
+            "name": "I send a GET request to \"/api/v1/test\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 783207
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 8,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "the response body property \"success\" should equal \"true\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 46124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "the response body should have property \"data\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 34916
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 60791
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "health-check",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Health Check",
+    "tags": [],
+    "uri": "tests/api/health.feature"
+  },
+  {
+    "description": "  As a model owner\n  I want to manage contributors and ownership\n  So that I can collaborate on models with other users",
+    "elements": [
+      {
+        "description": "",
+        "id": "model-authors;list-authors-of-a-model",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "List authors of a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 59097250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 140246583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "a public model \"Authored Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11021416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
+            "name": "I list authors of the model \"Authored Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4969375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 10,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "the response body should be an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 27165
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 71582
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;add-a-contributor-to-a-model",
+        "keyword": "Scenario",
+        "line": 13,
+        "name": "Add a contributor to a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 72676875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 14,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 155907333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 15,
+            "name": "a public model \"Collab Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10264834
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 16,
+            "name": "an authenticated user \"contributor\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132507375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 17,
+            "name": "\"owner\" adds \"contributor\" as a contributor to \"Collab Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:26"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12315375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 18,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 37833
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 80291
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;contributor-appears-in-the-author-list",
+        "keyword": "Scenario",
+        "line": 20,
+        "name": "Contributor appears in the author list",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 78105083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 21,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 135462500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 22,
+            "name": "a public model \"Team Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9181791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 23,
+            "name": "an authenticated user \"contributor\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141844374
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 24,
+            "name": "\"owner\" has added \"contributor\" as a contributor to \"Team Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:46"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11077499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 25,
+            "name": "I list authors of the model \"Team Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3604208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 26,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24457
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 37792
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;remove-a-contributor-from-a-model",
+        "keyword": "Scenario",
+        "line": 28,
+        "name": "Remove a contributor from a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 79382875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 29,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 136721166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 30,
+            "name": "a public model \"Shrinking Team\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7979917
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 31,
+            "name": "an authenticated user \"contributor\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 148196416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 32,
+            "name": "\"owner\" has added \"contributor\" as a contributor to \"Shrinking Team\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:46"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11454208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 33,
+            "name": "\"owner\" removes \"contributor\" from \"Shrinking Team\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:69"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8497792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 34,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 27667
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 45125
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;cannot-remove-the-owner",
+        "keyword": "Scenario",
+        "line": 36,
+        "name": "Cannot remove the owner",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 71919541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 37,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141027291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 38,
+            "name": "a public model \"Owner Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9783374
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 39,
+            "name": "\"owner\" removes \"owner\" from \"Owner Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:69"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3609084
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 40,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 22333
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 32208
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;transfer-ownership-to-a-contributor",
+        "keyword": "Scenario",
+        "line": 42,
+        "name": "Transfer ownership to a contributor",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 61619750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 43,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 135105500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 44,
+            "name": "a public model \"Transfer Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9387416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 45,
+            "name": "an authenticated user \"new-owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 160211750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 46,
+            "name": "\"owner\" has added \"new-owner\" as a contributor to \"Transfer Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:46"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7593124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 47,
+            "name": "\"owner\" transfers ownership of \"Transfer Model\" to \"new-owner\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:83"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7223874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 48,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26875
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 41999
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;cannot-transfer-ownership-to-a-non-author",
+        "keyword": "Scenario",
+        "line": 50,
+        "name": "Cannot transfer ownership to a non-author",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 72337416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 51,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 142652667
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 52,
+            "name": "a public model \"No Transfer\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9568624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 53,
+            "name": "an authenticated user \"outsider\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 144592250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 54,
+            "name": "\"owner\" transfers ownership of \"No Transfer\" to \"outsider\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:83"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6152041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 55,
+            "name": "the response status should be 404",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25333
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30584
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;non-owner-cannot-add-contributors",
+        "keyword": "Scenario",
+        "line": 57,
+        "name": "Non-owner cannot add contributors",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 69018540
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 58,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 135231749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 59,
+            "name": "a public model \"Restricted Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7872083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 60,
+            "name": "an authenticated user \"contributor\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 130416167
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 61,
+            "name": "\"owner\" has added \"contributor\" as a contributor to \"Restricted Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:46"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10147249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 62,
+            "name": "an authenticated user \"intruder\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 147492207
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 63,
+            "name": "\"contributor\" adds \"intruder\" as a contributor to \"Restricted Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:26"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6112417
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 64,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 29542
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 57332
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;list-models-by-user",
+        "keyword": "Scenario",
+        "line": 66,
+        "name": "List models by user",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 62416333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 67,
+            "name": "an authenticated user \"author\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 165200667
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 68,
+            "name": "a public model \"Author's Model\" created by \"author\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12574625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 69,
+            "name": "I list models by user \"author\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:98"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3357875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 70,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 20125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 71,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 28957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 72,
+            "name": "the response body property \"data\" should have length 1",
+            "match": {
+              "location": "tests/shared/common.steps.ts:49"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23375
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 37249
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-authors;cannot-add-the-same-contributor-twice",
+        "keyword": "Scenario",
+        "line": 74,
+        "name": "Cannot add the same contributor twice",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 65228750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 75,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 157192915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 76,
+            "name": "a public model \"Dup Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14563624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 77,
+            "name": "an authenticated user \"contributor\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 130588499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 78,
+            "name": "\"owner\" has added \"contributor\" as a contributor to \"Dup Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:46"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11519167
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 79,
+            "name": "\"owner\" adds \"contributor\" as a contributor to \"Dup Model\"",
+            "match": {
+              "location": "tests/api/model-author.steps.ts:26"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4747999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 80,
+            "name": "the response status should be 409",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48667
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 47708
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "model-authors",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Model Authors",
+    "tags": [],
+    "uri": "tests/api/model-author.feature"
+  },
+  {
+    "description": "  As a model owner\n  I want to manage access permissions\n  So that I can control who can read, write, or administer my models",
+    "elements": [
+      {
+        "description": "",
+        "id": "model-permissions;grant-read-permission-to-another-user",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "Grant read permission to another user",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 77534499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 151143417
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "a private model \"Shared Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10631083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "an authenticated user \"reader\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 131299167
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 10,
+            "name": "\"owner\" grants \"read\" permission on \"Shared Model\" to \"reader\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 18938749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 11,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 50000
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 59124
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;user-with-read-permission-can-access-a-private-model",
+        "keyword": "Scenario",
+        "line": 13,
+        "name": "User with read permission can access a private model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 90606292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 14,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138604416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 15,
+            "name": "a private model \"Readable Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8563833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 16,
+            "name": "an authenticated user \"reader\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 130604041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "\"owner\" has granted \"read\" permission on \"Readable Model\" to \"reader\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11976250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 18,
+            "name": "\"reader\" gets the model \"Readable Model\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:125"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8612124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 29583
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 35083
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;user-with-write-permission-can-update-a-model",
+        "keyword": "Scenario",
+        "line": 21,
+        "name": "User with write permission can update a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 79382582
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 22,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 137479166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 23,
+            "name": "a public model \"Writable Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9585250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 24,
+            "name": "an authenticated user \"writer\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 144974833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 25,
+            "name": "\"owner\" has granted \"write\" permission on \"Writable Model\" to \"writer\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15341915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 26,
+            "name": "\"writer\" updates the model \"Writable Model\" with visibility \"private\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:108"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7090917
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 27,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30957
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 33207
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;user-with-read-permission-cannot-update-a-model",
+        "keyword": "Scenario",
+        "line": 29,
+        "name": "User with read permission cannot update a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 81251709
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 30,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 136642541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 31,
+            "name": "a public model \"Read Only Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9376624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 32,
+            "name": "an authenticated user \"reader\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 146600334
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 33,
+            "name": "\"owner\" has granted \"read\" permission on \"Read Only Model\" to \"reader\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16785875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 34,
+            "name": "\"reader\" updates the model \"Read Only Model\" with visibility \"private\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:108"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7359166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 35,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 33416
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 41541
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;list-permissions-on-a-model",
+        "keyword": "Scenario",
+        "line": 37,
+        "name": "List permissions on a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 79312500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 38,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141087792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 39,
+            "name": "a private model \"Listed Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9059916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 40,
+            "name": "an authenticated user \"collaborator\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 130225959
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 41,
+            "name": "\"owner\" has granted \"write\" permission on \"Listed Model\" to \"collaborator\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6974916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 42,
+            "name": "\"owner\" lists permissions on \"Listed Model\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:61"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4199291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 43,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 44,
+            "name": "the response body should be an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26417
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 40500
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;revoke-permission",
+        "keyword": "Scenario",
+        "line": 46,
+        "name": "Revoke permission",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 73949667
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 47,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 150523957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 48,
+            "name": "a private model \"Revoke Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17773250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 49,
+            "name": "an authenticated user \"former\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 166099334
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 50,
+            "name": "\"owner\" has granted \"read\" permission on \"Revoke Model\" to \"former\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7206582
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 51,
+            "name": "\"owner\" revokes permission on \"Revoke Model\" from \"former\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:75"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5414999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 52,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 27041
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 50291
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;revoked-user-can-no-longer-access-a-private-model",
+        "keyword": "Scenario",
+        "line": 54,
+        "name": "Revoked user can no longer access a private model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 60321416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 55,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 146341583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 56,
+            "name": "a private model \"Locked Out Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8166624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 57,
+            "name": "an authenticated user \"former\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 147287457
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 58,
+            "name": "\"owner\" has granted \"read\" permission on \"Locked Out Model\" to \"former\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16817624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 59,
+            "name": "\"owner\" has revoked permission on \"Locked Out Model\" from \"former\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:90"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9121708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 60,
+            "name": "\"former\" gets the model \"Locked Out Model\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:125"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4422416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 61,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24832
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 35832
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;non-admin-cannot-grant-permissions",
+        "keyword": "Scenario",
+        "line": 63,
+        "name": "Non-admin cannot grant permissions",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 66853250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 64,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 139029875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 65,
+            "name": "a public model \"Locked Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9158499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 66,
+            "name": "an authenticated user \"intruder\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 147873665
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 67,
+            "name": "\"intruder\" grants \"write\" permission on \"Locked Model\" to \"intruder\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7791541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 68,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 46625
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 119916
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;cannot-grant-duplicate-permission",
+        "keyword": "Scenario",
+        "line": 70,
+        "name": "Cannot grant duplicate permission",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 60166666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 71,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132189875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 72,
+            "name": "a private model \"Dup Perm Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12919916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 73,
+            "name": "an authenticated user \"grantee\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 129458082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 74,
+            "name": "\"owner\" has granted \"read\" permission on \"Dup Perm Model\" to \"grantee\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13066708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 75,
+            "name": "\"owner\" grants \"read\" permission on \"Dup Perm Model\" to \"grantee\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3585959
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 76,
+            "name": "the response status should be 409",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19999
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 31166
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-permissions;grant-admin-permission-allows-managing-permissions",
+        "keyword": "Scenario",
+        "line": 78,
+        "name": "Grant admin permission allows managing permissions",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 66317915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 79,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 139678041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 80,
+            "name": "a private model \"Delegated Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9214625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 81,
+            "name": "an authenticated user \"delegate\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 161474874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 82,
+            "name": "\"owner\" has granted \"admin\" permission on \"Delegated Model\" to \"delegate\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13229583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 83,
+            "name": "an authenticated user \"third\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 129409208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 84,
+            "name": "\"delegate\" grants \"read\" permission on \"Delegated Model\" to \"third\"",
+            "match": {
+              "location": "tests/api/model-permission.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6063500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 85,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31457
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 31624
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "model-permissions",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Model Permissions",
+    "tags": [],
+    "uri": "tests/api/model-permission.feature"
+  },
+  {
+    "description": "  As a model author\n  I want to tag model versions\n  So that models are discoverable by topic",
+    "elements": [
+      {
+        "description": "",
+        "id": "model-version-tags;add-a-tag-to-a-model's-current-version",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "Add a tag to a model's current version",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 51983709
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 164800333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "a public model \"Tagged Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10958124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "a version \"v1\" for \"Tagged Model\" with title \"Initial\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11710666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 10,
+            "name": "I add tag \"ecology\" to model \"Tagged Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16471875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 11,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "the response body should have property \"tagId\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 35791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 13,
+            "name": "the response body property \"tagName\" should equal \"ecology\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26499
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 40375
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-version-tags;add-multiple-tags-to-a-model",
+        "keyword": "Scenario",
+        "line": 15,
+        "name": "Add multiple tags to a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 62766291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 16,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 139040750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "a public model \"Multi Tag Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8445583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "a version \"v1\" for \"Multi Tag Model\" with title \"Initial\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7195459
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 19,
+            "name": "I add tag \"simulation\" to model \"Multi Tag Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8705167
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 20,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 33625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 21,
+            "name": "I add tag \"netlogo\" to model \"Multi Tag Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6138249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 22,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 21040
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 41709
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-version-tags;cannot-add-the-same-tag-twice",
+        "keyword": "Scenario",
+        "line": 24,
+        "name": "Cannot add the same tag twice",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 59145667
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 25,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 148931209
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 26,
+            "name": "a public model \"Dup Tag Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7860209
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 27,
+            "name": "a version \"v1\" for \"Dup Tag Model\" with title \"Initial\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11937540
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 28,
+            "name": "tag \"duplicate\" has been added to model \"Dup Tag Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:36"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10995666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 29,
+            "name": "I add tag \"duplicate\" to model \"Dup Tag Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3279207
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 30,
+            "name": "the response status should be 409",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26250
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 40833
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-version-tags;remove-a-tag-from-a-model",
+        "keyword": "Scenario",
+        "line": 32,
+        "name": "Remove a tag from a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 59674791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 33,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138486249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 34,
+            "name": "a public model \"Untagged Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8556708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 35,
+            "name": "a version \"v1\" for \"Untagged Model\" with title \"Initial\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6968291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 36,
+            "name": "tag \"removable\" has been added to model \"Untagged Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:36"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7270249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 37,
+            "name": "I remove tag \"removable\" from model \"Untagged Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:55"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4964040
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 38,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 28915
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 37707
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-version-tags;list-tags-for-a-specific-version",
+        "keyword": "Scenario",
+        "line": 40,
+        "name": "List tags for a specific version",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 61279334
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 41,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 134789499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 42,
+            "name": "a public model \"Version Tags\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7404458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 43,
+            "name": "a version \"v1\" for \"Version Tags\" with title \"First\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7449832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 44,
+            "name": "tag \"biology\" has been added to model \"Version Tags\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:36"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7509791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 45,
+            "name": "I list tags for version 1 of model \"Version Tags\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:69"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4104583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 46,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 22917
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 47,
+            "name": "the response body should be an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23708
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 38666
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-version-tags;tagging-requires-write-permission",
+        "keyword": "Scenario",
+        "line": 49,
+        "name": "Tagging requires write permission",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 56185666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 50,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132671542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 51,
+            "name": "a private model \"Protected Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8778916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 52,
+            "name": "a version \"v1\" for \"Protected Model\" with title \"Secret\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7210916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 53,
+            "name": "an authenticated user \"stranger\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 161532583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 54,
+            "name": "\"stranger\" adds tag \"hacked\" to model \"Protected Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:82"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7432249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 55,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23665
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 33041
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-version-tags;adding-a-tag-creates-the-tag-if-it-does-not-exist",
+        "keyword": "Scenario",
+        "line": 57,
+        "name": "Adding a tag creates the tag if it does not exist",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 69582916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 58,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 142544333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 59,
+            "name": "a public model \"New Tag Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7630875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 60,
+            "name": "a version \"v1\" for \"New Tag Model\" with title \"Initial\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7296458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 61,
+            "name": "I add tag \"brand-new-tag\" to model \"New Tag Model\"",
+            "match": {
+              "location": "tests/api/model-version-tag.steps.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6927458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 62,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 63,
+            "name": "I send a GET request to \"/api/v1/tags?q=brand-new\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3651874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 64,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19915
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 34041
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "model-version-tags",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Model Version Tags",
+    "tags": [],
+    "uri": "tests/api/model-version-tag.feature"
+  },
+  {
+    "description": "  As a model author\n  I want to manage model versions\n  So that I can track changes to my models over time",
+    "elements": [
+      {
+        "description": "",
+        "id": "model-versions;create-a-version-for-a-model",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "Create a version for a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 64196791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 133140666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "a public model \"My Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10207249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
+            "name": "I create a version for \"My Model\" with title \"Initial Version\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8250000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 10,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 29916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "the response body should have property \"id\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 45415
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 37749
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;create-a-second-version-finalizes-the-first",
+        "keyword": "Scenario",
+        "line": 14,
+        "name": "Create a second version finalizes the first",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "skipped",
+              "duration": 10667
+            }
+          },
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 15,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 16,
+            "name": "a public model \"Evolving Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "a version \"v1\" for \"Evolving Model\" with title \"First Draft\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 18,
+            "name": "I create a version for \"Evolving Model\" with title \"Second Draft\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:42"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 16083
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBTS0lQUEVELiBEdXJhdGlvbjowcw==",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@pending",
+            "line": 13
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;list-versions-of-a-model-with-one-version",
+        "keyword": "Scenario",
+        "line": 21,
+        "name": "List versions of a model with one version",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 69174166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 22,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 150666916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 23,
+            "name": "a public model \"Versioned Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10368957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 24,
+            "name": "a version \"v1\" for \"Versioned Model\" with title \"Release 1\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12155083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 25,
+            "name": "I list versions of the model \"Versioned Model\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:70"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6993708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 26,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 32541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 27,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 28,
+            "name": "the response body property \"data\" should have length 1",
+            "match": {
+              "location": "tests/shared/common.steps.ts:49"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 21624
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 29958
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;list-versions-returns-multiple-versions-in-order",
+        "keyword": "Scenario",
+        "line": 31,
+        "name": "List versions returns multiple versions in order",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "skipped",
+              "duration": 3416
+            }
+          },
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 32,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 33,
+            "name": "a public model \"Multi Version\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 34,
+            "name": "a version \"v1\" for \"Multi Version\" with title \"Alpha\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 35,
+            "name": "a version \"v2\" for \"Multi Version\" with title \"Beta\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 36,
+            "name": "I list versions of the model \"Multi Version\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:70"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 37,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 38,
+            "name": "the response body property \"data\" should have length 2",
+            "match": {
+              "location": "tests/shared/common.steps.ts:49"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15457
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBTS0lQUEVELiBEdXJhdGlvbjowcw==",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@pending",
+            "line": 30
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;get-a-specific-version-by-number",
+        "keyword": "Scenario",
+        "line": 40,
+        "name": "Get a specific version by number",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 75050291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 41,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 140575749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 42,
+            "name": "a public model \"Specific Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10129290
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 43,
+            "name": "a version \"v1\" for \"Specific Model\" with title \"The Version\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8633917
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 44,
+            "name": "I get version 1 of the model \"Specific Model\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:80"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5736583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 45,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 29125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 46,
+            "name": "the response body property \"title\" should equal \"The Version\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 34874
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 34125
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;update-the-current-version-title",
+        "keyword": "Scenario",
+        "line": 48,
+        "name": "Update the current version title",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 81809208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 49,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138003875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 50,
+            "name": "a public model \"Editable Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9707916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 51,
+            "name": "a version \"v1\" for \"Editable Model\" with title \"Old Title\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7239332
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 52,
+            "name": "I update the current version of \"Editable Model\" with title \"New Title\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:93"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4664958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 53,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26917
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 36291
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;update-the-current-version-description",
+        "keyword": "Scenario",
+        "line": 55,
+        "name": "Update the current version description",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 68269958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 56,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 131490708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 57,
+            "name": "a public model \"Described Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9186374
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 58,
+            "name": "a version \"v1\" for \"Described Model\" with title \"Some Title\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7855750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 59,
+            "name": "I update the current version of \"Described Model\" with description \"A detailed description\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:107"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4953583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 60,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25374
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 43292
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;creating-a-version-requires-write-permission",
+        "keyword": "Scenario",
+        "line": 62,
+        "name": "Creating a version requires write permission",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 63726291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 63,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 130156791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 64,
+            "name": "a private model \"Locked Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9452334
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 65,
+            "name": "an authenticated user \"stranger\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 131742875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 66,
+            "name": "\"stranger\" creates a version for \"Locked Model\" with title \"Nope\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:56"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9891834
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 67,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 27083
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 28750
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;listing-versions-requires-read-access",
+        "keyword": "Scenario",
+        "line": 69,
+        "name": "Listing versions requires read access",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 81792207
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 70,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138476833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 71,
+            "name": "a private model \"Private Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9469833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 72,
+            "name": "an authenticated user \"stranger\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 128038790
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 73,
+            "name": "\"stranger\" lists versions of the model \"Private Model\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:121"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8475500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 74,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30584
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30917
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;updating-a-version-requires-write-access",
+        "keyword": "Scenario",
+        "line": 76,
+        "name": "Updating a version requires write access",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 81195541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 77,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 148245666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 78,
+            "name": "a public model \"Guarded Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9448457
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 79,
+            "name": "a version \"v1\" for \"Guarded Model\" with title \"Original\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12861000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 80,
+            "name": "an authenticated user \"stranger\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 136673208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 81,
+            "name": "\"stranger\" updates the current version of \"Guarded Model\" with title \"Hacked\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:134"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7506375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 82,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 22332
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 25165
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-versions;list-versions-of-a-model-with-no-versions-returns-empty",
+        "keyword": "Scenario",
+        "line": 84,
+        "name": "List versions of a model with no versions returns empty",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 85515957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 85,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 135984542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 86,
+            "name": "a public model \"Empty Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9999332
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 87,
+            "name": "I list versions of the model \"Empty Model\"",
+            "match": {
+              "location": "tests/api/model-version.steps.ts:70"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4370999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 88,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31582
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 89,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31167
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 90,
+            "name": "the response body property \"data\" should have length 0",
+            "match": {
+              "location": "tests/shared/common.steps.ts:49"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 21791
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 44209
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "model-versions",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Model Versions",
+    "tags": [],
+    "uri": "tests/api/model-version.feature"
+  },
+  {
+    "description": "  As a user\n  I want to manage models\n  So that I can create, view, update, and delete models",
+    "elements": [
+      {
+        "description": "",
+        "id": "model-management;create-a-model",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "Create a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 56292541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 133508374
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 8,
+            "name": "I create a model with title \"Wolf Sheep Predation\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:65"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6020875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 9,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "the response body should have property \"id\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 47958
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 37999
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-management;create-a-model-requires-authentication",
+        "keyword": "Scenario",
+        "line": 12,
+        "name": "Create a model requires authentication",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 62676750
+            }
+          },
+          {
+            "arguments": [
+              {
+                "content": "{ \"title\": \"Unauthorized Model\" }",
+                "line": 14
+              }
+            ],
+            "keyword": "When ",
+            "line": 13,
+            "name": "I send a POST request to \"/api/v1/models\" with JSON body:",
+            "match": {
+              "location": "tests/api/model.steps.ts:49"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 828750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 17,
+            "name": "the response status should be 401",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19458
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 22457
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-management;get-a-public-model",
+        "keyword": "Scenario",
+        "line": 19,
+        "name": "Get a public model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 48992625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 20,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 134614666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 21,
+            "name": "a public model \"Ants\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8955500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 22,
+            "name": "I get the model \"Ants\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:115"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3361166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 23,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 28790
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 24,
+            "name": "the response body should have property \"id\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19791
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30375
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-management;list-public-models",
+        "keyword": "Scenario",
+        "line": 26,
+        "name": "List public models",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 52381499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 27,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132801750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 28,
+            "name": "a public model \"Model A\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9641124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 29,
+            "name": "a public model \"Model B\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4303959
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 30,
+            "name": "I send a GET request to \"/api/v1/models\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6565000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 31,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30707
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 32,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23499
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30833
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-management;update-a-model's-visibility",
+        "keyword": "Scenario",
+        "line": 34,
+        "name": "Update a model's visibility",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 64141290
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 35,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 136433624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 36,
+            "name": "a public model \"My Model\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9016750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 37,
+            "name": "I update the model \"My Model\" with visibility \"private\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:138"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4152375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 38,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24499
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30375
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-management;delete-a-model",
+        "keyword": "Scenario",
+        "line": 40,
+        "name": "Delete a model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 65293624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 41,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 133670291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 42,
+            "name": "a public model \"To Delete\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8749792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 43,
+            "name": "I delete the model \"To Delete\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:152"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4414333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 44,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25207
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 33374
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-management;cannot-access-a-private-model-without-permission",
+        "keyword": "Scenario",
+        "line": 46,
+        "name": "Cannot access a private model without permission",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 68093041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 47,
+            "name": "an authenticated user \"owner\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 146393458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 48,
+            "name": "a private model \"Secret Model\" created by \"owner\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10199499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 49,
+            "name": "an authenticated user \"stranger\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 135536416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 50,
+            "name": "\"stranger\" gets the model \"Secret Model\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:125"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7511750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 51,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24499
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 35292
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-management;search-models-by-keyword",
+        "keyword": "Scenario",
+        "line": 53,
+        "name": "Search models by keyword",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 77586250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 54,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 134503165
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 55,
+            "name": "a public model \"Climate Change Sim\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10833041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 56,
+            "name": "I send a GET request to \"/api/v1/models?keyword=Climate\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6101415
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 57,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 39916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 58,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31582
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 33541
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "model-management;create-a-forked-model",
+        "keyword": "Scenario",
+        "line": 60,
+        "name": "Create a forked model",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 54475500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 61,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132804707
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 62,
+            "name": "a public model \"Original\" created by the current user",
+            "match": {
+              "location": "tests/api/model.steps.ts:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9370582
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 63,
+            "name": "I fork the model \"Original\" with title \"My Fork\"",
+            "match": {
+              "location": "tests/api/model.steps.ts:162"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3878040
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 64,
+            "name": "the response status should be 201",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 28791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 65,
+            "name": "the response body should have property \"id\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 56166
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 39290
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "model-management",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Model Management",
+    "tags": [],
+    "uri": "tests/api/model.feature"
+  },
+  {
+    "description": "  As a user\n  I want to browse and search tags\n  So that I can discover models by topic",
+    "elements": [
+      {
+        "description": "",
+        "id": "tag-management;list-tags-returns-paginated-results",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "List tags returns paginated results",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 62710749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "a tag \"ecology\" exists",
+            "match": {
+              "location": "tests/api/tag.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1943416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 8,
+            "name": "I send a GET request to \"/api/v1/tags\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2017584
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 9,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 41124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25459
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30208
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "tag-management;search-tags-by-prefix",
+        "keyword": "Scenario",
+        "line": 12,
+        "name": "Search tags by prefix",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 55993125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 13,
+            "name": "a tag \"biology\" exists",
+            "match": {
+              "location": "tests/api/tag.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2325666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "a tag \"biochemistry\" exists",
+            "match": {
+              "location": "tests/api/tag.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 755666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 15,
+            "name": "I send a GET request to \"/api/v1/tags?q=bio\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1517541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 16,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23417
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 22624
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 27458
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "tag-management;get-a-tag-by-name",
+        "keyword": "Scenario",
+        "line": 19,
+        "name": "Get a tag by name",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 47144459
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 20,
+            "name": "a tag \"physics\" exists",
+            "match": {
+              "location": "tests/api/tag.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1827208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 21,
+            "name": "I get the tag \"physics\"",
+            "match": {
+              "location": "tests/api/tag.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1352458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 22,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 18041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 23,
+            "name": "the response body property \"name\" should equal \"physics\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 35791
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 29750
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "tag-management;get-a-non-existent-tag-returns-404",
+        "keyword": "Scenario",
+        "line": 25,
+        "name": "Get a non-existent tag returns 404",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 46835332
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 26,
+            "name": "I send a GET request to \"/api/v1/tags/nonexistent-tag-xyz\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1675957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 27,
+            "name": "the response status should be 404",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17084
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 18415
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "tag-management",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Tag Management",
+    "tags": [],
+    "uri": "tests/api/tag.feature"
+  },
+  {
+    "description": "  As a user\n  I want to manage user profiles\n  So that I can view and update user information",
+    "elements": [
+      {
+        "description": "",
+        "id": "user-management;list-users-returns-paginated-results",
+        "keyword": "Scenario",
+        "line": 6,
+        "name": "List users returns paginated results",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 47345375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 148418915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 8,
+            "name": "I send a GET request to \"/api/v1/users\"",
+            "match": {
+              "location": "tests/api/health.steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4653458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 9,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30209
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "the response body should have property \"data\" as an array",
+            "match": {
+              "location": "tests/shared/common.steps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25457
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "the response body should have property \"count\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 21667
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 37250
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "user-management;get-user-by-id",
+        "keyword": "Scenario",
+        "line": 13,
+        "name": "Get user by ID",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 66789582
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 14,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132084041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 15,
+            "name": "I get the current user's profile",
+            "match": {
+              "location": "tests/api/user.steps.ts:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5718874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 16,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 29042
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "the response body should have property \"id\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "the response body should have property \"email\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13083
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 39207
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "user-management;update-own-profile",
+        "keyword": "Scenario",
+        "line": 20,
+        "name": "Update own profile",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 67595749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 21,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 149219708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 22,
+            "name": "I update the current user with userKind \"student\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8862541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 23,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 34458
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 49624
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "user-management;update-profile-requires-authentication",
+        "keyword": "Scenario",
+        "line": 25,
+        "name": "Update profile requires authentication",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 65218625
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "userKind",
+                      "student"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "When ",
+            "line": 26,
+            "name": "I send a PATCH request to \"/api/v1/users/00000000-0000-0000-0000-000000000000\" with body:",
+            "match": {
+              "location": "tests/api/user.steps.ts:54"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1061708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 28,
+            "name": "the response status should be 401",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 36707
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 40708
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "user-management;delete-own-account",
+        "keyword": "Scenario",
+        "line": 30,
+        "name": "Delete own account",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 60253667
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 31,
+            "name": "an authenticated user",
+            "match": {
+              "location": "tests/api/user.steps.ts:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141955083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 32,
+            "name": "I delete the current user's account",
+            "match": {
+              "location": "tests/api/user.steps.ts:45"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9452750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 33,
+            "name": "the response status should be 204",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 44042
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 43458
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "user-management;cannot-update-another-user's-profile",
+        "keyword": "Scenario",
+        "line": 35,
+        "name": "Cannot update another user's profile",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 74324541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 36,
+            "name": "an authenticated user \"alice\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132829375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 37,
+            "name": "an authenticated user \"bob\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 145040082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 38,
+            "name": "\"alice\" updates \"bob\" with userKind \"teacher\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:71"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5642458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 39,
+            "name": "the response status should be 403",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 32125
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 56334
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "user-management",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "User Management",
+    "tags": [],
+    "uri": "tests/api/user.feature"
+  }
+]

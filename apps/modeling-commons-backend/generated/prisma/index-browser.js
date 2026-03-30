@@ -131,22 +131,27 @@ exports.Prisma.UserScalarFieldEnum = {
   systemRole: 'systemRole',
   userKind: 'userKind',
   isProfilePublic: 'isProfilePublic',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  role: 'role',
+  banned: 'banned',
+  banReason: 'banReason',
+  banExpires: 'banExpires'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refreshToken: 'refreshToken',
+  accountId: 'accountId',
+  providerId: 'providerId',
   accessToken: 'accessToken',
-  expiresAt: 'expiresAt',
-  tokenType: 'tokenType',
+  refreshToken: 'refreshToken',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
   scope: 'scope',
   idToken: 'idToken',
-  sessionState: 'sessionState'
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
@@ -156,7 +161,9 @@ exports.Prisma.SessionScalarFieldEnum = {
   token: 'token',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  impersonatedBy: 'impersonatedBy'
 };
 
 exports.Prisma.VerificationScalarFieldEnum = {
@@ -165,7 +172,22 @@ exports.Prisma.VerificationScalarFieldEnum = {
   value: 'value',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   userId: 'userId'
+};
+
+exports.Prisma.PasskeyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  publicKey: 'publicKey',
+  userId: 'userId',
+  credentialID: 'credentialID',
+  counter: 'counter',
+  deviceType: 'deviceType',
+  backedUp: 'backedUp',
+  transports: 'transports',
+  createdAt: 'createdAt',
+  aaguid: 'aaguid'
 };
 
 exports.Prisma.ModelScalarFieldEnum = {
@@ -314,6 +336,7 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Session: 'Session',
   Verification: 'Verification',
+  Passkey: 'Passkey',
   Model: 'Model',
   ModelVersion: 'ModelVersion',
   ModelVersionFile: 'ModelVersionFile',

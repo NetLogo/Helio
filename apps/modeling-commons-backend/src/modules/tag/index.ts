@@ -14,8 +14,6 @@ declare global {
     findTagsByPrefixQuery: ReturnType<
       typeof import('#src/modules/tag/queries/find-tags-by-prefix.query.ts').default
     >;
-    findTagQuery: ReturnType<
-      typeof import('#src/modules/tag/queries/find-tag.query.ts').default
-    >;
+    findTagQuery: ReturnType<typeof import('#src/modules/tag/queries/find-tag.query.ts').default>;
   }
 }

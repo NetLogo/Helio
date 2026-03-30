@@ -30,6 +30,7 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
         params: modelAuthorParamsSchema,
         body: addContributorRequestDtoSchema,
         response: { 201: modelAuthorResponseDtoSchema },
+        tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('admin')],
     },
@@ -48,15 +49,12 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
     {
       schema: {
         params: modelAuthorUserParamsSchema,
+        tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('admin')],
     },
     async (request, reply) => {
-      await modelAuthorService.remove(
-        request.params.id,
-        request.params.userId,
-        request.user!.id,
-      );
+      await modelAuthorService.remove(request.params.id, request.params.userId, request.user!.id);
       return reply.code(204).send();
     },
   );
@@ -67,6 +65,7 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
       schema: {
         params: modelAuthorParamsSchema,
         body: transferOwnershipRequestDtoSchema,
+        tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('admin')],
     },
@@ -86,6 +85,7 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
       schema: {
         params: modelAuthorParamsSchema,
         response: { 200: Type.Array(modelAuthorResponseDtoSchema) },
+        tags: ['Model'],
       },
       preHandler: [resolveModel('read')],
     },
@@ -102,14 +102,12 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
         params: userIdParamsSchema,
         querystring: userModelsQuerySchema,
         response: { 200: modelAuthorPaginatedResponseSchema },
+        tags: ['User'],
       },
     },
     async (request) => {
       const { limit, page } = request.query;
-      const result = await listUserModelsQuery.execute(
-        request.params.id,
-        { limit, page },
-      );
+      const result = await listUserModelsQuery.execute(request.params.id, { limit, page });
       return {
         ...result,
         data: result.data.map((a) => modelAuthorMapper.toResponse(a)),

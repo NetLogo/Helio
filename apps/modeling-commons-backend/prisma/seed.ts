@@ -164,11 +164,11 @@ async function main() {
 
   // 2. Accounts (Better Auth credential type)
   const accounts = [
-    { id: ids.accountAlice, userId: ids.alice, type: 'credential', provider: 'credential', providerAccountId: ids.alice },
-    { id: ids.accountBob, userId: ids.bob, type: 'credential', provider: 'credential', providerAccountId: ids.bob },
-    { id: ids.accountCarol, userId: ids.carol, type: 'credential', provider: 'credential', providerAccountId: ids.carol },
-    { id: ids.accountDave, userId: ids.dave, type: 'credential', provider: 'credential', providerAccountId: ids.dave },
-    { id: ids.accountAdmin, userId: ids.admin, type: 'credential', provider: 'credential', providerAccountId: ids.admin },
+    { id: ids.accountAlice, userId: ids.alice, accountId: ids.alice, providerId: ids.alice },
+    { id: ids.accountBob, userId: ids.bob, accountId: ids.bob, providerId: ids.bob },
+    { id: ids.accountCarol, userId: ids.carol, accountId: ids.carol, providerId: ids.carol },
+    { id: ids.accountDave, userId: ids.dave, accountId: ids.dave, providerId: ids.dave },
+    { id: ids.accountAdmin, userId: ids.admin, accountId: ids.admin, providerId: ids.admin },
   ];
 
   for (const a of accounts) {
@@ -233,15 +233,69 @@ async function main() {
 
   // 5. Files (nlogox files + supplementary)
   const files = [
-    { id: ids.wolfSheepNlogox1, filename: 'wolf-sheep-v1.nlogox', contentType: 'application/xml', sizeBytes: BigInt(420), blob: fakeNlogox('Wolf Sheep Predation v1') },
-    { id: ids.wolfSheepNlogox2, filename: 'wolf-sheep-v2.nlogox', contentType: 'application/xml', sizeBytes: BigInt(440), blob: fakeNlogox('Wolf Sheep Predation v2') },
-    { id: ids.fireSpreadNlogox, filename: 'fire-spread.nlogox', contentType: 'application/xml', sizeBytes: BigInt(380), blob: fakeNlogox('Fire Spread') },
-    { id: ids.antForagingNlogox, filename: 'ant-foraging.nlogox', contentType: 'application/xml', sizeBytes: BigInt(410), blob: fakeNlogox('Ant Foraging') },
-    { id: ids.virusNetworkNlogox, filename: 'virus-network.nlogox', contentType: 'application/xml', sizeBytes: BigInt(390), blob: fakeNlogox('Virus on a Network') },
-    { id: ids.wolfSheepForkNlogox, filename: 'wolf-sheep-fork.nlogox', contentType: 'application/xml', sizeBytes: BigInt(450), blob: fakeNlogox('Wolf Sheep Fork') },
-    { id: ids.wolfSheepReadme, filename: 'README.md', contentType: 'text/markdown', sizeBytes: BigInt(58), blob: fakeReadme() },
-    { id: ids.wolfSheepData, filename: 'initial-data.csv', contentType: 'text/csv', sizeBytes: BigInt(52), blob: fakeCsv() },
-    { id: ids.fireSpreadCsv, filename: 'burn-results.csv', contentType: 'text/csv', sizeBytes: BigInt(52), blob: fakeCsv() },
+    {
+      id: ids.wolfSheepNlogox1,
+      filename: 'wolf-sheep-v1.nlogox',
+      contentType: 'application/xml',
+      sizeBytes: BigInt(420),
+      blob: fakeNlogox('Wolf Sheep Predation v1'),
+    },
+    {
+      id: ids.wolfSheepNlogox2,
+      filename: 'wolf-sheep-v2.nlogox',
+      contentType: 'application/xml',
+      sizeBytes: BigInt(440),
+      blob: fakeNlogox('Wolf Sheep Predation v2'),
+    },
+    {
+      id: ids.fireSpreadNlogox,
+      filename: 'fire-spread.nlogox',
+      contentType: 'application/xml',
+      sizeBytes: BigInt(380),
+      blob: fakeNlogox('Fire Spread'),
+    },
+    {
+      id: ids.antForagingNlogox,
+      filename: 'ant-foraging.nlogox',
+      contentType: 'application/xml',
+      sizeBytes: BigInt(410),
+      blob: fakeNlogox('Ant Foraging'),
+    },
+    {
+      id: ids.virusNetworkNlogox,
+      filename: 'virus-network.nlogox',
+      contentType: 'application/xml',
+      sizeBytes: BigInt(390),
+      blob: fakeNlogox('Virus on a Network'),
+    },
+    {
+      id: ids.wolfSheepForkNlogox,
+      filename: 'wolf-sheep-fork.nlogox',
+      contentType: 'application/xml',
+      sizeBytes: BigInt(450),
+      blob: fakeNlogox('Wolf Sheep Fork'),
+    },
+    {
+      id: ids.wolfSheepReadme,
+      filename: 'README.md',
+      contentType: 'text/markdown',
+      sizeBytes: BigInt(58),
+      blob: fakeReadme(),
+    },
+    {
+      id: ids.wolfSheepData,
+      filename: 'initial-data.csv',
+      contentType: 'text/csv',
+      sizeBytes: BigInt(52),
+      blob: fakeCsv(),
+    },
+    {
+      id: ids.fireSpreadCsv,
+      filename: 'burn-results.csv',
+      contentType: 'text/csv',
+      sizeBytes: BigInt(52),
+      blob: fakeCsv(),
+    },
   ];
 
   for (const f of files) {
@@ -259,7 +313,12 @@ async function main() {
     { id: ids.fireSpread, visibility: 'public' as const, isEndorsed: true },
     { id: ids.antForaging, visibility: 'public' as const, isEndorsed: false },
     { id: ids.virusNetwork, visibility: 'private' as const, isEndorsed: false },
-    { id: ids.wolfSheepFork, visibility: 'unlisted' as const, isEndorsed: false, parentModelId: ids.wolfSheep },
+    {
+      id: ids.wolfSheepFork,
+      visibility: 'unlisted' as const,
+      isEndorsed: false,
+      parentModelId: ids.wolfSheep,
+    },
   ];
 
   for (const m of models) {
@@ -281,7 +340,8 @@ async function main() {
       modelId: ids.wolfSheep,
       versionNumber: 1,
       title: 'Wolf Sheep Predation',
-      description: 'A classic predator-prey model exploring population dynamics between wolves, sheep, and grass.',
+      description:
+        'A classic predator-prey model exploring population dynamics between wolves, sheep, and grass.',
       nlogoxFileId: ids.wolfSheepNlogox1,
       netlogoVersion: '6.4.0',
       infoTab: '## WHAT IS IT?\n\nThis model explores the stability of predator-prey ecosystems.',
@@ -296,14 +356,16 @@ async function main() {
       description: 'Updated with energy-based movement and grass regrowth mechanics.',
       nlogoxFileId: ids.wolfSheepNlogox2,
       netlogoVersion: '6.4.0',
-      infoTab: '## WHAT IS IT?\n\nThis model explores the stability of predator-prey ecosystems.\n\n## WHAT\'S NEW\n\nEnergy-based movement added in v2.',
+      infoTab:
+        "## WHAT IS IT?\n\nThis model explores the stability of predator-prey ecosystems.\n\n## WHAT'S NEW\n\nEnergy-based movement added in v2.",
     },
     {
       id: ids.fireSpreadV1,
       modelId: ids.fireSpread,
       versionNumber: 1,
       title: 'Fire Spread',
-      description: 'Simulates the spread of a fire through a forest, demonstrating percolation thresholds.',
+      description:
+        'Simulates the spread of a fire through a forest, demonstrating percolation thresholds.',
       nlogoxFileId: ids.fireSpreadNlogox,
       netlogoVersion: '6.4.0',
       infoTab: '## WHAT IS IT?\n\nThis model simulates fire spreading through a forest.',
@@ -313,7 +375,8 @@ async function main() {
       modelId: ids.antForaging,
       versionNumber: 1,
       title: 'Ant Foraging',
-      description: 'Models how ants use pheromone trails to find the shortest path between their nest and a food source.',
+      description:
+        'Models how ants use pheromone trails to find the shortest path between their nest and a food source.',
       nlogoxFileId: ids.antForagingNlogox,
       netlogoVersion: '6.3.0',
       infoTab: '## WHAT IS IT?\n\nThis model demonstrates emergent path-finding behavior.',
@@ -323,10 +386,12 @@ async function main() {
       modelId: ids.virusNetwork,
       versionNumber: 1,
       title: 'Virus on a Network',
-      description: 'Explores how a virus spreads through a network topology and the impact of vaccination strategies.',
+      description:
+        'Explores how a virus spreads through a network topology and the impact of vaccination strategies.',
       nlogoxFileId: ids.virusNetworkNlogox,
       netlogoVersion: '6.4.0',
-      infoTab: '## WHAT IS IT?\n\nThis model shows virus spread dynamics on various network topologies.',
+      infoTab:
+        '## WHAT IS IT?\n\nThis model shows virus spread dynamics on various network topologies.',
     },
     {
       id: ids.wolfSheepForkV1,
@@ -355,7 +420,10 @@ async function main() {
     { id: ids.fireSpread, data: { latestVersionId: ids.fireSpreadV1 } },
     { id: ids.antForaging, data: { latestVersionId: ids.antForagingV1 } },
     { id: ids.virusNetwork, data: { latestVersionId: ids.virusNetworkV1 } },
-    { id: ids.wolfSheepFork, data: { latestVersionId: ids.wolfSheepForkV1, parentVersionId: ids.wolfSheepV2 } },
+    {
+      id: ids.wolfSheepFork,
+      data: { latestVersionId: ids.wolfSheepForkV1, parentVersionId: ids.wolfSheepV2 },
+    },
   ];
 
   for (const m of modelUpdates) {
@@ -410,8 +478,18 @@ async function main() {
 
   // 11. Model additional files (model-level, version-tagged)
   const additionalFiles = [
-    { id: ids.additionalFile1, modelId: ids.wolfSheep, taggedVersionId: ids.wolfSheepV1, fileId: ids.wolfSheepReadme },
-    { id: ids.additionalFile2, modelId: ids.fireSpread, taggedVersionId: ids.fireSpreadV1, fileId: ids.fireSpreadCsv },
+    {
+      id: ids.additionalFile1,
+      modelId: ids.wolfSheep,
+      taggedVersionId: ids.wolfSheepV1,
+      fileId: ids.wolfSheepReadme,
+    },
+    {
+      id: ids.additionalFile2,
+      modelId: ids.fireSpread,
+      taggedVersionId: ids.fireSpreadV1,
+      fileId: ids.fireSpreadCsv,
+    },
   ];
 
   for (const af of additionalFiles) {
@@ -446,9 +524,24 @@ async function main() {
 
   // 13. Model permissions
   const permissions = [
-    { id: ids.permBobReadWolfSheep, modelId: ids.wolfSheep, granteeUserId: ids.bob, permissionLevel: 'read' as const },
-    { id: ids.permCarolWriteFireSpread, modelId: ids.fireSpread, granteeUserId: ids.carol, permissionLevel: 'write' as const },
-    { id: ids.permPublicReadAntForaging, modelId: ids.antForaging, granteeUserId: null, permissionLevel: 'read' as const },
+    {
+      id: ids.permBobReadWolfSheep,
+      modelId: ids.wolfSheep,
+      granteeUserId: ids.bob,
+      permissionLevel: 'read' as const,
+    },
+    {
+      id: ids.permCarolWriteFireSpread,
+      modelId: ids.fireSpread,
+      granteeUserId: ids.carol,
+      permissionLevel: 'write' as const,
+    },
+    {
+      id: ids.permPublicReadAntForaging,
+      modelId: ids.antForaging,
+      granteeUserId: null,
+      permissionLevel: 'read' as const,
+    },
   ];
 
   for (const p of permissions) {

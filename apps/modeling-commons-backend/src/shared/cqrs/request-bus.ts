@@ -35,7 +35,6 @@ export function createRequestBus(label: string): RequestBus {
   }
 
   async function execute<R>(action: Action<unknown, R>): Promise<R> {
-     
     if (!action || typeof action !== 'object') {
       throw new TypeError(`${label} must be an object`);
     }

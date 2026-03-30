@@ -27,12 +27,12 @@ echo "Server is ready (took ${elapsed}s)"
 
 # ── Generate REST types (OpenAPI) ───────────────────────────────────────────
 echo "Generating REST client types…"
-openapi-typescript "$SERVER_URL/api-docs/json" -o ./client/rest.d.ts
+openapi-typescript "$SERVER_URL/api-docs/openapi.json" -o ./client/rest.d.ts
 echo "Done — client types written to client/"
 
 # if env CLIENT_TYPES_OUTPUT_DIR is set, also write to that location (for CI)
 if [ -n "${CLIENT_TYPES_OUTPUT_DIR:-}" ]; then
   echo "Also writing REST client types to ${CLIENT_TYPES_OUTPUT_DIR}"
-  openapi-typescript "$SERVER_URL/api-docs/json" -o "${CLIENT_TYPES_OUTPUT_DIR}"
+  openapi-typescript "$SERVER_URL/api-docs/openapi.json" -o "${CLIENT_TYPES_OUTPUT_DIR}"
   echo "Done — client types written to ${CLIENT_TYPES_OUTPUT_DIR}"
 fi

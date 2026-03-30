@@ -6,7 +6,6 @@
           <h1 class="text-3xl font-bold text-slate-900">API Test</h1>
           <p class="mt-2 text-slate-600">Testing the backend connection</p>
         </div>
-
         <div class="p-8">
           <!-- Loading State -->
           <div v-if="loading" class="text-center">
@@ -92,6 +91,7 @@
 </template>
 
 <script setup lang="ts">
+
 interface TestData {
   data: {
     greeting: string;

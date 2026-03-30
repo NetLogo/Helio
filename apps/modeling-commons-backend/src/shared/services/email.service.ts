@@ -9,7 +9,7 @@ export default function makeEmailService({
 }): EmailServicePort {
   return {
     async send(to: string, subject: string, _body: string): Promise<void> {
-      logger.warn(`[EMAIL STUB] Would send to ${to}: ${subject}`);
+      logger.warn(`[EMAIL STUB] Would send to ${to}: ${subject}---${_body}`);
     },
   };
 }

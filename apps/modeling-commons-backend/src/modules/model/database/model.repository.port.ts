@@ -1,4 +1,8 @@
-import type { ModelEntity, ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
+import type {
+  ModelEntity,
+  ModelSearchFilters,
+  ModelVisibility,
+} from '#src/modules/model/domain/model.types.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { RepositoryPort } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
@@ -12,14 +16,11 @@ export interface ModelRepository extends RepositoryPort<ModelEntity> {
     params: PaginatedQueryParams,
     userId: string | null,
   ): Promise<Paginated<ModelEntity>>;
-  findChildren(
-    modelId: string,
-    params: PaginatedQueryParams,
-  ): Promise<Paginated<ModelEntity>>;
+  findChildren(modelId: string, params: PaginatedQueryParams): Promise<Paginated<ModelEntity>>;
   insertTx(ctx: TransactionContext, entity: ModelEntity): Promise<void>;
   updateFields(
     ctx: TransactionContext,
     id: string,
-    data: { visibility?: string; isEndorsed?: boolean },
+    data: { visibility?: ModelVisibility; isEndorsed?: boolean },
   ): Promise<void>;
 }

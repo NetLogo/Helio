@@ -4,7 +4,7 @@ export type ModelVersionEntity = {
   versionNumber: number;
   title: string;
   description: string | null;
-  previewImage: Buffer | null;
+  previewImage: Buffer<ArrayBuffer> | null;
   nlogoxFileId: string;
   netlogoVersion: string | null;
   infoTab: string | null;
@@ -15,11 +15,11 @@ export type ModelVersionEntity = {
 export type CreateVersionProps = {
   title?: string;
   description?: string;
-  previewImage?: Buffer;
+  previewImage?: Buffer<ArrayBuffer>;
 };
 
 export type UpdateCurrentVersionProps = {
   title?: string;
   description?: string;
-  previewImage?: Buffer;
+  previewImage?: Buffer<ArrayBuffer>;
 };

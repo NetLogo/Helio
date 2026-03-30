@@ -15,7 +15,7 @@ export default function makeModelAdditionalFileService({
     async add(
       modelId: string,
       userId: string,
-      fileBuffer: Buffer,
+      fileBuffer: Buffer<ArrayBuffer>,
       filename: string,
       contentType: string,
     ): Promise<ModelAdditionalFileEntity> {

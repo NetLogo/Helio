@@ -1,5 +1,5 @@
 import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
-import type { ModelEntity } from '#src/modules/model/domain/model.types.ts';
+import type { ModelEntity, ModelVisibility } from '#src/modules/model/domain/model.types.ts';
 import type { ModelResponseDto } from '#src/modules/model/dtos/model.response.dto.ts';
 import { ajv } from '#src/shared/utils/index.ts';
 import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
@@ -9,7 +9,7 @@ export type ModelRecord = {
   latestVersionId: string | null;
   parentModelId: string | null;
   parentVersionId: string | null;
-  visibility: string;
+  visibility: ModelVisibility;
   isEndorsed: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -36,7 +36,7 @@ export default function modelMapper(): Mapper<ModelEntity, ModelRecord, ModelRes
         latestVersionId: record.latestVersionId,
         parentModelId: record.parentModelId,
         parentVersionId: record.parentVersionId,
-        visibility: record.visibility as ModelEntity['visibility'],
+        visibility: record.visibility,
         isEndorsed: record.isEndorsed,
         createdAt: new Date(record.createdAt),
         updatedAt: new Date(record.updatedAt),

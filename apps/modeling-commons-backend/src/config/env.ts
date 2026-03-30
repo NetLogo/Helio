@@ -5,6 +5,7 @@ const NodeEnv = {
   development: 'development',
   production: 'production',
   test: 'test',
+  staging: 'staging',
 } as const;
 
 export const LogLevel = {
@@ -38,6 +39,11 @@ const schema = Type.Object({
   PRODUCT_VERSION: Type.String({ default: '0.1.0' }),
   PRODUCT_DISPLAY_NAME: Type.Optional(Type.String()),
   PRODUCT_WEBSITE: Type.String({ default: 'https://www.modelingcommons.org' }),
+  IP_ADDRESS_HEADERS: Type.Optional(
+    Type.String({
+      default: 'cf-connecting-ip,X-Forwarded-For',
+    }),
+  ), // comma-separated list of IP address headers
 });
 
 const env = envSchema<Static<typeof schema>>({
@@ -45,26 +51,31 @@ const env = envSchema<Static<typeof schema>>({
   schema,
 });
 
+const envVariableToList = (value: string | undefined, delim = ','): string[] => {
+  if (!value) return [];
+  return value.split(delim).map((v) => v.trim());
+};
+
 export default {
   nodeEnv: env.NODE_ENV,
   isDevelopment: env.NODE_ENV === NodeEnv.development,
   isProduction: env.NODE_ENV === NodeEnv.production,
-  version: '0.0.0',
+  isTest: env.NODE_ENV === NodeEnv.test,
+  isStaging: env.NODE_ENV === NodeEnv.staging,
+  version: env.PRODUCT_VERSION,
   log: {
     level: env.LOG_LEVEL,
   },
   server: {
     host: env.HOST,
     port: env.PORT,
+    ipAddressHeaders: envVariableToList(env.IP_ADDRESS_HEADERS),
   },
   db: {
     url: `postgres://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_URL}/${env.POSTGRES_DB}?sslmode=disable`,
   },
   cors: {
-    allowedOrigins:
-      typeof env.ALLOWED_ORIGINS === 'string'
-        ? env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
-        : [],
+    allowedOrigins: envVariableToList(env.ALLOWED_ORIGINS),
   },
   auth: {
     secret: env.BETTER_AUTH_SECRET,
@@ -73,7 +84,7 @@ export default {
   product: {
     name: env.PRODUCT_NAME,
     description: env.PRODUCT_DESCRIPTION,
-    keywords: env.PRODUCT_KEYWORDS.split(',').map((k) => k.trim()),
+    keywords: envVariableToList(env.PRODUCT_KEYWORDS),
     version: env.PRODUCT_VERSION,
     displayName: env.PRODUCT_DISPLAY_NAME || env.PRODUCT_NAME,
     website: env.PRODUCT_WEBSITE,

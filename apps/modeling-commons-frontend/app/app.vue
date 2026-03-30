@@ -3,7 +3,9 @@
   <NuxtLoadingIndicator color="var(--ui-primary)" />
   <NuxtLayout>
     <NuxtErrorBoundary>
-      <NuxtPage />
+      <UApp>
+        <NuxtPage />
+      </UApp>
     </NuxtErrorBoundary>
   </NuxtLayout>
 </template>

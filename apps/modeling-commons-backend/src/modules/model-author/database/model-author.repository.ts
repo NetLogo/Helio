@@ -1,5 +1,8 @@
 import type { ModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.port.ts';
-import type { ModelAuthorEntity } from '#src/modules/model-author/domain/model-author.types.ts';
+import type {
+  ModelAuthorEntity,
+  AuthorRole,
+} from '#src/modules/model-author/domain/model-author.types.ts';
 import type { ModelAuthorRecord } from '#src/modules/model-author/model-author.mapper.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
@@ -36,9 +39,7 @@ export default function modelAuthorRepository({
         where: { modelId },
         orderBy: { createdAt: 'asc' },
       });
-      return records.map((r: unknown) =>
-        modelAuthorMapper.toDomain(r as ModelAuthorRecord),
-      );
+      return records.map((r: unknown) => modelAuthorMapper.toDomain(r as ModelAuthorRecord));
     },
 
     async findModelsByUser(
@@ -61,9 +62,7 @@ export default function modelAuthorRepository({
         count,
         limit: params.limit,
         page: params.page,
-        data: records.map((r: unknown) =>
-          modelAuthorMapper.toDomain(r as ModelAuthorRecord),
-        ),
+        data: records.map((r: unknown) => modelAuthorMapper.toDomain(r as ModelAuthorRecord)),
       };
     },
 
@@ -77,7 +76,7 @@ export default function modelAuthorRepository({
       ctx: TransactionContext,
       modelId: string,
       userId: string,
-      role: string,
+      role: AuthorRole,
     ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelAuthor.update({

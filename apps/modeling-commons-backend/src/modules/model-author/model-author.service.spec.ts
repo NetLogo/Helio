@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeModelAuthorService from '#src/modules/model-author/model-author.service.ts';
 import modelAuthorDomain from '#src/modules/model-author/domain/model-author.domain.ts';
-import { AuthorAlreadyExistsError, NotOwnerError } from '#src/modules/model-author/domain/model-author.errors.ts';
+import {
+  AuthorAlreadyExistsError,
+  NotOwnerError,
+} from '#src/modules/model-author/domain/model-author.errors.ts';
 import { NotFoundException } from '#src/shared/exceptions/index.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.mock.ts';
@@ -42,7 +45,9 @@ describe('modelAuthorService', () => {
     it('throws NotOwnerError when caller is not owner', async () => {
       modelAuthorRepository.findByCompositeKey.mockResolvedValue({ role: 'contributor' });
 
-      await expect(service.addContributor('m1', 'user-2', 'non-owner')).rejects.toThrow(NotOwnerError);
+      await expect(service.addContributor('m1', 'user-2', 'non-owner')).rejects.toThrow(
+        NotOwnerError,
+      );
     });
 
     it('throws AuthorAlreadyExistsError if user is already an author', async () => {

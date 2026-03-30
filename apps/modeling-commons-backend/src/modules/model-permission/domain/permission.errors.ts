@@ -2,16 +2,12 @@ import { ConflictException, NotFoundException } from '#src/shared/exceptions/ind
 
 export class PermissionAlreadyExistsError extends ConflictException {
   constructor(modelId: string, granteeUserId: string) {
-    super(
-      `Permission already exists for user ${granteeUserId} on model ${modelId}`,
-    );
+    super(`Permission already exists for user ${granteeUserId} on model ${modelId}`);
   }
 }
 
 export class PermissionNotFoundError extends NotFoundException {
   constructor(modelId: string, granteeUserId: string) {
-    super(
-      `Permission not found for user ${granteeUserId} on model ${modelId}`,
-    );
+    super(`Permission not found for user ${granteeUserId} on model ${modelId}`);
   }
 }

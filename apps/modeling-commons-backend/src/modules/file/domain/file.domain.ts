@@ -12,7 +12,7 @@ import {
 export default function fileDomain() {
   return {
     createFile(props: {
-      buffer: Buffer;
+      buffer: Buffer<ArrayBuffer>;
       filename: string;
       contentType: string;
     }): FileEntity {
@@ -20,9 +20,7 @@ export default function fileDomain() {
         throw new FileTooLargeError(props.buffer.length, MAX_FILE_SIZE);
       }
       if (
-        !ALLOWED_CONTENT_TYPES.includes(
-          props.contentType as (typeof ALLOWED_CONTENT_TYPES)[number],
-        )
+        !ALLOWED_CONTENT_TYPES.includes(props.contentType as (typeof ALLOWED_CONTENT_TYPES)[number])
       ) {
         throw new FileTypeNotAllowedError(props.contentType);
       }

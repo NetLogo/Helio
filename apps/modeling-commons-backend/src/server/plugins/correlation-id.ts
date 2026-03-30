@@ -6,8 +6,7 @@ async function correlationIdPlugin(fastify: FastifyInstance) {
   fastify.decorateRequest('correlationId', '');
 
   fastify.addHook('onRequest', async (request, reply) => {
-    const id =
-      (request.headers['x-correlation-id'] as string | undefined) ?? randomUUID();
+    const id = (request.headers['x-correlation-id'] as string | undefined) ?? randomUUID();
     request.correlationId = id;
     reply.header('x-correlation-id', id);
   });

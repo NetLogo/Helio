@@ -43,11 +43,7 @@ export default function makePermissionService({
       return entity;
     },
 
-    async revoke(
-      modelId: string,
-      granteeUserId: string,
-      callerId: string,
-    ): Promise<void> {
+    async revoke(modelId: string, granteeUserId: string, callerId: string): Promise<void> {
       const existing = await permissionRepository.findByModelAndUser(modelId, granteeUserId);
       if (!existing) {
         throw new PermissionNotFoundError(modelId, granteeUserId);

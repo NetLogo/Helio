@@ -1,8 +1,9 @@
 import env from '#src/config/env.ts';
 import Swagger from '@fastify/swagger';
-import SwaggerUI from '@fastify/swagger-ui';
+import Scalar from '@scalar/fastify-api-reference';
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
+import { auth } from '#src/lib/auth.ts';
 
 async function swaggerGeneratorPlugin(fastify: FastifyInstance) {
   await fastify.register(Swagger, {
@@ -14,7 +15,7 @@ async function swaggerGeneratorPlugin(fastify: FastifyInstance) {
         version: env.product.version,
       },
     },
-    // If you don't need to generate client types you could keep swagger
+
     swagger: {
       info: {
         title: env.product.name,
@@ -27,8 +28,31 @@ async function swaggerGeneratorPlugin(fastify: FastifyInstance) {
     },
   });
 
-  await fastify.register(SwaggerUI, {
+  fastify.route({
+    method: ['GET'],
+    url: '/api-docs/auth/openapi.json',
+    schema: {
+      hide: true,
+    },
+    handler: async (_, reply) => {
+      const schema = await auth.api.generateOpenAPISchema();
+      reply.send(schema);
+    },
+  });
+
+  await fastify.register(Scalar, {
     routePrefix: '/api-docs',
+    configuration: {
+      metaData: {
+        title: `${env.product.name} API Reference`,
+        description: `The OpenAPI documentation for the ${env.product.name} API.`,
+        version: env.product.version,
+      },
+      sources: [
+        { url: '/api-docs/openapi.json', title: 'REST API' },
+        { url: '/api-docs/auth/openapi.json', title: 'Authentication API' },
+      ],
+    },
   });
 
   fastify.log.info(`Swagger documentation is available at /api-docs`);

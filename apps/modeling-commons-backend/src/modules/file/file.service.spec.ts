@@ -22,7 +22,11 @@ describe('fileService', () => {
 
   describe('upload', () => {
     it('creates file entity and inserts via repository', async () => {
-      const id = await service.upload(Buffer.from('test'), 'model.nlogox', 'application/octet-stream');
+      const id = await service.upload(
+        Buffer.from('test'),
+        'model.nlogox',
+        'application/octet-stream',
+      );
 
       expect(id).toBeTypeOf('string');
       expect(fileRepository.insertTx).toHaveBeenCalledOnce();

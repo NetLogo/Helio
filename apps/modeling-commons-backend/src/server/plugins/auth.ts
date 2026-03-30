@@ -113,6 +113,15 @@ async function authPlugin(fastify: FastifyInstance) {
     const session = await authService.getSession(request);
     request.user = session?.user ?? null;
   });
+
+  // fastify.addHook('preHandler', async (request) => {
+  //   if (request.url.startsWith('/admin')) {
+  //     const session = await authService.requireSession(request);
+  //     if (session.user.systemRole !== SystemRole.admin) {
+  //       throw new UnauthorizedException('Admin access required');
+  //     }
+  //   }
+  // });
 }
 
 export default fp(authPlugin, {

@@ -1,6 +1,6 @@
 <template>
-  <div :class="cn($style['menus'])" v-bind="$attrs">
-    <div :class="$style['links']">
+  <div :class="cn($style['menus'])">
+    <div :class="$style['links']" v-bind="$attrs">
       <slot />
     </div>
   </div>

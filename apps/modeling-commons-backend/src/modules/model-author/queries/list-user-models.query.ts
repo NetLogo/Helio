@@ -2,9 +2,7 @@ import type { ModelAuthorEntity } from '#src/modules/model-author/domain/model-a
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
 import type { Paginated } from '#src/shared/db/repository.port.ts';
 
-export default function makeListUserModelsQuery({
-  modelAuthorRepository,
-}: Dependencies) {
+export default function makeListUserModelsQuery({ modelAuthorRepository }: Dependencies) {
   return {
     async execute(
       userId: string,

@@ -2,12 +2,12 @@
   <Navbar
     id="main-navbar"
     ref="navbar"
-    class="justify-between"
+    class="backdrop-blur-lg! bg-white/80! border-b-2 border-primary lg:px-40!"
     :brand="brand"
     brand-href="/"
     :brand-attrs="brandAttrs"
   >
-    <NavbarLinksContainer>
+    <NavbarLinksContainer class="flex-1">
       <NavbarItem
         v-for="link in navbarLinks"
         :key="link.title"
@@ -15,8 +15,8 @@
         :href="link.href"
         :columns="link.columns"
         :active="link.active"
+        :icon="link.icon"
       >
-        <!-- eslint-disable-next-line vue/no-use-v-if-with-v-for -->
         <template v-if="link.children && link.children.length > 0">
           <NavbarDropdownItem
             v-for="child in link.children"
@@ -24,18 +24,30 @@
             :title="child.title"
             :href="child.href"
             :active="child.active"
+            :icon="child.icon"
           />
         </template>
       </NavbarItem>
     </NavbarLinksContainer>
 
-    <NavbarActionsContainer> </NavbarActionsContainer>
+    <NavbarActionsContainer>
+      <UDropdownMenu v-if="user.isLoggedIn" :items="userDropdownItems" :modal="false">
+        <UAvatar
+          :name="user.name"
+          :image="user.image"
+          :alt="user.name"
+          class="cursor-pointer hover:ring-2 hover:ring-primary rounded-full"
+        />
+      </UDropdownMenu>
+      <UButton v-else variant="solid" size="md" class="px-3" to="/login"> Sign in </UButton>
+    </NavbarActionsContainer>
   </Navbar>
 
   <NavbarHeightTracker navbar-selector="#main-navbar" />
 </template>
 
 <script lang="ts">
+import type { DropdownMenuItem } from "@nuxt/ui";
 import TurtlesLogo from "@repo/vue-ui/assets/brands/Turtles.svg";
 import type { Navbar as _Navbar } from "@repo/vue-ui/components/navbar/index";
 import { useMediaQuery } from "@vueuse/core";
@@ -45,6 +57,7 @@ import { WebsiteLogo } from "~/assets/website-logo";
 export interface NavbarLink {
   title: string;
   href: string;
+  icon?: string;
   columns?: number;
   children?: Array<Omit<NavbarLink, "children">>;
   active?: boolean;
@@ -100,6 +113,54 @@ export const isLinkParentActive = (link: NavbarLink, currentPath: string): boole
 
 <script setup lang="ts">
 const route = useRoute();
+const auth = useNuxtApp().$auth;
+const user = useUser();
+
+const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
+  if (user.value.isLoggedIn) {
+    return [
+      [
+        {
+          label: user.value.name,
+          avatar: { src: user.value.image ?? undefined, lazy: true, alt: user.value.name },
+          type: "label",
+        },
+      ],
+      [
+        {
+          label: "Profile",
+          icon: "i-lucide-user",
+        },
+        {
+          label: "Settings",
+          icon: "i-lucide-settings",
+        },
+      ],
+      [
+        {
+          label: "Sign out",
+          icon: "i-lucide-log-out",
+          color: "error",
+          onClick: async () => {
+            await auth.client.signOut();
+            navigateTo("/login");
+          },
+        },
+      ],
+      [
+        {
+          label: "Admin Dashboard",
+          icon: "i-lucide-shield-check",
+          href: "/admin",
+          visible: true,
+          color: "primary",
+        },
+      ],
+    ];
+  }
+  return [];
+});
+
 
 const isMobileScreen = ref(false);
 const navbarRef = useTemplateRef<InstanceType<typeof _Navbar>>("navbar");
@@ -128,8 +189,20 @@ const navbarLinks = ref<Array<NavbarLink>>([
   {
     title: "Home",
     href: "/",
-    columns: 2,
+    columns: 2
   },
+  {
+    title: "Explore Models",
+    href: "/models",
+    columns: 2,
+    children: [
+      { title: "All Models", href: "/models", icon: "i-lucide-box" },
+      { title: "My Models", href: "/profile/models", icon: "i-lucide-user" },
+      { title: "Featured Models", href: "/featured-models", icon: "i-lucide-star" },
+      { title: "New Models", href: "/new-models", icon: "i-lucide-plus" },
+      { title: "Models by Tag", href: "/models/tags", icon: "i-lucide-tag" },
+    ],
+  }
 ]);
 
 updateActiveStates(navbarRef, navbarLinks, route);

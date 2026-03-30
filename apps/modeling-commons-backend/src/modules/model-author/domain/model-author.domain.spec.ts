@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import modelAuthorDomain from '#src/modules/model-author/domain/model-author.domain.ts';
-import { CannotRemoveOwnerError, NotOwnerError } from '#src/modules/model-author/domain/model-author.errors.ts';
+import {
+  CannotRemoveOwnerError,
+  NotOwnerError,
+} from '#src/modules/model-author/domain/model-author.errors.ts';
 
 const domain = modelAuthorDomain();
 
@@ -24,7 +27,12 @@ describe('modelAuthorDomain', () => {
 
     it('throws for non-owner', () => {
       expect(() =>
-        domain.assertIsOwner({ modelId: 'm1', userId: 'u1', role: 'contributor', createdAt: new Date() }),
+        domain.assertIsOwner({
+          modelId: 'm1',
+          userId: 'u1',
+          role: 'contributor',
+          createdAt: new Date(),
+        }),
       ).toThrow(NotOwnerError);
     });
   });
@@ -32,13 +40,23 @@ describe('modelAuthorDomain', () => {
   describe('assertNotOwner', () => {
     it('passes for contributor', () => {
       expect(() =>
-        domain.assertNotOwner({ modelId: 'm1', userId: 'u1', role: 'contributor', createdAt: new Date() }),
+        domain.assertNotOwner({
+          modelId: 'm1',
+          userId: 'u1',
+          role: 'contributor',
+          createdAt: new Date(),
+        }),
       ).not.toThrow();
     });
 
     it('throws for owner', () => {
       expect(() =>
-        domain.assertNotOwner({ modelId: 'm1', userId: 'u1', role: 'owner', createdAt: new Date() }),
+        domain.assertNotOwner({
+          modelId: 'm1',
+          userId: 'u1',
+          role: 'owner',
+          createdAt: new Date(),
+        }),
       ).toThrow(CannotRemoveOwnerError);
     });
   });

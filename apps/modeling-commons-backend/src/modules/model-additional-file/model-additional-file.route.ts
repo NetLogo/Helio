@@ -21,6 +21,9 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
       schema: {
         params: modelIdParamsSchema,
         response: { 201: modelAdditionalFileResponseDtoSchema },
+        tags: ['Model', 'File'],
+        description:
+          'Upload an additional file for a model. The file is sent as multipart/form-data with the file field named "file".',
       },
       preHandler: [requireAuth, resolveModel('write')],
     },
@@ -31,10 +34,14 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
       }
 
       const buffer = await data.toBuffer();
+      const ownBuffer = Buffer.alloc(buffer.length);
+      buffer.copy(ownBuffer);
+      buffer.fill(0);
+
       const entity = await modelAdditionalFileService.add(
         request.params.id,
         request.user!.id,
-        buffer,
+        ownBuffer,
         data.filename,
         data.mimetype,
       );
@@ -58,14 +65,12 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
     {
       schema: {
         params: additionalFileParamsSchema,
+        tags: ['Model', 'File'],
       },
       preHandler: [requireAuth, resolveModel('admin')],
     },
     async (request, reply) => {
-      await modelAdditionalFileService.remove(
-        request.params.fileId,
-        request.user!.id,
-      );
+      await modelAdditionalFileService.remove(request.params.fileId, request.user!.id);
       return reply.code(204).send();
     },
   );
@@ -77,6 +82,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
         params: modelIdParamsSchema,
         querystring: listAdditionalFilesQuerySchema,
         response: { 200: Type.Array(modelAdditionalFileResponseDtoSchema) },
+        tags: ['Model', 'File'],
       },
       preHandler: [resolveModel('read')],
     },

@@ -2,9 +2,9 @@
   <UApp>
     <ClientNavbar />
     <PageBoundary>
-      <div class="min-h-[70vh]">
-        <slot />
-      </div>
+      <UMain class="min-h-[80vh]">
+          <slot />
+      </UMain>
     </PageBoundary>
     <ClientFooter />
   </UApp>

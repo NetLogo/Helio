@@ -9,7 +9,7 @@ export default function modelVersionDomain() {
       versionNumber: number;
       title: string;
       description?: string;
-      previewImage?: Buffer;
+      previewImage?: Buffer<ArrayBuffer>;
       nlogoxFileId: string;
     }): ModelVersionEntity {
       return {

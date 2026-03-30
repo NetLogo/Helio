@@ -1,4 +1,7 @@
-import type { AuthorRole, ModelAuthorEntity } from '#src/modules/model-author/domain/model-author.types.ts';
+import type {
+  AuthorRole,
+  ModelAuthorEntity,
+} from '#src/modules/model-author/domain/model-author.types.ts';
 import {
   CannotRemoveOwnerError,
   NotOwnerError,

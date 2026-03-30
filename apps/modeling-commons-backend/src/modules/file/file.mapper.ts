@@ -7,7 +7,7 @@ export type FileRecord = {
   filename: string;
   contentType: string;
   sizeBytes: bigint;
-  blob: Buffer;
+  blob: Buffer<ArrayBuffer>;
   createdAt: Date;
 };
 
@@ -19,7 +19,7 @@ export default function fileMapper(): Mapper<FileEntity, FileRecord, FileRespons
         filename: record.filename,
         contentType: record.contentType,
         sizeBytes: record.sizeBytes,
-        blob: Buffer.from(record.blob),
+        blob: record.blob,
         createdAt: new Date(record.createdAt),
       };
     },

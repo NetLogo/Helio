@@ -12,6 +12,21 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
   // Set sensible default security headers
   await fastify.register(Helmet, {
     global: true,
+    contentSecurityPolicy: {
+      directives: {
+        // General default source
+        defaultSrc: [`'self'`],
+        // Allow specific image sources (e.g., data URIs used by the Swagger validator)
+        imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
+        // Allow specific script sources, potentially including 'unsafe-inline' or nonces
+        scriptSrc: [`'self'`, `https:`, `'unsafe-inline'`],
+        // Allow specific style sources, including 'unsafe-inline' for some inline styles
+        styleSrc: [`'self'`, `'unsafe-inline'`],
+        // Allow WebAssembly to function (required by recent Scalar versions)
+        workerSrc: [`'self'`, `'unsafe-eval'`],
+        // Add other directives as needed
+      },
+    },
   });
 
   // Enables the use of CORS in a Fastify application.

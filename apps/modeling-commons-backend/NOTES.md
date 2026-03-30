@@ -1,0 +1,4 @@
+- @fastify/compress
+- @fastify/csrf-protection
+- Configure @fastify/helmet
+-

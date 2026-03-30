@@ -30,7 +30,7 @@ export function makeDependencies({
 }: {
   logger: FastifyBaseLogger;
   eventBus: EventBus;
-}): Resolvers<Dependencies> {
+}): Partial<Resolvers<Dependencies>> {
   return {
     logger: asValue(logger),
     prisma: asValue(prisma),

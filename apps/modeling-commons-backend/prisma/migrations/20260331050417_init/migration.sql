@@ -13,11 +13,73 @@ CREATE TYPE "AuthorRole" AS ENUM ('owner', 'contributor');
 -- CreateEnum
 CREATE TYPE "PermissionLevel" AS ENUM ('read', 'write', 'admin');
 
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "deletedAt" TIMESTAMP(3),
-ADD COLUMN     "isProfilePublic" BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN     "systemRole" "SystemRole" NOT NULL DEFAULT 'user',
-ADD COLUMN     "userKind" "UserKind" NOT NULL DEFAULT 'other';
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "name" TEXT,
+    "email" TEXT,
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "image" TEXT,
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+    "systemRole" "SystemRole" NOT NULL DEFAULT 'user',
+    "userKind" "UserKind" NOT NULL DEFAULT 'other',
+    "isProfilePublic" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "role" TEXT,
+    "banned" BOOLEAN,
+    "banReason" TEXT,
+    "banExpires" TIMESTAMPTZ(3),
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Account" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "accountId" TEXT NOT NULL,
+    "providerId" TEXT NOT NULL,
+    "accessToken" TEXT,
+    "refreshToken" TEXT,
+    "accessTokenExpiresAt" TIMESTAMPTZ(3),
+    "refreshTokenExpiresAt" TIMESTAMPTZ(3),
+    "scope" TEXT,
+    "idToken" TEXT,
+    "password" TEXT,
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+
+    CONSTRAINT "Account_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Session" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "token" TEXT NOT NULL,
+    "ipAddress" TEXT,
+    "userAgent" TEXT,
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+    "impersonatedBy" TEXT,
+
+    CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Verification" (
+    "id" TEXT NOT NULL,
+    "identifier" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3),
+    "userId" TEXT,
+
+    CONSTRAINT "Verification_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Model" (
@@ -40,11 +102,11 @@ CREATE TABLE "ModelVersion" (
     "modelId" TEXT NOT NULL,
     "versionNumber" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "previewImage" BYTEA,
     "nlogoxFileId" TEXT NOT NULL,
-    "netlogoVersion" TEXT NOT NULL,
-    "infoTab" TEXT NOT NULL,
+    "netlogoVersion" TEXT,
+    "infoTab" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "finalizedAt" TIMESTAMP(3),
 
@@ -64,6 +126,7 @@ CREATE TABLE "ModelVersionFile" (
 CREATE TABLE "ModelVersionTag" (
     "modelVersionId" TEXT NOT NULL,
     "tagId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ModelVersionTag_pkey" PRIMARY KEY ("modelVersionId","tagId")
 );
@@ -136,6 +199,21 @@ CREATE TABLE "Event" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE INDEX "Account_userId_idx" ON "Account"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Session_token_key" ON "Session"("token");
+
+-- CreateIndex
+CREATE INDEX "Session_userId_idx" ON "Session"("userId");
+
+-- CreateIndex
+CREATE INDEX "Verification_userId_idx" ON "Verification"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Model_latestVersionId_key" ON "Model"("latestVersionId");
 
 -- CreateIndex
@@ -178,6 +256,9 @@ CREATE INDEX "ModelPermission_modelId_idx" ON "ModelPermission"("modelId");
 CREATE INDEX "ModelPermission_granteeUserId_idx" ON "ModelPermission"("granteeUserId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ModelPermission_modelId_granteeUserId_key" ON "ModelPermission"("modelId", "granteeUserId");
+
+-- CreateIndex
 CREATE INDEX "Event_actorId_idx" ON "Event"("actorId");
 
 -- CreateIndex
@@ -188,6 +269,15 @@ CREATE INDEX "Event_type_idx" ON "Event"("type");
 
 -- CreateIndex
 CREATE INDEX "Event_processedAt_idx" ON "Event"("processedAt");
+
+-- AddForeignKey
+ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Verification" ADD CONSTRAINT "Verification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Model" ADD CONSTRAINT "Model_latestVersionId_fkey" FOREIGN KEY ("latestVersionId") REFERENCES "ModelVersion"("id") ON DELETE SET NULL ON UPDATE CASCADE;

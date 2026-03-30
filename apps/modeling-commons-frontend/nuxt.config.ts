@@ -5,6 +5,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3000",
+      authApiBase: process.env.NUXT_PUBLIC_AUTH_BASE || "http://localhost:3000/api",
+      appUrl: process.env.NUXT_PUBLIC_APP_URL || "http://localhost:3005",
     },
   },
 

@@ -15,8 +15,7 @@ import { tagResponseDtoSchema } from '#src/modules/tag/dtos/tag.response.dto.ts'
 import { Type } from 'typebox';
 
 export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
-  const { modelVersionTagService, tagService, listTagsByVersionQuery } =
-    fastify.diContainer.cradle;
+  const { modelVersionTagService, tagService, listTagsByVersionQuery } = fastify.diContainer.cradle;
 
   fastify.post<{ Params: ModelIdParams; Body: AddTagRequestDto }>(
     '/v1/models/:id/tags',
@@ -25,6 +24,7 @@ export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
         params: modelIdParamsSchema,
         body: addTagRequestDtoSchema,
         response: { 201: modelVersionTagResponseDtoSchema },
+        tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('write')],
     },
@@ -49,6 +49,7 @@ export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
     {
       schema: {
         params: removeTagParamsSchema,
+        tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('write')],
     },
@@ -68,6 +69,7 @@ export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
       schema: {
         params: versionTagsParamsSchema,
         response: { 200: Type.Array(tagResponseDtoSchema) },
+        tags: ['Model'],
       },
       preHandler: [resolveModel('read')],
     },
@@ -76,9 +78,7 @@ export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
         request.params.id,
         request.params.version,
       );
-      const tags = await Promise.all(
-        entities.map((e) => tagService.findByIdOrName(e.tagId)),
-      );
+      const tags = await Promise.all(entities.map((e) => tagService.findByIdOrName(e.tagId)));
       return tags.map((tag) => ({
         id: tag.id,
         name: tag.name,

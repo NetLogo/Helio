@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeModelService from '#src/modules/model/model.service.ts';
 import modelDomain from '#src/modules/model/domain/model.domain.ts';
-import { ModelNotFoundError, ModelAlreadyDeletedError } from '#src/modules/model/domain/model.errors.ts';
+import {
+  ModelNotFoundError,
+  ModelAlreadyDeletedError,
+} from '#src/modules/model/domain/model.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
@@ -69,11 +72,9 @@ describe('modelService', () => {
 
       await service.update('model-1', { visibility: 'private' });
 
-      expect(modelRepository.updateFields).toHaveBeenCalledWith(
-        expect.anything(),
-        'model-1',
-        { visibility: 'private' },
-      );
+      expect(modelRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'model-1', {
+        visibility: 'private',
+      });
     });
 
     it('throws ModelNotFoundError if model does not exist', async () => {

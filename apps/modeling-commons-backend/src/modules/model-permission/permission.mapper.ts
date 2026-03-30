@@ -1,12 +1,15 @@
 import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
-import type { ModelPermissionEntity } from '#src/modules/model-permission/domain/permission.types.ts';
+import type {
+  ModelPermissionEntity,
+  PermissionLevel,
+} from '#src/modules/model-permission/domain/permission.types.ts';
 import type { PermissionResponseDto } from '#src/modules/model-permission/dtos/permission.response.dto.ts';
 
 export type PermissionRecord = {
   id: string;
   modelId: string;
   granteeUserId: string;
-  permissionLevel: string;
+  permissionLevel: PermissionLevel;
   createdAt: Date;
 };
 
@@ -21,7 +24,7 @@ export default function permissionMapper(): Mapper<
         id: record.id,
         modelId: record.modelId,
         granteeUserId: record.granteeUserId,
-        permissionLevel: record.permissionLevel as ModelPermissionEntity['permissionLevel'],
+        permissionLevel: record.permissionLevel,
         createdAt: new Date(record.createdAt),
       };
     },

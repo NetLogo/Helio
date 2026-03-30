@@ -5,6 +5,8 @@ export function useApi() {
   const apiBase = useRuntimeConfig().public.apiBase;
   const apiClient = createClient<paths>({
     baseUrl: apiBase,
+    credentials: "include",
   });
+
   return apiClient;
 }

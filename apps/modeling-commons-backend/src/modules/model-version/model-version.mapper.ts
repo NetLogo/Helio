@@ -8,7 +8,7 @@ export type ModelVersionRecord = {
   versionNumber: number;
   title: string;
   description: string | null;
-  previewImage: Buffer | null;
+  previewImage: Buffer<ArrayBuffer> | null;
   nlogoxFileId: string;
   netlogoVersion: string | null;
   infoTab: string | null;
@@ -29,7 +29,7 @@ export default function modelVersionMapper(): Mapper<
         versionNumber: record.versionNumber,
         title: record.title,
         description: record.description,
-        previewImage: record.previewImage ? Buffer.from(record.previewImage) : null,
+        previewImage: record.previewImage ?? null,
         nlogoxFileId: record.nlogoxFileId,
         netlogoVersion: record.netlogoVersion,
         infoTab: record.infoTab,

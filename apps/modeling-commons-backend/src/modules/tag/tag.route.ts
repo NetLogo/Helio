@@ -17,6 +17,7 @@ export default async function tagRoutes(fastify: FastifyInstance) {
       schema: {
         querystring: tagSearchQuerySchema,
         response: { 200: tagPaginatedResponseSchema },
+        tags: ['Tag', 'Search'],
       },
     },
     async (request) => {
@@ -35,6 +36,7 @@ export default async function tagRoutes(fastify: FastifyInstance) {
       schema: {
         params: tagIdOrNameParamsSchema,
         response: { 200: tagResponseDtoSchema },
+        tags: ['Tag'],
       },
     },
     async (request) => {

@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeModelVersionService from '#src/modules/model-version/model-version.service.ts';
 import modelVersionDomain from '#src/modules/model-version/domain/model-version.domain.ts';
-import { VersionNotFoundError, VersionFinalizedError } from '#src/modules/model-version/domain/model-version.errors.ts';
+import {
+  VersionNotFoundError,
+  VersionFinalizedError,
+} from '#src/modules/model-version/domain/model-version.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.mock.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
@@ -76,7 +79,9 @@ describe('modelVersionService', () => {
     });
 
     it('uses previous title as fallback', async () => {
-      modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion({ title: 'Previous' }));
+      modelVersionRepository.findLatestByModel.mockResolvedValue(
+        makeVersion({ title: 'Previous' }),
+      );
       modelVersionRepository.getNextVersionNumber.mockResolvedValue(2);
 
       await service.create('model-1', 'user-1', nlogoxFile, {});
@@ -94,19 +99,17 @@ describe('modelVersionService', () => {
 
       await service.updateCurrent('model-1', 'user-1', { title: 'Updated' });
 
-      expect(modelVersionRepository.updateFields).toHaveBeenCalledWith(
-        expect.anything(),
-        'v1',
-        { title: 'Updated' },
-      );
+      expect(modelVersionRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'v1', {
+        title: 'Updated',
+      });
     });
 
     it('throws VersionNotFoundError if no version exists', async () => {
       modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
 
-      await expect(
-        service.updateCurrent('model-1', 'user-1', { title: 'X' }),
-      ).rejects.toThrow(VersionNotFoundError);
+      await expect(service.updateCurrent('model-1', 'user-1', { title: 'X' })).rejects.toThrow(
+        VersionNotFoundError,
+      );
     });
 
     it('throws VersionFinalizedError if version is finalized', async () => {
@@ -114,9 +117,9 @@ describe('modelVersionService', () => {
         makeVersion({ finalizedAt: new Date() }),
       );
 
-      await expect(
-        service.updateCurrent('model-1', 'user-1', { title: 'X' }),
-      ).rejects.toThrow(VersionFinalizedError);
+      await expect(service.updateCurrent('model-1', 'user-1', { title: 'X' })).rejects.toThrow(
+        VersionFinalizedError,
+      );
     });
   });
 });

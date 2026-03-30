@@ -23,6 +23,7 @@ export default async function permissionRoutes(fastify: FastifyInstance) {
         params: permissionParamsSchema,
         body: grantPermissionRequestDtoSchema,
         response: { 201: permissionResponseDtoSchema },
+        tags: ['Model', 'Permission'],
       },
       preHandler: [requireAuth, resolveModel('admin')],
     },
@@ -42,6 +43,7 @@ export default async function permissionRoutes(fastify: FastifyInstance) {
     {
       schema: {
         params: permissionGranteeParamsSchema,
+        tags: ['Model', 'Permission'],
       },
       preHandler: [requireAuth, resolveModel('admin')],
     },
@@ -61,6 +63,7 @@ export default async function permissionRoutes(fastify: FastifyInstance) {
       schema: {
         params: permissionParamsSchema,
         response: { 200: Type.Array(permissionResponseDtoSchema) },
+        tags: ['Model', 'Permission'],
       },
       preHandler: [requireAuth, resolveModel('admin')],
     },

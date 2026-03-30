@@ -12,6 +12,7 @@ export default async function fileRoutes(fastify: FastifyInstance) {
       schema: {
         params: fileIdParamsSchema,
         response: { 200: fileResponseDtoSchema },
+        tags: ['File'],
       },
       preHandler: [requireAuth],
     },
@@ -24,8 +25,9 @@ export default async function fileRoutes(fastify: FastifyInstance) {
   fastify.get<{ Params: FileIdParams }>(
     '/v1/files/:id/download',
     {
-      schema: { params: fileIdParamsSchema },
-      preHandler: [requireAuth],
+      schema: { params: fileIdParamsSchema, tags: ['File'] },
+      // TODO: File Permissions Access Control
+      // preHandler: [requireAuth],
     },
     async (request, reply) => {
       const file = await fileService.download(request.params.id);

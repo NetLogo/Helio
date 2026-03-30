@@ -1,5 +1,5 @@
 import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
-import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
+import type { UserEntity, SystemRole, UserKind } from '#src/modules/user/domain/user.types.ts';
 import type { UserResponseDto } from '#src/modules/user/dtos/user.response.dto.ts';
 
 export type UserRecord = {
@@ -8,8 +8,8 @@ export type UserRecord = {
   email: string | null;
   emailVerified: boolean;
   image: string | null;
-  systemRole: string;
-  userKind: string;
+  systemRole: SystemRole;
+  userKind: UserKind;
   isProfilePublic: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -25,8 +25,8 @@ export default function userMapper(): Mapper<UserEntity, UserRecord, UserRespons
         email: record.email,
         emailVerified: record.emailVerified,
         image: record.image,
-        systemRole: record.systemRole as UserEntity['systemRole'],
-        userKind: record.userKind as UserEntity['userKind'],
+        systemRole: record.systemRole,
+        userKind: record.userKind,
         isProfilePublic: record.isProfilePublic,
         createdAt: new Date(record.createdAt),
         updatedAt: new Date(record.updatedAt),

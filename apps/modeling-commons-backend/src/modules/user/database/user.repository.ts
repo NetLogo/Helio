@@ -1,5 +1,10 @@
 import type { UserRepository } from '#src/modules/user/database/user.repository.port.ts';
-import type { UserEntity, UserSearchFilters } from '#src/modules/user/domain/user.types.ts';
+import type {
+  UserEntity,
+  UserSearchFilters,
+  UserKind,
+  SystemRole,
+} from '#src/modules/user/domain/user.types.ts';
 import type { UserRecord } from '#src/modules/user/user.mapper.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
@@ -35,7 +40,7 @@ export default function userRepository({
     async updateFields(
       ctx: TransactionContext,
       id: string,
-      data: { userKind?: string; isProfilePublic?: boolean; systemRole?: string },
+      data: { userKind?: UserKind; isProfilePublic?: boolean; systemRole?: SystemRole },
     ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.user.update({ where: { id }, data });

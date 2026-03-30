@@ -1,5 +1,9 @@
 import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
-import type { ModelEntity, ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
+import type {
+  ModelEntity,
+  ModelSearchFilters,
+  ModelVisibility,
+} from '#src/modules/model/domain/model.types.ts';
 import type { ModelRecord } from '#src/modules/model/model.mapper.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
@@ -53,7 +57,7 @@ export default function modelRepository({
     async updateFields(
       ctx: TransactionContext,
       id: string,
-      data: { visibility?: string; isEndorsed?: boolean },
+      data: { visibility?: ModelVisibility; isEndorsed?: boolean },
     ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.model.update({ where: { id }, data });

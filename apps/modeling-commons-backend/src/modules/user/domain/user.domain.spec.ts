@@ -42,11 +42,15 @@ describe('userDomain', () => {
     });
 
     it('returns true for self viewing private profile', () => {
-      expect(domain.canViewProfile(makeUser({ isProfilePublic: false }), 'user-1', 'user')).toBe(true);
+      expect(domain.canViewProfile(makeUser({ isProfilePublic: false }), 'user-1', 'user')).toBe(
+        true,
+      );
     });
 
     it('returns true for admin viewing private profile', () => {
-      expect(domain.canViewProfile(makeUser({ isProfilePublic: false }), 'admin-1', 'admin')).toBe(true);
+      expect(domain.canViewProfile(makeUser({ isProfilePublic: false }), 'admin-1', 'admin')).toBe(
+        true,
+      );
     });
   });
 

@@ -24,6 +24,7 @@
     "turbo:postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@better-auth/passkey": "^1.5.6",
     "@nuxt/content": "^3.7.1",
     "@nuxt/eslint": "1.10.0",
     "@nuxt/fonts": "0.12.1",
@@ -43,6 +44,7 @@
     "@repo/typescript-config": "0.0.0",
     "@repo/utils": "0.0.0",
     "@repo/vue-ui": "1.0.0",
+    "better-auth": "^1.5.6",
     "nuxt": "^4.1.2",
     "nuxt-gtag": "4.1.0",
     "nuxt-link-checker": "4.3.6",
