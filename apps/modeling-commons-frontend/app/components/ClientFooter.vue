@@ -1,5 +1,5 @@
 <template>
-  <Footer :sections="3">
+  <Footer :sections="3" class="md:px-[calc((100vw-var(--max-width-ch))/2)]!">
     <FooterContainer>
       <FooterBrandSection
         :brand="WebsiteLogo"

@@ -6,7 +6,7 @@ export default defineAppConfig({
     },
 
     container: {
-      base: "max-w-[150ch] px-4 lg:px-24 py-12 mx-auto",
+      base: "max-w-[var(--max-width-ch)] px-4  py-12 mx-auto",
     },
 
     input: {

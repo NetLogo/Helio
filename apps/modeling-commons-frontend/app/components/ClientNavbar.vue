@@ -2,12 +2,12 @@
   <Navbar
     id="main-navbar"
     ref="navbar"
-    class="backdrop-blur-lg! bg-white/80! border-b-2 border-primary lg:px-40!"
+    class="backdrop-blur-lg! bg-white/80! border-b-2 border-secondary md:px-[calc((100vw-var(--max-width-ch))/2)]!"
     :brand="brand"
     brand-href="/"
     :brand-attrs="brandAttrs"
   >
-    <NavbarLinksContainer class="flex-1">
+    <NavbarLinksContainer class="flex-1 mx-auto">
       <NavbarItem
         v-for="link in navbarLinks"
         :key="link.title"
