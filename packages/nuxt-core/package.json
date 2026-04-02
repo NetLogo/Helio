@@ -15,6 +15,8 @@
     ]
   },
   "scripts": {
+    "create:env": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.example')) { if (!fs.existsSync('.env')) { fs.copyFileSync('.env.example', '.env'); console.log('✓ .env created from .env.example'); } else { console.log('✓ .env already exists'); } } else { console.log('⚠ .env.example not found'); }\"",
+    "init": "yarn run create:env && nuxt prepare",
     "turbo:postinstall": "nuxt prepare",
     "lint": "eslint . --max-warnings 0",
     "check-types": "nuxi typecheck"
