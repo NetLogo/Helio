@@ -1,6 +1,6 @@
 <template>
   <UTooltip
-    v-if="!isNested && primitive && primitive.name"
+    v-if="primitive && primitive.name"
     :ui="{ content: 'primitive-tooltip ring-0 bg-transparent shadow-none ' }"
     :content="{
       side: 'top',
@@ -94,16 +94,12 @@
       </UPageCard>
     </template>
   </UTooltip>
-  <PrimitiveMarkup
-    v-else-if="isDisabled || isNested"
-    :name="props.name"
-    :url="primitive?.url"
-    v-bind="$attrs"
-  />
+  <PrimitiveMarkup v-else-if="isDisabled" :name="props.name" :url="primitive?.url" v-bind="$attrs">
+    <slot v-if="$slots['default']" />
+  </PrimitiveMarkup>
   <PrimitiveMarkup v-else :name="props.name" v-bind="$attrs">
-    <span v-if="$slots['default'] == null" class="netlogo-wiki-link text-red-500 bold">{{
-      props.name
-    }}</span>
+    <slot v-if="$slots['default']" />
+    <span v-else class="netlogo-wiki-link text-red-500 bold">{{ props.name }} </span>
   </PrimitiveMarkup>
 </template>
 
@@ -125,7 +121,8 @@ const props = defineProps<Props>();
 const isNested = inject<boolean>("prim-tooltip-nested", false);
 provide("prim-tooltip-nested", true);
 
-const isDisabled = inject<boolean>("prim-tooltip-disabled", false);
+const isDisabledGlobally = process.env.NUXT_PRIM_TOOLTIP_DISABLED === "1";
+const isDisabled = inject<boolean>("prim-tooltip-disabled", isDisabledGlobally);
 
 const { primitive } = isDisabled ? useNoPrimitive() : await usePrimitive({ name: props.name });
 

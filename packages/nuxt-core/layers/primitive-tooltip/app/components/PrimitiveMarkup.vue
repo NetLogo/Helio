@@ -1,6 +1,8 @@
 <template>
   <code class="netlogo-command" :data-primitive-name="name">
+    <slot v-if="$slots['default']" />
     <Anchor
+      v-else
       :href="url"
       class="netlogo-wiki-link"
       :data-display-text="name"
