@@ -259,6 +259,16 @@
     margin-bottom: 0;
   }
 
+  .prose blockquote > pre:has(+ pre) {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .prose blockquote > pre + pre {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
   .prose li pre {
     padding: 0;
   }
