@@ -106,7 +106,7 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     build: {
       sourcemap: true,
       rollupOptions: {
-        external: ["parse5", "prismjs", "zod/locales", "zod/v4/locales"],
+        external: ["prismjs", "zod/locales", "zod/v4/locales"],
       },
     },
     server: {
