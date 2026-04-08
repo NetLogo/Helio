@@ -1,6 +1,6 @@
 <template>
   <UTooltip
-    v-if="primitive && primitive.name"
+    v-if="!isNested && primitive && primitive.name"
     :ui="{ content: 'primitive-tooltip ring-0 bg-transparent shadow-none ' }"
     :content="{
       side: 'top',
@@ -11,17 +11,7 @@
     :delay-duration="300"
     :disabled="isNested"
   >
-    <code class="netlogo-command" :primitive-name="primitive.name">
-      <Anchor
-        :href="primitive.url"
-        class="netlogo-wiki-link"
-        :data-display-text="primitive.name"
-        :target="external ? '_blank' : '_self'"
-        :rel="external ? 'noopener noreferrer' : null"
-        >{{ props.name }}</Anchor
-      >
-    </code>
-
+    <PrimitiveMarkup :name="primitive.name" :url="primitive.url" />
     <template #content>
       <UPageCard
         varian="outline"
@@ -65,19 +55,19 @@
           <hr class="bg-slate-200 mb-0" />
         </div>
 
-        <div class="prose prose-tight p-0 m-0 mt-1 w-full">
+        <div class="prose prose-tight p-0 m-0 mt-1 w-full min-h-10">
           <MDC
             v-if="primitive.examples"
             :cache-key="`${primitive.name}-examples`"
             tag="div"
             unwrap="p"
             class="dict_entry"
-            :value="examples"
+            :value="primitive.examples"
           />
 
           <MDC
-            tag="div"
-            :cache-key="`${primitive.name}-description`"
+            :cache-key="primitive.name + 'description'"
+            class="mt-2"
             :value="primitive.description ?? ''"
           />
 
@@ -104,31 +94,25 @@
       </UPageCard>
     </template>
   </UTooltip>
-  <code
-    v-else
-    class="netlogo-command"
-    :primitive-name="props.name"
-    aria-label="Unknown NetLogo primitive"
-  >
+  <PrimitiveMarkup
+    v-else-if="isDisabled || isNested"
+    :name="props.name"
+    :url="primitive?.url"
+    v-bind="$attrs"
+  />
+  <PrimitiveMarkup v-else :name="props.name" v-bind="$attrs">
     <span v-if="$slots['default'] == null" class="netlogo-wiki-link text-red-500 bold">{{
       props.name
     }}</span>
-    <slot v-else />
-  </code>
+  </PrimitiveMarkup>
 </template>
 
 <script setup lang="ts">
-/**
- * TODO:
- * - [ ] Reduce memory footprint
- * - [ ] Fix hydration issues
- */
-import { escapeHTML } from "@repo/utils/std/string";
 import { useNoPrimitive } from "../composables/usePrimitive";
+import PrimitiveMarkup from "./PrimitiveMarkup.vue";
 
 defineOptions({
-  // Allowing client-side renderer to avoid SSR
-  // hydration issues in the development server.
+  ssr: true,
   client: false,
 });
 
@@ -144,22 +128,6 @@ provide("prim-tooltip-nested", true);
 const isDisabled = inject<boolean>("prim-tooltip-disabled", false);
 
 const { primitive } = isDisabled ? useNoPrimitive() : await usePrimitive({ name: props.name });
-
-const examples = computed(() => {
-  return `<h5 class="m-0">${
-    primitive.value?.examples
-      ?.map(
-        (ex: string) => `
-  <span class="prim-example font-mono m-0 block [&_p]:m-0! [&_p]:font-bold">
-
-  ${escapeHTML(ex)}
-
-  </span>
-  `,
-      )
-      .join("") ?? ""
-  }</h5>`;
-});
 
 const external = computed(() => {
   return primitive.value?.url?.startsWith("http");
