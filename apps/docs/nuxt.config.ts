@@ -38,12 +38,13 @@ export default defineNuxtConfig(
       ssr: true,
 
       routeRules:
-        process.env.DOCS_BUILD_SSR_CATALOG === '1'
-          ? {}
-          : {
+        process.env.DOCS_USE_CLIENT_CATALOG === '1'
+          ? {
               '/dict/**': { ssr: false, prerender: true },
               ...Object.fromEntries(extensions.map((ext) => [`${ext.href}/**`, { ssr: false, prerender: true }])),
-            },
+            }
+          : {},
+
       components: [
         {
           path: '~/components',
