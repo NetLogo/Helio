@@ -121,7 +121,7 @@ const props = defineProps<Props>();
 const isNested = inject<boolean>("prim-tooltip-nested", false);
 provide("prim-tooltip-nested", true);
 
-const isDisabledGlobally = process.env.NUXT_PRIM_TOOLTIP_DISABLED === "1";
+const isDisabledGlobally = process.env["NUXT_PRIM_TOOLTIP_DISABLED"] === "1";
 const isDisabled = inject<boolean>("prim-tooltip-disabled", isDisabledGlobally);
 
 const { primitive } = isDisabled ? useNoPrimitive() : await usePrimitive({ name: props.name });

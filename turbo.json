@@ -31,6 +31,12 @@
         "!.next/cache/**"
       ]
     },
+    "create:env": {
+      "cache": false,
+      "outputs": [
+        ".env"
+      ]
+    },
     "init": {
       "dependsOn": [
         "^build",

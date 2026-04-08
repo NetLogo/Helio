@@ -17,3 +17,7 @@ logs
 .DS_Store
 .fleet
 .idea
+
+# Environment variables
+.env
+.env.*.local

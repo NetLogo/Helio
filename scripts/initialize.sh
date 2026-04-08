@@ -11,8 +11,8 @@
 
 set -e
 
-NUXT_TELEMETRY_DISABLED=1
-HELIO_SKIP_CHECKS=1
+export NUXT_TELEMETRY_DISABLED=1
+export HELIO_SKIP_CHECKS=1
 
 REPO_HOME=$(pwd)
 if [ "$(basename $REPO_HOME)" = "scripts" ]; then
@@ -21,6 +21,7 @@ fi
 
 git submodule update --init --recursive
 yarn install --ignore-scripts --frozen-lockfile
+yarn turbo run create:env
 yarn turbo run build
 yarn install --force --frozen-lockfile
 NUXT_TELEMETRY_DISABLED=1 yarn turbo run init
