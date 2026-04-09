@@ -1,6 +1,5 @@
 import { DocumentMetadataSchema, Schemas } from '@repo/netlogo-docs/metadata';
-import { z } from 'zod';
-
+import * as z from 'zod';
 export const LearnMetadataSchema = z.object({
   thumbnail: z.string().optional(),
   tags: z.array(z.string()).default([]),

@@ -1,18 +1,21 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { getRoutesSubset } from "@repo/netlogo-docs/helpers-node";
 import tailwindcss from "@tailwindcss/vite";
+import { websiteConfigSchema } from "./runtime.config.schema";
 import { vueUiIconPack, vueUiSrc, vueUiStyles } from "./turbo";
-
-import { getRoutes } from "@repo/netlogo-docs/helpers";
 
 type NuxtBaseConfig = Parameters<typeof defineNuxtConfig>[0];
 
+const website = websiteConfigSchema.parse(process.env);
+
 export const nuxtBaseConfig: NuxtBaseConfig = {
+  extends: ["./layers/mdc", "./layers/primitive-tooltip"],
+
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
   app: {
     rootId: "__netlogo",
   },
   modules: [
+    "@nuxt/devtools", // Nuxt Devtools for enhanced development experience
     "@nuxtjs/sitemap", // Adds sitemap.xml
     "@repo/nuxt-content-assets", // Local asset loading based on relative paths in Markdowns
     "@nuxt/content", // Query, navigation, search, and rendering of Markdown files
@@ -27,9 +30,7 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     "@nuxtjs/google-fonts", // Google Fonts
   ],
 
-  colorMode: {
-    preference: "light",
-  },
+  site: { url: website.productWebsite, name: website.productName },
 
   css: ["~/assets/styles/main.scss", "~/assets/styles/tailwind.css", vueUiStyles],
 
@@ -41,6 +42,8 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   },
 
   $development: {
+    devtools: { enabled: true },
+
     experimental: {
       payloadExtraction: false,
     },
@@ -60,7 +63,6 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   components: [
     {
       path: vueUiSrc,
-      global: true,
       pattern: "**/*.vue",
       ignore: ["**/examples/*.vue", "**/tests/*.vue"],
       pathPrefix: false,
@@ -68,13 +70,14 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     },
     {
       path: "~/components",
-      global: true,
       pattern: "**/*.vue",
       ignore: ["**/examples/*.vue", "**/tests/*.vue"],
       pathPrefix: false,
       watch: true,
     },
   ],
+
+  ignore: [".build/", ".latest/", ".static/", ".preview/"],
 
   svgo: {
     customComponent: "SvgImport",
@@ -96,10 +99,15 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ["@repo/vue-ui", "@repo/utils", "@repo/netlogo-docs"],
+      include: ["@repo/vue-ui", "@repo/utils", "@repo/netlogo-docs", "zod"],
+      exclude: ["@repo/netlogo-docs/primitive-index", "@repo/utils/lib/server"],
     },
+
     build: {
       sourcemap: true,
+      rollupOptions: {
+        external: ["prismjs", "zod/locales", "zod/v4/locales"],
+      },
     },
     server: {
       watch: { usePolling: true },
@@ -111,6 +119,14 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     renderer: {
       anchorLinks: false,
     },
+    build: {
+      markdown: {
+        highlight: false,
+        remarkPlugins: {
+          "remark-emoji": false,
+        },
+      },
+    },
     watch: { enabled: false },
   },
 
@@ -121,30 +137,38 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     overrideStaticDimensions: false,
   },
 
-  mdc: {
-    components: {
-      prose: false,
-    },
-  },
-
   ui: {
     mdc: false,
     content: false,
+    colorMode: false,
   },
 
   ogImage: {
     defaults: {
-      extension: "png",
+      extension: "jpeg",
+      sharp: {
+        quality: 70,
+      },
     },
   },
 
-  linkChecker: {
-    excludeLinks: ["/*.pdf"],
-    skipInspections: ["no-baseless", "no-underscores", "trailing-slash"],
-    report: {
-      html: process.env["CHECK"] === "true",
-    },
-  },
+  linkChecker:
+    process.env.NUXT_BUILD_LINK_CHECKER === "0"
+      ? { enabled: false }
+      : {
+          excludeLinks: ["/*.pdf"],
+          skipInspections: [
+            "no-baseless",
+            "no-underscores",
+            "trailing-slash",
+            "absolute-site-urls",
+            "no-uppercase-chars",
+            "no-non-ascii-chars",
+          ],
+          report: {
+            html: process.env["CHECK"] === "true",
+          },
+        },
 
   hooks: {
     async ready() {
@@ -154,9 +178,12 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
       console.info(
         `[repo] Using primitives.yaml from ${import.meta.resolve("@repo/common-data/datasets/primitives.yaml")}`,
       );
+    },
+  },
 
-      const noAutogen = process.env["NO_AUTOGEN"] === "true";
-      if (noAutogen === true) return;
+  runtimeConfig: {
+    public: {
+      website,
     },
   },
 
@@ -165,9 +192,11 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     serveStatic: true,
     prerender: {
       autoSubfolderIndex: false,
-      crawlLinks: true,
+      crawlLinks: process.env.NITRO_PRERENDER_CRAWL_LINKS === "0" ? false : true,
       concurrency: 1,
-      routes: await getRoutes(),
+      routes: await getRoutesSubset(
+        process.env.NITRO_PRERENDER_ROUTES?.split(",").map((route) => route.trim()) || [],
+      ),
     },
   },
 };

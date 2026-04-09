@@ -1,17 +1,15 @@
-import { deepMerge } from '@repo/utils/std/objects';
-import tailwindcss from '@tailwindcss/vite';
+import { addNuxtContentAssetsRoot } from '@repo/netlogo-docs/helpers-node';
+import type { DefineNuxtConfig } from 'nuxt/config';
 
 import { getDocumentedExtensionBuilders } from '@repo/netlogo-docs/extension-docs';
-import { addNuxtContentAssetsRoot, getRoutes } from '@repo/netlogo-docs/helpers';
+import { deepMerge } from '@repo/utils/std/objects';
 
-import autogenConfig from './lib/docs/autogen.config';
-import * as MarkdownConfig from './lib/docs/markdown.config';
-import runDocsAutogen from './lib/docs/runDocsAutogen';
-
-import type { DefineNuxtConfig } from 'nuxt/config';
-import { publicEnvironmentVariables, verifyEnvironmentVariables } from './env.public';
 import pdfOverrides from './nuxt.config.pdf';
-import { vueUiSrc, vueUiStyles } from './turbo';
+import { websiteConfigSchema } from './runtime.config';
+
+import * as MarkdownConfig from '@repo/nuxt-core/markdown.config';
+import autogenConfig from './lib/docs/autogen.config';
+import runDocsAutogen from './lib/docs/runDocsAutogen';
 
 type NuxtConfigInput = Parameters<DefineNuxtConfig>[0];
 const basePath = process.env['BASE_PATH'] ?? '/';
@@ -23,149 +21,70 @@ if (isUsingPdfConfig) {
   console.info('[repo] Running with PDF generation configuration overrides');
 }
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
+const extensions = (await getDocumentedExtensionBuilders(autogenConfig)).map((ext) => ({
+  title: ext.fullName,
+  href: `/${ext.name.toLowerCase()}`,
+}));
 
 export default defineNuxtConfig(
   deepMerge<NuxtConfigInput, NuxtConfigInput>(
     {
-      compatibilityDate: '2025-07-15',
+      extends: ['@repo/nuxt-core/nuxt.config.ts'],
+
       app: {
         baseURL: basePath,
-        rootId: '__netlogo',
       },
-      devtools: { enabled: true },
+
       ssr: true,
-      // prettier-ignore
-      modules: [
-        '@nuxtjs/sitemap',             // Adds sitemap.xml
-        '@repo/nuxt-content-assets',   // Local asset loading based on relative paths in Markdowns
-        '@nuxt/content',               // Query, navigation, search, and rendering of Markdown files
-        '@nuxt/ui',                    // Reka-UI library for Nuxt
-        '@nuxt/icon',                  // Optimized icons with iconify
-        'nuxt-svgo',                   // SVG loader from file
-        '@nuxt/eslint',                // Linter
-        'nuxt-gtag',                   // Google
-        'nuxt-og-image',               // Dynamic Open Graph image generation
-        'nuxt-link-checker',           // Link checking post-build
+
+      routeRules:
+        process.env.DOCS_USE_CLIENT_CATALOG === '1'
+          ? {
+              '/dict/**': { ssr: false, prerender: true },
+              ...Object.fromEntries(extensions.map((ext) => [`${ext.href}/**`, { ssr: false, prerender: true }])),
+            }
+          : {},
+
+      components: [
+        {
+          path: '~/components',
+          pattern: '**/*.vue',
+          ignore: ['**/examples/*.vue', '**/tests/*.vue'],
+          pathPrefix: false,
+          watch: true,
+        },
       ],
-      site: { url: 'https://docs.netlogo.org', name: process.env['PRODUCT_NAME'] },
-      css: ['~/assets/styles/main.scss', '~/assets/styles/tailwind.css', vueUiStyles],
-      colorMode: {
-        preference: 'light',
-      },
 
       gtag: {
         id: 'G-ZET3KSPLMC',
       },
 
-      imports: {
-        autoImport: true,
-        transform: {
-          exclude: [/\bnode_modules\b/, /\b\.git\b/],
-        },
-      },
-
-      $development: {
-        experimental: {
-          payloadExtraction: false,
-        },
-      },
-
-      icon: {
-        mode: 'css',
-        cssLayer: 'base',
-      },
-
-      components: [
-        {
-          path: vueUiSrc,
-          global: true,
-          pattern: '**/*.vue',
-          ignore: ['**/examples/*.vue', '**/tests/*.vue'],
-          pathPrefix: false,
-          watch: true,
-        },
-        {
-          path: '~/components',
-          global: true,
-          pattern: '**/*.vue',
-          ignore: ['**/examples/*.vue', '**/tests/*.vue'],
-          pathPrefix: false,
-          watch: true,
-        },
-      ],
-
-      ignore: ['.build/', '.latest/', '.static/', '.preview/'],
-
-      svgo: {
-        customComponent: 'SvgImport',
-      },
-
       vite: {
-        plugins: [tailwindcss()],
         optimizeDeps: {
           include: ['@repo/vue-ui', ...MarkdownConfig.externalImports],
-        },
-        server: {
-          hmr: {
-            overlay: true,
-          },
-          watch: { usePolling: true },
         },
       },
 
       content: {
         build: MarkdownConfig.buildOptions,
-        renderer: {
-          anchorLinks: false,
-        },
-        watch: { enabled: false },
-      },
-
-      contentAssets: {
-        imageSize: 'style attrs',
-        contentExtensions: 'md',
-        debug: true,
-        overrideStaticDimensions: false,
-      },
-
-      ogImage: {
-        defaults: {
-          extension: 'jpeg',
-          sharp: {
-            quality: 70,
-          },
-        },
       },
 
       linkChecker: {
         excludeLinks: ['/*.pdf', `${basePath}NetLogo_User_Manual.pdf`],
-        skipInspections: ['no-baseless', 'no-underscores', 'trailing-slash'],
-        report: {
-          html: process.env['CHECK'] === 'true',
-        },
       },
 
       runtimeConfig: {
         public: {
-          extensions: (await getDocumentedExtensionBuilders(autogenConfig)).map((ext) => ({
-            title: ext.fullName,
-            href: `/${ext.name.toLowerCase()}`,
-          })),
-          ...publicEnvironmentVariables,
+          extensions,
+          website: websiteConfigSchema.parse(process.env),
         },
       },
 
       hooks: {
         async ready() {
-          verifyEnvironmentVariables();
-
-          console.info(`[repo] Using @repo/vue-ui source path: ${vueUiSrc}`);
-          console.info(`[repo] Using @repo/vue-ui styles path: ${vueUiStyles}`);
-
-          const noAutogen = process.env['NO_AUTOGEN'] === 'true';
-          if (noAutogen === true) return;
-          await runDocsAutogen();
+          if (process.env['NO_AUTOGEN'] !== 'true') {
+            await runDocsAutogen();
+          }
         },
         'content:file:beforeParse'(ctx) {
           addNuxtContentAssetsRoot(ctx.file);
@@ -176,12 +95,6 @@ export default defineNuxtConfig(
         static: true,
         serveStatic: true,
         baseURL: basePath,
-        prerender: {
-          autoSubfolderIndex: false,
-          crawlLinks: true,
-          concurrency: 1,
-          routes: await getRoutes(),
-        },
       },
     },
     optionalPdfLayer,

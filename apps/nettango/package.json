@@ -4,10 +4,11 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "^22.0.0"
+    "node": "^24.0.0"
   },
   "scripts": {
-    "init": "nuxt prepare",
+    "create:env": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.example')) { if (!fs.existsSync('.env')) { fs.copyFileSync('.env.example', '.env'); console.log('✓ .env created from .env.example'); } else { console.log('✓ .env already exists'); } } else { console.log('⚠ .env.example not found'); }\"",
+    "init": "npm run create:env && nuxt prepare",
     "nuxt:build": "nuxt build",
     "nuxt:dev": "nuxt dev --port 3003",
     "nuxt:dev:no-autogen": "NO_AUTOGEN=true nuxt dev --port 3003",
@@ -31,14 +32,13 @@
     "@nuxtjs/google-fonts": "3.2.0",
     "@nuxtjs/sitemap": "7.4.7",
     "@repo/eslint-config": "0.0.0",
-    "@repo/markdown": "0.0.0",
     "@repo/netlogo-docs": "0.0.0",
-    "@repo/nuxt-content-assets": "1.5.0",
     "@repo/tailwind-config": "0.0.0",
     "@repo/template": "0.0.0",
     "@repo/typescript-config": "0.0.0",
     "@repo/utils": "0.0.0",
     "@repo/vue-ui": "1.0.0",
+    "@repo/nuxt-core": "0.0.0",
     "@vueuse/core": "^14.1.0",
     "better-sqlite3": "^12.4.1",
     "eslint": "^9.31.0",
@@ -47,7 +47,6 @@
     "nuxt-link-checker": "4.3.6",
     "nuxt-og-image": "^5.1.12",
     "nuxt-svgo": "4.2.6",
-    "radix-vue": "1.9.17",
     "reka-ui": "^2.6.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.18",
@@ -58,6 +57,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.68",
     "@repo/nuxt-content-assets": "1.5.0",
+    "@repo/markdown": "0.0.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/vite": "^4.1.18",
     "rehype-autolink-headings": "^7.1.0",

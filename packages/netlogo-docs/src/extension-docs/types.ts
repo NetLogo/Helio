@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 import type { Primitive } from "./entities";
 
 export type TypeName =

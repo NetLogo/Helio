@@ -39,7 +39,6 @@ import { useMediaQuery } from "@vueuse/core";
 import { onMounted, ref, watch } from "vue";
 import { WebsiteLogo } from "~/assets/website-logo";
 import { useNavigation, type NavbarLink } from "~/composables/useNavigation";
-import Button from "../../../../packages/vue-ui/src/components/Button.vue";
 
 const route = useRoute();
 

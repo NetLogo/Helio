@@ -6,7 +6,7 @@ import TemplateRenderer from "@repo/template";
 
 import * as ArrayUtils from "@repo/utils/std/array";
 
-import { saveNavigationMetadata } from "../helpers/navigation";
+import { saveNavigationMetadata } from "../helpers-node/navigation";
 import { generatePrimitiveIndex } from "../primitive-index";
 
 import type { ProjectConfigInput } from "@repo/template/schemas";

@@ -22,7 +22,7 @@
           <Anchor href="/copyright"> Copyright and License Information </Anchor>
           page.
         </p>
-        <div v-if="productInfo.isBeta" class="highlight highlight-warning">
+        <div v-if="productIsBeta" class="highlight highlight-warning">
           <p>
             NetLogo <span v-if="productVersion">{{ productVersion }}</span> is a beta release. It is not recommended for
             production use, but we welcome your feedback on the new features and changes.
@@ -71,25 +71,24 @@ import { ref } from 'vue';
 import beginnersLinksData from '~/assets/beginners-links.json';
 import importantLinksData from '~/assets/important-links.json';
 
-const productInfo = useProductInfo();
-const productVersion = ref(productInfo.productVersion);
+const {
+  public: {
+    website: { productVersion, productDescription, productKeywords, productName, productIsBeta },
+  },
+} = useRuntimeConfig();
 const importantLinks = ref(importantLinksData);
 const beginnersLinks = ref(beginnersLinksData);
 
-const description =
-  'The official documentation for the NetLogo modeling environment, including user manuals, tutorials, and reference materials.';
-// Set page title and meta
 useSeoMeta({
-  description,
-  keywords:
-    'NetLogo,Documentation,User Manual,Tutorials,Reference,Agent-Based Modeling,Simulation,Programming,Modeling Environment',
+  title: productName,
+  description: productDescription,
+  keywords: productKeywords.join(', '),
 });
 
 defineOgImageComponent('DocsSeo', {
-  title: productInfo.productName,
-  description,
+  title: productName,
   theme: '#f31500',
   siteLogo: '/turtles.png',
-  siteName: productInfo.productName,
+  siteName: productName,
 });
 </script>

@@ -26,3 +26,8 @@ logs
 .idea
 
 routes.json
+
+# Environment variables
+.env
+.env.*.local
+.env.local

@@ -7,6 +7,16 @@
       "types": "./src/index.ts",
       "default": "./dist/index.js"
     },
+    "./helpers": {
+      "types": "./src/helpers/index.ts",
+      "import": "./dist/esm/helpers/index.js",
+      "require": "./dist/cjs/helpers/index.js"
+    },
+    "./helpers-node": {
+      "types": "./src/helpers-node/index.ts",
+      "import": "./dist/esm/helpers-node/index.js",
+      "require": "./dist/cjs/helpers-node/index.js"
+    },
     "./*": {
       "types": "./src/*/index.ts",
       "import": "./dist/esm/*/index.js",

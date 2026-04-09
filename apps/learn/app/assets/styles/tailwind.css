@@ -6,4 +6,5 @@
 
 @import 'tw-animate-css';
 @source "../../../../../packages/vue-ui/src";
+@source "../../../../../packages/nuxt-core/";
 @source "../../../content/**/*.md";

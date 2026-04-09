@@ -125,9 +125,8 @@
 </template>
 
 <script setup lang="ts">
-import { z } from "zod";
+import * as z from "zod";
 import type { DownloadLink, NetLogoVersion } from "~/utils/api";
-
 const props = defineProps<{
   versions: NetLogoVersion[];
   devOs: string;

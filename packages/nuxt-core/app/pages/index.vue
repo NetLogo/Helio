@@ -6,6 +6,5 @@
 </template>
 
 <script setup lang="ts">
-import { useWebsite } from "~/composables/useWebsite";
 const meta = useWebsite();
 </script>

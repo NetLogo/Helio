@@ -5,10 +5,21 @@
   "private": true,
   "exports": {
     "./nuxt.config.ts": "./nuxt.config.ts",
-    "./nuxt/tsconfig.json": "./.nuxt/tsconfig.json"
+    "./nuxt/tsconfig.json": "./.nuxt/tsconfig.json",
+    "./runtime.config.schema": "./runtime.config.schema.ts",
+    "./markdown.config": "./markdown.config.ts",
+    "./content.config": "./content.config.ts",
+    "./app/**/*": [
+      "./app/**/*.ts",
+      "./app/**/*.vue"
+    ]
   },
   "scripts": {
-    "turbo:postinstall": "nuxt prepare"
+    "create:env": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.example')) { if (!fs.existsSync('.env')) { fs.copyFileSync('.env.example', '.env'); console.log('✓ .env created from .env.example'); } else { console.log('✓ .env already exists'); } } else { console.log('⚠ .env.example not found'); }\"",
+    "init": "yarn run create:env && nuxt prepare",
+    "turbo:postinstall": "nuxt prepare",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "nuxi typecheck"
   },
   "dependencies": {
     "nuxt": "^4.1.2",
@@ -16,7 +27,6 @@
     "nuxt-link-checker": "4.3.6",
     "nuxt-og-image": "^5.1.12",
     "nuxt-svgo": "4.2.6",
-    "radix-vue": "1.9.17",
     "reka-ui": "^2.6.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.18",
@@ -34,7 +44,6 @@
     "@repo/eslint-config": "0.0.0",
     "@repo/markdown": "0.0.0",
     "@repo/netlogo-docs": "0.0.0",
-    "@repo/nuxt-content-assets": "1.5.0",
     "@repo/tailwind-config": "0.0.0",
     "@repo/template": "0.0.0",
     "@repo/typescript-config": "0.0.0",

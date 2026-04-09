@@ -1,5 +1,4 @@
-import { z } from "zod";
-
+import * as z from "zod";
 const ExtensionMetadataSchema = z.object({
   extensionName: z
     .object({

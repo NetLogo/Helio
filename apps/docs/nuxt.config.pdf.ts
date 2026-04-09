@@ -1,4 +1,4 @@
-import { getRoutesSubset } from '@repo/netlogo-docs/helpers';
+import { getRoutesSubset } from '@repo/netlogo-docs/helpers-node';
 import type { DefineNuxtConfig } from 'nuxt/config';
 
 const pdfOverrides: Parameters<DefineNuxtConfig>[0] = {
@@ -34,7 +34,6 @@ const pdfOverrides: Parameters<DefineNuxtConfig>[0] = {
     prerender: {
       autoSubfolderIndex: false,
       crawlLinks: false,
-      concurrency: 20,
       routes: await getRoutesSubset(process.env.NITRO_PRERENDER_ROUTES?.split(',').map((route) => route.trim()) || []),
     },
   },

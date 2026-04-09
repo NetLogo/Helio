@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 import { WebsiteLogo } from "~/assets/website-logo";
-import { useWebsite } from "~/composables/useWebsite";
 
 const meta = useWebsite();
 const currentYear = ref(new Date().getFullYear());

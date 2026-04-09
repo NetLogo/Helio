@@ -6,7 +6,7 @@ import glob from 'glob';
 import path from 'path';
 import process from 'process';
 
-import { saveNavigationMetadata } from '@repo/netlogo-docs/helpers';
+import { saveNavigationMetadata } from '@repo/netlogo-docs/helpers-node';
 
 function copyViaGlob(globPattern: string, destDir: string) {
   const files = glob.sync(globPattern, { nodir: true });
