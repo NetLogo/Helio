@@ -1,5 +1,7 @@
 # Creating Nuxt Project
 
+> :warning: This guide is no longer relevant and needs to be updated. (TODO)
+
 1. Copy `packages/nuxt-core` to `apps/<your-nuxt-app>`.
 2. Rename `package.target.json` to `package.json` (deleting the original `package.json` if it exists).
 3. Modify the `name` field in `package.json` to match your app name.

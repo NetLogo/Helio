@@ -1,4 +1,7 @@
 ## Dependency Management
+
+> :warning: This guide is no longer relevant and needs to be updated. (TODO)
+
 Managing dependencies might be the most tricky part of Helio development. Helio uses a monorepo structure managed with [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/), [yarn](https://yarnpkg.com/) and [turborepo](https://turbo.build/repo).
 
 ### Checking mismatched dependency versions
