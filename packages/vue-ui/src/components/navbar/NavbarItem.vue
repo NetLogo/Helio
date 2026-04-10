@@ -13,7 +13,7 @@
     @blur="dropdownOpen = false"
   >
     <Anchor :href="href">
-      <Icon v-if="icon" :class="$style['icon']" :name="icon"/>
+      <Icon v-if="icon" :class="$style['icon']" :name="icon" />
       {{ title }}
     </Anchor>
     <div

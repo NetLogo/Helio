@@ -1,4 +1,4 @@
-import type { ErrorStatus, FilterKeys, HttpMethod, OkStatus } from "openapi-typescript-helpers";
+import type { ErrorStatus, HttpMethod, OkStatus } from "openapi-typescript-helpers";
 import type { paths } from "~~/shared/types/api";
 
 export type QueryParams<
