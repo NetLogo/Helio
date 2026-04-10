@@ -1,4 +1,5 @@
-import { Given, When, DataTable } from '@cucumber/cucumber';
+import { Given, When } from '@cucumber/cucumber';
+import type { DataTable } from '@cucumber/cucumber';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import { createAuthenticatedUser, type TestUser } from '../support/auth-helper.ts';
 
@@ -79,6 +80,46 @@ When(
       url: `/api/v1/users/${target.id}`,
       payload: { userKind },
       headers: { cookie: actor.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+Given(
+  '{string} sets their profile to private',
+  async function (this: ICustomWorld, name: string) {
+    const user = getUsers(this.context).get(name)!;
+    await this.server.inject({
+      method: 'PATCH',
+      url: `/api/v1/users/${user.id}`,
+      payload: { isProfilePublic: false },
+      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+Given(
+  '{string} sets their profile to public',
+  async function (this: ICustomWorld, name: string) {
+    const user = getUsers(this.context).get(name)!;
+    await this.server.inject({
+      method: 'PATCH',
+      url: `/api/v1/users/${user.id}`,
+      payload: { isProfilePublic: true },
+      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+When(
+  '{string} gets the profile of {string}',
+  async function (this: ICustomWorld, actorName: string, targetName: string) {
+    const users = getUsers(this.context);
+    const actor = users.get(actorName)!;
+    const target = users.get(targetName)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/users/${target.id}`,
+      headers: { cookie: actor.cookie },
     });
   },
 );

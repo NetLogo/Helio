@@ -1,7 +1,13 @@
 <template>
   <UContainer>
     <div class="py-2">
-      <UButton variant="ghost" icon="i-lucide-arrow-left" to="/models" size="sm" class="mb-4 -ml-2 text-muted">
+      <UButton
+        variant="ghost"
+        icon="i-lucide-arrow-left"
+        to="/models"
+        size="sm"
+        class="mb-4 -ml-2 text-muted"
+      >
         Back to models
       </UButton>
 
@@ -30,8 +36,6 @@
 </template>
 
 <script setup lang="ts">
-import { useModelDetailStore } from "~/stores/modelDetail";
-
 const route = useRoute();
 const store = useModelDetailStore();
 const modelId = computed(() => route.params.id as string);
@@ -57,7 +61,8 @@ useSeoMeta({
   title: () => store.currentVersion?.title ?? "Model",
   description: () => store.currentVersion?.description ?? "View model details on Modeling Commons",
   ogTitle: () => store.currentVersion?.title ?? "Model",
-  ogDescription: () => store.currentVersion?.description ?? "View model details on Modeling Commons",
+  ogDescription: () =>
+    store.currentVersion?.description ?? "View model details on Modeling Commons",
   ogType: "article",
 });
 

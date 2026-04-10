@@ -5,19 +5,13 @@
     :description="model.description"
   >
     <template #badges>
-      <span
-        v-if="model.isEndorsed"
-        class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700"
-      >
-        <UIcon name="i-lucide-award" class="size-3" />
-        Featured
-      </span>
-      <span
-        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
-        :class="getVisibilityClass(model.visibility)"
-      >
-        {{ model.visibility }}
-      </span>
+      <UBadge v-if="model.isEndorsed" :icon="'i-lucide-award'" size="md"> Featured </UBadge>
+      <UBadge
+        :icon="getVisibilityIcon(model.visibility)"
+        size="md"
+        :title="model.visibility"
+        variant="outline"
+      />
     </template>
 
     <template #footer>
@@ -30,7 +24,7 @@
 
 <script setup lang="ts">
 import type { ModelListItem } from "~/stores/models";
-import { getVisibilityClass, formatRelativeDate } from "~/utils/formatters";
+import { formatRelativeDate } from "~/utils/formatters";
 
 defineProps<{
   model: ModelListItem;

@@ -1,9 +1,12 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
 import { PrismaClient } from '../generated/prisma/client.js';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const adapter = new PrismaPg({ connectionString: process.env['DATABASE_URL']! });
 const prisma = new PrismaClient({ adapter });
+const seedFilesPath = path.join(import.meta.dirname, 'seed-files');
 
 const ids = {
   // Users
@@ -108,7 +111,7 @@ async function main() {
   const users = [
     {
       id: ids.alice,
-      name: 'Alice Wilensky',
+      name: 'Alice Bob',
       email: 'alice@example.com',
       emailVerified: true,
       systemRole: 'user' as const,
@@ -232,20 +235,21 @@ async function main() {
   console.log(`  ✓ ${tags.length} tags`);
 
   // 5. Files (nlogox files + supplementary)
+
   const files = [
     {
       id: ids.wolfSheepNlogox1,
       filename: 'wolf-sheep-v1.nlogox',
       contentType: 'application/xml',
-      sizeBytes: BigInt(420),
-      blob: fakeNlogox('Wolf Sheep Predation v1'),
+      sizeBytes: fs.statSync(path.join(seedFilesPath, 'wolf-sheep-predation.nlogox')).size,
+      blob: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-predation.nlogox')),
     },
     {
       id: ids.wolfSheepNlogox2,
       filename: 'wolf-sheep-v2.nlogox',
       contentType: 'application/xml',
-      sizeBytes: BigInt(440),
-      blob: fakeNlogox('Wolf Sheep Predation v2'),
+      sizeBytes: fs.statSync(path.join(seedFilesPath, 'wolf-sheep-predation-v2.nlogox')).size,
+      blob: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-predation-v2.nlogox')),
     },
     {
       id: ids.fireSpreadNlogox,
@@ -272,8 +276,8 @@ async function main() {
       id: ids.wolfSheepForkNlogox,
       filename: 'wolf-sheep-fork.nlogox',
       contentType: 'application/xml',
-      sizeBytes: BigInt(450),
-      blob: fakeNlogox('Wolf Sheep Fork'),
+      sizeBytes: fs.statSync(path.join(seedFilesPath, 'wolf-sheep-predation.nlogox')).size,
+      blob: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-predation.nlogox')),
     },
     {
       id: ids.wolfSheepReadme,
@@ -347,6 +351,7 @@ async function main() {
       infoTab: '## WHAT IS IT?\n\nThis model explores the stability of predator-prey ecosystems.',
       createdAt: oneWeekAgo,
       finalizedAt: now,
+      previewImage: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-preview.png')),
     },
     {
       id: ids.wolfSheepV2,
@@ -358,6 +363,7 @@ async function main() {
       netlogoVersion: '6.4.0',
       infoTab:
         "## WHAT IS IT?\n\nThis model explores the stability of predator-prey ecosystems.\n\n## WHAT'S NEW\n\nEnergy-based movement added in v2.",
+      previewImage: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-preview.png')),
     },
     {
       id: ids.fireSpreadV1,
@@ -402,6 +408,7 @@ async function main() {
       nlogoxFileId: ids.wolfSheepForkNlogox,
       netlogoVersion: '6.4.0',
       infoTab: '## WHAT IS IT?\n\nA seasonal variant of the classic Wolf Sheep Predation model.',
+      previewImage: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-preview.png')),
     },
   ];
 

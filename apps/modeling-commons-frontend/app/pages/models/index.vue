@@ -2,7 +2,7 @@
   <UContainer>
     <div class="space-y-8">
       <header class="space-y-2">
-        <h1 class="text-3xl font-bold text-highlighted tracking-tight">Explore Models</h1>
+        <h1>Explore Models</h1>
         <p class="text-muted">
           Browse and discover agent-based simulations shared by the community.
         </p>
@@ -14,7 +14,7 @@
             :model-value="store.filters.keyword"
             placeholder="Search models by keyword..."
             icon="i-lucide-search"
-            size="lg"
+            size="xl"
             @update:model-value="onKeywordChange"
           />
         </div>
@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import type { SelectMenuItem } from '#ui/types';
+import type { SelectMenuItem } from "#ui/types";
 import { useModelsStore } from "~/stores/models";
 
 useSeoMeta({
@@ -89,13 +89,16 @@ const store = useModelsStore();
 const indicator = useLoadingIndicator();
 const loadFromEmpty = computed(() => !store.models.length && store.loading);
 
-watch(() => store.loading, (isLoading) => {
-  if (isLoading) {
-    indicator.start();
-  } else {
-    indicator.finish();
-  }
-});
+watch(
+  () => store.loading,
+  (isLoading) => {
+    if (isLoading) {
+      indicator.start();
+    } else {
+      indicator.finish();
+    }
+  },
+);
 
 const visibilityOptions: Array<SelectMenuItem> = [
   { label: "All", value: null },

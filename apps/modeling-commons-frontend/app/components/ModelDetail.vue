@@ -9,7 +9,7 @@
       @embed="handleEmbed"
     />
 
-    <div v-if="store.currentVersion?.description" class="docs prose text-toned prose-sm max-w-none">
+    <div v-if="store.currentVersion?.description" class="docs prose prose-sm max-w-none">
       <p>{{ store.currentVersion.description }}</p>
     </div>
 
@@ -17,7 +17,7 @@
 
     <NLWEmbed
       v-if="store.currentVersion?.nlogoxFileId"
-      :model-url="`${apiBase}/api/v1/files/${store.currentVersion.nlogoxFileId}/download`"
+      :model-url="`${apiBase}/${getFileUrl(store.currentVersion.nlogoxFileId)}`"
     />
 
     <ModelStats
@@ -36,23 +36,19 @@
           v-for="tab in tabs"
           :key="tab.key"
           class="flex-1 py-3 text-sm font-medium text-center transition-colors border-b-2 -mb-px"
-          :class="activeTab === tab.key
-            ? 'border-primary-600 text-highlighted'
-            : 'border-transparent text-muted hover:text-toned'
+          :class="
+            activeTab === tab.key
+              ? 'border-primary-600 text-highlighted'
+              : 'border-transparent text-muted hover:text-toned'
           "
           @click="activeTab = tab.key"
         >
           {{ tab.label }}
         </button>
       </div>
-
       <ModelDiscussionTab v-if="activeTab === 'discussion'" />
 
-      <ModelFilesTab
-        v-else-if="activeTab === 'files'"
-        :files="[]"
-        @download="handleFileDownload"
-      />
+      <ModelFilesTab v-else-if="activeTab === 'files'" :files="[]" @download="handleFileDownload" />
 
       <ModelVersionsTab
         v-else-if="activeTab === 'versions'"
@@ -70,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import type { VersionRow, FamilyModel } from "~/components/model-detail/types";
+import type { FamilyModel, VersionRow } from "~/components/model-detail/types";
 import NLWEmbed from "./netlogo-web/NLWEmbed.vue";
 
 const store = useModelDetailStore();
@@ -114,19 +110,34 @@ const versionRows = computed<VersionRow[]>(() =>
 const familyParent = ref<FamilyModel | null>(null);
 const familyChildren = ref<FamilyModel[]>([]);
 
-async function fetchFamilyModel(modelId: string, linkedVersionId?: string | null): Promise<FamilyModel | null> {
+async function fetchFamilyModel(
+  modelId: string,
+  linkedVersionId?: string | null,
+): Promise<FamilyModel | null> {
   const { GET } = useApi();
 
   const [modelRes, versionsRes, authorsRes] = await Promise.all([
     GET("/api/v1/models/{id}", { params: { path: { id: modelId } } }),
-    GET("/api/v1/models/{id}/versions", { params: { path: { id: modelId }, query: { limit: 50 } } }),
+    GET("/api/v1/models/{id}/versions", {
+      params: { path: { id: modelId }, query: { limit: 50 } },
+    }),
     GET("/api/v1/models/{id}/authors", { params: { path: { id: modelId } } }),
   ]);
 
   if (modelRes.error) return null;
 
-  const model = modelRes.data as { id: string; createdAt: string; visibility: string; isEndorsed: boolean };
-  const versionsData = versionsRes.data as { count: number; data: { id: string; title: string; description: string | null; versionNumber: number }[] } | undefined;
+  const model = modelRes.data as {
+    id: string;
+    createdAt: string;
+    visibility: string;
+    isEndorsed: boolean;
+  };
+  const versionsData = versionsRes.data as
+    | {
+        count: number;
+        data: { id: string; title: string; description: string | null; versionNumber: number }[];
+      }
+    | undefined;
   const versions = versionsData?.data ?? [];
   const latestVersion = versions[0];
 
@@ -140,7 +151,9 @@ async function fetchFamilyModel(modelId: string, linkedVersionId?: string | null
 
   let authorName: string | null = null;
   if (ownerId) {
-    const { data: userData } = await GET("/api/v1/users/{id}", { params: { path: { id: ownerId } } });
+    const { data: userData } = await GET("/api/v1/users/{id}", {
+      params: { path: { id: ownerId } },
+    });
     authorName = (userData as { name: string | null } | undefined)?.name ?? null;
   }
 
@@ -163,7 +176,10 @@ async function fetchFamily() {
   const { GET } = useApi();
 
   if (store.model.parentModelId) {
-    familyParent.value = await fetchFamilyModel(store.model.parentModelId, store.model.parentVersionId);
+    familyParent.value = await fetchFamilyModel(
+      store.model.parentModelId,
+      store.model.parentVersionId,
+    );
   } else {
     familyParent.value = null;
   }
@@ -171,7 +187,9 @@ async function fetchFamily() {
   const childrenRes = await GET("/api/v1/models/{id}/children", {
     params: { path: { id: store.model.id }, query: { limit: 50 } },
   });
-  const childrenData = childrenRes.data as { data: { id: string; parentVersionId: string | null }[] } | undefined;
+  const childrenData = childrenRes.data as
+    | { data: { id: string; parentVersionId: string | null }[] }
+    | undefined;
   const childEntries = childrenData?.data ?? [];
 
   const resolved = await Promise.all(childEntries.map((child) => fetchFamilyModel(child.id)));
@@ -187,9 +205,12 @@ async function fetchFamily() {
     .filter((m): m is FamilyModel => m !== null);
 }
 
-watch(() => store.model?.id, (id) => {
-  if (id) fetchFamily();
-});
+watch(
+  () => store.model?.id,
+  (id) => {
+    if (id) fetchFamily();
+  },
+);
 
 function handleEmbed() {
   // TODO: implement embed modal
@@ -212,10 +233,10 @@ function handleCompare() {
 }
 
 function handleFileDownload(fileId: string) {
-  window.open(`${apiBase}/api/v1/files/${fileId}/download`, "_blank");
+  window.open(`${apiBase}/${getFileUrl(fileId)}`, "_blank");
 }
 
 function handleVersionDownload(fileId: string) {
-  window.open(`${apiBase}/api/v1/files/${fileId}/download`, "_blank");
+  window.open(`${apiBase}/${getFileUrl(fileId)}`, "_blank");
 }
 </script>

@@ -3,7 +3,7 @@
     <div class="mx-auto max-w-2xl">
       <div class="rounded-lg bg-white shadow-lg">
         <div class="border-b border-slate-200 bg-slate-50 px-8 py-6">
-          <h1 class="text-3xl font-bold text-slate-900">API Test</h1>
+          <h1 class="font-bold text-slate-900">API Test</h1>
           <p class="mt-2 text-slate-600">Testing the backend connection</p>
         </div>
         <div class="p-8">
@@ -91,7 +91,6 @@
 </template>
 
 <script setup lang="ts">
-
 interface TestData {
   data: {
     greeting: string;

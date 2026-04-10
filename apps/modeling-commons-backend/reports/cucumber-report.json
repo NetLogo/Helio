@@ -14,7 +14,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 117982708
+              "duration": 104148625
             }
           },
           {
@@ -27,7 +27,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 147567665
+              "duration": 149073957
             }
           },
           {
@@ -40,7 +40,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 76082
+              "duration": 88541
             }
           },
           {
@@ -53,7 +53,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 44875
+              "duration": 41125
             }
           },
           {
@@ -61,7 +61,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 141834
+              "duration": 144250
             },
             "embeddings": [
               {
@@ -86,7 +86,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 65844458
+              "duration": 57661207
             }
           },
           {
@@ -99,7 +99,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2610333
+              "duration": 2657042
             }
           },
           {
@@ -112,7 +112,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 37542
+              "duration": 37958
             }
           },
           {
@@ -120,7 +120,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 50959
+              "duration": 51082
             },
             "embeddings": [
               {
@@ -145,7 +145,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 50437999
+              "duration": 52061166
             }
           },
           {
@@ -158,7 +158,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 84881874
+              "duration": 84617458
             }
           },
           {
@@ -171,7 +171,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 70087083
+              "duration": 72682166
             }
           },
           {
@@ -184,7 +184,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 59041
+              "duration": 40916
             }
           },
           {
@@ -197,7 +197,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 54625
+              "duration": 33415
             }
           },
           {
@@ -205,7 +205,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 64624
+              "duration": 54750
             },
             "embeddings": [
               {
@@ -230,7 +230,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 61301375
+              "duration": 59128874
             }
           },
           {
@@ -243,7 +243,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 78028709
+              "duration": 82892542
             }
           },
           {
@@ -256,7 +256,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 58376875
+              "duration": 66738749
             }
           },
           {
@@ -269,7 +269,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 64332
+              "duration": 81958
             }
           },
           {
@@ -277,7 +277,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 57542
+              "duration": 88041
             },
             "embeddings": [
               {
@@ -313,7 +313,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 62195709
+              "duration": 75549749
             }
           },
           {
@@ -326,7 +326,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 138621874
+              "duration": 142417291
             }
           },
           {
@@ -339,7 +339,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 13719541
+              "duration": 13251832
             }
           },
           {
@@ -352,7 +352,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 13057666
+              "duration": 14125667
             }
           },
           {
@@ -365,7 +365,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26166
+              "duration": 32208
             }
           },
           {
@@ -378,7 +378,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 37125
+              "duration": 41457
             }
           },
           {
@@ -386,7 +386,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 53875
+              "duration": 65583
             },
             "embeddings": [
               {
@@ -411,7 +411,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 55897292
+              "duration": 65547125
             }
           },
           {
@@ -424,7 +424,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 135581333
+              "duration": 146977625
             }
           },
           {
@@ -437,7 +437,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9292541
+              "duration": 11985208
             }
           },
           {
@@ -450,7 +450,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3674500
+              "duration": 4404791
             }
           },
           {
@@ -463,7 +463,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 24874
+              "duration": 41291
             }
           },
           {
@@ -476,7 +476,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 21291
+              "duration": 20957
             }
           },
           {
@@ -484,7 +484,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 48500
+              "duration": 62999
             },
             "embeddings": [
               {
@@ -509,7 +509,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 69265792
+              "duration": 52342959
             }
           },
           {
@@ -518,11 +518,11 @@
             "line": 21,
             "name": "an authenticated user \"regular\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 133782417
+              "duration": 142286292
             }
           },
           {
@@ -535,7 +535,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3897249
+              "duration": 4006624
             }
           },
           {
@@ -548,7 +548,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 24667
+              "duration": 29792
             }
           },
           {
@@ -556,7 +556,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 70165
+              "duration": 89792
             },
             "embeddings": [
               {
@@ -581,7 +581,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 70065500
+              "duration": 54608584
             }
           },
           {
@@ -594,7 +594,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1233957
+              "duration": 916250
             }
           },
           {
@@ -607,7 +607,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 23874
+              "duration": 18542
             }
           },
           {
@@ -615,7 +615,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 41583
+              "duration": 34041
             },
             "embeddings": [
               {
@@ -651,7 +651,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 62236792
+              "duration": 47885959
             }
           },
           {
@@ -664,7 +664,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 783207
+              "duration": 784458
             }
           },
           {
@@ -677,7 +677,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 24208
+              "duration": 21083
             }
           },
           {
@@ -690,7 +690,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 46124
+              "duration": 36457
             }
           },
           {
@@ -703,7 +703,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 34916
+              "duration": 25999
             }
           },
           {
@@ -711,7 +711,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 60791
+              "duration": 54666
             },
             "embeddings": [
               {
@@ -747,7 +747,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 59097250
+              "duration": 43940291
             }
           },
           {
@@ -756,11 +756,11 @@
             "line": 7,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 140246583
+              "duration": 159121625
             }
           },
           {
@@ -773,7 +773,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 11021416
+              "duration": 10458957
             }
           },
           {
@@ -786,7 +786,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4969375
+              "duration": 10817833
             }
           },
           {
@@ -799,7 +799,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 31458
+              "duration": 42333
             }
           },
           {
@@ -812,7 +812,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 27165
+              "duration": 26499
             }
           },
           {
@@ -820,7 +820,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 71582
+              "duration": 81040
             },
             "embeddings": [
               {
@@ -845,7 +845,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 72676875
+              "duration": 57727291
             }
           },
           {
@@ -854,11 +854,11 @@
             "line": 14,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 155907333
+              "duration": 175300084
             }
           },
           {
@@ -871,7 +871,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10264834
+              "duration": 8933208
             }
           },
           {
@@ -880,11 +880,11 @@
             "line": 16,
             "name": "an authenticated user \"contributor\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 132507375
+              "duration": 137456666
             }
           },
           {
@@ -897,7 +897,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 12315375
+              "duration": 10153957
             }
           },
           {
@@ -910,7 +910,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 37833
+              "duration": 36583
             }
           },
           {
@@ -918,7 +918,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 80291
+              "duration": 62332
             },
             "embeddings": [
               {
@@ -943,7 +943,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 78105083
+              "duration": 64023750
             }
           },
           {
@@ -952,11 +952,11 @@
             "line": 21,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 135462500
+              "duration": 138315625
             }
           },
           {
@@ -969,7 +969,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9181791
+              "duration": 8754875
             }
           },
           {
@@ -978,11 +978,11 @@
             "line": 23,
             "name": "an authenticated user \"contributor\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 141844374
+              "duration": 138497624
             }
           },
           {
@@ -995,7 +995,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 11077499
+              "duration": 14109915
             }
           },
           {
@@ -1008,7 +1008,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3604208
+              "duration": 3660582
             }
           },
           {
@@ -1021,7 +1021,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 24457
+              "duration": 28375
             }
           },
           {
@@ -1029,7 +1029,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 37792
+              "duration": 32374
             },
             "embeddings": [
               {
@@ -1054,7 +1054,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 79382875
+              "duration": 62452749
             }
           },
           {
@@ -1063,11 +1063,11 @@
             "line": 29,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 136721166
+              "duration": 136191208
             }
           },
           {
@@ -1080,7 +1080,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7979917
+              "duration": 9940625
             }
           },
           {
@@ -1089,11 +1089,11 @@
             "line": 31,
             "name": "an authenticated user \"contributor\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 148196416
+              "duration": 167048541
             }
           },
           {
@@ -1106,7 +1106,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 11454208
+              "duration": 8987334
             }
           },
           {
@@ -1119,7 +1119,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8497792
+              "duration": 8500584
             }
           },
           {
@@ -1132,7 +1132,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 27667
+              "duration": 30542
             }
           },
           {
@@ -1140,7 +1140,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 45125
+              "duration": 34291
             },
             "embeddings": [
               {
@@ -1165,7 +1165,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 71919541
+              "duration": 63922958
             }
           },
           {
@@ -1174,11 +1174,11 @@
             "line": 37,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 141027291
+              "duration": 143833666
             }
           },
           {
@@ -1191,7 +1191,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9783374
+              "duration": 14309874
             }
           },
           {
@@ -1204,7 +1204,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3609084
+              "duration": 5794624
             }
           },
           {
@@ -1217,7 +1217,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 22333
+              "duration": 32791
             }
           },
           {
@@ -1225,7 +1225,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 32208
+              "duration": 35957
             },
             "embeddings": [
               {
@@ -1250,7 +1250,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 61619750
+              "duration": 74881333
             }
           },
           {
@@ -1259,11 +1259,11 @@
             "line": 43,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 135105500
+              "duration": 147471458
             }
           },
           {
@@ -1276,7 +1276,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9387416
+              "duration": 14497957
             }
           },
           {
@@ -1285,11 +1285,11 @@
             "line": 45,
             "name": "an authenticated user \"new-owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 160211750
+              "duration": 138709584
             }
           },
           {
@@ -1302,7 +1302,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7593124
+              "duration": 8695999
             }
           },
           {
@@ -1315,7 +1315,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7223874
+              "duration": 7830750
             }
           },
           {
@@ -1328,7 +1328,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26875
+              "duration": 33500
             }
           },
           {
@@ -1336,7 +1336,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 41999
+              "duration": 36208
             },
             "embeddings": [
               {
@@ -1361,7 +1361,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 72337416
+              "duration": 53068249
             }
           },
           {
@@ -1370,11 +1370,11 @@
             "line": 51,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 142652667
+              "duration": 144199542
             }
           },
           {
@@ -1387,7 +1387,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9568624
+              "duration": 11526541
             }
           },
           {
@@ -1396,11 +1396,11 @@
             "line": 53,
             "name": "an authenticated user \"outsider\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 144592250
+              "duration": 169813833
             }
           },
           {
@@ -1413,7 +1413,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6152041
+              "duration": 7308458
             }
           },
           {
@@ -1426,7 +1426,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 25333
+              "duration": 52083
             }
           },
           {
@@ -1434,7 +1434,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 30584
+              "duration": 52833
             },
             "embeddings": [
               {
@@ -1459,7 +1459,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 69018540
+              "duration": 57801792
             }
           },
           {
@@ -1468,11 +1468,11 @@
             "line": 58,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 135231749
+              "duration": 149642917
             }
           },
           {
@@ -1485,7 +1485,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7872083
+              "duration": 27827709
             }
           },
           {
@@ -1494,11 +1494,11 @@
             "line": 60,
             "name": "an authenticated user \"contributor\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 130416167
+              "duration": 137257958
             }
           },
           {
@@ -1511,7 +1511,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10147249
+              "duration": 10456791
             }
           },
           {
@@ -1520,11 +1520,11 @@
             "line": 62,
             "name": "an authenticated user \"intruder\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 147492207
+              "duration": 163273291
             }
           },
           {
@@ -1537,7 +1537,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6112417
+              "duration": 6061249
             }
           },
           {
@@ -1550,7 +1550,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 29542
+              "duration": 21208
             }
           },
           {
@@ -1558,7 +1558,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 57332
+              "duration": 30999
             },
             "embeddings": [
               {
@@ -1583,7 +1583,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 62416333
+              "duration": 66756750
             }
           },
           {
@@ -1592,11 +1592,11 @@
             "line": 67,
             "name": "an authenticated user \"author\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 165200667
+              "duration": 161229000
             }
           },
           {
@@ -1609,7 +1609,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 12574625
+              "duration": 12150209
             }
           },
           {
@@ -1622,7 +1622,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3357875
+              "duration": 2673707
             }
           },
           {
@@ -1635,7 +1635,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 20125
+              "duration": 25250
             }
           },
           {
@@ -1648,7 +1648,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 28957
+              "duration": 31833
             }
           },
           {
@@ -1661,7 +1661,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 23375
+              "duration": 21292
             }
           },
           {
@@ -1669,7 +1669,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 37249
+              "duration": 35415
             },
             "embeddings": [
               {
@@ -1694,7 +1694,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 65228750
+              "duration": 56110457
             }
           },
           {
@@ -1703,11 +1703,11 @@
             "line": 75,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 157192915
+              "duration": 172102291
             }
           },
           {
@@ -1720,7 +1720,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 14563624
+              "duration": 16150625
             }
           },
           {
@@ -1729,11 +1729,11 @@
             "line": 77,
             "name": "an authenticated user \"contributor\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 130588499
+              "duration": 151011082
             }
           },
           {
@@ -1746,7 +1746,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 11519167
+              "duration": 13257834
             }
           },
           {
@@ -1759,7 +1759,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4747999
+              "duration": 6467583
             }
           },
           {
@@ -1772,7 +1772,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 48667
+              "duration": 41916
             }
           },
           {
@@ -1780,7 +1780,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 47708
+              "duration": 248625
             },
             "embeddings": [
               {
@@ -1816,7 +1816,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 77534499
+              "duration": 73134750
             }
           },
           {
@@ -1825,11 +1825,11 @@
             "line": 7,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 151143417
+              "duration": 136241958
             }
           },
           {
@@ -1842,7 +1842,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10631083
+              "duration": 10897040
             }
           },
           {
@@ -1851,11 +1851,11 @@
             "line": 9,
             "name": "an authenticated user \"reader\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 131299167
+              "duration": 134019084
             }
           },
           {
@@ -1868,7 +1868,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 18938749
+              "duration": 16114792
             }
           },
           {
@@ -1881,7 +1881,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 50000
+              "duration": 29708
             }
           },
           {
@@ -1889,7 +1889,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 59124
+              "duration": 30874
             },
             "embeddings": [
               {
@@ -1914,7 +1914,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 90606292
+              "duration": 70816416
             }
           },
           {
@@ -1923,11 +1923,11 @@
             "line": 14,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 138604416
+              "duration": 152027708
             }
           },
           {
@@ -1940,7 +1940,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8563833
+              "duration": 16527667
             }
           },
           {
@@ -1949,11 +1949,11 @@
             "line": 16,
             "name": "an authenticated user \"reader\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 130604041
+              "duration": 172985208
             }
           },
           {
@@ -1966,7 +1966,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 11976250
+              "duration": 20762875
             }
           },
           {
@@ -1979,7 +1979,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8612124
+              "duration": 8798875
             }
           },
           {
@@ -1992,7 +1992,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 29583
+              "duration": 36125
             }
           },
           {
@@ -2000,7 +2000,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 35083
+              "duration": 36667
             },
             "embeddings": [
               {
@@ -2025,7 +2025,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 79382582
+              "duration": 98796374
             }
           },
           {
@@ -2034,11 +2034,11 @@
             "line": 22,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 137479166
+              "duration": 139261415
             }
           },
           {
@@ -2051,7 +2051,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9585250
+              "duration": 11256250
             }
           },
           {
@@ -2060,11 +2060,11 @@
             "line": 24,
             "name": "an authenticated user \"writer\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 144974833
+              "duration": 134469166
             }
           },
           {
@@ -2077,7 +2077,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 15341915
+              "duration": 21431333
             }
           },
           {
@@ -2090,7 +2090,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7090917
+              "duration": 12186459
             }
           },
           {
@@ -2103,7 +2103,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 30957
+              "duration": 34374
             }
           },
           {
@@ -2111,7 +2111,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 33207
+              "duration": 49250
             },
             "embeddings": [
               {
@@ -2136,7 +2136,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 81251709
+              "duration": 74135625
             }
           },
           {
@@ -2145,11 +2145,11 @@
             "line": 30,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 136642541
+              "duration": 137028458
             }
           },
           {
@@ -2162,7 +2162,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9376624
+              "duration": 9315333
             }
           },
           {
@@ -2171,11 +2171,11 @@
             "line": 32,
             "name": "an authenticated user \"reader\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 146600334
+              "duration": 137782166
             }
           },
           {
@@ -2188,7 +2188,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 16785875
+              "duration": 12617665
             }
           },
           {
@@ -2201,7 +2201,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7359166
+              "duration": 5129333
             }
           },
           {
@@ -2214,7 +2214,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 33416
+              "duration": 25042
             }
           },
           {
@@ -2222,7 +2222,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 41541
+              "duration": 45749
             },
             "embeddings": [
               {
@@ -2247,7 +2247,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 79312500
+              "duration": 63792416
             }
           },
           {
@@ -2256,11 +2256,11 @@
             "line": 38,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 141087792
+              "duration": 142481124
             }
           },
           {
@@ -2273,7 +2273,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9059916
+              "duration": 8891791
             }
           },
           {
@@ -2282,11 +2282,11 @@
             "line": 40,
             "name": "an authenticated user \"collaborator\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 130225959
+              "duration": 131035332
             }
           },
           {
@@ -2299,7 +2299,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6974916
+              "duration": 11819375
             }
           },
           {
@@ -2312,7 +2312,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4199291
+              "duration": 5259125
             }
           },
           {
@@ -2325,7 +2325,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26125
+              "duration": 31082
             }
           },
           {
@@ -2338,7 +2338,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26417
+              "duration": 28458
             }
           },
           {
@@ -2346,7 +2346,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 40500
+              "duration": 36458
             },
             "embeddings": [
               {
@@ -2371,7 +2371,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 73949667
+              "duration": 60645042
             }
           },
           {
@@ -2380,11 +2380,11 @@
             "line": 47,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 150523957
+              "duration": 151264124
             }
           },
           {
@@ -2397,7 +2397,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 17773250
+              "duration": 8705500
             }
           },
           {
@@ -2406,11 +2406,11 @@
             "line": 49,
             "name": "an authenticated user \"former\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 166099334
+              "duration": 138495958
             }
           },
           {
@@ -2423,7 +2423,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7206582
+              "duration": 11447291
             }
           },
           {
@@ -2436,7 +2436,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 5414999
+              "duration": 12076207
             }
           },
           {
@@ -2449,7 +2449,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 27041
+              "duration": 51082
             }
           },
           {
@@ -2457,7 +2457,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 50291
+              "duration": 56167
             },
             "embeddings": [
               {
@@ -2482,7 +2482,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 60321416
+              "duration": 66124458
             }
           },
           {
@@ -2491,11 +2491,11 @@
             "line": 55,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 146341583
+              "duration": 141261583
             }
           },
           {
@@ -2508,7 +2508,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8166624
+              "duration": 7170000
             }
           },
           {
@@ -2517,11 +2517,11 @@
             "line": 57,
             "name": "an authenticated user \"former\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 147287457
+              "duration": 135784250
             }
           },
           {
@@ -2534,7 +2534,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 16817624
+              "duration": 10809624
             }
           },
           {
@@ -2547,7 +2547,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9121708
+              "duration": 5321916
             }
           },
           {
@@ -2560,7 +2560,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4422416
+              "duration": 3079708
             }
           },
           {
@@ -2573,7 +2573,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 24832
+              "duration": 23167
             }
           },
           {
@@ -2581,7 +2581,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 35832
+              "duration": 30582
             },
             "embeddings": [
               {
@@ -2606,7 +2606,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 66853250
+              "duration": 56571540
             }
           },
           {
@@ -2615,11 +2615,11 @@
             "line": 64,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 139029875
+              "duration": 137983416
             }
           },
           {
@@ -2632,7 +2632,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9158499
+              "duration": 7977666
             }
           },
           {
@@ -2641,11 +2641,11 @@
             "line": 66,
             "name": "an authenticated user \"intruder\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 147873665
+              "duration": 136483499
             }
           },
           {
@@ -2658,7 +2658,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7791541
+              "duration": 13522542
             }
           },
           {
@@ -2671,7 +2671,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 46625
+              "duration": 25166
             }
           },
           {
@@ -2679,7 +2679,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 119916
+              "duration": 29334
             },
             "embeddings": [
               {
@@ -2704,7 +2704,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 60166666
+              "duration": 59689540
             }
           },
           {
@@ -2713,11 +2713,11 @@
             "line": 71,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 132189875
+              "duration": 154915874
             }
           },
           {
@@ -2730,7 +2730,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 12919916
+              "duration": 7733792
             }
           },
           {
@@ -2739,11 +2739,11 @@
             "line": 73,
             "name": "an authenticated user \"grantee\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 129458082
+              "duration": 151214375
             }
           },
           {
@@ -2756,7 +2756,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 13066708
+              "duration": 13887041
             }
           },
           {
@@ -2769,7 +2769,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3585959
+              "duration": 3185375
             }
           },
           {
@@ -2782,7 +2782,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 19999
+              "duration": 20833
             }
           },
           {
@@ -2790,7 +2790,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 31166
+              "duration": 40124
             },
             "embeddings": [
               {
@@ -2815,7 +2815,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 66317915
+              "duration": 59559291
             }
           },
           {
@@ -2824,11 +2824,11 @@
             "line": 79,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 139678041
+              "duration": 143607833
             }
           },
           {
@@ -2841,7 +2841,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9214625
+              "duration": 8532125
             }
           },
           {
@@ -2850,11 +2850,11 @@
             "line": 81,
             "name": "an authenticated user \"delegate\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 161474874
+              "duration": 165893167
             }
           },
           {
@@ -2867,7 +2867,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 13229583
+              "duration": 11388667
             }
           },
           {
@@ -2876,11 +2876,11 @@
             "line": 83,
             "name": "an authenticated user \"third\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 129409208
+              "duration": 151738499
             }
           },
           {
@@ -2893,7 +2893,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6063500
+              "duration": 14641916
             }
           },
           {
@@ -2906,7 +2906,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 31457
+              "duration": 33290
             }
           },
           {
@@ -2914,7 +2914,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 31624
+              "duration": 42541
             },
             "embeddings": [
               {
@@ -2950,7 +2950,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 51983709
+              "duration": 71928250
             }
           },
           {
@@ -2959,11 +2959,11 @@
             "line": 7,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 164800333
+              "duration": 145842041
             }
           },
           {
@@ -2976,7 +2976,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10958124
+              "duration": 8992667
             }
           },
           {
@@ -2989,7 +2989,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 11710666
+              "duration": 9752124
             }
           },
           {
@@ -3002,7 +3002,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 16471875
+              "duration": 11593999
             }
           },
           {
@@ -3015,7 +3015,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 25708
+              "duration": 28791
             }
           },
           {
@@ -3028,7 +3028,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 35791
+              "duration": 29042
             }
           },
           {
@@ -3041,7 +3041,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26499
+              "duration": 30542
             }
           },
           {
@@ -3049,7 +3049,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 40375
+              "duration": 26332
             },
             "embeddings": [
               {
@@ -3074,7 +3074,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 62766291
+              "duration": 64354666
             }
           },
           {
@@ -3083,11 +3083,11 @@
             "line": 16,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 139040750
+              "duration": 139064667
             }
           },
           {
@@ -3100,7 +3100,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8445583
+              "duration": 8721374
             }
           },
           {
@@ -3113,7 +3113,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7195459
+              "duration": 7382625
             }
           },
           {
@@ -3126,7 +3126,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8705167
+              "duration": 7236875
             }
           },
           {
@@ -3139,7 +3139,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 33625
+              "duration": 28457
             }
           },
           {
@@ -3152,7 +3152,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6138249
+              "duration": 5533083
             }
           },
           {
@@ -3165,7 +3165,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 21040
+              "duration": 19207
             }
           },
           {
@@ -3173,7 +3173,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 41709
+              "duration": 33290
             },
             "embeddings": [
               {
@@ -3198,7 +3198,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 59145667
+              "duration": 61571958
             }
           },
           {
@@ -3207,11 +3207,11 @@
             "line": 25,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 148931209
+              "duration": 153466291
             }
           },
           {
@@ -3224,7 +3224,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7860209
+              "duration": 10865665
             }
           },
           {
@@ -3237,7 +3237,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 11937540
+              "duration": 12562208
             }
           },
           {
@@ -3250,7 +3250,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10995666
+              "duration": 8840625
             }
           },
           {
@@ -3263,7 +3263,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3279207
+              "duration": 3592875
             }
           },
           {
@@ -3276,7 +3276,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26250
+              "duration": 23417
             }
           },
           {
@@ -3284,7 +3284,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 40833
+              "duration": 35250
             },
             "embeddings": [
               {
@@ -3309,7 +3309,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 59674791
+              "duration": 65705916
             }
           },
           {
@@ -3318,11 +3318,11 @@
             "line": 33,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 138486249
+              "duration": 144081040
             }
           },
           {
@@ -3335,7 +3335,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8556708
+              "duration": 11937625
             }
           },
           {
@@ -3348,7 +3348,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6968291
+              "duration": 8405833
             }
           },
           {
@@ -3361,7 +3361,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7270249
+              "duration": 10658375
             }
           },
           {
@@ -3374,7 +3374,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4964040
+              "duration": 5242709
             }
           },
           {
@@ -3387,7 +3387,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 28915
+              "duration": 27332
             }
           },
           {
@@ -3395,7 +3395,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 37707
+              "duration": 29333
             },
             "embeddings": [
               {
@@ -3420,7 +3420,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 61279334
+              "duration": 62868291
             }
           },
           {
@@ -3429,11 +3429,11 @@
             "line": 41,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 134789499
+              "duration": 138156750
             }
           },
           {
@@ -3446,7 +3446,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7404458
+              "duration": 8614042
             }
           },
           {
@@ -3459,7 +3459,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7449832
+              "duration": 10503999
             }
           },
           {
@@ -3472,7 +3472,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7509791
+              "duration": 11497624
             }
           },
           {
@@ -3485,7 +3485,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4104583
+              "duration": 5799542
             }
           },
           {
@@ -3498,7 +3498,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 22917
+              "duration": 38624
             }
           },
           {
@@ -3511,7 +3511,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 23708
+              "duration": 30375
             }
           },
           {
@@ -3519,7 +3519,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 38666
+              "duration": 43125
             },
             "embeddings": [
               {
@@ -3544,7 +3544,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 56185666
+              "duration": 61248333
             }
           },
           {
@@ -3553,11 +3553,11 @@
             "line": 50,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 132671542
+              "duration": 139519666
             }
           },
           {
@@ -3570,7 +3570,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8778916
+              "duration": 11629792
             }
           },
           {
@@ -3583,7 +3583,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7210916
+              "duration": 7395500
             }
           },
           {
@@ -3592,11 +3592,11 @@
             "line": 53,
             "name": "an authenticated user \"stranger\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 161532583
+              "duration": 131808458
             }
           },
           {
@@ -3609,7 +3609,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7432249
+              "duration": 8929541
             }
           },
           {
@@ -3622,7 +3622,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 23665
+              "duration": 20667
             }
           },
           {
@@ -3630,7 +3630,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 33041
+              "duration": 23624
             },
             "embeddings": [
               {
@@ -3655,7 +3655,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 69582916
+              "duration": 72752791
             }
           },
           {
@@ -3664,11 +3664,11 @@
             "line": 58,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 142544333
+              "duration": 139504249
             }
           },
           {
@@ -3681,7 +3681,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7630875
+              "duration": 8155333
             }
           },
           {
@@ -3694,7 +3694,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7296458
+              "duration": 6593167
             }
           },
           {
@@ -3707,7 +3707,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6927458
+              "duration": 7397833
             }
           },
           {
@@ -3720,7 +3720,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 25416
+              "duration": 24083
             }
           },
           {
@@ -3733,7 +3733,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3651874
+              "duration": 3758874
             }
           },
           {
@@ -3746,7 +3746,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 19915
+              "duration": 17749
             }
           },
           {
@@ -3754,7 +3754,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 34041
+              "duration": 28000
             },
             "embeddings": [
               {
@@ -3790,7 +3790,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 64196791
+              "duration": 54163791
             }
           },
           {
@@ -3799,11 +3799,11 @@
             "line": 7,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 133140666
+              "duration": 171633792
             }
           },
           {
@@ -3816,7 +3816,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10207249
+              "duration": 13169874
             }
           },
           {
@@ -3829,7 +3829,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8250000
+              "duration": 7780250
             }
           },
           {
@@ -3842,7 +3842,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 29916
+              "duration": 27834
             }
           },
           {
@@ -3855,7 +3855,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 45415
+              "duration": 57749
             }
           },
           {
@@ -3863,7 +3863,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 37749
+              "duration": 33457
             },
             "embeddings": [
               {
@@ -3888,7 +3888,7 @@
             "hidden": true,
             "result": {
               "status": "skipped",
-              "duration": 10667
+              "duration": 15708
             }
           },
           {
@@ -3905,7 +3905,7 @@
             "line": 15,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "skipped",
@@ -3969,7 +3969,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 16083
+              "duration": 14541
             },
             "embeddings": [
               {
@@ -3999,7 +3999,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 69174166
+              "duration": 62915790
             }
           },
           {
@@ -4008,11 +4008,11 @@
             "line": 22,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 150666916
+              "duration": 146151832
             }
           },
           {
@@ -4025,7 +4025,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10368957
+              "duration": 10504709
             }
           },
           {
@@ -4038,7 +4038,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 12155083
+              "duration": 6954999
             }
           },
           {
@@ -4051,7 +4051,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6993708
+              "duration": 6227500
             }
           },
           {
@@ -4064,7 +4064,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 32541
+              "duration": 25083
             }
           },
           {
@@ -4077,7 +4077,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 30082
+              "duration": 34166
             }
           },
           {
@@ -4090,7 +4090,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 21624
+              "duration": 25459
             }
           },
           {
@@ -4098,7 +4098,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 29958
+              "duration": 25916
             },
             "embeddings": [
               {
@@ -4123,7 +4123,7 @@
             "hidden": true,
             "result": {
               "status": "skipped",
-              "duration": 3416
+              "duration": 4041
             }
           },
           {
@@ -4140,7 +4140,7 @@
             "line": 32,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "skipped",
@@ -4230,7 +4230,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 15457
+              "duration": 21375
             },
             "embeddings": [
               {
@@ -4260,7 +4260,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 75050291
+              "duration": 61204875
             }
           },
           {
@@ -4269,11 +4269,11 @@
             "line": 41,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 140575749
+              "duration": 175545334
             }
           },
           {
@@ -4286,7 +4286,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10129290
+              "duration": 10936332
             }
           },
           {
@@ -4299,7 +4299,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8633917
+              "duration": 6885750
             }
           },
           {
@@ -4312,7 +4312,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 5736583
+              "duration": 5558875
             }
           },
           {
@@ -4325,7 +4325,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 29125
+              "duration": 24666
             }
           },
           {
@@ -4338,7 +4338,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 34874
+              "duration": 40625
             }
           },
           {
@@ -4346,7 +4346,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 34125
+              "duration": 34166
             },
             "embeddings": [
               {
@@ -4371,7 +4371,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 81809208
+              "duration": 71899166
             }
           },
           {
@@ -4380,11 +4380,11 @@
             "line": 49,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 138003875
+              "duration": 158610709
             }
           },
           {
@@ -4397,7 +4397,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9707916
+              "duration": 9198084
             }
           },
           {
@@ -4410,7 +4410,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7239332
+              "duration": 11820542
             }
           },
           {
@@ -4423,7 +4423,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4664958
+              "duration": 5426041
             }
           },
           {
@@ -4436,7 +4436,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26917
+              "duration": 27250
             }
           },
           {
@@ -4444,7 +4444,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 36291
+              "duration": 46125
             },
             "embeddings": [
               {
@@ -4469,7 +4469,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 68269958
+              "duration": 61985624
             }
           },
           {
@@ -4478,11 +4478,11 @@
             "line": 56,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 131490708
+              "duration": 151637625
             }
           },
           {
@@ -4495,7 +4495,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9186374
+              "duration": 9253958
             }
           },
           {
@@ -4508,7 +4508,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7855750
+              "duration": 12730625
             }
           },
           {
@@ -4521,7 +4521,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4953583
+              "duration": 4716374
             }
           },
           {
@@ -4534,7 +4534,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 25374
+              "duration": 21167
             }
           },
           {
@@ -4542,7 +4542,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 43292
+              "duration": 36416
             },
             "embeddings": [
               {
@@ -4567,7 +4567,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 63726291
+              "duration": 63899792
             }
           },
           {
@@ -4576,11 +4576,11 @@
             "line": 63,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 130156791
+              "duration": 183408750
             }
           },
           {
@@ -4593,7 +4593,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9452334
+              "duration": 9496875
             }
           },
           {
@@ -4602,11 +4602,11 @@
             "line": 65,
             "name": "an authenticated user \"stranger\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 131742875
+              "duration": 140708082
             }
           },
           {
@@ -4619,7 +4619,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9891834
+              "duration": 9749207
             }
           },
           {
@@ -4632,7 +4632,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 27083
+              "duration": 34709
             }
           },
           {
@@ -4640,7 +4640,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 28750
+              "duration": 39499
             },
             "embeddings": [
               {
@@ -4665,7 +4665,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 81792207
+              "duration": 74012999
             }
           },
           {
@@ -4674,11 +4674,11 @@
             "line": 70,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 138476833
+              "duration": 136590958
             }
           },
           {
@@ -4691,7 +4691,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9469833
+              "duration": 7558624
             }
           },
           {
@@ -4700,11 +4700,11 @@
             "line": 72,
             "name": "an authenticated user \"stranger\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 128038790
+              "duration": 137959625
             }
           },
           {
@@ -4717,7 +4717,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8475500
+              "duration": 7006916
             }
           },
           {
@@ -4730,7 +4730,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 30584
+              "duration": 25666
             }
           },
           {
@@ -4738,7 +4738,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 30917
+              "duration": 36292
             },
             "embeddings": [
               {
@@ -4763,7 +4763,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 81195541
+              "duration": 73920624
             }
           },
           {
@@ -4772,11 +4772,11 @@
             "line": 77,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 148245666
+              "duration": 141295250
             }
           },
           {
@@ -4789,7 +4789,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9448457
+              "duration": 9625583
             }
           },
           {
@@ -4802,7 +4802,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 12861000
+              "duration": 6896790
             }
           },
           {
@@ -4811,11 +4811,11 @@
             "line": 80,
             "name": "an authenticated user \"stranger\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 136673208
+              "duration": 134152417
             }
           },
           {
@@ -4828,7 +4828,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7506375
+              "duration": 8652458
             }
           },
           {
@@ -4841,7 +4841,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 22332
+              "duration": 23124
             }
           },
           {
@@ -4849,7 +4849,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 25165
+              "duration": 32791
             },
             "embeddings": [
               {
@@ -4874,7 +4874,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 85515957
+              "duration": 91704708
             }
           },
           {
@@ -4883,11 +4883,11 @@
             "line": 85,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 135984542
+              "duration": 158621332
             }
           },
           {
@@ -4900,7 +4900,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9999332
+              "duration": 12536374
             }
           },
           {
@@ -4913,7 +4913,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4370999
+              "duration": 4405957
             }
           },
           {
@@ -4926,7 +4926,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 31582
+              "duration": 29000
             }
           },
           {
@@ -4939,7 +4939,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 31167
+              "duration": 29749
             }
           },
           {
@@ -4952,7 +4952,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 21791
+              "duration": 20082
             }
           },
           {
@@ -4960,7 +4960,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 44209
+              "duration": 28334
             },
             "embeddings": [
               {
@@ -4996,7 +4996,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 56292541
+              "duration": 107795541
             }
           },
           {
@@ -5005,11 +5005,11 @@
             "line": 7,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 133508374
+              "duration": 157849334
             }
           },
           {
@@ -5022,7 +5022,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6020875
+              "duration": 7769000
             }
           },
           {
@@ -5035,7 +5035,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 30082
+              "duration": 32124
             }
           },
           {
@@ -5048,7 +5048,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 47958
+              "duration": 62416
             }
           },
           {
@@ -5056,7 +5056,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 37999
+              "duration": 44417
             },
             "embeddings": [
               {
@@ -5081,7 +5081,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 62676750
+              "duration": 61345250
             }
           },
           {
@@ -5099,7 +5099,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 828750
+              "duration": 896249
             }
           },
           {
@@ -5112,7 +5112,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 19458
+              "duration": 21458
             }
           },
           {
@@ -5120,7 +5120,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 22457
+              "duration": 31250
             },
             "embeddings": [
               {
@@ -5145,7 +5145,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 48992625
+              "duration": 60209291
             }
           },
           {
@@ -5154,11 +5154,11 @@
             "line": 20,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 134614666
+              "duration": 144763500
             }
           },
           {
@@ -5171,7 +5171,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8955500
+              "duration": 9761417
             }
           },
           {
@@ -5184,7 +5184,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3361166
+              "duration": 3176666
             }
           },
           {
@@ -5197,7 +5197,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 28790
+              "duration": 23709
             }
           },
           {
@@ -5210,7 +5210,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 19791
+              "duration": 23791
             }
           },
           {
@@ -5218,7 +5218,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 30375
+              "duration": 23749
             },
             "embeddings": [
               {
@@ -5243,7 +5243,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 52381499
+              "duration": 57566666
             }
           },
           {
@@ -5252,11 +5252,11 @@
             "line": 27,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 132801750
+              "duration": 137468124
             }
           },
           {
@@ -5269,7 +5269,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9641124
+              "duration": 8761916
             }
           },
           {
@@ -5282,7 +5282,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4303959
+              "duration": 3406250
             }
           },
           {
@@ -5295,7 +5295,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6565000
+              "duration": 6324208
             }
           },
           {
@@ -5308,7 +5308,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 30707
+              "duration": 28292
             }
           },
           {
@@ -5321,7 +5321,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 23499
+              "duration": 23541
             }
           },
           {
@@ -5329,7 +5329,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 30833
+              "duration": 33250
             },
             "embeddings": [
               {
@@ -5354,7 +5354,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 64141290
+              "duration": 59758791
             }
           },
           {
@@ -5363,11 +5363,11 @@
             "line": 35,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 136433624
+              "duration": 138233790
             }
           },
           {
@@ -5380,7 +5380,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9016750
+              "duration": 8911625
             }
           },
           {
@@ -5393,7 +5393,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4152375
+              "duration": 3814624
             }
           },
           {
@@ -5406,7 +5406,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 24499
+              "duration": 21874
             }
           },
           {
@@ -5414,7 +5414,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 30375
+              "duration": 33041
             },
             "embeddings": [
               {
@@ -5439,7 +5439,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 65293624
+              "duration": 63737166
             }
           },
           {
@@ -5448,11 +5448,11 @@
             "line": 41,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 133670291
+              "duration": 155829624
             }
           },
           {
@@ -5465,7 +5465,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 8749792
+              "duration": 19965375
             }
           },
           {
@@ -5478,7 +5478,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4414333
+              "duration": 6645791
             }
           },
           {
@@ -5491,7 +5491,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 25207
+              "duration": 42000
             }
           },
           {
@@ -5499,7 +5499,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 33374
+              "duration": 41250
             },
             "embeddings": [
               {
@@ -5524,7 +5524,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 68093041
+              "duration": 68925040
             }
           },
           {
@@ -5533,11 +5533,11 @@
             "line": 47,
             "name": "an authenticated user \"owner\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 146393458
+              "duration": 150874458
             }
           },
           {
@@ -5550,7 +5550,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10199499
+              "duration": 11348958
             }
           },
           {
@@ -5559,11 +5559,11 @@
             "line": 49,
             "name": "an authenticated user \"stranger\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 135536416
+              "duration": 181920999
             }
           },
           {
@@ -5576,7 +5576,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7511750
+              "duration": 10559165
             }
           },
           {
@@ -5589,7 +5589,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 24499
+              "duration": 28291
             }
           },
           {
@@ -5597,7 +5597,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 35292
+              "duration": 46667
             },
             "embeddings": [
               {
@@ -5622,7 +5622,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 77586250
+              "duration": 76425457
             }
           },
           {
@@ -5631,11 +5631,11 @@
             "line": 54,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 134503165
+              "duration": 179805458
             }
           },
           {
@@ -5648,7 +5648,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10833041
+              "duration": 11921209
             }
           },
           {
@@ -5661,7 +5661,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6101415
+              "duration": 7249792
             }
           },
           {
@@ -5674,7 +5674,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 39916
+              "duration": 35332
             }
           },
           {
@@ -5687,7 +5687,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 31582
+              "duration": 56416
             }
           },
           {
@@ -5695,7 +5695,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 33541
+              "duration": 44375
             },
             "embeddings": [
               {
@@ -5720,7 +5720,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 54475500
+              "duration": 66247415
             }
           },
           {
@@ -5729,11 +5729,11 @@
             "line": 61,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 132804707
+              "duration": 142838040
             }
           },
           {
@@ -5746,7 +5746,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 9370582
+              "duration": 7011125
             }
           },
           {
@@ -5759,7 +5759,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3878040
+              "duration": 3327832
             }
           },
           {
@@ -5772,7 +5772,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 28791
+              "duration": 21957
             }
           },
           {
@@ -5785,7 +5785,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 56166
+              "duration": 44917
             }
           },
           {
@@ -5793,7 +5793,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 39290
+              "duration": 37833
             },
             "embeddings": [
               {
@@ -5829,7 +5829,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 62710749
+              "duration": 60673541
             }
           },
           {
@@ -5842,7 +5842,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1943416
+              "duration": 2090374
             }
           },
           {
@@ -5855,7 +5855,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2017584
+              "duration": 1901874
             }
           },
           {
@@ -5868,7 +5868,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 41124
+              "duration": 23249
             }
           },
           {
@@ -5881,7 +5881,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 25459
+              "duration": 23124
             }
           },
           {
@@ -5889,7 +5889,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 30208
+              "duration": 23124
             },
             "embeddings": [
               {
@@ -5914,7 +5914,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 55993125
+              "duration": 49022209
             }
           },
           {
@@ -5927,7 +5927,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2325666
+              "duration": 1687207
             }
           },
           {
@@ -5940,7 +5940,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 755666
+              "duration": 508374
             }
           },
           {
@@ -5953,7 +5953,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1517541
+              "duration": 1074499
             }
           },
           {
@@ -5966,7 +5966,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 23417
+              "duration": 16332
             }
           },
           {
@@ -5979,7 +5979,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 22624
+              "duration": 21000
             }
           },
           {
@@ -5987,7 +5987,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 27458
+              "duration": 27958
             },
             "embeddings": [
               {
@@ -6012,7 +6012,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 47144459
+              "duration": 47089083
             }
           },
           {
@@ -6025,7 +6025,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1827208
+              "duration": 1639708
             }
           },
           {
@@ -6038,7 +6038,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1352458
+              "duration": 1077457
             }
           },
           {
@@ -6051,7 +6051,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 18041
+              "duration": 20749
             }
           },
           {
@@ -6064,7 +6064,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 35791
+              "duration": 37791
             }
           },
           {
@@ -6072,7 +6072,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 29750
+              "duration": 30709
             },
             "embeddings": [
               {
@@ -6097,7 +6097,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 46835332
+              "duration": 48247083
             }
           },
           {
@@ -6110,7 +6110,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1675957
+              "duration": 3079000
             }
           },
           {
@@ -6123,7 +6123,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 17084
+              "duration": 41124
             }
           },
           {
@@ -6131,7 +6131,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 18415
+              "duration": 51959
             },
             "embeddings": [
               {
@@ -6167,7 +6167,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 47345375
+              "duration": 49787749
             }
           },
           {
@@ -6176,11 +6176,11 @@
             "line": 7,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 148418915
+              "duration": 161339833
             }
           },
           {
@@ -6193,7 +6193,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 4653458
+              "duration": 5264167
             }
           },
           {
@@ -6206,7 +6206,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 30209
+              "duration": 34375
             }
           },
           {
@@ -6219,7 +6219,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 25457
+              "duration": 19374
             }
           },
           {
@@ -6232,7 +6232,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 21667
+              "duration": 12750
             }
           },
           {
@@ -6240,7 +6240,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 37250
+              "duration": 29624
             },
             "embeddings": [
               {
@@ -6265,7 +6265,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 66789582
+              "duration": 63596417
             }
           },
           {
@@ -6274,11 +6274,11 @@
             "line": 14,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 132084041
+              "duration": 138409583
             }
           },
           {
@@ -6287,11 +6287,11 @@
             "line": 15,
             "name": "I get the current user's profile",
             "match": {
-              "location": "tests/api/user.steps.ts:23"
+              "location": "tests/api/user.steps.ts:24"
             },
             "result": {
               "status": "passed",
-              "duration": 5718874
+              "duration": 10653624
             }
           },
           {
@@ -6304,7 +6304,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 29042
+              "duration": 42291
             }
           },
           {
@@ -6317,7 +6317,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 30750
+              "duration": 28540
             }
           },
           {
@@ -6330,7 +6330,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 13083
+              "duration": 12999
             }
           },
           {
@@ -6338,7 +6338,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 39207
+              "duration": 35833
             },
             "embeddings": [
               {
@@ -6363,7 +6363,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 67595749
+              "duration": 63334624
             }
           },
           {
@@ -6372,11 +6372,11 @@
             "line": 21,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 149219708
+              "duration": 157471375
             }
           },
           {
@@ -6385,11 +6385,11 @@
             "line": 22,
             "name": "I update the current user with userKind \"student\"",
             "match": {
-              "location": "tests/api/user.steps.ts:32"
+              "location": "tests/api/user.steps.ts:33"
             },
             "result": {
               "status": "passed",
-              "duration": 8862541
+              "duration": 14780042
             }
           },
           {
@@ -6402,7 +6402,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 34458
+              "duration": 35833
             }
           },
           {
@@ -6410,7 +6410,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 49624
+              "duration": 36333
             },
             "embeddings": [
               {
@@ -6435,7 +6435,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 65218625
+              "duration": 63205500
             }
           },
           {
@@ -6455,11 +6455,11 @@
             "line": 26,
             "name": "I send a PATCH request to \"/api/v1/users/00000000-0000-0000-0000-000000000000\" with body:",
             "match": {
-              "location": "tests/api/user.steps.ts:54"
+              "location": "tests/api/user.steps.ts:55"
             },
             "result": {
               "status": "passed",
-              "duration": 1061708
+              "duration": 902083
             }
           },
           {
@@ -6472,7 +6472,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 36707
+              "duration": 26040
             }
           },
           {
@@ -6480,7 +6480,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 40708
+              "duration": 29750
             },
             "embeddings": [
               {
@@ -6505,7 +6505,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 60253667
+              "duration": 57053749
             }
           },
           {
@@ -6514,11 +6514,11 @@
             "line": 31,
             "name": "an authenticated user",
             "match": {
-              "location": "tests/api/user.steps.ts:10"
+              "location": "tests/api/user.steps.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 141955083
+              "duration": 148866041
             }
           },
           {
@@ -6527,11 +6527,11 @@
             "line": 32,
             "name": "I delete the current user's account",
             "match": {
-              "location": "tests/api/user.steps.ts:45"
+              "location": "tests/api/user.steps.ts:46"
             },
             "result": {
               "status": "passed",
-              "duration": 9452750
+              "duration": 8902332
             }
           },
           {
@@ -6544,7 +6544,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 44042
+              "duration": 42792
             }
           },
           {
@@ -6552,7 +6552,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 43458
+              "duration": 38375
             },
             "embeddings": [
               {
@@ -6577,7 +6577,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 74324541
+              "duration": 58847374
             }
           },
           {
@@ -6586,11 +6586,11 @@
             "line": 36,
             "name": "an authenticated user \"alice\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 132829375
+              "duration": 141227917
             }
           },
           {
@@ -6599,11 +6599,11 @@
             "line": 37,
             "name": "an authenticated user \"bob\"",
             "match": {
-              "location": "tests/api/user.steps.ts:16"
+              "location": "tests/api/user.steps.ts:17"
             },
             "result": {
               "status": "passed",
-              "duration": 145040082
+              "duration": 216244542
             }
           },
           {
@@ -6612,11 +6612,11 @@
             "line": 38,
             "name": "\"alice\" updates \"bob\" with userKind \"teacher\"",
             "match": {
-              "location": "tests/api/user.steps.ts:71"
+              "location": "tests/api/user.steps.ts:72"
             },
             "result": {
               "status": "passed",
-              "duration": 5642458
+              "duration": 6664209
             }
           },
           {
@@ -6629,7 +6629,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 32125
+              "duration": 35749
             }
           },
           {
@@ -6637,7 +6637,418 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 56334
+              "duration": 47916
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "user-management;private-profile-returns-only-public-fields-to-other-users",
+        "keyword": "Scenario",
+        "line": 41,
+        "name": "Private profile returns only public fields to other users",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 87358875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 42,
+            "name": "an authenticated user \"alice\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 140553625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 43,
+            "name": "\"alice\" sets their profile to private",
+            "match": {
+              "location": "tests/api/user.steps.ts:87"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7831290
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 44,
+            "name": "an authenticated user \"bob\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 139820874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 45,
+            "name": "\"bob\" gets the profile of \"alice\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:113"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8316000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 46,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 32083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 47,
+            "name": "the response body should have property \"name\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 36541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 48,
+            "name": "the response body should have property \"isProfilePublic\" equal to false",
+            "match": {
+              "location": "tests/shared/common.steps.ts:73"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 20500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 49,
+            "name": "the response body should not have property \"email\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:57"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 18540
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 50,
+            "name": "the response body should not have property \"image\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:57"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 51,
+            "name": "the response body should not have property \"systemRole\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:57"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 52,
+            "name": "the response body should not have property \"userKind\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:57"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10625
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 37415
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "user-management;private-profile-returns-full-fields-to-the-owner",
+        "keyword": "Scenario",
+        "line": 54,
+        "name": "Private profile returns full fields to the owner",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 82851000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 55,
+            "name": "an authenticated user \"alice\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141858166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 56,
+            "name": "\"alice\" sets their profile to private",
+            "match": {
+              "location": "tests/api/user.steps.ts:87"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6247957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 57,
+            "name": "I get the current user's profile",
+            "match": {
+              "location": "tests/api/user.steps.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3270291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 58,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 40541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 59,
+            "name": "the response body should have property \"email\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 60,
+            "name": "the response body should have property \"isProfilePublic\" equal to false",
+            "match": {
+              "location": "tests/shared/common.steps.ts:73"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15749
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 56291
+            },
+            "embeddings": [
+              {
+                "data": "U3RhdHVzOiBQQVNTRUQuIER1cmF0aW9uOjBz",
+                "mime_type": "text/plain"
+              }
+            ]
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "user-management;public-profile-returns-full-fields-to-other-users",
+        "keyword": "Scenario",
+        "line": 62,
+        "name": "Public profile returns full fields to other users",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 66889875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 63,
+            "name": "an authenticated user \"alice\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 161085333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 64,
+            "name": "\"alice\" sets their profile to public",
+            "match": {
+              "location": "tests/api/user.steps.ts:100"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8222666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 65,
+            "name": "an authenticated user \"bob\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 143263791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 66,
+            "name": "\"bob\" gets the profile of \"alice\"",
+            "match": {
+              "location": "tests/api/user.steps.ts:113"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4557250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 67,
+            "name": "the response status should be 200",
+            "match": {
+              "location": "tests/shared/common.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 68,
+            "name": "the response body should have property \"email\"",
+            "match": {
+              "location": "tests/shared/common.steps.ts:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30334
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 69,
+            "name": "the response body should have property \"isProfilePublic\" equal to true",
+            "match": {
+              "location": "tests/shared/common.steps.ts:65"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48665
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 40042
             },
             "embeddings": [
               {

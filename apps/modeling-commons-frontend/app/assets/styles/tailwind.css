@@ -1,9 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
-@import 'tailwindcss';
-@import '@nuxt/ui';
-@import '@repo/tailwind-config/scss/variables.css';
+@import "tailwindcss";
+@import "@nuxt/ui";
+@import "@repo/tailwind-config/scss/variables.css";
+@import "@repo/tailwind-config/scss/modeling-commons-variables.css";
 
-@import 'tw-animate-css';
+@import "tw-animate-css";
 @source "../../../../../packages/vue-ui/src";
 @source "../../../content/**/*.md";

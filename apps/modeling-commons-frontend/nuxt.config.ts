@@ -6,21 +6,21 @@ export default defineNuxtConfig({
 
   app: {
     rootId: "__nuxt",
-    layoutTransition: {
-      name: "layout",
-      mode: "out-in",
-    },
-    pageTransition: {
-      name: "page",
-      mode: "out-in",
-    },
+    // layoutTransition: {
+    //   name: "layout",
+    //   mode: "out-in",
+    // },
+    // pageTransition: {
+    //   name: "page",
+    //   mode: "out-in",
+    // },
   },
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3000",
-      authApiBase: process.env.NUXT_PUBLIC_AUTH_BASE || "http://localhost:3000/api",
-      appUrl: process.env.NUXT_PUBLIC_APP_URL || "http://localhost:3005",
+      apiBase: process.env.NUXT_PUBLIC_API_BASE as string,
+      authApiBase: process.env.NUXT_PUBLIC_AUTH_BASE as string,
+      appUrl: process.env.NUXT_PUBLIC_APP_URL as string,
     },
   },
 
@@ -30,6 +30,10 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt'
   ],
 
+  pinia: {
+    storesDirs: ["./stores/**"],
+  },
+
   routeRules: {
     "/": { swr: 300 },
     "/models": { swr: 120 },
@@ -38,6 +42,12 @@ export default defineNuxtConfig({
 
   gtag: {
     id: "",
+  },
+
+  googleFonts: {
+    families: {
+      Epilogue: [400, 500, 600, 700],
+    },
   },
 
   components: [

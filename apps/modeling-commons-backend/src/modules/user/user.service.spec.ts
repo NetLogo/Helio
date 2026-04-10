@@ -1,10 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeUserService from '#src/modules/user/user.service.ts';
 import userDomain from '#src/modules/user/domain/user.domain.ts';
-import {
-  UserNotFoundError,
-  UserProfilePrivateError,
-} from '#src/modules/user/domain/user.errors.ts';
+import { UserNotFoundError } from '#src/modules/user/domain/user.errors.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
@@ -118,30 +115,47 @@ describe('userService', () => {
   });
 
   describe('findById', () => {
-    it('returns public user', async () => {
+    it('returns full profile for public user', async () => {
       const user = makeUser();
       userRepository.findOneById.mockResolvedValue(user);
 
       const result = await service.findById('user-1', 'other', 'user');
 
-      expect(result).toBe(user);
+      expect(result).toEqual({ canViewFullProfile: true, user });
     });
 
-    it('throws for private profile when not self or admin', async () => {
-      userRepository.findOneById.mockResolvedValue(makeUser({ isProfilePublic: false }));
+    it('returns public view for private profile when not self or admin', async () => {
+      const user = makeUser({ isProfilePublic: false });
+      userRepository.findOneById.mockResolvedValue(user);
 
-      await expect(service.findById('user-1', 'other', 'user')).rejects.toThrow(
-        UserProfilePrivateError,
-      );
+      const result = await service.findById('user-1', 'other', 'user');
+
+      expect(result.canViewFullProfile).toBe(false);
+      expect(result.user).toEqual({
+        id: user.id,
+        name: user.name,
+        isProfilePublic: false,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      });
     });
 
-    it('allows self to view private profile', async () => {
+    it('returns full profile for self viewing private profile', async () => {
       const user = makeUser({ isProfilePublic: false });
       userRepository.findOneById.mockResolvedValue(user);
 
       const result = await service.findById('user-1', 'user-1', 'user');
 
-      expect(result).toBe(user);
+      expect(result).toEqual({ canViewFullProfile: true, user });
+    });
+
+    it('returns full profile for admin viewing private profile', async () => {
+      const user = makeUser({ isProfilePublic: false });
+      userRepository.findOneById.mockResolvedValue(user);
+
+      const result = await service.findById('user-1', 'admin-1', 'admin');
+
+      expect(result).toEqual({ canViewFullProfile: true, user });
     });
 
     it('throws for deleted user', async () => {

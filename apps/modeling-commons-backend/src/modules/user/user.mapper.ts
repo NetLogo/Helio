@@ -1,6 +1,7 @@
 import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
-import type { UserEntity, SystemRole, UserKind } from '#src/modules/user/domain/user.types.ts';
+import type { UserEntity, UserPublicView, SystemRole, UserKind } from '#src/modules/user/domain/user.types.ts';
 import type { UserResponseDto } from '#src/modules/user/dtos/user.response.dto.ts';
+import type { UserPublicResponseDto } from '#src/modules/user/dtos/user.public.response.dto.ts';
 
 export type UserRecord = {
   id: string;
@@ -16,7 +17,9 @@ export type UserRecord = {
   deletedAt: Date | null;
 };
 
-export default function userMapper(): Mapper<UserEntity, UserRecord, UserResponseDto> {
+export default function userMapper(): Mapper<UserEntity, UserRecord, UserResponseDto> & {
+  toPublicResponse: (view: UserPublicView) => UserPublicResponseDto;
+} {
   return {
     toDomain(record: UserRecord): UserEntity {
       return {
@@ -62,6 +65,16 @@ export default function userMapper(): Mapper<UserEntity, UserRecord, UserRespons
         createdAt: entity.createdAt,
         updatedAt: entity.updatedAt,
         deletedAt: entity.deletedAt,
+      };
+    },
+
+    toPublicResponse(view: UserPublicView): UserPublicResponseDto {
+      return {
+        id: view.id,
+        name: view.name,
+        isProfilePublic: view.isProfilePublic,
+        createdAt: view.createdAt.toISOString(),
+        updatedAt: view.updatedAt.toISOString(),
       };
     },
   };

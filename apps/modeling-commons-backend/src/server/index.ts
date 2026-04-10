@@ -34,7 +34,11 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
   // `origin: false` disables CORS headers entirely (suitable for same-origin / server-to-server).
   // Set to `true` or a specific origin string/array for cross-origin frontends.
   await fastify.register(Cors, {
-    origin: env.cors.allowedOrigins.length > 0 ? env.cors.allowedOrigins : false,
+    origin: env.isDevelopment
+      ? (_, callback) => {
+          callback(null, true); // Allow all origins in development for ease of testing
+        }
+      : (env.cors.allowedOrigins ?? true),
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,

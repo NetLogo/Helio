@@ -27,6 +27,8 @@ export type UserEntity = {
   deletedAt: Date | null;
 };
 
+export type UserPublicView = Pick<UserEntity, 'id' | 'name' | 'isProfilePublic' | 'createdAt' | 'updatedAt'>;
+
 export type UpdateUserProfileProps = {
   userKind?: UserKind;
   isProfilePublic?: boolean;

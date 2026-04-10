@@ -44,7 +44,7 @@ const siteLogo = computed<string | undefined>(() => {
     <div class="relative z-10 flex flex-col justify-between w-full h-full p-[60px]">
       <div>
         <h1 class="text-5xl font-bold text-white mb-4">{{ title }}</h1>
-        <p class="text-2xl text-white/90 max-w-2xl line-clamp-5 text-ellipsis">{{ description }}</p>
+        <p class="text-white/90 max-w-2xl line-clamp-5 text-ellipsis">{{ description }}</p>
       </div>
 
       <div class="flex items-center">

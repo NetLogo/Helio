@@ -11,8 +11,7 @@ export function formatRelativeDate(dateStr: string): string {
   const diffYear = Math.floor(diffDay / 365);
 
   if (diffYear > 0) return `${diffYear} year${diffYear > 1 ? "s" : ""} ago`;
-  if (diffMonth > 0)
-    return `${diffMonth} month${diffMonth > 1 ? "s" : ""} ago`;
+  if (diffMonth > 0) return `${diffMonth} month${diffMonth > 1 ? "s" : ""} ago`;
   if (diffWeek > 0) return `${diffWeek} week${diffWeek > 1 ? "s" : ""} ago`;
   if (diffDay > 0) return `${diffDay} day${diffDay > 1 ? "s" : ""} ago`;
   if (diffHour > 0) return `${diffHour} hour${diffHour > 1 ? "s" : ""} ago`;
@@ -28,16 +27,16 @@ export function formatDate(dateStr: string): string {
   });
 }
 
-export function getVisibilityClass(visibility: string): string {
+export function getVisibilityIcon(visibility: string): string {
   switch (visibility) {
     case "public":
-      return "bg-success-100 text-success-700";
+      return "i-lucide-globe";
     case "private":
-      return "bg-muted text-toned";
+      return "i-lucide-lock";
     case "unlisted":
-      return "bg-warning-100 text-warning-700";
+      return "i-lucide-eye-off";
     default:
-      return "bg-muted text-toned";
+      return "i-lucide-help-circle";
   }
 }
 
@@ -50,4 +49,8 @@ export function getTagColorClass(tagName: string): string {
     "bg-pink-100 text-pink-700 border-pink-200",
   ];
   return classes[tagName.charCodeAt(0) % classes.length]!;
+}
+
+export function getFileUrl(fileId: string): string {
+  return `/api/v1/files/${fileId}/download`;
 }

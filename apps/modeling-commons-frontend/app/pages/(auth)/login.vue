@@ -41,8 +41,9 @@ useSeoMeta({
 });
 
 const meta = useWebsite();
-const appUrl = useRuntimeConfig().public.appUrl;
+const appUrl = useRuntimeConfig().public.appUrl as string;
 const toast = useToast();
+const router = useRouter();
 const auth = useNuxtApp().$auth;
 const form = useTemplateRef('form')
 
@@ -69,7 +70,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       });
     },
     onSuccess() {
-      navigateTo("/models");
+      router.push("/models");
     },
     onError(ctx: { error: Error }) {
       toast.clear();

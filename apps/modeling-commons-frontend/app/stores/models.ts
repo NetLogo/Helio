@@ -1,5 +1,3 @@
-import { defineStore } from "pinia";
-
 export interface ModelListItem {
   id: string;
   createdAt: string;

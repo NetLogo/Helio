@@ -65,6 +65,31 @@ describe('userDomain', () => {
     });
   });
 
+  describe('extractPublicView', () => {
+    it('returns only public fields', () => {
+      const user = makeUser({
+        email: 'secret@example.com',
+        image: 'https://example.com/avatar.jpg',
+        systemRole: 'admin',
+        userKind: 'researcher',
+      });
+      const view = domain.extractPublicView(user);
+
+      expect(view).toEqual({
+        id: user.id,
+        name: user.name,
+        isProfilePublic: user.isProfilePublic,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      });
+      expect(view).not.toHaveProperty('email');
+      expect(view).not.toHaveProperty('emailVerified');
+      expect(view).not.toHaveProperty('image');
+      expect(view).not.toHaveProperty('systemRole');
+      expect(view).not.toHaveProperty('userKind');
+    });
+  });
+
   describe('isSelfOrAdmin', () => {
     it('returns true for self', () => {
       expect(domain.isSelfOrAdmin('user-1', 'user-1', 'user')).toBe(true);

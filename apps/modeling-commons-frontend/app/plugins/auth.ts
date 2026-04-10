@@ -5,13 +5,13 @@ import { adminClient } from "better-auth/client/plugins";
 export default defineNuxtPlugin({
   name: "auth",
   enforce: "pre",
-  async setup() {
+  setup(nuxtApp) {
     const authClient = createAuthClient({
       baseURL: useRuntimeConfig().public.authApiBase,
       plugins: [adminClient(), passkeyClient()],
     });
 
-    const session = await authClient.useSession(useFetch);
+    const session = nuxtApp.runWithContext(() => authClient.useSession());
 
     return {
       provide: {

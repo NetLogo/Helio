@@ -1,5 +1,5 @@
 import { SystemRole } from '#src/modules/user/domain/user.types.ts';
-import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
+import type { UserEntity, UserPublicView } from '#src/modules/user/domain/user.types.ts';
 import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
 
 export default function userDomain() {
@@ -19,6 +19,16 @@ export default function userDomain() {
       if (requesterId === target.id) return true;
       if (requesterRole === SystemRole.admin) return true;
       return false;
+    },
+
+    extractPublicView(user: UserEntity): UserPublicView {
+      return {
+        id: user.id,
+        name: user.name,
+        isProfilePublic: user.isProfilePublic,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
     },
 
     isAdmin(role: string | null | undefined): boolean {

@@ -14,7 +14,9 @@ useSeoMeta({
 });
 
 const toast = useToast();
+const router = useRouter();
 const auth = useNuxtApp().$auth;
+const appUrl = useRuntimeConfig().public.appUrl as string;
 const fields = signUpFields;
 const schema = signUpValidator;
 type Schema = z.output<typeof schema>;
@@ -34,7 +36,7 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
   auth.client.signUp
     .email({
       ...payload.data,
-      callbackURL: getSignUpCallbackUrl(),
+      callbackURL: getSignUpCallbackUrl(appUrl),
     })
     .then(({ error }: { error: Error }) => {
       if (error) {
@@ -52,7 +54,7 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
           icon: "i-lucide-check-circle",
           color: "success",
         });
-        navigateTo("/login");
+        router.push("/login");
       }
     });
 }

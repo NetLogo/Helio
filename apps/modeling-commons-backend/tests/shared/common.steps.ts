@@ -53,3 +53,27 @@ Then(
     assert.strictEqual(body[property].length, length);
   },
 );
+
+Then(
+  'the response body should not have property {string}',
+  function (this: ICustomWorld, property: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    assert.ok(!(property in body), `Expected property "${property}" to NOT be in response body`);
+  },
+);
+
+Then(
+  'the response body should have property {string} equal to true',
+  function (this: ICustomWorld, property: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    assert.strictEqual(body[property], true);
+  },
+);
+
+Then(
+  'the response body should have property {string} equal to false',
+  function (this: ICustomWorld, property: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    assert.strictEqual(body[property], false);
+  },
+);

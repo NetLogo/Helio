@@ -113,6 +113,7 @@ export const isLinkParentActive = (link: NavbarLink, currentPath: string): boole
 
 <script setup lang="ts">
 const route = useRoute();
+const router = useRouter();
 const auth = useNuxtApp().$auth;
 const user = useUser();
 
@@ -143,7 +144,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           color: "error",
           onClick: async () => {
             await auth.client.signOut();
-            navigateTo("/login");
+            router.push("/login");
           },
         },
       ],

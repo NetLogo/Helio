@@ -1,12 +1,18 @@
+import createClient, { type Client } from "openapi-fetch";
 import type { paths } from "~~/shared/types/api";
-import createClient from "openapi-fetch";
 
-export function useApi() {
-  const apiBase = useRuntimeConfig().public.apiBase;
-  const apiClient = createClient<paths>({
-    baseUrl: apiBase,
+let apiClient: Client<paths> | null = null;
+
+export function initApi(baseUrl: string) {
+  apiClient = createClient<paths>({
+    baseUrl,
     credentials: "include",
   });
+}
 
+export function useApi() {
+  if (!apiClient) {
+    throw new Error("API client not initialized. Ensure the api plugin has loaded.");
+  }
   return apiClient;
 }

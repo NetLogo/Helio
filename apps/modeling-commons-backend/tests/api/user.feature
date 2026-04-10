@@ -37,3 +37,33 @@ Feature: User Management
     And an authenticated user "bob"
     When "alice" updates "bob" with userKind "teacher"
     Then the response status should be 403
+
+  Scenario: Private profile returns only public fields to other users
+    Given an authenticated user "alice"
+    And "alice" sets their profile to private
+    And an authenticated user "bob"
+    When "bob" gets the profile of "alice"
+    Then the response status should be 200
+    And the response body should have property "name"
+    And the response body should have property "isProfilePublic" equal to false
+    And the response body should not have property "email"
+    And the response body should not have property "image"
+    And the response body should not have property "systemRole"
+    And the response body should not have property "userKind"
+
+  Scenario: Private profile returns full fields to the owner
+    Given an authenticated user "alice"
+    And "alice" sets their profile to private
+    When I get the current user's profile
+    Then the response status should be 200
+    And the response body should have property "email"
+    And the response body should have property "isProfilePublic" equal to false
+
+  Scenario: Public profile returns full fields to other users
+    Given an authenticated user "alice"
+    And "alice" sets their profile to public
+    And an authenticated user "bob"
+    When "bob" gets the profile of "alice"
+    Then the response status should be 200
+    And the response body should have property "email"
+    And the response body should have property "isProfilePublic" equal to true

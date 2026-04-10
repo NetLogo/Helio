@@ -1,3 +1,4 @@
+import { Type } from 'typebox';
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import type { UserSearchFilters } from '#src/modules/user/domain/user.types.ts';
 import type { FastifyInstance } from 'fastify';
@@ -10,6 +11,7 @@ import {
   type UserSearchQuery,
 } from '#src/modules/user/user.schemas.ts';
 import { userResponseDtoSchema } from '#src/modules/user/dtos/user.response.dto.ts';
+import { userPublicResponseDtoSchema } from '#src/modules/user/dtos/user.public.response.dto.ts';
 import { userPaginatedResponseSchema } from '#src/modules/user/dtos/user.paginated.response.dto.ts';
 
 export default async function userRoutes(fastify: FastifyInstance) {
@@ -61,17 +63,23 @@ export default async function userRoutes(fastify: FastifyInstance) {
     {
       schema: {
         params: userIdParamsSchema,
-        response: { 200: userResponseDtoSchema },
+        response: {
+          200: Type.Union([userResponseDtoSchema, userPublicResponseDtoSchema]),
+        },
         tags: ['User'],
       },
     },
     async (request) => {
-      const entity = await userService.findById(
+      const result = await userService.findById(
         request.params.id,
         request.user?.id ?? null,
         request.user?.systemRole ?? null,
       );
-      return userMapper.toResponse(entity);
+
+      if (result.canViewFullProfile) {
+        return userMapper.toResponse(result.user);
+      }
+      return userMapper.toPublicResponse(result.user);
     },
   );
 

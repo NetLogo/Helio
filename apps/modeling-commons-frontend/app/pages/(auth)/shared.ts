@@ -103,14 +103,10 @@ export const signUpFields: Array<AuthFormField> = [
   },
 ];
 
-export const getSignUpCallbackUrl = () => {
-  const appUrl = useRuntimeConfig().public.appUrl;
-  const callbackUrl = `${appUrl}/welcome`;
-  return callbackUrl;
+export const getSignUpCallbackUrl = (appUrl: string) => {
+  return `${appUrl}/welcome`;
 };
 
-export const getLogInCallbackUrl = () => {
-  const appUrl = useRuntimeConfig().public.appUrl;
-  const callbackUrl = `${appUrl}/test`;
-  return callbackUrl;
+export const getLogInCallbackUrl = (appUrl: string) => {
+  return `${appUrl}/test`;
 };

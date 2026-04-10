@@ -1,27 +1,33 @@
 <template>
   <div>
-    <section class="relative overflow-hidden border-b border-default bg-gradient-to-b from-primary-50/80 to-background">
+    <section
+      class="relative overflow-hidden border-b border-default bg-gradient-to-b from-primary-50/80 to-background"
+    >
       <div class="absolute inset-0 opacity-[0.04]">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="hero-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-              <path d="M 32 0 L 0 0 0 32" fill="none" stroke="currentColor" stroke-width="0.5" class="text-primary-600" />
+              <path
+                d="M 32 0 L 0 0 0 32"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="0.5"
+                class="text-primary-600"
+              />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#hero-grid)" />
         </svg>
       </div>
       <UContainer class="relative py-16 sm:py-24 text-center">
-        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-highlighted">
+        <h1 class="text-highlighted">
           {{ meta.name }}
         </h1>
         <p class="mt-4 text-lg text-toned max-w-2xl mx-auto leading-relaxed">
           {{ meta.description }}
         </p>
         <div class="mt-8 flex justify-center gap-3">
-          <UButton to="/models" size="lg">
-            Explore Models
-          </UButton>
+          <UButton to="/models" size="lg"> Explore Models </UButton>
           <UButton to="/signup" size="lg" variant="outline" color="neutral">
             Join the Community
           </UButton>
@@ -44,18 +50,16 @@
 
       <div v-else-if="error" class="text-center py-16">
         <UIcon name="i-lucide-wifi-off" class="size-14 text-dimmed mx-auto mb-4" />
-        <h2 class="text-lg font-semibold text-toned">Unable to load models</h2>
+        <h2 class="ext-toned">Unable to load models</h2>
         <p class="text-muted mt-1">We couldn't reach the server. Please try again.</p>
-        <UButton variant="outline" class="mt-4" @click="refresh()">
-          Try again
-        </UButton>
+        <UButton variant="outline" class="mt-4" @click="refresh()"> Try again </UButton>
       </div>
 
       <template v-else-if="data">
         <section v-if="data.featured.length > 0" class="space-y-6">
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-2xl font-bold text-highlighted tracking-tight">Featured Models</h2>
+              <h5 class="tracking-tight">Featured Models</h5>
               <p class="text-sm text-muted mt-1">Community-endorsed simulations</p>
             </div>
             <UButton to="/models" variant="ghost" trailing-icon="i-lucide-arrow-right">
@@ -67,10 +71,14 @@
           </div>
         </section>
 
-        <section v-if="data.recent.length > 0" class="space-y-6" :class="{ 'mt-12': data.featured.length > 0 }">
+        <section
+          v-if="data.recent.length > 0"
+          class="space-y-6"
+          :class="{ 'mt-12': data.featured.length > 0 }"
+        >
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-2xl font-bold text-highlighted tracking-tight">Recent Models</h2>
+              <h5 class="tracking-tight">Recent Models</h5>
               <p class="text-sm text-muted mt-1">Latest uploads from the community</p>
             </div>
             <UButton to="/models" variant="ghost" trailing-icon="i-lucide-arrow-right">
@@ -82,7 +90,10 @@
           </div>
         </section>
 
-        <section v-if="data.featured.length === 0 && data.recent.length === 0" class="text-center py-16">
+        <section
+          v-if="data.featured.length === 0 && data.recent.length === 0"
+          class="text-center py-16"
+        >
           <UIcon name="i-lucide-package-open" class="size-14 text-dimmed mx-auto mb-4" />
           <h2 class="text-lg font-semibold text-toned">No models yet</h2>
           <p class="text-dimmed mt-1">Be the first to share a simulation with the community.</p>
@@ -113,10 +124,14 @@ async function enrichModels(models: ModelListItem[]): Promise<ModelListItem[]> {
         const { data } = await GET("/api/v1/models/{id}/versions", {
           params: { path: { id: model.id }, query: { limit: 1, page: 0 } },
         });
-        const versionsData = data as { data: Array<{ title: string; description: string | null }> } | undefined;
+        const versionsData = data as
+          | { data: Array<{ title: string; description: string | null }> }
+          | undefined;
         const v = versionsData?.data?.[0];
         if (v) return { ...model, title: v.title, description: v.description };
-      } catch { /* skip enrichment for this model */ }
+      } catch {
+        /* skip enrichment for this model */
+      }
       return model;
     }),
   );

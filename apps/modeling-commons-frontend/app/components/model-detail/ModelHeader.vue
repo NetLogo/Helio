@@ -1,11 +1,19 @@
 <template>
   <header class="space-y-4">
     <div class="flex items-start justify-between gap-4">
-      <h1 class="text-3xl font-bold text-highlighted tracking-tight m-0">
+      <h5 class="text-highlighted m-0">
         {{ title }}
-      </h1>
+      </h5>
       <div class="flex items-center gap-2 shrink-0">
-        <UButton variant="outline" color="secondary" class="px-5 py-2 ring-secondary/20" icon="i-lucide-code" @click="$emit('embed')"> Embed </UButton>
+        <UButton
+          variant="outline"
+          color="secondary"
+          class="px-5 py-2 ring-secondary/20"
+          icon="i-lucide-code"
+          @click="$emit('embed')"
+        >
+          Embed
+        </UButton>
         <UButton
           v-if="downloadUrl"
           variant="outline"
@@ -27,22 +35,20 @@
           {{ author.name }}
         </NuxtLink>
       </div>
-      <span v-if="author" class="text-dimmed leading-0 text-2xl">&middot;</span>
+      <Middot v-if="author" />
       <span>{{ relativeDate }}</span>
       <template v-if="netlogoVersion">
-        <span v-if="author" class="text-dimmed leading-0 text-2xl">&middot;</span>
+        <Middot v-if="author" />
         <span>Written in {{ netlogoVersion }}</span>
       </template>
       <template v-if="modelGroup">
-        <span v-if="author" class="text-dimmed leading-0 text-2xl">&middot;</span>
+        <Middot v-if="author" />
         <span>
           Model Group:
           <NuxtLink class="font-medium text-primary-700 hover:underline">{{ modelGroup }}</NuxtLink>
         </span>
       </template>
     </div>
-
-    <hr class="border-default" />
   </header>
 </template>
 
