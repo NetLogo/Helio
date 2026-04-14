@@ -1,4 +1,5 @@
 import { env } from '#src/config/index.ts';
+import { checkServicesHealth } from '#src/server/healthcheck.ts';
 import server from '#src/server/index.ts';
 import { prisma } from '#src/shared/db/prisma.client.ts';
 import Fastify from 'fastify';
@@ -23,8 +24,6 @@ async function init(): Promise<void> {
       },
     },
   });
-
-  await server(fastify);
 
   // Graceful shutdown: close DB connection when the server shuts down
   fastify.addHook('onClose', async (instance) => {
@@ -54,6 +53,8 @@ async function init(): Promise<void> {
   });
 
   try {
+    await checkServicesHealth(fastify.log);
+    await server(fastify);
     await fastify.listen({ port: env.server.port, host: env.server.host });
     fastify.log.info('Server is ready');
   } catch (error) {

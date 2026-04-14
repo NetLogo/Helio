@@ -21,6 +21,17 @@ const schema = Type.Object({
   POSTGRES_PASSWORD: Type.String(),
   POSTGRES_USER: Type.String(),
   POSTGRES_DB: Type.String(),
+  REDIS_HOST: Type.String(),
+  REDIS_PORT: Type.Number(),
+  REDIS_URL: Type.String(),
+  RUSTFS_ENDPOINT: Type.String(),
+  RUSTFS_CONSOLE_URL: Type.String(),
+  RUSTFS_ACCESS_KEY: Type.String(),
+  RUSTFS_SECRET_KEY: Type.String(),
+  RUSTFS_REGION: Type.String(),
+  RUSTFS_BUCKET: Type.String(),
+  GALAPAGOS_ENDPOINT: Type.String(),
+  NETLOGO_SERVICES_ENDPOINT: Type.String(),
   LOG_LEVEL: Type.Enum(LogLevel),
   NODE_ENV: Type.Enum(NodeEnv),
   HOST: Type.String({ default: 'localhost' }),
@@ -73,6 +84,25 @@ export default {
   },
   db: {
     url: `postgres://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_URL}/${env.POSTGRES_DB}?sslmode=disable`,
+  },
+  cache: {
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT,
+    url: env.REDIS_URL,
+  },
+  storage: {
+    endpoint: env.RUSTFS_ENDPOINT,
+    consoleUrl: env.RUSTFS_CONSOLE_URL,
+    accessKey: env.RUSTFS_ACCESS_KEY,
+    secretKey: env.RUSTFS_SECRET_KEY,
+    region: env.RUSTFS_REGION,
+    bucket: env.RUSTFS_BUCKET,
+  },
+  galapagos: {
+    endpoint: env.GALAPAGOS_ENDPOINT,
+  },
+  netlogoServices: {
+    endpoint: env.NETLOGO_SERVICES_ENDPOINT,
   },
   cors: {
     allowedOrigins: envVariableToList(env.ALLOWED_ORIGINS),

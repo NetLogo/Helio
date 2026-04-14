@@ -1,5 +1,6 @@
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
+import { signDownloadToken } from '#src/shared/services/signed-url.service.ts';
 import type { FastifyInstance } from 'fastify';
 import {
   additionalFileParamsSchema,
@@ -47,15 +48,17 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
       );
 
       const fileMeta = await fileService.getMetadata(entity.fileId);
+      const token = signDownloadToken(entity.fileId);
       return reply.code(201).send({
         id: entity.id,
         modelId: entity.modelId,
-        taggedVersionId: entity.taggedVersionId,
+        taggedVersionNumber: entity.taggedVersionNumber,
         fileId: entity.fileId,
         filename: fileMeta.filename,
         contentType: fileMeta.contentType,
         sizeBytes: Number(fileMeta.sizeBytes),
         createdAt: entity.createdAt.toISOString(),
+        downloadUrl: `/api/v1/files/${entity.fileId}/download?token=${token}`,
       });
     },
   );
@@ -89,21 +92,23 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
     async (request) => {
       const entities = await listAdditionalFilesQuery.execute(
         request.params.id,
-        request.query.taggedVersionId,
+        request.query.taggedVersionNumber,
       );
 
       const results = await Promise.all(
         entities.map(async (entity) => {
           const fileMeta = await fileService.getMetadata(entity.fileId);
+          const token = signDownloadToken(entity.fileId);
           return {
             id: entity.id,
             modelId: entity.modelId,
-            taggedVersionId: entity.taggedVersionId,
+            taggedVersionNumber: entity.taggedVersionNumber,
             fileId: entity.fileId,
             filename: fileMeta.filename,
             contentType: fileMeta.contentType,
             sizeBytes: Number(fileMeta.sizeBytes),
             createdAt: entity.createdAt.toISOString(),
+            downloadUrl: `/api/v1/files/${entity.fileId}/download?token=${token}`,
           };
         }),
       );

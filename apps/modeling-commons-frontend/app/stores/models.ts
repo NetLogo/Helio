@@ -2,12 +2,13 @@ export interface ModelListItem {
   id: string;
   createdAt: string;
   updatedAt: string;
-  latestVersionId: string | null;
+  latestVersionNumber: number | null;
   parentModelId: string | null;
   visibility: string;
   isEndorsed: boolean;
   title?: string;
   description?: string | null;
+  previewImageUri?: string | null;
 }
 
 interface ModelsFilters {
@@ -61,7 +62,6 @@ export const useModelsStore = defineStore("models", {
         };
 
         if (this.filters.keyword) query.keyword = this.filters.keyword;
-        if (this.filters.visibility) query.visibility = this.filters.visibility;
         if (this.filters.tag) query.tag = this.filters.tag;
         if (this.filters.isEndorsed !== null) query.isEndorsed = this.filters.isEndorsed;
 
@@ -96,7 +96,7 @@ export const useModelsStore = defineStore("models", {
 
       const enriched = await Promise.all(
         models.map(async (model) => {
-          if (!model.latestVersionId) return model;
+          if (!model.latestVersionNumber) return model;
 
           try {
             const { data } = await GET("/api/v1/models/{id}/versions", {
@@ -115,10 +115,11 @@ export const useModelsStore = defineStore("models", {
                 ...model,
                 title: latestVersion.title,
                 description: latestVersion.description,
+                previewImageUri: `${getPreviewImageURI(model.id, model.latestVersionNumber)}`,
               };
             }
           } catch {
-            // Fall through with unenriched model
+            console.warn(`Failed to fetch version data for model ${model.id}`);
           }
           return model;
         }),

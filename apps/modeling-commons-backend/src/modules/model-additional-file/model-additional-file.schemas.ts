@@ -7,6 +7,6 @@ export const additionalFileParamsSchema = Type.Object({
 export type AdditionalFileParams = Static<typeof additionalFileParamsSchema>;
 
 export const listAdditionalFilesQuerySchema = Type.Object({
-  taggedVersionId: Type.Optional(Type.String({ format: 'uuid' })),
+  taggedVersionNumber: Type.Optional(Type.Integer({ minimum: 1 })),
 });
 export type ListAdditionalFilesQuery = Static<typeof listAdditionalFilesQuerySchema>;

@@ -26,7 +26,7 @@ export default function makeModelAdditionalFileService({
 
       const entity = modelAdditionalFileDomain.createAdditionalFile({
         modelId,
-        taggedVersionId: currentVersion.id,
+        taggedVersionNumber: currentVersion.versionNumber,
         fileId: fileEntity.id,
       });
 
@@ -62,9 +62,9 @@ export default function makeModelAdditionalFileService({
 
     async listByModel(
       modelId: string,
-      taggedVersionId?: string,
+      taggedVersionNumber?: number,
     ): Promise<ModelAdditionalFileEntity[]> {
-      return modelAdditionalFileRepository.findByModel(modelId, taggedVersionId);
+      return modelAdditionalFileRepository.findByModel(modelId, taggedVersionNumber);
     },
   };
 }

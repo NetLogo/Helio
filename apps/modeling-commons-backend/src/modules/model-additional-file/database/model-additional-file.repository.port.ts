@@ -5,5 +5,5 @@ export interface ModelAdditionalFileRepository {
   insertTx(ctx: TransactionContext, entity: ModelAdditionalFileEntity): Promise<void>;
   deleteTx(ctx: TransactionContext, id: string): Promise<void>;
   findOneById(id: string): Promise<ModelAdditionalFileEntity | undefined>;
-  findByModel(modelId: string, taggedVersionId?: string): Promise<ModelAdditionalFileEntity[]>;
+  findByModel(modelId: string, taggedVersionNumber?: number): Promise<ModelAdditionalFileEntity[]>;
 }

@@ -9,7 +9,7 @@ import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export interface ModelRepository extends RepositoryPort<ModelEntity> {
   findByIdIncludeDeleted(id: string): Promise<ModelEntity | undefined>;
-  setLatestVersion(ctx: TransactionContext, modelId: string, versionId: string): Promise<void>;
+  setLatestVersion(ctx: TransactionContext, modelId: string, versionNumber: number): Promise<void>;
   softDelete(ctx: TransactionContext, id: string): Promise<void>;
   search(
     filters: ModelSearchFilters,

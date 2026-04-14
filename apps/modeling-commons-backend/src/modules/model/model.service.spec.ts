@@ -13,9 +13,9 @@ import type { ModelEntity } from '#src/modules/model/domain/model.types.ts';
 function makeModel(overrides: Partial<ModelEntity> = {}): ModelEntity {
   return {
     id: 'model-1',
-    latestVersionId: null,
+    latestVersionNumber: null,
     parentModelId: null,
-    parentVersionId: null,
+    parentVersionNumber: null,
     visibility: 'public',
     isEndorsed: false,
     createdAt: new Date(),

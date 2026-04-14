@@ -112,6 +112,27 @@ Given(
   },
 );
 
+Given(
+  'an unlisted model {string} created by {string}',
+  async function (this: ICustomWorld, title: string, ownerName: string) {
+    const owner = getUsers(this.context).get(ownerName)!;
+    const id = await createModel(this.server, owner, title, 'unlisted');
+    getModels(this.context).set(title, id);
+  },
+);
+
+When(
+  '{string} sends a GET request to {string}',
+  async function (this: ICustomWorld, actorName: string, url: string) {
+    const actor = getUsers(this.context).get(actorName)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url,
+      headers: { cookie: actor.cookie },
+    });
+  },
+);
+
 When('I get the model {string}', async function (this: ICustomWorld, title: string) {
   const modelId = getModels(this.context).get(title)!;
   const user = this.context['currentUser'] as TestUser | undefined;

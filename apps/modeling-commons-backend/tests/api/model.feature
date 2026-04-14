@@ -63,3 +63,25 @@ Feature: Model Management
     When I fork the model "Original" with title "My Fork"
     Then the response status should be 201
     And the response body should have property "id"
+
+  Scenario: Unlisted models do not appear in search results
+    Given an authenticated user "owner"
+    And an unlisted model "Hidden Gem" created by "owner"
+    When "owner" sends a GET request to "/api/v1/models"
+    Then the response status should be 200
+    And the response body property "data" should have length 0
+
+  Scenario: Private models do not appear in search for non-owners
+    Given an authenticated user "owner"
+    And a private model "Secret Stuff" created by "owner"
+    And an authenticated user "stranger"
+    When "stranger" sends a GET request to "/api/v1/models"
+    Then the response status should be 200
+    And the response body property "data" should have length 0
+
+  Scenario: Private models appear in search for the owner
+    Given an authenticated user "owner"
+    And a private model "My Secret" created by "owner"
+    When "owner" sends a GET request to "/api/v1/models"
+    Then the response status should be 200
+    And the response body property "data" should have length 1

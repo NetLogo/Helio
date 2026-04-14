@@ -21,14 +21,13 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE as string,
       authApiBase: process.env.NUXT_PUBLIC_AUTH_BASE as string,
       appUrl: process.env.NUXT_PUBLIC_APP_URL as string,
+      adminDashboardUrl: process.env.ADMIN_DASHBOARD_URL as string,
     },
   },
 
   // prettier-ignore
-  modules: [
-    '@pinia/nuxt' ,                      // Pinia store
-    'pinia-plugin-persistedstate/nuxt'
-  ],
+  modules: [// Pinia store
+  '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', "@nuxt/image"],
 
   pinia: {
     storesDirs: ["./stores/**"],

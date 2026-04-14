@@ -1,12 +1,13 @@
 <template>
   <UContainer>
     <div class="space-y-8">
-      <header class="space-y-2">
-        <h1>Explore Models</h1>
-        <p class="text-muted">
-          Browse and discover agent-based simulations shared by the community.
-        </p>
-      </header>
+      <UPageHero
+        title="Explore Models"
+        description="Browse and discover agent-based simulations shared by the community."
+        :ui="{
+          container: 'lg:p-25',
+        }"
+      />
 
       <div class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
@@ -14,21 +15,14 @@
             :model-value="store.filters.keyword"
             placeholder="Search models by keyword..."
             icon="i-lucide-search"
-            size="xl"
             @update:model-value="onKeywordChange"
           />
         </div>
-        <USelectMenu
-          :items="visibilityOptions"
-          :model-value="selectedVisibility"
-          placeholder="Visibility"
-          class="w-full lg:w-40"
-          @update:model-value="onVisibilityChange"
-        />
         <UButton
           :variant="store.filters.isEndorsed ? 'solid' : 'outline'"
           icon="i-lucide-award"
-          :color="store.filters.isEndorsed ? 'warning' : 'neutral'"
+          :color="store.filters.isEndorsed ? 'secondary' : 'neutral'"
+          size="sm"
           @click="toggleEndorsed"
         >
           Featured
@@ -127,5 +121,5 @@ function toggleEndorsed() {
   store.setFilter("isEndorsed", store.filters.isEndorsed ? null : true);
 }
 
-await useAsyncData("models-list", () => store.fetchModels());
+callOnce("fetchModels", () => store.fetchModels());
 </script>

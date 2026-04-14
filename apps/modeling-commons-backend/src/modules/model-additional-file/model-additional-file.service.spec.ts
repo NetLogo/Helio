@@ -13,7 +13,6 @@ import type { ModelVersionEntity } from '#src/modules/model-version/domain/model
 
 function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionEntity {
   return {
-    id: 'v1',
     modelId: 'model-1',
     versionNumber: 1,
     title: 'Test',
@@ -64,7 +63,7 @@ describe('modelAdditionalFileService', () => {
       );
 
       expect(result.modelId).toBe('model-1');
-      expect(result.taggedVersionId).toBe('v1');
+      expect(result.taggedVersionNumber).toBe(1);
       expect(fileRepository.insertTx).toHaveBeenCalledOnce();
       expect(modelAdditionalFileRepository.insertTx).toHaveBeenCalledOnce();
     });
@@ -109,12 +108,12 @@ describe('modelAdditionalFileService', () => {
       expect(result).toBe(files);
     });
 
-    it('passes taggedVersionId when provided', async () => {
+    it('passes taggedVersionNumber when provided', async () => {
       modelAdditionalFileRepository.findByModel.mockResolvedValue([]);
 
-      await service.listByModel('model-1', 'v1');
+      await service.listByModel('model-1', 1);
 
-      expect(modelAdditionalFileRepository.findByModel).toHaveBeenCalledWith('model-1', 'v1');
+      expect(modelAdditionalFileRepository.findByModel).toHaveBeenCalledWith('model-1', 1);
     });
   });
 });

@@ -42,15 +42,39 @@ export function getVisibilityIcon(visibility: string): string {
 
 export function getTagColorClass(tagName: string): string {
   const classes = [
-    "bg-violet-100 text-violet-700 border-violet-200",
-    "bg-emerald-100 text-emerald-700 border-emerald-200",
-    "bg-amber-100 text-amber-700 border-amber-200",
-    "bg-sky-100 text-sky-700 border-sky-200",
-    "bg-pink-100 text-pink-700 border-pink-200",
+    "bg-violet-100 text-violet-700",
+    "bg-emerald-100 text-emerald-700",
+    "bg-amber-100 text-amber-700",
+    "bg-sky-100 text-sky-700",
+    "bg-pink-100 text-pink-700",
   ];
   return classes[tagName.charCodeAt(0) % classes.length]!;
 }
 
-export function getFileUrl(fileId: string): string {
-  return `/api/v1/files/${fileId}/download`;
+export function withApiBase(uri: string): string {
+  const {
+    public: { apiBase },
+  } = useRuntimeConfig();
+  return `${apiBase}/${uri}`;
+}
+
+export function getFileURI(fileId: string): string {
+  return `api/v1/files/${fileId}/download`;
+}
+
+export function getPreviewImageURI(modelId: string, versionNumber: number): string {
+  return `api/v1/models/${modelId}/versions/${versionNumber}/preview-image`;
+}
+
+export function pluralize(count: number, singular: string, plural?: string): string {
+  if (count === 1) return `${singular}`;
+  return `${count} ${plural || singular + "s"}`;
+}
+
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function sentenceCase(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }

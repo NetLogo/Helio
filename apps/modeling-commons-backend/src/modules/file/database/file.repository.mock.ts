@@ -11,5 +11,6 @@ export function mockFileRepository(): { [K in keyof FileRepository]: ReturnType<
     delete: vi.fn(),
     insertTx: vi.fn(),
     findMetadataById: vi.fn(),
+    findModelByFileId: vi.fn(),
   };
 }

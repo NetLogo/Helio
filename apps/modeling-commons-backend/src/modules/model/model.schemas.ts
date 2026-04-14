@@ -12,7 +12,7 @@ export const createModelRequestDtoSchema = Type.Object({
     Type.Union([Type.Literal('public'), Type.Literal('private'), Type.Literal('unlisted')]),
   ),
   parentModelId: Type.Optional(Type.String({ format: 'uuid' })),
-  parentVersionId: Type.Optional(Type.String({ format: 'uuid' })),
+  parentVersionNumber: Type.Optional(Type.Integer({ minimum: 1 })),
 });
 export type CreateModelRequestDto = Static<typeof createModelRequestDtoSchema>;
 
@@ -45,9 +45,6 @@ export type ModelVisibilityDto = (typeof modelVisibilityDto)[keyof typeof modelV
 export const modelSearchQuerySchema = Type.Intersect([
   paginatedQueryRequestDtoSchema,
   Type.Object({
-    visibility: Type.Optional(
-      Type.Union([...Object.values(modelVisibilityDto).map((v) => Type.Literal(v))]),
-    ),
     tag: Type.Optional(Type.String()),
     authorId: Type.Optional(Type.String({ format: 'uuid' })),
     parentModelId: Type.Optional(Type.String({ format: 'uuid' })),

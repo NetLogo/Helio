@@ -3,8 +3,8 @@
   --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "SF Mono", SF Mono, SF Mono, Consolas, "Liberation Mono", Menlo, Courier, monospace;
 
-  --h1-size: 4.5rem;
-  --h2-size: 3.25rem;
+  --h1-size: 3.25rem;
+  --h2-size: 3rem;
   --h3-size: 2.75rem;
   --h4-size: 2.25rem;
   --h5-size: 1.75rem;
@@ -22,6 +22,7 @@
   /* Neutrals */
   --color-neutral-white: #ffffff;
   --color-neutral-lightest: #f2f2f2;
+  --color-neutral-lightest-20: #f2f2f2cc;
   --color-neutral-lighter: #d8d8d8;
   --color-neutral-light: #b2b2b2;
   --color-neutral: #7f7f7f;
@@ -30,6 +31,10 @@
   --color-neutral-darkest: #000000;
   --color-neutral-darkest-60: rgba(0, 0, 0, 0.6);
   --color-neutral-darkest-15: rgba(0, 0, 0, 0.15);
+  --color-neutral-darkest-5: rgba(0, 0, 0, 0.05);
+
+  /* Page background */
+  --color-page-bg: #f9fafb;
 
   /* Royal Blue */
   --color-royal-blue-lightest: #edebfb;
@@ -52,7 +57,7 @@
   /* Functional colors */
   --color-primary: var(--color-royal-blue);
   --color-brand: var(--color-royal-blue);
-  --color-brand-accent: var(--color-coral);
+  --color-brand-accent: var(--color-coral-dark);
 
   --color-background: var(--color-neutral-white);
   --color-foreground: var(--color-neutral-lightest);
@@ -60,13 +65,25 @@
   --color-text-dimmed: var(--color-neutral-darkest-60);
   --color-border: var(--color-neutral-darkest-15);
 
-  /* Nuxt UI */
-  --ui-bg: var(--color-foreground);
+  --color-nav-hover: var(--color-neutral-white);
+  --color-background-overlay: var(--color-background);
+  --color-nav-text-hover: var(--color-royal-blue-dark);
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* Nuxt UI (ports) */
+  --primary: var(--color-primary);
+  --secondary: var(--color-brand-accent);
+  --ui-bg: var(--color-background);
   --ui-border: var(--color-border);
   --ui-text: var(--color-text);
   --ui-text-dimmed: var(--color-text-dimmed);
 
-  --ui-radius: 0.375rem;
+  --ui-radius: var(--radius);
 }
 
 /* Tailwind Colors */
@@ -79,6 +96,10 @@
   --color-neutral-dark: var(--color-neutral-dark);
   --color-neutral-darker: var(--color-neutral-darker);
   --color-neutral-darkest: var(--color-neutral-darkest);
+  --color-neutral-darkest-60: var(--color-neutral-darkest-60);
+  --color-neutral-darkest-15: var(--color-neutral-darkest-15);
+  --color-neutral-darkest-5: var(--color-neutral-darkest-5);
+  --color-page-bg: var(--color-page-bg);
 
   --color-royal-blue-lightest: var(--color-royal-blue-lightest);
   --color-royal-blue-lighter: var(--color-royal-blue-lighter);
@@ -101,6 +122,11 @@
   --text-base: var(--text-base);
   --text-sm: var(--text-sm);
   --text-xs: var(--text-xs);
+
+  --radius-sm: var(--radius-sm);
+  --radius: var(--radius);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
 }
 
 @media (max-width: 1024px) {

@@ -147,32 +147,32 @@ model Passkey {
 // Domain models
 
 model Model {
-  id              String          @id @default(uuid())
-  latestVersionId String?         @unique
-  parentModelId   String?
-  parentVersionId String?
-  visibility      ModelVisibility @default(public)
-  isEndorsed      Boolean         @default(false)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  deletedAt       DateTime?
+  id                  String          @id @default(uuid())
+  latestVersionNumber Int?
+  parentModelId       String?
+  parentVersionNumber Int?
+  visibility          ModelVisibility @default(public)
+  isEndorsed          Boolean         @default(false)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  deletedAt           DateTime?
 
-  latestVersion ModelVersion? @relation("LatestVersion", fields: [latestVersionId], references: [id])
+  latestVersion ModelVersion? @relation("LatestVersion", fields: [id, latestVersionNumber], references: [modelId, versionNumber])
   parentModel   Model?        @relation("ModelParent", fields: [parentModelId], references: [id])
   childModels   Model[]       @relation("ModelParent")
-  parentVersion ModelVersion? @relation("ParentVersion", fields: [parentVersionId], references: [id])
+  parentVersion ModelVersion? @relation("ParentVersion", fields: [parentModelId, parentVersionNumber], references: [modelId, versionNumber])
 
   versions        ModelVersion[]        @relation("ModelVersions")
   authors         ModelAuthor[]
   permissions     ModelPermission[]
   additionalFiles ModelAdditionalFile[]
 
+  @@unique([id, latestVersionNumber])
   @@index([parentModelId])
-  @@index([parentVersionId])
+  @@index([parentModelId, parentVersionNumber])
 }
 
 model ModelVersion {
-  id             String    @id @default(uuid())
   modelId        String
   versionNumber  Int
   title          String
@@ -195,31 +195,33 @@ model ModelVersion {
   tags                  ModelVersionTag[]
   taggedAdditionalFiles ModelAdditionalFile[]
 
-  @@unique([modelId, versionNumber])
+  @@id([modelId, versionNumber])
   @@index([modelId])
 }
 
 model ModelVersionFile {
-  id             String @id @default(uuid())
-  modelVersionId String
-  fileId         String
+  id            String @id @default(uuid())
+  modelId       String
+  versionNumber Int
+  fileId        String
 
-  modelVersion ModelVersion @relation(fields: [modelVersionId], references: [id], onDelete: Cascade)
+  modelVersion ModelVersion @relation(fields: [modelId, versionNumber], references: [modelId, versionNumber], onDelete: Cascade)
   file         File         @relation(fields: [fileId], references: [id])
 
-  @@index([modelVersionId])
+  @@index([modelId, versionNumber])
   @@index([fileId])
 }
 
 model ModelVersionTag {
-  modelVersionId String
-  tagId          String
-  createdAt      DateTime @default(now())
+  modelId       String
+  versionNumber Int
+  tagId         String
+  createdAt     DateTime @default(now())
 
-  modelVersion ModelVersion @relation(fields: [modelVersionId], references: [id], onDelete: Cascade)
+  modelVersion ModelVersion @relation(fields: [modelId, versionNumber], references: [modelId, versionNumber], onDelete: Cascade)
   tag          Tag          @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
-  @@id([modelVersionId, tagId])
+  @@id([modelId, versionNumber, tagId])
   @@index([tagId])
 }
 
@@ -237,18 +239,18 @@ model File {
 }
 
 model ModelAdditionalFile {
-  id              String   @id @default(uuid())
-  modelId         String
-  taggedVersionId String
-  fileId          String
-  createdAt       DateTime @default(now())
+  id                  String   @id @default(uuid())
+  modelId             String
+  taggedVersionNumber Int
+  fileId              String
+  createdAt           DateTime @default(now())
 
   model         Model        @relation(fields: [modelId], references: [id], onDelete: Cascade)
-  taggedVersion ModelVersion @relation(fields: [taggedVersionId], references: [id])
+  taggedVersion ModelVersion @relation(fields: [modelId, taggedVersionNumber], references: [modelId, versionNumber])
   file          File         @relation(fields: [fileId], references: [id])
 
   @@index([modelId])
-  @@index([taggedVersionId])
+  @@index([modelId, taggedVersionNumber])
 }
 
 model Tag {

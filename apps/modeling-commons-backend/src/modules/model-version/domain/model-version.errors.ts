@@ -10,8 +10,14 @@ export class VersionNotFoundError extends NotFoundException {
   }
 }
 
+export class VersionPreviewImageNotFoundError extends NotFoundException {
+  constructor(modelId: string, version: number) {
+    super(`Preview image for version ${version} of model ${modelId} not found`);
+  }
+}
+
 export class VersionFinalizedError extends ConflictException {
-  constructor(versionId: string) {
-    super(`Version ${versionId} is finalized and cannot be modified`);
+  constructor(modelId: string, versionNumber: number) {
+    super(`Version ${versionNumber} of model ${modelId} is finalized and cannot be modified`);
   }
 }

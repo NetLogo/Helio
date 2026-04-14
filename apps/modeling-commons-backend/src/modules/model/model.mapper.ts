@@ -6,9 +6,9 @@ import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
 
 export type ModelRecord = {
   id: string;
-  latestVersionId: string | null;
+  latestVersionNumber: number | null;
   parentModelId: string | null;
-  parentVersionId: string | null;
+  parentVersionNumber: number | null;
   visibility: ModelVisibility;
   isEndorsed: boolean;
   createdAt: Date;
@@ -33,9 +33,9 @@ export default function modelMapper(): Mapper<ModelEntity, ModelRecord, ModelRes
     toDomain(record: ModelRecord): ModelEntity {
       return {
         id: record.id,
-        latestVersionId: record.latestVersionId,
+        latestVersionNumber: record.latestVersionNumber,
         parentModelId: record.parentModelId,
-        parentVersionId: record.parentVersionId,
+        parentVersionNumber: record.parentVersionNumber,
         visibility: record.visibility,
         isEndorsed: record.isEndorsed,
         createdAt: new Date(record.createdAt),
@@ -47,9 +47,9 @@ export default function modelMapper(): Mapper<ModelEntity, ModelRecord, ModelRes
     toResponse(entity: ModelEntity): ModelResponseDto {
       return {
         id: entity.id,
-        latestVersionId: entity.latestVersionId,
+        latestVersionNumber: entity.latestVersionNumber,
         parentModelId: entity.parentModelId,
-        parentVersionId: entity.parentVersionId,
+        parentVersionNumber: entity.parentVersionNumber,
         visibility: entity.visibility,
         isEndorsed: entity.isEndorsed,
         createdAt: entity.createdAt.toISOString(),
@@ -60,9 +60,9 @@ export default function modelMapper(): Mapper<ModelEntity, ModelRecord, ModelRes
     toPersistence(entity: ModelEntity): ModelRecord {
       const record: ModelRecord = {
         id: entity.id,
-        latestVersionId: entity.latestVersionId,
+        latestVersionNumber: entity.latestVersionNumber,
         parentModelId: entity.parentModelId,
-        parentVersionId: entity.parentVersionId,
+        parentVersionNumber: entity.parentVersionNumber,
         visibility: entity.visibility,
         isEndorsed: entity.isEndorsed,
         createdAt: entity.createdAt,

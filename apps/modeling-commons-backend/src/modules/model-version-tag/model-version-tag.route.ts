@@ -36,7 +36,8 @@ export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
       );
       const tag = await tagService.findByIdOrName(entity.tagId);
       return reply.code(201).send({
-        modelVersionId: entity.modelVersionId,
+        modelId: entity.modelId,
+        versionNumber: entity.versionNumber,
         tagId: entity.tagId,
         tagName: tag.name,
         createdAt: entity.createdAt.toISOString(),

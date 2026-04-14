@@ -1,4 +1,4 @@
-import type { FileRepository } from '#src/modules/file/database/file.repository.port.ts';
+import type { FileRepository, FileModelInfo } from '#src/modules/file/database/file.repository.port.ts';
 import type { FileEntity } from '#src/modules/file/domain/file.types.ts';
 import type { FileRecord } from '#src/modules/file/file.mapper.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
@@ -40,6 +40,30 @@ export default function fileRepository({
         sizeBytes: record.sizeBytes,
         createdAt: record.createdAt,
       };
+    },
+
+    async findModelByFileId(fileId: string): Promise<FileModelInfo | null> {
+      const modelSelect = { id: true, visibility: true, deletedAt: true } as const;
+
+      const version = await db.modelVersion.findFirst({
+        where: { nlogoxFileId: fileId },
+        select: { model: { select: modelSelect } },
+      });
+      if (version) return version.model;
+
+      const versionFile = await db.modelVersionFile.findFirst({
+        where: { fileId },
+        select: { modelVersion: { select: { model: { select: modelSelect } } } },
+      });
+      if (versionFile) return versionFile.modelVersion.model;
+
+      const additionalFile = await db.modelAdditionalFile.findFirst({
+        where: { fileId },
+        select: { model: { select: modelSelect } },
+      });
+      if (additionalFile) return additionalFile.model;
+
+      return null;
     },
   };
 }

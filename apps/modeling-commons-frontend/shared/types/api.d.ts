@@ -117,6 +117,7 @@ export interface paths {
                             sizeBytes: number;
                             /** Format: date-time */
                             createdAt: string;
+                            downloadUrl: string;
                         };
                     };
                 };
@@ -139,7 +140,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    token?: string;
+                };
                 header?: never;
                 path: {
                     id: string;
@@ -179,7 +182,6 @@ export interface paths {
                     limit?: number;
                     /** @description Page number */
                     page?: number;
-                    visibility?: "public" | "private" | "unlisted";
                     tag?: string;
                     authorId?: string;
                     parentModelId?: string;
@@ -235,9 +237,9 @@ export interface paths {
                                  */
                                 updatedAt: string;
                             }) & {
-                                latestVersionId: string | null;
+                                latestVersionNumber: number | null;
                                 parentModelId: string | null;
-                                parentVersionId: string | null;
+                                parentVersionNumber: number | null;
                                 /** @description public | private | unlisted */
                                 visibility: string;
                                 isEndorsed: boolean;
@@ -265,8 +267,7 @@ export interface paths {
                         visibility?: "public" | "private" | "unlisted";
                         /** Format: uuid */
                         parentModelId?: string;
-                        /** Format: uuid */
-                        parentVersionId?: string;
+                        parentVersionNumber?: number;
                     };
                 };
             };
@@ -338,9 +339,9 @@ export interface paths {
                              */
                             updatedAt: string;
                         }) & {
-                            latestVersionId: string | null;
+                            latestVersionNumber: number | null;
                             parentModelId: string | null;
-                            parentVersionId: string | null;
+                            parentVersionNumber: number | null;
                             /** @description public | private | unlisted */
                             visibility: string;
                             isEndorsed: boolean;
@@ -416,7 +417,6 @@ export interface paths {
                     limit?: number;
                     /** @description Page number */
                     page?: number;
-                    visibility?: "public" | "private" | "unlisted";
                     tag?: string;
                     authorId?: string;
                     parentModelId?: string;
@@ -474,9 +474,9 @@ export interface paths {
                                  */
                                 updatedAt: string;
                             }) & {
-                                latestVersionId: string | null;
+                                latestVersionNumber: number | null;
                                 parentModelId: string | null;
-                                parentVersionId: string | null;
+                                parentVersionNumber: number | null;
                                 /** @description public | private | unlisted */
                                 visibility: string;
                                 isEndorsed: boolean;
@@ -504,7 +504,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    taggedVersionId?: string;
+                    taggedVersionNumber?: number;
                 };
                 header?: never;
                 path: {
@@ -530,8 +530,7 @@ export interface paths {
                         } & {
                             /** Format: uuid */
                             modelId: string;
-                            /** Format: uuid */
-                            taggedVersionId: string;
+                            taggedVersionNumber: number;
                             /** Format: uuid */
                             fileId: string;
                             filename: string;
@@ -539,6 +538,7 @@ export interface paths {
                             sizeBytes: number;
                             /** Format: date-time */
                             createdAt: string;
+                            downloadUrl: string;
                         })[];
                     };
                 };
@@ -573,8 +573,7 @@ export interface paths {
                         } & {
                             /** Format: uuid */
                             modelId: string;
-                            /** Format: uuid */
-                            taggedVersionId: string;
+                            taggedVersionNumber: number;
                             /** Format: uuid */
                             fileId: string;
                             filename: string;
@@ -582,6 +581,7 @@ export interface paths {
                             sizeBytes: number;
                             /** Format: date-time */
                             createdAt: string;
+                            downloadUrl: string;
                         };
                     };
                 };
@@ -1056,14 +1056,7 @@ export interface paths {
                             page: number;
                             data: unknown[];
                         } & {
-                            data: ({
-                                /**
-                                 * Format: uuid
-                                 * @description Entity's id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
-                                 */
-                                id: string;
-                            } & {
+                            data: {
                                 /** Format: uuid */
                                 modelId: string;
                                 versionNumber: number;
@@ -1076,7 +1069,7 @@ export interface paths {
                                 /** Format: date-time */
                                 createdAt: string;
                                 isFinalized: boolean;
-                            })[];
+                            }[];
                         };
                     };
                 };
@@ -1108,12 +1101,7 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /**
-                             * Format: uuid
-                             * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
-                             */
-                            id: string;
+                            versionNumber: number;
                         };
                     };
                 };
@@ -1193,13 +1181,6 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /**
-                             * Format: uuid
-                             * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
-                             */
-                            id: string;
-                        } & {
                             /** Format: uuid */
                             modelId: string;
                             versionNumber: number;
@@ -1213,6 +1194,44 @@ export interface paths {
                             createdAt: string;
                             isFinalized: boolean;
                         };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/versions/{version}/preview-image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    version: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
                     };
                 };
             };
@@ -1260,7 +1279,8 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** Format: uuid */
-                            modelVersionId: string;
+                            modelId: string;
+                            versionNumber: number;
                             /** Format: uuid */
                             tagId: string;
                             tagName: string;
@@ -1525,7 +1545,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": ({
+                        "application/json": (({
                             /**
                              * Format: uuid
                              * @description Entity's id
@@ -1554,7 +1574,28 @@ export interface paths {
                             /** @description student | teacher | researcher | other */
                             userKind: string;
                             isProfilePublic: boolean;
-                        };
+                        }) | (({
+                            /**
+                             * Format: uuid
+                             * @description Entity's id
+                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             */
+                            id: string;
+                        } & {
+                            /**
+                             * @description Entity creation date
+                             * @example 2020-11-24T17:43:15.970Z
+                             */
+                            createdAt: string;
+                            /**
+                             * @description Entity last update date
+                             * @example 2020-11-24T17:43:15.970Z
+                             */
+                            updatedAt: string;
+                        }) & {
+                            name: string | null;
+                            isProfilePublic: boolean;
+                        });
                     };
                 };
             };

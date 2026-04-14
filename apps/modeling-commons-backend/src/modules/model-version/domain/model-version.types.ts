@@ -1,5 +1,4 @@
 export type ModelVersionEntity = {
-  id: string;
   modelId: string;
   versionNumber: number;
   title: string;

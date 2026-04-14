@@ -27,10 +27,8 @@
           {{ meta.description }}
         </p>
         <div class="mt-8 flex justify-center gap-3">
-          <UButton to="/models" size="lg"> Explore Models </UButton>
-          <UButton to="/signup" size="lg" variant="outline" color="neutral">
-            Join the Community
-          </UButton>
+          <UButton to="/models" size="lg" variant="solid"> Explore Models </UButton>
+          <UButton to="/signup" size="lg"> Join the Community </UButton>
         </div>
       </UContainer>
     </section>
@@ -119,7 +117,7 @@ async function enrichModels(models: ModelListItem[]): Promise<ModelListItem[]> {
   const { GET } = useApi();
   return Promise.all(
     models.map(async (model) => {
-      if (!model.latestVersionId) return model;
+      if (!model.latestVersionNumber) return model;
       try {
         const { data } = await GET("/api/v1/models/{id}/versions", {
           params: { path: { id: model.id }, query: { limit: 1, page: 0 } },
@@ -128,7 +126,13 @@ async function enrichModels(models: ModelListItem[]): Promise<ModelListItem[]> {
           | { data: Array<{ title: string; description: string | null }> }
           | undefined;
         const v = versionsData?.data?.[0];
-        if (v) return { ...model, title: v.title, description: v.description };
+        if (v)
+          return {
+            ...model,
+            title: v.title,
+            description: v.description,
+            previewImageUri: getPreviewImageURI(model.id, model.latestVersionNumber),
+          };
       } catch {
         /* skip enrichment for this model */
       }

@@ -8,6 +8,7 @@ export const fileResponseDtoSchema = Type.Intersect([
     contentType: Type.String(),
     sizeBytes: Type.Integer(),
     createdAt: Type.String({ format: 'date-time' }),
+    downloadUrl: Type.String(),
   }),
 ]);
 

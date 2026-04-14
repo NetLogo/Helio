@@ -8,6 +8,22 @@ const adapter = new PrismaPg({ connectionString: process.env['DATABASE_URL']! })
 const prisma = new PrismaClient({ adapter });
 const seedFilesPath = path.join(import.meta.dirname, 'seed-files');
 
+const getNonRandomUUID = (() => {
+  const counter: Record<string, number> = {};
+
+  return (prefix: string, from: number = 0) => {
+    if (!counter[prefix]) {
+      counter[prefix] = from;
+    }
+    if (prefix.length != 8) {
+      throw new Error(`Prefix must be 8 characters long: ${prefix}`);
+    }
+    const id = `${prefix}-0000-4000-a000-${counter[prefix].toString().padStart(12, '0')}`;
+    counter[prefix]++;
+    return id;
+  };
+})();
+
 const ids = {
   // Users
   alice: '10000000-0000-4000-a000-000000000001',
@@ -22,18 +38,10 @@ const ids = {
   antForaging: '20000000-0000-4000-a000-000000000003',
   virusNetwork: '20000000-0000-4000-a000-000000000004',
   wolfSheepFork: '20000000-0000-4000-a000-000000000005',
-
-  // Model versions
-  wolfSheepV1: '30000000-0000-4000-a000-000000000001',
-  wolfSheepV2: '30000000-0000-4000-a000-000000000002',
-  fireSpreadV1: '30000000-0000-4000-a000-000000000003',
-  antForagingV1: '30000000-0000-4000-a000-000000000004',
-  virusNetworkV1: '30000000-0000-4000-a000-000000000005',
-  wolfSheepForkV1: '30000000-0000-4000-a000-000000000006',
+  trafficBasic: '20000000-0000-4000-a000-000000000006',
+  traffic2Lanes: '20000000-0000-4000-a000-000000000007',
 
   // Files
-  wolfSheepNlogox1: '40000000-0000-4000-a000-000000000001',
-  wolfSheepNlogox2: '40000000-0000-4000-a000-000000000002',
   fireSpreadNlogox: '40000000-0000-4000-a000-000000000003',
   antForagingNlogox: '40000000-0000-4000-a000-000000000004',
   virusNetworkNlogox: '40000000-0000-4000-a000-000000000005',
@@ -102,8 +110,71 @@ function fakeReadme(): Buffer {
   return Buffer.from('# Wolf Sheep Predation\n\nA classic predator-prey model.', 'utf-8');
 }
 
-// Seed
+function readInfoTab(xmlString: string): string | undefined {
+  return `
+  # Info Tab Content
+  This is a placeholder for the info tab content extracted from the nlogox file.
+  In a real implementation, you would parse the XML and extract the relevant section.
+  `;
+}
 
+function readNlogox(
+  filename: string,
+  previewImgName: string,
+): {
+  id: string;
+  filename: string;
+  blob: Buffer;
+  contentType: string;
+  previewImage: {
+    blob: Buffer;
+    contentType: string;
+  };
+  sizeBytes: bigint;
+  infoTab: string | undefined;
+} {
+  const filepath = path.join(seedFilesPath, filename);
+  const stats = fs.statSync(filepath);
+  const content = fs.readFileSync(filepath, 'utf-8');
+  const infoTab = readInfoTab(content);
+
+  const previewImagePath = path.join(seedFilesPath, previewImgName);
+  const imageBlob = fs.readFileSync(previewImagePath);
+  const previewImageExt = path.extname(previewImgName).toLowerCase();
+  const mimes: Record<string, string> = {
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.bmp': 'image/bmp',
+    '.webp': 'image/webp',
+  };
+  const previewImageContentType = mimes[previewImageExt] || 'application/octet-stream';
+
+  return {
+    id: getNonRandomUUID('40000000', 12),
+    filename,
+    blob: Buffer.from(content, 'utf-8'),
+    contentType: 'application/xml',
+    previewImage: {
+      blob: imageBlob,
+      contentType: previewImageContentType,
+    },
+    sizeBytes: BigInt(stats.size),
+    infoTab,
+  };
+}
+
+const seedNlogoxFiles = {
+  wolfSheepNlogox1: readNlogox('wolf-sheep-predation.nlogox', 'wolf-sheep-preview.png'),
+  wolfSheepNlogox2: readNlogox('wolf-sheep-predation-v2.nlogox', 'wolf-sheep-preview.png'),
+  wolfSheepNlogoxFork: readNlogox('wolf-sheep-predation-fork.nlogox', 'wolf-sheep-preview.png'),
+  trafficGridNlogox: readNlogox('traffic-grid.nlogox', 'traffic-grid-preview.png'),
+  trafficBasicNlogox: readNlogox('traffic-basic.nlogox', 'traffic-grid-preview.png'),
+  traffic2LanesNlogox: readNlogox('traffic-2-lanes.nlogox', 'traffic-2-lanes-preview.png'),
+};
+
+// Seed
 async function main() {
   console.log('Seeding database...');
 
@@ -237,67 +308,53 @@ async function main() {
   // 5. Files (nlogox files + supplementary)
 
   const files = [
-    {
-      id: ids.wolfSheepNlogox1,
-      filename: 'wolf-sheep-v1.nlogox',
-      contentType: 'application/xml',
-      sizeBytes: fs.statSync(path.join(seedFilesPath, 'wolf-sheep-predation.nlogox')).size,
-      blob: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-predation.nlogox')),
-    },
-    {
-      id: ids.wolfSheepNlogox2,
-      filename: 'wolf-sheep-v2.nlogox',
-      contentType: 'application/xml',
-      sizeBytes: fs.statSync(path.join(seedFilesPath, 'wolf-sheep-predation-v2.nlogox')).size,
-      blob: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-predation-v2.nlogox')),
-    },
+    ...Object.values(seedNlogoxFiles).map((f) => ({
+      id: f.id,
+      filename: `${f.filename}`,
+      contentType: f.contentType,
+      sizeBytes: f.sizeBytes,
+      blob: f.blob,
+    })),
     {
       id: ids.fireSpreadNlogox,
       filename: 'fire-spread.nlogox',
       contentType: 'application/xml',
-      sizeBytes: BigInt(380),
+      sizeBytes: BigInt(380) as bigint,
       blob: fakeNlogox('Fire Spread'),
     },
     {
       id: ids.antForagingNlogox,
       filename: 'ant-foraging.nlogox',
       contentType: 'application/xml',
-      sizeBytes: BigInt(410),
+      sizeBytes: BigInt(410) as bigint,
       blob: fakeNlogox('Ant Foraging'),
     },
     {
       id: ids.virusNetworkNlogox,
       filename: 'virus-network.nlogox',
       contentType: 'application/xml',
-      sizeBytes: BigInt(390),
+      sizeBytes: BigInt(390) as bigint,
       blob: fakeNlogox('Virus on a Network'),
-    },
-    {
-      id: ids.wolfSheepForkNlogox,
-      filename: 'wolf-sheep-fork.nlogox',
-      contentType: 'application/xml',
-      sizeBytes: fs.statSync(path.join(seedFilesPath, 'wolf-sheep-predation.nlogox')).size,
-      blob: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-predation.nlogox')),
     },
     {
       id: ids.wolfSheepReadme,
       filename: 'README.md',
       contentType: 'text/markdown',
-      sizeBytes: BigInt(58),
+      sizeBytes: BigInt(58) as bigint,
       blob: fakeReadme(),
     },
     {
       id: ids.wolfSheepData,
       filename: 'initial-data.csv',
       contentType: 'text/csv',
-      sizeBytes: BigInt(52),
+      sizeBytes: BigInt(52) as bigint,
       blob: fakeCsv(),
     },
     {
       id: ids.fireSpreadCsv,
       filename: 'burn-results.csv',
       contentType: 'text/csv',
-      sizeBytes: BigInt(52),
+      sizeBytes: BigInt(52) as bigint,
       blob: fakeCsv(),
     },
   ];
@@ -306,6 +363,7 @@ async function main() {
     await prisma.file.upsert({
       where: { id: f.id },
       update: {},
+      // @ts-expect-error -- Shared vs. Non-Shared Buffer
       create: f,
     });
   }
@@ -322,6 +380,13 @@ async function main() {
       visibility: 'unlisted' as const,
       isEndorsed: false,
       parentModelId: ids.wolfSheep,
+    },
+    { id: ids.trafficBasic, visibility: 'public' as const, isEndorsed: false },
+    {
+      id: ids.traffic2Lanes,
+      visibility: 'public' as const,
+      isEndorsed: false,
+      parentModelId: ids.trafficBasic,
     },
   ];
 
@@ -340,44 +405,82 @@ async function main() {
 
   const versions = [
     {
-      id: ids.wolfSheepV1,
       modelId: ids.wolfSheep,
       versionNumber: 1,
       title: 'Wolf Sheep Predation',
       description:
         'A classic predator-prey model exploring population dynamics between wolves, sheep, and grass.',
-      nlogoxFileId: ids.wolfSheepNlogox1,
-      netlogoVersion: '6.4.0',
-      infoTab: '## WHAT IS IT?\n\nThis model explores the stability of predator-prey ecosystems.',
+      nlogoxFileId: seedNlogoxFiles.wolfSheepNlogox1.id,
+      netlogoVersion: '7.0.0',
+      infoTab: seedNlogoxFiles.wolfSheepNlogox1.infoTab,
       createdAt: oneWeekAgo,
       finalizedAt: now,
-      previewImage: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-preview.png')),
+      previewImage: seedNlogoxFiles.wolfSheepNlogox1.previewImage.blob,
     },
     {
-      id: ids.wolfSheepV2,
       modelId: ids.wolfSheep,
       versionNumber: 2,
       title: 'Wolf Sheep Predation',
       description: 'Updated with energy-based movement and grass regrowth mechanics.',
-      nlogoxFileId: ids.wolfSheepNlogox2,
-      netlogoVersion: '6.4.0',
-      infoTab:
-        "## WHAT IS IT?\n\nThis model explores the stability of predator-prey ecosystems.\n\n## WHAT'S NEW\n\nEnergy-based movement added in v2.",
-      previewImage: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-preview.png')),
+      nlogoxFileId: seedNlogoxFiles.wolfSheepNlogox2.id,
+      netlogoVersion: '7.0.3',
+      infoTab: seedNlogoxFiles.wolfSheepNlogox2.infoTab,
+      previewImage: seedNlogoxFiles.wolfSheepNlogox2.previewImage.blob,
     },
     {
-      id: ids.fireSpreadV1,
+      modelId: ids.wolfSheepFork,
+      versionNumber: 1,
+      title: 'Wolf Sheep - Seasonal Variant',
+      description: 'A fork of Wolf Sheep Predation that adds seasonal grass growth patterns.',
+      nlogoxFileId: seedNlogoxFiles.wolfSheepNlogoxFork.id,
+      netlogoVersion: '7.0.0',
+      infoTab: seedNlogoxFiles.wolfSheepNlogoxFork.infoTab,
+      previewImage: seedNlogoxFiles.wolfSheepNlogoxFork.previewImage.blob,
+    },
+    {
+      modelId: ids.trafficBasic,
+      versionNumber: 1,
+      title: 'Traffic Basic',
+      description: 'A simple traffic flow model demonstrating basic congestion dynamics.',
+      nlogoxFileId: seedNlogoxFiles.trafficBasicNlogox.id,
+      netlogoVersion: '6.4.0',
+      infoTab: seedNlogoxFiles.trafficBasicNlogox.infoTab,
+      previewImage: seedNlogoxFiles.trafficBasicNlogox.previewImage.blob,
+    },
+    {
+      modelId: ids.trafficBasic,
+      versionNumber: 2,
+      title: 'Traffic Grid',
+      description:
+        'An extension of the basic traffic model that simulates a grid of intersections and traffic lights.',
+      nlogoxFileId: seedNlogoxFiles.trafficGridNlogox.id,
+      netlogoVersion: '7.0.0',
+      infoTab: seedNlogoxFiles.trafficGridNlogox.infoTab,
+      previewImage: seedNlogoxFiles.trafficGridNlogox.previewImage.blob,
+    },
+    {
+      modelId: ids.traffic2Lanes,
+      versionNumber: 1,
+      title: 'Traffic – 2 Lanes',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros. Lorem ipsum dolor sit amet, consect etur adipiscing elit. Suspendisse varius enim in eros.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.  Suspendisse vauspendisse va.',
+
+      nlogoxFileId: seedNlogoxFiles.traffic2LanesNlogox.id,
+      netlogoVersion: '7.0.0',
+      infoTab: seedNlogoxFiles.traffic2LanesNlogox.infoTab,
+      previewImage: seedNlogoxFiles.traffic2LanesNlogox.previewImage.blob,
+    },
+    {
       modelId: ids.fireSpread,
       versionNumber: 1,
       title: 'Fire Spread',
       description:
-        'Simulates the spread of a fire through a forest, demonstrating percolation thresholds.',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros. Lorem ipsum dolor sit amet, consect etur adipiscing elit. Suspendisse varius enim in eros.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.  Suspendisse vauspendisse va.',
       nlogoxFileId: ids.fireSpreadNlogox,
       netlogoVersion: '6.4.0',
       infoTab: '## WHAT IS IT?\n\nThis model simulates fire spreading through a forest.',
     },
     {
-      id: ids.antForagingV1,
       modelId: ids.antForaging,
       versionNumber: 1,
       title: 'Ant Foraging',
@@ -388,7 +491,6 @@ async function main() {
       infoTab: '## WHAT IS IT?\n\nThis model demonstrates emergent path-finding behavior.',
     },
     {
-      id: ids.virusNetworkV1,
       modelId: ids.virusNetwork,
       versionNumber: 1,
       title: 'Virus on a Network',
@@ -399,23 +501,13 @@ async function main() {
       infoTab:
         '## WHAT IS IT?\n\nThis model shows virus spread dynamics on various network topologies.',
     },
-    {
-      id: ids.wolfSheepForkV1,
-      modelId: ids.wolfSheepFork,
-      versionNumber: 1,
-      title: 'Wolf Sheep - Seasonal Variant',
-      description: 'A fork of Wolf Sheep Predation that adds seasonal grass growth patterns.',
-      nlogoxFileId: ids.wolfSheepForkNlogox,
-      netlogoVersion: '6.4.0',
-      infoTab: '## WHAT IS IT?\n\nA seasonal variant of the classic Wolf Sheep Predation model.',
-      previewImage: fs.readFileSync(path.join(seedFilesPath, 'wolf-sheep-preview.png')),
-    },
   ];
 
   for (const v of versions) {
     await prisma.modelVersion.upsert({
-      where: { id: v.id },
+      where: { modelId_versionNumber: { modelId: v.modelId, versionNumber: v.versionNumber } },
       update: {},
+      // @ts-expect-error -- Shared vs. Non-Shared Buffer
       create: v,
     });
   }
@@ -423,14 +515,16 @@ async function main() {
 
   // 8. Set latest version pointers
   const modelUpdates = [
-    { id: ids.wolfSheep, data: { latestVersionId: ids.wolfSheepV2 } },
-    { id: ids.fireSpread, data: { latestVersionId: ids.fireSpreadV1 } },
-    { id: ids.antForaging, data: { latestVersionId: ids.antForagingV1 } },
-    { id: ids.virusNetwork, data: { latestVersionId: ids.virusNetworkV1 } },
+    { id: ids.wolfSheep, data: { latestVersionNumber: 2 } },
+    { id: ids.fireSpread, data: { latestVersionNumber: 1 } },
+    { id: ids.antForaging, data: { latestVersionNumber: 1 } },
+    { id: ids.virusNetwork, data: { latestVersionNumber: 1 } },
     {
       id: ids.wolfSheepFork,
-      data: { latestVersionId: ids.wolfSheepForkV1, parentVersionId: ids.wolfSheepV2 },
+      data: { latestVersionNumber: 1, parentVersionNumber: 2 },
     },
+    { id: ids.trafficBasic, data: { latestVersionNumber: 2 } },
+    { id: ids.traffic2Lanes, data: { latestVersionNumber: 1, parentVersionNumber: 2 } },
   ];
 
   for (const m of modelUpdates) {
@@ -440,8 +534,8 @@ async function main() {
 
   // 9. Model version files (supplementary files attached to versions)
   const mvFiles = [
-    { id: ids.mvFile1, modelVersionId: ids.wolfSheepV1, fileId: ids.wolfSheepData },
-    { id: ids.mvFile2, modelVersionId: ids.wolfSheepV2, fileId: ids.wolfSheepData },
+    { id: ids.mvFile1, modelId: ids.wolfSheep, versionNumber: 1, fileId: ids.wolfSheepData },
+    { id: ids.mvFile2, modelId: ids.wolfSheep, versionNumber: 2, fileId: ids.wolfSheepData },
   ];
 
   for (const mvf of mvFiles) {
@@ -454,29 +548,35 @@ async function main() {
   console.log(`  ✓ ${mvFiles.length} model version files`);
 
   // 10. Model version tags
+  const spreadTags = (modelId: string, versionNumber: number, tagIds: string[]) =>
+    tagIds.map((tagId) => ({ modelId, versionNumber, tagId }));
+
   const versionTags = [
-    { modelVersionId: ids.wolfSheepV1, tagId: ids.tagEcology },
-    { modelVersionId: ids.wolfSheepV1, tagId: ids.tagPredatorPrey },
-    { modelVersionId: ids.wolfSheepV1, tagId: ids.tagBiology },
-    { modelVersionId: ids.wolfSheepV2, tagId: ids.tagEcology },
-    { modelVersionId: ids.wolfSheepV2, tagId: ids.tagPredatorPrey },
-    { modelVersionId: ids.wolfSheepV2, tagId: ids.tagBiology },
-    { modelVersionId: ids.wolfSheepV2, tagId: ids.tagEmergence },
-    { modelVersionId: ids.fireSpreadV1, tagId: ids.tagFire },
-    { modelVersionId: ids.fireSpreadV1, tagId: ids.tagEmergence },
-    { modelVersionId: ids.antForagingV1, tagId: ids.tagBiology },
-    { modelVersionId: ids.antForagingV1, tagId: ids.tagSwarmIntelligence },
-    { modelVersionId: ids.antForagingV1, tagId: ids.tagEmergence },
-    { modelVersionId: ids.virusNetworkV1, tagId: ids.tagNetwork },
-    { modelVersionId: ids.virusNetworkV1, tagId: ids.tagEpidemiology },
-    { modelVersionId: ids.virusNetworkV1, tagId: ids.tagBiology },
-    { modelVersionId: ids.wolfSheepForkV1, tagId: ids.tagEcology },
-    { modelVersionId: ids.wolfSheepForkV1, tagId: ids.tagPredatorPrey },
-  ];
+    spreadTags(ids.wolfSheep, 1, [ids.tagEcology, ids.tagPredatorPrey, ids.tagBiology]),
+    spreadTags(ids.wolfSheep, 2, [
+      ids.tagEcology,
+      ids.tagPredatorPrey,
+      ids.tagBiology,
+      ids.tagEmergence,
+    ]),
+    spreadTags(ids.fireSpread, 1, [ids.tagFire, ids.tagEmergence]),
+    spreadTags(ids.antForaging, 1, [ids.tagBiology, ids.tagSwarmIntelligence, ids.tagEmergence]),
+    spreadTags(ids.virusNetwork, 1, [ids.tagNetwork, ids.tagEpidemiology, ids.tagBiology]),
+    spreadTags(ids.wolfSheepFork, 1, [ids.tagEcology, ids.tagPredatorPrey]),
+    spreadTags(ids.trafficBasic, 1, [ids.tagEmergence]),
+    spreadTags(ids.trafficBasic, 2, [ids.tagEmergence]),
+    spreadTags(ids.traffic2Lanes, 1, [ids.tagEmergence]),
+  ].flat();
 
   for (const vt of versionTags) {
     await prisma.modelVersionTag.upsert({
-      where: { modelVersionId_tagId: { modelVersionId: vt.modelVersionId, tagId: vt.tagId } },
+      where: {
+        modelId_versionNumber_tagId: {
+          modelId: vt.modelId,
+          versionNumber: vt.versionNumber,
+          tagId: vt.tagId,
+        },
+      },
       update: {},
       create: vt,
     });
@@ -488,13 +588,13 @@ async function main() {
     {
       id: ids.additionalFile1,
       modelId: ids.wolfSheep,
-      taggedVersionId: ids.wolfSheepV1,
+      taggedVersionNumber: 1,
       fileId: ids.wolfSheepReadme,
     },
     {
       id: ids.additionalFile2,
       modelId: ids.fireSpread,
-      taggedVersionId: ids.fireSpreadV1,
+      taggedVersionNumber: 1,
       fileId: ids.fireSpreadCsv,
     },
   ];
@@ -518,6 +618,9 @@ async function main() {
     { modelId: ids.virusNetwork, userId: ids.alice, role: 'owner' as const },
     { modelId: ids.virusNetwork, userId: ids.carol, role: 'contributor' as const },
     { modelId: ids.wolfSheepFork, userId: ids.dave, role: 'owner' as const },
+    { modelId: ids.trafficBasic, userId: ids.alice, role: 'owner' as const },
+    { modelId: ids.trafficBasic, userId: ids.bob, role: 'contributor' as const },
+    { modelId: ids.traffic2Lanes, userId: ids.bob, role: 'owner' as const },
   ];
 
   for (const a of authors) {
@@ -549,6 +652,18 @@ async function main() {
       granteeUserId: null,
       permissionLevel: 'read' as const,
     },
+    {
+      id: getNonRandomUUID('60000000', 100),
+      modelId: ids.trafficBasic,
+      granteeUserId: null,
+      permissionLevel: 'read' as const,
+    },
+    {
+      id: getNonRandomUUID('60000000', 100),
+      modelId: ids.traffic2Lanes,
+      granteeUserId: null,
+      permissionLevel: 'read' as const,
+    },
   ];
 
   for (const p of permissions) {
@@ -575,7 +690,7 @@ async function main() {
       type: 'model_version.created',
       actorId: ids.alice,
       resourceType: 'model_version',
-      resourceId: ids.wolfSheepV1,
+      resourceId: `${ids.wolfSheep}:1`,
       payload: { modelId: ids.wolfSheep, versionNumber: 1 },
     },
     {
@@ -583,7 +698,7 @@ async function main() {
       type: 'model_version.created',
       actorId: ids.alice,
       resourceType: 'model_version',
-      resourceId: ids.wolfSheepV2,
+      resourceId: `${ids.wolfSheep}:2`,
       payload: { modelId: ids.wolfSheep, versionNumber: 2 },
       processedAt: new Date(),
     },
@@ -602,7 +717,7 @@ async function main() {
       actorId: ids.dave,
       resourceType: 'model',
       resourceId: ids.wolfSheepFork,
-      payload: { parentModelId: ids.wolfSheep, parentVersionId: ids.wolfSheepV2 },
+      payload: { parentModelId: ids.wolfSheep, parentVersionNumber: 2 },
     },
   ];
 

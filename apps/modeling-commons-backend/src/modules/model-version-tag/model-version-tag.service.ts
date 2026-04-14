@@ -18,11 +18,12 @@ export default function makeModelVersionTagService({
 
       const tag = await tagService.upsertByName(tagName);
 
-      const alreadyApplied = await modelVersionTagRepository.exists(currentVersion.id, tag.id);
-      if (alreadyApplied) throw new TagAlreadyAppliedError(currentVersion.id, tag.id);
+      const alreadyApplied = await modelVersionTagRepository.exists(currentVersion.modelId, currentVersion.versionNumber, tag.id);
+      if (alreadyApplied) throw new TagAlreadyAppliedError(currentVersion.modelId, currentVersion.versionNumber, tag.id);
 
       const entity = modelVersionTagDomain.createModelVersionTag({
-        modelVersionId: currentVersion.id,
+        modelId: currentVersion.modelId,
+        versionNumber: currentVersion.versionNumber,
         tagId: tag.id,
       });
 
@@ -32,7 +33,7 @@ export default function makeModelVersionTagService({
           type: 'model_version_tag.added',
           actorId: userId,
           resourceType: 'model_version_tag',
-          resourceId: `${currentVersion.id}:${tag.id}`,
+          resourceId: `${currentVersion.modelId}:${currentVersion.versionNumber}:${tag.id}`,
           payload: { modelId, tagName: tag.name },
         });
         return entity;
@@ -45,19 +46,19 @@ export default function makeModelVersionTagService({
       modelVersionTagDomain.assertNotFinalized(currentVersion);
 
       await transactionManager.run(async (ctx) => {
-        await modelVersionTagRepository.deleteTx(ctx, currentVersion.id, tagId);
+        await modelVersionTagRepository.deleteTx(ctx, currentVersion.modelId, currentVersion.versionNumber, tagId);
         await eventRepository.insert(ctx, {
           type: 'model_version_tag.removed',
           actorId: userId,
           resourceType: 'model_version_tag',
-          resourceId: `${currentVersion.id}:${tagId}`,
+          resourceId: `${currentVersion.modelId}:${currentVersion.versionNumber}:${tagId}`,
           payload: { modelId, tagId },
         });
       });
     },
 
-    async listByVersion(modelVersionId: string): Promise<ModelVersionTagEntity[]> {
-      return modelVersionTagRepository.findByVersionId(modelVersionId);
+    async listByVersion(modelId: string, versionNumber: number): Promise<ModelVersionTagEntity[]> {
+      return modelVersionTagRepository.findByVersion(modelId, versionNumber);
     },
   };
 }

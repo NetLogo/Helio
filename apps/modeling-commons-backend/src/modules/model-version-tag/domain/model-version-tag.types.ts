@@ -1,10 +1,12 @@
 export type ModelVersionTagEntity = {
-  modelVersionId: string;
+  modelId: string;
+  versionNumber: number;
   tagId: string;
   createdAt: Date;
 };
 
 export type AddTagProps = {
-  modelVersionId: string;
+  modelId: string;
+  versionNumber: number;
   tagId: string;
 };

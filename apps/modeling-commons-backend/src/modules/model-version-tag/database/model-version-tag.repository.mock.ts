@@ -7,7 +7,7 @@ export function mockModelVersionTagRepository(): {
   return {
     insertTx: vi.fn(),
     deleteTx: vi.fn(),
-    findByVersionId: vi.fn(),
+    findByVersion: vi.fn(),
     exists: vi.fn(),
   };
 }

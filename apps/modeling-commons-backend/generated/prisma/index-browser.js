@@ -192,9 +192,9 @@ exports.Prisma.PasskeyScalarFieldEnum = {
 
 exports.Prisma.ModelScalarFieldEnum = {
   id: 'id',
-  latestVersionId: 'latestVersionId',
+  latestVersionNumber: 'latestVersionNumber',
   parentModelId: 'parentModelId',
-  parentVersionId: 'parentVersionId',
+  parentVersionNumber: 'parentVersionNumber',
   visibility: 'visibility',
   isEndorsed: 'isEndorsed',
   createdAt: 'createdAt',
@@ -203,7 +203,6 @@ exports.Prisma.ModelScalarFieldEnum = {
 };
 
 exports.Prisma.ModelVersionScalarFieldEnum = {
-  id: 'id',
   modelId: 'modelId',
   versionNumber: 'versionNumber',
   title: 'title',
@@ -218,12 +217,14 @@ exports.Prisma.ModelVersionScalarFieldEnum = {
 
 exports.Prisma.ModelVersionFileScalarFieldEnum = {
   id: 'id',
-  modelVersionId: 'modelVersionId',
+  modelId: 'modelId',
+  versionNumber: 'versionNumber',
   fileId: 'fileId'
 };
 
 exports.Prisma.ModelVersionTagScalarFieldEnum = {
-  modelVersionId: 'modelVersionId',
+  modelId: 'modelId',
+  versionNumber: 'versionNumber',
   tagId: 'tagId',
   createdAt: 'createdAt'
 };
@@ -240,7 +241,7 @@ exports.Prisma.FileScalarFieldEnum = {
 exports.Prisma.ModelAdditionalFileScalarFieldEnum = {
   id: 'id',
   modelId: 'modelId',
-  taggedVersionId: 'taggedVersionId',
+  taggedVersionNumber: 'taggedVersionNumber',
   fileId: 'fileId',
   createdAt: 'createdAt'
 };

@@ -8,9 +8,9 @@ const domain = modelDomain();
 function makeModel(overrides: Partial<ModelEntity> = {}): ModelEntity {
   return {
     id: 'model-1',
-    latestVersionId: null,
+    latestVersionNumber: null,
     parentModelId: null,
-    parentVersionId: null,
+    parentVersionNumber: null,
     visibility: 'public',
     isEndorsed: false,
     createdAt: new Date(),
@@ -41,10 +41,10 @@ describe('modelDomain', () => {
       const model = domain.createModel({
         title: 'Fork',
         parentModelId: 'parent-1',
-        parentVersionId: 'pv-1',
+        parentVersionNumber: 1,
       });
       expect(model.parentModelId).toBe('parent-1');
-      expect(model.parentVersionId).toBe('pv-1');
+      expect(model.parentVersionNumber).toBe(1);
     });
   });
 

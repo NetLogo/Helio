@@ -4,11 +4,7 @@
       <h3 class="text-lg font-semibold text-highlighted">Discussion</h3>
       <div class="flex items-center gap-2 text-sm">
         <span class="text-muted">Filter Comments By</span>
-        <USelectMenu
-          :items="filterOptions"
-          :model-value="filterOptions[0]"
-          class="w-32"
-        />
+        <USelectMenu :items="filterOptions" :model-value="filterOptions[0]" class="w-32" />
       </div>
     </div>
 

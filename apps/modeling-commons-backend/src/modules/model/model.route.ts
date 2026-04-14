@@ -14,12 +14,17 @@ import {
 import { modelResponseDtoSchema } from '#src/modules/model/dtos/model.response.dto.ts';
 import { modelPaginatedResponseSchema } from '#src/modules/model/dtos/model.paginated.response.dto.ts';
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
-import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import { Type, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import rules from '#src/config/rules.ts';
 
 export default async function modelRoutes(fastify: FastifyInstance) {
-  const { modelService, modelMapper, searchModelsQuery, getModelChildrenQuery } =
-    fastify.diContainer.cradle;
+  const {
+    modelService,
+    modelMapper,
+    searchModelsQuery,
+    getModelChildrenQuery,
+    modelVersionService,
+  } = fastify.diContainer.cradle;
 
   fastify.post<{ Body: CreateModelRequestDto }>(
     '/v1/models',

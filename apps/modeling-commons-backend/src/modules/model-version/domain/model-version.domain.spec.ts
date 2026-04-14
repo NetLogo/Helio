@@ -15,7 +15,6 @@ describe('modelVersionDomain', () => {
         nlogoxFileId: 'f1',
       });
 
-      expect(version.id).toBeTypeOf('string');
       expect(version.versionNumber).toBe(1);
       expect(version.finalizedAt).toBeNull();
     });
@@ -24,7 +23,6 @@ describe('modelVersionDomain', () => {
   describe('assertNotFinalized', () => {
     it('passes for non-finalized version', () => {
       const version: ModelVersionEntity = {
-        id: 'v1',
         modelId: 'm1',
         versionNumber: 1,
         title: 'T',
@@ -41,7 +39,6 @@ describe('modelVersionDomain', () => {
 
     it('throws VersionFinalizedError for finalized version', () => {
       const version: ModelVersionEntity = {
-        id: 'v1',
         modelId: 'm1',
         versionNumber: 1,
         title: 'T',

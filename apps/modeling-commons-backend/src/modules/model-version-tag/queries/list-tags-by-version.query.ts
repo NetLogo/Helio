@@ -9,7 +9,7 @@ export default function makeListTagsByVersionQuery({
     async execute(modelId: string, versionNumber: number): Promise<ModelVersionTagEntity[]> {
       const version = await modelVersionRepository.findByModelAndVersion(modelId, versionNumber);
       if (!version) throw new VersionNotFoundError(modelId, versionNumber);
-      return modelVersionTagService.listByVersion(version.id);
+      return modelVersionTagService.listByVersion(version.modelId, version.versionNumber);
     },
   };
 }

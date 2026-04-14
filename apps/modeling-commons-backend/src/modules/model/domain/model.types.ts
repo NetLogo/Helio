@@ -7,9 +7,9 @@ export type ModelVisibility = (typeof ModelVisibility)[keyof typeof ModelVisibil
 
 export type ModelEntity = {
   id: string;
-  latestVersionId: string | null;
+  latestVersionNumber: number | null;
   parentModelId: string | null;
-  parentVersionId: string | null;
+  parentVersionNumber: number | null;
   visibility: ModelVisibility;
   isEndorsed: boolean;
   createdAt: Date;
@@ -22,7 +22,7 @@ export type CreateModelProps = {
   description?: string;
   visibility?: ModelVisibility;
   parentModelId?: string;
-  parentVersionId?: string;
+  parentVersionNumber?: number;
 };
 
 export type UpdateModelProps = {
@@ -31,7 +31,6 @@ export type UpdateModelProps = {
 };
 
 export type ModelSearchFilters = {
-  visibility?: ModelVisibility;
   tag?: string;
   authorId?: string;
   parentModelId?: string;

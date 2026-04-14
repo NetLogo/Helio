@@ -1,23 +1,34 @@
 <template>
-  <div v-if="store.model" class="space-y-8">
-    <ModelHeader
-      :title="store.currentVersion?.title || 'Untitled Model'"
-      :author="primaryAuthor"
-      :created-at="store.model.createdAt"
-      :netlogo-version="store.currentVersion?.netlogoVersion"
-      :download-url="downloadUrl"
-      @embed="handleEmbed"
-    />
+  <UCard
+    v-if="store.model"
+    :ui="{
+      root: 'divide-none',
+      body: 'space-y-12 sm:p-8',
+    }"
+  >
+    <section class="space-y-6">
+      <ModelHeader
+        :title="store.currentVersion?.title || 'Untitled Model'"
+        :authors="authors"
+        :primary-author="primaryAuthor"
+        :created-at="store.model.createdAt"
+        :netlogo-version="store.currentVersion?.netlogoVersion"
+        :download-url="downloadUrl"
+        @embed="handleEmbed"
+      />
 
-    <div v-if="store.currentVersion?.description" class="docs prose prose-sm max-w-none">
-      <p>{{ store.currentVersion.description }}</p>
-    </div>
+      <article v-if="store.currentVersion?.description" class="docs prose prose-sm max-w-none">
+        <p>{{ store.currentVersion.description }}</p>
+      </article>
 
-    <TagList v-if="store.tags.length > 0" :tags="store.tags" editable @add="handleAddTag" />
+      <TagList v-if="store.tags.length > 0" :tags="store.tags" editable @add="handleAddTag" />
+    </section>
 
     <NLWEmbed
       v-if="store.currentVersion?.nlogoxFileId"
-      :model-url="`${apiBase}/${getFileUrl(store.currentVersion.nlogoxFileId)}`"
+      class="flex-1"
+      :model-url="`${apiBase}/${getFileURI(store.currentVersion.nlogoxFileId)}`"
+      :preview-image-url="`${apiBase}/${getPreviewImageURI(store.model.id, store.currentVersion.versionNumber)}`"
     />
 
     <ModelStats
@@ -30,7 +41,7 @@
       @compare="handleCompare"
     />
 
-    <div class="rounded-xl border border-default overflow-hidden">
+    <section class="rounded-xl border border-default overflow-hidden">
       <div class="flex border-b border-default">
         <button
           v-for="tab in tabs"
@@ -61,8 +72,8 @@
         :parent="familyParent"
         :children="familyChildren"
       />
-    </div>
-  </div>
+    </section>
+  </UCard>
 </template>
 
 <script setup lang="ts">
@@ -88,6 +99,13 @@ const primaryAuthor = computed(() => {
   if (!author) return undefined;
   return { name: author.userName || "Unknown", image: author.userImage };
 });
+
+const authors = computed(() =>
+  store.authors.map((a) => ({
+    name: a.userName || "Unknown",
+    image: a.userImage,
+  })),
+);
 
 const downloadUrl = computed(() => {
   const fileId = store.currentVersion?.nlogoxFileId;
@@ -233,10 +251,10 @@ function handleCompare() {
 }
 
 function handleFileDownload(fileId: string) {
-  window.open(`${apiBase}/${getFileUrl(fileId)}`, "_blank");
+  window.open(`${apiBase}/${getFileURI(fileId)}`, "_blank");
 }
 
 function handleVersionDownload(fileId: string) {
-  window.open(`${apiBase}/${getFileUrl(fileId)}`, "_blank");
+  window.open(`${apiBase}/${getFileURI(fileId)}`, "_blank");
 }
 </script>

@@ -1,4 +1,7 @@
-import { VersionNotFoundError } from '#src/modules/model-version/domain/model-version.errors.ts';
+import {
+  VersionNotFoundError,
+  VersionPreviewImageNotFoundError,
+} from '#src/modules/model-version/domain/model-version.errors.ts';
 import type {
   CreateVersionProps,
   UpdateCurrentVersionProps,
@@ -18,11 +21,11 @@ export default function makeModelVersionService({
       userId: string,
       nlogoxFile: { buffer: Buffer<ArrayBuffer>; filename: string; contentType: string },
       input: CreateVersionProps,
-    ): Promise<string> {
+    ): Promise<number> {
       return transactionManager.run(async (ctx) => {
         const previous = await modelVersionRepository.findLatestByModel(modelId);
         if (previous) {
-          await modelVersionRepository.finalize(ctx, previous.id);
+          await modelVersionRepository.finalize(ctx, previous.modelId, previous.versionNumber);
         }
 
         const fileDomain = (globalThis as unknown as { fileDomain?: Dependencies['fileDomain'] })
@@ -52,17 +55,17 @@ export default function makeModelVersionService({
         });
 
         await modelVersionRepository.insertTx(ctx, entity);
-        await modelRepository.setLatestVersion(ctx, modelId, entity.id);
+        await modelRepository.setLatestVersion(ctx, modelId, versionNumber);
 
         await eventRepository.insert(ctx, {
           type: 'model_version.created',
           actorId: userId,
           resourceType: 'model_version',
-          resourceId: entity.id,
+          resourceId: `${modelId}:${versionNumber}`,
           payload: { modelId, versionNumber },
         });
 
-        return entity.id;
+        return entity.versionNumber;
       });
     },
 
@@ -76,15 +79,28 @@ export default function makeModelVersionService({
       modelVersionDomain.assertNotFinalized(current);
 
       await transactionManager.run(async (ctx) => {
-        await modelVersionRepository.updateFields(ctx, current.id, input);
+        await modelVersionRepository.updateFields(
+          ctx,
+          current.modelId,
+          current.versionNumber,
+          input,
+        );
         await eventRepository.insert(ctx, {
           type: 'model_version.updated',
           actorId: userId,
           resourceType: 'model_version',
-          resourceId: current.id,
+          resourceId: `${modelId}:${current.versionNumber}`,
           payload: { modelId },
         });
       });
+    },
+
+    async getPreviewImage(modelId: string, versionNumber: number) {
+      const version = await modelVersionRepository.findByModelAndVersion(modelId, versionNumber);
+      if (!version) throw new VersionNotFoundError(modelId, versionNumber);
+      if (!version.previewImage) throw new VersionPreviewImageNotFoundError(modelId, versionNumber);
+
+      return { buffer: version.previewImage, contentType: 'image/png' };
     },
   };
 }

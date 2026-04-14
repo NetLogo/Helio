@@ -11,8 +11,8 @@ import {
 } from '#src/modules/model-version/model-version.schemas.ts';
 import { modelVersionResponseDtoSchema } from '#src/modules/model-version/dtos/model-version.response.dto.ts';
 import { modelVersionPaginatedResponseSchema } from '#src/modules/model-version/dtos/model-version.paginated.response.dto.ts';
-import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
+import { Type } from 'typebox';
 import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/model.schemas.ts';
 
 export default async function modelVersionRoutes(fastify: FastifyInstance) {
@@ -25,19 +25,19 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
       schema: {
         params: modelIdParamsSchema,
         body: createVersionRequestDtoSchema,
-        response: { 201: idDtoSchema },
+        response: { 201: Type.Object({ versionNumber: Type.Integer() }) },
         tags: ['Model'],
       },
       preHandler: [requireAuth, resolveModel('write')],
     },
     async (request, reply) => {
-      const id = await modelVersionService.create(
+      const versionNumber = await modelVersionService.create(
         request.params.id,
         request.user!.id,
         { buffer: Buffer.alloc(0), filename: '', contentType: 'application/octet-stream' },
         request.body,
       );
-      return reply.code(201).send({ id });
+      return reply.code(201).send({ versionNumber });
     },
   );
 
@@ -90,6 +90,29 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
     async (request) => {
       const entity = await getVersionQuery.execute(request.params.id, request.params.version);
       return modelVersionMapper.toResponse(entity);
+    },
+  );
+
+  fastify.get<{ Params: VersionParams }>(
+    '/v1/models/:id/versions/:version/preview-image',
+    {
+      schema: {
+        params: versionParamsSchema,
+        response: {
+          200: Type.String({ format: 'binary' }),
+        },
+        tags: ['Model'],
+      },
+      preHandler: [resolveModel('read')],
+    },
+    async (request, reply) => {
+      const { buffer, contentType } = await modelVersionService.getPreviewImage(
+        request.params.id,
+        request.params.version,
+      );
+      reply.header('Content-Type', contentType);
+      reply.header('Cross-Origin-Resource-Policy', 'cross-origin');
+      return buffer;
     },
   );
 }

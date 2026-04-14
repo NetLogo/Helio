@@ -31,12 +31,12 @@ export default function modelRepository({
     async setLatestVersion(
       ctx: TransactionContext,
       modelId: string,
-      versionId: string,
+      versionNumber: number,
     ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.model.update({
         where: { id: modelId },
-        data: { latestVersionId: versionId },
+        data: { latestVersionNumber: versionNumber },
       });
     },
 
@@ -70,10 +70,23 @@ export default function modelRepository({
     ): Promise<Paginated<ModelEntity>> {
       const where: Record<string, unknown> = { deletedAt: null };
 
-      if (filters.visibility) {
-        where['visibility'] = filters.visibility;
-      } else if (!userId) {
-        where['visibility'] = { in: ['public'] };
+      if (userId) {
+        where['AND'] = [
+          {
+            OR: [
+              { visibility: 'public' },
+              {
+                visibility: 'private',
+                OR: [
+                  { authors: { some: { userId } } },
+                  { permissions: { some: { granteeUserId: userId } } },
+                ],
+              },
+            ],
+          },
+        ];
+      } else {
+        where['visibility'] = 'public';
       }
 
       if (filters.parentModelId) where['parentModelId'] = filters.parentModelId;

@@ -9,7 +9,9 @@
 
     <table v-if="files.length > 0" class="w-full text-sm">
       <thead>
-        <tr class="border-b border-default text-left text-xs font-semibold text-muted uppercase tracking-wider">
+        <tr
+          class="border-b border-default text-left text-xs font-semibold text-muted uppercase tracking-wider"
+        >
           <th class="pb-3 pr-4">Title</th>
           <th class="pb-3 pr-4">Description</th>
           <th class="pb-3 pr-4">Type</th>

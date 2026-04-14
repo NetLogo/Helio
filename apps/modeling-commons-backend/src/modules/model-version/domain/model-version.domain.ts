@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import type { ModelVersionEntity } from '#src/modules/model-version/domain/model-version.types.ts';
 import { VersionFinalizedError } from '#src/modules/model-version/domain/model-version.errors.ts';
 
@@ -13,7 +12,6 @@ export default function modelVersionDomain() {
       nlogoxFileId: string;
     }): ModelVersionEntity {
       return {
-        id: randomUUID(),
         modelId: props.modelId,
         versionNumber: props.versionNumber,
         title: props.title,
@@ -29,7 +27,7 @@ export default function modelVersionDomain() {
 
     assertNotFinalized(version: ModelVersionEntity): void {
       if (version.finalizedAt) {
-        throw new VersionFinalizedError(version.id);
+        throw new VersionFinalizedError(version.modelId, version.versionNumber);
       }
     },
   };

@@ -29,11 +29,11 @@ export default function modelAdditionalFileRepository({
 
     async findByModel(
       modelId: string,
-      taggedVersionId?: string,
+      taggedVersionNumber?: number,
     ): Promise<ModelAdditionalFileEntity[]> {
       const where: Record<string, unknown> = { modelId };
-      if (taggedVersionId) {
-        where['taggedVersionId'] = taggedVersionId;
+      if (taggedVersionNumber) {
+        where['taggedVersionNumber'] = taggedVersionNumber;
       }
       const records = await db.modelAdditionalFile.findMany({
         where,

@@ -14,7 +14,6 @@ import type { ModelVersionEntity } from '#src/modules/model-version/domain/model
 
 function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionEntity {
   return {
-    id: 'v1',
     modelId: 'model-1',
     versionNumber: 1,
     title: 'Test',
@@ -61,9 +60,9 @@ describe('modelVersionService', () => {
       modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
       modelVersionRepository.getNextVersionNumber.mockResolvedValue(1);
 
-      const id = await service.create('model-1', 'user-1', nlogoxFile, { title: 'V1' });
+      const versionNumber = await service.create('model-1', 'user-1', nlogoxFile, { title: 'V1' });
 
-      expect(id).toBeTypeOf('string');
+      expect(versionNumber).toBeTypeOf('number');
       expect(modelVersionRepository.finalize).not.toHaveBeenCalled();
       expect(modelVersionRepository.insertTx).toHaveBeenCalledOnce();
       expect(modelRepository.setLatestVersion).toHaveBeenCalledOnce();
@@ -75,7 +74,7 @@ describe('modelVersionService', () => {
 
       await service.create('model-1', 'user-1', nlogoxFile, {});
 
-      expect(modelVersionRepository.finalize).toHaveBeenCalledWith(expect.anything(), 'v1');
+      expect(modelVersionRepository.finalize).toHaveBeenCalledWith(expect.anything(), 'model-1', 1);
     });
 
     it('uses previous title as fallback', async () => {
@@ -99,9 +98,12 @@ describe('modelVersionService', () => {
 
       await service.updateCurrent('model-1', 'user-1', { title: 'Updated' });
 
-      expect(modelVersionRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'v1', {
-        title: 'Updated',
-      });
+      expect(modelVersionRepository.updateFields).toHaveBeenCalledWith(
+        expect.anything(),
+        'model-1',
+        1,
+        { title: 'Updated' },
+      );
     });
 
     it('throws VersionNotFoundError if no version exists', async () => {

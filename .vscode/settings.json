@@ -63,6 +63,10 @@
     "**/test-dist": true,
     "**/.output": true,
     "**/.data": true,
+    "apps/docs": true,
+    "apps/learn": true,
+    "apps/netlogo": true,
+    "apps/nettango": true
   },
 
   "cSpell.words": ["autogen", "iconify", "netlogo", "Nuxt", "Pathnames", "reka", "vueuse"]

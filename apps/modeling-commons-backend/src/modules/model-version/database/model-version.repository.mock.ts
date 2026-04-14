@@ -5,12 +5,6 @@ export function mockModelVersionRepository(): {
   [K in keyof ModelVersionRepository]: ReturnType<typeof vi.fn>;
 } {
   return {
-    insert: vi.fn(),
-    findOneById: vi.fn(),
-    findAll: vi.fn(),
-    findAllPaginated: vi.fn(),
-    update: vi.fn(),
-    delete: vi.fn(),
     insertTx: vi.fn(),
     findByModelAndVersion: vi.fn(),
     findLatestByModel: vi.fn(),

@@ -8,9 +8,9 @@ export default function modelDomain() {
       const now = new Date();
       return {
         id: randomUUID(),
-        latestVersionId: null,
+        latestVersionNumber: null,
         parentModelId: props.parentModelId ?? null,
-        parentVersionId: props.parentVersionId ?? null,
+        parentVersionNumber: props.parentVersionNumber ?? null,
         visibility: props.visibility ?? 'public',
         isEndorsed: false,
         createdAt: now,

@@ -15,16 +15,16 @@ export default function modelVersionTagRepository({
       await client.modelVersionTag.create({ data });
     },
 
-    async deleteTx(ctx: TransactionContext, modelVersionId: string, tagId: string): Promise<void> {
+    async deleteTx(ctx: TransactionContext, modelId: string, versionNumber: number, tagId: string): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelVersionTag.delete({
-        where: { modelVersionId_tagId: { modelVersionId, tagId } },
+        where: { modelId_versionNumber_tagId: { modelId, versionNumber, tagId } },
       });
     },
 
-    async findByVersionId(modelVersionId: string): Promise<ModelVersionTagEntity[]> {
+    async findByVersion(modelId: string, versionNumber: number): Promise<ModelVersionTagEntity[]> {
       const records = await db.modelVersionTag.findMany({
-        where: { modelVersionId },
+        where: { modelId, versionNumber },
         orderBy: { createdAt: 'desc' },
       });
       return records.map((r: unknown) =>
@@ -32,9 +32,9 @@ export default function modelVersionTagRepository({
       );
     },
 
-    async exists(modelVersionId: string, tagId: string): Promise<boolean> {
+    async exists(modelId: string, versionNumber: number, tagId: string): Promise<boolean> {
       const record = await db.modelVersionTag.findUnique({
-        where: { modelVersionId_tagId: { modelVersionId, tagId } },
+        where: { modelId_versionNumber_tagId: { modelId, versionNumber, tagId } },
       });
       return record !== null;
     },

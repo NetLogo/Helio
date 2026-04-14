@@ -3,7 +3,8 @@ import type { ModelVersionTagEntity } from '#src/modules/model-version-tag/domai
 import type { ModelVersionTagResponseDto } from '#src/modules/model-version-tag/dtos/model-version-tag.response.dto.ts';
 
 export type ModelVersionTagRecord = {
-  modelVersionId: string;
+  modelId: string;
+  versionNumber: number;
   tagId: string;
   createdAt: Date;
 };
@@ -16,7 +17,8 @@ export default function modelVersionTagMapper(): Mapper<
   return {
     toDomain(record: ModelVersionTagRecord): ModelVersionTagEntity {
       return {
-        modelVersionId: record.modelVersionId,
+        modelId: record.modelId,
+        versionNumber: record.versionNumber,
         tagId: record.tagId,
         createdAt: new Date(record.createdAt),
       };
@@ -24,7 +26,8 @@ export default function modelVersionTagMapper(): Mapper<
 
     toResponse(entity: ModelVersionTagEntity): ModelVersionTagResponseDto {
       return {
-        modelVersionId: entity.modelVersionId,
+        modelId: entity.modelId,
+        versionNumber: entity.versionNumber,
         tagId: entity.tagId,
         tagName: '',
         createdAt: entity.createdAt.toISOString(),
@@ -33,7 +36,8 @@ export default function modelVersionTagMapper(): Mapper<
 
     toPersistence(entity: ModelVersionTagEntity): ModelVersionTagRecord {
       return {
-        modelVersionId: entity.modelVersionId,
+        modelId: entity.modelId,
+        versionNumber: entity.versionNumber,
         tagId: entity.tagId,
         createdAt: entity.createdAt,
       };

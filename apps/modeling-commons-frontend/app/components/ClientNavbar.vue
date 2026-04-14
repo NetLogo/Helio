@@ -2,7 +2,7 @@
   <Navbar
     id="main-navbar"
     ref="navbar"
-    class="backdrop-blur-lg! bg-background/80! border-b-2 border-secondary md:px-[calc((100vw-var(--max-width-ch))/2)]!"
+    class="bg-background! py-4! lg:px-[calc((100vw-var(--max-width-ch))/2)]! shadow-none!"
     :brand="brand"
     brand-href="/"
     :brand-attrs="brandAttrs"
@@ -16,6 +16,7 @@
         :columns="link.columns"
         :active="link.active"
         :icon="link.icon"
+        class="rounded-md transition-colors"
       >
         <template v-if="link.children && link.children.length > 0">
           <NavbarDropdownItem
@@ -31,15 +32,35 @@
     </NavbarLinksContainer>
 
     <NavbarActionsContainer>
-      <UDropdownMenu v-if="user.isLoggedIn" :items="userDropdownItems" :modal="false">
-        <UAvatar
-          :name="user.name"
-          :image="user.image"
-          :alt="user.name"
-          class="cursor-pointer hover:ring-2 hover:ring-primary rounded-full"
-        />
+      <UDropdownMenu
+        v-if="user.isLoggedIn"
+        v-slot="{ open }"
+        :items="userDropdownItems"
+        :modal="true"
+      >
+        <div
+          class="group hover:cursor-pointer flex gap-2 items-center p-1 hover:bg-neutral-lighter/30 rounded-full"
+          :class="{ 'bg-neutral-lighter/30': open }"
+        >
+          <UAvatar
+            :name="user.name"
+            :image="user.image"
+            :alt="user.name"
+            size="sm"
+            class="rounded-full bg-neutral-lighter"
+          />
+          <span class="text-sm text-muted">{{ user.name }}</span>
+          <UIcon
+            name="i-lucide-chevron-down"
+            class="text-muted group-hover:text-toned transition-transform"
+            :class="{ 'rotate-180': open }"
+          />
+        </div>
       </UDropdownMenu>
-      <UButton v-else variant="solid" size="md" class="px-3" to="/login"> Sign in </UButton>
+      <div v-else class="flex gap-2">
+        <UButton variant="link" size="sm" to="/login"> Log In </UButton>
+        <UButton variant="solid" size="sm" to="/login"> Sign Up </UButton>
+      </div>
     </NavbarActionsContainer>
   </Navbar>
 
@@ -48,7 +69,6 @@
 
 <script lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
-import TurtlesLogo from "@repo/vue-ui/assets/brands/Turtles.svg";
 import type { Navbar as _Navbar } from "@repo/vue-ui/components/navbar/index";
 import { useMediaQuery } from "@vueuse/core";
 import { onMounted, ref, watch } from "vue";
@@ -152,7 +172,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
         {
           label: "Admin Dashboard",
           icon: "i-lucide-shield-check",
-          href: "/admin",
+          href: adminDashboardUrl,
           visible: true,
           color: "primary",
         },
@@ -162,16 +182,19 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
   return [];
 });
 
-
 const isMobileScreen = ref(false);
 const navbarRef = useTemplateRef<InstanceType<typeof _Navbar>>("navbar");
 
-const brand = computed(() => (isMobileScreen.value ? TurtlesLogo : WebsiteLogo));
+const brand = computed(() => WebsiteLogo);
 const brandAttrs = computed(() =>
   isMobileScreen.value
-    ? { style: { width: "2rem" } }
-    : { width: "15rem", style: { width: "15rem", marginLeft: "1rem" }, class: "[&>svg]:w-full!" },
+    ? { style: { width: "10rem" } }
+    : { width: "15rem", style: { width: "15rem", marginLeft: "0" }, class: "[&>svg]:w-full!" },
 );
+
+const {
+  public: { adminDashboardUrl },
+} = useRuntimeConfig();
 
 const handleMediaQueryChange = (): void => {
   if (import.meta.client) {
@@ -190,10 +213,10 @@ const navbarLinks = ref<Array<NavbarLink>>([
   {
     title: "Home",
     href: "/",
-    columns: 2
+    columns: 2,
   },
   {
-    title: "Explore Models",
+    title: "Models",
     href: "/models",
     columns: 2,
     children: [
@@ -203,7 +226,16 @@ const navbarLinks = ref<Array<NavbarLink>>([
       { title: "New Models", href: "/new-models", icon: "i-lucide-plus" },
       { title: "Models by Tag", href: "/models/tags", icon: "i-lucide-tag" },
     ],
-  }
+  },
+  {
+    title: "About",
+    href: "/about",
+  },
+  {
+    title: "Donate",
+    href: "/donate",
+    icon: "i-lucide-heart",
+  },
 ]);
 
 updateActiveStates(navbarRef, navbarLinks, route);

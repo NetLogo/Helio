@@ -17,3 +17,52 @@ services:
       retries: 5
     volumes:
       - /tmp/modeling-commons-postgres-data:/var/lib/postgresql
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    command: /data
+    ports:
+      - 41090:9000
+      - 9001:9001
+    environment:
+      RUSTFS_ADDRESS: :9000
+      RUSTFS_CONSOLE_ENABLE: 'true'
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
+    volumes:
+      - /tmp/modeling-commons-rustfs-data:/data
+
+  redis:
+    image: redis:8-alpine
+    profiles:
+      - cache
+      - optional
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - /tmp/modeling-commons-redis-data:/data
+
+  # galapagos:
+  #   profiles:
+  #     - frontend
+  #     - optional
+
+  netlogo-services:
+    image: ghcr.io/netlogo/netlogo-services:latest
+    platform: linux/amd64
+    ports:
+      - 51090:8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      ALLOWED_ORIGINS: localhost,host.docker.internal,*.svc.cluster,netlogo.org,*.netlogo.org,modelingcommons.org,*.modelingcommons.org,modelingcommons.com,*.modelingcommons.com,netlogoweb.org,*.netlogoweb.org,ccl.northwestern.edu
+      LOCALHOST: host.docker.internal
+      TRANSLATE_LOCALHOST: "true"
+    profiles:
+      - lambda
+      - optional

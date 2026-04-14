@@ -4,13 +4,14 @@
       <div>
         <h3 class="text-lg font-semibold text-highlighted">Version History</h3>
         <p class="text-xs text-dimmed mt-1">
-          {{ versions.length }} version{{ versions.length !== 1 ? "s" : "" }}.
-          Select two to compare.
+          {{ versions.length }} version{{ versions.length !== 1 ? "s" : "" }}. Select two to
+          compare.
         </p>
       </div>
       <UButton
         variant="soft"
         :disabled="!canCompare"
+        size="sm"
         @click="$emit('compare', selected[0] ?? null, selected[1] ?? null)"
       >
         Compare Selected
@@ -22,22 +23,26 @@
         v-for="version in versions"
         :key="version.versionNumber"
         class="flex items-center gap-4 rounded-lg border px-4 py-3 transition-colors cursor-pointer"
-        :class="isSelected(version.versionNumber)
-          ? 'border-primary-300 bg-primary-50/60'
-          : 'border-default hover:border-accented bg-background'"
+        :class="
+          isSelected(version.versionNumber)
+            ? 'border-primary-300 bg-primary-50/60'
+            : 'border-default hover:border-accented bg-background'
+        "
         @click="toggle(version.versionNumber)"
       >
         <input
           type="checkbox"
           :checked="isSelected(version.versionNumber)"
-          class="accent-primary-600 size-4 shrink-0 pointer-events-none"
+          class="accent-neutral-darkest bg-neutral-lightest size-4 shrink-0 pointer-events-none"
           tabindex="-1"
         />
 
         <div class="flex items-center gap-2 min-w-0 flex-1">
           <span class="text-sm font-semibold text-highlighted">V{{ version.versionNumber }}</span>
           <span class="text-xs text-dimmed">&middot;</span>
-          <span class="text-xs text-muted whitespace-nowrap">{{ formatRelativeDate(version.createdAt) }}</span>
+          <span class="text-xs text-muted whitespace-nowrap">{{
+            formatRelativeDate(version.createdAt)
+          }}</span>
           <span class="text-xs text-dimmed">&middot;</span>
           <NuxtLink class="text-xs text-primary-700 hover:underline shrink-0">
             {{ version.uploaderName ?? "Unknown" }}

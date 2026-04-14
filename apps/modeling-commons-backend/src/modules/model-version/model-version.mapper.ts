@@ -3,7 +3,6 @@ import type { ModelVersionEntity } from '#src/modules/model-version/domain/model
 import type { ModelVersionResponseDto } from '#src/modules/model-version/dtos/model-version.response.dto.ts';
 
 export type ModelVersionRecord = {
-  id: string;
   modelId: string;
   versionNumber: number;
   title: string;
@@ -24,7 +23,6 @@ export default function modelVersionMapper(): Mapper<
   return {
     toDomain(record: ModelVersionRecord): ModelVersionEntity {
       return {
-        id: record.id,
         modelId: record.modelId,
         versionNumber: record.versionNumber,
         title: record.title,
@@ -40,7 +38,6 @@ export default function modelVersionMapper(): Mapper<
 
     toResponse(entity: ModelVersionEntity): ModelVersionResponseDto {
       return {
-        id: entity.id,
         modelId: entity.modelId,
         versionNumber: entity.versionNumber,
         title: entity.title,
@@ -55,7 +52,6 @@ export default function modelVersionMapper(): Mapper<
 
     toPersistence(entity: ModelVersionEntity): ModelVersionRecord {
       return {
-        id: entity.id,
         modelId: entity.modelId,
         versionNumber: entity.versionNumber,
         title: entity.title,

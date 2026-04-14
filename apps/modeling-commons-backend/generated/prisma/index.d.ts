@@ -8443,15 +8443,27 @@ export namespace Prisma {
 
   export type AggregateModel = {
     _count: ModelCountAggregateOutputType | null
+    _avg: ModelAvgAggregateOutputType | null
+    _sum: ModelSumAggregateOutputType | null
     _min: ModelMinAggregateOutputType | null
     _max: ModelMaxAggregateOutputType | null
   }
 
+  export type ModelAvgAggregateOutputType = {
+    latestVersionNumber: number | null
+    parentVersionNumber: number | null
+  }
+
+  export type ModelSumAggregateOutputType = {
+    latestVersionNumber: number | null
+    parentVersionNumber: number | null
+  }
+
   export type ModelMinAggregateOutputType = {
     id: string | null
-    latestVersionId: string | null
+    latestVersionNumber: number | null
     parentModelId: string | null
-    parentVersionId: string | null
+    parentVersionNumber: number | null
     visibility: $Enums.ModelVisibility | null
     isEndorsed: boolean | null
     createdAt: Date | null
@@ -8461,9 +8473,9 @@ export namespace Prisma {
 
   export type ModelMaxAggregateOutputType = {
     id: string | null
-    latestVersionId: string | null
+    latestVersionNumber: number | null
     parentModelId: string | null
-    parentVersionId: string | null
+    parentVersionNumber: number | null
     visibility: $Enums.ModelVisibility | null
     isEndorsed: boolean | null
     createdAt: Date | null
@@ -8473,9 +8485,9 @@ export namespace Prisma {
 
   export type ModelCountAggregateOutputType = {
     id: number
-    latestVersionId: number
+    latestVersionNumber: number
     parentModelId: number
-    parentVersionId: number
+    parentVersionNumber: number
     visibility: number
     isEndorsed: number
     createdAt: number
@@ -8485,11 +8497,21 @@ export namespace Prisma {
   }
 
 
+  export type ModelAvgAggregateInputType = {
+    latestVersionNumber?: true
+    parentVersionNumber?: true
+  }
+
+  export type ModelSumAggregateInputType = {
+    latestVersionNumber?: true
+    parentVersionNumber?: true
+  }
+
   export type ModelMinAggregateInputType = {
     id?: true
-    latestVersionId?: true
+    latestVersionNumber?: true
     parentModelId?: true
-    parentVersionId?: true
+    parentVersionNumber?: true
     visibility?: true
     isEndorsed?: true
     createdAt?: true
@@ -8499,9 +8521,9 @@ export namespace Prisma {
 
   export type ModelMaxAggregateInputType = {
     id?: true
-    latestVersionId?: true
+    latestVersionNumber?: true
     parentModelId?: true
-    parentVersionId?: true
+    parentVersionNumber?: true
     visibility?: true
     isEndorsed?: true
     createdAt?: true
@@ -8511,9 +8533,9 @@ export namespace Prisma {
 
   export type ModelCountAggregateInputType = {
     id?: true
-    latestVersionId?: true
+    latestVersionNumber?: true
     parentModelId?: true
-    parentVersionId?: true
+    parentVersionNumber?: true
     visibility?: true
     isEndorsed?: true
     createdAt?: true
@@ -8560,6 +8582,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ModelAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModelSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ModelMinAggregateInputType
@@ -8590,21 +8624,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ModelCountAggregateInputType | true
+    _avg?: ModelAvgAggregateInputType
+    _sum?: ModelSumAggregateInputType
     _min?: ModelMinAggregateInputType
     _max?: ModelMaxAggregateInputType
   }
 
   export type ModelGroupByOutputType = {
     id: string
-    latestVersionId: string | null
+    latestVersionNumber: number | null
     parentModelId: string | null
-    parentVersionId: string | null
+    parentVersionNumber: number | null
     visibility: $Enums.ModelVisibility
     isEndorsed: boolean
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
     _count: ModelCountAggregateOutputType | null
+    _avg: ModelAvgAggregateOutputType | null
+    _sum: ModelSumAggregateOutputType | null
     _min: ModelMinAggregateOutputType | null
     _max: ModelMaxAggregateOutputType | null
   }
@@ -8625,9 +8663,9 @@ export namespace Prisma {
 
   export type ModelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    latestVersionId?: boolean
+    latestVersionNumber?: boolean
     parentModelId?: boolean
-    parentVersionId?: boolean
+    parentVersionNumber?: boolean
     visibility?: boolean
     isEndorsed?: boolean
     createdAt?: boolean
@@ -8646,9 +8684,9 @@ export namespace Prisma {
 
   export type ModelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    latestVersionId?: boolean
+    latestVersionNumber?: boolean
     parentModelId?: boolean
-    parentVersionId?: boolean
+    parentVersionNumber?: boolean
     visibility?: boolean
     isEndorsed?: boolean
     createdAt?: boolean
@@ -8661,9 +8699,9 @@ export namespace Prisma {
 
   export type ModelSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    latestVersionId?: boolean
+    latestVersionNumber?: boolean
     parentModelId?: boolean
-    parentVersionId?: boolean
+    parentVersionNumber?: boolean
     visibility?: boolean
     isEndorsed?: boolean
     createdAt?: boolean
@@ -8676,9 +8714,9 @@ export namespace Prisma {
 
   export type ModelSelectScalar = {
     id?: boolean
-    latestVersionId?: boolean
+    latestVersionNumber?: boolean
     parentModelId?: boolean
-    parentVersionId?: boolean
+    parentVersionNumber?: boolean
     visibility?: boolean
     isEndorsed?: boolean
     createdAt?: boolean
@@ -8686,7 +8724,7 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type ModelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "latestVersionId" | "parentModelId" | "parentVersionId" | "visibility" | "isEndorsed" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["model"]>
+  export type ModelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "latestVersionNumber" | "parentModelId" | "parentVersionNumber" | "visibility" | "isEndorsed" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["model"]>
   export type ModelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     latestVersion?: boolean | Model$latestVersionArgs<ExtArgs>
     parentModel?: boolean | Model$parentModelArgs<ExtArgs>
@@ -8723,9 +8761,9 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      latestVersionId: string | null
+      latestVersionNumber: number | null
       parentModelId: string | null
-      parentVersionId: string | null
+      parentVersionNumber: number | null
       visibility: $Enums.ModelVisibility
       isEndorsed: boolean
       createdAt: Date
@@ -9163,9 +9201,9 @@ export namespace Prisma {
    */
   interface ModelFieldRefs {
     readonly id: FieldRef<"Model", 'String'>
-    readonly latestVersionId: FieldRef<"Model", 'String'>
+    readonly latestVersionNumber: FieldRef<"Model", 'Int'>
     readonly parentModelId: FieldRef<"Model", 'String'>
-    readonly parentVersionId: FieldRef<"Model", 'String'>
+    readonly parentVersionNumber: FieldRef<"Model", 'Int'>
     readonly visibility: FieldRef<"Model", 'ModelVisibility'>
     readonly isEndorsed: FieldRef<"Model", 'Boolean'>
     readonly createdAt: FieldRef<"Model", 'DateTime'>
@@ -9788,7 +9826,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionMinAggregateOutputType = {
-    id: string | null
     modelId: string | null
     versionNumber: number | null
     title: string | null
@@ -9802,7 +9839,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionMaxAggregateOutputType = {
-    id: string | null
     modelId: string | null
     versionNumber: number | null
     title: string | null
@@ -9816,7 +9852,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCountAggregateOutputType = {
-    id: number
     modelId: number
     versionNumber: number
     title: number
@@ -9840,7 +9875,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionMinAggregateInputType = {
-    id?: true
     modelId?: true
     versionNumber?: true
     title?: true
@@ -9854,7 +9888,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionMaxAggregateInputType = {
-    id?: true
     modelId?: true
     versionNumber?: true
     title?: true
@@ -9868,7 +9901,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCountAggregateInputType = {
-    id?: true
     modelId?: true
     versionNumber?: true
     title?: true
@@ -9969,7 +10001,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionGroupByOutputType = {
-    id: string
     modelId: string
     versionNumber: number
     title: string
@@ -10002,7 +10033,6 @@ export namespace Prisma {
 
 
   export type ModelVersionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
     modelId?: boolean
     versionNumber?: boolean
     title?: boolean
@@ -10024,7 +10054,6 @@ export namespace Prisma {
   }, ExtArgs["result"]["modelVersion"]>
 
   export type ModelVersionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
     modelId?: boolean
     versionNumber?: boolean
     title?: boolean
@@ -10040,7 +10069,6 @@ export namespace Prisma {
   }, ExtArgs["result"]["modelVersion"]>
 
   export type ModelVersionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
     modelId?: boolean
     versionNumber?: boolean
     title?: boolean
@@ -10056,7 +10084,6 @@ export namespace Prisma {
   }, ExtArgs["result"]["modelVersion"]>
 
   export type ModelVersionSelectScalar = {
-    id?: boolean
     modelId?: boolean
     versionNumber?: boolean
     title?: boolean
@@ -10069,7 +10096,7 @@ export namespace Prisma {
     finalizedAt?: boolean
   }
 
-  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "versionNumber" | "title" | "description" | "previewImage" | "nlogoxFileId" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt", ExtArgs["result"]["modelVersion"]>
+  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImage" | "nlogoxFileId" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt", ExtArgs["result"]["modelVersion"]>
   export type ModelVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     nlogoxFile?: boolean | FileDefaultArgs<ExtArgs>
@@ -10101,7 +10128,6 @@ export namespace Prisma {
       taggedAdditionalFiles: Prisma.$ModelAdditionalFilePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: string
       modelId: string
       versionNumber: number
       title: string
@@ -10195,8 +10221,8 @@ export namespace Prisma {
      * // Get first 10 ModelVersions
      * const modelVersions = await prisma.modelVersion.findMany({ take: 10 })
      * 
-     * // Only select the `id`
-     * const modelVersionWithIdOnly = await prisma.modelVersion.findMany({ select: { id: true } })
+     * // Only select the `modelId`
+     * const modelVersionWithModelIdOnly = await prisma.modelVersion.findMany({ select: { modelId: true } })
      * 
      */
     findMany<T extends ModelVersionFindManyArgs>(args?: SelectSubset<T, ModelVersionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -10240,9 +10266,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many ModelVersions and only return the `id`
-     * const modelVersionWithIdOnly = await prisma.modelVersion.createManyAndReturn({
-     *   select: { id: true },
+     * // Create many ModelVersions and only return the `modelId`
+     * const modelVersionWithModelIdOnly = await prisma.modelVersion.createManyAndReturn({
+     *   select: { modelId: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -10331,9 +10357,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more ModelVersions and only return the `id`
-     * const modelVersionWithIdOnly = await prisma.modelVersion.updateManyAndReturn({
-     *   select: { id: true },
+     * // Update zero or more ModelVersions and only return the `modelId`
+     * const modelVersionWithModelIdOnly = await prisma.modelVersion.updateManyAndReturn({
+     *   select: { modelId: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -10542,7 +10568,6 @@ export namespace Prisma {
    * Fields of the ModelVersion model
    */
   interface ModelVersionFieldRefs {
-    readonly id: FieldRef<"ModelVersion", 'String'>
     readonly modelId: FieldRef<"ModelVersion", 'String'>
     readonly versionNumber: FieldRef<"ModelVersion", 'Int'>
     readonly title: FieldRef<"ModelVersion", 'String'>
@@ -11093,45 +11118,69 @@ export namespace Prisma {
 
   export type AggregateModelVersionFile = {
     _count: ModelVersionFileCountAggregateOutputType | null
+    _avg: ModelVersionFileAvgAggregateOutputType | null
+    _sum: ModelVersionFileSumAggregateOutputType | null
     _min: ModelVersionFileMinAggregateOutputType | null
     _max: ModelVersionFileMaxAggregateOutputType | null
   }
 
+  export type ModelVersionFileAvgAggregateOutputType = {
+    versionNumber: number | null
+  }
+
+  export type ModelVersionFileSumAggregateOutputType = {
+    versionNumber: number | null
+  }
+
   export type ModelVersionFileMinAggregateOutputType = {
     id: string | null
-    modelVersionId: string | null
+    modelId: string | null
+    versionNumber: number | null
     fileId: string | null
   }
 
   export type ModelVersionFileMaxAggregateOutputType = {
     id: string | null
-    modelVersionId: string | null
+    modelId: string | null
+    versionNumber: number | null
     fileId: string | null
   }
 
   export type ModelVersionFileCountAggregateOutputType = {
     id: number
-    modelVersionId: number
+    modelId: number
+    versionNumber: number
     fileId: number
     _all: number
   }
 
 
+  export type ModelVersionFileAvgAggregateInputType = {
+    versionNumber?: true
+  }
+
+  export type ModelVersionFileSumAggregateInputType = {
+    versionNumber?: true
+  }
+
   export type ModelVersionFileMinAggregateInputType = {
     id?: true
-    modelVersionId?: true
+    modelId?: true
+    versionNumber?: true
     fileId?: true
   }
 
   export type ModelVersionFileMaxAggregateInputType = {
     id?: true
-    modelVersionId?: true
+    modelId?: true
+    versionNumber?: true
     fileId?: true
   }
 
   export type ModelVersionFileCountAggregateInputType = {
     id?: true
-    modelVersionId?: true
+    modelId?: true
+    versionNumber?: true
     fileId?: true
     _all?: true
   }
@@ -11174,6 +11223,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ModelVersionFileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModelVersionFileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ModelVersionFileMinAggregateInputType
@@ -11204,15 +11265,20 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ModelVersionFileCountAggregateInputType | true
+    _avg?: ModelVersionFileAvgAggregateInputType
+    _sum?: ModelVersionFileSumAggregateInputType
     _min?: ModelVersionFileMinAggregateInputType
     _max?: ModelVersionFileMaxAggregateInputType
   }
 
   export type ModelVersionFileGroupByOutputType = {
     id: string
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
     fileId: string
     _count: ModelVersionFileCountAggregateOutputType | null
+    _avg: ModelVersionFileAvgAggregateOutputType | null
+    _sum: ModelVersionFileSumAggregateOutputType | null
     _min: ModelVersionFileMinAggregateOutputType | null
     _max: ModelVersionFileMaxAggregateOutputType | null
   }
@@ -11233,7 +11299,8 @@ export namespace Prisma {
 
   export type ModelVersionFileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    modelVersionId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
     fileId?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
     file?: boolean | FileDefaultArgs<ExtArgs>
@@ -11241,7 +11308,8 @@ export namespace Prisma {
 
   export type ModelVersionFileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    modelVersionId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
     fileId?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
     file?: boolean | FileDefaultArgs<ExtArgs>
@@ -11249,7 +11317,8 @@ export namespace Prisma {
 
   export type ModelVersionFileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    modelVersionId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
     fileId?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
     file?: boolean | FileDefaultArgs<ExtArgs>
@@ -11257,11 +11326,12 @@ export namespace Prisma {
 
   export type ModelVersionFileSelectScalar = {
     id?: boolean
-    modelVersionId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
     fileId?: boolean
   }
 
-  export type ModelVersionFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelVersionId" | "fileId", ExtArgs["result"]["modelVersionFile"]>
+  export type ModelVersionFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "versionNumber" | "fileId", ExtArgs["result"]["modelVersionFile"]>
   export type ModelVersionFileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
     file?: boolean | FileDefaultArgs<ExtArgs>
@@ -11283,7 +11353,8 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      modelVersionId: string
+      modelId: string
+      versionNumber: number
       fileId: string
     }, ExtArgs["result"]["modelVersionFile"]>
     composites: {}
@@ -11711,7 +11782,8 @@ export namespace Prisma {
    */
   interface ModelVersionFileFieldRefs {
     readonly id: FieldRef<"ModelVersionFile", 'String'>
-    readonly modelVersionId: FieldRef<"ModelVersionFile", 'String'>
+    readonly modelId: FieldRef<"ModelVersionFile", 'String'>
+    readonly versionNumber: FieldRef<"ModelVersionFile", 'Int'>
     readonly fileId: FieldRef<"ModelVersionFile", 'String'>
   }
     
@@ -12138,44 +12210,68 @@ export namespace Prisma {
 
   export type AggregateModelVersionTag = {
     _count: ModelVersionTagCountAggregateOutputType | null
+    _avg: ModelVersionTagAvgAggregateOutputType | null
+    _sum: ModelVersionTagSumAggregateOutputType | null
     _min: ModelVersionTagMinAggregateOutputType | null
     _max: ModelVersionTagMaxAggregateOutputType | null
   }
 
+  export type ModelVersionTagAvgAggregateOutputType = {
+    versionNumber: number | null
+  }
+
+  export type ModelVersionTagSumAggregateOutputType = {
+    versionNumber: number | null
+  }
+
   export type ModelVersionTagMinAggregateOutputType = {
-    modelVersionId: string | null
+    modelId: string | null
+    versionNumber: number | null
     tagId: string | null
     createdAt: Date | null
   }
 
   export type ModelVersionTagMaxAggregateOutputType = {
-    modelVersionId: string | null
+    modelId: string | null
+    versionNumber: number | null
     tagId: string | null
     createdAt: Date | null
   }
 
   export type ModelVersionTagCountAggregateOutputType = {
-    modelVersionId: number
+    modelId: number
+    versionNumber: number
     tagId: number
     createdAt: number
     _all: number
   }
 
 
+  export type ModelVersionTagAvgAggregateInputType = {
+    versionNumber?: true
+  }
+
+  export type ModelVersionTagSumAggregateInputType = {
+    versionNumber?: true
+  }
+
   export type ModelVersionTagMinAggregateInputType = {
-    modelVersionId?: true
+    modelId?: true
+    versionNumber?: true
     tagId?: true
     createdAt?: true
   }
 
   export type ModelVersionTagMaxAggregateInputType = {
-    modelVersionId?: true
+    modelId?: true
+    versionNumber?: true
     tagId?: true
     createdAt?: true
   }
 
   export type ModelVersionTagCountAggregateInputType = {
-    modelVersionId?: true
+    modelId?: true
+    versionNumber?: true
     tagId?: true
     createdAt?: true
     _all?: true
@@ -12219,6 +12315,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ModelVersionTagAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModelVersionTagSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ModelVersionTagMinAggregateInputType
@@ -12249,15 +12357,20 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ModelVersionTagCountAggregateInputType | true
+    _avg?: ModelVersionTagAvgAggregateInputType
+    _sum?: ModelVersionTagSumAggregateInputType
     _min?: ModelVersionTagMinAggregateInputType
     _max?: ModelVersionTagMaxAggregateInputType
   }
 
   export type ModelVersionTagGroupByOutputType = {
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
     tagId: string
     createdAt: Date
     _count: ModelVersionTagCountAggregateOutputType | null
+    _avg: ModelVersionTagAvgAggregateOutputType | null
+    _sum: ModelVersionTagSumAggregateOutputType | null
     _min: ModelVersionTagMinAggregateOutputType | null
     _max: ModelVersionTagMaxAggregateOutputType | null
   }
@@ -12277,7 +12390,8 @@ export namespace Prisma {
 
 
   export type ModelVersionTagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    modelVersionId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
     tagId?: boolean
     createdAt?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
@@ -12285,7 +12399,8 @@ export namespace Prisma {
   }, ExtArgs["result"]["modelVersionTag"]>
 
   export type ModelVersionTagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    modelVersionId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
     tagId?: boolean
     createdAt?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
@@ -12293,7 +12408,8 @@ export namespace Prisma {
   }, ExtArgs["result"]["modelVersionTag"]>
 
   export type ModelVersionTagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    modelVersionId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
     tagId?: boolean
     createdAt?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
@@ -12301,12 +12417,13 @@ export namespace Prisma {
   }, ExtArgs["result"]["modelVersionTag"]>
 
   export type ModelVersionTagSelectScalar = {
-    modelVersionId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
     tagId?: boolean
     createdAt?: boolean
   }
 
-  export type ModelVersionTagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelVersionId" | "tagId" | "createdAt", ExtArgs["result"]["modelVersionTag"]>
+  export type ModelVersionTagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "tagId" | "createdAt", ExtArgs["result"]["modelVersionTag"]>
   export type ModelVersionTagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
     tag?: boolean | TagDefaultArgs<ExtArgs>
@@ -12327,7 +12444,8 @@ export namespace Prisma {
       tag: Prisma.$TagPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      modelVersionId: string
+      modelId: string
+      versionNumber: number
       tagId: string
       createdAt: Date
     }, ExtArgs["result"]["modelVersionTag"]>
@@ -12413,8 +12531,8 @@ export namespace Prisma {
      * // Get first 10 ModelVersionTags
      * const modelVersionTags = await prisma.modelVersionTag.findMany({ take: 10 })
      * 
-     * // Only select the `modelVersionId`
-     * const modelVersionTagWithModelVersionIdOnly = await prisma.modelVersionTag.findMany({ select: { modelVersionId: true } })
+     * // Only select the `modelId`
+     * const modelVersionTagWithModelIdOnly = await prisma.modelVersionTag.findMany({ select: { modelId: true } })
      * 
      */
     findMany<T extends ModelVersionTagFindManyArgs>(args?: SelectSubset<T, ModelVersionTagFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelVersionTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -12458,9 +12576,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many ModelVersionTags and only return the `modelVersionId`
-     * const modelVersionTagWithModelVersionIdOnly = await prisma.modelVersionTag.createManyAndReturn({
-     *   select: { modelVersionId: true },
+     * // Create many ModelVersionTags and only return the `modelId`
+     * const modelVersionTagWithModelIdOnly = await prisma.modelVersionTag.createManyAndReturn({
+     *   select: { modelId: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -12549,9 +12667,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more ModelVersionTags and only return the `modelVersionId`
-     * const modelVersionTagWithModelVersionIdOnly = await prisma.modelVersionTag.updateManyAndReturn({
-     *   select: { modelVersionId: true },
+     * // Update zero or more ModelVersionTags and only return the `modelId`
+     * const modelVersionTagWithModelIdOnly = await prisma.modelVersionTag.updateManyAndReturn({
+     *   select: { modelId: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -12755,7 +12873,8 @@ export namespace Prisma {
    * Fields of the ModelVersionTag model
    */
   interface ModelVersionTagFieldRefs {
-    readonly modelVersionId: FieldRef<"ModelVersionTag", 'String'>
+    readonly modelId: FieldRef<"ModelVersionTag", 'String'>
+    readonly versionNumber: FieldRef<"ModelVersionTag", 'Int'>
     readonly tagId: FieldRef<"ModelVersionTag", 'String'>
     readonly createdAt: FieldRef<"ModelVersionTag", 'DateTime'>
   }
@@ -14361,14 +14480,24 @@ export namespace Prisma {
 
   export type AggregateModelAdditionalFile = {
     _count: ModelAdditionalFileCountAggregateOutputType | null
+    _avg: ModelAdditionalFileAvgAggregateOutputType | null
+    _sum: ModelAdditionalFileSumAggregateOutputType | null
     _min: ModelAdditionalFileMinAggregateOutputType | null
     _max: ModelAdditionalFileMaxAggregateOutputType | null
+  }
+
+  export type ModelAdditionalFileAvgAggregateOutputType = {
+    taggedVersionNumber: number | null
+  }
+
+  export type ModelAdditionalFileSumAggregateOutputType = {
+    taggedVersionNumber: number | null
   }
 
   export type ModelAdditionalFileMinAggregateOutputType = {
     id: string | null
     modelId: string | null
-    taggedVersionId: string | null
+    taggedVersionNumber: number | null
     fileId: string | null
     createdAt: Date | null
   }
@@ -14376,7 +14505,7 @@ export namespace Prisma {
   export type ModelAdditionalFileMaxAggregateOutputType = {
     id: string | null
     modelId: string | null
-    taggedVersionId: string | null
+    taggedVersionNumber: number | null
     fileId: string | null
     createdAt: Date | null
   }
@@ -14384,17 +14513,25 @@ export namespace Prisma {
   export type ModelAdditionalFileCountAggregateOutputType = {
     id: number
     modelId: number
-    taggedVersionId: number
+    taggedVersionNumber: number
     fileId: number
     createdAt: number
     _all: number
   }
 
 
+  export type ModelAdditionalFileAvgAggregateInputType = {
+    taggedVersionNumber?: true
+  }
+
+  export type ModelAdditionalFileSumAggregateInputType = {
+    taggedVersionNumber?: true
+  }
+
   export type ModelAdditionalFileMinAggregateInputType = {
     id?: true
     modelId?: true
-    taggedVersionId?: true
+    taggedVersionNumber?: true
     fileId?: true
     createdAt?: true
   }
@@ -14402,7 +14539,7 @@ export namespace Prisma {
   export type ModelAdditionalFileMaxAggregateInputType = {
     id?: true
     modelId?: true
-    taggedVersionId?: true
+    taggedVersionNumber?: true
     fileId?: true
     createdAt?: true
   }
@@ -14410,7 +14547,7 @@ export namespace Prisma {
   export type ModelAdditionalFileCountAggregateInputType = {
     id?: true
     modelId?: true
-    taggedVersionId?: true
+    taggedVersionNumber?: true
     fileId?: true
     createdAt?: true
     _all?: true
@@ -14454,6 +14591,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ModelAdditionalFileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModelAdditionalFileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ModelAdditionalFileMinAggregateInputType
@@ -14484,6 +14633,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ModelAdditionalFileCountAggregateInputType | true
+    _avg?: ModelAdditionalFileAvgAggregateInputType
+    _sum?: ModelAdditionalFileSumAggregateInputType
     _min?: ModelAdditionalFileMinAggregateInputType
     _max?: ModelAdditionalFileMaxAggregateInputType
   }
@@ -14491,10 +14642,12 @@ export namespace Prisma {
   export type ModelAdditionalFileGroupByOutputType = {
     id: string
     modelId: string
-    taggedVersionId: string
+    taggedVersionNumber: number
     fileId: string
     createdAt: Date
     _count: ModelAdditionalFileCountAggregateOutputType | null
+    _avg: ModelAdditionalFileAvgAggregateOutputType | null
+    _sum: ModelAdditionalFileSumAggregateOutputType | null
     _min: ModelAdditionalFileMinAggregateOutputType | null
     _max: ModelAdditionalFileMaxAggregateOutputType | null
   }
@@ -14516,7 +14669,7 @@ export namespace Prisma {
   export type ModelAdditionalFileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     modelId?: boolean
-    taggedVersionId?: boolean
+    taggedVersionNumber?: boolean
     fileId?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
@@ -14527,7 +14680,7 @@ export namespace Prisma {
   export type ModelAdditionalFileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     modelId?: boolean
-    taggedVersionId?: boolean
+    taggedVersionNumber?: boolean
     fileId?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
@@ -14538,7 +14691,7 @@ export namespace Prisma {
   export type ModelAdditionalFileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     modelId?: boolean
-    taggedVersionId?: boolean
+    taggedVersionNumber?: boolean
     fileId?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
@@ -14549,12 +14702,12 @@ export namespace Prisma {
   export type ModelAdditionalFileSelectScalar = {
     id?: boolean
     modelId?: boolean
-    taggedVersionId?: boolean
+    taggedVersionNumber?: boolean
     fileId?: boolean
     createdAt?: boolean
   }
 
-  export type ModelAdditionalFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "taggedVersionId" | "fileId" | "createdAt", ExtArgs["result"]["modelAdditionalFile"]>
+  export type ModelAdditionalFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "taggedVersionNumber" | "fileId" | "createdAt", ExtArgs["result"]["modelAdditionalFile"]>
   export type ModelAdditionalFileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     taggedVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
@@ -14581,7 +14734,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       modelId: string
-      taggedVersionId: string
+      taggedVersionNumber: number
       fileId: string
       createdAt: Date
     }, ExtArgs["result"]["modelAdditionalFile"]>
@@ -15012,7 +15165,7 @@ export namespace Prisma {
   interface ModelAdditionalFileFieldRefs {
     readonly id: FieldRef<"ModelAdditionalFile", 'String'>
     readonly modelId: FieldRef<"ModelAdditionalFile", 'String'>
-    readonly taggedVersionId: FieldRef<"ModelAdditionalFile", 'String'>
+    readonly taggedVersionNumber: FieldRef<"ModelAdditionalFile", 'Int'>
     readonly fileId: FieldRef<"ModelAdditionalFile", 'String'>
     readonly createdAt: FieldRef<"ModelAdditionalFile", 'DateTime'>
   }
@@ -19830,9 +19983,9 @@ export namespace Prisma {
 
   export const ModelScalarFieldEnum: {
     id: 'id',
-    latestVersionId: 'latestVersionId',
+    latestVersionNumber: 'latestVersionNumber',
     parentModelId: 'parentModelId',
-    parentVersionId: 'parentVersionId',
+    parentVersionNumber: 'parentVersionNumber',
     visibility: 'visibility',
     isEndorsed: 'isEndorsed',
     createdAt: 'createdAt',
@@ -19844,7 +19997,6 @@ export namespace Prisma {
 
 
   export const ModelVersionScalarFieldEnum: {
-    id: 'id',
     modelId: 'modelId',
     versionNumber: 'versionNumber',
     title: 'title',
@@ -19862,7 +20014,8 @@ export namespace Prisma {
 
   export const ModelVersionFileScalarFieldEnum: {
     id: 'id',
-    modelVersionId: 'modelVersionId',
+    modelId: 'modelId',
+    versionNumber: 'versionNumber',
     fileId: 'fileId'
   };
 
@@ -19870,7 +20023,8 @@ export namespace Prisma {
 
 
   export const ModelVersionTagScalarFieldEnum: {
-    modelVersionId: 'modelVersionId',
+    modelId: 'modelId',
+    versionNumber: 'versionNumber',
     tagId: 'tagId',
     createdAt: 'createdAt'
   };
@@ -19893,7 +20047,7 @@ export namespace Prisma {
   export const ModelAdditionalFileScalarFieldEnum: {
     id: 'id',
     modelId: 'modelId',
-    taggedVersionId: 'taggedVersionId',
+    taggedVersionNumber: 'taggedVersionNumber',
     fileId: 'fileId',
     createdAt: 'createdAt'
   };
@@ -20618,9 +20772,9 @@ export namespace Prisma {
     OR?: ModelWhereInput[]
     NOT?: ModelWhereInput | ModelWhereInput[]
     id?: StringFilter<"Model"> | string
-    latestVersionId?: StringNullableFilter<"Model"> | string | null
+    latestVersionNumber?: IntNullableFilter<"Model"> | number | null
     parentModelId?: StringNullableFilter<"Model"> | string | null
-    parentVersionId?: StringNullableFilter<"Model"> | string | null
+    parentVersionNumber?: IntNullableFilter<"Model"> | number | null
     visibility?: EnumModelVisibilityFilter<"Model"> | $Enums.ModelVisibility
     isEndorsed?: BoolFilter<"Model"> | boolean
     createdAt?: DateTimeFilter<"Model"> | Date | string
@@ -20638,9 +20792,9 @@ export namespace Prisma {
 
   export type ModelOrderByWithRelationInput = {
     id?: SortOrder
-    latestVersionId?: SortOrderInput | SortOrder
+    latestVersionNumber?: SortOrderInput | SortOrder
     parentModelId?: SortOrderInput | SortOrder
-    parentVersionId?: SortOrderInput | SortOrder
+    parentVersionNumber?: SortOrderInput | SortOrder
     visibility?: SortOrder
     isEndorsed?: SortOrder
     createdAt?: SortOrder
@@ -20658,12 +20812,13 @@ export namespace Prisma {
 
   export type ModelWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    latestVersionId?: string
+    id_latestVersionNumber?: ModelIdLatestVersionNumberCompoundUniqueInput
     AND?: ModelWhereInput | ModelWhereInput[]
     OR?: ModelWhereInput[]
     NOT?: ModelWhereInput | ModelWhereInput[]
+    latestVersionNumber?: IntNullableFilter<"Model"> | number | null
     parentModelId?: StringNullableFilter<"Model"> | string | null
-    parentVersionId?: StringNullableFilter<"Model"> | string | null
+    parentVersionNumber?: IntNullableFilter<"Model"> | number | null
     visibility?: EnumModelVisibilityFilter<"Model"> | $Enums.ModelVisibility
     isEndorsed?: BoolFilter<"Model"> | boolean
     createdAt?: DateTimeFilter<"Model"> | Date | string
@@ -20677,21 +20832,23 @@ export namespace Prisma {
     authors?: ModelAuthorListRelationFilter
     permissions?: ModelPermissionListRelationFilter
     additionalFiles?: ModelAdditionalFileListRelationFilter
-  }, "id" | "latestVersionId">
+  }, "id" | "id_latestVersionNumber">
 
   export type ModelOrderByWithAggregationInput = {
     id?: SortOrder
-    latestVersionId?: SortOrderInput | SortOrder
+    latestVersionNumber?: SortOrderInput | SortOrder
     parentModelId?: SortOrderInput | SortOrder
-    parentVersionId?: SortOrderInput | SortOrder
+    parentVersionNumber?: SortOrderInput | SortOrder
     visibility?: SortOrder
     isEndorsed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     _count?: ModelCountOrderByAggregateInput
+    _avg?: ModelAvgOrderByAggregateInput
     _max?: ModelMaxOrderByAggregateInput
     _min?: ModelMinOrderByAggregateInput
+    _sum?: ModelSumOrderByAggregateInput
   }
 
   export type ModelScalarWhereWithAggregatesInput = {
@@ -20699,9 +20856,9 @@ export namespace Prisma {
     OR?: ModelScalarWhereWithAggregatesInput[]
     NOT?: ModelScalarWhereWithAggregatesInput | ModelScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Model"> | string
-    latestVersionId?: StringNullableWithAggregatesFilter<"Model"> | string | null
+    latestVersionNumber?: IntNullableWithAggregatesFilter<"Model"> | number | null
     parentModelId?: StringNullableWithAggregatesFilter<"Model"> | string | null
-    parentVersionId?: StringNullableWithAggregatesFilter<"Model"> | string | null
+    parentVersionNumber?: IntNullableWithAggregatesFilter<"Model"> | number | null
     visibility?: EnumModelVisibilityWithAggregatesFilter<"Model"> | $Enums.ModelVisibility
     isEndorsed?: BoolWithAggregatesFilter<"Model"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Model"> | Date | string
@@ -20713,7 +20870,6 @@ export namespace Prisma {
     AND?: ModelVersionWhereInput | ModelVersionWhereInput[]
     OR?: ModelVersionWhereInput[]
     NOT?: ModelVersionWhereInput | ModelVersionWhereInput[]
-    id?: StringFilter<"ModelVersion"> | string
     modelId?: StringFilter<"ModelVersion"> | string
     versionNumber?: IntFilter<"ModelVersion"> | number
     title?: StringFilter<"ModelVersion"> | string
@@ -20734,7 +20890,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionOrderByWithRelationInput = {
-    id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
     title?: SortOrder
@@ -20755,7 +20910,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
     modelId_versionNumber?: ModelVersionModelIdVersionNumberCompoundUniqueInput
     AND?: ModelVersionWhereInput | ModelVersionWhereInput[]
     OR?: ModelVersionWhereInput[]
@@ -20777,10 +20931,9 @@ export namespace Prisma {
     files?: ModelVersionFileListRelationFilter
     tags?: ModelVersionTagListRelationFilter
     taggedAdditionalFiles?: ModelAdditionalFileListRelationFilter
-  }, "id" | "modelId_versionNumber">
+  }, "modelId_versionNumber">
 
   export type ModelVersionOrderByWithAggregationInput = {
-    id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
     title?: SortOrder
@@ -20802,7 +20955,6 @@ export namespace Prisma {
     AND?: ModelVersionScalarWhereWithAggregatesInput | ModelVersionScalarWhereWithAggregatesInput[]
     OR?: ModelVersionScalarWhereWithAggregatesInput[]
     NOT?: ModelVersionScalarWhereWithAggregatesInput | ModelVersionScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"ModelVersion"> | string
     modelId?: StringWithAggregatesFilter<"ModelVersion"> | string
     versionNumber?: IntWithAggregatesFilter<"ModelVersion"> | number
     title?: StringWithAggregatesFilter<"ModelVersion"> | string
@@ -20820,7 +20972,8 @@ export namespace Prisma {
     OR?: ModelVersionFileWhereInput[]
     NOT?: ModelVersionFileWhereInput | ModelVersionFileWhereInput[]
     id?: StringFilter<"ModelVersionFile"> | string
-    modelVersionId?: StringFilter<"ModelVersionFile"> | string
+    modelId?: StringFilter<"ModelVersionFile"> | string
+    versionNumber?: IntFilter<"ModelVersionFile"> | number
     fileId?: StringFilter<"ModelVersionFile"> | string
     modelVersion?: XOR<ModelVersionScalarRelationFilter, ModelVersionWhereInput>
     file?: XOR<FileScalarRelationFilter, FileWhereInput>
@@ -20828,7 +20981,8 @@ export namespace Prisma {
 
   export type ModelVersionFileOrderByWithRelationInput = {
     id?: SortOrder
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     fileId?: SortOrder
     modelVersion?: ModelVersionOrderByWithRelationInput
     file?: FileOrderByWithRelationInput
@@ -20839,7 +20993,8 @@ export namespace Prisma {
     AND?: ModelVersionFileWhereInput | ModelVersionFileWhereInput[]
     OR?: ModelVersionFileWhereInput[]
     NOT?: ModelVersionFileWhereInput | ModelVersionFileWhereInput[]
-    modelVersionId?: StringFilter<"ModelVersionFile"> | string
+    modelId?: StringFilter<"ModelVersionFile"> | string
+    versionNumber?: IntFilter<"ModelVersionFile"> | number
     fileId?: StringFilter<"ModelVersionFile"> | string
     modelVersion?: XOR<ModelVersionScalarRelationFilter, ModelVersionWhereInput>
     file?: XOR<FileScalarRelationFilter, FileWhereInput>
@@ -20847,11 +21002,14 @@ export namespace Prisma {
 
   export type ModelVersionFileOrderByWithAggregationInput = {
     id?: SortOrder
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     fileId?: SortOrder
     _count?: ModelVersionFileCountOrderByAggregateInput
+    _avg?: ModelVersionFileAvgOrderByAggregateInput
     _max?: ModelVersionFileMaxOrderByAggregateInput
     _min?: ModelVersionFileMinOrderByAggregateInput
+    _sum?: ModelVersionFileSumOrderByAggregateInput
   }
 
   export type ModelVersionFileScalarWhereWithAggregatesInput = {
@@ -20859,7 +21017,8 @@ export namespace Prisma {
     OR?: ModelVersionFileScalarWhereWithAggregatesInput[]
     NOT?: ModelVersionFileScalarWhereWithAggregatesInput | ModelVersionFileScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ModelVersionFile"> | string
-    modelVersionId?: StringWithAggregatesFilter<"ModelVersionFile"> | string
+    modelId?: StringWithAggregatesFilter<"ModelVersionFile"> | string
+    versionNumber?: IntWithAggregatesFilter<"ModelVersionFile"> | number
     fileId?: StringWithAggregatesFilter<"ModelVersionFile"> | string
   }
 
@@ -20867,7 +21026,8 @@ export namespace Prisma {
     AND?: ModelVersionTagWhereInput | ModelVersionTagWhereInput[]
     OR?: ModelVersionTagWhereInput[]
     NOT?: ModelVersionTagWhereInput | ModelVersionTagWhereInput[]
-    modelVersionId?: StringFilter<"ModelVersionTag"> | string
+    modelId?: StringFilter<"ModelVersionTag"> | string
+    versionNumber?: IntFilter<"ModelVersionTag"> | number
     tagId?: StringFilter<"ModelVersionTag"> | string
     createdAt?: DateTimeFilter<"ModelVersionTag"> | Date | string
     modelVersion?: XOR<ModelVersionScalarRelationFilter, ModelVersionWhereInput>
@@ -20875,7 +21035,8 @@ export namespace Prisma {
   }
 
   export type ModelVersionTagOrderByWithRelationInput = {
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     tagId?: SortOrder
     createdAt?: SortOrder
     modelVersion?: ModelVersionOrderByWithRelationInput
@@ -20883,31 +21044,36 @@ export namespace Prisma {
   }
 
   export type ModelVersionTagWhereUniqueInput = Prisma.AtLeast<{
-    modelVersionId_tagId?: ModelVersionTagModelVersionIdTagIdCompoundUniqueInput
+    modelId_versionNumber_tagId?: ModelVersionTagModelIdVersionNumberTagIdCompoundUniqueInput
     AND?: ModelVersionTagWhereInput | ModelVersionTagWhereInput[]
     OR?: ModelVersionTagWhereInput[]
     NOT?: ModelVersionTagWhereInput | ModelVersionTagWhereInput[]
-    modelVersionId?: StringFilter<"ModelVersionTag"> | string
+    modelId?: StringFilter<"ModelVersionTag"> | string
+    versionNumber?: IntFilter<"ModelVersionTag"> | number
     tagId?: StringFilter<"ModelVersionTag"> | string
     createdAt?: DateTimeFilter<"ModelVersionTag"> | Date | string
     modelVersion?: XOR<ModelVersionScalarRelationFilter, ModelVersionWhereInput>
     tag?: XOR<TagScalarRelationFilter, TagWhereInput>
-  }, "modelVersionId_tagId">
+  }, "modelId_versionNumber_tagId">
 
   export type ModelVersionTagOrderByWithAggregationInput = {
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     tagId?: SortOrder
     createdAt?: SortOrder
     _count?: ModelVersionTagCountOrderByAggregateInput
+    _avg?: ModelVersionTagAvgOrderByAggregateInput
     _max?: ModelVersionTagMaxOrderByAggregateInput
     _min?: ModelVersionTagMinOrderByAggregateInput
+    _sum?: ModelVersionTagSumOrderByAggregateInput
   }
 
   export type ModelVersionTagScalarWhereWithAggregatesInput = {
     AND?: ModelVersionTagScalarWhereWithAggregatesInput | ModelVersionTagScalarWhereWithAggregatesInput[]
     OR?: ModelVersionTagScalarWhereWithAggregatesInput[]
     NOT?: ModelVersionTagScalarWhereWithAggregatesInput | ModelVersionTagScalarWhereWithAggregatesInput[]
-    modelVersionId?: StringWithAggregatesFilter<"ModelVersionTag"> | string
+    modelId?: StringWithAggregatesFilter<"ModelVersionTag"> | string
+    versionNumber?: IntWithAggregatesFilter<"ModelVersionTag"> | number
     tagId?: StringWithAggregatesFilter<"ModelVersionTag"> | string
     createdAt?: DateTimeWithAggregatesFilter<"ModelVersionTag"> | Date | string
   }
@@ -20986,7 +21152,7 @@ export namespace Prisma {
     NOT?: ModelAdditionalFileWhereInput | ModelAdditionalFileWhereInput[]
     id?: StringFilter<"ModelAdditionalFile"> | string
     modelId?: StringFilter<"ModelAdditionalFile"> | string
-    taggedVersionId?: StringFilter<"ModelAdditionalFile"> | string
+    taggedVersionNumber?: IntFilter<"ModelAdditionalFile"> | number
     fileId?: StringFilter<"ModelAdditionalFile"> | string
     createdAt?: DateTimeFilter<"ModelAdditionalFile"> | Date | string
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
@@ -20997,7 +21163,7 @@ export namespace Prisma {
   export type ModelAdditionalFileOrderByWithRelationInput = {
     id?: SortOrder
     modelId?: SortOrder
-    taggedVersionId?: SortOrder
+    taggedVersionNumber?: SortOrder
     fileId?: SortOrder
     createdAt?: SortOrder
     model?: ModelOrderByWithRelationInput
@@ -21011,7 +21177,7 @@ export namespace Prisma {
     OR?: ModelAdditionalFileWhereInput[]
     NOT?: ModelAdditionalFileWhereInput | ModelAdditionalFileWhereInput[]
     modelId?: StringFilter<"ModelAdditionalFile"> | string
-    taggedVersionId?: StringFilter<"ModelAdditionalFile"> | string
+    taggedVersionNumber?: IntFilter<"ModelAdditionalFile"> | number
     fileId?: StringFilter<"ModelAdditionalFile"> | string
     createdAt?: DateTimeFilter<"ModelAdditionalFile"> | Date | string
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
@@ -21022,12 +21188,14 @@ export namespace Prisma {
   export type ModelAdditionalFileOrderByWithAggregationInput = {
     id?: SortOrder
     modelId?: SortOrder
-    taggedVersionId?: SortOrder
+    taggedVersionNumber?: SortOrder
     fileId?: SortOrder
     createdAt?: SortOrder
     _count?: ModelAdditionalFileCountOrderByAggregateInput
+    _avg?: ModelAdditionalFileAvgOrderByAggregateInput
     _max?: ModelAdditionalFileMaxOrderByAggregateInput
     _min?: ModelAdditionalFileMinOrderByAggregateInput
+    _sum?: ModelAdditionalFileSumOrderByAggregateInput
   }
 
   export type ModelAdditionalFileScalarWhereWithAggregatesInput = {
@@ -21036,7 +21204,7 @@ export namespace Prisma {
     NOT?: ModelAdditionalFileScalarWhereWithAggregatesInput | ModelAdditionalFileScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ModelAdditionalFile"> | string
     modelId?: StringWithAggregatesFilter<"ModelAdditionalFile"> | string
-    taggedVersionId?: StringWithAggregatesFilter<"ModelAdditionalFile"> | string
+    taggedVersionNumber?: IntWithAggregatesFilter<"ModelAdditionalFile"> | number
     fileId?: StringWithAggregatesFilter<"ModelAdditionalFile"> | string
     createdAt?: DateTimeWithAggregatesFilter<"ModelAdditionalFile"> | Date | string
   }
@@ -21784,7 +21952,6 @@ export namespace Prisma {
   }
 
   export type ModelCreateInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -21802,9 +21969,9 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateInput = {
     id?: string
-    latestVersionId?: string | null
+    latestVersionNumber?: number | null
     parentModelId?: string | null
-    parentVersionId?: string | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -21818,7 +21985,6 @@ export namespace Prisma {
   }
 
   export type ModelUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21836,9 +22002,9 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21853,9 +22019,9 @@ export namespace Prisma {
 
   export type ModelCreateManyInput = {
     id?: string
-    latestVersionId?: string | null
+    latestVersionNumber?: number | null
     parentModelId?: string | null
-    parentVersionId?: string | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -21864,7 +22030,6 @@ export namespace Prisma {
   }
 
   export type ModelUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21874,9 +22039,9 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21885,7 +22050,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -21904,7 +22068,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedCreateInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -21923,7 +22086,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21942,7 +22104,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -21961,7 +22122,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateManyInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -21975,7 +22135,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21987,7 +22146,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -22008,7 +22166,8 @@ export namespace Prisma {
 
   export type ModelVersionFileUncheckedCreateInput = {
     id?: string
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
     fileId: string
   }
 
@@ -22020,13 +22179,15 @@ export namespace Prisma {
 
   export type ModelVersionFileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    modelVersionId?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: IntFieldUpdateOperationsInput | number
     fileId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ModelVersionFileCreateManyInput = {
     id?: string
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
     fileId: string
   }
 
@@ -22036,7 +22197,8 @@ export namespace Prisma {
 
   export type ModelVersionFileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    modelVersionId?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: IntFieldUpdateOperationsInput | number
     fileId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -22047,7 +22209,8 @@ export namespace Prisma {
   }
 
   export type ModelVersionTagUncheckedCreateInput = {
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
     tagId: string
     createdAt?: Date | string
   }
@@ -22059,13 +22222,15 @@ export namespace Prisma {
   }
 
   export type ModelVersionTagUncheckedUpdateInput = {
-    modelVersionId?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: IntFieldUpdateOperationsInput | number
     tagId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelVersionTagCreateManyInput = {
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
     tagId: string
     createdAt?: Date | string
   }
@@ -22075,7 +22240,8 @@ export namespace Prisma {
   }
 
   export type ModelVersionTagUncheckedUpdateManyInput = {
-    modelVersionId?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: IntFieldUpdateOperationsInput | number
     tagId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22166,7 +22332,7 @@ export namespace Prisma {
   export type ModelAdditionalFileUncheckedCreateInput = {
     id?: string
     modelId: string
-    taggedVersionId: string
+    taggedVersionNumber: number
     fileId: string
     createdAt?: Date | string
   }
@@ -22182,7 +22348,7 @@ export namespace Prisma {
   export type ModelAdditionalFileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
-    taggedVersionId?: StringFieldUpdateOperationsInput | string
+    taggedVersionNumber?: IntFieldUpdateOperationsInput | number
     fileId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22190,7 +22356,7 @@ export namespace Prisma {
   export type ModelAdditionalFileCreateManyInput = {
     id?: string
     modelId: string
-    taggedVersionId: string
+    taggedVersionNumber: number
     fileId: string
     createdAt?: Date | string
   }
@@ -22203,7 +22369,7 @@ export namespace Prisma {
   export type ModelAdditionalFileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
-    taggedVersionId?: StringFieldUpdateOperationsInput | string
+    taggedVersionNumber?: IntFieldUpdateOperationsInput | number
     fileId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22937,6 +23103,17 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type EnumModelVisibilityFilter<$PrismaModel = never> = {
     equals?: $Enums.ModelVisibility | EnumModelVisibilityFieldRefInput<$PrismaModel>
     in?: $Enums.ModelVisibility[] | ListEnumModelVisibilityFieldRefInput<$PrismaModel>
@@ -22984,11 +23161,16 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ModelIdLatestVersionNumberCompoundUniqueInput = {
+    id: string
+    latestVersionNumber: number
+  }
+
   export type ModelCountOrderByAggregateInput = {
     id?: SortOrder
-    latestVersionId?: SortOrder
+    latestVersionNumber?: SortOrder
     parentModelId?: SortOrder
-    parentVersionId?: SortOrder
+    parentVersionNumber?: SortOrder
     visibility?: SortOrder
     isEndorsed?: SortOrder
     createdAt?: SortOrder
@@ -22996,11 +23178,16 @@ export namespace Prisma {
     deletedAt?: SortOrder
   }
 
+  export type ModelAvgOrderByAggregateInput = {
+    latestVersionNumber?: SortOrder
+    parentVersionNumber?: SortOrder
+  }
+
   export type ModelMaxOrderByAggregateInput = {
     id?: SortOrder
-    latestVersionId?: SortOrder
+    latestVersionNumber?: SortOrder
     parentModelId?: SortOrder
-    parentVersionId?: SortOrder
+    parentVersionNumber?: SortOrder
     visibility?: SortOrder
     isEndorsed?: SortOrder
     createdAt?: SortOrder
@@ -23010,14 +23197,35 @@ export namespace Prisma {
 
   export type ModelMinOrderByAggregateInput = {
     id?: SortOrder
-    latestVersionId?: SortOrder
+    latestVersionNumber?: SortOrder
     parentModelId?: SortOrder
-    parentVersionId?: SortOrder
+    parentVersionNumber?: SortOrder
     visibility?: SortOrder
     isEndorsed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+  }
+
+  export type ModelSumOrderByAggregateInput = {
+    latestVersionNumber?: SortOrder
+    parentVersionNumber?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumModelVisibilityWithAggregatesFilter<$PrismaModel = never> = {
@@ -23073,7 +23281,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCountOrderByAggregateInput = {
-    id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
     title?: SortOrder
@@ -23091,7 +23298,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionMaxOrderByAggregateInput = {
-    id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
     title?: SortOrder
@@ -23105,7 +23311,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionMinOrderByAggregateInput = {
-    id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
     title?: SortOrder
@@ -23139,20 +23344,31 @@ export namespace Prisma {
 
   export type ModelVersionFileCountOrderByAggregateInput = {
     id?: SortOrder
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     fileId?: SortOrder
+  }
+
+  export type ModelVersionFileAvgOrderByAggregateInput = {
+    versionNumber?: SortOrder
   }
 
   export type ModelVersionFileMaxOrderByAggregateInput = {
     id?: SortOrder
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     fileId?: SortOrder
   }
 
   export type ModelVersionFileMinOrderByAggregateInput = {
     id?: SortOrder
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     fileId?: SortOrder
+  }
+
+  export type ModelVersionFileSumOrderByAggregateInput = {
+    versionNumber?: SortOrder
   }
 
   export type TagScalarRelationFilter = {
@@ -23160,27 +23376,39 @@ export namespace Prisma {
     isNot?: TagWhereInput
   }
 
-  export type ModelVersionTagModelVersionIdTagIdCompoundUniqueInput = {
-    modelVersionId: string
+  export type ModelVersionTagModelIdVersionNumberTagIdCompoundUniqueInput = {
+    modelId: string
+    versionNumber: number
     tagId: string
   }
 
   export type ModelVersionTagCountOrderByAggregateInput = {
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     tagId?: SortOrder
     createdAt?: SortOrder
   }
 
+  export type ModelVersionTagAvgOrderByAggregateInput = {
+    versionNumber?: SortOrder
+  }
+
   export type ModelVersionTagMaxOrderByAggregateInput = {
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     tagId?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ModelVersionTagMinOrderByAggregateInput = {
-    modelVersionId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
     tagId?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ModelVersionTagSumOrderByAggregateInput = {
+    versionNumber?: SortOrder
   }
 
   export type BigIntFilter<$PrismaModel = never> = {
@@ -23265,15 +23493,19 @@ export namespace Prisma {
   export type ModelAdditionalFileCountOrderByAggregateInput = {
     id?: SortOrder
     modelId?: SortOrder
-    taggedVersionId?: SortOrder
+    taggedVersionNumber?: SortOrder
     fileId?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ModelAdditionalFileAvgOrderByAggregateInput = {
+    taggedVersionNumber?: SortOrder
   }
 
   export type ModelAdditionalFileMaxOrderByAggregateInput = {
     id?: SortOrder
     modelId?: SortOrder
-    taggedVersionId?: SortOrder
+    taggedVersionNumber?: SortOrder
     fileId?: SortOrder
     createdAt?: SortOrder
   }
@@ -23281,9 +23513,13 @@ export namespace Prisma {
   export type ModelAdditionalFileMinOrderByAggregateInput = {
     id?: SortOrder
     modelId?: SortOrder
-    taggedVersionId?: SortOrder
+    taggedVersionNumber?: SortOrder
     fileId?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ModelAdditionalFileSumOrderByAggregateInput = {
+    taggedVersionNumber?: SortOrder
   }
 
   export type TagCountOrderByAggregateInput = {
@@ -24055,6 +24291,14 @@ export namespace Prisma {
     update?: ModelAdditionalFileUpdateWithWhereUniqueWithoutModelInput | ModelAdditionalFileUpdateWithWhereUniqueWithoutModelInput[]
     updateMany?: ModelAdditionalFileUpdateManyWithWhereWithoutModelInput | ModelAdditionalFileUpdateManyWithWhereWithoutModelInput[]
     deleteMany?: ModelAdditionalFileScalarWhereInput | ModelAdditionalFileScalarWhereInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type ModelUncheckedUpdateManyWithoutParentModelNestedInput = {
@@ -24943,6 +25187,33 @@ export namespace Prisma {
     in?: $Enums.ModelVisibility[] | ListEnumModelVisibilityFieldRefInput<$PrismaModel>
     notIn?: $Enums.ModelVisibility[] | ListEnumModelVisibilityFieldRefInput<$PrismaModel>
     not?: NestedEnumModelVisibilityFilter<$PrismaModel> | $Enums.ModelVisibility
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumModelVisibilityWithAggregatesFilter<$PrismaModel = never> = {
@@ -25945,7 +26216,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateWithoutLatestOfModelInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -25963,7 +26233,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedCreateWithoutLatestOfModelInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -25986,7 +26255,6 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutChildModelsInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26003,9 +26271,9 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutChildModelsInput = {
     id?: string
-    latestVersionId?: string | null
+    latestVersionNumber?: number | null
     parentModelId?: string | null
-    parentVersionId?: string | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26023,7 +26291,6 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutParentModelInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26040,8 +26307,8 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutParentModelInput = {
     id?: string
-    latestVersionId?: string | null
-    parentVersionId?: string | null
+    latestVersionNumber?: number | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26065,7 +26332,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateWithoutParentOfModelsInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -26083,7 +26349,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedCreateWithoutParentOfModelsInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -26106,7 +26371,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateWithoutModelInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -26124,7 +26388,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedCreateWithoutModelInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -26206,7 +26469,7 @@ export namespace Prisma {
 
   export type ModelAdditionalFileUncheckedCreateWithoutModelInput = {
     id?: string
-    taggedVersionId: string
+    taggedVersionNumber: number
     fileId: string
     createdAt?: Date | string
   }
@@ -26233,7 +26496,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUpdateWithoutLatestOfModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26251,7 +26513,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateWithoutLatestOfModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -26280,7 +26541,6 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutChildModelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26297,9 +26557,9 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutChildModelsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26332,9 +26592,9 @@ export namespace Prisma {
     OR?: ModelScalarWhereInput[]
     NOT?: ModelScalarWhereInput | ModelScalarWhereInput[]
     id?: StringFilter<"Model"> | string
-    latestVersionId?: StringNullableFilter<"Model"> | string | null
+    latestVersionNumber?: IntNullableFilter<"Model"> | number | null
     parentModelId?: StringNullableFilter<"Model"> | string | null
-    parentVersionId?: StringNullableFilter<"Model"> | string | null
+    parentVersionNumber?: IntNullableFilter<"Model"> | number | null
     visibility?: EnumModelVisibilityFilter<"Model"> | $Enums.ModelVisibility
     isEndorsed?: BoolFilter<"Model"> | boolean
     createdAt?: DateTimeFilter<"Model"> | Date | string
@@ -26354,7 +26614,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUpdateWithoutParentOfModelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26372,7 +26631,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateWithoutParentOfModelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -26409,7 +26667,6 @@ export namespace Prisma {
     AND?: ModelVersionScalarWhereInput | ModelVersionScalarWhereInput[]
     OR?: ModelVersionScalarWhereInput[]
     NOT?: ModelVersionScalarWhereInput | ModelVersionScalarWhereInput[]
-    id?: StringFilter<"ModelVersion"> | string
     modelId?: StringFilter<"ModelVersion"> | string
     versionNumber?: IntFilter<"ModelVersion"> | number
     title?: StringFilter<"ModelVersion"> | string
@@ -26476,13 +26733,12 @@ export namespace Prisma {
     NOT?: ModelAdditionalFileScalarWhereInput | ModelAdditionalFileScalarWhereInput[]
     id?: StringFilter<"ModelAdditionalFile"> | string
     modelId?: StringFilter<"ModelAdditionalFile"> | string
-    taggedVersionId?: StringFilter<"ModelAdditionalFile"> | string
+    taggedVersionNumber?: IntFilter<"ModelAdditionalFile"> | number
     fileId?: StringFilter<"ModelAdditionalFile"> | string
     createdAt?: DateTimeFilter<"ModelAdditionalFile"> | Date | string
   }
 
   export type ModelCreateWithoutVersionsInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26499,9 +26755,9 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutVersionsInput = {
     id?: string
-    latestVersionId?: string | null
+    latestVersionNumber?: number | null
     parentModelId?: string | null
-    parentVersionId?: string | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26546,7 +26802,6 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutLatestVersionInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26562,9 +26817,8 @@ export namespace Prisma {
   }
 
   export type ModelUncheckedCreateWithoutLatestVersionInput = {
-    id?: string
     parentModelId?: string | null
-    parentVersionId?: string | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26583,7 +26837,6 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutParentVersionInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26600,8 +26853,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutParentVersionInput = {
     id?: string
-    latestVersionId?: string | null
-    parentModelId?: string | null
+    latestVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -26673,7 +26925,6 @@ export namespace Prisma {
 
   export type ModelAdditionalFileUncheckedCreateWithoutTaggedVersionInput = {
     id?: string
-    modelId: string
     fileId: string
     createdAt?: Date | string
   }
@@ -26700,7 +26951,6 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutVersionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26717,9 +26967,9 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutVersionsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26776,7 +27026,6 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutLatestVersionInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26792,9 +27041,8 @@ export namespace Prisma {
   }
 
   export type ModelUncheckedUpdateWithoutLatestVersionInput = {
-    id?: StringFieldUpdateOperationsInput | string
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26844,7 +27092,8 @@ export namespace Prisma {
     OR?: ModelVersionFileScalarWhereInput[]
     NOT?: ModelVersionFileScalarWhereInput | ModelVersionFileScalarWhereInput[]
     id?: StringFilter<"ModelVersionFile"> | string
-    modelVersionId?: StringFilter<"ModelVersionFile"> | string
+    modelId?: StringFilter<"ModelVersionFile"> | string
+    versionNumber?: IntFilter<"ModelVersionFile"> | number
     fileId?: StringFilter<"ModelVersionFile"> | string
   }
 
@@ -26868,7 +27117,8 @@ export namespace Prisma {
     AND?: ModelVersionTagScalarWhereInput | ModelVersionTagScalarWhereInput[]
     OR?: ModelVersionTagScalarWhereInput[]
     NOT?: ModelVersionTagScalarWhereInput | ModelVersionTagScalarWhereInput[]
-    modelVersionId?: StringFilter<"ModelVersionTag"> | string
+    modelId?: StringFilter<"ModelVersionTag"> | string
+    versionNumber?: IntFilter<"ModelVersionTag"> | number
     tagId?: StringFilter<"ModelVersionTag"> | string
     createdAt?: DateTimeFilter<"ModelVersionTag"> | Date | string
   }
@@ -26890,7 +27140,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateWithoutFilesInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -26908,7 +27157,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedCreateWithoutFilesInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -26969,7 +27217,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUpdateWithoutFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26987,7 +27234,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateWithoutFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -27038,7 +27284,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateWithoutTagsInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -27056,7 +27301,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedCreateWithoutTagsInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -27107,7 +27351,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUpdateWithoutTagsInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27125,7 +27368,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateWithoutTagsInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -27166,7 +27408,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateWithoutNlogoxFileInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -27184,7 +27425,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedCreateWithoutNlogoxFileInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -27218,7 +27458,8 @@ export namespace Prisma {
 
   export type ModelVersionFileUncheckedCreateWithoutFileInput = {
     id?: string
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
   }
 
   export type ModelVersionFileCreateOrConnectWithoutFileInput = {
@@ -27241,7 +27482,7 @@ export namespace Prisma {
   export type ModelAdditionalFileUncheckedCreateWithoutFileInput = {
     id?: string
     modelId: string
-    taggedVersionId: string
+    taggedVersionNumber: number
     createdAt?: Date | string
   }
 
@@ -27304,7 +27545,6 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutAdditionalFilesInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -27321,9 +27561,9 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutAdditionalFilesInput = {
     id?: string
-    latestVersionId?: string | null
+    latestVersionNumber?: number | null
     parentModelId?: string | null
-    parentVersionId?: string | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -27341,7 +27581,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateWithoutTaggedAdditionalFilesInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -27359,7 +27598,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedCreateWithoutTaggedAdditionalFilesInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -27420,7 +27658,6 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutAdditionalFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27437,9 +27674,9 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutAdditionalFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27463,7 +27700,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUpdateWithoutTaggedAdditionalFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27481,7 +27717,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateWithoutTaggedAdditionalFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -27537,7 +27772,8 @@ export namespace Prisma {
   }
 
   export type ModelVersionTagUncheckedCreateWithoutTagInput = {
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
     createdAt?: Date | string
   }
 
@@ -27568,7 +27804,6 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutAuthorsInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -27585,9 +27820,9 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutAuthorsInput = {
     id?: string
-    latestVersionId?: string | null
+    latestVersionNumber?: number | null
     parentModelId?: string | null
-    parentVersionId?: string | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -27669,7 +27904,6 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutAuthorsInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27686,9 +27920,9 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutAuthorsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27760,7 +27994,6 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutPermissionsInput = {
-    id?: string
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -27777,9 +28010,9 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutPermissionsInput = {
     id?: string
-    latestVersionId?: string | null
+    latestVersionNumber?: number | null
     parentModelId?: string | null
-    parentVersionId?: string | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -27861,7 +28094,6 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutPermissionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27878,9 +28110,9 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutPermissionsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28349,8 +28581,8 @@ export namespace Prisma {
 
   export type ModelCreateManyParentModelInput = {
     id?: string
-    latestVersionId?: string | null
-    parentVersionId?: string | null
+    latestVersionNumber?: number | null
+    parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -28359,7 +28591,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionCreateManyModelInput = {
-    id?: string
     versionNumber: number
     title: string
     description?: string | null
@@ -28386,13 +28617,12 @@ export namespace Prisma {
 
   export type ModelAdditionalFileCreateManyModelInput = {
     id?: string
-    taggedVersionId: string
+    taggedVersionNumber: number
     fileId: string
     createdAt?: Date | string
   }
 
   export type ModelUpdateWithoutParentModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28409,8 +28639,8 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutParentModelInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28425,8 +28655,8 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateManyWithoutParentModelInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28435,7 +28665,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUpdateWithoutModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28453,7 +28682,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateWithoutModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28471,7 +28699,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateManyWithoutModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28531,22 +28758,21 @@ export namespace Prisma {
 
   export type ModelAdditionalFileUncheckedUpdateWithoutModelInput = {
     id?: StringFieldUpdateOperationsInput | string
-    taggedVersionId?: StringFieldUpdateOperationsInput | string
+    taggedVersionNumber?: IntFieldUpdateOperationsInput | number
     fileId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelAdditionalFileUncheckedUpdateManyWithoutModelInput = {
     id?: StringFieldUpdateOperationsInput | string
-    taggedVersionId?: StringFieldUpdateOperationsInput | string
+    taggedVersionNumber?: IntFieldUpdateOperationsInput | number
     fileId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelCreateManyParentVersionInput = {
     id?: string
-    latestVersionId?: string | null
-    parentModelId?: string | null
+    latestVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -28566,13 +28792,11 @@ export namespace Prisma {
 
   export type ModelAdditionalFileCreateManyTaggedVersionInput = {
     id?: string
-    modelId: string
     fileId: string
     createdAt?: Date | string
   }
 
   export type ModelUpdateWithoutParentVersionInput = {
-    id?: StringFieldUpdateOperationsInput | string
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28589,8 +28813,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutParentVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28605,8 +28828,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateManyWithoutParentVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    latestVersionId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28653,20 +28875,17 @@ export namespace Prisma {
 
   export type ModelAdditionalFileUncheckedUpdateWithoutTaggedVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    modelId?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelAdditionalFileUncheckedUpdateManyWithoutTaggedVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    modelId?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelVersionCreateManyNlogoxFileInput = {
-    id?: string
     modelId: string
     versionNumber: number
     title: string
@@ -28680,18 +28899,18 @@ export namespace Prisma {
 
   export type ModelVersionFileCreateManyFileInput = {
     id?: string
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
   }
 
   export type ModelAdditionalFileCreateManyFileInput = {
     id?: string
     modelId: string
-    taggedVersionId: string
+    taggedVersionNumber: number
     createdAt?: Date | string
   }
 
   export type ModelVersionUpdateWithoutNlogoxFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28709,7 +28928,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateWithoutNlogoxFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -28727,7 +28945,6 @@ export namespace Prisma {
   }
 
   export type ModelVersionUncheckedUpdateManyWithoutNlogoxFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
@@ -28746,12 +28963,14 @@ export namespace Prisma {
 
   export type ModelVersionFileUncheckedUpdateWithoutFileInput = {
     id?: StringFieldUpdateOperationsInput | string
-    modelVersionId?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: IntFieldUpdateOperationsInput | number
   }
 
   export type ModelVersionFileUncheckedUpdateManyWithoutFileInput = {
     id?: StringFieldUpdateOperationsInput | string
-    modelVersionId?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: IntFieldUpdateOperationsInput | number
   }
 
   export type ModelAdditionalFileUpdateWithoutFileInput = {
@@ -28764,19 +28983,20 @@ export namespace Prisma {
   export type ModelAdditionalFileUncheckedUpdateWithoutFileInput = {
     id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
-    taggedVersionId?: StringFieldUpdateOperationsInput | string
+    taggedVersionNumber?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelAdditionalFileUncheckedUpdateManyWithoutFileInput = {
     id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
-    taggedVersionId?: StringFieldUpdateOperationsInput | string
+    taggedVersionNumber?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelVersionTagCreateManyTagInput = {
-    modelVersionId: string
+    modelId: string
+    versionNumber: number
     createdAt?: Date | string
   }
 
@@ -28786,12 +29006,14 @@ export namespace Prisma {
   }
 
   export type ModelVersionTagUncheckedUpdateWithoutTagInput = {
-    modelVersionId?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelVersionTagUncheckedUpdateManyWithoutTagInput = {
-    modelVersionId?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

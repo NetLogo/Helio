@@ -11,7 +11,6 @@ import type { ModelVersionEntity } from '#src/modules/model-version/domain/model
 
 function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionEntity {
   return {
-    id: 'v1',
     modelId: 'model-1',
     versionNumber: 1,
     title: 'Test',
@@ -55,7 +54,8 @@ describe('modelVersionTagService', () => {
 
       const result = await service.add('model-1', 'user-1', 'ecology');
 
-      expect(result.modelVersionId).toBe('v1');
+      expect(result.modelId).toBe('model-1');
+      expect(result.versionNumber).toBe(1);
       expect(result.tagId).toBe('tag-1');
       expect(modelVersionTagRepository.insertTx).toHaveBeenCalledOnce();
     });
@@ -105,10 +105,10 @@ describe('modelVersionTagService', () => {
 
   describe('listByVersion', () => {
     it('delegates to repository', async () => {
-      const tags = [{ modelVersionId: 'v1', tagId: 'tag-1' }];
-      modelVersionTagRepository.findByVersionId.mockResolvedValue(tags);
+      const tags = [{ modelId: 'model-1', versionNumber: 1, tagId: 'tag-1' }];
+      modelVersionTagRepository.findByVersion.mockResolvedValue(tags);
 
-      const result = await service.listByVersion('v1');
+      const result = await service.listByVersion('model-1', 1);
 
       expect(result).toBe(tags);
     });

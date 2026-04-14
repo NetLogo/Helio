@@ -9,7 +9,8 @@ export default function modelVersionTagDomain() {
   return {
     createModelVersionTag(props: AddTagProps): ModelVersionTagEntity {
       return {
-        modelVersionId: props.modelVersionId,
+        modelId: props.modelId,
+        versionNumber: props.versionNumber,
         tagId: props.tagId,
         createdAt: new Date(),
       };
@@ -17,7 +18,7 @@ export default function modelVersionTagDomain() {
 
     assertNotFinalized(version: ModelVersionEntity): void {
       if (version.finalizedAt) {
-        throw new CannotModifyFinalizedVersionError(version.id);
+        throw new CannotModifyFinalizedVersionError(version.modelId, version.versionNumber);
       }
     },
   };
