@@ -12,17 +12,15 @@ const {
 
 const route = useRoute();
 const path = decodeURIComponent(route.path).replace(/\?/, '');
+
+// Disabled until feature is rolled out.
+// --Omar I. (05-10-2026)
+provide('prim-tooltip-disabled', true);
+
 const { data: page } = await useAsyncData(path, () => {
   return queryCollection('content').path(path).first();
 });
 
-// Special case due to the large number of
-// primitives on the dictionary page, which causes too many
-// tooltips to be rendered and results in degraded performance.
-// --Omar I. (05-10-2026)
-if (['/dictionary', '/3d'].includes(path)) {
-  provide('prim-tooltip-disabled', true);
-}
 
 const { data: surround } = await useAsyncData(`${path}-surround`, () => {
   return queryCollectionItemSurroundings('content', path, {

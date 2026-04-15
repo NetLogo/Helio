@@ -36,7 +36,7 @@
       </NavbarAction>
 
       <NavbarAction
-        href="/NetLogo_User_Manual.pdf"
+        :href="`/${productVersion}/NetLogo_User_Manual.pdf`"
         aria-label="Download NetLogo User Manual as PDF"
         :no-nuxt-link="true"
       >
@@ -59,7 +59,7 @@ import { onVersionChange, pullVersionsFromSource } from '~~/shared/versions';
 
 const {
   public: {
-    website: { productWebsite, productVersion, versionsSrc },
+    website: { productWebsite, productVersion, versionsSrc  },
   },
 } = useRuntimeConfig();
 
@@ -82,6 +82,7 @@ const navbarRef = useTemplateRef<InstanceType<typeof _Navbar>>('navbar');
 
 const brand = computed(() => (isMobileScreen.value ? TurtlesLogo : NetLogoUserManualLogo));
 const brandAttrs = computed(() => (isMobileScreen.value ? { style: { width: '2rem' } } : { width: 'auto' }));
+
 
 const handleMediaQueryChange = (): void => {
   if (import.meta.client) {

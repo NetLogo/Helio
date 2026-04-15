@@ -25,7 +25,7 @@ const pullVersionsFromSource = async (
   url: string,
 ): Promise<Record<string, VersionProps>> => {
   try {
-    const data = await $fetch<Array<LiveVersionData>>(url);
+    const data = await $fetch<Array<LiveVersionData>>(url, { "baseURL": "/" });
 
     const normalizeLiveVersionsToProps = (version: LiveVersionData): VersionProps => ({
       displayName: version.name,
