@@ -172,6 +172,8 @@ const seedNlogoxFiles = {
   trafficGridNlogox: readNlogox('traffic-grid.nlogox', 'traffic-grid-preview.png'),
   trafficBasicNlogox: readNlogox('traffic-basic.nlogox', 'traffic-grid-preview.png'),
   traffic2LanesNlogox: readNlogox('traffic-2-lanes.nlogox', 'traffic-2-lanes-preview.png'),
+  fire: readNlogox('fire.nlogox', 'fire-preview.png'),
+  ants: readNlogox('ants.nlogox', 'ants-preview.png'),
 };
 
 // Seed
@@ -316,20 +318,6 @@ async function main() {
       blob: f.blob,
     })),
     {
-      id: ids.fireSpreadNlogox,
-      filename: 'fire-spread.nlogox',
-      contentType: 'application/xml',
-      sizeBytes: BigInt(380) as bigint,
-      blob: fakeNlogox('Fire Spread'),
-    },
-    {
-      id: ids.antForagingNlogox,
-      filename: 'ant-foraging.nlogox',
-      contentType: 'application/xml',
-      sizeBytes: BigInt(410) as bigint,
-      blob: fakeNlogox('Ant Foraging'),
-    },
-    {
       id: ids.virusNetworkNlogox,
       filename: 'virus-network.nlogox',
       contentType: 'application/xml',
@@ -473,22 +461,24 @@ async function main() {
     {
       modelId: ids.fireSpread,
       versionNumber: 1,
-      title: 'Fire Spread',
+      title: 'Fire',
       description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros. Lorem ipsum dolor sit amet, consect etur adipiscing elit. Suspendisse varius enim in eros.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.  Suspendisse vauspendisse va.',
-      nlogoxFileId: ids.fireSpreadNlogox,
+        "This project simulates the spread of a fire through a forest. It shows that the fire's chance of reaching the right edge of the forest depends critically on the density of trees. This is an example of a common feature of complex systems, the presence of a non-linear threshold or critical parameter.",
+      nlogoxFileId: seedNlogoxFiles.fire.id,
       netlogoVersion: '6.4.0',
       infoTab: '## WHAT IS IT?\n\nThis model simulates fire spreading through a forest.',
+      previewImage: seedNlogoxFiles.fire.previewImage.blob,
     },
     {
       modelId: ids.antForaging,
       versionNumber: 1,
-      title: 'Ant Foraging',
+      title: 'Ants',
       description:
-        'Models how ants use pheromone trails to find the shortest path between their nest and a food source.',
-      nlogoxFileId: ids.antForagingNlogox,
+        'In this project, a colony of ants forages for food. Though each ant follows a set of simple rules, the colony as a whole acts in a sophisticated way.',
+      nlogoxFileId: seedNlogoxFiles.ants.id,
       netlogoVersion: '6.3.0',
       infoTab: '## WHAT IS IT?\n\nThis model demonstrates emergent path-finding behavior.',
+      previewImage: seedNlogoxFiles.ants.previewImage.blob,
     },
     {
       modelId: ids.virusNetwork,

@@ -6,14 +6,6 @@ export default defineNuxtConfig({
 
   app: {
     rootId: "__nuxt",
-    // layoutTransition: {
-    //   name: "layout",
-    //   mode: "out-in",
-    // },
-    // pageTransition: {
-    //   name: "page",
-    //   mode: "out-in",
-    // },
   },
 
   runtimeConfig: {
@@ -26,8 +18,11 @@ export default defineNuxtConfig({
   },
 
   // prettier-ignore
-  modules: [// Pinia store
-  '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', "@nuxt/image"],
+  modules: [
+    '@pinia/nuxt', // Pinia store
+    'pinia-plugin-persistedstate/nuxt',
+    "@nuxt/image"
+  ],
 
   pinia: {
     storesDirs: ["./stores/**"],
@@ -46,6 +41,34 @@ export default defineNuxtConfig({
   googleFonts: {
     families: {
       Epilogue: [400, 500, 600, 700],
+    },
+  },
+
+  hooks: {
+    "pages:extend"(pages) {
+      pages.push({
+        name: "model-slug",
+        path: "/models/:slug/:id",
+        file: "~/pages/models/[id].vue",
+      });
+
+      pages.push({
+        name: "model-slug-version",
+        path: "/models/:slug/:id/versions/:versionNumber",
+        file: "~/pages/models/[id].vue",
+      });
+
+      pages.push({
+        name: "model-version",
+        path: "/models/:id/versions/:versionNumber",
+        file: "~/pages/models/[id].vue",
+      });
+    },
+  },
+
+  vite: {
+    server: {
+      hmr: false,
     },
   },
 

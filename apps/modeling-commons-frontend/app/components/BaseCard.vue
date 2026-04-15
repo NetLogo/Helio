@@ -21,7 +21,7 @@
                 alt="Card image"
                 class="w-full h-full object-cover rounded mb-4 absolute inset-0"
                 crossorigin="use-credentials"
-                placeholder="blur"
+                :placeholder="[20, 20]"
                 @error="imageLoadFailed = true"
               />
             </template>
@@ -88,7 +88,6 @@
 
 <script setup lang="ts">
 import { NuxtLink } from "#components";
-import { computed, useSlots } from "vue";
 
 defineProps<{
   to?: string;
@@ -99,5 +98,6 @@ defineProps<{
 
 const slots = useSlots();
 const hasFooter = computed(() => !!slots.footer);
+
 const imageLoadFailed = ref(false);
 </script>

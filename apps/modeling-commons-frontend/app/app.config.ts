@@ -10,6 +10,28 @@ export default defineAppConfig({
       base: "max-w-[var(--max-width-ch)] py-12 mx-auto",
     },
 
+    alert: {
+      slots: {
+        root: "rounded-md px-4 py-2",
+      },
+      compoundVariants: [
+        {
+          color: "primary",
+          variant: "subtle",
+          class: {
+            root: "bg-[#E0F5FF] text-royal-blue-darker ring-[#CBEFFF]",
+          },
+        },
+        {
+          color: "neutral",
+          variant: "subtle",
+          class: {
+            root: "bg-neutral-lightest text-royal-blue-darker ring-neutral-light",
+          },
+        },
+      ],
+    },
+
     ...Object.fromEntries(
       ["input", "textarea", "inputMenu", "selectMenu", "inputDate", "inputNumber", "inputTags"].map(
         (component) => {
@@ -103,6 +125,16 @@ export default defineAppConfig({
       },
     },
 
+    pageCard: {
+      variants: {
+        variant: {
+          subtle: {
+            root: "border border-royal-blue-lightest bg-elevated/30",
+          },
+        },
+      },
+    },
+
     pageHero: {
       slots: {
         title: "text-[var(--h1-size)] font-[500] leading-[var(--line-height-heading)]",
@@ -141,6 +173,11 @@ export default defineAppConfig({
           square: true,
           size: "sm",
           class: "p-[0.6rem] text-[1.3rem] ",
+        },
+        {
+          square: true,
+          size: "xs",
+          class: "p-[0.6rem] text-[1rem] ",
         },
       ],
     },

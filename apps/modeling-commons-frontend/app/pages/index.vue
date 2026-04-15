@@ -1,37 +1,36 @@
 <template>
   <div>
-    <section
-      class="relative overflow-hidden border-b border-default bg-gradient-to-b from-primary-50/80 to-background"
-    >
-      <div class="absolute inset-0 opacity-[0.04]">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="hero-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-              <path
-                d="M 32 0 L 0 0 0 32"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="0.5"
-                class="text-primary-600"
-              />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#hero-grid)" />
-        </svg>
-      </div>
-      <UContainer class="relative py-16 sm:py-24 text-center">
-        <h1 class="text-highlighted">
-          {{ meta.name }}
-        </h1>
-        <p class="mt-4 text-lg text-toned max-w-2xl mx-auto leading-relaxed">
-          {{ meta.description }}
+    <UPageHero :title="meta.name">
+      <template #title>
+        <component :is="meta.logo" class="max-w-md lg:max-w-2xl mx-auto" />
+      </template>
+      <template #description>
+        <p
+          v-for="(paragraph, index) in meta.description.split('\n\n')"
+          :key="index"
+          class="text-md"
+        >
+          {{ paragraph }}
         </p>
-        <div class="mt-8 flex justify-center gap-3">
-          <UButton to="/models" size="lg" variant="solid"> Explore Models </UButton>
-          <UButton to="/signup" size="lg"> Join the Community </UButton>
+      </template>
+      <template #body>
+        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center">
+          <UInput
+            placeholder="Search models by keyword..."
+            icon="i-lucide-search"
+            class="max-w-md lg:max-w-3xl"
+            @keydown.enter="
+              (e: KeyboardEvent) =>
+                navigateTo(`/models?keyword=${(e.target as HTMLInputElement).value}`)
+            "
+          />
+
+          <span class="text-md text-muted"> OR </span>
+
+          <UButton variant="outline" icon="i-lucide-shuffle"> Random </UButton>
         </div>
-      </UContainer>
-    </section>
+      </template>
+    </UPageHero>
 
     <UContainer>
       <div v-if="status === 'pending'" class="space-y-12">

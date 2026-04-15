@@ -68,7 +68,6 @@
 </template>
 
 <script setup lang="ts">
-import type { SelectMenuItem } from "#ui/types";
 import { useModelsStore } from "~/stores/models";
 
 useSeoMeta({
@@ -94,17 +93,6 @@ watch(
   },
 );
 
-const visibilityOptions: Array<SelectMenuItem> = [
-  { label: "All", value: null },
-  { label: "Public", value: "public" },
-  { label: "Private", value: "private" },
-  { label: "Unlisted", value: "unlisted" },
-] as const;
-
-const selectedVisibility = computed(
-  () => visibilityOptions.find((o) => o.value === store.filters.visibility) ?? visibilityOptions[0],
-);
-
 let keywordTimeout: ReturnType<typeof setTimeout>;
 function onKeywordChange(value: string | number) {
   clearTimeout(keywordTimeout);
@@ -113,13 +101,16 @@ function onKeywordChange(value: string | number) {
   }, 300);
 }
 
-function onVisibilityChange(option: SelectMenuItem) {
-  store.setFilter("visibility", option.value);
-}
-
 function toggleEndorsed() {
   store.setFilter("isEndorsed", store.filters.isEndorsed ? null : true);
 }
 
 callOnce("fetchModels", () => store.fetchModels());
+
+onMounted(() => {
+  // See if query params have keyword or endorsed filters and apply them
+  const { keyword, endorsed } = useRoute().query;
+  store.setFilter("keyword", keyword ? String(keyword) : "");
+  store.setFilter("isEndorsed", endorsed ? String(endorsed) === "true" : null);
+});
 </script>

@@ -7,7 +7,7 @@
     brand-href="/"
     :brand-attrs="brandAttrs"
   >
-    <NavbarLinksContainer class="flex-1 mx-auto">
+    <NavbarLinksContainer class="lg:mx-auto flex-none!">
       <NavbarItem
         v-for="link in navbarLinks"
         :key="link.title"
@@ -31,7 +31,10 @@
       </NavbarItem>
     </NavbarLinksContainer>
 
-    <NavbarActionsContainer>
+    <NavbarActionsContainer class="gap-3! ml-0!">
+      <NuxtLink to="/models/upload" title="Upload a Model">
+        <UButton variant="outline" size="xs" square icon="i-lucide-upload" />
+      </NuxtLink>
       <UDropdownMenu
         v-if="user.isLoggedIn"
         v-slot="{ open }"

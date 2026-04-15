@@ -1,3 +1,5 @@
+import slugify from "slugify";
+
 export function formatRelativeDate(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);
@@ -77,4 +79,18 @@ export function capitalize(str: string): string {
 
 export function sentenceCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+export function createModelPath(modelId: string, modelTitle: string): string {
+  const slug = slugify(modelTitle, { lower: true, strict: true });
+  const truncatedSlug = slug.length > 50 ? slug.substring(0, 50) : slug;
+  return `/models/${truncatedSlug}/${modelId}`;
+}
+
+export function parseModelPath(path: string): { modelId: string; modelSlug: string } | null {
+  const parts = path.split("/");
+  if (parts.length < 4 || parts[1] !== "models") return null;
+  const modelId = parts[parts.length - 1]!;
+  const modelSlug = parts.slice(2, parts.length - 1).join("/");
+  return { modelId, modelSlug };
 }

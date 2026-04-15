@@ -2,9 +2,9 @@ export interface ModelDetail {
   id: string;
   createdAt: string;
   updatedAt: string;
-  latestVersionId: string | null;
+  latestVersionNumber: string | null;
   parentModelId: string | null;
-  parentVersionId: string | null;
+  parentVersionNumber: string | null;
   visibility: string;
   isEndorsed: boolean;
 }

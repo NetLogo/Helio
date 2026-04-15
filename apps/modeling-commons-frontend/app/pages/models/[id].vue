@@ -1,12 +1,12 @@
 <template>
   <UContainer>
-    <div class="py-2">
+    <div class="space-y-4">
       <UButton
         variant="ghost"
         icon="i-lucide-arrow-left"
         to="/models"
         size="sm"
-        class="mb-4 -ml-2 text-muted"
+        class="-ml-2 text-muted"
       >
         Back to models
       </UButton>
@@ -30,7 +30,26 @@
         </UButton>
       </div>
 
-      <ModelDetail v-else-if="store.model" />
+      <template v-else-if="store.model">
+        <UAlert
+          v-if="!isLatestVersion"
+          variant="subtle"
+          :closable="false"
+          icon="i-lucide-history"
+          title="You are viewing an older version of this model"
+          orientation="horizontal"
+          :actions="[
+            {
+              label: 'View Latest',
+              to: latestVersionPath!,
+              trailingIcon: 'i-lucide-arrow-right',
+              variant: 'link',
+            },
+          ]"
+        />
+
+        <ModelDetail />
+      </template>
     </div>
   </UContainer>
 </template>
@@ -39,18 +58,26 @@
 const route = useRoute();
 const store = useModelDetailStore();
 const modelId = computed(() => route.params.id as string);
+// Where is this coming from? I don't see it in the route params.
+// Check (nuxt.config.ts).hooks['pages:extend'] to see how the routes are being generated.
+const modelVersionNumber = computed(
+  () => parseInt(route.params.versionNumber as string) ?? undefined,
+);
 
 const { error, status, refresh } = await useAsyncData(
-  `model-${modelId.value}`,
+  `model-${modelId.value}-${modelVersionNumber.value ?? "latest"}`,
   async () => {
     await store.fetchModel(modelId.value);
+    if (modelVersionNumber.value) {
+      await store.selectVersion(modelVersionNumber.value);
+    }
     if (store.error) {
       throw createError({ statusCode: 404, message: store.error });
     }
     return store.model;
   },
   {
-    watch: [modelId],
+    watch: [modelId, modelVersionNumber],
     getCachedData(key, nuxtApp) {
       return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
     },
@@ -64,6 +91,18 @@ useSeoMeta({
   ogDescription: () =>
     store.currentVersion?.description ?? "View model details on Modeling Commons",
   ogType: "article",
+});
+
+const isLatestVersion = computed(() => {
+  return store.model?.latestVersionNumber === store.currentVersion?.versionNumber;
+});
+const latestVersionPath = computed(() => {
+  if (!store.model) return null;
+  if (isLatestVersion.value) {
+    return `/models/${store.model.id}`;
+  } else {
+    return `/models/${store.model.id}/versions/${store.model.latestVersionNumber}`;
+  }
 });
 
 onUnmounted(() => {

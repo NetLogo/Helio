@@ -196,7 +196,7 @@ async function fetchFamily() {
   if (store.model.parentModelId) {
     familyParent.value = await fetchFamilyModel(
       store.model.parentModelId,
-      store.model.parentVersionId,
+      store.model.parentVersionNumber,
     );
   } else {
     familyParent.value = null;
