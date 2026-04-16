@@ -11,7 +11,7 @@
     "init": "npm run create:env && nuxt prepare",
     "nuxt:build": "nuxt build",
     "nuxt:dev": "nuxt dev --port 3003",
-    "nuxt:dev:no-autogen": "NO_AUTOGEN=true nuxt dev --port 3003",
+    "nuxt:dev:no-autogen": "sh -c 'NO_AUTOGEN=true nuxt dev --port 3003'",
     "nuxt:generate": "nuxt prepare && nuxt generate",
     "nuxt:preview": "nuxt preview",
     "nuxt:prepare": "nuxt prepare",

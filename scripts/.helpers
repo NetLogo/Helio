@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -euo pipefail
-export WINDOWS_OS="$(uname -s | grep -i cygwin || true)"
+export WINDOWS_OS="$(uname -s | grep -iE 'cygwin|mingw|msys' || true)"
 export HELIO_HEADLESS="${HELIO_HEADLESS:-0}"
 export HELIO_LOG_INDENT_LEVEL="${HELIO_LOG_INDENT_LEVEL:-0}"
 export HELIO_LOG_STRING="${HELIO_LOG_STRING:-"  "}"
@@ -121,7 +121,11 @@ function kill_processes_by_name() {
   local processes_names=("$@")
   local process
   for process in "${processes_names[@]}"; do
-    pgrep $process | xargs -r kill -9 >/dev/null 2>/dev/null || true
+    if [ -n "$WINDOWS_OS" ]; then
+      taskkill /F /IM "$process.exe" >/dev/null 2>/dev/null || true
+    else
+      pgrep $process | xargs -r kill -9 >/dev/null 2>/dev/null || true
+    fi
   done
 }
 
