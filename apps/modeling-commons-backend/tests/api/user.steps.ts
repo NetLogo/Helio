@@ -57,8 +57,10 @@ When(
   async function (this: ICustomWorld, url: string, dataTable: DataTable) {
     const rows = dataTable.raw();
     const body: Record<string, string> = {};
-    for (const [key, value] of rows) {
-      body[key] = value;
+    for (const row of rows) {
+      const [key, value] = row;
+      if (key === undefined) continue;
+      body[key] = value ?? '';
     }
     this.context.latestResponse = await this.server.inject({
       method: 'PATCH',

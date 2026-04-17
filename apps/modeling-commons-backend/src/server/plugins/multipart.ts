@@ -1,10 +1,8 @@
-import env from '#src/config/env.ts';
-import rules from '#src/config/rules.ts';
-import multipart from '@fastify/multipart';
+import '@fastify/multipart';
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 
-async function multipartPlugin(fastify: FastifyInstance) {
+async function multipartPlugin(_fastify: FastifyInstance) {
   // await fastify.register(multipart, {
   //   limits: {
   //     fileSize: rules.limits.fileUpload.size.max,

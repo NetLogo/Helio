@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
+import type { Model } from '#prisma/index';
 import modelDomain from '#src/modules/model/domain/model.domain.ts';
 import { ModelAlreadyDeletedError } from '#src/modules/model/domain/model.errors.ts';
-import type { ModelEntity } from '#src/modules/model/domain/model.types.ts';
 
 const domain = modelDomain();
 
-function makeModel(overrides: Partial<ModelEntity> = {}): ModelEntity {
+function makeModel(overrides: Partial<Model> = {}): Model {
   return {
     id: 'model-1',
     latestVersionNumber: null,

@@ -1,9 +1,9 @@
+import type { Model } from '#prisma/index';
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
 import type {
   CreateModelProps,
-  ModelEntity,
   UpdateModelProps,
-} from '#src/modules/model/domain/model.types.ts';
+} from '#src/modules/model/dtos/model.dto.ts';
 
 export default function makeModelService({
   transactionManager,
@@ -55,7 +55,7 @@ export default function makeModelService({
       });
     },
 
-    async findById(modelId: string): Promise<ModelEntity> {
+    async findById(modelId: string): Promise<Model> {
       const model = await modelRepository.findOneById(modelId);
       if (!model) throw new ModelNotFoundError(modelId);
       return model;

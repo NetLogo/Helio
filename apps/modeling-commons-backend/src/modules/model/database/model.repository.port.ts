@@ -1,26 +1,23 @@
 import type { Model } from '#prisma/index';
-import type {
-  ModelEntity,
-  ModelSearchFilters,
-  ModelVisibility,
-} from '#src/modules/model/domain/model.types.ts';
+import type { ModelCardRecord } from '#src/modules/model/database/model.card.record.ts';
+import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { RepositoryPort } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
-export type ModelRecord = Model;
-
-export interface ModelRepository extends RepositoryPort<ModelEntity> {
-  findByIdIncludeDeleted(id: string): Promise<ModelEntity | undefined>;
+export interface ModelRepository extends RepositoryPort<Model> {
+  findByIdIncludeDeleted(id: string): Promise<Model | undefined>;
   setLatestVersion(ctx: TransactionContext, modelId: string, versionNumber: number): Promise<void>;
   softDelete(ctx: TransactionContext, id: string): Promise<void>;
   search(
     filters: ModelSearchFilters,
     params: PaginatedQueryParams,
     userId: string | null,
-  ): Promise<Paginated<ModelEntity>>;
-  findChildren(modelId: string, params: PaginatedQueryParams): Promise<Paginated<ModelEntity>>;
-  insertTx(ctx: TransactionContext, entity: ModelEntity): Promise<void>;
+  ): Promise<Paginated<Model>>;
+  findChildren(modelId: string, params: PaginatedQueryParams): Promise<Paginated<Model>>;
+  findCard(modelId: string): Promise<ModelCardRecord | null>;
+  insertTx(ctx: TransactionContext, entity: Model): Promise<void>;
   updateFields(
     ctx: TransactionContext,
     id: string,

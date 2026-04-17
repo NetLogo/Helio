@@ -240,8 +240,8 @@ export interface paths {
                                 latestVersionNumber: number | null;
                                 parentModelId: string | null;
                                 parentVersionNumber: number | null;
-                                /** @description public | private | unlisted */
-                                visibility: string;
+                                /** @enum {unknown} */
+                                visibility: "public" | "private" | "unlisted";
                                 isEndorsed: boolean;
                             })[];
                         };
@@ -264,6 +264,7 @@ export interface paths {
                         title: string;
                         /** @description Model description */
                         description?: string;
+                        /** @enum {unknown} */
                         visibility?: "public" | "private" | "unlisted";
                         /** Format: uuid */
                         parentModelId?: string;
@@ -342,8 +343,8 @@ export interface paths {
                             latestVersionNumber: number | null;
                             parentModelId: string | null;
                             parentVersionNumber: number | null;
-                            /** @description public | private | unlisted */
-                            visibility: string;
+                            /** @enum {unknown} */
+                            visibility: "public" | "private" | "unlisted";
                             isEndorsed: boolean;
                         };
                     };
@@ -386,6 +387,7 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** @enum {unknown} */
                         visibility?: "public" | "private" | "unlisted";
                         isEndorsed?: boolean;
                     };
@@ -401,6 +403,122 @@ export interface paths {
                 };
             };
         };
+        trace?: never;
+    };
+    "/api/v1/models/{id}/card": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            model: ({
+                                /**
+                                 * Format: uuid
+                                 * @description Entity's id
+                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 */
+                                id: string;
+                            } & {
+                                /**
+                                 * @description Entity creation date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                createdAt: string;
+                                /**
+                                 * @description Entity last update date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                updatedAt: string;
+                            }) & {
+                                latestVersionNumber: number | null;
+                                parentModelId: string | null;
+                                parentVersionNumber: number | null;
+                                /** @enum {unknown} */
+                                visibility: "public" | "private" | "unlisted";
+                                isEndorsed: boolean;
+                            };
+                            latestVersion: {
+                                /** Format: uuid */
+                                modelId: string;
+                                versionNumber: number;
+                                title: string;
+                                description: string | null;
+                                /** Format: uuid */
+                                nlogoxFileId: string;
+                                netlogoVersion: string | null;
+                                infoTab: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                isFinalized: boolean;
+                            } | null;
+                            authors: ({
+                                /** Format: uuid */
+                                modelId: string;
+                                /** Format: uuid */
+                                userId: string;
+                                /** @description owner | contributor */
+                                role: string;
+                                /**
+                                 * @description Author assignment date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                createdAt: string;
+                            } & {
+                                userName: string | null;
+                                userImage: string | null;
+                            })[];
+                            tagsOnLatestVersion: {
+                                /**
+                                 * Format: uuid
+                                 * @description Tag id
+                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 */
+                                id: string;
+                                /**
+                                 * @description Tag name
+                                 * @example climate
+                                 */
+                                name: string;
+                                /**
+                                 * @description Tag creation date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                createdAt: string;
+                            }[];
+                            counts: {
+                                versions: number;
+                                children: number;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/models/{id}/children": {
@@ -477,8 +595,8 @@ export interface paths {
                                 latestVersionNumber: number | null;
                                 parentModelId: string | null;
                                 parentVersionNumber: number | null;
-                                /** @description public | private | unlisted */
-                                visibility: string;
+                                /** @enum {unknown} */
+                                visibility: "public" | "private" | "unlisted";
                                 isEndorsed: boolean;
                             })[];
                         };

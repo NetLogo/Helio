@@ -1,10 +1,10 @@
+import type { Model } from '#prisma/index';
+import type { ModelCardRecord } from '#src/modules/model/database/model.card.record.ts';
+import { modelCardArgs } from '#src/modules/model/database/model.card.record.ts';
 import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
-import type {
-  ModelEntity,
-  ModelSearchFilters,
-  ModelVisibility,
-} from '#src/modules/model/domain/model.types.ts';
-import type { ModelRecord } from '#src/modules/model/database/model.repository.port.ts';
+import type { ModelRecord } from '#src/modules/model/database/model.record.ts';
+import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
@@ -15,7 +15,7 @@ export default function modelRepository({
   repositoryBase,
 }: Dependencies): ModelRepository {
   const tableName = 'model';
-  const base = repositoryBase<ModelEntity, ModelRecord>({
+  const base = repositoryBase<Model, ModelRecord>({
     tableName,
     mapper: modelMapper,
   });
@@ -23,7 +23,7 @@ export default function modelRepository({
   return {
     ...base,
 
-    async findByIdIncludeDeleted(id: string): Promise<ModelEntity | undefined> {
+    async findByIdIncludeDeleted(id: string): Promise<Model | undefined> {
       const record = await db.model.findUnique({ where: { id } });
       return record ? modelMapper.toDomain(record as unknown as ModelRecord) : undefined;
     },
@@ -48,10 +48,9 @@ export default function modelRepository({
       });
     },
 
-    async insertTx(ctx: TransactionContext, entity: ModelEntity): Promise<void> {
+    async insertTx(ctx: TransactionContext, entity: Model): Promise<void> {
       const client = resolveTransaction(ctx);
-      const data = modelMapper.toPersistence(entity);
-      await client.model.create({ data });
+      await client.model.create({ data: entity });
     },
 
     async updateFields(
@@ -67,7 +66,7 @@ export default function modelRepository({
       filters: ModelSearchFilters,
       params: PaginatedQueryParams,
       userId: string | null,
-    ): Promise<Paginated<ModelEntity>> {
+    ): Promise<Paginated<Model>> {
       const where: Record<string, unknown> = { deletedAt: null };
 
       if (userId) {
@@ -130,10 +129,17 @@ export default function modelRepository({
       };
     },
 
+    async findCard(modelId: string): Promise<ModelCardRecord | null> {
+      return db.model.findFirst({
+        where: { id: modelId, deletedAt: null },
+        ...modelCardArgs,
+      });
+    },
+
     async findChildren(
       modelId: string,
       params: PaginatedQueryParams,
-    ): Promise<Paginated<ModelEntity>> {
+    ): Promise<Paginated<Model>> {
       const where = { parentModelId: modelId, deletedAt: null };
       const [count, records] = await Promise.all([
         db.model.count({ where }),

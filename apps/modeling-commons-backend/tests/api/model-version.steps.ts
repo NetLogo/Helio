@@ -15,11 +15,6 @@ function getVersions(context: Record<string, unknown>): Map<string, string> {
   return context['versions'] as Map<string, string>;
 }
 
-function resolveUser(context: Record<string, unknown>, name?: string): TestUser {
-  if (name) return getUsers(context).get(name)!;
-  return context['currentUser'] as TestUser;
-}
-
 Given(
   'a version {string} for {string} with title {string}',
   async function (this: ICustomWorld, versionKey: string, modelTitle: string, title: string) {

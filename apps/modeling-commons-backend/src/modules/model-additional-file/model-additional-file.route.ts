@@ -9,7 +9,7 @@ import {
   type ListAdditionalFilesQuery,
 } from '#src/modules/model-additional-file/model-additional-file.schemas.ts';
 import { modelAdditionalFileResponseDtoSchema } from '#src/modules/model-additional-file/dtos/model-additional-file.response.dto.ts';
-import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/model.schemas.ts';
+import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/dtos/model.dto.ts';
 import { Type } from 'typebox';
 
 export default async function modelAdditionalFileRoutes(fastify: FastifyInstance) {

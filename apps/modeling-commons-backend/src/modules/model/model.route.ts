@@ -4,18 +4,18 @@ import type { FastifyInstance } from 'fastify';
 import {
   createModelRequestDtoSchema,
   modelIdParamsSchema,
+  modelPaginatedResponseSchema,
+  modelResponseDtoSchema,
   modelSearchQuerySchema,
   updateModelRequestDtoSchema,
   type CreateModelRequestDto,
   type ModelIdParams,
   type ModelSearchQuery,
   type UpdateModelRequestDto,
-} from '#src/modules/model/model.schemas.ts';
-import { modelResponseDtoSchema } from '#src/modules/model/dtos/model.response.dto.ts';
-import { modelPaginatedResponseSchema } from '#src/modules/model/dtos/model.paginated.response.dto.ts';
+} from '#src/modules/model/dtos/model.dto.ts';
+import { modelCardResponseDtoSchema } from '#src/modules/model/dtos/model.card.dto.ts';
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
-import { Type, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import rules from '#src/config/rules.ts';
+import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
 export default async function modelRoutes(fastify: FastifyInstance) {
   const {
@@ -23,7 +23,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     modelMapper,
     searchModelsQuery,
     getModelChildrenQuery,
-    modelVersionService,
+    getModelCardQuery,
   } = fastify.diContainer.cradle;
 
   fastify.post<{ Body: CreateModelRequestDto }>(
@@ -83,6 +83,21 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     async (request) => {
       const entity = await modelService.findById(request.params.id);
       return modelMapper.toResponse(entity);
+    },
+  );
+
+  fastify.get<{ Params: ModelIdParams }>(
+    '/v1/models/:id/card',
+    {
+      schema: {
+        params: modelIdParamsSchema,
+        response: { 200: modelCardResponseDtoSchema },
+        tags: ['Model'],
+      },
+      preHandler: [resolveModel('read')],
+    },
+    async (request) => {
+      return getModelCardQuery.execute(request.params.id);
     },
   );
 

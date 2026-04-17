@@ -14,6 +14,7 @@ export function mockModelRepository(): { [K in keyof ModelRepository]: ReturnTyp
     softDelete: vi.fn(),
     search: vi.fn(),
     findChildren: vi.fn(),
+    findCard: vi.fn(),
     insertTx: vi.fn(),
     updateFields: vi.fn(),
   };

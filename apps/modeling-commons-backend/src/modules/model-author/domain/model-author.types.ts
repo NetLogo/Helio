@@ -1,15 +1,8 @@
-export const AuthorRole = {
-  owner: 'owner',
-  contributor: 'contributor',
-} as const;
-export type AuthorRole = (typeof AuthorRole)[keyof typeof AuthorRole];
+import type { ModelAuthor } from '#prisma/index';
+import { AuthorRole } from '#prisma/index';
 
-export type ModelAuthorEntity = {
-  modelId: string;
-  userId: string;
-  role: AuthorRole;
-  createdAt: Date;
-};
+export { AuthorRole };
+export type ModelAuthorEntity = ModelAuthor;
 
 export type AddContributorProps = {
   modelId: string;

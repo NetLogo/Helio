@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { Given, When, Then } from '@cucumber/cucumber';
 import type { ICustomWorld } from '../support/custom-world.ts';
-import { signUp, signIn } from '../support/auth-helper.ts';
+import { signUp } from '../support/auth-helper.ts';
 
 Given(
   'a registered user with email {string}',

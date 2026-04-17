@@ -11,13 +11,6 @@ export const AuthorRole = {
 } as const;
 export type AuthorRole = (typeof AuthorRole)[keyof typeof AuthorRole];
 
-export const ModelVisibility = {
-  public: 'public',
-  private: 'private',
-  unlisted: 'unlisted',
-} as const;
-export type ModelVisibility = (typeof ModelVisibility)[keyof typeof ModelVisibility];
-
 const levelRank: Record<PermissionLevel, number> = {
   read: 1,
   write: 2,

@@ -8,9 +8,9 @@ import {
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
-import type { ModelEntity } from '#src/modules/model/domain/model.types.ts';
+import type { Model } from '#prisma/index';
 
-function makeModel(overrides: Partial<ModelEntity> = {}): ModelEntity {
+function makeModel(overrides: Partial<Model> = {}): Model {
   return {
     id: 'model-1',
     latestVersionNumber: null,

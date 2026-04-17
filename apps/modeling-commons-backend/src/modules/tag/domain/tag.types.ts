@@ -1,8 +1,6 @@
-export type TagEntity = {
-  id: string;
-  name: string;
-  createdAt: Date;
-};
+import type { Tag } from '#prisma/index';
+
+export type TagEntity = Tag;
 
 export type CreateTagProps = {
   name: string;

@@ -10,7 +10,7 @@ import {
   type VersionTagsParams,
 } from '#src/modules/model-version-tag/model-version-tag.schemas.ts';
 import { modelVersionTagResponseDtoSchema } from '#src/modules/model-version-tag/dtos/model-version-tag.response.dto.ts';
-import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/model.schemas.ts';
+import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/dtos/model.dto.ts';
 import { tagResponseDtoSchema } from '#src/modules/tag/dtos/tag.response.dto.ts';
 import { Type } from 'typebox';
 

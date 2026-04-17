@@ -13,7 +13,7 @@ import { modelVersionResponseDtoSchema } from '#src/modules/model-version/dtos/m
 import { modelVersionPaginatedResponseSchema } from '#src/modules/model-version/dtos/model-version.paginated.response.dto.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 import { Type } from 'typebox';
-import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/model.schemas.ts';
+import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/dtos/model.dto.ts';
 
 export default async function modelVersionRoutes(fastify: FastifyInstance) {
   const { modelVersionService, modelVersionMapper, listVersionsQuery, getVersionQuery } =
