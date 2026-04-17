@@ -228,6 +228,7 @@ watch(
   (id) => {
     if (id) fetchFamily();
   },
+  { immediate: true },
 );
 
 function handleEmbed() {

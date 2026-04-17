@@ -18,7 +18,10 @@
           class="flex items-center gap-1 text-sm font-semibold text-toned mb-2"
           @click="childrenOpen = !childrenOpen"
         >
-          <UIcon :name="childrenOpen ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="size-4" />
+          <UIcon
+            :name="childrenOpen ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'"
+            class="size-4"
+          />
           Children ({{ children.length }})
         </button>
         <div v-if="childrenOpen" class="space-y-3">

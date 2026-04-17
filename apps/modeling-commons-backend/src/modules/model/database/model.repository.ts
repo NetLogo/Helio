@@ -4,7 +4,7 @@ import type {
   ModelSearchFilters,
   ModelVisibility,
 } from '#src/modules/model/domain/model.types.ts';
-import type { ModelRecord } from '#src/modules/model/model.mapper.ts';
+import type { ModelRecord } from '#src/modules/model/database/model.repository.port.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';

@@ -39,7 +39,7 @@
             <div class="h-8 w-48 bg-accented rounded animate-pulse" />
             <div class="h-4 w-64 bg-muted rounded mt-2 animate-pulse" />
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <ModelCardSkeleton v-for="i in 3" :key="i" />
           </div>
         </section>
@@ -63,7 +63,7 @@
               View all
             </UButton>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <ModelCard v-for="model in data.featured" :key="model.id" :model="model" />
           </div>
         </section>
@@ -82,7 +82,7 @@
               View all
             </UButton>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <ModelCard v-for="model in data.recent" :key="model.id" :model="model" />
           </div>
         </section>

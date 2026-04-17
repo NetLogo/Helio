@@ -135,10 +135,11 @@ const props = defineProps<{
 const previewUrl = ref<string | null>(props.initialPreviewUrl || null);
 
 const emit = defineEmits<{
-  changeImage: [];
+  changeImage: [File];
 }>();
 
 const imageDropZoneRef = useTemplateRef<InstanceType<typeof ImageDropZone>>("ImageDropZone");
+const imageFile = ref<File | null>(null);
 
 function addTag() {
   const value = tagInput.value.trim();
@@ -153,11 +154,21 @@ function removeTag(tag: string) {
 }
 
 function onImageSelect(file: File) {
+  imageFile.value = file;
   const reader = new FileReader();
   reader.onload = (e) => {
     previewUrl.value = e.target?.result as string;
   };
   reader.readAsDataURL(file);
-  emit("changeImage");
+  emit("changeImage", file);
 }
+
+defineExpose({
+  modelName,
+  description,
+  tags,
+  useCases,
+  imageFile,
+  previewUrl,
+});
 </script>

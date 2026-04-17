@@ -160,6 +160,37 @@
         </template>
       </UTooltip>
     </section>
+
+    <section class="flex gap-15 flex-col mt-10">
+      <h3>Table</h3>
+
+      <UStripedTable :data="tableData" />
+      <UTable :data="tableData" />
+    </section>
+
+    <section class="flex gap-15 flex-col mt-10">
+      <h3>Avatars</h3>
+
+      <div class="flex gap-4">
+        <UAvatar name="John Doe" image="https://i.pravatar.cc/150" />
+        <UAvatar name="Bob Brown" alt="Bob Brown" />
+      </div>
+
+      <div class="flex gap-4">
+        <UAvatarGroup>
+          <UAvatar name="John Doe" image="https://i.pravatar.cc/150" />
+          <UAvatar name="Bob Brown" alt="Bob Brown" />
+          <UAvatar name="John Doe" image="https://i.pravatar.cc/150" />
+          <UAvatar name="Bob Brown" alt="Bob Brown" />
+        </UAvatarGroup>
+      </div>
+    </section>
+
+    <section class="flex gap-15 flex-col mt-10">
+      <h3>Various Components</h3>
+
+      <TagCard name="Food" description="Tagged 12 times in the past 2 weeks" />
+    </section>
   </UContainer>
 </template>
 
@@ -170,4 +201,42 @@ if (!import.meta.dev) {
 
 const USD = ref("USD");
 const TRUE = ref(true);
+
+const tableData = ref([
+  {
+    id: "4600",
+    date: "2024-03-11T15:30:00",
+    status: "paid",
+    email: "james.anderson@example.com",
+    amount: 594,
+  },
+  {
+    id: "4599",
+    date: "2024-03-11T10:10:00",
+    status: "failed",
+    email: "mia.white@example.com",
+    amount: 276,
+  },
+  {
+    id: "4598",
+    date: "2024-03-11T08:50:00",
+    status: "refunded",
+    email: "william.brown@example.com",
+    amount: 315,
+  },
+  {
+    id: "4597",
+    date: "2024-03-10T19:45:00",
+    status: "paid",
+    email: "emma.davis@example.com",
+    amount: 529,
+  },
+  {
+    id: "4596",
+    date: "2024-03-10T15:55:00",
+    status: "paid",
+    email: "ethan.harris@example.com",
+    amount: 639,
+  },
+]);
 </script>

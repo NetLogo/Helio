@@ -1,20 +1,9 @@
 import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
-import type { ModelEntity, ModelVisibility } from '#src/modules/model/domain/model.types.ts';
+import type { ModelEntity } from '#src/modules/model/domain/model.types.ts';
+import type { ModelRecord } from '#src/modules/model/database/model.repository.port.ts';
 import type { ModelResponseDto } from '#src/modules/model/dtos/model.response.dto.ts';
 import { ajv } from '#src/shared/utils/index.ts';
 import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
-
-export type ModelRecord = {
-  id: string;
-  latestVersionNumber: number | null;
-  parentModelId: string | null;
-  parentVersionNumber: number | null;
-  visibility: ModelVisibility;
-  isEndorsed: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
-};
 
 const modelSchema = {
   type: 'object',

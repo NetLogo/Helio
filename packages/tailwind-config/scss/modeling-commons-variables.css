@@ -36,6 +36,9 @@
   /* Page background */
   --color-page-bg: #f9fafb;
 
+  /* Spacing */
+  --space-md: 1.25rem;
+
   /* Royal Blue */
   --color-royal-blue-lightest: #edebfb;
   --color-royal-blue-lighter: #dbd7f8;
@@ -138,4 +141,12 @@
     --h5-size: 1.25rem;
     --h6-size: 1.125rem;
   }
+}
+
+.font-epilogue {
+  font-family: var(--font-heading);
+}
+
+.font-inter {
+  font-family: var(--font-sans);
 }

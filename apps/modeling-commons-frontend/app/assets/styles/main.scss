@@ -8,7 +8,27 @@
 
 @layer website {
   @include meta.load-css("@repo/tailwind-config/scss/normalize.scss");
-  @include meta.load-css("@repo/tailwind-config/scss/netlogo-theme.scss");
+
+  @include meta.load-css(
+    "@repo/tailwind-config/scss/netlogo-theme.scss",
+    $with: ("netlogo-table": false)
+  );
+
+  // Reset some critical values for @nuxt/ui to behave
+  // as expected. data-slot="root" is the root element of a
+  // a @nuxt/ui component.
+  // -- Omar Ibrahim, Apr 16 26
+  [data-slot="root"] {
+    & p {
+      margin-bottom: 0;
+    }
+    & ul {
+      margin: 0;
+    }
+    & li {
+      margin-inline: 0;
+    }
+  }
 
   h1,
   h2,

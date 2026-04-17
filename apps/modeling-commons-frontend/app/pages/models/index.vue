@@ -49,7 +49,7 @@
         </UButton>
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 relative">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
         <ModelCard v-for="model in store.models" :key="model.id" :model="model" />
       </div>
 

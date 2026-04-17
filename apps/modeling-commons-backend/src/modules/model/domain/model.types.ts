@@ -1,3 +1,5 @@
+import type { ModelRecord } from '../database/model.repository.port.ts';
+
 export const ModelVisibility = {
   public: 'public',
   private: 'private',
@@ -5,17 +7,7 @@ export const ModelVisibility = {
 } as const;
 export type ModelVisibility = (typeof ModelVisibility)[keyof typeof ModelVisibility];
 
-export type ModelEntity = {
-  id: string;
-  latestVersionNumber: number | null;
-  parentModelId: string | null;
-  parentVersionNumber: number | null;
-  visibility: ModelVisibility;
-  isEndorsed: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
-};
+export type ModelEntity = ModelRecord;
 
 export type CreateModelProps = {
   title: string;

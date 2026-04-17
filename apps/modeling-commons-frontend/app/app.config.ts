@@ -156,6 +156,9 @@ export default defineAppConfig({
           md: "px-6 py-[0.625rem] gap-3 text-md",
           lg: "px-5 py-2 gap-2",
         },
+        variant: {
+          link: "p-0",
+        },
       },
       compoundVariants: [
         {
@@ -180,6 +183,13 @@ export default defineAppConfig({
           class: "p-[0.6rem] text-[1rem] ",
         },
       ],
+    },
+
+    table: {
+      slots: {
+        root: "ring ring-neutral-darkest/15 rounded-sm",
+        base: "mb-0",
+      },
     },
   },
 });

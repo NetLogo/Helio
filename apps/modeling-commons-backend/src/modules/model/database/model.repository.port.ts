@@ -1,3 +1,4 @@
+import type { Model } from '#prisma/index';
 import type {
   ModelEntity,
   ModelSearchFilters,
@@ -6,6 +7,8 @@ import type {
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { RepositoryPort } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+
+export type ModelRecord = Model;
 
 export interface ModelRepository extends RepositoryPort<ModelEntity> {
   findByIdIncludeDeleted(id: string): Promise<ModelEntity | undefined>;

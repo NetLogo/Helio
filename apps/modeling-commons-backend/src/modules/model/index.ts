@@ -1,6 +1,6 @@
 import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
 import type { ModelEntity } from '#src/modules/model/domain/model.types.ts';
-import type { ModelRecord } from '#src/modules/model/model.mapper.ts';
+import type { ModelRecord } from '#src/modules/model/database/model.repository.port.ts';
 import type { ModelResponseDto } from '#src/modules/model/dtos/model.response.dto.ts';
 import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 import type modelDomain from '#src/modules/model/domain/model.domain.ts';

@@ -2,7 +2,7 @@
   <component :is="to ? NuxtLink : 'div'" :to="to" :class="[to ? 'group block' : 'block']">
     <UCard
       :ui="{
-        root: 'transition-all duration-300 relative rounded-xl ring-1 border-0 divide-y-0 bg-background',
+        root: 'transition-all h-full duration-300 relative rounded-xl ring-1 border-0 divide-y-0 bg-background',
         header: 'p-0 sm:p-0',
         body: 'p-4 sm:p-4',
       }"
@@ -13,17 +13,25 @@
       <template #header>
         <slot name="cover">
           <div
-            class="h-60 bg-linear-to-br from-primary-50/60 via-elevated to-primary-100/40 relative overflow-hidden"
+            class="h-40 bg-linear-to-br from-primary-50/60 via-elevated to-primary-100/40 relative overflow-hidden"
           >
             <template v-if="imageUrl && !imageLoadFailed">
               <NuxtImg
+                v-slot="{ isLoaded, imgAttrs, src }"
                 :src="imageUrl"
                 alt="Card image"
-                class="w-full h-full object-cover rounded mb-4 absolute inset-0"
+                class="w-full h-full object-cover rounded-t mb-4 absolute inset-0"
                 crossorigin="use-credentials"
-                :placeholder="[20, 20]"
+                defer
+                custom
                 @error="imageLoadFailed = true"
-              />
+              >
+                <!-- Show the actual image when loaded -->
+                <img v-if="isLoaded" v-bind="imgAttrs" :src="src" />
+
+                <!-- Show a placeholder while loading -->
+                <img v-else :src="Placeholder.uri" alt="placeholder" />
+              </NuxtImg>
             </template>
             <template v-else>
               <div class="absolute inset-0 opacity-10">
@@ -57,21 +65,23 @@
       </template>
 
       <div class="space-y-2">
-        <slot name="body">
-          <div class="flex justify-between items-center">
-            <h4
-              v-if="title"
-              class="text-md font-semibold text-highlighted leading-tight transition-colors"
-              :class="{ 'group-hover:text-primary-700': to }"
-            >
-              {{ title }}
-            </h4>
-            <div class="flex gap-1.5">
-              <slot name="badges" />
-            </div>
+        <div class="flex justify-between">
+          <div />
+          <!-- todo: model stats -->
+          <div class="flex gap-1.5">
+            <slot name="badges" />
           </div>
+        </div>
+        <slot name="body">
+          <h4
+            v-if="title"
+            class="text-md font-semibold text-highlighted leading-tight transition-colors"
+            :class="{ 'group-hover:text-primary-700': to }"
+          >
+            {{ title }}
+          </h4>
 
-          <p class="text-sm text-muted line-clamp-3 h-[3lh] leading-relaxed">
+          <p class="text-sm text-muted line-clamp-6 h-[6lh] leading-relaxed">
             {{ description ?? "No description provided." }}
           </p>
 
@@ -88,6 +98,7 @@
 
 <script setup lang="ts">
 import { NuxtLink } from "#components";
+import Placeholder from "@Repo/vue-ui/assets/placeholder-image.json";
 
 defineProps<{
   to?: string;

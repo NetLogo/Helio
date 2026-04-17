@@ -2,7 +2,11 @@
 @use "docs-mixins.scss" as docs;
 
 @include netlogo.default;
-@include netlogo.table;
+
+$netlogo-table: true !default;
+@if ($netlogo-table) {
+  @include netlogo.table;
+}
 
 .docs {
   & {

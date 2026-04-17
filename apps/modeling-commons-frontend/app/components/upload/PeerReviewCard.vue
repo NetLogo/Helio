@@ -62,4 +62,9 @@ const helpTypes = ref({
 });
 
 const reviewDescription = ref("");
+
+defineExpose({
+  helpTypes,
+  reviewDescription,
+});
 </script>

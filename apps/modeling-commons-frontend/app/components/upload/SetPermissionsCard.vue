@@ -176,6 +176,15 @@ function addInvite() {
 function removeInvite(person: string) {
   invitedPeople.value = invitedPeople.value.filter((p) => p !== person);
 }
+
+defineExpose({
+  readPermission,
+  writePermission,
+  fileUploadPermission,
+  selectedGroup,
+  invitedPeople,
+  askCollaborators,
+});
 </script>
 
 <style lang="scss" scoped>
