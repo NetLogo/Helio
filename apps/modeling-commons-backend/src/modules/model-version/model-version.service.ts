@@ -12,7 +12,7 @@ export default function makeModelVersionService({
   modelVersionRepository,
   modelVersionDomain,
   modelRepository,
-  fileRepository,
+  fileService,
   eventRepository,
 }: Dependencies) {
   return {
@@ -22,27 +22,19 @@ export default function makeModelVersionService({
       nlogoxFile: { buffer: Buffer<ArrayBuffer>; filename: string; contentType: string },
       input: CreateVersionProps,
     ): Promise<number> {
+      const netlogoFileKey = await fileService.upload({
+        filename: nlogoxFile.filename,
+        buffer: nlogoxFile.buffer,
+        contentType: nlogoxFile.contentType,
+        access: 'private',
+        pathPrefix: `models/${modelId}/versions`,
+      });
+
       return transactionManager.run(async (ctx) => {
         const previous = await modelVersionRepository.findLatestByModel(modelId);
         if (previous) {
           await modelVersionRepository.finalize(ctx, previous.modelId, previous.versionNumber);
         }
-
-        const fileDomain = (globalThis as unknown as { fileDomain?: Dependencies['fileDomain'] })
-          .fileDomain;
-        const fileEntity = fileDomain
-          ? fileDomain.createFile(nlogoxFile)
-          : {
-              id: '',
-              ...nlogoxFile,
-              sizeBytes: BigInt(nlogoxFile.buffer.length),
-              blob: nlogoxFile.buffer,
-              createdAt: new Date(),
-            };
-        await fileRepository.insertTx(
-          ctx,
-          fileEntity as Parameters<typeof fileRepository.insertTx>[1],
-        );
 
         const versionNumber = await modelVersionRepository.getNextVersionNumber(ctx, modelId);
         const entity = modelVersionDomain.createVersion({
@@ -51,7 +43,7 @@ export default function makeModelVersionService({
           title: input.title ?? previous?.title ?? 'Untitled',
           description: input.description,
           previewImage: input.previewImage,
-          nlogoxFileId: fileEntity.id,
+          netlogoFileKey,
         });
 
         await modelVersionRepository.insertTx(ctx, entity);

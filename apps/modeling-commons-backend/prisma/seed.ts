@@ -1,11 +1,25 @@
-import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
+
 import fs from 'node:fs';
 import path from 'node:path';
 
 const adapter = new PrismaPg({ connectionString: process.env['DATABASE_URL']! });
 const prisma = new PrismaClient({ adapter });
+const storage = new S3Client({
+  region: process.env['RUSTFS_REGION'],
+
+  credentials: {
+    accessKeyId: process.env['RUSTFS_ACCESS_KEY']!,
+    secretAccessKey: process.env['RUSTFS_SECRET_KEY']!,
+  },
+
+  endpoint: process.env['RUSTFS_ENDPOINT'],
+});
+const bucket = { Name: process.env['RUSTFS_BUCKET']! };
 const seedFilesPath = path.join(import.meta.dirname, 'seed-files');
 
 const getNonRandomUUID = (() => {
@@ -40,15 +54,6 @@ const ids = {
   wolfSheepFork: '20000000-0000-4000-a000-000000000005',
   trafficBasic: '20000000-0000-4000-a000-000000000006',
   traffic2Lanes: '20000000-0000-4000-a000-000000000007',
-
-  // Files
-  fireSpreadNlogox: '40000000-0000-4000-a000-000000000003',
-  antForagingNlogox: '40000000-0000-4000-a000-000000000004',
-  virusNetworkNlogox: '40000000-0000-4000-a000-000000000005',
-  wolfSheepForkNlogox: '40000000-0000-4000-a000-000000000006',
-  wolfSheepReadme: '40000000-0000-4000-a000-000000000010',
-  wolfSheepData: '40000000-0000-4000-a000-000000000011',
-  fireSpreadCsv: '40000000-0000-4000-a000-000000000012',
 
   // Tags
   tagEcology: '50000000-0000-4000-a000-000000000001',
@@ -122,7 +127,7 @@ function readNlogox(
   filename: string,
   previewImgName: string,
 ): {
-  id: string;
+  key: string;
   filename: string;
   blob: Buffer;
   contentType: string;
@@ -152,7 +157,7 @@ function readNlogox(
   const previewImageContentType = mimes[previewImageExt] || 'application/octet-stream';
 
   return {
-    id: getNonRandomUUID('40000000', 12),
+    key: 'uploads/models/' + filename,
     filename,
     blob: Buffer.from(content, 'utf-8'),
     contentType: 'application/xml',
@@ -164,17 +169,6 @@ function readNlogox(
     infoTab,
   };
 }
-
-const seedNlogoxFiles = {
-  wolfSheepNlogox1: readNlogox('wolf-sheep-predation.nlogox', 'wolf-sheep-preview.png'),
-  wolfSheepNlogox2: readNlogox('wolf-sheep-predation-v2.nlogox', 'wolf-sheep-preview.png'),
-  wolfSheepNlogoxFork: readNlogox('wolf-sheep-predation-fork.nlogox', 'wolf-sheep-preview.png'),
-  trafficGridNlogox: readNlogox('traffic-grid.nlogox', 'traffic-grid-preview.png'),
-  trafficBasicNlogox: readNlogox('traffic-basic.nlogox', 'traffic-grid-preview.png'),
-  traffic2LanesNlogox: readNlogox('traffic-2-lanes.nlogox', 'traffic-2-lanes-preview.png'),
-  fire: readNlogox('fire.nlogox', 'fire-preview.png'),
-  ants: readNlogox('ants.nlogox', 'ants-preview.png'),
-};
 
 // Seed
 async function main() {
@@ -308,38 +302,54 @@ async function main() {
   console.log(`  ✓ ${tags.length} tags`);
 
   // 5. Files (nlogox files + supplementary)
+  const keys = {
+    virusNetworkNlogox: 'uploads/models/virus-network.nlogox',
+    wolfSheepReadme: 'uploads/models/wolf-sheep-readme.md',
+    wolfSheepData: 'uploads/models/wolf-sheep-data.csv',
+    fireSpreadCsv: 'uploads/models/fire-spread-data.csv',
+  };
+  const seedNlogoxFiles = {
+    wolfSheepNlogox1: readNlogox('wolf-sheep-predation.nlogox', 'wolf-sheep-preview.png'),
+    wolfSheepNlogox2: readNlogox('wolf-sheep-predation-v2.nlogox', 'wolf-sheep-preview.png'),
+    wolfSheepNlogoxFork: readNlogox('wolf-sheep-predation-fork.nlogox', 'wolf-sheep-preview.png'),
+    trafficGridNlogox: readNlogox('traffic-grid.nlogox', 'traffic-grid-preview.png'),
+    trafficBasicNlogox: readNlogox('traffic-basic.nlogox', 'traffic-grid-preview.png'),
+    traffic2LanesNlogox: readNlogox('traffic-2-lanes.nlogox', 'traffic-2-lanes-preview.png'),
+    fire: readNlogox('fire.nlogox', 'fire-preview.png'),
+    ants: readNlogox('ants.nlogox', 'ants-preview.png'),
+  };
 
   const files = [
     ...Object.values(seedNlogoxFiles).map((f) => ({
-      id: f.id,
+      key: f.key,
       filename: `${f.filename}`,
       contentType: f.contentType,
       sizeBytes: f.sizeBytes,
       blob: f.blob,
     })),
     {
-      id: ids.virusNetworkNlogox,
+      key: keys.virusNetworkNlogox,
       filename: 'virus-network.nlogox',
       contentType: 'application/xml',
       sizeBytes: BigInt(390) as bigint,
       blob: fakeNlogox('Virus on a Network'),
     },
     {
-      id: ids.wolfSheepReadme,
+      key: keys.wolfSheepReadme,
       filename: 'README.md',
       contentType: 'text/markdown',
       sizeBytes: BigInt(58) as bigint,
       blob: fakeReadme(),
     },
     {
-      id: ids.wolfSheepData,
+      key: keys.wolfSheepData,
       filename: 'initial-data.csv',
       contentType: 'text/csv',
       sizeBytes: BigInt(52) as bigint,
       blob: fakeCsv(),
     },
     {
-      id: ids.fireSpreadCsv,
+      key: keys.fireSpreadCsv,
       filename: 'burn-results.csv',
       contentType: 'text/csv',
       sizeBytes: BigInt(52) as bigint,
@@ -348,12 +358,18 @@ async function main() {
   ];
 
   for (const f of files) {
-    await prisma.file.upsert({
-      where: { id: f.id },
-      update: {},
-      // @ts-expect-error -- Shared vs. Non-Shared Buffer
-      create: f,
-    });
+    await storage.send(
+      new PutObjectCommand({
+        Bucket: bucket.Name,
+        Key: f.key,
+        Body: f.blob,
+        ContentType: f.contentType,
+        Metadata: {
+          filename: f.filename,
+          createdAt: new Date().toISOString(),
+        },
+      }),
+    );
   }
   console.log(`  ✓ ${files.length} files`);
 
@@ -398,7 +414,7 @@ async function main() {
       title: 'Wolf Sheep Predation',
       description:
         'A classic predator-prey model exploring population dynamics between wolves, sheep, and grass.',
-      nlogoxFileId: seedNlogoxFiles.wolfSheepNlogox1.id,
+      netlogoFileKey: seedNlogoxFiles.wolfSheepNlogox1.key,
       netlogoVersion: '7.0.0',
       infoTab: seedNlogoxFiles.wolfSheepNlogox1.infoTab,
       createdAt: oneWeekAgo,
@@ -410,7 +426,7 @@ async function main() {
       versionNumber: 2,
       title: 'Wolf Sheep Predation',
       description: 'Updated with energy-based movement and grass regrowth mechanics.',
-      nlogoxFileId: seedNlogoxFiles.wolfSheepNlogox2.id,
+      netlogoFileKey: seedNlogoxFiles.wolfSheepNlogox2.key,
       netlogoVersion: '7.0.3',
       infoTab: seedNlogoxFiles.wolfSheepNlogox2.infoTab,
       previewImage: seedNlogoxFiles.wolfSheepNlogox2.previewImage.blob,
@@ -420,7 +436,7 @@ async function main() {
       versionNumber: 1,
       title: 'Wolf Sheep - Seasonal Variant',
       description: 'A fork of Wolf Sheep Predation that adds seasonal grass growth patterns.',
-      nlogoxFileId: seedNlogoxFiles.wolfSheepNlogoxFork.id,
+      netlogoFileKey: seedNlogoxFiles.wolfSheepNlogoxFork.key,
       netlogoVersion: '7.0.0',
       infoTab: seedNlogoxFiles.wolfSheepNlogoxFork.infoTab,
       previewImage: seedNlogoxFiles.wolfSheepNlogoxFork.previewImage.blob,
@@ -430,7 +446,7 @@ async function main() {
       versionNumber: 1,
       title: 'Traffic Basic',
       description: 'A simple traffic flow model demonstrating basic congestion dynamics.',
-      nlogoxFileId: seedNlogoxFiles.trafficBasicNlogox.id,
+      netlogoFileKey: seedNlogoxFiles.trafficBasicNlogox.key,
       netlogoVersion: '6.4.0',
       infoTab: seedNlogoxFiles.trafficBasicNlogox.infoTab,
       previewImage: seedNlogoxFiles.trafficBasicNlogox.previewImage.blob,
@@ -441,7 +457,7 @@ async function main() {
       title: 'Traffic Grid',
       description:
         'An extension of the basic traffic model that simulates a grid of intersections and traffic lights.',
-      nlogoxFileId: seedNlogoxFiles.trafficGridNlogox.id,
+      netlogoFileKey: seedNlogoxFiles.trafficGridNlogox.key,
       netlogoVersion: '7.0.0',
       infoTab: seedNlogoxFiles.trafficGridNlogox.infoTab,
       previewImage: seedNlogoxFiles.trafficGridNlogox.previewImage.blob,
@@ -453,7 +469,7 @@ async function main() {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros. Lorem ipsum dolor sit amet, consect etur adipiscing elit. Suspendisse varius enim in eros.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.  Suspendisse vauspendisse va.',
 
-      nlogoxFileId: seedNlogoxFiles.traffic2LanesNlogox.id,
+      netlogoFileKey: seedNlogoxFiles.traffic2LanesNlogox.key,
       netlogoVersion: '7.0.0',
       infoTab: seedNlogoxFiles.traffic2LanesNlogox.infoTab,
       previewImage: seedNlogoxFiles.traffic2LanesNlogox.previewImage.blob,
@@ -464,7 +480,7 @@ async function main() {
       title: 'Fire',
       description:
         "This project simulates the spread of a fire through a forest. It shows that the fire's chance of reaching the right edge of the forest depends critically on the density of trees. This is an example of a common feature of complex systems, the presence of a non-linear threshold or critical parameter.",
-      nlogoxFileId: seedNlogoxFiles.fire.id,
+      netlogoFileKey: seedNlogoxFiles.fire.key,
       netlogoVersion: '6.4.0',
       infoTab: '## WHAT IS IT?\n\nThis model simulates fire spreading through a forest.',
       previewImage: seedNlogoxFiles.fire.previewImage.blob,
@@ -475,7 +491,7 @@ async function main() {
       title: 'Ants',
       description:
         'In this project, a colony of ants forages for food. Though each ant follows a set of simple rules, the colony as a whole acts in a sophisticated way.',
-      nlogoxFileId: seedNlogoxFiles.ants.id,
+      netlogoFileKey: seedNlogoxFiles.ants.key,
       netlogoVersion: '6.3.0',
       infoTab: '## WHAT IS IT?\n\nThis model demonstrates emergent path-finding behavior.',
       previewImage: seedNlogoxFiles.ants.previewImage.blob,
@@ -486,7 +502,7 @@ async function main() {
       title: 'Virus on a Network',
       description:
         'Explores how a virus spreads through a network topology and the impact of vaccination strategies.',
-      nlogoxFileId: ids.virusNetworkNlogox,
+      netlogoFileKey: keys.virusNetworkNlogox,
       netlogoVersion: '6.4.0',
       infoTab:
         '## WHAT IS IT?\n\nThis model shows virus spread dynamics on various network topologies.',
@@ -524,8 +540,8 @@ async function main() {
 
   // 9. Model version files (supplementary files attached to versions)
   const mvFiles = [
-    { id: ids.mvFile1, modelId: ids.wolfSheep, versionNumber: 1, fileId: ids.wolfSheepData },
-    { id: ids.mvFile2, modelId: ids.wolfSheep, versionNumber: 2, fileId: ids.wolfSheepData },
+    { id: ids.mvFile1, modelId: ids.wolfSheep, versionNumber: 1, fileKey: keys.wolfSheepData },
+    { id: ids.mvFile2, modelId: ids.wolfSheep, versionNumber: 2, fileKey: keys.wolfSheepData },
   ];
 
   for (const mvf of mvFiles) {
@@ -579,13 +595,13 @@ async function main() {
       id: ids.additionalFile1,
       modelId: ids.wolfSheep,
       taggedVersionNumber: 1,
-      fileId: ids.wolfSheepReadme,
+      fileKey: keys.wolfSheepReadme,
     },
     {
       id: ids.additionalFile2,
       modelId: ids.fireSpread,
       taggedVersionNumber: 1,
-      fileId: ids.fireSpreadCsv,
+      fileKey: keys.fireSpreadCsv,
     },
   ];
 

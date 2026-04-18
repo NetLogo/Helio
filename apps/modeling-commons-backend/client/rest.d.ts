@@ -80,94 +80,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/files/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Default Response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * Format: uuid
-                             * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
-                             */
-                            id: string;
-                        } & {
-                            filename: string;
-                            contentType: string;
-                            sizeBytes: number;
-                            /** Format: date-time */
-                            createdAt: string;
-                            downloadUrl: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/files/{id}/download": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: {
-                    token?: string;
-                };
-                header?: never;
-                path: {
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Default Response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/models": {
         parameters: {
             query?: never;
@@ -462,8 +374,7 @@ export interface paths {
                                 versionNumber: number;
                                 title: string;
                                 description: string | null;
-                                /** Format: uuid */
-                                nlogoxFileId: string;
+                                netlogoFileKey: string;
                                 netlogoVersion: string | null;
                                 infoTab: string | null;
                                 /** Format: date-time */
@@ -649,8 +560,7 @@ export interface paths {
                             /** Format: uuid */
                             modelId: string;
                             taggedVersionNumber: number;
-                            /** Format: uuid */
-                            fileId: string;
+                            fileKey: string;
                             filename: string;
                             contentType: string;
                             sizeBytes: number;
@@ -692,8 +602,7 @@ export interface paths {
                             /** Format: uuid */
                             modelId: string;
                             taggedVersionNumber: number;
-                            /** Format: uuid */
-                            fileId: string;
+                            fileKey: string;
                             filename: string;
                             contentType: string;
                             sizeBytes: number;
@@ -1180,8 +1089,7 @@ export interface paths {
                                 versionNumber: number;
                                 title: string;
                                 description: string | null;
-                                /** Format: uuid */
-                                nlogoxFileId: string;
+                                netlogoFileKey: string;
                                 netlogoVersion: string | null;
                                 infoTab: string | null;
                                 /** Format: date-time */
@@ -1304,8 +1212,7 @@ export interface paths {
                             versionNumber: number;
                             title: string;
                             description: string | null;
-                            /** Format: uuid */
-                            nlogoxFileId: string;
+                            netlogoFileKey: string;
                             netlogoVersion: string | null;
                             infoTab: string | null;
                             /** Format: date-time */

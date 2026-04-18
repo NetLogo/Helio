@@ -25,6 +25,7 @@ export default function tagDomain() {
         id: randomUUID(),
         name,
         createdAt: new Date(),
+        displayName: props.displayName ?? name,
       };
     },
   };

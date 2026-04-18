@@ -9,7 +9,7 @@ export default function modelVersionDomain() {
       title: string;
       description?: string;
       previewImage?: Uint8Array<ArrayBuffer>;
-      nlogoxFileId: string;
+      netlogoFileKey: string;
     }): ModelVersionEntity {
       return {
         modelId: props.modelId,
@@ -17,7 +17,7 @@ export default function modelVersionDomain() {
         title: props.title,
         description: props.description ?? null,
         previewImage: props.previewImage ?? null,
-        nlogoxFileId: props.nlogoxFileId,
+        netlogoFileKey: props.netlogoFileKey,
         netlogoVersion: null,
         infoTab: null,
         createdAt: new Date(),

@@ -34,6 +34,7 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
       const versionNumber = await modelVersionService.create(
         request.params.id,
         request.user!.id,
+        // TODO: handle file upload properly instead of using an empty buffer and placeholder values
         { buffer: Buffer.alloc(0), filename: '', contentType: 'application/octet-stream' },
         request.body,
       );

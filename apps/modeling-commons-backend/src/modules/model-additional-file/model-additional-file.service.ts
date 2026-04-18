@@ -7,8 +7,7 @@ export default function makeModelAdditionalFileService({
   modelAdditionalFileRepository,
   modelAdditionalFileDomain,
   modelVersionRepository,
-  fileDomain,
-  fileRepository,
+  fileService,
   eventRepository,
 }: Dependencies) {
   return {
@@ -22,16 +21,21 @@ export default function makeModelAdditionalFileService({
       const currentVersion = await modelVersionRepository.findLatestByModel(modelId);
       if (!currentVersion) throw new VersionNotFoundError(modelId);
 
-      const fileEntity = fileDomain.createFile({ buffer: fileBuffer, filename, contentType });
+      const fileKey = await fileService.upload({
+        filename,
+        buffer: fileBuffer,
+        contentType,
+        access: 'private',
+        pathPrefix: `models/${modelId}/additional-files`,
+      });
 
       const entity = modelAdditionalFileDomain.createAdditionalFile({
         modelId,
         taggedVersionNumber: currentVersion.versionNumber,
-        fileId: fileEntity.id,
+        fileKey,
       });
 
       return transactionManager.run(async (ctx) => {
-        await fileRepository.insertTx(ctx, fileEntity);
         await modelAdditionalFileRepository.insertTx(ctx, entity);
         await eventRepository.insert(ctx, {
           type: 'model_additional_file.added',

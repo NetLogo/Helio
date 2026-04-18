@@ -31,11 +31,12 @@
     "check-types": "tsc --noEmit",
     "check": "yarn run check-types && yarn run deps:validate",
     "refresh": "yarn run db:generate && yarn run generate:types",
-    "prisma": "prisma",
-    "db:migrate": "prisma migrate deploy",
+    "db": "prisma",
     "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
     "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset --force",
     "deps:validate": "depcruise src --config .dependency-cruiser.cjs --output-type err-long",
     "deps:graph": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > doc/dependency-graph.svg"
   },
@@ -50,6 +51,7 @@
     "@adminjs/prisma": "^5.0.4",
     "@adminjs/sql": "^2.2.6",
     "@aws-sdk/client-s3": "^3.1031.0",
+    "@aws-sdk/s3-request-presigner": "^3.1032.0",
     "@better-auth/passkey": "^1.5.6",
     "@fastify/autoload": "6.3.1",
     "@fastify/awilix": "8.2.0",
@@ -83,7 +85,7 @@
     "file-type": "^22.0.0",
     "pg": "^8.20.0",
     "pg-boss": "^12.14.0",
-    "typebox": "1.1.6"
+    "typebox": "1.1.23"
   },
   "devDependencies": {
     "@cucumber/cucumber": "12.7.0",

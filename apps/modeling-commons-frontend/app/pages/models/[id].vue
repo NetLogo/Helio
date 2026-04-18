@@ -64,6 +64,8 @@ const modelVersionNumber = computed(
   () => parseInt(route.params.versionNumber as string) ?? undefined,
 );
 
+const api = useApi();
+
 const { error, status, refresh } = await useAsyncData(
   `model-${modelId.value}-${modelVersionNumber.value ?? "latest"}`,
   async () => {

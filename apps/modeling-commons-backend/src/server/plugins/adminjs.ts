@@ -9,7 +9,7 @@ AdminJS.registerAdapter({ Database, Resource });
 async function adminJsPlugin(fastify: FastifyInstance) {
   const db = await new Adapter('postgresql', {
     connectionString: env.db.url,
-    database: 'test',
+    database: env.db.database,
   }).init();
 
   const modelNavigation = {
@@ -29,7 +29,6 @@ async function adminJsPlugin(fastify: FastifyInstance) {
       { resource: db.table('Account'), options: { navigation: defaultNavigation } },
       { resource: db.table('Session'), options: { navigation: defaultNavigation } },
       { resource: db.table('Verification'), options: { navigation: defaultNavigation } },
-      { resource: db.table('File'), options: { navigation: defaultNavigation } },
       { resource: db.table('Event'), options: { navigation: defaultNavigation } },
       { resource: db.table('Model'), options: { navigation: modelNavigation } },
       { resource: db.table('ModelAdditionalFile'), options: { navigation: modelNavigation } },

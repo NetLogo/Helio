@@ -3,7 +3,7 @@ import { di } from '#src/server/di/index.ts';
 import AutoLoad from '@fastify/autoload';
 import Cors from '@fastify/cors';
 import Helmet from '@fastify/helmet';
-import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import { TypeBoxValidatorCompiler, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import UnderPressure from '@fastify/under-pressure';
 import type { FastifyInstance } from 'fastify';
 import path from 'node:path';
@@ -74,5 +74,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
     },
   });
 
-  return fastify.withTypeProvider<TypeBoxTypeProvider>();
+  return fastify
+    .setValidatorCompiler(TypeBoxValidatorCompiler)
+    .withTypeProvider<TypeBoxTypeProvider>();
 }

@@ -1,13 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeModelAdditionalFileService from '#src/modules/model-additional-file/model-additional-file.service.ts';
 import modelAdditionalFileDomain from '#src/modules/model-additional-file/domain/model-additional-file.domain.ts';
-import fileDomain from '#src/modules/file/domain/file.domain.ts';
 import { AdditionalFileNotFoundError } from '#src/modules/model-additional-file/domain/model-additional-file.errors.ts';
 import { VersionNotFoundError } from '#src/modules/model-version/domain/model-version.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelAdditionalFileRepository } from '#src/modules/model-additional-file/database/model-additional-file.repository.mock.ts';
 import { mockModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.mock.ts';
-import { mockFileRepository } from '#src/modules/file/database/file.repository.mock.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import type { ModelVersionEntity } from '#src/modules/model-version/domain/model-version.types.ts';
 
@@ -18,7 +16,7 @@ function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionE
     title: 'Test',
     description: null,
     previewImage: null,
-    nlogoxFileId: 'file-1',
+    netlogoFileKey: '2026/04/17/abcd-model.nlogox',
     netlogoVersion: null,
     infoTab: null,
     createdAt: new Date(),
@@ -30,41 +28,41 @@ function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionE
 describe('modelAdditionalFileService', () => {
   const modelAdditionalFileRepository = mockModelAdditionalFileRepository();
   const modelVersionRepository = mockModelVersionRepository();
-  const fileRepository = mockFileRepository();
+  const fileService = { upload: vi.fn().mockResolvedValue('2026/04/17/abcd-extra.csv') };
   const eventRepository = mockEventRepository();
   const transactionManager = mockTransactionManager();
   const additionalFileDomain = modelAdditionalFileDomain();
-  const fDomain = fileDomain();
 
   const service = makeModelAdditionalFileService({
     transactionManager,
     modelAdditionalFileRepository,
     modelAdditionalFileDomain: additionalFileDomain,
     modelVersionRepository,
-    fileDomain: fDomain,
-    fileRepository,
+    fileService,
     eventRepository,
   } as never);
 
   beforeEach(() => {
     vi.clearAllMocks();
+    fileService.upload.mockResolvedValue('2026/04/17/abcd-extra.csv');
   });
 
   describe('add', () => {
-    it('adds file to current version', async () => {
+    it('uploads file and attaches it to the current version', async () => {
       modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
 
       const result = await service.add(
         'model-1',
         'user-1',
-        Buffer.from('data'),
+        Buffer.from('data') as Buffer<ArrayBuffer>,
         'extra.csv',
         'text/csv',
       );
 
       expect(result.modelId).toBe('model-1');
       expect(result.taggedVersionNumber).toBe(1);
-      expect(fileRepository.insertTx).toHaveBeenCalledOnce();
+      expect(result.fileKey).toBe('2026/04/17/abcd-extra.csv');
+      expect(fileService.upload).toHaveBeenCalledOnce();
       expect(modelAdditionalFileRepository.insertTx).toHaveBeenCalledOnce();
     });
 
@@ -72,7 +70,13 @@ describe('modelAdditionalFileService', () => {
       modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
 
       await expect(
-        service.add('model-1', 'user-1', Buffer.from('data'), 'f.csv', 'text/csv'),
+        service.add(
+          'model-1',
+          'user-1',
+          Buffer.from('data') as Buffer<ArrayBuffer>,
+          'f.csv',
+          'text/csv',
+        ),
       ).rejects.toThrow(VersionNotFoundError);
     });
   });

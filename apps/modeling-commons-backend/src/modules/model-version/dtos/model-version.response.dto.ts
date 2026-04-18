@@ -5,7 +5,7 @@ export const modelVersionResponseDtoSchema = Type.Object({
   versionNumber: Type.Integer(),
   title: Type.String(),
   description: Type.Union([Type.String(), Type.Null()]),
-  nlogoxFileId: Type.String({ format: 'uuid' }),
+  netlogoFileKey: Type.String(),
   netlogoVersion: Type.Union([Type.String(), Type.Null()]),
   infoTab: Type.Union([Type.String(), Type.Null()]),
   createdAt: Type.String({ format: 'date-time' }),

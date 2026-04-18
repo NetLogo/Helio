@@ -4,7 +4,7 @@ export type ModelAdditionalFileRecord = {
   id: string;
   modelId: string;
   taggedVersionNumber: number;
-  fileId: string;
+  fileKey: string;
   createdAt: Date;
 };
 
@@ -15,7 +15,7 @@ export default function modelAdditionalFileMapper() {
         id: record.id,
         modelId: record.modelId,
         taggedVersionNumber: record.taggedVersionNumber,
-        fileId: record.fileId,
+        fileKey: record.fileKey,
         createdAt: new Date(record.createdAt),
       };
     },
@@ -25,7 +25,7 @@ export default function modelAdditionalFileMapper() {
         id: entity.id,
         modelId: entity.modelId,
         taggedVersionNumber: entity.taggedVersionNumber,
-        fileId: entity.fileId,
+        fileKey: entity.fileKey,
         filename: '',
         contentType: '',
         sizeBytes: 0,
@@ -38,7 +38,7 @@ export default function modelAdditionalFileMapper() {
         id: entity.id,
         modelId: entity.modelId,
         taggedVersionNumber: entity.taggedVersionNumber,
-        fileId: entity.fileId,
+        fileKey: entity.fileKey,
         createdAt: entity.createdAt,
       };
     },

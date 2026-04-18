@@ -208,7 +208,7 @@ exports.Prisma.ModelVersionScalarFieldEnum = {
   title: 'title',
   description: 'description',
   previewImage: 'previewImage',
-  nlogoxFileId: 'nlogoxFileId',
+  netlogoFileKey: 'netlogoFileKey',
   netlogoVersion: 'netlogoVersion',
   infoTab: 'infoTab',
   createdAt: 'createdAt',
@@ -219,7 +219,7 @@ exports.Prisma.ModelVersionFileScalarFieldEnum = {
   id: 'id',
   modelId: 'modelId',
   versionNumber: 'versionNumber',
-  fileId: 'fileId'
+  fileKey: 'fileKey'
 };
 
 exports.Prisma.ModelVersionTagScalarFieldEnum = {
@@ -229,26 +229,18 @@ exports.Prisma.ModelVersionTagScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.FileScalarFieldEnum = {
-  id: 'id',
-  filename: 'filename',
-  contentType: 'contentType',
-  sizeBytes: 'sizeBytes',
-  blob: 'blob',
-  createdAt: 'createdAt'
-};
-
 exports.Prisma.ModelAdditionalFileScalarFieldEnum = {
   id: 'id',
   modelId: 'modelId',
   taggedVersionNumber: 'taggedVersionNumber',
-  fileId: 'fileId',
+  fileKey: 'fileKey',
   createdAt: 'createdAt'
 };
 
 exports.Prisma.TagScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  displayName: 'displayName',
   createdAt: 'createdAt'
 };
 
@@ -342,7 +334,6 @@ exports.Prisma.ModelName = {
   ModelVersion: 'ModelVersion',
   ModelVersionFile: 'ModelVersionFile',
   ModelVersionTag: 'ModelVersionTag',
-  File: 'File',
   ModelAdditionalFile: 'ModelAdditionalFile',
   Tag: 'Tag',
   ModelAuthor: 'ModelAuthor',

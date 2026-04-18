@@ -59,11 +59,6 @@ export type ModelVersionFile = $Result.DefaultSelection<Prisma.$ModelVersionFile
  */
 export type ModelVersionTag = $Result.DefaultSelection<Prisma.$ModelVersionTagPayload>
 /**
- * Model File
- * 
- */
-export type File = $Result.DefaultSelection<Prisma.$FilePayload>
-/**
  * Model ModelAdditionalFile
  * 
  */
@@ -369,16 +364,6 @@ export class PrismaClient<
     * ```
     */
   get modelVersionTag(): Prisma.ModelVersionTagDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.file`: Exposes CRUD operations for the **File** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Files
-    * const files = await prisma.file.findMany()
-    * ```
-    */
-  get file(): Prisma.FileDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.modelAdditionalFile`: Exposes CRUD operations for the **ModelAdditionalFile** model.
@@ -872,7 +857,6 @@ export namespace Prisma {
     ModelVersion: 'ModelVersion',
     ModelVersionFile: 'ModelVersionFile',
     ModelVersionTag: 'ModelVersionTag',
-    File: 'File',
     ModelAdditionalFile: 'ModelAdditionalFile',
     Tag: 'Tag',
     ModelAuthor: 'ModelAuthor',
@@ -893,7 +877,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionFile" | "modelVersionTag" | "file" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "event"
+      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionFile" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "event"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1563,80 +1547,6 @@ export namespace Prisma {
           }
         }
       }
-      File: {
-        payload: Prisma.$FilePayload<ExtArgs>
-        fields: Prisma.FileFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.FileFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.FileFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>
-          }
-          findFirst: {
-            args: Prisma.FileFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.FileFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>
-          }
-          findMany: {
-            args: Prisma.FileFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>[]
-          }
-          create: {
-            args: Prisma.FileCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>
-          }
-          createMany: {
-            args: Prisma.FileCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.FileCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>[]
-          }
-          delete: {
-            args: Prisma.FileDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>
-          }
-          update: {
-            args: Prisma.FileUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>
-          }
-          deleteMany: {
-            args: Prisma.FileDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.FileUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.FileUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>[]
-          }
-          upsert: {
-            args: Prisma.FileUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$FilePayload>
-          }
-          aggregate: {
-            args: Prisma.FileAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateFile>
-          }
-          groupBy: {
-            args: Prisma.FileGroupByArgs<ExtArgs>
-            result: $Utils.Optional<FileGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.FileCountArgs<ExtArgs>
-            result: $Utils.Optional<FileCountAggregateOutputType> | number
-          }
-        }
-      }
       ModelAdditionalFile: {
         payload: Prisma.$ModelAdditionalFilePayload<ExtArgs>
         fields: Prisma.ModelAdditionalFileFieldRefs
@@ -2124,7 +2034,6 @@ export namespace Prisma {
     modelVersion?: ModelVersionOmit
     modelVersionFile?: ModelVersionFileOmit
     modelVersionTag?: ModelVersionTagOmit
-    file?: FileOmit
     modelAdditionalFile?: ModelAdditionalFileOmit
     tag?: TagOmit
     modelAuthor?: ModelAuthorOmit
@@ -2411,55 +2320,6 @@ export namespace Prisma {
    * ModelVersionCountOutputType without action
    */
   export type ModelVersionCountOutputTypeCountTaggedAdditionalFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ModelAdditionalFileWhereInput
-  }
-
-
-  /**
-   * Count Type FileCountOutputType
-   */
-
-  export type FileCountOutputType = {
-    nlogoxVersions: number
-    modelVersionFiles: number
-    additionalFiles: number
-  }
-
-  export type FileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    nlogoxVersions?: boolean | FileCountOutputTypeCountNlogoxVersionsArgs
-    modelVersionFiles?: boolean | FileCountOutputTypeCountModelVersionFilesArgs
-    additionalFiles?: boolean | FileCountOutputTypeCountAdditionalFilesArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * FileCountOutputType without action
-   */
-  export type FileCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the FileCountOutputType
-     */
-    select?: FileCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * FileCountOutputType without action
-   */
-  export type FileCountOutputTypeCountNlogoxVersionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ModelVersionWhereInput
-  }
-
-  /**
-   * FileCountOutputType without action
-   */
-  export type FileCountOutputTypeCountModelVersionFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ModelVersionFileWhereInput
-  }
-
-  /**
-   * FileCountOutputType without action
-   */
-  export type FileCountOutputTypeCountAdditionalFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ModelAdditionalFileWhereInput
   }
 
@@ -9831,7 +9691,7 @@ export namespace Prisma {
     title: string | null
     description: string | null
     previewImage: Bytes | null
-    nlogoxFileId: string | null
+    netlogoFileKey: string | null
     netlogoVersion: string | null
     infoTab: string | null
     createdAt: Date | null
@@ -9844,7 +9704,7 @@ export namespace Prisma {
     title: string | null
     description: string | null
     previewImage: Bytes | null
-    nlogoxFileId: string | null
+    netlogoFileKey: string | null
     netlogoVersion: string | null
     infoTab: string | null
     createdAt: Date | null
@@ -9857,7 +9717,7 @@ export namespace Prisma {
     title: number
     description: number
     previewImage: number
-    nlogoxFileId: number
+    netlogoFileKey: number
     netlogoVersion: number
     infoTab: number
     createdAt: number
@@ -9880,7 +9740,7 @@ export namespace Prisma {
     title?: true
     description?: true
     previewImage?: true
-    nlogoxFileId?: true
+    netlogoFileKey?: true
     netlogoVersion?: true
     infoTab?: true
     createdAt?: true
@@ -9893,7 +9753,7 @@ export namespace Prisma {
     title?: true
     description?: true
     previewImage?: true
-    nlogoxFileId?: true
+    netlogoFileKey?: true
     netlogoVersion?: true
     infoTab?: true
     createdAt?: true
@@ -9906,7 +9766,7 @@ export namespace Prisma {
     title?: true
     description?: true
     previewImage?: true
-    nlogoxFileId?: true
+    netlogoFileKey?: true
     netlogoVersion?: true
     infoTab?: true
     createdAt?: true
@@ -10006,7 +9866,7 @@ export namespace Prisma {
     title: string
     description: string | null
     previewImage: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion: string | null
     infoTab: string | null
     createdAt: Date
@@ -10038,13 +9898,12 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     previewImage?: boolean
-    nlogoxFileId?: boolean
+    netlogoFileKey?: boolean
     netlogoVersion?: boolean
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
-    nlogoxFile?: boolean | FileDefaultArgs<ExtArgs>
     latestOfModel?: boolean | ModelVersion$latestOfModelArgs<ExtArgs>
     parentOfModels?: boolean | ModelVersion$parentOfModelsArgs<ExtArgs>
     files?: boolean | ModelVersion$filesArgs<ExtArgs>
@@ -10059,13 +9918,12 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     previewImage?: boolean
-    nlogoxFileId?: boolean
+    netlogoFileKey?: boolean
     netlogoVersion?: boolean
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
-    nlogoxFile?: boolean | FileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersion"]>
 
   export type ModelVersionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10074,13 +9932,12 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     previewImage?: boolean
-    nlogoxFileId?: boolean
+    netlogoFileKey?: boolean
     netlogoVersion?: boolean
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
-    nlogoxFile?: boolean | FileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersion"]>
 
   export type ModelVersionSelectScalar = {
@@ -10089,17 +9946,16 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     previewImage?: boolean
-    nlogoxFileId?: boolean
+    netlogoFileKey?: boolean
     netlogoVersion?: boolean
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
   }
 
-  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImage" | "nlogoxFileId" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt", ExtArgs["result"]["modelVersion"]>
+  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImage" | "netlogoFileKey" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt", ExtArgs["result"]["modelVersion"]>
   export type ModelVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
-    nlogoxFile?: boolean | FileDefaultArgs<ExtArgs>
     latestOfModel?: boolean | ModelVersion$latestOfModelArgs<ExtArgs>
     parentOfModels?: boolean | ModelVersion$parentOfModelsArgs<ExtArgs>
     files?: boolean | ModelVersion$filesArgs<ExtArgs>
@@ -10109,18 +9965,15 @@ export namespace Prisma {
   }
   export type ModelVersionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
-    nlogoxFile?: boolean | FileDefaultArgs<ExtArgs>
   }
   export type ModelVersionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
-    nlogoxFile?: boolean | FileDefaultArgs<ExtArgs>
   }
 
   export type $ModelVersionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ModelVersion"
     objects: {
       model: Prisma.$ModelPayload<ExtArgs>
-      nlogoxFile: Prisma.$FilePayload<ExtArgs>
       latestOfModel: Prisma.$ModelPayload<ExtArgs> | null
       parentOfModels: Prisma.$ModelPayload<ExtArgs>[]
       files: Prisma.$ModelVersionFilePayload<ExtArgs>[]
@@ -10133,7 +9986,7 @@ export namespace Prisma {
       title: string
       description: string | null
       previewImage: Prisma.Bytes | null
-      nlogoxFileId: string
+      netlogoFileKey: string
       netlogoVersion: string | null
       infoTab: string | null
       createdAt: Date
@@ -10533,7 +10386,6 @@ export namespace Prisma {
   export interface Prisma__ModelVersionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     model<T extends ModelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelDefaultArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    nlogoxFile<T extends FileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FileDefaultArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     latestOfModel<T extends ModelVersion$latestOfModelArgs<ExtArgs> = {}>(args?: Subset<T, ModelVersion$latestOfModelArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     parentOfModels<T extends ModelVersion$parentOfModelsArgs<ExtArgs> = {}>(args?: Subset<T, ModelVersion$parentOfModelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     files<T extends ModelVersion$filesArgs<ExtArgs> = {}>(args?: Subset<T, ModelVersion$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelVersionFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -10573,7 +10425,7 @@ export namespace Prisma {
     readonly title: FieldRef<"ModelVersion", 'String'>
     readonly description: FieldRef<"ModelVersion", 'String'>
     readonly previewImage: FieldRef<"ModelVersion", 'Bytes'>
-    readonly nlogoxFileId: FieldRef<"ModelVersion", 'String'>
+    readonly netlogoFileKey: FieldRef<"ModelVersion", 'String'>
     readonly netlogoVersion: FieldRef<"ModelVersion", 'String'>
     readonly infoTab: FieldRef<"ModelVersion", 'String'>
     readonly createdAt: FieldRef<"ModelVersion", 'DateTime'>
@@ -11136,21 +10988,21 @@ export namespace Prisma {
     id: string | null
     modelId: string | null
     versionNumber: number | null
-    fileId: string | null
+    fileKey: string | null
   }
 
   export type ModelVersionFileMaxAggregateOutputType = {
     id: string | null
     modelId: string | null
     versionNumber: number | null
-    fileId: string | null
+    fileKey: string | null
   }
 
   export type ModelVersionFileCountAggregateOutputType = {
     id: number
     modelId: number
     versionNumber: number
-    fileId: number
+    fileKey: number
     _all: number
   }
 
@@ -11167,21 +11019,21 @@ export namespace Prisma {
     id?: true
     modelId?: true
     versionNumber?: true
-    fileId?: true
+    fileKey?: true
   }
 
   export type ModelVersionFileMaxAggregateInputType = {
     id?: true
     modelId?: true
     versionNumber?: true
-    fileId?: true
+    fileKey?: true
   }
 
   export type ModelVersionFileCountAggregateInputType = {
     id?: true
     modelId?: true
     versionNumber?: true
-    fileId?: true
+    fileKey?: true
     _all?: true
   }
 
@@ -11275,7 +11127,7 @@ export namespace Prisma {
     id: string
     modelId: string
     versionNumber: number
-    fileId: string
+    fileKey: string
     _count: ModelVersionFileCountAggregateOutputType | null
     _avg: ModelVersionFileAvgAggregateOutputType | null
     _sum: ModelVersionFileSumAggregateOutputType | null
@@ -11301,61 +11153,54 @@ export namespace Prisma {
     id?: boolean
     modelId?: boolean
     versionNumber?: boolean
-    fileId?: boolean
+    fileKey?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersionFile"]>
 
   export type ModelVersionFileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     modelId?: boolean
     versionNumber?: boolean
-    fileId?: boolean
+    fileKey?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersionFile"]>
 
   export type ModelVersionFileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     modelId?: boolean
     versionNumber?: boolean
-    fileId?: boolean
+    fileKey?: boolean
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersionFile"]>
 
   export type ModelVersionFileSelectScalar = {
     id?: boolean
     modelId?: boolean
     versionNumber?: boolean
-    fileId?: boolean
+    fileKey?: boolean
   }
 
-  export type ModelVersionFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "versionNumber" | "fileId", ExtArgs["result"]["modelVersionFile"]>
+  export type ModelVersionFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "versionNumber" | "fileKey", ExtArgs["result"]["modelVersionFile"]>
   export type ModelVersionFileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }
   export type ModelVersionFileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }
   export type ModelVersionFileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     modelVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }
 
   export type $ModelVersionFilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ModelVersionFile"
     objects: {
       modelVersion: Prisma.$ModelVersionPayload<ExtArgs>
-      file: Prisma.$FilePayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       modelId: string
       versionNumber: number
-      fileId: string
+      fileKey: string
     }, ExtArgs["result"]["modelVersionFile"]>
     composites: {}
   }
@@ -11751,7 +11596,6 @@ export namespace Prisma {
   export interface Prisma__ModelVersionFileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     modelVersion<T extends ModelVersionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelVersionDefaultArgs<ExtArgs>>): Prisma__ModelVersionClient<$Result.GetResult<Prisma.$ModelVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    file<T extends FileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FileDefaultArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11784,7 +11628,7 @@ export namespace Prisma {
     readonly id: FieldRef<"ModelVersionFile", 'String'>
     readonly modelId: FieldRef<"ModelVersionFile", 'String'>
     readonly versionNumber: FieldRef<"ModelVersionFile", 'Int'>
-    readonly fileId: FieldRef<"ModelVersionFile", 'String'>
+    readonly fileKey: FieldRef<"ModelVersionFile", 'String'>
   }
     
 
@@ -13297,1184 +13141,6 @@ export namespace Prisma {
 
 
   /**
-   * Model File
-   */
-
-  export type AggregateFile = {
-    _count: FileCountAggregateOutputType | null
-    _avg: FileAvgAggregateOutputType | null
-    _sum: FileSumAggregateOutputType | null
-    _min: FileMinAggregateOutputType | null
-    _max: FileMaxAggregateOutputType | null
-  }
-
-  export type FileAvgAggregateOutputType = {
-    sizeBytes: number | null
-  }
-
-  export type FileSumAggregateOutputType = {
-    sizeBytes: bigint | null
-  }
-
-  export type FileMinAggregateOutputType = {
-    id: string | null
-    filename: string | null
-    contentType: string | null
-    sizeBytes: bigint | null
-    blob: Bytes | null
-    createdAt: Date | null
-  }
-
-  export type FileMaxAggregateOutputType = {
-    id: string | null
-    filename: string | null
-    contentType: string | null
-    sizeBytes: bigint | null
-    blob: Bytes | null
-    createdAt: Date | null
-  }
-
-  export type FileCountAggregateOutputType = {
-    id: number
-    filename: number
-    contentType: number
-    sizeBytes: number
-    blob: number
-    createdAt: number
-    _all: number
-  }
-
-
-  export type FileAvgAggregateInputType = {
-    sizeBytes?: true
-  }
-
-  export type FileSumAggregateInputType = {
-    sizeBytes?: true
-  }
-
-  export type FileMinAggregateInputType = {
-    id?: true
-    filename?: true
-    contentType?: true
-    sizeBytes?: true
-    blob?: true
-    createdAt?: true
-  }
-
-  export type FileMaxAggregateInputType = {
-    id?: true
-    filename?: true
-    contentType?: true
-    sizeBytes?: true
-    blob?: true
-    createdAt?: true
-  }
-
-  export type FileCountAggregateInputType = {
-    id?: true
-    filename?: true
-    contentType?: true
-    sizeBytes?: true
-    blob?: true
-    createdAt?: true
-    _all?: true
-  }
-
-  export type FileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which File to aggregate.
-     */
-    where?: FileWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Files to fetch.
-     */
-    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: FileWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Files from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Files.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Files
-    **/
-    _count?: true | FileCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: FileAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: FileSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: FileMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: FileMaxAggregateInputType
-  }
-
-  export type GetFileAggregateType<T extends FileAggregateArgs> = {
-        [P in keyof T & keyof AggregateFile]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateFile[P]>
-      : GetScalarType<T[P], AggregateFile[P]>
-  }
-
-
-
-
-  export type FileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: FileWhereInput
-    orderBy?: FileOrderByWithAggregationInput | FileOrderByWithAggregationInput[]
-    by: FileScalarFieldEnum[] | FileScalarFieldEnum
-    having?: FileScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: FileCountAggregateInputType | true
-    _avg?: FileAvgAggregateInputType
-    _sum?: FileSumAggregateInputType
-    _min?: FileMinAggregateInputType
-    _max?: FileMaxAggregateInputType
-  }
-
-  export type FileGroupByOutputType = {
-    id: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint
-    blob: Bytes
-    createdAt: Date
-    _count: FileCountAggregateOutputType | null
-    _avg: FileAvgAggregateOutputType | null
-    _sum: FileSumAggregateOutputType | null
-    _min: FileMinAggregateOutputType | null
-    _max: FileMaxAggregateOutputType | null
-  }
-
-  type GetFileGroupByPayload<T extends FileGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<FileGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof FileGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], FileGroupByOutputType[P]>
-            : GetScalarType<T[P], FileGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type FileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    filename?: boolean
-    contentType?: boolean
-    sizeBytes?: boolean
-    blob?: boolean
-    createdAt?: boolean
-    nlogoxVersions?: boolean | File$nlogoxVersionsArgs<ExtArgs>
-    modelVersionFiles?: boolean | File$modelVersionFilesArgs<ExtArgs>
-    additionalFiles?: boolean | File$additionalFilesArgs<ExtArgs>
-    _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["file"]>
-
-  export type FileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    filename?: boolean
-    contentType?: boolean
-    sizeBytes?: boolean
-    blob?: boolean
-    createdAt?: boolean
-  }, ExtArgs["result"]["file"]>
-
-  export type FileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    filename?: boolean
-    contentType?: boolean
-    sizeBytes?: boolean
-    blob?: boolean
-    createdAt?: boolean
-  }, ExtArgs["result"]["file"]>
-
-  export type FileSelectScalar = {
-    id?: boolean
-    filename?: boolean
-    contentType?: boolean
-    sizeBytes?: boolean
-    blob?: boolean
-    createdAt?: boolean
-  }
-
-  export type FileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "filename" | "contentType" | "sizeBytes" | "blob" | "createdAt", ExtArgs["result"]["file"]>
-  export type FileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    nlogoxVersions?: boolean | File$nlogoxVersionsArgs<ExtArgs>
-    modelVersionFiles?: boolean | File$modelVersionFilesArgs<ExtArgs>
-    additionalFiles?: boolean | File$additionalFilesArgs<ExtArgs>
-    _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type FileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type FileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-
-  export type $FilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "File"
-    objects: {
-      nlogoxVersions: Prisma.$ModelVersionPayload<ExtArgs>[]
-      modelVersionFiles: Prisma.$ModelVersionFilePayload<ExtArgs>[]
-      additionalFiles: Prisma.$ModelAdditionalFilePayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      filename: string
-      contentType: string
-      sizeBytes: bigint
-      blob: Prisma.Bytes
-      createdAt: Date
-    }, ExtArgs["result"]["file"]>
-    composites: {}
-  }
-
-  type FileGetPayload<S extends boolean | null | undefined | FileDefaultArgs> = $Result.GetResult<Prisma.$FilePayload, S>
-
-  type FileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<FileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: FileCountAggregateInputType | true
-    }
-
-  export interface FileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['File'], meta: { name: 'File' } }
-    /**
-     * Find zero or one File that matches the filter.
-     * @param {FileFindUniqueArgs} args - Arguments to find a File
-     * @example
-     * // Get one File
-     * const file = await prisma.file.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends FileFindUniqueArgs>(args: SelectSubset<T, FileFindUniqueArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one File that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {FileFindUniqueOrThrowArgs} args - Arguments to find a File
-     * @example
-     * // Get one File
-     * const file = await prisma.file.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends FileFindUniqueOrThrowArgs>(args: SelectSubset<T, FileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first File that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {FileFindFirstArgs} args - Arguments to find a File
-     * @example
-     * // Get one File
-     * const file = await prisma.file.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends FileFindFirstArgs>(args?: SelectSubset<T, FileFindFirstArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first File that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {FileFindFirstOrThrowArgs} args - Arguments to find a File
-     * @example
-     * // Get one File
-     * const file = await prisma.file.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends FileFindFirstOrThrowArgs>(args?: SelectSubset<T, FileFindFirstOrThrowArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Files that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {FileFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Files
-     * const files = await prisma.file.findMany()
-     * 
-     * // Get first 10 Files
-     * const files = await prisma.file.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const fileWithIdOnly = await prisma.file.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends FileFindManyArgs>(args?: SelectSubset<T, FileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a File.
-     * @param {FileCreateArgs} args - Arguments to create a File.
-     * @example
-     * // Create one File
-     * const File = await prisma.file.create({
-     *   data: {
-     *     // ... data to create a File
-     *   }
-     * })
-     * 
-     */
-    create<T extends FileCreateArgs>(args: SelectSubset<T, FileCreateArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Files.
-     * @param {FileCreateManyArgs} args - Arguments to create many Files.
-     * @example
-     * // Create many Files
-     * const file = await prisma.file.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends FileCreateManyArgs>(args?: SelectSubset<T, FileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Files and returns the data saved in the database.
-     * @param {FileCreateManyAndReturnArgs} args - Arguments to create many Files.
-     * @example
-     * // Create many Files
-     * const file = await prisma.file.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Files and only return the `id`
-     * const fileWithIdOnly = await prisma.file.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends FileCreateManyAndReturnArgs>(args?: SelectSubset<T, FileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a File.
-     * @param {FileDeleteArgs} args - Arguments to delete one File.
-     * @example
-     * // Delete one File
-     * const File = await prisma.file.delete({
-     *   where: {
-     *     // ... filter to delete one File
-     *   }
-     * })
-     * 
-     */
-    delete<T extends FileDeleteArgs>(args: SelectSubset<T, FileDeleteArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one File.
-     * @param {FileUpdateArgs} args - Arguments to update one File.
-     * @example
-     * // Update one File
-     * const file = await prisma.file.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends FileUpdateArgs>(args: SelectSubset<T, FileUpdateArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Files.
-     * @param {FileDeleteManyArgs} args - Arguments to filter Files to delete.
-     * @example
-     * // Delete a few Files
-     * const { count } = await prisma.file.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends FileDeleteManyArgs>(args?: SelectSubset<T, FileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Files.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {FileUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Files
-     * const file = await prisma.file.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends FileUpdateManyArgs>(args: SelectSubset<T, FileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Files and returns the data updated in the database.
-     * @param {FileUpdateManyAndReturnArgs} args - Arguments to update many Files.
-     * @example
-     * // Update many Files
-     * const file = await prisma.file.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Files and only return the `id`
-     * const fileWithIdOnly = await prisma.file.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends FileUpdateManyAndReturnArgs>(args: SelectSubset<T, FileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one File.
-     * @param {FileUpsertArgs} args - Arguments to update or create a File.
-     * @example
-     * // Update or create a File
-     * const file = await prisma.file.upsert({
-     *   create: {
-     *     // ... data to create a File
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the File we want to update
-     *   }
-     * })
-     */
-    upsert<T extends FileUpsertArgs>(args: SelectSubset<T, FileUpsertArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Files.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {FileCountArgs} args - Arguments to filter Files to count.
-     * @example
-     * // Count the number of Files
-     * const count = await prisma.file.count({
-     *   where: {
-     *     // ... the filter for the Files we want to count
-     *   }
-     * })
-    **/
-    count<T extends FileCountArgs>(
-      args?: Subset<T, FileCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], FileCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a File.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {FileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends FileAggregateArgs>(args: Subset<T, FileAggregateArgs>): Prisma.PrismaPromise<GetFileAggregateType<T>>
-
-    /**
-     * Group by File.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {FileGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends FileGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: FileGroupByArgs['orderBy'] }
-        : { orderBy?: FileGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, FileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the File model
-   */
-  readonly fields: FileFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for File.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__FileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    nlogoxVersions<T extends File$nlogoxVersionsArgs<ExtArgs> = {}>(args?: Subset<T, File$nlogoxVersionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    modelVersionFiles<T extends File$modelVersionFilesArgs<ExtArgs> = {}>(args?: Subset<T, File$modelVersionFilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelVersionFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    additionalFiles<T extends File$additionalFilesArgs<ExtArgs> = {}>(args?: Subset<T, File$additionalFilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelAdditionalFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the File model
-   */
-  interface FileFieldRefs {
-    readonly id: FieldRef<"File", 'String'>
-    readonly filename: FieldRef<"File", 'String'>
-    readonly contentType: FieldRef<"File", 'String'>
-    readonly sizeBytes: FieldRef<"File", 'BigInt'>
-    readonly blob: FieldRef<"File", 'Bytes'>
-    readonly createdAt: FieldRef<"File", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * File findUnique
-   */
-  export type FileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * Filter, which File to fetch.
-     */
-    where: FileWhereUniqueInput
-  }
-
-  /**
-   * File findUniqueOrThrow
-   */
-  export type FileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * Filter, which File to fetch.
-     */
-    where: FileWhereUniqueInput
-  }
-
-  /**
-   * File findFirst
-   */
-  export type FileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * Filter, which File to fetch.
-     */
-    where?: FileWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Files to fetch.
-     */
-    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Files.
-     */
-    cursor?: FileWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Files from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Files.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Files.
-     */
-    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
-  }
-
-  /**
-   * File findFirstOrThrow
-   */
-  export type FileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * Filter, which File to fetch.
-     */
-    where?: FileWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Files to fetch.
-     */
-    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Files.
-     */
-    cursor?: FileWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Files from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Files.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Files.
-     */
-    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
-  }
-
-  /**
-   * File findMany
-   */
-  export type FileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * Filter, which Files to fetch.
-     */
-    where?: FileWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Files to fetch.
-     */
-    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Files.
-     */
-    cursor?: FileWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Files from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Files.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Files.
-     */
-    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
-  }
-
-  /**
-   * File create
-   */
-  export type FileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * The data needed to create a File.
-     */
-    data: XOR<FileCreateInput, FileUncheckedCreateInput>
-  }
-
-  /**
-   * File createMany
-   */
-  export type FileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Files.
-     */
-    data: FileCreateManyInput | FileCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * File createManyAndReturn
-   */
-  export type FileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * The data used to create many Files.
-     */
-    data: FileCreateManyInput | FileCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * File update
-   */
-  export type FileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * The data needed to update a File.
-     */
-    data: XOR<FileUpdateInput, FileUncheckedUpdateInput>
-    /**
-     * Choose, which File to update.
-     */
-    where: FileWhereUniqueInput
-  }
-
-  /**
-   * File updateMany
-   */
-  export type FileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Files.
-     */
-    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyInput>
-    /**
-     * Filter which Files to update
-     */
-    where?: FileWhereInput
-    /**
-     * Limit how many Files to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * File updateManyAndReturn
-   */
-  export type FileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * The data used to update Files.
-     */
-    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyInput>
-    /**
-     * Filter which Files to update
-     */
-    where?: FileWhereInput
-    /**
-     * Limit how many Files to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * File upsert
-   */
-  export type FileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * The filter to search for the File to update in case it exists.
-     */
-    where: FileWhereUniqueInput
-    /**
-     * In case the File found by the `where` argument doesn't exist, create a new File with this data.
-     */
-    create: XOR<FileCreateInput, FileUncheckedCreateInput>
-    /**
-     * In case the File was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<FileUpdateInput, FileUncheckedUpdateInput>
-  }
-
-  /**
-   * File delete
-   */
-  export type FileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    /**
-     * Filter which File to delete.
-     */
-    where: FileWhereUniqueInput
-  }
-
-  /**
-   * File deleteMany
-   */
-  export type FileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Files to delete
-     */
-    where?: FileWhereInput
-    /**
-     * Limit how many Files to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * File.nlogoxVersions
-   */
-  export type File$nlogoxVersionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ModelVersion
-     */
-    select?: ModelVersionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ModelVersion
-     */
-    omit?: ModelVersionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ModelVersionInclude<ExtArgs> | null
-    where?: ModelVersionWhereInput
-    orderBy?: ModelVersionOrderByWithRelationInput | ModelVersionOrderByWithRelationInput[]
-    cursor?: ModelVersionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ModelVersionScalarFieldEnum | ModelVersionScalarFieldEnum[]
-  }
-
-  /**
-   * File.modelVersionFiles
-   */
-  export type File$modelVersionFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ModelVersionFile
-     */
-    select?: ModelVersionFileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ModelVersionFile
-     */
-    omit?: ModelVersionFileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ModelVersionFileInclude<ExtArgs> | null
-    where?: ModelVersionFileWhereInput
-    orderBy?: ModelVersionFileOrderByWithRelationInput | ModelVersionFileOrderByWithRelationInput[]
-    cursor?: ModelVersionFileWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ModelVersionFileScalarFieldEnum | ModelVersionFileScalarFieldEnum[]
-  }
-
-  /**
-   * File.additionalFiles
-   */
-  export type File$additionalFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ModelAdditionalFile
-     */
-    select?: ModelAdditionalFileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ModelAdditionalFile
-     */
-    omit?: ModelAdditionalFileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ModelAdditionalFileInclude<ExtArgs> | null
-    where?: ModelAdditionalFileWhereInput
-    orderBy?: ModelAdditionalFileOrderByWithRelationInput | ModelAdditionalFileOrderByWithRelationInput[]
-    cursor?: ModelAdditionalFileWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ModelAdditionalFileScalarFieldEnum | ModelAdditionalFileScalarFieldEnum[]
-  }
-
-  /**
-   * File without action
-   */
-  export type FileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model ModelAdditionalFile
    */
 
@@ -14498,7 +13164,7 @@ export namespace Prisma {
     id: string | null
     modelId: string | null
     taggedVersionNumber: number | null
-    fileId: string | null
+    fileKey: string | null
     createdAt: Date | null
   }
 
@@ -14506,7 +13172,7 @@ export namespace Prisma {
     id: string | null
     modelId: string | null
     taggedVersionNumber: number | null
-    fileId: string | null
+    fileKey: string | null
     createdAt: Date | null
   }
 
@@ -14514,7 +13180,7 @@ export namespace Prisma {
     id: number
     modelId: number
     taggedVersionNumber: number
-    fileId: number
+    fileKey: number
     createdAt: number
     _all: number
   }
@@ -14532,7 +13198,7 @@ export namespace Prisma {
     id?: true
     modelId?: true
     taggedVersionNumber?: true
-    fileId?: true
+    fileKey?: true
     createdAt?: true
   }
 
@@ -14540,7 +13206,7 @@ export namespace Prisma {
     id?: true
     modelId?: true
     taggedVersionNumber?: true
-    fileId?: true
+    fileKey?: true
     createdAt?: true
   }
 
@@ -14548,7 +13214,7 @@ export namespace Prisma {
     id?: true
     modelId?: true
     taggedVersionNumber?: true
-    fileId?: true
+    fileKey?: true
     createdAt?: true
     _all?: true
   }
@@ -14643,7 +13309,7 @@ export namespace Prisma {
     id: string
     modelId: string
     taggedVersionNumber: number
-    fileId: string
+    fileKey: string
     createdAt: Date
     _count: ModelAdditionalFileCountAggregateOutputType | null
     _avg: ModelAdditionalFileAvgAggregateOutputType | null
@@ -14670,58 +13336,52 @@ export namespace Prisma {
     id?: boolean
     modelId?: boolean
     taggedVersionNumber?: boolean
-    fileId?: boolean
+    fileKey?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
     taggedVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelAdditionalFile"]>
 
   export type ModelAdditionalFileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     modelId?: boolean
     taggedVersionNumber?: boolean
-    fileId?: boolean
+    fileKey?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
     taggedVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelAdditionalFile"]>
 
   export type ModelAdditionalFileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     modelId?: boolean
     taggedVersionNumber?: boolean
-    fileId?: boolean
+    fileKey?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
     taggedVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelAdditionalFile"]>
 
   export type ModelAdditionalFileSelectScalar = {
     id?: boolean
     modelId?: boolean
     taggedVersionNumber?: boolean
-    fileId?: boolean
+    fileKey?: boolean
     createdAt?: boolean
   }
 
-  export type ModelAdditionalFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "taggedVersionNumber" | "fileId" | "createdAt", ExtArgs["result"]["modelAdditionalFile"]>
+  export type ModelAdditionalFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "taggedVersionNumber" | "fileKey" | "createdAt", ExtArgs["result"]["modelAdditionalFile"]>
   export type ModelAdditionalFileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     taggedVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }
   export type ModelAdditionalFileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     taggedVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }
   export type ModelAdditionalFileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     taggedVersion?: boolean | ModelVersionDefaultArgs<ExtArgs>
-    file?: boolean | FileDefaultArgs<ExtArgs>
   }
 
   export type $ModelAdditionalFilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14729,13 +13389,12 @@ export namespace Prisma {
     objects: {
       model: Prisma.$ModelPayload<ExtArgs>
       taggedVersion: Prisma.$ModelVersionPayload<ExtArgs>
-      file: Prisma.$FilePayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       modelId: string
       taggedVersionNumber: number
-      fileId: string
+      fileKey: string
       createdAt: Date
     }, ExtArgs["result"]["modelAdditionalFile"]>
     composites: {}
@@ -15133,7 +13792,6 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     model<T extends ModelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelDefaultArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     taggedVersion<T extends ModelVersionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelVersionDefaultArgs<ExtArgs>>): Prisma__ModelVersionClient<$Result.GetResult<Prisma.$ModelVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    file<T extends FileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FileDefaultArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15166,7 +13824,7 @@ export namespace Prisma {
     readonly id: FieldRef<"ModelAdditionalFile", 'String'>
     readonly modelId: FieldRef<"ModelAdditionalFile", 'String'>
     readonly taggedVersionNumber: FieldRef<"ModelAdditionalFile", 'Int'>
-    readonly fileId: FieldRef<"ModelAdditionalFile", 'String'>
+    readonly fileKey: FieldRef<"ModelAdditionalFile", 'String'>
     readonly createdAt: FieldRef<"ModelAdditionalFile", 'DateTime'>
   }
     
@@ -15600,18 +14258,21 @@ export namespace Prisma {
   export type TagMinAggregateOutputType = {
     id: string | null
     name: string | null
+    displayName: string | null
     createdAt: Date | null
   }
 
   export type TagMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    displayName: string | null
     createdAt: Date | null
   }
 
   export type TagCountAggregateOutputType = {
     id: number
     name: number
+    displayName: number
     createdAt: number
     _all: number
   }
@@ -15620,18 +14281,21 @@ export namespace Prisma {
   export type TagMinAggregateInputType = {
     id?: true
     name?: true
+    displayName?: true
     createdAt?: true
   }
 
   export type TagMaxAggregateInputType = {
     id?: true
     name?: true
+    displayName?: true
     createdAt?: true
   }
 
   export type TagCountAggregateInputType = {
     id?: true
     name?: true
+    displayName?: true
     createdAt?: true
     _all?: true
   }
@@ -15711,6 +14375,7 @@ export namespace Prisma {
   export type TagGroupByOutputType = {
     id: string
     name: string
+    displayName: string | null
     createdAt: Date
     _count: TagCountAggregateOutputType | null
     _min: TagMinAggregateOutputType | null
@@ -15734,6 +14399,7 @@ export namespace Prisma {
   export type TagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    displayName?: boolean
     createdAt?: boolean
     modelVersions?: boolean | Tag$modelVersionsArgs<ExtArgs>
     _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
@@ -15742,22 +14408,25 @@ export namespace Prisma {
   export type TagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    displayName?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["tag"]>
 
   export type TagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    displayName?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["tag"]>
 
   export type TagSelectScalar = {
     id?: boolean
     name?: boolean
+    displayName?: boolean
     createdAt?: boolean
   }
 
-  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt", ExtArgs["result"]["tag"]>
+  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "displayName" | "createdAt", ExtArgs["result"]["tag"]>
   export type TagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     modelVersions?: boolean | Tag$modelVersionsArgs<ExtArgs>
     _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
@@ -15773,6 +14442,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      displayName: string | null
       createdAt: Date
     }, ExtArgs["result"]["tag"]>
     composites: {}
@@ -16200,6 +14870,7 @@ export namespace Prisma {
   interface TagFieldRefs {
     readonly id: FieldRef<"Tag", 'String'>
     readonly name: FieldRef<"Tag", 'String'>
+    readonly displayName: FieldRef<"Tag", 'String'>
     readonly createdAt: FieldRef<"Tag", 'DateTime'>
   }
     
@@ -20002,7 +18673,7 @@ export namespace Prisma {
     title: 'title',
     description: 'description',
     previewImage: 'previewImage',
-    nlogoxFileId: 'nlogoxFileId',
+    netlogoFileKey: 'netlogoFileKey',
     netlogoVersion: 'netlogoVersion',
     infoTab: 'infoTab',
     createdAt: 'createdAt',
@@ -20016,7 +18687,7 @@ export namespace Prisma {
     id: 'id',
     modelId: 'modelId',
     versionNumber: 'versionNumber',
-    fileId: 'fileId'
+    fileKey: 'fileKey'
   };
 
   export type ModelVersionFileScalarFieldEnum = (typeof ModelVersionFileScalarFieldEnum)[keyof typeof ModelVersionFileScalarFieldEnum]
@@ -20032,23 +18703,11 @@ export namespace Prisma {
   export type ModelVersionTagScalarFieldEnum = (typeof ModelVersionTagScalarFieldEnum)[keyof typeof ModelVersionTagScalarFieldEnum]
 
 
-  export const FileScalarFieldEnum: {
-    id: 'id',
-    filename: 'filename',
-    contentType: 'contentType',
-    sizeBytes: 'sizeBytes',
-    blob: 'blob',
-    createdAt: 'createdAt'
-  };
-
-  export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
-
-
   export const ModelAdditionalFileScalarFieldEnum: {
     id: 'id',
     modelId: 'modelId',
     taggedVersionNumber: 'taggedVersionNumber',
-    fileId: 'fileId',
+    fileKey: 'fileKey',
     createdAt: 'createdAt'
   };
 
@@ -20058,6 +18717,7 @@ export namespace Prisma {
   export const TagScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    displayName: 'displayName',
     createdAt: 'createdAt'
   };
 
@@ -20246,20 +18906,6 @@ export namespace Prisma {
    * Reference to a field of type 'Bytes[]'
    */
   export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'BigInt'
-   */
-  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
-    
-
-
-  /**
-   * Reference to a field of type 'BigInt[]'
-   */
-  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
     
 
 
@@ -20875,13 +19521,12 @@ export namespace Prisma {
     title?: StringFilter<"ModelVersion"> | string
     description?: StringNullableFilter<"ModelVersion"> | string | null
     previewImage?: BytesNullableFilter<"ModelVersion"> | Bytes | null
-    nlogoxFileId?: StringFilter<"ModelVersion"> | string
+    netlogoFileKey?: StringFilter<"ModelVersion"> | string
     netlogoVersion?: StringNullableFilter<"ModelVersion"> | string | null
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableFilter<"ModelVersion"> | Date | string | null
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
-    nlogoxFile?: XOR<FileScalarRelationFilter, FileWhereInput>
     latestOfModel?: XOR<ModelNullableScalarRelationFilter, ModelWhereInput> | null
     parentOfModels?: ModelListRelationFilter
     files?: ModelVersionFileListRelationFilter
@@ -20895,13 +19540,12 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     previewImage?: SortOrderInput | SortOrder
-    nlogoxFileId?: SortOrder
+    netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrderInput | SortOrder
     infoTab?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrderInput | SortOrder
     model?: ModelOrderByWithRelationInput
-    nlogoxFile?: FileOrderByWithRelationInput
     latestOfModel?: ModelOrderByWithRelationInput
     parentOfModels?: ModelOrderByRelationAggregateInput
     files?: ModelVersionFileOrderByRelationAggregateInput
@@ -20919,13 +19563,12 @@ export namespace Prisma {
     title?: StringFilter<"ModelVersion"> | string
     description?: StringNullableFilter<"ModelVersion"> | string | null
     previewImage?: BytesNullableFilter<"ModelVersion"> | Bytes | null
-    nlogoxFileId?: StringFilter<"ModelVersion"> | string
+    netlogoFileKey?: StringFilter<"ModelVersion"> | string
     netlogoVersion?: StringNullableFilter<"ModelVersion"> | string | null
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableFilter<"ModelVersion"> | Date | string | null
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
-    nlogoxFile?: XOR<FileScalarRelationFilter, FileWhereInput>
     latestOfModel?: XOR<ModelNullableScalarRelationFilter, ModelWhereInput> | null
     parentOfModels?: ModelListRelationFilter
     files?: ModelVersionFileListRelationFilter
@@ -20939,7 +19582,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     previewImage?: SortOrderInput | SortOrder
-    nlogoxFileId?: SortOrder
+    netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrderInput | SortOrder
     infoTab?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -20960,7 +19603,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"ModelVersion"> | string
     description?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
     previewImage?: BytesNullableWithAggregatesFilter<"ModelVersion"> | Bytes | null
-    nlogoxFileId?: StringWithAggregatesFilter<"ModelVersion"> | string
+    netlogoFileKey?: StringWithAggregatesFilter<"ModelVersion"> | string
     netlogoVersion?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
     infoTab?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ModelVersion"> | Date | string
@@ -20974,18 +19617,16 @@ export namespace Prisma {
     id?: StringFilter<"ModelVersionFile"> | string
     modelId?: StringFilter<"ModelVersionFile"> | string
     versionNumber?: IntFilter<"ModelVersionFile"> | number
-    fileId?: StringFilter<"ModelVersionFile"> | string
+    fileKey?: StringFilter<"ModelVersionFile"> | string
     modelVersion?: XOR<ModelVersionScalarRelationFilter, ModelVersionWhereInput>
-    file?: XOR<FileScalarRelationFilter, FileWhereInput>
   }
 
   export type ModelVersionFileOrderByWithRelationInput = {
     id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
     modelVersion?: ModelVersionOrderByWithRelationInput
-    file?: FileOrderByWithRelationInput
   }
 
   export type ModelVersionFileWhereUniqueInput = Prisma.AtLeast<{
@@ -20995,16 +19636,15 @@ export namespace Prisma {
     NOT?: ModelVersionFileWhereInput | ModelVersionFileWhereInput[]
     modelId?: StringFilter<"ModelVersionFile"> | string
     versionNumber?: IntFilter<"ModelVersionFile"> | number
-    fileId?: StringFilter<"ModelVersionFile"> | string
+    fileKey?: StringFilter<"ModelVersionFile"> | string
     modelVersion?: XOR<ModelVersionScalarRelationFilter, ModelVersionWhereInput>
-    file?: XOR<FileScalarRelationFilter, FileWhereInput>
   }, "id">
 
   export type ModelVersionFileOrderByWithAggregationInput = {
     id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
     _count?: ModelVersionFileCountOrderByAggregateInput
     _avg?: ModelVersionFileAvgOrderByAggregateInput
     _max?: ModelVersionFileMaxOrderByAggregateInput
@@ -21019,7 +19659,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ModelVersionFile"> | string
     modelId?: StringWithAggregatesFilter<"ModelVersionFile"> | string
     versionNumber?: IntWithAggregatesFilter<"ModelVersionFile"> | number
-    fileId?: StringWithAggregatesFilter<"ModelVersionFile"> | string
+    fileKey?: StringWithAggregatesFilter<"ModelVersionFile"> | string
   }
 
   export type ModelVersionTagWhereInput = {
@@ -21078,74 +19718,6 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ModelVersionTag"> | Date | string
   }
 
-  export type FileWhereInput = {
-    AND?: FileWhereInput | FileWhereInput[]
-    OR?: FileWhereInput[]
-    NOT?: FileWhereInput | FileWhereInput[]
-    id?: StringFilter<"File"> | string
-    filename?: StringFilter<"File"> | string
-    contentType?: StringFilter<"File"> | string
-    sizeBytes?: BigIntFilter<"File"> | bigint | number
-    blob?: BytesFilter<"File"> | Bytes
-    createdAt?: DateTimeFilter<"File"> | Date | string
-    nlogoxVersions?: ModelVersionListRelationFilter
-    modelVersionFiles?: ModelVersionFileListRelationFilter
-    additionalFiles?: ModelAdditionalFileListRelationFilter
-  }
-
-  export type FileOrderByWithRelationInput = {
-    id?: SortOrder
-    filename?: SortOrder
-    contentType?: SortOrder
-    sizeBytes?: SortOrder
-    blob?: SortOrder
-    createdAt?: SortOrder
-    nlogoxVersions?: ModelVersionOrderByRelationAggregateInput
-    modelVersionFiles?: ModelVersionFileOrderByRelationAggregateInput
-    additionalFiles?: ModelAdditionalFileOrderByRelationAggregateInput
-  }
-
-  export type FileWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: FileWhereInput | FileWhereInput[]
-    OR?: FileWhereInput[]
-    NOT?: FileWhereInput | FileWhereInput[]
-    filename?: StringFilter<"File"> | string
-    contentType?: StringFilter<"File"> | string
-    sizeBytes?: BigIntFilter<"File"> | bigint | number
-    blob?: BytesFilter<"File"> | Bytes
-    createdAt?: DateTimeFilter<"File"> | Date | string
-    nlogoxVersions?: ModelVersionListRelationFilter
-    modelVersionFiles?: ModelVersionFileListRelationFilter
-    additionalFiles?: ModelAdditionalFileListRelationFilter
-  }, "id">
-
-  export type FileOrderByWithAggregationInput = {
-    id?: SortOrder
-    filename?: SortOrder
-    contentType?: SortOrder
-    sizeBytes?: SortOrder
-    blob?: SortOrder
-    createdAt?: SortOrder
-    _count?: FileCountOrderByAggregateInput
-    _avg?: FileAvgOrderByAggregateInput
-    _max?: FileMaxOrderByAggregateInput
-    _min?: FileMinOrderByAggregateInput
-    _sum?: FileSumOrderByAggregateInput
-  }
-
-  export type FileScalarWhereWithAggregatesInput = {
-    AND?: FileScalarWhereWithAggregatesInput | FileScalarWhereWithAggregatesInput[]
-    OR?: FileScalarWhereWithAggregatesInput[]
-    NOT?: FileScalarWhereWithAggregatesInput | FileScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"File"> | string
-    filename?: StringWithAggregatesFilter<"File"> | string
-    contentType?: StringWithAggregatesFilter<"File"> | string
-    sizeBytes?: BigIntWithAggregatesFilter<"File"> | bigint | number
-    blob?: BytesWithAggregatesFilter<"File"> | Bytes
-    createdAt?: DateTimeWithAggregatesFilter<"File"> | Date | string
-  }
-
   export type ModelAdditionalFileWhereInput = {
     AND?: ModelAdditionalFileWhereInput | ModelAdditionalFileWhereInput[]
     OR?: ModelAdditionalFileWhereInput[]
@@ -21153,22 +19725,20 @@ export namespace Prisma {
     id?: StringFilter<"ModelAdditionalFile"> | string
     modelId?: StringFilter<"ModelAdditionalFile"> | string
     taggedVersionNumber?: IntFilter<"ModelAdditionalFile"> | number
-    fileId?: StringFilter<"ModelAdditionalFile"> | string
+    fileKey?: StringFilter<"ModelAdditionalFile"> | string
     createdAt?: DateTimeFilter<"ModelAdditionalFile"> | Date | string
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
     taggedVersion?: XOR<ModelVersionScalarRelationFilter, ModelVersionWhereInput>
-    file?: XOR<FileScalarRelationFilter, FileWhereInput>
   }
 
   export type ModelAdditionalFileOrderByWithRelationInput = {
     id?: SortOrder
     modelId?: SortOrder
     taggedVersionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
     createdAt?: SortOrder
     model?: ModelOrderByWithRelationInput
     taggedVersion?: ModelVersionOrderByWithRelationInput
-    file?: FileOrderByWithRelationInput
   }
 
   export type ModelAdditionalFileWhereUniqueInput = Prisma.AtLeast<{
@@ -21178,18 +19748,17 @@ export namespace Prisma {
     NOT?: ModelAdditionalFileWhereInput | ModelAdditionalFileWhereInput[]
     modelId?: StringFilter<"ModelAdditionalFile"> | string
     taggedVersionNumber?: IntFilter<"ModelAdditionalFile"> | number
-    fileId?: StringFilter<"ModelAdditionalFile"> | string
+    fileKey?: StringFilter<"ModelAdditionalFile"> | string
     createdAt?: DateTimeFilter<"ModelAdditionalFile"> | Date | string
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
     taggedVersion?: XOR<ModelVersionScalarRelationFilter, ModelVersionWhereInput>
-    file?: XOR<FileScalarRelationFilter, FileWhereInput>
   }, "id">
 
   export type ModelAdditionalFileOrderByWithAggregationInput = {
     id?: SortOrder
     modelId?: SortOrder
     taggedVersionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
     createdAt?: SortOrder
     _count?: ModelAdditionalFileCountOrderByAggregateInput
     _avg?: ModelAdditionalFileAvgOrderByAggregateInput
@@ -21205,7 +19774,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ModelAdditionalFile"> | string
     modelId?: StringWithAggregatesFilter<"ModelAdditionalFile"> | string
     taggedVersionNumber?: IntWithAggregatesFilter<"ModelAdditionalFile"> | number
-    fileId?: StringWithAggregatesFilter<"ModelAdditionalFile"> | string
+    fileKey?: StringWithAggregatesFilter<"ModelAdditionalFile"> | string
     createdAt?: DateTimeWithAggregatesFilter<"ModelAdditionalFile"> | Date | string
   }
 
@@ -21215,6 +19784,7 @@ export namespace Prisma {
     NOT?: TagWhereInput | TagWhereInput[]
     id?: StringFilter<"Tag"> | string
     name?: StringFilter<"Tag"> | string
+    displayName?: StringNullableFilter<"Tag"> | string | null
     createdAt?: DateTimeFilter<"Tag"> | Date | string
     modelVersions?: ModelVersionTagListRelationFilter
   }
@@ -21222,6 +19792,7 @@ export namespace Prisma {
   export type TagOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    displayName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     modelVersions?: ModelVersionTagOrderByRelationAggregateInput
   }
@@ -21232,6 +19803,7 @@ export namespace Prisma {
     AND?: TagWhereInput | TagWhereInput[]
     OR?: TagWhereInput[]
     NOT?: TagWhereInput | TagWhereInput[]
+    displayName?: StringNullableFilter<"Tag"> | string | null
     createdAt?: DateTimeFilter<"Tag"> | Date | string
     modelVersions?: ModelVersionTagListRelationFilter
   }, "id" | "name">
@@ -21239,6 +19811,7 @@ export namespace Prisma {
   export type TagOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    displayName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: TagCountOrderByAggregateInput
     _max?: TagMaxOrderByAggregateInput
@@ -21251,6 +19824,7 @@ export namespace Prisma {
     NOT?: TagScalarWhereWithAggregatesInput | TagScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Tag"> | string
     name?: StringWithAggregatesFilter<"Tag"> | string
+    displayName?: StringNullableWithAggregatesFilter<"Tag"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string
   }
 
@@ -22054,12 +20628,12 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
     model: ModelCreateNestedOneWithoutVersionsInput
-    nlogoxFile: FileCreateNestedOneWithoutNlogoxVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -22073,7 +20647,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -22090,12 +20664,12 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
-    nlogoxFile?: FileUpdateOneRequiredWithoutNlogoxVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -22109,7 +20683,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22127,7 +20701,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -22139,6 +20713,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22151,7 +20726,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22160,46 +20735,47 @@ export namespace Prisma {
 
   export type ModelVersionFileCreateInput = {
     id?: string
+    fileKey: string
     modelVersion: ModelVersionCreateNestedOneWithoutFilesInput
-    file: FileCreateNestedOneWithoutModelVersionFilesInput
   }
 
   export type ModelVersionFileUncheckedCreateInput = {
     id?: string
     modelId: string
     versionNumber: number
-    fileId: string
+    fileKey: string
   }
 
   export type ModelVersionFileUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     modelVersion?: ModelVersionUpdateOneRequiredWithoutFilesNestedInput
-    file?: FileUpdateOneRequiredWithoutModelVersionFilesNestedInput
   }
 
   export type ModelVersionFileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type ModelVersionFileCreateManyInput = {
     id?: string
     modelId: string
     versionNumber: number
-    fileId: string
+    fileKey: string
   }
 
   export type ModelVersionFileUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type ModelVersionFileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type ModelVersionTagCreateInput = {
@@ -22246,110 +20822,35 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type FileCreateInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-    nlogoxVersions?: ModelVersionCreateNestedManyWithoutNlogoxFileInput
-    modelVersionFiles?: ModelVersionFileCreateNestedManyWithoutFileInput
-    additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutFileInput
-  }
-
-  export type FileUncheckedCreateInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-    nlogoxVersions?: ModelVersionUncheckedCreateNestedManyWithoutNlogoxFileInput
-    modelVersionFiles?: ModelVersionFileUncheckedCreateNestedManyWithoutFileInput
-    additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutFileInput
-  }
-
-  export type FileUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    nlogoxVersions?: ModelVersionUpdateManyWithoutNlogoxFileNestedInput
-    modelVersionFiles?: ModelVersionFileUpdateManyWithoutFileNestedInput
-    additionalFiles?: ModelAdditionalFileUpdateManyWithoutFileNestedInput
-  }
-
-  export type FileUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    nlogoxVersions?: ModelVersionUncheckedUpdateManyWithoutNlogoxFileNestedInput
-    modelVersionFiles?: ModelVersionFileUncheckedUpdateManyWithoutFileNestedInput
-    additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutFileNestedInput
-  }
-
-  export type FileCreateManyInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-  }
-
-  export type FileUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type FileUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type ModelAdditionalFileCreateInput = {
     id?: string
+    fileKey: string
     createdAt?: Date | string
     model: ModelCreateNestedOneWithoutAdditionalFilesInput
     taggedVersion: ModelVersionCreateNestedOneWithoutTaggedAdditionalFilesInput
-    file: FileCreateNestedOneWithoutAdditionalFilesInput
   }
 
   export type ModelAdditionalFileUncheckedCreateInput = {
     id?: string
     modelId: string
     taggedVersionNumber: number
-    fileId: string
+    fileKey: string
     createdAt?: Date | string
   }
 
   export type ModelAdditionalFileUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     model?: ModelUpdateOneRequiredWithoutAdditionalFilesNestedInput
     taggedVersion?: ModelVersionUpdateOneRequiredWithoutTaggedAdditionalFilesNestedInput
-    file?: FileUpdateOneRequiredWithoutAdditionalFilesNestedInput
   }
 
   export type ModelAdditionalFileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     taggedVersionNumber?: IntFieldUpdateOperationsInput | number
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22357,12 +20858,13 @@ export namespace Prisma {
     id?: string
     modelId: string
     taggedVersionNumber: number
-    fileId: string
+    fileKey: string
     createdAt?: Date | string
   }
 
   export type ModelAdditionalFileUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22370,13 +20872,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     modelId?: StringFieldUpdateOperationsInput | string
     taggedVersionNumber?: IntFieldUpdateOperationsInput | number
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TagCreateInput = {
     id?: string
     name: string
+    displayName?: string | null
     createdAt?: Date | string
     modelVersions?: ModelVersionTagCreateNestedManyWithoutTagInput
   }
@@ -22384,6 +20887,7 @@ export namespace Prisma {
   export type TagUncheckedCreateInput = {
     id?: string
     name: string
+    displayName?: string | null
     createdAt?: Date | string
     modelVersions?: ModelVersionTagUncheckedCreateNestedManyWithoutTagInput
   }
@@ -22391,6 +20895,7 @@ export namespace Prisma {
   export type TagUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     modelVersions?: ModelVersionTagUpdateManyWithoutTagNestedInput
   }
@@ -22398,6 +20903,7 @@ export namespace Prisma {
   export type TagUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     modelVersions?: ModelVersionTagUncheckedUpdateManyWithoutTagNestedInput
   }
@@ -22405,18 +20911,21 @@ export namespace Prisma {
   export type TagCreateManyInput = {
     id?: string
     name: string
+    displayName?: string | null
     createdAt?: Date | string
   }
 
   export type TagUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TagUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23250,11 +21759,6 @@ export namespace Prisma {
     isNot?: ModelWhereInput
   }
 
-  export type FileScalarRelationFilter = {
-    is?: FileWhereInput
-    isNot?: FileWhereInput
-  }
-
   export type ModelVersionFileListRelationFilter = {
     every?: ModelVersionFileWhereInput
     some?: ModelVersionFileWhereInput
@@ -23286,7 +21790,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     previewImage?: SortOrder
-    nlogoxFileId?: SortOrder
+    netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrder
     infoTab?: SortOrder
     createdAt?: SortOrder
@@ -23303,7 +21807,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     previewImage?: SortOrder
-    nlogoxFileId?: SortOrder
+    netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrder
     infoTab?: SortOrder
     createdAt?: SortOrder
@@ -23316,7 +21820,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     previewImage?: SortOrder
-    nlogoxFileId?: SortOrder
+    netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrder
     infoTab?: SortOrder
     createdAt?: SortOrder
@@ -23346,7 +21850,7 @@ export namespace Prisma {
     id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
   }
 
   export type ModelVersionFileAvgOrderByAggregateInput = {
@@ -23357,14 +21861,14 @@ export namespace Prisma {
     id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
   }
 
   export type ModelVersionFileMinOrderByAggregateInput = {
     id?: SortOrder
     modelId?: SortOrder
     versionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
   }
 
   export type ModelVersionFileSumOrderByAggregateInput = {
@@ -23411,90 +21915,11 @@ export namespace Prisma {
     versionNumber?: SortOrder
   }
 
-  export type BigIntFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
-  }
-
-  export type BytesFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
-    not?: NestedBytesFilter<$PrismaModel> | Bytes
-  }
-
-  export type FileCountOrderByAggregateInput = {
-    id?: SortOrder
-    filename?: SortOrder
-    contentType?: SortOrder
-    sizeBytes?: SortOrder
-    blob?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type FileAvgOrderByAggregateInput = {
-    sizeBytes?: SortOrder
-  }
-
-  export type FileMaxOrderByAggregateInput = {
-    id?: SortOrder
-    filename?: SortOrder
-    contentType?: SortOrder
-    sizeBytes?: SortOrder
-    blob?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type FileMinOrderByAggregateInput = {
-    id?: SortOrder
-    filename?: SortOrder
-    contentType?: SortOrder
-    sizeBytes?: SortOrder
-    blob?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type FileSumOrderByAggregateInput = {
-    sizeBytes?: SortOrder
-  }
-
-  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedBigIntFilter<$PrismaModel>
-    _min?: NestedBigIntFilter<$PrismaModel>
-    _max?: NestedBigIntFilter<$PrismaModel>
-  }
-
-  export type BytesWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
-    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Bytes
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBytesFilter<$PrismaModel>
-    _max?: NestedBytesFilter<$PrismaModel>
-  }
-
   export type ModelAdditionalFileCountOrderByAggregateInput = {
     id?: SortOrder
     modelId?: SortOrder
     taggedVersionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -23506,7 +21931,7 @@ export namespace Prisma {
     id?: SortOrder
     modelId?: SortOrder
     taggedVersionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -23514,7 +21939,7 @@ export namespace Prisma {
     id?: SortOrder
     modelId?: SortOrder
     taggedVersionNumber?: SortOrder
-    fileId?: SortOrder
+    fileKey?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -23525,18 +21950,21 @@ export namespace Prisma {
   export type TagCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    displayName?: SortOrder
     createdAt?: SortOrder
   }
 
   export type TagMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    displayName?: SortOrder
     createdAt?: SortOrder
   }
 
   export type TagMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    displayName?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -24377,12 +22805,6 @@ export namespace Prisma {
     connect?: ModelWhereUniqueInput
   }
 
-  export type FileCreateNestedOneWithoutNlogoxVersionsInput = {
-    create?: XOR<FileCreateWithoutNlogoxVersionsInput, FileUncheckedCreateWithoutNlogoxVersionsInput>
-    connectOrCreate?: FileCreateOrConnectWithoutNlogoxVersionsInput
-    connect?: FileWhereUniqueInput
-  }
-
   export type ModelCreateNestedOneWithoutLatestVersionInput = {
     create?: XOR<ModelCreateWithoutLatestVersionInput, ModelUncheckedCreateWithoutLatestVersionInput>
     connectOrCreate?: ModelCreateOrConnectWithoutLatestVersionInput
@@ -24461,14 +22883,6 @@ export namespace Prisma {
     upsert?: ModelUpsertWithoutVersionsInput
     connect?: ModelWhereUniqueInput
     update?: XOR<XOR<ModelUpdateToOneWithWhereWithoutVersionsInput, ModelUpdateWithoutVersionsInput>, ModelUncheckedUpdateWithoutVersionsInput>
-  }
-
-  export type FileUpdateOneRequiredWithoutNlogoxVersionsNestedInput = {
-    create?: XOR<FileCreateWithoutNlogoxVersionsInput, FileUncheckedCreateWithoutNlogoxVersionsInput>
-    connectOrCreate?: FileCreateOrConnectWithoutNlogoxVersionsInput
-    upsert?: FileUpsertWithoutNlogoxVersionsInput
-    connect?: FileWhereUniqueInput
-    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutNlogoxVersionsInput, FileUpdateWithoutNlogoxVersionsInput>, FileUncheckedUpdateWithoutNlogoxVersionsInput>
   }
 
   export type ModelUpdateOneWithoutLatestVersionNestedInput = {
@@ -24609,26 +23023,12 @@ export namespace Prisma {
     connect?: ModelVersionWhereUniqueInput
   }
 
-  export type FileCreateNestedOneWithoutModelVersionFilesInput = {
-    create?: XOR<FileCreateWithoutModelVersionFilesInput, FileUncheckedCreateWithoutModelVersionFilesInput>
-    connectOrCreate?: FileCreateOrConnectWithoutModelVersionFilesInput
-    connect?: FileWhereUniqueInput
-  }
-
   export type ModelVersionUpdateOneRequiredWithoutFilesNestedInput = {
     create?: XOR<ModelVersionCreateWithoutFilesInput, ModelVersionUncheckedCreateWithoutFilesInput>
     connectOrCreate?: ModelVersionCreateOrConnectWithoutFilesInput
     upsert?: ModelVersionUpsertWithoutFilesInput
     connect?: ModelVersionWhereUniqueInput
     update?: XOR<XOR<ModelVersionUpdateToOneWithWhereWithoutFilesInput, ModelVersionUpdateWithoutFilesInput>, ModelVersionUncheckedUpdateWithoutFilesInput>
-  }
-
-  export type FileUpdateOneRequiredWithoutModelVersionFilesNestedInput = {
-    create?: XOR<FileCreateWithoutModelVersionFilesInput, FileUncheckedCreateWithoutModelVersionFilesInput>
-    connectOrCreate?: FileCreateOrConnectWithoutModelVersionFilesInput
-    upsert?: FileUpsertWithoutModelVersionFilesInput
-    connect?: FileWhereUniqueInput
-    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutModelVersionFilesInput, FileUpdateWithoutModelVersionFilesInput>, FileUncheckedUpdateWithoutModelVersionFilesInput>
   }
 
   export type ModelVersionCreateNestedOneWithoutTagsInput = {
@@ -24659,144 +23059,6 @@ export namespace Prisma {
     update?: XOR<XOR<TagUpdateToOneWithWhereWithoutModelVersionsInput, TagUpdateWithoutModelVersionsInput>, TagUncheckedUpdateWithoutModelVersionsInput>
   }
 
-  export type ModelVersionCreateNestedManyWithoutNlogoxFileInput = {
-    create?: XOR<ModelVersionCreateWithoutNlogoxFileInput, ModelVersionUncheckedCreateWithoutNlogoxFileInput> | ModelVersionCreateWithoutNlogoxFileInput[] | ModelVersionUncheckedCreateWithoutNlogoxFileInput[]
-    connectOrCreate?: ModelVersionCreateOrConnectWithoutNlogoxFileInput | ModelVersionCreateOrConnectWithoutNlogoxFileInput[]
-    createMany?: ModelVersionCreateManyNlogoxFileInputEnvelope
-    connect?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-  }
-
-  export type ModelVersionFileCreateNestedManyWithoutFileInput = {
-    create?: XOR<ModelVersionFileCreateWithoutFileInput, ModelVersionFileUncheckedCreateWithoutFileInput> | ModelVersionFileCreateWithoutFileInput[] | ModelVersionFileUncheckedCreateWithoutFileInput[]
-    connectOrCreate?: ModelVersionFileCreateOrConnectWithoutFileInput | ModelVersionFileCreateOrConnectWithoutFileInput[]
-    createMany?: ModelVersionFileCreateManyFileInputEnvelope
-    connect?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-  }
-
-  export type ModelAdditionalFileCreateNestedManyWithoutFileInput = {
-    create?: XOR<ModelAdditionalFileCreateWithoutFileInput, ModelAdditionalFileUncheckedCreateWithoutFileInput> | ModelAdditionalFileCreateWithoutFileInput[] | ModelAdditionalFileUncheckedCreateWithoutFileInput[]
-    connectOrCreate?: ModelAdditionalFileCreateOrConnectWithoutFileInput | ModelAdditionalFileCreateOrConnectWithoutFileInput[]
-    createMany?: ModelAdditionalFileCreateManyFileInputEnvelope
-    connect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-  }
-
-  export type ModelVersionUncheckedCreateNestedManyWithoutNlogoxFileInput = {
-    create?: XOR<ModelVersionCreateWithoutNlogoxFileInput, ModelVersionUncheckedCreateWithoutNlogoxFileInput> | ModelVersionCreateWithoutNlogoxFileInput[] | ModelVersionUncheckedCreateWithoutNlogoxFileInput[]
-    connectOrCreate?: ModelVersionCreateOrConnectWithoutNlogoxFileInput | ModelVersionCreateOrConnectWithoutNlogoxFileInput[]
-    createMany?: ModelVersionCreateManyNlogoxFileInputEnvelope
-    connect?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-  }
-
-  export type ModelVersionFileUncheckedCreateNestedManyWithoutFileInput = {
-    create?: XOR<ModelVersionFileCreateWithoutFileInput, ModelVersionFileUncheckedCreateWithoutFileInput> | ModelVersionFileCreateWithoutFileInput[] | ModelVersionFileUncheckedCreateWithoutFileInput[]
-    connectOrCreate?: ModelVersionFileCreateOrConnectWithoutFileInput | ModelVersionFileCreateOrConnectWithoutFileInput[]
-    createMany?: ModelVersionFileCreateManyFileInputEnvelope
-    connect?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-  }
-
-  export type ModelAdditionalFileUncheckedCreateNestedManyWithoutFileInput = {
-    create?: XOR<ModelAdditionalFileCreateWithoutFileInput, ModelAdditionalFileUncheckedCreateWithoutFileInput> | ModelAdditionalFileCreateWithoutFileInput[] | ModelAdditionalFileUncheckedCreateWithoutFileInput[]
-    connectOrCreate?: ModelAdditionalFileCreateOrConnectWithoutFileInput | ModelAdditionalFileCreateOrConnectWithoutFileInput[]
-    createMany?: ModelAdditionalFileCreateManyFileInputEnvelope
-    connect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-  }
-
-  export type BigIntFieldUpdateOperationsInput = {
-    set?: bigint | number
-    increment?: bigint | number
-    decrement?: bigint | number
-    multiply?: bigint | number
-    divide?: bigint | number
-  }
-
-  export type BytesFieldUpdateOperationsInput = {
-    set?: Bytes
-  }
-
-  export type ModelVersionUpdateManyWithoutNlogoxFileNestedInput = {
-    create?: XOR<ModelVersionCreateWithoutNlogoxFileInput, ModelVersionUncheckedCreateWithoutNlogoxFileInput> | ModelVersionCreateWithoutNlogoxFileInput[] | ModelVersionUncheckedCreateWithoutNlogoxFileInput[]
-    connectOrCreate?: ModelVersionCreateOrConnectWithoutNlogoxFileInput | ModelVersionCreateOrConnectWithoutNlogoxFileInput[]
-    upsert?: ModelVersionUpsertWithWhereUniqueWithoutNlogoxFileInput | ModelVersionUpsertWithWhereUniqueWithoutNlogoxFileInput[]
-    createMany?: ModelVersionCreateManyNlogoxFileInputEnvelope
-    set?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-    disconnect?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-    delete?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-    connect?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-    update?: ModelVersionUpdateWithWhereUniqueWithoutNlogoxFileInput | ModelVersionUpdateWithWhereUniqueWithoutNlogoxFileInput[]
-    updateMany?: ModelVersionUpdateManyWithWhereWithoutNlogoxFileInput | ModelVersionUpdateManyWithWhereWithoutNlogoxFileInput[]
-    deleteMany?: ModelVersionScalarWhereInput | ModelVersionScalarWhereInput[]
-  }
-
-  export type ModelVersionFileUpdateManyWithoutFileNestedInput = {
-    create?: XOR<ModelVersionFileCreateWithoutFileInput, ModelVersionFileUncheckedCreateWithoutFileInput> | ModelVersionFileCreateWithoutFileInput[] | ModelVersionFileUncheckedCreateWithoutFileInput[]
-    connectOrCreate?: ModelVersionFileCreateOrConnectWithoutFileInput | ModelVersionFileCreateOrConnectWithoutFileInput[]
-    upsert?: ModelVersionFileUpsertWithWhereUniqueWithoutFileInput | ModelVersionFileUpsertWithWhereUniqueWithoutFileInput[]
-    createMany?: ModelVersionFileCreateManyFileInputEnvelope
-    set?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-    disconnect?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-    delete?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-    connect?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-    update?: ModelVersionFileUpdateWithWhereUniqueWithoutFileInput | ModelVersionFileUpdateWithWhereUniqueWithoutFileInput[]
-    updateMany?: ModelVersionFileUpdateManyWithWhereWithoutFileInput | ModelVersionFileUpdateManyWithWhereWithoutFileInput[]
-    deleteMany?: ModelVersionFileScalarWhereInput | ModelVersionFileScalarWhereInput[]
-  }
-
-  export type ModelAdditionalFileUpdateManyWithoutFileNestedInput = {
-    create?: XOR<ModelAdditionalFileCreateWithoutFileInput, ModelAdditionalFileUncheckedCreateWithoutFileInput> | ModelAdditionalFileCreateWithoutFileInput[] | ModelAdditionalFileUncheckedCreateWithoutFileInput[]
-    connectOrCreate?: ModelAdditionalFileCreateOrConnectWithoutFileInput | ModelAdditionalFileCreateOrConnectWithoutFileInput[]
-    upsert?: ModelAdditionalFileUpsertWithWhereUniqueWithoutFileInput | ModelAdditionalFileUpsertWithWhereUniqueWithoutFileInput[]
-    createMany?: ModelAdditionalFileCreateManyFileInputEnvelope
-    set?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-    disconnect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-    delete?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-    connect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-    update?: ModelAdditionalFileUpdateWithWhereUniqueWithoutFileInput | ModelAdditionalFileUpdateWithWhereUniqueWithoutFileInput[]
-    updateMany?: ModelAdditionalFileUpdateManyWithWhereWithoutFileInput | ModelAdditionalFileUpdateManyWithWhereWithoutFileInput[]
-    deleteMany?: ModelAdditionalFileScalarWhereInput | ModelAdditionalFileScalarWhereInput[]
-  }
-
-  export type ModelVersionUncheckedUpdateManyWithoutNlogoxFileNestedInput = {
-    create?: XOR<ModelVersionCreateWithoutNlogoxFileInput, ModelVersionUncheckedCreateWithoutNlogoxFileInput> | ModelVersionCreateWithoutNlogoxFileInput[] | ModelVersionUncheckedCreateWithoutNlogoxFileInput[]
-    connectOrCreate?: ModelVersionCreateOrConnectWithoutNlogoxFileInput | ModelVersionCreateOrConnectWithoutNlogoxFileInput[]
-    upsert?: ModelVersionUpsertWithWhereUniqueWithoutNlogoxFileInput | ModelVersionUpsertWithWhereUniqueWithoutNlogoxFileInput[]
-    createMany?: ModelVersionCreateManyNlogoxFileInputEnvelope
-    set?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-    disconnect?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-    delete?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-    connect?: ModelVersionWhereUniqueInput | ModelVersionWhereUniqueInput[]
-    update?: ModelVersionUpdateWithWhereUniqueWithoutNlogoxFileInput | ModelVersionUpdateWithWhereUniqueWithoutNlogoxFileInput[]
-    updateMany?: ModelVersionUpdateManyWithWhereWithoutNlogoxFileInput | ModelVersionUpdateManyWithWhereWithoutNlogoxFileInput[]
-    deleteMany?: ModelVersionScalarWhereInput | ModelVersionScalarWhereInput[]
-  }
-
-  export type ModelVersionFileUncheckedUpdateManyWithoutFileNestedInput = {
-    create?: XOR<ModelVersionFileCreateWithoutFileInput, ModelVersionFileUncheckedCreateWithoutFileInput> | ModelVersionFileCreateWithoutFileInput[] | ModelVersionFileUncheckedCreateWithoutFileInput[]
-    connectOrCreate?: ModelVersionFileCreateOrConnectWithoutFileInput | ModelVersionFileCreateOrConnectWithoutFileInput[]
-    upsert?: ModelVersionFileUpsertWithWhereUniqueWithoutFileInput | ModelVersionFileUpsertWithWhereUniqueWithoutFileInput[]
-    createMany?: ModelVersionFileCreateManyFileInputEnvelope
-    set?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-    disconnect?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-    delete?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-    connect?: ModelVersionFileWhereUniqueInput | ModelVersionFileWhereUniqueInput[]
-    update?: ModelVersionFileUpdateWithWhereUniqueWithoutFileInput | ModelVersionFileUpdateWithWhereUniqueWithoutFileInput[]
-    updateMany?: ModelVersionFileUpdateManyWithWhereWithoutFileInput | ModelVersionFileUpdateManyWithWhereWithoutFileInput[]
-    deleteMany?: ModelVersionFileScalarWhereInput | ModelVersionFileScalarWhereInput[]
-  }
-
-  export type ModelAdditionalFileUncheckedUpdateManyWithoutFileNestedInput = {
-    create?: XOR<ModelAdditionalFileCreateWithoutFileInput, ModelAdditionalFileUncheckedCreateWithoutFileInput> | ModelAdditionalFileCreateWithoutFileInput[] | ModelAdditionalFileUncheckedCreateWithoutFileInput[]
-    connectOrCreate?: ModelAdditionalFileCreateOrConnectWithoutFileInput | ModelAdditionalFileCreateOrConnectWithoutFileInput[]
-    upsert?: ModelAdditionalFileUpsertWithWhereUniqueWithoutFileInput | ModelAdditionalFileUpsertWithWhereUniqueWithoutFileInput[]
-    createMany?: ModelAdditionalFileCreateManyFileInputEnvelope
-    set?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-    disconnect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-    delete?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-    connect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
-    update?: ModelAdditionalFileUpdateWithWhereUniqueWithoutFileInput | ModelAdditionalFileUpdateWithWhereUniqueWithoutFileInput[]
-    updateMany?: ModelAdditionalFileUpdateManyWithWhereWithoutFileInput | ModelAdditionalFileUpdateManyWithWhereWithoutFileInput[]
-    deleteMany?: ModelAdditionalFileScalarWhereInput | ModelAdditionalFileScalarWhereInput[]
-  }
-
   export type ModelCreateNestedOneWithoutAdditionalFilesInput = {
     create?: XOR<ModelCreateWithoutAdditionalFilesInput, ModelUncheckedCreateWithoutAdditionalFilesInput>
     connectOrCreate?: ModelCreateOrConnectWithoutAdditionalFilesInput
@@ -24807,12 +23069,6 @@ export namespace Prisma {
     create?: XOR<ModelVersionCreateWithoutTaggedAdditionalFilesInput, ModelVersionUncheckedCreateWithoutTaggedAdditionalFilesInput>
     connectOrCreate?: ModelVersionCreateOrConnectWithoutTaggedAdditionalFilesInput
     connect?: ModelVersionWhereUniqueInput
-  }
-
-  export type FileCreateNestedOneWithoutAdditionalFilesInput = {
-    create?: XOR<FileCreateWithoutAdditionalFilesInput, FileUncheckedCreateWithoutAdditionalFilesInput>
-    connectOrCreate?: FileCreateOrConnectWithoutAdditionalFilesInput
-    connect?: FileWhereUniqueInput
   }
 
   export type ModelUpdateOneRequiredWithoutAdditionalFilesNestedInput = {
@@ -24829,14 +23085,6 @@ export namespace Prisma {
     upsert?: ModelVersionUpsertWithoutTaggedAdditionalFilesInput
     connect?: ModelVersionWhereUniqueInput
     update?: XOR<XOR<ModelVersionUpdateToOneWithWhereWithoutTaggedAdditionalFilesInput, ModelVersionUpdateWithoutTaggedAdditionalFilesInput>, ModelVersionUncheckedUpdateWithoutTaggedAdditionalFilesInput>
-  }
-
-  export type FileUpdateOneRequiredWithoutAdditionalFilesNestedInput = {
-    create?: XOR<FileCreateWithoutAdditionalFilesInput, FileUncheckedCreateWithoutAdditionalFilesInput>
-    connectOrCreate?: FileCreateOrConnectWithoutAdditionalFilesInput
-    upsert?: FileUpsertWithoutAdditionalFilesInput
-    connect?: FileWhereUniqueInput
-    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutAdditionalFilesInput, FileUpdateWithoutAdditionalFilesInput>, FileUncheckedUpdateWithoutAdditionalFilesInput>
   }
 
   export type ModelVersionTagCreateNestedManyWithoutTagInput = {
@@ -25241,50 +23489,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBytesNullableFilter<$PrismaModel>
     _max?: NestedBytesNullableFilter<$PrismaModel>
-  }
-
-  export type NestedBigIntFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
-  }
-
-  export type NestedBytesFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
-    not?: NestedBytesFilter<$PrismaModel> | Bytes
-  }
-
-  export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedBigIntFilter<$PrismaModel>
-    _min?: NestedBigIntFilter<$PrismaModel>
-    _max?: NestedBigIntFilter<$PrismaModel>
-  }
-
-  export type NestedBytesWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
-    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Bytes
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBytesFilter<$PrismaModel>
-    _max?: NestedBytesFilter<$PrismaModel>
   }
 
   export type NestedEnumAuthorRoleFilter<$PrismaModel = never> = {
@@ -26220,12 +24424,12 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
     model: ModelCreateNestedOneWithoutVersionsInput
-    nlogoxFile: FileCreateNestedOneWithoutNlogoxVersionsInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
     tags?: ModelVersionTagCreateNestedManyWithoutModelVersionInput
@@ -26238,7 +24442,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -26336,12 +24540,12 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
     model: ModelCreateNestedOneWithoutVersionsInput
-    nlogoxFile: FileCreateNestedOneWithoutNlogoxVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
     tags?: ModelVersionTagCreateNestedManyWithoutModelVersionInput
@@ -26354,7 +24558,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -26375,11 +24579,11 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    nlogoxFile: FileCreateNestedOneWithoutNlogoxVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -26392,7 +24596,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -26462,15 +24666,15 @@ export namespace Prisma {
 
   export type ModelAdditionalFileCreateWithoutModelInput = {
     id?: string
+    fileKey: string
     createdAt?: Date | string
     taggedVersion: ModelVersionCreateNestedOneWithoutTaggedAdditionalFilesInput
-    file: FileCreateNestedOneWithoutAdditionalFilesInput
   }
 
   export type ModelAdditionalFileUncheckedCreateWithoutModelInput = {
     id?: string
     taggedVersionNumber: number
-    fileId: string
+    fileKey: string
     createdAt?: Date | string
   }
 
@@ -26500,12 +24704,12 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
-    nlogoxFile?: FileUpdateOneRequiredWithoutNlogoxVersionsNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
     tags?: ModelVersionTagUpdateManyWithoutModelVersionNestedInput
@@ -26518,7 +24722,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26618,12 +24822,12 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
-    nlogoxFile?: FileUpdateOneRequiredWithoutNlogoxVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
     tags?: ModelVersionTagUpdateManyWithoutModelVersionNestedInput
@@ -26636,7 +24840,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26672,7 +24876,7 @@ export namespace Prisma {
     title?: StringFilter<"ModelVersion"> | string
     description?: StringNullableFilter<"ModelVersion"> | string | null
     previewImage?: BytesNullableFilter<"ModelVersion"> | Bytes | null
-    nlogoxFileId?: StringFilter<"ModelVersion"> | string
+    netlogoFileKey?: StringFilter<"ModelVersion"> | string
     netlogoVersion?: StringNullableFilter<"ModelVersion"> | string | null
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
@@ -26734,7 +24938,7 @@ export namespace Prisma {
     id?: StringFilter<"ModelAdditionalFile"> | string
     modelId?: StringFilter<"ModelAdditionalFile"> | string
     taggedVersionNumber?: IntFilter<"ModelAdditionalFile"> | number
-    fileId?: StringFilter<"ModelAdditionalFile"> | string
+    fileKey?: StringFilter<"ModelAdditionalFile"> | string
     createdAt?: DateTimeFilter<"ModelAdditionalFile"> | Date | string
   }
 
@@ -26772,33 +24976,6 @@ export namespace Prisma {
   export type ModelCreateOrConnectWithoutVersionsInput = {
     where: ModelWhereUniqueInput
     create: XOR<ModelCreateWithoutVersionsInput, ModelUncheckedCreateWithoutVersionsInput>
-  }
-
-  export type FileCreateWithoutNlogoxVersionsInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-    modelVersionFiles?: ModelVersionFileCreateNestedManyWithoutFileInput
-    additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutFileInput
-  }
-
-  export type FileUncheckedCreateWithoutNlogoxVersionsInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-    modelVersionFiles?: ModelVersionFileUncheckedCreateNestedManyWithoutFileInput
-    additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutFileInput
-  }
-
-  export type FileCreateOrConnectWithoutNlogoxVersionsInput = {
-    where: FileWhereUniqueInput
-    create: XOR<FileCreateWithoutNlogoxVersionsInput, FileUncheckedCreateWithoutNlogoxVersionsInput>
   }
 
   export type ModelCreateWithoutLatestVersionInput = {
@@ -26878,12 +25055,12 @@ export namespace Prisma {
 
   export type ModelVersionFileCreateWithoutModelVersionInput = {
     id?: string
-    file: FileCreateNestedOneWithoutModelVersionFilesInput
+    fileKey: string
   }
 
   export type ModelVersionFileUncheckedCreateWithoutModelVersionInput = {
     id?: string
-    fileId: string
+    fileKey: string
   }
 
   export type ModelVersionFileCreateOrConnectWithoutModelVersionInput = {
@@ -26918,14 +25095,14 @@ export namespace Prisma {
 
   export type ModelAdditionalFileCreateWithoutTaggedVersionInput = {
     id?: string
+    fileKey: string
     createdAt?: Date | string
     model: ModelCreateNestedOneWithoutAdditionalFilesInput
-    file: FileCreateNestedOneWithoutAdditionalFilesInput
   }
 
   export type ModelAdditionalFileUncheckedCreateWithoutTaggedVersionInput = {
     id?: string
-    fileId: string
+    fileKey: string
     createdAt?: Date | string
   }
 
@@ -26979,39 +25156,6 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
-  }
-
-  export type FileUpsertWithoutNlogoxVersionsInput = {
-    update: XOR<FileUpdateWithoutNlogoxVersionsInput, FileUncheckedUpdateWithoutNlogoxVersionsInput>
-    create: XOR<FileCreateWithoutNlogoxVersionsInput, FileUncheckedCreateWithoutNlogoxVersionsInput>
-    where?: FileWhereInput
-  }
-
-  export type FileUpdateToOneWithWhereWithoutNlogoxVersionsInput = {
-    where?: FileWhereInput
-    data: XOR<FileUpdateWithoutNlogoxVersionsInput, FileUncheckedUpdateWithoutNlogoxVersionsInput>
-  }
-
-  export type FileUpdateWithoutNlogoxVersionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    modelVersionFiles?: ModelVersionFileUpdateManyWithoutFileNestedInput
-    additionalFiles?: ModelAdditionalFileUpdateManyWithoutFileNestedInput
-  }
-
-  export type FileUncheckedUpdateWithoutNlogoxVersionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    modelVersionFiles?: ModelVersionFileUncheckedUpdateManyWithoutFileNestedInput
-    additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutFileNestedInput
   }
 
   export type ModelUpsertWithoutLatestVersionInput = {
@@ -27094,7 +25238,7 @@ export namespace Prisma {
     id?: StringFilter<"ModelVersionFile"> | string
     modelId?: StringFilter<"ModelVersionFile"> | string
     versionNumber?: IntFilter<"ModelVersionFile"> | number
-    fileId?: StringFilter<"ModelVersionFile"> | string
+    fileKey?: StringFilter<"ModelVersionFile"> | string
   }
 
   export type ModelVersionTagUpsertWithWhereUniqueWithoutModelVersionInput = {
@@ -27144,12 +25288,12 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
     model: ModelCreateNestedOneWithoutVersionsInput
-    nlogoxFile: FileCreateNestedOneWithoutNlogoxVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     tags?: ModelVersionTagCreateNestedManyWithoutModelVersionInput
@@ -27162,7 +25306,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -27176,33 +25320,6 @@ export namespace Prisma {
   export type ModelVersionCreateOrConnectWithoutFilesInput = {
     where: ModelVersionWhereUniqueInput
     create: XOR<ModelVersionCreateWithoutFilesInput, ModelVersionUncheckedCreateWithoutFilesInput>
-  }
-
-  export type FileCreateWithoutModelVersionFilesInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-    nlogoxVersions?: ModelVersionCreateNestedManyWithoutNlogoxFileInput
-    additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutFileInput
-  }
-
-  export type FileUncheckedCreateWithoutModelVersionFilesInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-    nlogoxVersions?: ModelVersionUncheckedCreateNestedManyWithoutNlogoxFileInput
-    additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutFileInput
-  }
-
-  export type FileCreateOrConnectWithoutModelVersionFilesInput = {
-    where: FileWhereUniqueInput
-    create: XOR<FileCreateWithoutModelVersionFilesInput, FileUncheckedCreateWithoutModelVersionFilesInput>
   }
 
   export type ModelVersionUpsertWithoutFilesInput = {
@@ -27221,12 +25338,12 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
-    nlogoxFile?: FileUpdateOneRequiredWithoutNlogoxVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     tags?: ModelVersionTagUpdateManyWithoutModelVersionNestedInput
@@ -27239,7 +25356,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27250,50 +25367,17 @@ export namespace Prisma {
     taggedAdditionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutTaggedVersionNestedInput
   }
 
-  export type FileUpsertWithoutModelVersionFilesInput = {
-    update: XOR<FileUpdateWithoutModelVersionFilesInput, FileUncheckedUpdateWithoutModelVersionFilesInput>
-    create: XOR<FileCreateWithoutModelVersionFilesInput, FileUncheckedCreateWithoutModelVersionFilesInput>
-    where?: FileWhereInput
-  }
-
-  export type FileUpdateToOneWithWhereWithoutModelVersionFilesInput = {
-    where?: FileWhereInput
-    data: XOR<FileUpdateWithoutModelVersionFilesInput, FileUncheckedUpdateWithoutModelVersionFilesInput>
-  }
-
-  export type FileUpdateWithoutModelVersionFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    nlogoxVersions?: ModelVersionUpdateManyWithoutNlogoxFileNestedInput
-    additionalFiles?: ModelAdditionalFileUpdateManyWithoutFileNestedInput
-  }
-
-  export type FileUncheckedUpdateWithoutModelVersionFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    nlogoxVersions?: ModelVersionUncheckedUpdateManyWithoutNlogoxFileNestedInput
-    additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutFileNestedInput
-  }
-
   export type ModelVersionCreateWithoutTagsInput = {
     versionNumber: number
     title: string
     description?: string | null
     previewImage?: Bytes | null
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
     model: ModelCreateNestedOneWithoutVersionsInput
-    nlogoxFile: FileCreateNestedOneWithoutNlogoxVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -27306,7 +25390,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -27325,12 +25409,14 @@ export namespace Prisma {
   export type TagCreateWithoutModelVersionsInput = {
     id?: string
     name: string
+    displayName?: string | null
     createdAt?: Date | string
   }
 
   export type TagUncheckedCreateWithoutModelVersionsInput = {
     id?: string
     name: string
+    displayName?: string | null
     createdAt?: Date | string
   }
 
@@ -27355,12 +25441,12 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
-    nlogoxFile?: FileUpdateOneRequiredWithoutNlogoxVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -27373,7 +25459,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27398,150 +25484,15 @@ export namespace Prisma {
   export type TagUpdateWithoutModelVersionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TagUncheckedUpdateWithoutModelVersionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ModelVersionCreateWithoutNlogoxFileInput = {
-    versionNumber: number
-    title: string
-    description?: string | null
-    previewImage?: Bytes | null
-    netlogoVersion?: string | null
-    infoTab?: string | null
-    createdAt?: Date | string
-    finalizedAt?: Date | string | null
-    model: ModelCreateNestedOneWithoutVersionsInput
-    latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
-    parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
-    files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
-    tags?: ModelVersionTagCreateNestedManyWithoutModelVersionInput
-    taggedAdditionalFiles?: ModelAdditionalFileCreateNestedManyWithoutTaggedVersionInput
-  }
-
-  export type ModelVersionUncheckedCreateWithoutNlogoxFileInput = {
-    modelId: string
-    versionNumber: number
-    title: string
-    description?: string | null
-    previewImage?: Bytes | null
-    netlogoVersion?: string | null
-    infoTab?: string | null
-    createdAt?: Date | string
-    finalizedAt?: Date | string | null
-    latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
-    parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
-    files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
-    tags?: ModelVersionTagUncheckedCreateNestedManyWithoutModelVersionInput
-    taggedAdditionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutTaggedVersionInput
-  }
-
-  export type ModelVersionCreateOrConnectWithoutNlogoxFileInput = {
-    where: ModelVersionWhereUniqueInput
-    create: XOR<ModelVersionCreateWithoutNlogoxFileInput, ModelVersionUncheckedCreateWithoutNlogoxFileInput>
-  }
-
-  export type ModelVersionCreateManyNlogoxFileInputEnvelope = {
-    data: ModelVersionCreateManyNlogoxFileInput | ModelVersionCreateManyNlogoxFileInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ModelVersionFileCreateWithoutFileInput = {
-    id?: string
-    modelVersion: ModelVersionCreateNestedOneWithoutFilesInput
-  }
-
-  export type ModelVersionFileUncheckedCreateWithoutFileInput = {
-    id?: string
-    modelId: string
-    versionNumber: number
-  }
-
-  export type ModelVersionFileCreateOrConnectWithoutFileInput = {
-    where: ModelVersionFileWhereUniqueInput
-    create: XOR<ModelVersionFileCreateWithoutFileInput, ModelVersionFileUncheckedCreateWithoutFileInput>
-  }
-
-  export type ModelVersionFileCreateManyFileInputEnvelope = {
-    data: ModelVersionFileCreateManyFileInput | ModelVersionFileCreateManyFileInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ModelAdditionalFileCreateWithoutFileInput = {
-    id?: string
-    createdAt?: Date | string
-    model: ModelCreateNestedOneWithoutAdditionalFilesInput
-    taggedVersion: ModelVersionCreateNestedOneWithoutTaggedAdditionalFilesInput
-  }
-
-  export type ModelAdditionalFileUncheckedCreateWithoutFileInput = {
-    id?: string
-    modelId: string
-    taggedVersionNumber: number
-    createdAt?: Date | string
-  }
-
-  export type ModelAdditionalFileCreateOrConnectWithoutFileInput = {
-    where: ModelAdditionalFileWhereUniqueInput
-    create: XOR<ModelAdditionalFileCreateWithoutFileInput, ModelAdditionalFileUncheckedCreateWithoutFileInput>
-  }
-
-  export type ModelAdditionalFileCreateManyFileInputEnvelope = {
-    data: ModelAdditionalFileCreateManyFileInput | ModelAdditionalFileCreateManyFileInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ModelVersionUpsertWithWhereUniqueWithoutNlogoxFileInput = {
-    where: ModelVersionWhereUniqueInput
-    update: XOR<ModelVersionUpdateWithoutNlogoxFileInput, ModelVersionUncheckedUpdateWithoutNlogoxFileInput>
-    create: XOR<ModelVersionCreateWithoutNlogoxFileInput, ModelVersionUncheckedCreateWithoutNlogoxFileInput>
-  }
-
-  export type ModelVersionUpdateWithWhereUniqueWithoutNlogoxFileInput = {
-    where: ModelVersionWhereUniqueInput
-    data: XOR<ModelVersionUpdateWithoutNlogoxFileInput, ModelVersionUncheckedUpdateWithoutNlogoxFileInput>
-  }
-
-  export type ModelVersionUpdateManyWithWhereWithoutNlogoxFileInput = {
-    where: ModelVersionScalarWhereInput
-    data: XOR<ModelVersionUpdateManyMutationInput, ModelVersionUncheckedUpdateManyWithoutNlogoxFileInput>
-  }
-
-  export type ModelVersionFileUpsertWithWhereUniqueWithoutFileInput = {
-    where: ModelVersionFileWhereUniqueInput
-    update: XOR<ModelVersionFileUpdateWithoutFileInput, ModelVersionFileUncheckedUpdateWithoutFileInput>
-    create: XOR<ModelVersionFileCreateWithoutFileInput, ModelVersionFileUncheckedCreateWithoutFileInput>
-  }
-
-  export type ModelVersionFileUpdateWithWhereUniqueWithoutFileInput = {
-    where: ModelVersionFileWhereUniqueInput
-    data: XOR<ModelVersionFileUpdateWithoutFileInput, ModelVersionFileUncheckedUpdateWithoutFileInput>
-  }
-
-  export type ModelVersionFileUpdateManyWithWhereWithoutFileInput = {
-    where: ModelVersionFileScalarWhereInput
-    data: XOR<ModelVersionFileUpdateManyMutationInput, ModelVersionFileUncheckedUpdateManyWithoutFileInput>
-  }
-
-  export type ModelAdditionalFileUpsertWithWhereUniqueWithoutFileInput = {
-    where: ModelAdditionalFileWhereUniqueInput
-    update: XOR<ModelAdditionalFileUpdateWithoutFileInput, ModelAdditionalFileUncheckedUpdateWithoutFileInput>
-    create: XOR<ModelAdditionalFileCreateWithoutFileInput, ModelAdditionalFileUncheckedCreateWithoutFileInput>
-  }
-
-  export type ModelAdditionalFileUpdateWithWhereUniqueWithoutFileInput = {
-    where: ModelAdditionalFileWhereUniqueInput
-    data: XOR<ModelAdditionalFileUpdateWithoutFileInput, ModelAdditionalFileUncheckedUpdateWithoutFileInput>
-  }
-
-  export type ModelAdditionalFileUpdateManyWithWhereWithoutFileInput = {
-    where: ModelAdditionalFileScalarWhereInput
-    data: XOR<ModelAdditionalFileUpdateManyMutationInput, ModelAdditionalFileUncheckedUpdateManyWithoutFileInput>
   }
 
   export type ModelCreateWithoutAdditionalFilesInput = {
@@ -27585,12 +25536,12 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
     model: ModelCreateNestedOneWithoutVersionsInput
-    nlogoxFile: FileCreateNestedOneWithoutNlogoxVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -27603,7 +25554,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -27617,33 +25568,6 @@ export namespace Prisma {
   export type ModelVersionCreateOrConnectWithoutTaggedAdditionalFilesInput = {
     where: ModelVersionWhereUniqueInput
     create: XOR<ModelVersionCreateWithoutTaggedAdditionalFilesInput, ModelVersionUncheckedCreateWithoutTaggedAdditionalFilesInput>
-  }
-
-  export type FileCreateWithoutAdditionalFilesInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-    nlogoxVersions?: ModelVersionCreateNestedManyWithoutNlogoxFileInput
-    modelVersionFiles?: ModelVersionFileCreateNestedManyWithoutFileInput
-  }
-
-  export type FileUncheckedCreateWithoutAdditionalFilesInput = {
-    id?: string
-    filename: string
-    contentType: string
-    sizeBytes: bigint | number
-    blob: Bytes
-    createdAt?: Date | string
-    nlogoxVersions?: ModelVersionUncheckedCreateNestedManyWithoutNlogoxFileInput
-    modelVersionFiles?: ModelVersionFileUncheckedCreateNestedManyWithoutFileInput
-  }
-
-  export type FileCreateOrConnectWithoutAdditionalFilesInput = {
-    where: FileWhereUniqueInput
-    create: XOR<FileCreateWithoutAdditionalFilesInput, FileUncheckedCreateWithoutAdditionalFilesInput>
   }
 
   export type ModelUpsertWithoutAdditionalFilesInput = {
@@ -27704,12 +25628,12 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
-    nlogoxFile?: FileUpdateOneRequiredWithoutNlogoxVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -27722,7 +25646,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27731,39 +25655,6 @@ export namespace Prisma {
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
     tags?: ModelVersionTagUncheckedUpdateManyWithoutModelVersionNestedInput
-  }
-
-  export type FileUpsertWithoutAdditionalFilesInput = {
-    update: XOR<FileUpdateWithoutAdditionalFilesInput, FileUncheckedUpdateWithoutAdditionalFilesInput>
-    create: XOR<FileCreateWithoutAdditionalFilesInput, FileUncheckedCreateWithoutAdditionalFilesInput>
-    where?: FileWhereInput
-  }
-
-  export type FileUpdateToOneWithWhereWithoutAdditionalFilesInput = {
-    where?: FileWhereInput
-    data: XOR<FileUpdateWithoutAdditionalFilesInput, FileUncheckedUpdateWithoutAdditionalFilesInput>
-  }
-
-  export type FileUpdateWithoutAdditionalFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    nlogoxVersions?: ModelVersionUpdateManyWithoutNlogoxFileNestedInput
-    modelVersionFiles?: ModelVersionFileUpdateManyWithoutFileNestedInput
-  }
-
-  export type FileUncheckedUpdateWithoutAdditionalFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    filename?: StringFieldUpdateOperationsInput | string
-    contentType?: StringFieldUpdateOperationsInput | string
-    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
-    blob?: BytesFieldUpdateOperationsInput | Bytes
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    nlogoxVersions?: ModelVersionUncheckedUpdateManyWithoutNlogoxFileNestedInput
-    modelVersionFiles?: ModelVersionFileUncheckedUpdateManyWithoutFileNestedInput
   }
 
   export type ModelVersionTagCreateWithoutTagInput = {
@@ -28595,7 +26486,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     previewImage?: Bytes | null
-    nlogoxFileId: string
+    netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
     createdAt?: Date | string
@@ -28618,7 +26509,7 @@ export namespace Prisma {
   export type ModelAdditionalFileCreateManyModelInput = {
     id?: string
     taggedVersionNumber: number
-    fileId: string
+    fileKey: string
     createdAt?: Date | string
   }
 
@@ -28669,11 +26560,11 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nlogoxFile?: FileUpdateOneRequiredWithoutNlogoxVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -28686,7 +26577,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28703,7 +26594,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    nlogoxFileId?: StringFieldUpdateOperationsInput | string
+    netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28751,22 +26642,22 @@ export namespace Prisma {
 
   export type ModelAdditionalFileUpdateWithoutModelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taggedVersion?: ModelVersionUpdateOneRequiredWithoutTaggedAdditionalFilesNestedInput
-    file?: FileUpdateOneRequiredWithoutAdditionalFilesNestedInput
   }
 
   export type ModelAdditionalFileUncheckedUpdateWithoutModelInput = {
     id?: StringFieldUpdateOperationsInput | string
     taggedVersionNumber?: IntFieldUpdateOperationsInput | number
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelAdditionalFileUncheckedUpdateManyWithoutModelInput = {
     id?: StringFieldUpdateOperationsInput | string
     taggedVersionNumber?: IntFieldUpdateOperationsInput | number
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28782,7 +26673,7 @@ export namespace Prisma {
 
   export type ModelVersionFileCreateManyModelVersionInput = {
     id?: string
-    fileId: string
+    fileKey: string
   }
 
   export type ModelVersionTagCreateManyModelVersionInput = {
@@ -28792,7 +26683,7 @@ export namespace Prisma {
 
   export type ModelAdditionalFileCreateManyTaggedVersionInput = {
     id?: string
-    fileId: string
+    fileKey: string
     createdAt?: Date | string
   }
 
@@ -28838,17 +26729,17 @@ export namespace Prisma {
 
   export type ModelVersionFileUpdateWithoutModelVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    file?: FileUpdateOneRequiredWithoutModelVersionFilesNestedInput
+    fileKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type ModelVersionFileUncheckedUpdateWithoutModelVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type ModelVersionFileUncheckedUpdateManyWithoutModelVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type ModelVersionTagUpdateWithoutModelVersionInput = {
@@ -28868,129 +26759,20 @@ export namespace Prisma {
 
   export type ModelAdditionalFileUpdateWithoutTaggedVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     model?: ModelUpdateOneRequiredWithoutAdditionalFilesNestedInput
-    file?: FileUpdateOneRequiredWithoutAdditionalFilesNestedInput
   }
 
   export type ModelAdditionalFileUncheckedUpdateWithoutTaggedVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelAdditionalFileUncheckedUpdateManyWithoutTaggedVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ModelVersionCreateManyNlogoxFileInput = {
-    modelId: string
-    versionNumber: number
-    title: string
-    description?: string | null
-    previewImage?: Bytes | null
-    netlogoVersion?: string | null
-    infoTab?: string | null
-    createdAt?: Date | string
-    finalizedAt?: Date | string | null
-  }
-
-  export type ModelVersionFileCreateManyFileInput = {
-    id?: string
-    modelId: string
-    versionNumber: number
-  }
-
-  export type ModelAdditionalFileCreateManyFileInput = {
-    id?: string
-    modelId: string
-    taggedVersionNumber: number
-    createdAt?: Date | string
-  }
-
-  export type ModelVersionUpdateWithoutNlogoxFileInput = {
-    versionNumber?: IntFieldUpdateOperationsInput | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    infoTab?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
-    latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
-    parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
-    files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
-    tags?: ModelVersionTagUpdateManyWithoutModelVersionNestedInput
-    taggedAdditionalFiles?: ModelAdditionalFileUpdateManyWithoutTaggedVersionNestedInput
-  }
-
-  export type ModelVersionUncheckedUpdateWithoutNlogoxFileInput = {
-    modelId?: StringFieldUpdateOperationsInput | string
-    versionNumber?: IntFieldUpdateOperationsInput | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    infoTab?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
-    parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
-    files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
-    tags?: ModelVersionTagUncheckedUpdateManyWithoutModelVersionNestedInput
-    taggedAdditionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutTaggedVersionNestedInput
-  }
-
-  export type ModelVersionUncheckedUpdateManyWithoutNlogoxFileInput = {
-    modelId?: StringFieldUpdateOperationsInput | string
-    versionNumber?: IntFieldUpdateOperationsInput | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
-    netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    infoTab?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ModelVersionFileUpdateWithoutFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    modelVersion?: ModelVersionUpdateOneRequiredWithoutFilesNestedInput
-  }
-
-  export type ModelVersionFileUncheckedUpdateWithoutFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    modelId?: StringFieldUpdateOperationsInput | string
-    versionNumber?: IntFieldUpdateOperationsInput | number
-  }
-
-  export type ModelVersionFileUncheckedUpdateManyWithoutFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    modelId?: StringFieldUpdateOperationsInput | string
-    versionNumber?: IntFieldUpdateOperationsInput | number
-  }
-
-  export type ModelAdditionalFileUpdateWithoutFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    model?: ModelUpdateOneRequiredWithoutAdditionalFilesNestedInput
-    taggedVersion?: ModelVersionUpdateOneRequiredWithoutTaggedAdditionalFilesNestedInput
-  }
-
-  export type ModelAdditionalFileUncheckedUpdateWithoutFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    modelId?: StringFieldUpdateOperationsInput | string
-    taggedVersionNumber?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ModelAdditionalFileUncheckedUpdateManyWithoutFileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    modelId?: StringFieldUpdateOperationsInput | string
-    taggedVersionNumber?: IntFieldUpdateOperationsInput | number
+    fileKey?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

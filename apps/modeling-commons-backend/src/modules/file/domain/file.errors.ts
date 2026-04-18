@@ -1,8 +1,14 @@
 import { ArgumentInvalidException, NotFoundException } from '#src/shared/exceptions/index.ts';
 
 export class FileNotFoundError extends NotFoundException {
-  constructor(id: string) {
-    super(`File with id ${id} not found`);
+  constructor(key: string) {
+    super(`File with key ${key} not found`);
+  }
+}
+
+export class FileValidationError extends ArgumentInvalidException {
+  constructor(key: string, reason: string) {
+    super(`File with key ${key} is invalid: ${reason}`);
   }
 }
 

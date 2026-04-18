@@ -1,34 +1,110 @@
 import { FileNotFoundError } from '#src/modules/file/domain/file.errors.ts';
-import type { FileEntity } from '#src/modules/file/domain/file.types.ts';
+import {
+  fileMetadataSchema,
+  isPublicKey,
+  type FileAccess,
+  type FileMetadata,
+} from '#src/modules/file/domain/file.types.ts';
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  getSignedUrl,
+  HeadObjectCommand,
+  PutObjectCommand,
+} from '#src/shared/storage/index.ts';
+
+export type FileInfo = {
+  key: string;
+  contentType: string;
+  sizeBytes: bigint;
+  metadata: FileMetadata;
+  access: FileAccess;
+};
 
 export default function makeFileService({
-  transactionManager,
-  fileRepository,
   fileDomain,
+  storage,
+  bucket,
+  storagePublicBaseUrl,
 }: Dependencies) {
+  const publicBaseUrl = storagePublicBaseUrl.replace(/\/+$/, '');
+
+  function parseMetadata(key: string, raw: unknown): FileMetadata {
+    const parsed = fileMetadataSchema.Parse(raw ?? {});
+    if (parsed.deletedAt) throw new FileNotFoundError(key);
+    return parsed;
+  }
+
   return {
-    async upload(
-      buffer: Buffer<ArrayBuffer>,
-      filename: string,
-      contentType: string,
-    ): Promise<string> {
-      const entity = fileDomain.createFile({ buffer, filename, contentType });
-      return transactionManager.run(async (ctx) => {
-        await fileRepository.insertTx(ctx, entity);
-        return entity.id;
-      });
+    async upload(params: {
+      filename: string;
+      buffer: Buffer<ArrayBuffer>;
+      contentType: string;
+      access?: FileAccess;
+      pathPrefix?: string;
+    }): Promise<string> {
+      const file = fileDomain.createFile(params);
+      await storage.send(
+        new PutObjectCommand({
+          Bucket: bucket.Name,
+          Key: file.key,
+          Body: file.blob,
+          ContentType: file.contentType,
+          Metadata: file.metadata,
+          ACL: file.access,
+        }),
+      );
+      return file.key;
     },
 
-    async getMetadata(fileId: string): Promise<Omit<FileEntity, 'blob'>> {
-      const metadata = await fileRepository.findMetadataById(fileId);
-      if (!metadata) throw new FileNotFoundError(fileId);
-      return metadata;
+    async getMetadata(key: string): Promise<FileInfo> {
+      const head = await storage.send(
+        new HeadObjectCommand({ Bucket: bucket.Name, Key: key }),
+      );
+      if (!head) throw new FileNotFoundError(key);
+      const metadata = parseMetadata(key, head.Metadata);
+      return {
+        key,
+        contentType: head.ContentType ?? 'application/octet-stream',
+        sizeBytes: BigInt(head.ContentLength ?? 0),
+        metadata,
+        access: isPublicKey(key) ? 'public-read' : 'private',
+      };
     },
 
-    async download(fileId: string): Promise<FileEntity> {
-      const file = await fileRepository.findOneById(fileId);
-      if (!file) throw new FileNotFoundError(fileId);
-      return file;
+    async getUrl(key: string, options: { expiresIn?: number } = {}): Promise<string> {
+      if (isPublicKey(key)) {
+        return `${publicBaseUrl}/${key}`;
+      }
+      const { expiresIn = 3600 } = options;
+      return getSignedUrl(
+        storage,
+        new GetObjectCommand({ Bucket: bucket.Name, Key: key }),
+        { expiresIn },
+      );
+    },
+
+    async download(key: string): Promise<{
+      blob: Buffer<ArrayBuffer>;
+      contentType: string;
+      filename: string;
+    }> {
+      const res = await storage.send(
+        new GetObjectCommand({ Bucket: bucket.Name, Key: key }),
+      );
+      if (!res.Body) throw new FileNotFoundError(key);
+      const metadata = parseMetadata(key, res.Metadata);
+      const bytes = await res.Body.transformToByteArray();
+      const blob = Buffer.from(bytes) as Buffer<ArrayBuffer>;
+      return {
+        blob,
+        contentType: res.ContentType ?? 'application/octet-stream',
+        filename: metadata.filename,
+      };
+    },
+
+    async delete(key: string): Promise<void> {
+      await storage.send(new DeleteObjectCommand({ Bucket: bucket.Name, Key: key }));
     },
   };
 }

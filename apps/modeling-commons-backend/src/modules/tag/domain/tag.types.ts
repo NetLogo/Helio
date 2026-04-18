@@ -4,4 +4,5 @@ export type TagEntity = Tag;
 
 export type CreateTagProps = {
   name: string;
+  displayName?: string;
 };

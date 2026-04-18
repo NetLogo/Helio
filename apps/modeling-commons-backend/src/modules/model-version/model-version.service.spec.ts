@@ -8,7 +8,6 @@ import {
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.mock.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
-import { mockFileRepository } from '#src/modules/file/database/file.repository.mock.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import type { ModelVersionEntity } from '#src/modules/model-version/domain/model-version.types.ts';
 
@@ -19,7 +18,7 @@ function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionE
     title: 'Test',
     description: null,
     previewImage: null,
-    nlogoxFileId: 'file-1',
+    netlogoFileKey: '2026/04/17/abcd-model.nlogox',
     netlogoVersion: null,
     infoTab: null,
     createdAt: new Date(),
@@ -31,7 +30,7 @@ function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionE
 describe('modelVersionService', () => {
   const modelVersionRepository = mockModelVersionRepository();
   const modelRepository = mockModelRepository();
-  const fileRepository = mockFileRepository();
+  const fileService = { upload: vi.fn().mockResolvedValue('2026/04/17/abcd-model.nlogox') };
   const eventRepository = mockEventRepository();
   const transactionManager = mockTransactionManager();
   const domain = modelVersionDomain();
@@ -41,28 +40,30 @@ describe('modelVersionService', () => {
     modelVersionRepository,
     modelVersionDomain: domain,
     modelRepository,
-    fileRepository,
+    fileService,
     eventRepository,
   } as never);
 
   beforeEach(() => {
     vi.clearAllMocks();
+    fileService.upload.mockResolvedValue('2026/04/17/abcd-model.nlogox');
   });
 
   const nlogoxFile = {
-    buffer: Buffer.from('test'),
+    buffer: Buffer.from('test') as Buffer<ArrayBuffer>,
     filename: 'model.nlogox',
     contentType: 'application/octet-stream',
   };
 
   describe('create', () => {
-    it('creates first version', async () => {
+    it('uploads file and creates first version', async () => {
       modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
       modelVersionRepository.getNextVersionNumber.mockResolvedValue(1);
 
       const versionNumber = await service.create('model-1', 'user-1', nlogoxFile, { title: 'V1' });
 
       expect(versionNumber).toBeTypeOf('number');
+      expect(fileService.upload).toHaveBeenCalledOnce();
       expect(modelVersionRepository.finalize).not.toHaveBeenCalled();
       expect(modelVersionRepository.insertTx).toHaveBeenCalledOnce();
       expect(modelRepository.setLatestVersion).toHaveBeenCalledOnce();

@@ -12,7 +12,7 @@ describe('modelVersionDomain', () => {
         modelId: 'm1',
         versionNumber: 1,
         title: 'V1',
-        nlogoxFileId: 'f1',
+        netlogoFileKey: 'f1',
       });
 
       expect(version.versionNumber).toBe(1);
@@ -28,7 +28,7 @@ describe('modelVersionDomain', () => {
         title: 'T',
         description: null,
         previewImage: null,
-        nlogoxFileId: 'f1',
+        netlogoFileKey: 'f1',
         netlogoVersion: null,
         infoTab: null,
         createdAt: new Date(),
@@ -44,7 +44,7 @@ describe('modelVersionDomain', () => {
         title: 'T',
         description: null,
         previewImage: null,
-        nlogoxFileId: 'f1',
+        netlogoFileKey: 'f1',
         netlogoVersion: null,
         infoTab: null,
         createdAt: new Date(),

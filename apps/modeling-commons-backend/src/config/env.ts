@@ -30,6 +30,7 @@ const schema = Type.Object({
   RUSTFS_SECRET_KEY: Type.String(),
   RUSTFS_REGION: Type.String(),
   RUSTFS_BUCKET: Type.String(),
+  RUSTFS_PUBLIC_URL: Type.Optional(Type.String()),
   GALAPAGOS_ENDPOINT: Type.String(),
   NETLOGO_SERVICES_ENDPOINT: Type.String(),
   LOG_LEVEL: Type.Enum(LogLevel),
@@ -84,6 +85,7 @@ export default {
   },
   db: {
     url: `postgres://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_URL}/${env.POSTGRES_DB}?sslmode=disable`,
+    database: env.POSTGRES_DB,
   },
   cache: {
     host: env.REDIS_HOST,
@@ -97,6 +99,7 @@ export default {
     secretKey: env.RUSTFS_SECRET_KEY,
     region: env.RUSTFS_REGION,
     bucket: env.RUSTFS_BUCKET,
+    publicBaseUrl: env.RUSTFS_PUBLIC_URL ?? `${env.RUSTFS_ENDPOINT}/${env.RUSTFS_BUCKET}`,
   },
   galapagos: {
     endpoint: env.GALAPAGOS_ENDPOINT,

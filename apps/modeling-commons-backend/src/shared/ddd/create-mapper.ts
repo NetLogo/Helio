@@ -4,9 +4,33 @@ class NotImplementedException extends Error {}
 
 const identity = <T, U>(x: T): U => x as unknown as U;
 
-function createMapperHelper<Entity, Record, Response>(
-  input: Partial<Mapper<Entity, Record, Response>>,
-): Mapper<Entity, Record, Response> {
+export type ResponseFormat<T> = T extends Date
+  ? string
+  : T extends object
+    ? { [K in keyof T]: T[K] extends Date ? string : T[K] }
+    : T;
+
+export function applyGlobalResponseFormat<T>(dto: T): ResponseFormat<T> {
+  // Date → ISO, etc..
+  // Keep the list small and documented.
+  // -- Omar Ibrahim, Apr 16 26
+  if (dto === null || typeof dto !== 'object') return dto as ResponseFormat<T>;
+  if (dto instanceof Date) return dto.toISOString() as ResponseFormat<T>;
+  const out: { [key: string]: unknown } = { ...(dto as object) };
+  for (const key of Object.keys(out)) {
+    const value = out[key];
+    if (value instanceof Date) out[key] = value.toISOString();
+  }
+  return out as ResponseFormat<T>;
+}
+
+function createMapperHelper<Entity, Record, RawResponse>(
+  input: Partial<{
+    toPersistence: (entity: Entity) => Record;
+    toDomain: (record: Record) => Entity;
+    toResponse: (entity: Entity) => RawResponse;
+  }>,
+): Mapper<Entity, Record, ResponseFormat<RawResponse>> {
   return {
     toDomain:
       input.toDomain ??
@@ -29,42 +53,33 @@ function createMapperHelper<Entity, Record, Response>(
 // Read requests can be satisfied with the identity function
 // if a custom domain shape is not required.
 // -- Omar Ibrahim, Apr 16 26
-export function createReadOnlyMapper<Record, Response>(input: {
-  toResponse: (record: Record) => Response;
-}): Mapper<Record, Record, Response> {
-  return createMapperHelper<Record, Record, Response>({
+export function createReadOnlyMapper<Record, RawResponse>(input: {
+  toResponse: (record: Record) => RawResponse;
+}): Mapper<Record, Record, ResponseFormat<RawResponse>> {
+  return createMapperHelper<Record, Record, RawResponse>({
     toDomain: identity as (record: Record) => Record,
+    toPersistence: identity as (entity: Record) => Record,
     toResponse: input.toResponse,
   });
 }
 
-export function createWriteOnlyMapper<Entity extends Record, Record, Response>(input: {
+export function createWriteOnlyMapper<Entity extends Record, Record, RawResponse>(input: {
   toDomain: (record: Record) => Entity;
-  toResponse: (entity: Entity) => Response;
-}): Mapper<Entity, Record, Response> {
-  return createMapperHelper<Entity, Record, Response>({
+  toResponse: (entity: Entity) => RawResponse;
+}): Mapper<Entity, Record, ResponseFormat<RawResponse>> {
+  return createMapperHelper<Entity, Record, RawResponse>({
     toDomain: input.toDomain,
     toPersistence: identity as (entity: Entity) => Record,
     toResponse: input.toResponse,
   });
 }
 
-export function createMapper<Entity, Record, Response>(
-  input: Mapper<Entity, Record, Response>,
-): Mapper<Entity, Record, Response> {
-  return createMapperHelper(input);
+export function createMapper<Entity, Record, RawResponse>(input: {
+  toPersistence: (entity: Entity) => Record;
+  toDomain: (record: Record) => Entity;
+  toResponse: (entity: Entity) => RawResponse;
+}): Mapper<Entity, Record, ResponseFormat<RawResponse>> {
+  return createMapperHelper<Entity, Record, RawResponse>(input);
 }
 
 export { identity };
-function applyGlobalResponseFormat<T>(dto: T): T {
-  // Date → ISO, Buffer → base64 data-url, null passthrough, etc.
-  // Keep the list small and documented.
-  // -- Omar Ibrahim, Apr 16 26
-  if (dto === null || typeof dto !== 'object') return dto;
-  const out: { [key: string]: unknown } = { ...(dto as object) };
-  for (const key of Object.keys(out)) {
-    const value = out[key];
-    if (value instanceof Date) out[key] = value.toISOString();
-  }
-  return out as T;
-}

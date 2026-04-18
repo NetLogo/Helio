@@ -1,6 +1,5 @@
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
-import { signDownloadToken } from '#src/shared/services/signed-url.service.ts';
 import type { FastifyInstance } from 'fastify';
 import {
   additionalFileParamsSchema,
@@ -10,11 +9,28 @@ import {
 } from '#src/modules/model-additional-file/model-additional-file.schemas.ts';
 import { modelAdditionalFileResponseDtoSchema } from '#src/modules/model-additional-file/dtos/model-additional-file.response.dto.ts';
 import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelAdditionalFileEntity } from '#src/modules/model-additional-file/domain/model-additional-file.types.ts';
 import { Type } from 'typebox';
 
 export default async function modelAdditionalFileRoutes(fastify: FastifyInstance) {
   const { modelAdditionalFileService, fileService, listAdditionalFilesQuery } =
     fastify.diContainer.cradle;
+
+  async function toResponse(entity: ModelAdditionalFileEntity) {
+    const info = await fileService.getMetadata(entity.fileKey);
+    const downloadUrl = await fileService.getUrl(entity.fileKey);
+    return {
+      id: entity.id,
+      modelId: entity.modelId,
+      taggedVersionNumber: entity.taggedVersionNumber,
+      fileKey: entity.fileKey,
+      filename: info.metadata.filename,
+      contentType: info.contentType,
+      sizeBytes: Number(info.sizeBytes),
+      createdAt: entity.createdAt.toISOString(),
+      downloadUrl,
+    };
+  }
 
   fastify.post<{ Params: ModelIdParams }>(
     '/v1/models/:id/additional-files',
@@ -47,19 +63,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
         data.mimetype,
       );
 
-      const fileMeta = await fileService.getMetadata(entity.fileId);
-      const token = signDownloadToken(entity.fileId);
-      return reply.code(201).send({
-        id: entity.id,
-        modelId: entity.modelId,
-        taggedVersionNumber: entity.taggedVersionNumber,
-        fileId: entity.fileId,
-        filename: fileMeta.filename,
-        contentType: fileMeta.contentType,
-        sizeBytes: Number(fileMeta.sizeBytes),
-        createdAt: entity.createdAt.toISOString(),
-        downloadUrl: `/api/v1/files/${entity.fileId}/download?token=${token}`,
-      });
+      return reply.code(201).send(await toResponse(entity));
     },
   );
 
@@ -94,26 +98,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
         request.params.id,
         request.query.taggedVersionNumber,
       );
-
-      const results = await Promise.all(
-        entities.map(async (entity) => {
-          const fileMeta = await fileService.getMetadata(entity.fileId);
-          const token = signDownloadToken(entity.fileId);
-          return {
-            id: entity.id,
-            modelId: entity.modelId,
-            taggedVersionNumber: entity.taggedVersionNumber,
-            fileId: entity.fileId,
-            filename: fileMeta.filename,
-            contentType: fileMeta.contentType,
-            sizeBytes: Number(fileMeta.sizeBytes),
-            createdAt: entity.createdAt.toISOString(),
-            downloadUrl: `/api/v1/files/${entity.fileId}/download?token=${token}`,
-          };
-        }),
-      );
-
-      return results;
+      return Promise.all(entities.map(toResponse));
     },
   );
 }
