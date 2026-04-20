@@ -30,7 +30,7 @@
         </UButton>
       </div>
 
-      <template v-else-if="store.model">
+      <template v-else-if="card">
         <UAlert
           v-if="!isLatestVersion"
           variant="subtle"
@@ -48,7 +48,7 @@
           ]"
         />
 
-        <ModelDetail />
+        <ModelDetail :card="card" />
       </template>
     </div>
   </UContainer>
@@ -56,58 +56,40 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const store = useModelDetailStore();
 const modelId = computed(() => route.params.id as string);
-// Where is this coming from? I don't see it in the route params.
-// Check (nuxt.config.ts).hooks['pages:extend'] to see how the routes are being generated.
-const modelVersionNumber = computed(
-  () => parseInt(route.params.versionNumber as string) ?? undefined,
+
+// Where is :versionNumber coming from? It's not in the route params.
+// These routes are configured to this page component via custom routing
+// /model/:id
+// /model/:id/versions/:versionNumber
+// /model/:slug/:id
+// /model/:slug/:id/versions/:versionNumber
+// See nuxt.config.ts for details
+// -- Omar Ibrahim, Apr 20 26
+const modelVersionNumber = computed(() =>
+  route.params.versionNumber ? parseInt(route.params.versionNumber as string) : undefined,
 );
 
-const api = useApi();
-
-const { error, status, refresh } = await useAsyncData(
-  `model-${modelId.value}-${modelVersionNumber.value ?? "latest"}`,
-  async () => {
-    await store.fetchModel(modelId.value);
-    if (modelVersionNumber.value) {
-      await store.selectVersion(modelVersionNumber.value);
-    }
-    if (store.error) {
-      throw createError({ statusCode: 404, message: store.error });
-    }
-    return store.model;
-  },
-  {
-    watch: [modelId, modelVersionNumber],
-    getCachedData(key, nuxtApp) {
-      return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
-    },
-  },
-);
+const { data: card, error, status, refresh } = useModelCard(modelId);
 
 useSeoMeta({
-  title: () => store.currentVersion?.title ?? "Model",
-  description: () => store.currentVersion?.description ?? "View model details on Modeling Commons",
-  ogTitle: () => store.currentVersion?.title ?? "Model",
-  ogDescription: () =>
-    store.currentVersion?.description ?? "View model details on Modeling Commons",
+  title: () => card.value?.latestVersion?.title ?? defaultStrings.modelName,
+  description: () => card.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+  ogTitle: () => card.value?.latestVersion?.title ?? defaultStrings.modelName,
+  ogDescription: () => card.value?.latestVersion?.description ?? defaultStrings.modelDescription,
   ogType: "article",
 });
 
 const isLatestVersion = computed(() => {
-  return store.model?.latestVersionNumber === store.currentVersion?.versionNumber;
-});
-const latestVersionPath = computed(() => {
-  if (!store.model) return null;
-  if (isLatestVersion.value) {
-    return `/models/${store.model.id}`;
-  } else {
-    return `/models/${store.model.id}/versions/${store.model.latestVersionNumber}`;
-  }
+  if (!card.value) return true;
+  const latest = card.value.latestVersion?.versionNumber;
+  return !modelVersionNumber.value || latest === modelVersionNumber.value;
 });
 
-onUnmounted(() => {
-  store.clear();
+const latestVersionPath = computed(() => {
+  if (!card.value) return null;
+  return isLatestVersion.value
+    ? `/models/${card.value.model.id}`
+    : `/models/${card.value.model.id}/versions/${card.value.latestVersion?.versionNumber}`;
 });
 </script>

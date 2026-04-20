@@ -17,7 +17,7 @@
         alt="Model preview image"
         class="w-full h-full object-cover rounded mb-4 absolute inset-0"
         crossorigin="use-credentials"
-        placeholder="blur"
+        :placeholder="[20, 20]"
       />
       <div :class="actionButtonClass">
         <Icon name="i-lucide-circle-play" class="size-18 mx-auto" />
@@ -43,14 +43,11 @@
 const props = defineProps<{
   modelUrl: string;
   previewImageUrl?: string;
+  modelTitle?: string;
 }>();
 
 const state = ref<NLWEmbedState>(NLWEmbedState.Preview);
-const nlwUrl = computed(() => {
-  const url = new URL(`${NLWHost}/web`);
-  url.searchParams.set("url", props.modelUrl);
-  return url.toString();
-});
+const nlwUrl = computed(() => getNetlogoWebEmbedUrl(props.modelUrl, props.modelTitle));
 </script>
 
 <script lang="ts">
@@ -61,7 +58,6 @@ export const NLWEmbedState = {
 };
 
 export type NLWEmbedState = (typeof NLWEmbedState)[keyof typeof NLWEmbedState];
-export const NLWHost = import.meta.dev ? "http://localhost:9000" : "https://www.netlogoweb.org";
 
 const actionButtonClass = [
   "flex flex-col items-center justify-center gap-4 z-10",

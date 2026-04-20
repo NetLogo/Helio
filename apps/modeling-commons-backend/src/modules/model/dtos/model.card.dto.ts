@@ -12,11 +12,32 @@ export const modelCardAuthorSchema = Type.Intersect([
   }),
 ]);
 
+export const modelCardVersionExtendedResponseDtoSchema = Type.Intersect([
+  modelVersionResponseDtoSchema,
+  Type.Object({
+    netlogoFileDownloadUrl: Type.Union([
+      Type.String({
+        format: 'uri',
+        examples: ['https://modelingcommons.org/files/public/models/model.nlogo'],
+      }),
+      Type.Null(),
+    ]),
+    previewImageUrl: Type.Union([
+      Type.String({
+        format: 'uri',
+        examples: ['https://modelingcommons.org/files/public/models/model.png'],
+      }),
+      Type.Null(),
+    ]),
+  }),
+]);
+
 export const modelCardResponseDtoSchema = Type.Object({
   model: modelResponseDtoSchema,
-  latestVersion: Type.Union([modelVersionResponseDtoSchema, Type.Null()]),
+  latestVersion: Type.Union([modelCardVersionExtendedResponseDtoSchema, Type.Null()]),
   authors: Type.Array(modelCardAuthorSchema),
   tagsOnLatestVersion: Type.Array(tagResponseDtoSchema),
+  previewImageUrl: Type.Union([Type.String(), Type.Null()]),
   counts: Type.Object({
     versions: Type.Integer(),
     children: Type.Integer(),

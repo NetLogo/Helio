@@ -68,7 +68,7 @@
 
       <div class="flex gap-5">
         <a href="/privacy" class="text-sm">Privacy Policy</a>
-        <a href="/terms" class="text-sm">Terms of Service</a>
+        <a href="/terms-of-service" class="text-sm">Terms of Service</a>
         <a href="/cookies" class="text-sm">Cookie Policy</a>
       </div>
     </div>

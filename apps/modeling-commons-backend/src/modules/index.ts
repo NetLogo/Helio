@@ -10,7 +10,6 @@ import { asFunction, asValue, type Resolver } from 'awilix';
 import type { FastifyBaseLogger } from 'fastify';
 import type { Bucket, S3Client } from '@aws-sdk/client-s3';
 import storage, { bucket } from '#src/lib/storage.ts';
-import env from '#src/config/env.ts';
 
 type Resolvers<T> = {
   [K in keyof T]: Resolver<T[K]>;
@@ -23,7 +22,6 @@ declare global {
     db: ExtendedPrismaClient;
     storage: S3Client;
     bucket: Bucket;
-    storagePublicBaseUrl: string;
     eventBus: EventBus;
     repositoryBase: RepositoryBaseFactory;
     transactionManager: TransactionManager;
@@ -43,7 +41,6 @@ export function makeDependencies({
     db: asValue(prisma),
     storage: asValue(storage),
     bucket: asValue(bucket),
-    storagePublicBaseUrl: asValue(env.storage.publicBaseUrl),
     eventBus: asValue(eventBus),
     repositoryBase: asFunction(makeRepositoryBase),
     transactionManager: asFunction(makePrismaTransactionManager),

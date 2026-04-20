@@ -3,7 +3,7 @@ export interface VersionRow {
   title: string;
   description: string | null;
   uploaderName?: string | null;
-  nlogoxFileId: string;
+  netlogoFileDownloadUrl: string | null;
   createdAt: string;
   isFinalized: boolean;
 }
@@ -18,14 +18,4 @@ export interface AttachedFile {
   isPending: boolean;
 }
 
-export interface FamilyModel {
-  id: string;
-  title: string;
-  description: string | null;
-  visibility: string;
-  isEndorsed: boolean;
-  createdAt: string;
-  authorName: string | null;
-  versionCount: number;
-  linkedVersionNumber: number | null;
-}
+export type FamilyModel = ResponseSuccessData<"GET", "/api/v1/models/{id}/family/card">["self"];

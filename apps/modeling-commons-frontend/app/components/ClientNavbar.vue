@@ -2,7 +2,7 @@
   <Navbar
     id="main-navbar"
     ref="navbar"
-    class="bg-background! py-4! lg:px-[calc((100vw-var(--max-width-ch))/2)]! shadow-none!"
+    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none!"
     :brand="brand"
     brand-href="/"
     :brand-attrs="brandAttrs"
@@ -32,7 +32,7 @@
     </NavbarLinksContainer>
 
     <NavbarActionsContainer class="gap-3! ml-0!">
-      <NuxtLink to="/models/upload" title="Upload a Model">
+      <NuxtLink v-if="user.isLoggedIn" to="/models/upload" title="Upload a Model">
         <UButton variant="outline" size="xs" square icon="i-lucide-upload" />
       </NuxtLink>
       <UDropdownMenu
@@ -60,7 +60,7 @@
           />
         </div>
       </UDropdownMenu>
-      <div v-else class="flex gap-2">
+      <div v-else class="flex gap-5">
         <UButton variant="link" size="sm" to="/login"> Log In </UButton>
         <UButton variant="solid" size="sm" to="/login"> Sign Up </UButton>
       </div>

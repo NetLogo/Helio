@@ -14,6 +14,7 @@ import {
   type UpdateModelRequestDto,
 } from '#src/modules/model/dtos/model.dto.ts';
 import { modelCardResponseDtoSchema } from '#src/modules/model/dtos/model.card.dto.ts';
+import { modelFamilyCardResponseDtoSchema } from '#src/modules/model/dtos/model.family-card.dto.ts';
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
@@ -24,6 +25,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     searchModelsQuery,
     getModelChildrenQuery,
     getModelCardQuery,
+    getModelFamilyCardQuery,
   } = fastify.diContainer.cradle;
 
   fastify.post<{ Body: CreateModelRequestDto }>(
@@ -98,6 +100,21 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     },
     async (request) => {
       return getModelCardQuery.execute(request.params.id);
+    },
+  );
+
+  fastify.get<{ Params: ModelIdParams }>(
+    '/v1/models/:id/family/card',
+    {
+      schema: {
+        params: modelIdParamsSchema,
+        response: { 200: modelFamilyCardResponseDtoSchema },
+        tags: ['Model'],
+      },
+      preHandler: [resolveModel('read')],
+    },
+    async (request) => {
+      return getModelFamilyCardQuery.execute(request.params.id);
     },
   );
 

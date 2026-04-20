@@ -26,10 +26,10 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelListItem } from "~/stores/models";
+import type { ModelListRow } from "~/composables/useModels";
 import { formatRelativeDate } from "~/utils/formatters";
 
 defineProps<{
-  model: ModelListItem;
+  model: ModelListRow;
 }>();
 </script>

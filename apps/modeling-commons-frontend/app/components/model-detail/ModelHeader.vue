@@ -5,7 +5,17 @@
         {{ title }}
       </h5>
       <div class="flex items-center gap-3 shrink-0">
-        <UButton icon="i-lucide-code" size="sm" @click="$emit('embed')"> Embed </UButton>
+        <ModelEmbedButton
+          :title="title"
+          :download-url="downloadUrl"
+          :embed-url="downloadUrl ? getNetlogoWebEmbedUrl(downloadUrl, title) : undefined"
+          :authors="authors"
+          :relative-date="relativeDate"
+          :netlogo-version="netlogoVersion"
+          :model-group="modelGroup"
+          :model-visibility="modelVisibility"
+          :preview-image-url="previewImageUrl"
+        />
         <UButton v-if="downloadUrl" icon="i-lucide-download" :to="downloadUrl" external size="sm">
           Download
         </UButton>
@@ -78,6 +88,8 @@ const props = defineProps<{
   netlogoVersion?: string | null;
   modelGroup?: string | null;
   downloadUrl?: string | null;
+  modelVisibility?: string;
+  previewImageUrl?: string | null;
 }>();
 
 defineEmits<{

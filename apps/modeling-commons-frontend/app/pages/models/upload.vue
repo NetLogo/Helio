@@ -106,17 +106,24 @@ async function submit(visibility: "public" | "private") {
     }
     const modelId = created.id;
 
-    // TODO(backend): multipart .nlogox upload — route at
-    // apps/modeling-commons-backend/src/modules/model-version/model-version.route.ts:37
-    // currently stubs the file buffer. Sending metadata only for now.
-    const { error: versionError } = await api.POST("/api/v1/models/{id}/versions", {
-      params: { path: { id: modelId } },
-      body: { title, description },
-    });
-    if (versionError) {
-      throw new Error(
-        (versionError as { message?: string })?.message ?? "Failed to create version",
-      );
+    const formData = new FormData();
+    formData.append("file", modelFile.value, modelFile.value.name);
+    formData.append("title", title);
+    if (description) formData.append("description", description);
+
+    const apiBase = useRuntimeConfig().public.apiBase;
+    try {
+      await $fetch(`${apiBase}/api/v1/models/${modelId}/versions`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : (err as { data?: { message?: string } })?.data?.message;
+      throw new Error(message ?? "Failed to upload model version");
     }
 
     for (const tag of details.tags) {

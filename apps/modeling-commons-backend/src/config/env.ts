@@ -81,6 +81,7 @@ export default {
   server: {
     host: env.HOST,
     port: env.PORT,
+    endpoint: env.NODE_ENV === NodeEnv.development ? `${env.HOST}:${env.PORT}` : `${env.HOST}`,
     ipAddressHeaders: envVariableToList(env.IP_ADDRESS_HEADERS),
   },
   db: {

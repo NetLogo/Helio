@@ -101,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelListItem } from "~/stores/models";
+import type { ModelListRow } from "~/composables/useModels";
 
 const meta = useWebsite();
 
@@ -112,7 +112,7 @@ useSeoMeta({
   ogDescription: meta.value.description,
 });
 
-async function enrichModels(models: ModelListItem[]): Promise<ModelListItem[]> {
+async function enrichModels(models: ModelListRow[]): Promise<ModelListRow[]> {
   const { GET } = useApi();
   return Promise.all(
     models.map(async (model) => {
@@ -148,7 +148,7 @@ const { data, error, status, refresh } = await useAsyncData("home-models", async
   ]);
 
   const toList = (res: typeof featuredRes) => {
-    const d = res.data as { data: ModelListItem[] } | undefined;
+    const d = res.data as { data: ModelListRow[] } | undefined;
     return d?.data ?? [];
   };
 

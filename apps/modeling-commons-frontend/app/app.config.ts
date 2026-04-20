@@ -191,5 +191,19 @@ export default defineAppConfig({
         base: "mb-0",
       },
     },
+
+    modal: {
+      slots: {
+        header: "justify-between gap-4",
+        title: "line-clamp-1 text-ellipsis text-h6 font-[500]!",
+        close: "p-2 relative inset-0",
+      },
+    },
+
+    tabs: {
+      slots: {
+        content: "pt-4",
+      },
+    },
   },
 });

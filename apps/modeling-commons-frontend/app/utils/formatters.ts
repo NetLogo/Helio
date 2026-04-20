@@ -94,3 +94,9 @@ export function parseModelPath(path: string): { modelId: string; modelSlug: stri
   const modelSlug = parts.slice(2, parts.length - 1).join("/");
   return { modelId, modelSlug };
 }
+
+export function appendWindowProtocol(url: string): string {
+  const hasProtocol = /^https?:\/\//i.test(url);
+  const currentProtocol = import.meta.dev ? "http:" : "https:";
+  return hasProtocol ? url : `${currentProtocol}//${url}`;
+}

@@ -5,7 +5,11 @@ import type { ModelVersionResponseDto } from '#src/modules/model-version/dtos/mo
 
 export type ModelVersionRecord = ModelVersion;
 
-export default function modelVersionMapper(): Mapper<ModelVersion, ModelVersion, ModelVersionResponseDto> {
+export default function modelVersionMapper(): Mapper<
+  ModelVersion,
+  ModelVersion,
+  ModelVersionResponseDto
+> {
   return createReadOnlyMapper<
     ModelVersion,
     Omit<ModelVersion, 'finalizedAt' | 'previewImage'> & { isFinalized: boolean }

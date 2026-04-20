@@ -368,19 +368,23 @@ export interface paths {
                                 visibility: "public" | "private" | "unlisted";
                                 isEndorsed: boolean;
                             };
-                            latestVersion: {
+                            latestVersion: ({
                                 /** Format: uuid */
                                 modelId: string;
+                                /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
                                 versionNumber: number;
                                 title: string;
                                 description: string | null;
-                                netlogoFileKey: string;
+                                netlogoFileKey: string | null;
                                 netlogoVersion: string | null;
                                 infoTab: string | null;
                                 /** Format: date-time */
                                 createdAt: string;
                                 isFinalized: boolean;
-                            } | null;
+                            } & {
+                                netlogoFileDownloadUrl: string | null;
+                                previewImageUrl: string | null;
+                            }) | null;
                             authors: ({
                                 /** Format: uuid */
                                 modelId: string;
@@ -415,10 +419,113 @@ export interface paths {
                                  */
                                 createdAt: string;
                             }[];
+                            previewImageUrl: string | null;
                             counts: {
                                 versions: number;
                                 children: number;
                             };
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/family/card": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            self: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                description: string | null;
+                                visibility: string;
+                                isEndorsed: boolean;
+                                /** Format: date-time */
+                                createdAt: string;
+                                latestVersionNumber: number | null;
+                                parentModelId: string | null;
+                                parentVersionNumber: number | null;
+                                authorName: string | null;
+                                versionCount: number;
+                                linkedVersionNumber: number | null;
+                            };
+                            parent: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                description: string | null;
+                                visibility: string;
+                                isEndorsed: boolean;
+                                /** Format: date-time */
+                                createdAt: string;
+                                latestVersionNumber: number | null;
+                                parentModelId: string | null;
+                                parentVersionNumber: number | null;
+                                authorName: string | null;
+                                versionCount: number;
+                                linkedVersionNumber: number | null;
+                            } | null;
+                            siblings: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                description: string | null;
+                                visibility: string;
+                                isEndorsed: boolean;
+                                /** Format: date-time */
+                                createdAt: string;
+                                latestVersionNumber: number | null;
+                                parentModelId: string | null;
+                                parentVersionNumber: number | null;
+                                authorName: string | null;
+                                versionCount: number;
+                                linkedVersionNumber: number | null;
+                            }[];
+                            children: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                description: string | null;
+                                visibility: string;
+                                isEndorsed: boolean;
+                                /** Format: date-time */
+                                createdAt: string;
+                                latestVersionNumber: number | null;
+                                parentModelId: string | null;
+                                parentVersionNumber: number | null;
+                                authorName: string | null;
+                                versionCount: number;
+                                linkedVersionNumber: number | null;
+                            }[];
                         };
                     };
                 };
@@ -1086,10 +1193,11 @@ export interface paths {
                             data: {
                                 /** Format: uuid */
                                 modelId: string;
+                                /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
                                 versionNumber: number;
                                 title: string;
                                 description: string | null;
-                                netlogoFileKey: string;
+                                netlogoFileKey: string | null;
                                 netlogoVersion: string | null;
                                 infoTab: string | null;
                                 /** Format: date-time */
@@ -1102,6 +1210,7 @@ export interface paths {
             };
         };
         put?: never;
+        /** @description Create a new model version. Send as multipart/form-data with a required "file" field (the .nlogox) plus optional "title" and "description" text fields. */
         post: {
             parameters: {
                 query?: never;
@@ -1111,14 +1220,7 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        title?: string;
-                        description?: string;
-                    };
-                };
-            };
+            requestBody?: never;
             responses: {
                 /** @description Default Response */
                 201: {
@@ -1209,15 +1311,115 @@ export interface paths {
                         "application/json": {
                             /** Format: uuid */
                             modelId: string;
+                            /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
                             versionNumber: number;
                             title: string;
                             description: string | null;
-                            netlogoFileKey: string;
+                            netlogoFileKey: string | null;
                             netlogoVersion: string | null;
                             infoTab: string | null;
                             /** Format: date-time */
                             createdAt: string;
                             isFinalized: boolean;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/versions/{version}/card": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    version: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            version: {
+                                /** Format: uuid */
+                                modelId: string;
+                                /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
+                                versionNumber: number;
+                                title: string;
+                                description: string | null;
+                                netlogoFileKey: string | null;
+                                netlogoVersion: string | null;
+                                infoTab: string | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                                isFinalized: boolean;
+                            };
+                            model: ({
+                                /**
+                                 * Format: uuid
+                                 * @description Entity's id
+                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 */
+                                id: string;
+                            } & {
+                                /**
+                                 * @description Entity creation date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                createdAt: string;
+                                /**
+                                 * @description Entity last update date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                updatedAt: string;
+                            }) & {
+                                latestVersionNumber: number | null;
+                                parentModelId: string | null;
+                                parentVersionNumber: number | null;
+                                /** @enum {unknown} */
+                                visibility: "public" | "private" | "unlisted";
+                                isEndorsed: boolean;
+                            };
+                            tags: {
+                                /**
+                                 * Format: uuid
+                                 * @description Tag id
+                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 */
+                                id: string;
+                                /**
+                                 * @description Tag name
+                                 * @example climate
+                                 */
+                                name: string;
+                                /**
+                                 * @description Tag creation date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                createdAt: string;
+                            }[];
+                            netlogoFileDownloadUrl: string;
+                            previewImageUrl: string | null;
                         };
                     };
                 };

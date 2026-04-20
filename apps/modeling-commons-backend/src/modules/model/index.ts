@@ -19,5 +19,8 @@ declare global {
     getModelCardQuery: ReturnType<
       typeof import('#src/modules/model/queries/get-model-card.query.ts').default
     >;
+    getModelFamilyCardQuery: ReturnType<
+      typeof import('#src/modules/model/queries/get-model-family-card.query.ts').default
+    >;
   }
 }

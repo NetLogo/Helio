@@ -2,41 +2,67 @@ import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
 import type { FastifyInstance } from 'fastify';
 import {
-  createVersionRequestDtoSchema,
   updateCurrentVersionRequestDtoSchema,
   versionParamsSchema,
-  type CreateVersionRequestDto,
   type UpdateCurrentVersionRequestDto,
   type VersionParams,
 } from '#src/modules/model-version/model-version.schemas.ts';
 import { modelVersionResponseDtoSchema } from '#src/modules/model-version/dtos/model-version.response.dto.ts';
+import { modelVersionCardResponseDtoSchema } from '#src/modules/model-version/dtos/model-version.card.dto.ts';
 import { modelVersionPaginatedResponseSchema } from '#src/modules/model-version/dtos/model-version.paginated.response.dto.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 import { Type } from 'typebox';
 import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/dtos/model.dto.ts';
 
 export default async function modelVersionRoutes(fastify: FastifyInstance) {
-  const { modelVersionService, modelVersionMapper, listVersionsQuery, getVersionQuery } =
-    fastify.diContainer.cradle;
+  const {
+    modelVersionService,
+    modelVersionMapper,
+    listVersionsQuery,
+    getVersionQuery,
+    getVersionCardQuery,
+  } = fastify.diContainer.cradle;
 
-  fastify.post<{ Params: ModelIdParams; Body: CreateVersionRequestDto }>(
+  fastify.post<{ Params: ModelIdParams }>(
     '/v1/models/:id/versions',
     {
       schema: {
         params: modelIdParamsSchema,
-        body: createVersionRequestDtoSchema,
         response: { 201: Type.Object({ versionNumber: Type.Integer() }) },
         tags: ['Model'],
+        consumes: ['multipart/form-data'],
+        description:
+          'Create a new model version. Send as multipart/form-data with a required "file" field (the .nlogox) plus optional "title" and "description" text fields.',
       },
       preHandler: [requireAuth, resolveModel('write')],
     },
     async (request, reply) => {
+      const data = await request.file();
+      if (!data) {
+        return reply.code(400).send({ message: 'File upload required' });
+      }
+
+      const readField = (key: string): string | undefined => {
+        const field = data.fields[key];
+        if (field && typeof field === 'object' && 'value' in field) {
+          const value = (field as { value: unknown }).value;
+          return typeof value === 'string' ? value : undefined;
+        }
+        return undefined;
+      };
+      const title = readField('title');
+      const description = readField('description');
+
+      const buffer = await data.toBuffer();
+      const ownBuffer = Buffer.alloc(buffer.length) as Buffer<ArrayBuffer>;
+      buffer.copy(ownBuffer);
+      buffer.fill(0);
+
       const versionNumber = await modelVersionService.create(
         request.params.id,
         request.user!.id,
-        // TODO: handle file upload properly instead of using an empty buffer and placeholder values
-        { buffer: Buffer.alloc(0), filename: '', contentType: 'application/octet-stream' },
-        request.body,
+        { buffer: ownBuffer, filename: data.filename, contentType: data.mimetype },
+        { title, description },
       );
       return reply.code(201).send({ versionNumber });
     },
@@ -91,6 +117,21 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
     async (request) => {
       const entity = await getVersionQuery.execute(request.params.id, request.params.version);
       return modelVersionMapper.toResponse(entity);
+    },
+  );
+
+  fastify.get<{ Params: VersionParams }>(
+    '/v1/models/:id/versions/:version/card',
+    {
+      schema: {
+        params: versionParamsSchema,
+        response: { 200: modelVersionCardResponseDtoSchema },
+        tags: ['Model'],
+      },
+      preHandler: [resolveModel('read')],
+    },
+    async (request) => {
+      return getVersionCardQuery.execute(request.params.id, request.params.version);
     },
   );
 

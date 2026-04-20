@@ -14,6 +14,7 @@ export default defineNuxtConfig({
       authApiBase: process.env.NUXT_PUBLIC_AUTH_BASE as string,
       appUrl: process.env.NUXT_PUBLIC_APP_URL as string,
       adminDashboardUrl: process.env.ADMIN_DASHBOARD_URL as string,
+      storageBaseUrl: process.env.NUXT_STORAGE_BASE_URL as string,
     },
   },
 
@@ -69,6 +70,33 @@ export default defineNuxtConfig({
   vite: {
     server: {
       hmr: false,
+    },
+  },
+
+  buildModules: ["@nuxt/image"],
+
+  image: {
+    domains: [
+      process.env.NUXT_PUBLIC_STORAGE_BASE_URL,
+      process.env.NUXT_PUBLIC_APP_URL,
+      process.env.NUXT_PUBLIC_API_BASE,
+      process.env.NUXT_PUBLIC_AUTH_BASE,
+    ].filter((url): url is string => Boolean(url)),
+    format: ["avif", "webp", "jpeg"],
+    ipx: {
+      // Avoid exposing name of internal binary
+      // -- Omar Ibrahim, Apr 20 26
+      baseURL: "/_images",
+    },
+    presets: {
+      thumbnail: {
+        modifiers: {
+          format: "webp",
+          width: 263,
+          height: 160,
+          fit: "cover",
+        },
+      },
     },
   },
 

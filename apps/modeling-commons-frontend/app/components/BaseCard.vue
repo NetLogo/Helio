@@ -15,23 +15,15 @@
           <div
             class="h-40 bg-linear-to-br from-primary-50/60 via-elevated to-primary-100/40 relative overflow-hidden"
           >
-            <template v-if="imageUrl && !imageLoadFailed">
+            <template v-if="imageUrl">
               <NuxtImg
-                v-slot="{ isLoaded, imgAttrs, src }"
                 :src="imageUrl"
                 alt="Card image"
                 class="w-full h-full object-cover rounded-t mb-4 absolute inset-0"
                 crossorigin="use-credentials"
                 defer
-                custom
-                @error="imageLoadFailed = true"
-              >
-                <!-- Show the actual image when loaded -->
-                <img v-if="isLoaded" v-bind="imgAttrs" :src="src" />
-
-                <!-- Show a placeholder while loading -->
-                <img v-else :src="Placeholder.uri" alt="placeholder" />
-              </NuxtImg>
+                :placeholder="[30, 30]"
+              />
             </template>
             <template v-else>
               <div class="absolute inset-0 opacity-10">
@@ -98,7 +90,6 @@
 
 <script setup lang="ts">
 import { NuxtLink } from "#components";
-import Placeholder from "@Repo/vue-ui/assets/placeholder-image.json";
 
 defineProps<{
   to?: string;
@@ -109,6 +100,4 @@ defineProps<{
 
 const slots = useSlots();
 const hasFooter = computed(() => !!slots.footer);
-
-const imageLoadFailed = ref(false);
 </script>

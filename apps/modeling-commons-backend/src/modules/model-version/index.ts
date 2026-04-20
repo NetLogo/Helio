@@ -19,5 +19,8 @@ declare global {
     getVersionQuery: ReturnType<
       typeof import('#src/modules/model-version/queries/get-version.query.ts').default
     >;
+    getVersionCardQuery: ReturnType<
+      typeof import('#src/modules/model-version/queries/get-version-card.query.ts').default
+    >;
   }
 }

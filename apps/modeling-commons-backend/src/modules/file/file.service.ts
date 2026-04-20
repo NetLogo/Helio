@@ -1,3 +1,4 @@
+import env from '#src/config/env.ts';
 import { FileNotFoundError } from '#src/modules/file/domain/file.errors.ts';
 import {
   fileMetadataSchema,
@@ -21,13 +22,8 @@ export type FileInfo = {
   access: FileAccess;
 };
 
-export default function makeFileService({
-  fileDomain,
-  storage,
-  bucket,
-  storagePublicBaseUrl,
-}: Dependencies) {
-  const publicBaseUrl = storagePublicBaseUrl.replace(/\/+$/, '');
+export default function makeFileService({ fileDomain, storage, bucket }: Dependencies) {
+  const publicBaseUrl = env.storage.publicBaseUrl.replace(/\/+$/, '');
 
   function parseMetadata(key: string, raw: unknown): FileMetadata {
     const parsed = fileMetadataSchema.Parse(raw ?? {});
@@ -58,9 +54,7 @@ export default function makeFileService({
     },
 
     async getMetadata(key: string): Promise<FileInfo> {
-      const head = await storage.send(
-        new HeadObjectCommand({ Bucket: bucket.Name, Key: key }),
-      );
+      const head = await storage.send(new HeadObjectCommand({ Bucket: bucket.Name, Key: key }));
       if (!head) throw new FileNotFoundError(key);
       const metadata = parseMetadata(key, head.Metadata);
       return {
@@ -77,11 +71,9 @@ export default function makeFileService({
         return `${publicBaseUrl}/${key}`;
       }
       const { expiresIn = 3600 } = options;
-      return getSignedUrl(
-        storage,
-        new GetObjectCommand({ Bucket: bucket.Name, Key: key }),
-        { expiresIn },
-      );
+      return getSignedUrl(storage, new GetObjectCommand({ Bucket: bucket.Name, Key: key }), {
+        expiresIn,
+      });
     },
 
     async download(key: string): Promise<{
@@ -89,9 +81,7 @@ export default function makeFileService({
       contentType: string;
       filename: string;
     }> {
-      const res = await storage.send(
-        new GetObjectCommand({ Bucket: bucket.Name, Key: key }),
-      );
+      const res = await storage.send(new GetObjectCommand({ Bucket: bucket.Name, Key: key }));
       if (!res.Body) throw new FileNotFoundError(key);
       const metadata = parseMetadata(key, res.Metadata);
       const bytes = await res.Body.transformToByteArray();

@@ -72,6 +72,14 @@
   --color-background-overlay: var(--color-background);
   --color-nav-text-hover: var(--color-royal-blue-dark);
 
+  /* Docs */
+  --primary-heading-background-color: var(--color-primary);
+  --primary-heading-background-color-hover: #0a55ad;
+  --primary-heading-text-color: var(--color-text-on-primary);
+  --secondary-heading-background-color: var(--color-coral-lighter);
+  --secondary-heading-background-color-hover: #b3cde0;
+  --secondary-heading-text-color: var(--color-black);
+
   /* Radius */
   --radius-sm: 0.25rem;
   --radius: 0.375rem;
