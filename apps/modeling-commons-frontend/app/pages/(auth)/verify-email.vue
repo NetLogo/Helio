@@ -1,5 +1,5 @@
 <template>
-  <div class="verify-email-page">
+  <div class="grid gap-6">
     <AuthPageIntro
       icon="i-lucide-mail-check"
       title="Verify your email address"
@@ -14,7 +14,7 @@
       :closable="false"
     />
 
-    <form class="verify-email-page__form" @submit.prevent="resendVerification">
+    <form class="grid gap-4" @submit.prevent="resendVerification">
       <UFormField label="Email">
         <UInput
           v-model="email"
@@ -28,7 +28,7 @@
 
       <UButton
         type="submit"
-        class="verify-email-page__submit"
+        class="w-full justify-center"
         size="lg"
         :loading="isSubmitting"
         :disabled="!canResend"
@@ -37,7 +37,7 @@
       </UButton>
     </form>
 
-    <UButton class="verify-email-page__submit" size="sm" variant="solid" :to="signUpLink">
+    <UButton class="w-full justify-center" size="sm" variant="solid" :to="signUpLink">
       Use a different email
     </UButton>
   </div>
@@ -165,20 +165,3 @@ onBeforeUnmount(() => {
   }
 });
 </script>
-
-<style scoped>
-.verify-email-page {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.verify-email-page__form {
-  display: grid;
-  gap: 1rem;
-}
-
-.verify-email-page__submit {
-  justify-content: center;
-  width: 100%;
-}
-</style>

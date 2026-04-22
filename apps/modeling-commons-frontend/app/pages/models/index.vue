@@ -11,10 +11,9 @@
 
       <div class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
-          <UInput
+          <SearchBar
             :model-value="filters.keyword"
-            placeholder="Search models by keyword..."
-            icon="i-lucide-search"
+            autofocus
             @update:model-value="onKeywordChange"
           />
         </div>

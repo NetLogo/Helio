@@ -2,10 +2,13 @@
   <FileUploader
     label="Drag and drop a NetLogo model here"
     accept=".nlogox"
-    :description="`Supported file types: .nlogox (max. ${formatBytes(MAX_FILE_SIZE)})`"
+    :description="`Supported file types: .nlogox (max. ${formattedMaxFileSize})`"
+    include-browse-button
   />
 </template>
 
-<script lang="ts" setup>
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+<script setup lang="ts">
+import { maxNetlogoFileSize } from "./form";
+
+const formattedMaxFileSize = formatBytes(maxNetlogoFileSize);
 </script>

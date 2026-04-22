@@ -1,7 +1,7 @@
 <template>
   <UCard
     :ui="{
-      root: 'rounded-2xl ring-0 border-0 shadow-none',
+      root: 'rounded-2xl shadow-none',
       body: 'p-8 sm:p-8',
     }"
   >
@@ -25,25 +25,22 @@
               >Select what you want help with</span
             >
           </template>
-          <div class="flex flex-col gap-2">
-            <UCheckbox
-              v-model="helpTypes.visualization"
-              label="I want suggestions to improve the visualization"
-            />
-            <UCheckbox v-model="helpTypes.code" label="I want suggestions to improve the code" />
-            <UCheckbox v-model="helpTypes.open" label="I am open to all suggestions" />
-          </div>
+          <UFormField>
+            <template #label>
+              <span class="font-sans text-base font-medium leading-normal text-text"
+                >Best Usecases</span
+              >
+            </template>
+            <UCheckboxGroup v-model="state.peerReviewKinds" :items="peerReviewKindOptions" />
+          </UFormField>
         </UFormField>
 
         <UFormField>
           <template #label>
-            <span
-              class="font-[family-name:var(--font-sans)] text-base font-medium leading-normal text-text"
-              >Description</span
-            >
+            <span class="text-md leading-normal text-text">Description</span>
           </template>
           <UTextarea
-            v-model="reviewDescription"
+            v-model="state.peerReviewDescription"
             placeholder="Write 1-2 lines to help others understand what you are trying to resolve"
             :rows="6"
             class="w-full"
@@ -55,16 +52,8 @@
 </template>
 
 <script setup lang="ts">
-const helpTypes = ref({
-  visualization: false,
-  code: false,
-  open: false,
-});
+import type { UploadFormInput } from "./form";
+import { peerReviewKindOptions } from "./form";
 
-const reviewDescription = ref("");
-
-defineExpose({
-  helpTypes,
-  reviewDescription,
-});
+const state = defineModel<UploadFormInput>({ required: true });
 </script>

@@ -52,7 +52,7 @@
             size="sm"
             class="rounded-full bg-neutral-lighter"
           />
-          <span class="text-sm text-muted">{{ user.name }}</span>
+          <span class="text-sm text-muted hidden sm:block">{{ user.name }}</span>
           <UIcon
             name="i-lucide-chevron-down"
             class="text-muted group-hover:text-toned transition-transform"

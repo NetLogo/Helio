@@ -57,6 +57,23 @@
   --color-coral-darker: #66341e;
   --color-coral-darkest: #4c2716;
 
+  /* States */
+  --color-danger: oklch(0.4437 0.1677 25.41);
+  --color-danger-hover: colormix(in srgb, var(--color-danger) 80%, black);
+  --color-danger-active: colormix(in srgb, var(--color-danger) 60%, black);
+
+  --color-success: oklch(0.4437 0.168 145.62);
+  --color-success-hover: colormix(in srgb, var(--color-success) 80%, black);
+  --color-success-active: colormix(in srgb, var(--color-success) 60%, black);
+
+  --color-info: var(--color-royal-blue);
+  --color-info-hover: var(--color-royal-blue-dark);
+  --color-info-active: var(--color-royal-blue-darker);
+
+  --color-warning: oklch(0.7528 0.1167 97.9);
+  --color-warning-hover: colormix(in srgb, var(--color-warning) 80%, black);
+  --color-warning-active: colormix(in srgb, var(--color-warning) 60%, black);
+
   /* Functional colors */
   --color-primary: var(--color-royal-blue);
   --color-brand: var(--color-royal-blue);
@@ -85,6 +102,13 @@
   --ui-border: var(--color-border);
   --ui-text: var(--color-text);
   --ui-text-dimmed: var(--color-text-dimmed);
+
+  --ui-primary: var(--color-primary);
+  --ui-secondary: var(--color-secondary);
+  --ui-success: var(--color-success);
+  --ui-info: var(--color-info);
+  --ui-warning: var(--color-warning);
+  --ui-error: var(--color-danger);
 
   --ui-radius: var(--radius);
 }
@@ -119,6 +143,22 @@
   --color-coral-dark: var(--color-coral-dark);
   --color-coral-darker: var(--color-coral-darker);
   --color-coral-darkest: var(--color-coral-darkest);
+
+  --color-danger: var(--color-danger);
+  --color-danger-hover: var(--color-danger-hover);
+  --color-danger-active: var(--color-danger-active);
+
+  --color-success: var(--color-success);
+  --color-success-hover: var(--color-success-hover);
+  --color-success-active: var(--color-success-active);
+
+  --color-info: var(--color-info);
+  --color-info-hover: var(--color-info-hover);
+  --color-info-active: var(--color-info-active);
+
+  --color-warning: var(--color-warning);
+  --color-warning-hover: var(--color-warning-hover);
+  --color-warning-active: var(--color-warning-active);
 
   --text-lg: var(--text-lg);
   --text-md: var(--text-md);

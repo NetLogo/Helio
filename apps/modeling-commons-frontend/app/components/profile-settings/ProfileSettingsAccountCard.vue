@@ -1,13 +1,10 @@
 <template>
   <ProfileSettingsCard eyebrow="Account" title="Profile overview">
-    <div class="profile-account-card__summary">
-      <UUser
-        :name="displayName"
-        :avatar="{ src: displayImage, alt: displayName, size: '3xl' }"
-      >
+    <div class="border-b border-neutral-darkest/10 pb-6">
+      <UUser :name="displayName" :avatar="{ src: displayImage, alt: displayName, size: 'xl' }">
         <template #description>
-          <div class="profile-account-card__identity">
-            <span class="profile-account-card__email">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="inline-flex items-center gap-2 text-muted">
               <UIcon name="i-lucide-mail" />
               {{ displayEmail }}
             </span>
@@ -19,24 +16,24 @@
       </UUser>
     </div>
 
-    <div class="profile-account-card__details">
-      <article class="profile-account-card__detail">
-        <p class="profile-account-card__label">Member since</p>
-        <p class="profile-account-card__value">{{ formatDate(createdAt) }}</p>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <article class="grid gap-2 rounded-md bg-neutral-darkest/5 p-4">
+        <p class="m-0 text-xs uppercase tracking-widest text-muted">Member since</p>
+        <p class="m-0 font-medium text-highlighted">{{ formatDate(createdAt) }}</p>
       </article>
-      <article class="profile-account-card__detail">
-        <p class="profile-account-card__label">System role</p>
-        <p class="profile-account-card__value">{{ systemRoleLabel }}</p>
+      <article class="grid gap-2 rounded-md bg-neutral-darkest/5 p-4">
+        <p class="m-0 text-xs uppercase tracking-widest text-muted">System role</p>
+        <p class="m-0 font-medium text-highlighted">{{ systemRoleLabel }}</p>
       </article>
-      <article class="profile-account-card__detail">
-        <p class="profile-account-card__label">Display name</p>
-        <p class="profile-account-card__value">{{ displayName }}</p>
-        <p class="profile-account-card__hint">Name editing is not available in this app yet.</p>
+      <article class="grid gap-2 rounded-md bg-neutral-darkest/5 p-4">
+        <p class="m-0 text-xs uppercase tracking-widest text-muted">Display name</p>
+        <p class="m-0 font-medium text-highlighted">{{ displayName }}</p>
+        <p class="m-0 text-sm text-muted">Name editing is not available in this app yet.</p>
       </article>
-      <article class="profile-account-card__detail">
-        <p class="profile-account-card__label">Email</p>
-        <p class="profile-account-card__value profile-account-card__value--break">{{ displayEmail }}</p>
-        <p class="profile-account-card__hint">
+      <article class="grid gap-2 rounded-md bg-neutral-darkest/5 p-4">
+        <p class="m-0 text-xs uppercase tracking-widest text-muted">Email</p>
+        <p class="m-0 break-words font-medium text-highlighted">{{ displayEmail }}</p>
+        <p class="m-0 text-sm text-muted">
           Email changes still go through the auth service rather than this settings page.
         </p>
       </article>
@@ -54,68 +51,3 @@ defineProps<{
   systemRoleLabel: string;
 }>();
 </script>
-
-<style scoped>
-.profile-account-card__summary {
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--ui-border) 80%, transparent);
-}
-
-.profile-account-card__identity {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.profile-account-card__email {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--ui-text-muted);
-}
-
-.profile-account-card__details {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.profile-account-card__detail {
-  display: grid;
-  gap: 0.5rem;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background: color-mix(in srgb, var(--ui-bg-muted) 65%, transparent);
-}
-
-.profile-account-card__label {
-  margin: 0;
-  color: var(--ui-text-muted);
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.profile-account-card__value {
-  margin: 0;
-  color: var(--ui-text-highlighted);
-  font-weight: 500;
-}
-
-.profile-account-card__value--break {
-  overflow-wrap: anywhere;
-}
-
-.profile-account-card__hint {
-  margin: 0;
-  color: var(--ui-text-muted);
-  font-size: 0.875rem;
-}
-
-@media (max-width: 640px) {
-  .profile-account-card__details {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-</style>

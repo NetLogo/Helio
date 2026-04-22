@@ -1,73 +1,98 @@
 <template>
   <div class="bg-page-bg min-h-screen">
     <UContainer class="py-8">
-      <div v-if="step === 'file'" class="flex items-center justify-center min-h-[70vh]">
+      <div v-if="!formState.nlogoxFile" class="flex items-center justify-center min-h-[70vh]">
         <div class="upload-modal">
-          <div class="flex flex-col gap-4 w-full">
+          <div class="flex flex-col w-full">
             <h5>Upload Model File</h5>
-            <p class="text-base text-text">The file name must end with ".nlogox"</p>
+            <p class="text-base text-muted">The file name must end with ".nlogox"</p>
           </div>
-          <NetlogoFileUpload v-model="formState.file" class="w-full h-100" />
+          <NetlogoFileUpload v-model="formState.nlogoxFile" class="w-full h-100" />
         </div>
       </div>
 
-      <div v-else class="flex gap-12">
-        <!-- <UploadStepper
-          :steps="['Add Details', 'Set Permissions', 'Ask for Peer Review']"
-          :active-step="0"
-          :refs="stepsRefs"
-        /> -->
-        <div class="flex flex-col gap-10 max-w-sm">
-          <div class="flex flex-col gap-5">
-            <h5>Model File</h5>
-            <NetlogoFileUpload
-              v-model="formState.file"
-              class="w-50"
+      <div v-else class="flex justify-between gap-10 relative">
+        <UCard class="ring-0 border-0 md:px-5 md:py-3 flex-1 shrink-0">
+          <UForm :state="formState">
+            <UStepper
+              v-model="stepIndex"
+              :items="stepperItems"
               :ui="{
-                base: 'hidden',
+                header: 'basis-[25%] ',
+                item: 'min-h-20',
+                content: 'mt-5',
+                trigger:
+                  'bg-(--color-foreground) text-text ring ring-(--color-border) rounded-full hover:bg-neutral-lighter group-data-[state=active]:hover:bg-royal-blue',
               }"
-            />
-          </div>
-          <div class="flex flex-col gap-5">
-            <h5>Model Files</h5>
-            <UAlert
-              variant="subtle"
-              color="neutral"
-              icon="i-lucide-info"
-              description="Allowed file types include .csv, .txt, .xlsx, .zip, and more. These files will be included in the model version and can be accessed by the model at runtime, for example using the file primitives in NetLogo."
-            />
-            <FileUploader
-              v-model="modelFiles"
-              description="Upload files required to run the model, such as datasets or extensions."
-              class="w-fill"
-            />
-          </div>
-          <div class="flex flex-col gap-5">
-            <h5>Additional Files</h5>
-            <UAlert
-              variant="subtle"
-              color="neutral"
-              icon="i-lucide-info"
-              description="Upload any additional files, such as documentation, license, or supplementary materials."
-            />
-            <FileUploader
-              v-model="additionalFiles"
-              class="w-50"
-              :ui="{
-                base: 'hidden',
-              }"
-            />
-          </div>
-        </div>
+            >
+              <template #files>
+                <FileUploadCard
+                  v-model:nlogox-file="formState.nlogoxFile"
+                  v-model:model-files="modelFiles"
+                  v-model:additional-files="additionalFiles"
+                />
+              </template>
+              <template #details>
+                <UForm :schema="AddDetailsCardSchema" nested>
+                  <AddDetailsCard v-model="formState" />
+                </UForm>
+              </template>
+              <template #permissions>
+                <SetPermissionsCard v-model="formState" />
+              </template>
+              <template #peer-review>
+                <PeerReviewCard v-model="formState" />
+              </template>
+            </UStepper>
 
-        <div class="flex flex-col gap-8 max-w-3xl w-full">
-          <AddDetailsCard ref="AddDetailsCard" @change-image="onChangeImage" />
-          <SetPermissionsCard ref="SetPermissionsCard" />
-          <PeerReviewCard ref="PeerReviewCard" />
-          <UploadActions
-            :publish-disabled="submitting"
-            @save-draft="onSaveDraft"
-            @publish="onPublish"
+            <div class="flex gap-4 items-start justify-between w-full">
+              <UFieldGroup>
+                <UButton
+                  square
+                  icon="i-lucide-chevron-left"
+                  title="Previous Step"
+                  :disabled="stepIndex === 0"
+                  @click="prev"
+                >
+                </UButton>
+                <UButton
+                  square
+                  icon="i-lucide-chevron-right"
+                  title="Next Step"
+                  :disabled="stepIndex === stepperItems.length - 1"
+                  @click="next"
+                >
+                </UButton>
+              </UFieldGroup>
+
+              <div class="flex gap-4">
+                <UButton variant="outline" color="neutral"> Save as Draft </UButton>
+                <UButton :disabled="submitting" variant="solid" color="primary"> Publish </UButton>
+              </div>
+            </div>
+          </UForm>
+        </UCard>
+        <div
+          class="hidden md:flex flex-col gap-5 sticky top-[calc(1rem+var(--ui-header-height))] self-start"
+        >
+          <h5>Upload Preview</h5>
+          <ModelCard
+            v-if="formState.nlogoxFile"
+            class="w-60 h-fit"
+            to="#"
+            :model="{
+              id: '',
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              latestVersionNumber: 1,
+              parentModelId: null,
+              parentVersionNumber: null,
+              visibility: formState.permission ?? 'private',
+              isEndorsed: false,
+              title: formState.name || formState.nlogoxFile.name,
+              description: formState.description,
+            }"
+            :image-url="previewImageUrl"
           />
         </div>
       </div>
@@ -76,9 +101,12 @@
 </template>
 
 <script setup lang="ts">
+import type { StepperItem } from "#ui/types";
 import type AddDetailsCard from "~/components/upload/AddDetailsCard.vue";
 import type PeerReviewCard from "~/components/upload/PeerReviewCard.vue";
-import type SetPermissionsCard from "~/components/upload/SetPermissionsCard.vue";
+import SetPermissionsCard from "~/components/upload/SetPermissionsCard.vue";
+import type { UploadFormInput } from "~/components/upload/form";
+import { AddDetailsCardSchema, UploadFormSchema } from "~/components/upload/form";
 
 definePageMeta({
   layout: "default",
@@ -92,123 +120,77 @@ useSeoMeta({
 const modelFile = ref<File | null>(null);
 const submitting = ref(false);
 
-const formState = ref({
-  file: new File([], "file.nlogox") as File | null,
-});
+const stepIndex = ref(0);
+
+const formSchema = UploadFormSchema;
+const defaultFormValues: UploadFormInput = {
+  nlogoxFile: null,
+  imageFile: null,
+  name: "",
+  description: "",
+  tags: [],
+  usecases: [],
+  subjects: [],
+  permission: "private",
+  groupId: null,
+  collaboratorEmails: [],
+  askForCollaborators: false,
+  askForPeerReview: false,
+  peerReviewKinds: [],
+};
+const formState = ref<UploadFormInput>({ ...defaultFormValues });
+const previewImageUrl = computed(() =>
+  formState.value.imageFile ? URL.createObjectURL(formState.value.imageFile) : undefined,
+);
+
+watch(
+  () => formState.value.nlogoxFile,
+  (newValue) => {
+    if (formState.value.name === "" && newValue) {
+      formState.value.name = newValue.name.replace(/\.nlogox$/i, "");
+    }
+    if (!newValue) {
+      formState.value = { ...defaultFormValues };
+    }
+  },
+  { immediate: true },
+);
+
 const modelFiles = ref<File[]>([]);
 const additionalFiles = ref<File[]>([]);
 
-const step = computed<"file" | "details">(() => (formState.value.file ? "details" : "file"));
+const stepperItems = [
+  {
+    slot: "details",
+    icon: "i-lucide-file-text",
+    title: "Add Details",
+  },
+  {
+    slot: "files",
+    icon: "i-lucide-file-up",
+    title: "Add Files",
+  },
+  {
+    slot: "permissions",
+    icon: "i-lucide-lock",
+    title: "Set Permissions",
+  },
+  {
+    slot: "peer-review",
+    icon: "i-lucide-users",
+    title: "Ask for Peer Review",
+  },
+] satisfies Array<StepperItem>;
 
-const addDetailsCardRef = useTemplateRef<InstanceType<typeof AddDetailsCard>>("AddDetailsCard");
-const setPermissionsCardRef =
-  useTemplateRef<InstanceType<typeof SetPermissionsCard>>("SetPermissionsCard");
-const peerReviewCardRef = useTemplateRef<InstanceType<typeof PeerReviewCard>>("PeerReviewCard");
-const stepsRefs = [addDetailsCardRef, setPermissionsCardRef, peerReviewCardRef];
-
-const toast = useToast();
-const router = useRouter();
-
-function onFileSelected(file: File | null | undefined) {
-  if (!file) {
-    toast.add({ title: "No file selected", color: "warning" });
-    return;
-  }
-  modelFile.value = file;
-  step.value = "details";
-}
-
-function onChangeImage(_file: File) {}
-
-function onSaveDraft() {
-  void submit("private");
-}
-
-function onPublish() {
-  const read = setPermissionsCardRef.value?.readPermission;
-  void submit(read === "everyone" ? "public" : "private");
-}
-
-async function submit(visibility: "public" | "private") {
-  if (submitting.value) return;
-
-  const details = addDetailsCardRef.value;
-  const permissions = setPermissionsCardRef.value;
-  if (!details || !permissions) return;
-
-  const title = details.modelName.trim();
-  if (!title) {
-    toast.add({ title: "Model name is required", color: "error" });
-    return;
-  }
-  if (!modelFile.value) {
-    toast.add({ title: "Please select a .nlogox file", color: "error" });
-    return;
-  }
-
-  submitting.value = true;
-  try {
-    const api = useApi();
-    const description = details.description.trim() || undefined;
-
-    const { data: created, error: createError } = await api.POST("/api/v1/models", {
-      body: { title, description, visibility },
-    });
-    if (createError || !created) {
-      throw new Error((createError as { message?: string })?.message ?? "Failed to create model");
-    }
-    const modelId = created.id;
-
-    const formData = new FormData();
-    formData.append("file", modelFile.value, modelFile.value.name);
-    formData.append("title", title);
-    if (description) formData.append("description", description);
-
-    const apiBase = useRuntimeConfig().public.apiBase;
-    try {
-      await $fetch(`${apiBase}/api/v1/models/${modelId}/versions`, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-    } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : (err as { data?: { message?: string } })?.data?.message;
-      throw new Error(message ?? "Failed to upload model version");
-    }
-
-    for (const tag of details.tags) {
-      const { error } = await api.POST("/api/v1/models/{id}/tags", {
-        params: { path: { id: modelId } },
-        body: { name: tag },
-      });
-      if (error) {
-        toast.add({ title: `Failed to add tag "${tag}"`, color: "warning" });
-      }
-    }
-
-    if (permissions.invitedPeople.length) {
-      toast.add({
-        title: "Email invites not yet supported",
-        description: "The permissions API requires user IDs; invited emails were skipped.",
-        color: "warning",
-      });
-    }
-
-    toast.add({ title: "Model uploaded", color: "success" });
-    await router.push(`/models/${modelId}`);
-  } catch (err) {
-    toast.add({
-      title: "Upload failed",
-      description: err instanceof Error ? err.message : String(err),
-      color: "error",
-    });
-  } finally {
-    submitting.value = false;
+function goToStep(index: number) {
+  stepIndex.value = index;
+  if (index < 0 || index > stepperItems.length - 1) return;
+  if (import.meta.client) {
+    window.scrollTo({ top: 0 });
   }
 }
+const next = () => goToStep(stepIndex.value + 1);
+const prev = () => goToStep(stepIndex.value - 1);
 </script>
 
 <style lang="scss" scoped>

@@ -64,7 +64,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div class="signup-page">
+  <div>
     <UAuthForm
       :fields="fields"
       :schema="schema"
@@ -81,48 +81,20 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
         <h4>Sign Up</h4>
       </template>
       <template #description>
-        <span class="signup-page__description">
+        <span class="text-muted">
           Already have an account?
-          <ULink :to="loginLink" class="signup-page__link">Login</ULink>.
+          <ULink :to="loginLink" class="font-medium text-primary underline">Login</ULink>.
         </span>
       </template>
 
       <template #footer>
-        <span class="signup-page__footer-copy">
+        <span class="text-muted">
           By signing up, you agree to our
-          <ULink to="/terms-of-service" class="signup-page__link">Terms of Service</ULink>.
+          <ULink to="/terms-of-service" class="font-medium text-primary underline">
+            Terms of Service
+          </ULink>.
         </span>
       </template>
     </UAuthForm>
   </div>
 </template>
-
-<style lang="css" scoped>
-.signup-page {
-  display: grid;
-}
-
-.signup-page__description,
-.signup-page__footer-copy {
-  color: var(--ui-text-muted);
-}
-
-.signup-page__link {
-  color: var(--ui-color-primary-500);
-  font-weight: 500;
-  text-decoration: underline;
-  text-underline-offset: 0.12em;
-}
-
-:deep([data-slot="error"]) {
-  transition: all 0.3s ease;
-  max-height: 0;
-  animation: fadeIn 1.5s var(--easy-easing) forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    max-height: 10rem;
-  }
-}
-</style>

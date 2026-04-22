@@ -1,10 +1,10 @@
 <template>
-  <div v-if="isLoading" class="passkey-page__loading">
-    <UIcon name="i-lucide-loader-circle" class="passkey-page__loading-icon" />
-    <p class="passkey-page__loading-copy">Checking your passkey setup...</p>
+  <div v-if="isLoading" class="grid justify-items-center gap-6 py-8 text-center">
+    <UIcon name="i-lucide-loader-circle" class="animate-spin text-3xl text-primary" />
+    <p class="m-0 text-muted">Checking your passkey setup...</p>
   </div>
 
-  <div v-else class="passkey-page">
+  <div v-else class="grid gap-6">
     <AuthPageIntro
       icon="i-lucide-fingerprint"
       title="Use this device next time"
@@ -31,9 +31,9 @@
       :closable="false"
     />
 
-    <div class="passkey-page__actions">
+    <div class="grid gap-3">
       <UButton
-        class="passkey-page__button"
+        class="w-full justify-center"
         size="lg"
         :loading="isAddingPasskey"
         :disabled="!isPasskeySupported"
@@ -42,7 +42,7 @@
         Add a passkey
       </UButton>
 
-      <UButton class="passkey-page__button" color="neutral" variant="ghost" @click="skipForNow">
+      <UButton class="w-full justify-center" color="neutral" variant="ghost" @click="skipForNow">
         Not now
       </UButton>
     </div>
@@ -126,44 +126,3 @@ async function skipForNow() {
   await continueToNext();
 }
 </script>
-
-<style scoped>
-.passkey-page,
-.passkey-page__loading {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.passkey-page__loading {
-  justify-items: center;
-  padding-block: 2rem;
-  text-align: center;
-}
-
-.passkey-page__loading-icon {
-  font-size: 2rem;
-  color: var(--ui-color-primary-500);
-  animation: spin 1s linear infinite;
-}
-
-.passkey-page__loading-copy {
-  margin: 0;
-  color: var(--ui-text-muted);
-}
-
-.passkey-page__actions {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.passkey-page__button {
-  justify-content: center;
-  width: 100%;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>

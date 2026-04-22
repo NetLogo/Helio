@@ -4,16 +4,18 @@
     title="Profile visibility"
     description="Choose how visible your author profile is across public model pages."
   >
-    <div class="profile-preferences-card__status">
+    <div class="flex justify-start sm:justify-end">
       <UBadge :color="visibilityBadgeColor" variant="subtle" size="sm">
         {{ visibilityLabel }}
       </UBadge>
     </div>
 
-    <section class="profile-preferences-card__panel">
-      <div class="profile-preferences-card__panel-copy">
-        <h3 class="profile-preferences-card__panel-title">Public author profile</h3>
-        <p class="profile-preferences-card__panel-description">
+    <section
+      class="grid gap-5 rounded-md border border-neutral-darkest/10 bg-neutral-darkest/5 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+    >
+      <div class="grid gap-1.5">
+        <h3 class="m-0 text-base font-medium text-highlighted">Public author profile</h3>
+        <p class="m-0 text-sm text-muted">
           When enabled, other people can see your name and author details on public-facing pages.
         </p>
       </div>
@@ -26,10 +28,10 @@
       />
     </section>
 
-    <section class="profile-preferences-card__radio-group">
-      <div class="profile-preferences-card__radio-copy">
-        <h3 class="profile-preferences-card__panel-title">How do you use Modeling Commons?</h3>
-        <p class="profile-preferences-card__panel-description">
+    <section class="grid gap-5 rounded-md border border-neutral-darkest/10 bg-neutral-darkest/5 p-5">
+      <div class="grid gap-1.5">
+        <h3 class="m-0 text-base font-medium text-highlighted">How do you use Modeling Commons?</h3>
+        <p class="m-0 text-sm text-muted">
           This helps us describe your profile more clearly across the app.
         </p>
       </div>
@@ -43,12 +45,12 @@
       />
     </section>
 
-    <footer class="profile-preferences-card__footer">
-      <p class="profile-preferences-card__footnote">
+    <footer class="flex flex-col gap-4 border-t border-neutral-darkest/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <p class="m-0 text-sm text-muted">
         {{ isDirty ? "You have unsaved changes." : "Your profile settings are up to date." }}
       </p>
 
-      <div class="profile-preferences-card__actions">
+      <div class="flex w-full flex-wrap gap-3 sm:w-auto">
         <UButton color="neutral" variant="outline" :disabled="!isDirty || isSaving" @click="$emit('reset')">
           Reset
         </UButton>
@@ -81,88 +83,3 @@ defineEmits<{
   save: [];
 }>();
 </script>
-
-<style scoped>
-.profile-preferences-card__status {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.profile-preferences-card__panel,
-.profile-preferences-card__radio-group {
-  display: grid;
-  gap: 1.25rem;
-  padding: 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--ui-border) 80%, transparent);
-  border-radius: 0.5rem;
-  background: color-mix(in srgb, var(--ui-bg-muted) 65%, transparent);
-}
-
-.profile-preferences-card__panel {
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-}
-
-.profile-preferences-card__panel-copy,
-.profile-preferences-card__radio-copy {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.profile-preferences-card__panel-title {
-  margin: 0;
-  color: var(--ui-text-highlighted);
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.profile-preferences-card__panel-description {
-  margin: 0;
-  color: var(--ui-text-muted);
-  font-size: 0.9375rem;
-}
-
-.profile-preferences-card__footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid color-mix(in srgb, var(--ui-border) 80%, transparent);
-}
-
-.profile-preferences-card__footnote {
-  margin: 0;
-  color: var(--ui-text-muted);
-  font-size: 0.875rem;
-}
-
-.profile-preferences-card__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-@media (max-width: 640px) {
-  .profile-preferences-card__status {
-    justify-content: flex-start;
-  }
-
-  .profile-preferences-card__panel {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .profile-preferences-card__footer {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .profile-preferences-card__actions {
-    width: 100%;
-  }
-
-  .profile-preferences-card__actions :deep(button) {
-    flex: 1 1 auto;
-  }
-}
-</style>

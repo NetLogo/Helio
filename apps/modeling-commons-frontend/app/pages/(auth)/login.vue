@@ -1,5 +1,5 @@
 <template>
-  <div class="login-page">
+  <div class="grid gap-6">
     <UAuthForm
       :fields="fields"
       :schema="schema"
@@ -16,15 +16,15 @@
         <h4>Log In</h4>
       </template>
       <template #description>
-        <span class="login-page__description">
+        <span class="text-muted">
           Don't have an account?
-          <ULink :to="signUpLink" class="login-page__link">Create one</ULink>.
+          <ULink :to="signUpLink" class="font-medium text-primary underline">Create one</ULink>.
         </span>
       </template>
 
       <template #providers>
         <UButton
-          class="login-page__provider-button"
+          class="w-full justify-center"
           color="neutral"
           variant="outline"
           icon="i-lucide-key-round"
@@ -36,25 +36,31 @@
           Continue with a passkey
         </UButton>
 
-        <p class="login-page__divider">
-          <span class="login-page__divider-copy">
-            <span class="login-page__divider-line" />
+        <p class="m-0 text-center text-sm text-muted">
+          <span class="inline-flex items-center gap-3">
+            <span class="h-px w-8 bg-neutral-darkest/10" />
             or continue with email
-            <span class="login-page__divider-line" />
+            <span class="h-px w-8 bg-neutral-darkest/10" />
           </span>
         </p>
       </template>
 
       <template #password-hint>
-        <ULink :to="authRoutes.resetPassword" class="login-page__password-link" tabindex="-1">
+        <ULink
+          :to="authRoutes.resetPassword"
+          class="text-sm font-medium text-neutral-dark underline"
+          tabindex="-1"
+        >
           Forgot password?
         </ULink>
       </template>
 
       <template #footer>
-        <span class="login-page__footer-copy">
+        <span class="text-muted">
           By signing in, you agree to our
-          <ULink to="/terms-of-service" class="login-page__footer-link">Terms of Service</ULink>.
+          <ULink to="/terms-of-service" class="font-medium text-coral-dark underline">
+            Terms of Service
+          </ULink>.
         </span>
       </template>
     </UAuthForm>
@@ -189,67 +195,3 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   await router.push(getPasskeyPromptUrl(nextPath.value));
 }
 </script>
-
-<style scoped>
-.login-page {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.login-page__description {
-  color: var(--ui-text-muted);
-}
-
-.login-page__link,
-.login-page__password-link,
-.login-page__footer-link {
-  font-weight: 500;
-  text-decoration: underline;
-  text-underline-offset: 0.12em;
-}
-
-.login-page__link {
-  color: var(--ui-color-primary-500);
-}
-
-.login-page__password-link {
-  color: var(--ui-text);
-  font-size: 0.875rem;
-}
-
-.login-page__footer-copy {
-  color: var(--ui-text-muted);
-}
-
-.login-page__footer-link {
-  color: var(--ui-color-secondary-500);
-}
-
-.login-page__footer-link:hover {
-  color: color-mix(in srgb, var(--ui-color-secondary-500) 82%, white);
-}
-
-.login-page__provider-button {
-  justify-content: center;
-  width: 100%;
-}
-
-.login-page__divider {
-  margin: 0;
-  color: var(--ui-text-muted);
-  font-size: 0.875rem;
-  text-align: center;
-}
-
-.login-page__divider-copy {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.login-page__divider-line {
-  width: 2rem;
-  height: 1px;
-  background: color-mix(in srgb, var(--ui-border) 80%, transparent);
-}
-</style>

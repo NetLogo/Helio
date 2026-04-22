@@ -16,6 +16,7 @@
       <template #body>
         <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center">
           <SearchBar
+            class="max-w-md md:max-w-3xl"
             @keydown.enter="
               (e: KeyboardEvent) =>
                 navigateTo(`/models?keyword=${(e.target as HTMLInputElement).value}`)

@@ -20,13 +20,9 @@
       :closable="false"
     />
 
-    <div class="profile-passkeys-card__create">
+    <div class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
       <UFormField label="New passkey name">
-        <UInput
-          v-model="newPasskeyName"
-          placeholder="This device"
-          icon="i-lucide-fingerprint"
-        />
+        <UInput v-model="newPasskeyName" placeholder="This device" icon="i-lucide-fingerprint" />
       </UFormField>
 
       <UButton
@@ -39,35 +35,45 @@
       </UButton>
     </div>
 
-    <div v-if="isPending || isRefetching" class="profile-passkeys-card__loading">
-      <UIcon name="i-lucide-loader-circle" class="profile-passkeys-card__loading-icon" />
-      <p class="profile-passkeys-card__loading-copy">Loading your registered passkeys…</p>
+    <div
+      v-if="isPending || isRefetching"
+      class="grid justify-items-center gap-3 rounded-md bg-neutral-darkest/5 p-6 text-center"
+    >
+      <UIcon name="i-lucide-loader-circle" class="animate-spin text-3xl text-primary" />
+      <p class="m-0 text-sm text-muted">Loading your registered passkeys…</p>
     </div>
 
-    <div v-else-if="!passkeys.length" class="profile-passkeys-card__empty">
-      <UIcon name="i-lucide-key-round" class="profile-passkeys-card__empty-icon" />
-      <div class="profile-passkeys-card__empty-copy">
-        <p class="profile-passkeys-card__empty-title">No passkeys yet</p>
-        <p class="profile-passkeys-card__empty-description">
+    <div
+      v-else-if="!passkeys.length"
+      class="grid justify-items-center gap-3 rounded-md bg-neutral-darkest/5 p-6 text-center"
+    >
+      <UIcon name="i-lucide-key-round" class="text-3xl text-primary" />
+      <div class="grid gap-1.5">
+        <p class="m-0 font-medium text-highlighted">No passkeys yet</p>
+        <p class="m-0 text-sm text-muted">
           Add one now to make future sign-ins faster and more resilient.
         </p>
       </div>
     </div>
 
-    <ul v-else class="profile-passkeys-card__list">
-      <li v-for="passkey in passkeys" :key="passkey.id" class="profile-passkeys-card__item">
-        <div class="profile-passkeys-card__item-summary">
-          <p class="profile-passkeys-card__item-title">
+    <ul v-else class="grid list-none gap-4 p-0">
+      <li
+        v-for="passkey in passkeys"
+        :key="passkey.id"
+        class="grid gap-4 rounded-md border border-neutral-darkest/10 bg-neutral-darkest/5 p-4"
+      >
+        <div class="grid gap-1.5">
+          <p class="m-0 font-medium text-highlighted">
             {{ passkey.name || "Unnamed passkey" }}
           </p>
-          <p class="profile-passkeys-card__item-meta">
+          <p class="m-0 text-sm text-muted">
             Added {{ formatDate(String(passkey.createdAt)) }}
             <span v-if="passkey.deviceType"> • {{ sentenceCase(passkey.deviceType) }}</span>
           </p>
         </div>
 
-        <div class="profile-passkeys-card__item-actions">
-          <UFormField label="Passkey name" class="profile-passkeys-card__rename-field">
+        <div class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+          <UFormField label="Passkey name" class="min-w-0">
             <UInput
               :model-value="draftName(passkey)"
               placeholder="Passkey name"
@@ -75,7 +81,7 @@
             />
           </UFormField>
 
-          <div class="profile-passkeys-card__buttons">
+          <div class="flex flex-wrap gap-3">
             <UButton
               color="neutral"
               variant="outline"
@@ -238,122 +244,3 @@ async function revoke(passkey: Passkey) {
   });
 }
 </script>
-
-<style scoped>
-.profile-passkeys-card__create {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: end;
-}
-
-.profile-passkeys-card__loading,
-.profile-passkeys-card__empty {
-  display: grid;
-  justify-items: center;
-  gap: 0.75rem;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  background: color-mix(in srgb, var(--ui-bg-muted) 65%, transparent);
-  text-align: center;
-}
-
-.profile-passkeys-card__loading-icon,
-.profile-passkeys-card__empty-icon {
-  font-size: 2rem;
-  color: var(--ui-color-primary-500);
-}
-
-.profile-passkeys-card__loading-icon {
-  animation: spin 1s linear infinite;
-}
-
-.profile-passkeys-card__loading-copy,
-.profile-passkeys-card__empty-title,
-.profile-passkeys-card__empty-description {
-  margin: 0;
-}
-
-.profile-passkeys-card__empty-copy {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.profile-passkeys-card__empty-title {
-  color: var(--ui-text-highlighted);
-  font-weight: 500;
-}
-
-.profile-passkeys-card__empty-description,
-.profile-passkeys-card__loading-copy {
-  color: var(--ui-text-muted);
-  font-size: 0.9375rem;
-}
-
-.profile-passkeys-card__list {
-  display: grid;
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.profile-passkeys-card__item {
-  display: grid;
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid color-mix(in srgb, var(--ui-border) 80%, transparent);
-  border-radius: 0.5rem;
-  background: color-mix(in srgb, var(--ui-bg-muted) 65%, transparent);
-}
-
-.profile-passkeys-card__item-summary {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.profile-passkeys-card__item-title,
-.profile-passkeys-card__item-meta {
-  margin: 0;
-}
-
-.profile-passkeys-card__item-title {
-  color: var(--ui-text-highlighted);
-  font-weight: 500;
-}
-
-.profile-passkeys-card__item-meta {
-  color: var(--ui-text-muted);
-  font-size: 0.875rem;
-}
-
-.profile-passkeys-card__item-actions {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: end;
-}
-
-.profile-passkeys-card__rename-field {
-  min-width: 0;
-}
-
-.profile-passkeys-card__buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (max-width: 640px) {
-  .profile-passkeys-card__create,
-  .profile-passkeys-card__item-actions {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-</style>

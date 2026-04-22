@@ -215,6 +215,11 @@ export default defineAppConfig({
         },
         {
           square: true,
+          size: "lg",
+          class: "p-[0.625rem] text-[1.4rem]",
+        },
+        {
+          square: true,
           size: "md",
           class: "p-[0.625rem] text-[1.5rem]",
         },
@@ -269,6 +274,17 @@ export default defineAppConfig({
           variant: "outline",
           class: {
             base: "bg-royal-blue-lightest/20 hover:bg-royal-blue-lightest/50 data-[dragging=true]:bg-royal-blue-lightest/80",
+            file: "group/file",
+            fileTrailingButton: "hover:text-error",
+          },
+        },
+        {
+          layout: "grid",
+          multiple: false,
+          class: {
+            file: "p-5",
+            fileTrailingButton:
+              "bg-royal-blue-lightest hover:bg-error text-dimmed hover:text-white p-0.5 transition-colors",
           },
         },
       ],

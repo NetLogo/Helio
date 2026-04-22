@@ -1,5 +1,5 @@
 <template>
-  <div class="reset-password-page">
+  <div class="grid gap-6">
     <AuthPageIntro
       icon="i-lucide-key-round"
       :title="isTokenFlow ? 'Choose a new password' : 'Reset your password'"
@@ -46,7 +46,7 @@
       :closable="false"
     />
 
-    <form v-if="!isTokenFlow" class="reset-password-page__form" @submit.prevent="requestResetLink">
+    <form v-if="!isTokenFlow" class="grid gap-4" @submit.prevent="requestResetLink">
       <UFormField label="Email">
         <UInput
           v-model="email"
@@ -57,12 +57,12 @@
         />
       </UFormField>
 
-      <UButton type="submit" class="reset-password-page__submit" size="lg" :loading="isRequesting">
+      <UButton type="submit" class="w-full justify-center" size="lg" :loading="isRequesting">
         Send reset link
       </UButton>
     </form>
 
-    <form v-else class="reset-password-page__form" @submit.prevent="resetPassword">
+    <form v-else class="grid gap-4" @submit.prevent="resetPassword">
       <UFormField label="New password">
         <UInput
           v-model="password"
@@ -83,14 +83,14 @@
         />
       </UFormField>
 
-      <UButton type="submit" class="reset-password-page__submit" size="lg" :loading="isResetting">
+      <UButton type="submit" class="w-full justify-center" size="lg" :loading="isResetting">
         Reset password
       </UButton>
     </form>
 
-    <div class="reset-password-page__actions">
+    <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
       <UButton
-        class="reset-password-page__action"
+        class="justify-center sm:flex-1"
         color="neutral"
         variant="outline"
         :to="returnLink"
@@ -99,7 +99,7 @@
       </UButton>
       <UButton
         v-if="isTokenFlow"
-        class="reset-password-page__action"
+        class="justify-center sm:flex-1"
         color="neutral"
         variant="ghost"
         @click="returnToRequestForm"
@@ -108,7 +108,7 @@
       </UButton>
       <UButton
         v-else-if="requestSucceeded"
-        class="reset-password-page__action"
+        class="justify-center sm:flex-1"
         color="neutral"
         variant="ghost"
         @click="tryAnotherEmail"
@@ -287,37 +287,3 @@ function tryAnotherEmail() {
   email.value = user.value.isLoggedIn ? user.value.email : "";
 }
 </script>
-
-<style scoped>
-.reset-password-page {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.reset-password-page__form {
-  display: grid;
-  gap: 1rem;
-}
-
-.reset-password-page__submit {
-  justify-content: center;
-  width: 100%;
-}
-
-.reset-password-page__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.reset-password-page__action {
-  flex: 1 1 0;
-  justify-content: center;
-}
-
-@media (max-width: 640px) {
-  .reset-password-page__actions {
-    flex-direction: column;
-  }
-}
-</style>
