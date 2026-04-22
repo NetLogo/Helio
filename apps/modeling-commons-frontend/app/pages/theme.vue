@@ -190,6 +190,26 @@
       <h3>Various Components</h3>
 
       <TagCard name="Food" description="Tagged 12 times in the past 2 weeks" />
+      <div class="space-y-5">
+        <UAlert
+          variant="subtle"
+          color="primary"
+          title="Success Alert"
+          description="This is a success alert."
+        />
+        <UAlert
+          variant="subtle"
+          color="secondary"
+          title="Success Alert"
+          description="This is a success alert."
+        />
+        <UAlert
+          variant="subtle"
+          color="neutral"
+          title="Success Alert"
+          description="This is a success alert."
+        />
+      </div>
     </section>
   </UContainer>
 </template>

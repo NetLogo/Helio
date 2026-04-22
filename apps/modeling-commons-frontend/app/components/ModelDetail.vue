@@ -70,8 +70,9 @@
 
       <ModelVersionsTab
         v-else-if="activeTab === 'versions'"
-        :versions="versionRows"
-        @download="handleVersionDownload"
+        :model-id="card.model.id"
+        :versions="versions ?? []"
+        :pending="versionsStatus === 'pending'"
       />
 
       <ModelFamilyTab
@@ -84,8 +85,6 @@
 </template>
 
 <script setup lang="ts">
-import type { VersionRow } from "~/components/model-detail/types";
-
 const props = defineProps<{ card: ModelCard }>();
 
 type TabKey = "discussion" | "files" | "versions" | "family";
@@ -94,6 +93,11 @@ const activeTab = ref<TabKey>("discussion");
 
 const modelId = computed(() => props.card?.model.id ?? "");
 const { data: family, execute: loadFamily, status: familyStatus } = useModelFamilyCard(modelId);
+const {
+  data: versions,
+  execute: loadVersions,
+  status: versionsStatus,
+} = useModelVersions(modelId, { immediate: false });
 
 const tabs = computed(() => [
   { key: "discussion" as const, label: "Discussion" },
@@ -123,26 +127,13 @@ const previewImageUrl = computed(() => {
   return appendWindowProtocol(props.card.previewImageUrl);
 });
 
-const versionRows = computed<VersionRow[]>(() => {
-  if (!props.card?.latestVersion) return [];
-  const v = props.card.latestVersion;
-  return [
-    {
-      versionNumber: v.versionNumber,
-      title: v.title,
-      description: v.description,
-      uploaderName: null,
-      netlogoFileDownloadUrl: v.netlogoFileDownloadUrl,
-      createdAt: v.createdAt,
-      isFinalized: v.isFinalized,
-    },
-  ];
-});
-
 function onTabChange(key: TabKey) {
   activeTab.value = key;
   if (key === "family" && familyStatus.value === "idle") {
     void loadFamily();
+  }
+  if (key === "versions" && versionsStatus.value === "idle") {
+    void loadVersions();
   }
 }
 
@@ -154,9 +145,5 @@ function handleCompare() {}
 
 function handleFileDownload(fileId: string) {
   window.open(`${apiBase}/${getFileURI(fileId)}`, "_blank");
-}
-
-function handleVersionDownload(_fileId: string) {
-  if (downloadUrl.value) window.open(downloadUrl.value, "_blank");
 }
 </script>

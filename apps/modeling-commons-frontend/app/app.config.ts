@@ -10,9 +10,15 @@ export default defineAppConfig({
       base: "max-w-[var(--max-width-ch)] py-12 mx-auto",
     },
 
+    avatar: {
+      slots: {
+        root: "bg-neutral-lighter",
+      },
+    },
+
     alert: {
       slots: {
-        root: "rounded-md px-4 py-2",
+        root: "rounded-md px-4 py-3",
       },
       compoundVariants: [
         {
@@ -23,10 +29,46 @@ export default defineAppConfig({
           },
         },
         {
+          color: "secondary",
+          variant: "subtle",
+          class: {
+            root: "bg-[#FEF6E3] text-royal-blue-darker ring-coral-lighter text-coral-darker",
+          },
+        },
+        {
           color: "neutral",
           variant: "subtle",
           class: {
-            root: "bg-neutral-lightest text-royal-blue-darker ring-neutral-light",
+            root: "bg-neutral-lightest text-royal-blue-darker ring-neutral-lighter text-neutral-darkest",
+          },
+        },
+      ],
+    },
+
+    badge: {
+      slots: {
+        base: "rounded-lg px-4 py-3",
+      },
+      compoundVariants: [
+        {
+          color: "primary",
+          variant: "subtle",
+          class: {
+            base: "bg-[#E0F5FF] text-royal-blue-darker ring-[#CBEFFF]",
+          },
+        },
+        {
+          color: "secondary",
+          variant: "subtle",
+          class: {
+            base: "bg-[#FEF6E3] text-royal-blue-darker ring-coral-lighter text-coral-darker",
+          },
+        },
+        {
+          color: "neutral",
+          variant: "subtle",
+          class: {
+            base: "bg-neutral-lightest text-royal-blue-darker ring-neutral-lighter text-neutral-darkest",
           },
         },
       ],
@@ -70,8 +112,8 @@ export default defineAppConfig({
         },
         variant: {
           card: {
-            root: "rounded-none bg-neutral-darkest/5 [&_p:first-of-type]:mb-0",
-            base: "rounded-none",
+            root: "rounded-md bg-neutral-darkest/5 [&_p:first-of-type]:mb-0",
+            base: "rounded-md",
           },
         },
       },
@@ -87,7 +129,7 @@ export default defineAppConfig({
         },
         variant: {
           card: {
-            item: "rounded-none bg-neutral-darkest/5 [&_p:first-of-type]:mb-0",
+            item: "rounded-md bg-neutral-darkest/5 [&_p:first-of-type]:mb-0",
           },
         },
       },
@@ -133,6 +175,10 @@ export default defineAppConfig({
           },
         },
       },
+    },
+
+    form: {
+      base: "space-y-6!",
     },
 
     pageHero: {
@@ -204,6 +250,28 @@ export default defineAppConfig({
       slots: {
         content: "pt-4",
       },
+    },
+
+    fileUpload: {
+      defaultVariants: {
+        color: "primary",
+        variant: "outline",
+      },
+      slots: {
+        root: "cursor-pointer group/file ",
+        base: "border-0 border-dashed-stylized py-10 px-5",
+        icon: "text-4xl text-neutral-darkest",
+        label: "font-semibold text-md leading-relaxed",
+      },
+      compoundVariants: [
+        {
+          color: "primary",
+          variant: "outline",
+          class: {
+            base: "bg-royal-blue-lightest/20 hover:bg-royal-blue-lightest/50 data-[dragging=true]:bg-royal-blue-lightest/80",
+          },
+        },
+      ],
     },
   },
 });

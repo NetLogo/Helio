@@ -137,7 +137,7 @@ export const isLinkParentActive = (link: NavbarLink, currentPath: string): boole
 <script setup lang="ts">
 const route = useRoute();
 const router = useRouter();
-const auth = useNuxtApp().$auth;
+const { signOut } = useAuthActions();
 const user = useUser();
 
 const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
@@ -154,10 +154,12 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
         {
           label: "Profile",
           icon: "i-lucide-user",
+          href: "/profile/settings",
         },
         {
           label: "Settings",
           icon: "i-lucide-settings",
+          href: "/profile/settings",
         },
       ],
       [
@@ -166,7 +168,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           icon: "i-lucide-log-out",
           color: "error",
           onClick: async () => {
-            await auth.client.signOut();
+            await signOut();
             router.push("/login");
           },
         },

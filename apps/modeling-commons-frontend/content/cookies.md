@@ -16,11 +16,11 @@ Our [Privacy Policy](https://automattic.com/privacy/) explains our principles wh
 
 Cookies are small pieces of data, stored in text files, that are stored on your computer or other device when websites are loaded in a browser. They are widely used to "remember" you and your preferences, either for a single visit (through a "session cookie") or for multiple repeat visits (using a "persistent cookie"). They ensure a consistent and efficient experience for visitors, and perform essential functions such as allowing users to register and remain logged in. Cookies may be set by the site that you are visiting (known as "first party cookies"), or by third parties, such as those who serve content or provide advertising or analytics services on the website ("third party cookies"). Both websites and HTML emails may also contain other tracking technologies such as "web beacons" or "pixels." These are typically small transparent images that provide us with statistics, for similar purposes as cookies. They are often used in conjunction with cookies, though they are not stored on your computer in the same way. As a result, if you disable cookies, web beacons may still load, but their functionality will be restricted.
 
-### **How we use cookies**
+### How we use cookies
 
 We use cookies for a number of different purposes. Some cookies are necessary for technical reasons; some enable a personalized experience for both visitors and registered users; and some allow the display of advertising from selected third party networks. Some of these cookies may be set when a page is loaded, or when a visitor takes a particular action (clicking the "like" or "follow" button on a post, for example). Many of the cookies we use are only set if you are a registered WordPress.com user (so you don’t have to log in every time, for example), while others are set whenever you visit one of our websites, irrespective of whether you have an account. For more information on the choices you have about the cookies we use, please see the Controlling Cookies section below.
 
-### **Where we place cookies**
+### Where we place cookies
 
 We set cookies in a number of different locations across our services. These include:
 
@@ -29,7 +29,7 @@ We set cookies in a number of different locations across our services. These inc
 *   On sites we host for our users.
 *   On sites that use our plugins (e.g. Jetpack).
 
-### **Types of Cookie**
+### Types of Cookie
 
 The table below explains the types of cookies we use on our websites and why we use them.
 
@@ -50,7 +50,7 @@ Below are examples of the cookies set by Automattic, with explanations of their 
 
 In addition, people and companies that use our services to publish or host their own sites may place additional cookies. We provide more information on these cookies below.
 
-#### **Required**
+#### Required
 
 |Cookie|Purpose|
 |--- |--- |
@@ -72,7 +72,7 @@ In addition, people and companies that use our services to publish or host their
 |wp-settings-{user_id}|Persists a user’s wp-admin configuration.|
 |wp_sharing_{id}|Tracks whether or not a user has already performed an action.|
 
-#### **Analytics and Performance**
+#### Analytics and Performance
 
 |Cookie|Purpose|
 |--- |--- |
@@ -90,7 +90,7 @@ optimizelySegments|Gathers information that helps us understand how visitors int
 |wp-affiliate-tracker|Remembers the ID of the affiliate that referred the current user to WordPress.com|
 |utma / utmb / utmc / utmt / utmz / ga / gat / gid|Google Analytics. Gathers information that helps us understand how visitors interact with our websites, which allow us to create a better experience for our visitors. Our users may also implement Google Analytics on their own websites.|
 
-#### **Advertising**
+#### Advertising
 
 |Cookie|Purpose|
 |--- |--- |
@@ -102,7 +102,7 @@ Reduces the display of ads for repeat visitors.
 
 Please also see the section below on third party advertisements that you may see on our sites or sites that use our services.
 
-#### **Advertisements from Third Parties Through Automattic’s Ads Program**
+#### Advertisements from Third Parties Through Automattic’s Ads Program
 
 Our mission is to democratize publishing. So that we can offer free access to create a website using WordPress.com, we show ads on some of our users’ sites. Our users may also choose to place ads on their site through our ads program. Additionally, we also show ads from our ads program on some of our own websites (e.g. longreads.com). We operate our ads program in partnership with third party vendors. As part of the operation of our ads program, we use cookies to collect certain information. Advertising cookies enable us and our partners to serve ads and to personalize those ads based on information like visits to our sites and other sites on the Internet. Below is a representative list of our advertising program partners, along with information on the cookies that that each partner sets. The partners we work with change from time to time, and this is not an exhaustive list. Your choices to control cookies related to our ads program are described below.
 
@@ -116,7 +116,7 @@ Our mission is to democratize publishing. So that we can offer free access to cr
 |BidSwitch|http://www.bidswitch.com/cookie-statement/|
 |Criteo|https://www.criteo.com/privacy/|
 |EMX Digital|https://enginemediaexchange.com/privacy/|
-|Google (AdSense, DoubleClick Ad Exchange “AdX”)|https://policies.google.com/technologies/ads|
+|Google|https://policies.google.com/technologies/ads|
 |Index Exchange|https://www.indexexchange.com/privacy/|
 |LKQD|https://www.lotame.com/about-lotame/privacy/|
 |Media.net|https://www.media.net/privacy-policy|
@@ -148,7 +148,7 @@ Below are examples of the cookies set for visitors to sites with the Parse.ly pl
 
 Below are examples of the cookies set for visitors to sites with the Jetpack plugin installed. For more details on the cookies set for administrators, please see [https://jetpack.com/support/cookies/](https://jetpack.com/support/cookies/).
 
-#### **Jetpack Comments**
+#### Jetpack Comments
 
 |Cookie Name|Purpose|
 |--- |--- |
@@ -156,20 +156,20 @@ Below are examples of the cookies set for visitors to sites with the Jetpack plu
 |comment_author_email_{HASH}|Remembers the value entered into the comment form's email field. Specific to the site from which it is set. This cookie mirrors one set by the core WordPress software for commenting purposes.|
 |comment_author_url_{HASH}|Remembers the value entered into the comment form's URL field. Specific to the site from which it is set. This cookie mirrors one set by the core WordPress software for commenting purposes|
 
-#### **Mobile Theme**
+#### Mobile Theme
 
 |Cookie Name|Purpose|
 |--- |--- |
 |akm_mobile|Remembers whether or not a user wishes to view the mobile version of a site.|
 
-#### **Subscriptions**
+#### Subscriptions
 
 |Cookie Name|Purpose|
 |--- |--- |
 |jetpack_comments_subscribe_{HASH}|Remembers the state of the post and comment subscription checkboxes.|
 |jetpack_blog_subscribe_{HASH}|Remembers the state of the post and comment subscription checkboxes.|
 
-#### **EU Cookie Law Banner**
+#### EU Cookie Law Banner
 
 |Cookie Name|Purpose|
 |--- |--- |
@@ -193,7 +193,7 @@ In order to better understand how our services are used, we monitor certain user
 
 You may see a “cookie banner” on our websites and dashboards. If you are visiting one of our sites from the EU, then we do not set, or allow our ad partners to set, cookies that are used to show you targeted ads before you click to accept. When you consent in this manner, we and our advertising partners may set advertising cookies on the site you are visiting and on our other websites, dashboards, and services, which we use to show you advertisements about our various Automattic products. We’ll display the banner to you periodically, just in case you change your mind.
 
-### **Consent and Choices for Advertisements on Our Users’ Sites Through Our Ads Program**
+### Consent and Choices for Advertisements on Our Users’ Sites Through Our Ads Program
 
 You may see a “cookie banner” on our users’ websites, particularly if you are in the European Union. If so, then our ad program does not set, or allow our ad partners to set, cookies that are used to show you targeted ads before you accept.
 

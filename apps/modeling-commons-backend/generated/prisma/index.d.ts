@@ -20429,7 +20429,7 @@ export namespace Prisma {
   }
 
   export type PasskeyCreateInput = {
-    id: string
+    id?: string
     name?: string | null
     publicKey: string
     credentialID: string
@@ -20443,7 +20443,7 @@ export namespace Prisma {
   }
 
   export type PasskeyUncheckedCreateInput = {
-    id: string
+    id?: string
     name?: string | null
     publicKey: string
     userId: string
@@ -20485,7 +20485,7 @@ export namespace Prisma {
   }
 
   export type PasskeyCreateManyInput = {
-    id: string
+    id?: string
     name?: string | null
     publicKey: string
     userId: string
@@ -23725,7 +23725,7 @@ export namespace Prisma {
   }
 
   export type PasskeyCreateWithoutUserInput = {
-    id: string
+    id?: string
     name?: string | null
     publicKey: string
     credentialID: string
@@ -23738,7 +23738,7 @@ export namespace Prisma {
   }
 
   export type PasskeyUncheckedCreateWithoutUserInput = {
-    id: string
+    id?: string
     name?: string | null
     publicKey: string
     credentialID: string
@@ -26245,7 +26245,7 @@ export namespace Prisma {
   }
 
   export type PasskeyCreateManyUserInput = {
-    id: string
+    id?: string
     name?: string | null
     publicKey: string
     credentialID: string

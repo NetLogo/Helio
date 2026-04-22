@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import { getSignUpCallbackUrl, providers, signUpFields, signUpValidator } from "./shared";
+import type * as z from "zod";
+import { authRoutes, getSafeNextPath } from "~/utils/auth";
+import { signUpFields, signUpValidator } from "./shared";
 
 definePageMeta({
   layout: "auth",
@@ -15,75 +16,104 @@ useSeoMeta({
 
 const toast = useToast();
 const router = useRouter();
-const auth = useNuxtApp().$auth;
-const appUrl = useRuntimeConfig().public.appUrl as string;
+const route = useRoute();
+const { signUpWithEmail } = useAuthActions();
+const hasNextPath = computed(
+  () =>
+    typeof route.query.next === "string" &&
+    route.query.next.startsWith("/") &&
+    !route.query.next.startsWith("//"),
+);
+const nextPath = computed(() => getSafeNextPath(route.query.next));
+const loginLink = computed(() =>
+  hasNextPath.value
+    ? { path: authRoutes.login, query: { next: nextPath.value } }
+    : authRoutes.login,
+);
 const fields = signUpFields;
 const schema = signUpValidator;
 type Schema = z.output<typeof schema>;
 
-const form = useTemplateRef("form");
+async function onSubmit(payload: FormSubmitEvent<Schema>) {
+  const { name, email, password, userKind } = payload.data;
+  const { error } = await signUpWithEmail({
+    name,
+    email,
+    password,
+    userKind,
+    next: route.query.next,
+  });
 
-watch(
-  () => form.value,
-  () => {
-    if (form.value) {
-      console.log(form.value.formRef);
-    }
-  },
-);
-
-function onSubmit(payload: FormSubmitEvent<Schema>) {
-  auth.client.signUp
-    .email({
-      ...payload.data,
-      callbackURL: getSignUpCallbackUrl(appUrl),
-    })
-    .then(({ error }: { error: Error }) => {
-      if (error) {
-        toast.clear();
-        toast.add({
-          title: "Signup failed",
-          description: error.message,
-          icon: "i-lucide-x-circle",
-          color: "error",
-        });
-      } else {
-        toast.add({
-          title: "Signup successful",
-          description: "Please check your email to confirm your account",
-          icon: "i-lucide-check-circle",
-          color: "success",
-        });
-        router.push("/login");
-      }
+  if (error) {
+    toast.add({
+      title: "Signup failed",
+      description: error.message ?? "We couldn't create your account.",
+      icon: "i-lucide-x-circle",
+      color: "error",
     });
+    return;
+  }
+
+  await router.push({
+    path: authRoutes.verifyEmail,
+    query: hasNextPath.value
+      ? { email: payload.data.email, sent: "1", next: nextPath.value }
+      : { email: payload.data.email, sent: "1" },
+  });
 }
 </script>
 
 <template>
-  <UAuthForm
-    ref="form"
-    :fields="fields"
-    :schema="schema"
-    :providers="providers"
-    title="Create an account"
-    :submit="{ label: 'Create account' }"
-    icon="i-lucide-user-plus"
-    loading-auto
-    @submit="onSubmit"
-  >
-    <template #description>
-      Already have an account? <ULink to="/login" class="text-primary font-medium">Login</ULink>.
-    </template>
+  <div class="signup-page">
+    <UAuthForm
+      :fields="fields"
+      :schema="schema"
+      title="Sign Up"
+      loading-auto
+      :submit="{
+        label: 'Sign Up',
+        color: 'primary',
+        variant: 'solid',
+      }"
+      @submit="onSubmit"
+    >
+      <template #title>
+        <h4>Sign Up</h4>
+      </template>
+      <template #description>
+        <span class="signup-page__description">
+          Already have an account?
+          <ULink :to="loginLink" class="signup-page__link">Login</ULink>.
+        </span>
+      </template>
 
-    <template #footer>
-      By signing up, you agree to our
-      <ULink to="/" class="text-primary font-medium">Terms of Service</ULink>.
-    </template>
-  </UAuthForm>
+      <template #footer>
+        <span class="signup-page__footer-copy">
+          By signing up, you agree to our
+          <ULink to="/terms-of-service" class="signup-page__link">Terms of Service</ULink>.
+        </span>
+      </template>
+    </UAuthForm>
+  </div>
 </template>
 
 <style lang="css" scoped>
+.signup-page {
+  display: grid;
+}
+
+.signup-page__description,
+.signup-page__footer-copy {
+  color: var(--ui-text-muted);
+}
+
+.signup-page__link {
+  color: var(--ui-color-primary-500);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
 :deep([data-slot="error"]) {
   transition: all 0.3s ease;
   max-height: 0;

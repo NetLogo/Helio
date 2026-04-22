@@ -30,7 +30,7 @@
         </UButton>
       </div>
 
-      <template v-else-if="card">
+      <template v-else-if="displayCard">
         <UAlert
           v-if="!isLatestVersion"
           variant="subtle"
@@ -48,35 +48,57 @@
           ]"
         />
 
-        <ModelDetail :card="card" />
+        <ModelDetail :card="displayCard" />
       </template>
     </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
+import type { ModelCard } from "~/composables/useModelCard";
+
 const route = useRoute();
 const modelId = computed(() => route.params.id as string);
 
-// Where is :versionNumber coming from? It's not in the route params.
-// These routes are configured to this page component via custom routing
-// /model/:id
-// /model/:id/versions/:versionNumber
-// /model/:slug/:id
-// /model/:slug/:id/versions/:versionNumber
-// See nuxt.config.ts for details
-// -- Omar Ibrahim, Apr 20 26
+// Routes mapping to this page (see nuxt.config.ts):
+// /models/:id
+// /models/:id/versions/:versionNumber
+// /models/:slug/:id
+// /models/:slug/:id/versions/:versionNumber
 const modelVersionNumber = computed(() =>
   route.params.versionNumber ? parseInt(route.params.versionNumber as string) : undefined,
 );
 
 const { data: card, error, status, refresh } = useModelCard(modelId);
 
+const { data: versionCard } = useModelVersionCard(
+  modelId,
+  computed(() => modelVersionNumber.value ?? 0),
+);
+
+const displayCard = computed<ModelCard | null>(() => {
+  if (!card.value) return null;
+  if (!modelVersionNumber.value || !versionCard.value) return card.value;
+  const v = versionCard.value;
+  return {
+    ...card.value,
+    latestVersion: {
+      ...v.version,
+      netlogoFileDownloadUrl: v.netlogoFileDownloadUrl,
+      previewImageUrl: v.previewImageUrl,
+    },
+    tagsOnLatestVersion: v.tags,
+    previewImageUrl: v.previewImageUrl,
+  };
+});
+
 useSeoMeta({
-  title: () => card.value?.latestVersion?.title ?? defaultStrings.modelName,
-  description: () => card.value?.latestVersion?.description ?? defaultStrings.modelDescription,
-  ogTitle: () => card.value?.latestVersion?.title ?? defaultStrings.modelName,
-  ogDescription: () => card.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+  title: () => displayCard.value?.latestVersion?.title ?? defaultStrings.modelName,
+  description: () =>
+    displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+  ogTitle: () => displayCard.value?.latestVersion?.title ?? defaultStrings.modelName,
+  ogDescription: () =>
+    displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
   ogType: "article",
 });
 
@@ -88,8 +110,6 @@ const isLatestVersion = computed(() => {
 
 const latestVersionPath = computed(() => {
   if (!card.value) return null;
-  return isLatestVersion.value
-    ? `/models/${card.value.model.id}`
-    : `/models/${card.value.model.id}/versions/${card.value.latestVersion?.versionNumber}`;
+  return `/models/${card.value.model.id}`;
 });
 </script>

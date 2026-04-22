@@ -10,6 +10,8 @@ description: |
 ---
 # Privacy Policy
 
+#### Table of Contents { "maxDepth": 3 }
+
 ### The Gist
 
 [COMPANY] will collect certain non-personally identify information about you as you use our sites. We may use this data to better understand our users. We can also publish this data, but the data will be about a large group of users, not individuals.

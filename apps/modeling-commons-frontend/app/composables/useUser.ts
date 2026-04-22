@@ -22,10 +22,12 @@ function useUser(): Readonly<ComputedRef<AuthenticatedUser>> {
           ...session.value.data.user,
           session: session.value.data.session,
           isLoggedIn: !!session.value.data.user,
+          user: session.value.data.user,
         }
       : {
           session: null,
           isLoggedIn: false,
+          user: null,
         },
   );
 

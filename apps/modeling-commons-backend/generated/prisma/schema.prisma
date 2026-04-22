@@ -129,7 +129,7 @@ model Verification {
 }
 
 model Passkey {
-  id           String    @id
+  id           String    @id @default(uuid())
   name         String?
   publicKey    String
   userId       String

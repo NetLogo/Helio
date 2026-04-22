@@ -15,10 +15,7 @@
       </template>
       <template #body>
         <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center">
-          <UInput
-            placeholder="Search models by keyword..."
-            icon="i-lucide-search"
-            class="max-w-md lg:max-w-3xl"
+          <SearchBar
             @keydown.enter="
               (e: KeyboardEvent) =>
                 navigateTo(`/models?keyword=${(e.target as HTMLInputElement).value}`)

@@ -100,3 +100,18 @@ export function appendWindowProtocol(url: string): string {
   const currentProtocol = import.meta.dev ? "http:" : "https:";
   return hasProtocol ? url : `${currentProtocol}//${url}`;
 }
+
+export function formatCountdown(seconds: number): string {
+  const min = Math.floor(seconds / 60);
+  const sec = seconds % 60;
+  return `${pluralize(min, "minute")} ${pluralize(sec, "second")}`;
+}
+
+export const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+};

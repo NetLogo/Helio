@@ -1,3 +1,5 @@
+import * as MarkdownConfig from "@repo/nuxt-core/markdown.config";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ["@repo/nuxt-core/nuxt.config.ts"],
@@ -20,23 +22,11 @@ export default defineNuxtConfig({
 
   // prettier-ignore
   modules: [
-    '@pinia/nuxt', // Pinia store
-    'pinia-plugin-persistedstate/nuxt',
     "@nuxt/image"
   ],
 
-  pinia: {
-    storesDirs: ["./stores/**"],
-  },
-
-  routeRules: {
-    "/": { swr: 300 },
-    "/models": { swr: 120 },
-    "/models/**": { swr: 3600 },
-  },
-
   gtag: {
-    id: "",
+    id: process.env.NUXT_PUBLIC_GA_TRACKING_ID || "",
   },
 
   googleFonts: {
@@ -73,7 +63,9 @@ export default defineNuxtConfig({
     },
   },
 
-  buildModules: ["@nuxt/image"],
+  content: {
+    build: MarkdownConfig.buildOptions,
+  },
 
   image: {
     domains: [

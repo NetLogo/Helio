@@ -1,8 +1,6 @@
 import type { AuthFormField } from "#ui/types";
 import * as z from "zod";
 
-export const providers: Array<{ label: string; icon: string; onClick: () => void }> = [];
-
 export const nameValidator = z
   .string("Name is required")
   .min(2, "Must be at least 2 characters")
@@ -12,17 +10,32 @@ export const emailValidator = z.email("Must be a valid email address");
 export const miniPasswordValidator = z
   .string("Password is required")
   .min(8, "Must be at least 8 characters")
-  .max(128, "Must be less than 24 characters");
+  .max(128, "Must be less than 128 characters");
 export const passwordValidator = miniPasswordValidator
   .regex(/[A-Za-z]/, "Must contain at least one letter")
   .regex(/[0-9]/, "Must contain at least one number")
   .regex(/[@$!%*?&]/, "Must contain at least one special character (@$!%*?&)")
   .regex(/^\S*$/, "Cannot contain spaces");
+export const userKindValidator = z.enum(["student", "teacher", "researcher", "other"]).optional();
 
 export const logInValidator = z.object({
   email: emailValidator,
   password: miniPasswordValidator,
 });
+
+export const emailOnlyValidator = z.object({
+  email: emailValidator,
+});
+
+export const resetPasswordValidator = z
+  .object({
+    password: passwordValidator,
+    confirmPassword: z.string("Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export const logInFields = [
   {
@@ -37,6 +50,7 @@ export const logInFields = [
     label: "Password",
     type: "password" as const,
     placeholder: "Enter your password",
+    required: true,
   },
 ];
 
@@ -46,6 +60,7 @@ export const signUpValidator = z
     email: emailValidator,
     password: passwordValidator,
     confirmPassword: z.string("Please confirm your password"),
+    userKind: userKindValidator,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -90,23 +105,15 @@ export const signUpFields: Array<AuthFormField> = [
     required: true,
   },
   {
-    name: "type",
-    label: "I am a...",
+    name: "userKind",
+    label: "What brings you to the Modeling Commons? I am a ...",
     type: "select" as const,
-    placeholder: "Student, Educator, Researcher, or Other",
+    placeholder: "Student, Teacher, Researcher, or Other",
     items: [
       { label: "Student", value: "student", icon: "i-lucide-graduation-cap" },
-      { label: "Educator", value: "educator", icon: "i-lucide-school" },
+      { label: "Teacher", value: "teacher", icon: "i-lucide-school" },
       { label: "Researcher", value: "researcher", icon: "i-lucide-text" },
       { label: "Other", value: "other", icon: "i-lucide-user" },
     ],
   },
 ];
-
-export const getSignUpCallbackUrl = (appUrl: string) => {
-  return `${appUrl}/welcome`;
-};
-
-export const getLogInCallbackUrl = (appUrl: string) => {
-  return `${appUrl}/test`;
-};

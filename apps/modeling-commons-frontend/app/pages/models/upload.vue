@@ -7,7 +7,7 @@
             <h5>Upload Model File</h5>
             <p class="text-base text-text">The file name must end with ".nlogox"</p>
           </div>
-          <NlogoxDropZone @select="onFileSelected" />
+          <NetlogoFileUpload v-model="formState.file" class="w-full h-100" />
         </div>
       </div>
 
@@ -17,6 +17,48 @@
           :active-step="0"
           :refs="stepsRefs"
         /> -->
+        <div class="flex flex-col gap-10 max-w-sm">
+          <div class="flex flex-col gap-5">
+            <h5>Model File</h5>
+            <NetlogoFileUpload
+              v-model="formState.file"
+              class="w-50"
+              :ui="{
+                base: 'hidden',
+              }"
+            />
+          </div>
+          <div class="flex flex-col gap-5">
+            <h5>Model Files</h5>
+            <UAlert
+              variant="subtle"
+              color="neutral"
+              icon="i-lucide-info"
+              description="Allowed file types include .csv, .txt, .xlsx, .zip, and more. These files will be included in the model version and can be accessed by the model at runtime, for example using the file primitives in NetLogo."
+            />
+            <FileUploader
+              v-model="modelFiles"
+              description="Upload files required to run the model, such as datasets or extensions."
+              class="w-fill"
+            />
+          </div>
+          <div class="flex flex-col gap-5">
+            <h5>Additional Files</h5>
+            <UAlert
+              variant="subtle"
+              color="neutral"
+              icon="i-lucide-info"
+              description="Upload any additional files, such as documentation, license, or supplementary materials."
+            />
+            <FileUploader
+              v-model="additionalFiles"
+              class="w-50"
+              :ui="{
+                base: 'hidden',
+              }"
+            />
+          </div>
+        </div>
 
         <div class="flex flex-col gap-8 max-w-3xl w-full">
           <AddDetailsCard ref="AddDetailsCard" @change-image="onChangeImage" />
@@ -47,9 +89,16 @@ useSeoMeta({
   description: "Upload a new NetLogo model to Modeling Commons",
 });
 
-const step = ref<"file" | "details">("file");
 const modelFile = ref<File | null>(null);
 const submitting = ref(false);
+
+const formState = ref({
+  file: new File([], "file.nlogox") as File | null,
+});
+const modelFiles = ref<File[]>([]);
+const additionalFiles = ref<File[]>([]);
+
+const step = computed<"file" | "details">(() => (formState.value.file ? "details" : "file"));
 
 const addDetailsCardRef = useTemplateRef<InstanceType<typeof AddDetailsCard>>("AddDetailsCard");
 const setPermissionsCardRef =
@@ -60,7 +109,11 @@ const stepsRefs = [addDetailsCardRef, setPermissionsCardRef, peerReviewCardRef];
 const toast = useToast();
 const router = useRouter();
 
-function onFileSelected(file: File) {
+function onFileSelected(file: File | null | undefined) {
+  if (!file) {
+    toast.add({ title: "No file selected", color: "warning" });
+    return;
+  }
   modelFile.value = file;
   step.value = "details";
 }

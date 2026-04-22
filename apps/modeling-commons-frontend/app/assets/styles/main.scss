@@ -1,4 +1,5 @@
 @use "sass:meta";
+@use "@repo/tailwind-config/scss/netlogo-mixins.scss" as netlogo;
 
 @layer theme, base, components, website, utilities;
 
@@ -45,6 +46,7 @@
     margin: 0;
     font-weight: 500;
     letter-spacing: -2%;
+    font-family: var(--font-heading);
   }
 
   .docs h1,
@@ -68,6 +70,8 @@
     h1 {
       font-weight: 600;
     }
+
+    @include netlogo.table;
   }
 
   /* Headings */

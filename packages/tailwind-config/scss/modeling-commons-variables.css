@@ -72,14 +72,6 @@
   --color-background-overlay: var(--color-background);
   --color-nav-text-hover: var(--color-royal-blue-dark);
 
-  /* Docs */
-  --primary-heading-background-color: var(--color-primary);
-  --primary-heading-background-color-hover: #0a55ad;
-  --primary-heading-text-color: var(--color-text-on-primary);
-  --secondary-heading-background-color: var(--color-coral-lighter);
-  --secondary-heading-background-color-hover: #b3cde0;
-  --secondary-heading-text-color: var(--color-black);
-
   /* Radius */
   --radius-sm: 0.25rem;
   --radius: 0.375rem;
@@ -157,4 +149,47 @@
 
 .font-inter {
   font-family: var(--font-sans);
+}
+
+/* Docs */
+.modeling-commons-docs {
+  --primary-heading-background-color: var(--color-royal-blue);
+  --primary-heading-background-color-hover: var(--color-royal-blue-dark);
+  --primary-heading-text-color: var(--color-text-on-primary);
+  --secondary-heading-background-color: var(--color-coral-lighter);
+  --secondary-heading-background-color-hover: color-mix(
+    in srgb,
+    var(--color-coral-light) 50%,
+    var(--color-coral-lighter)
+  );
+  --secondary-heading-text-color: var(--color-black);
+
+  table {
+    --table-background: var(--color-neutral-lightest);
+    --table-border-color: var(--color-neutral-darkest-15);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--radius-md);
+
+    th {
+      color: var(--color-text);
+      &:first-child {
+        border-top-left-radius: var(--radius-md);
+      }
+      &:last-child {
+        border-top-right-radius: var(--radius-md);
+      }
+    }
+
+    tr:last-child {
+      td {
+        &:first-child {
+          border-bottom-left-radius: var(--radius-md);
+        }
+        &:last-child {
+          border-bottom-right-radius: var(--radius-md);
+        }
+      }
+    }
+  }
 }
