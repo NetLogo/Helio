@@ -8,7 +8,7 @@ SERVER_URL="http://127.0.0.1:3000"
 MAX_WAIT=30  # seconds
 
 # ── Start the server in the background ──────────────────────────────────────
-node --env-file=.env--import ./src/instrumentation.ts ./src/index.ts &
+node --env-file=.env --import ./src/instrumentation.ts ./src/index.ts &
 SERVER_PID=$!
 trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
 

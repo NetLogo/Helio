@@ -198,6 +198,12 @@ export interface paths {
                              * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
                              */
                             id: string;
+                        } & {
+                            /**
+                             * @description Entity's version number
+                             * @example 1
+                             */
+                            versionNumber: number;
                         };
                     };
                 };

@@ -2,6 +2,7 @@ import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
 import type { FastifyInstance } from 'fastify';
 import {
+  createVersionRequestDtoSchema,
   updateCurrentVersionRequestDtoSchema,
   versionParamsSchema,
   type UpdateCurrentVersionRequestDto,
@@ -13,6 +14,7 @@ import { modelVersionPaginatedResponseSchema } from '#src/modules/model-version/
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 import { Type } from 'typebox';
 import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/dtos/model.dto.ts';
+import { NoFileUploadedError } from './domain/model-version.errors.ts';
 
 export default async function modelVersionRoutes(fastify: FastifyInstance) {
   const {
@@ -39,7 +41,7 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       const data = await request.file();
       if (!data) {
-        return reply.code(400).send({ message: 'File upload required' });
+        throw new NoFileUploadedError();
       }
 
       const readField = (key: string): string | undefined => {

@@ -184,6 +184,8 @@ model ModelVersion {
   createdAt      DateTime  @default(now())
   finalizedAt    DateTime?
 
+  isDraft Boolean @default(false)
+
   model Model @relation("ModelVersions", fields: [modelId], references: [id], onDelete: Cascade)
 
   // Reverse relations

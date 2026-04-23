@@ -67,5 +67,9 @@ export type UpdateModelRequestDto = Static<typeof updateModelRequestDtoSchema>;
 export type ModelResponseDto = Static<typeof modelResponseDtoSchema>;
 
 export type CreateModelProps = CreateModelRequestDto;
+export type CreateModelResult = {
+  id: string;
+  versionNumber: number;
+};
 export type UpdateModelProps = UpdateModelRequestDto;
 export type ModelSearchFilters = Omit<ModelSearchQuery, 'limit' | 'page'>;

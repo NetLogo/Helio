@@ -1,17 +1,17 @@
-import { Type } from 'typebox';
+import type { PermissionLevel } from '#src/modules/model-permission/domain/permission.types.ts';
+import { permissionResponseDtoSchema } from '#src/modules/model-permission/dtos/permission.response.dto.ts';
+import {
+  grantPermissionRequestDtoSchema,
+  permissionGranteeParamsSchema,
+  permissionParamsSchema,
+  type GrantPermissionRequestDto,
+  type PermissionGranteeParams,
+  type PermissionParams,
+} from '#src/modules/model-permission/permission.schemas.ts';
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
 import type { FastifyInstance } from 'fastify';
-import {
-  permissionParamsSchema,
-  permissionGranteeParamsSchema,
-  grantPermissionRequestDtoSchema,
-  type PermissionParams,
-  type PermissionGranteeParams,
-  type GrantPermissionRequestDto,
-} from '#src/modules/model-permission/permission.schemas.ts';
-import { permissionResponseDtoSchema } from '#src/modules/model-permission/dtos/permission.response.dto.ts';
-import type { PermissionLevel } from '#src/modules/model-permission/domain/permission.types.ts';
+import { Type } from 'typebox';
 
 export default async function permissionRoutes(fastify: FastifyInstance) {
   const { permissionService, permissionMapper } = fastify.diContainer.cradle;

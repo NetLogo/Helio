@@ -42,7 +42,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   modelUrl: string;
-  previewImageUrl?: string;
+  previewImageUrl?: string | null;
   modelTitle?: string;
 }>();
 

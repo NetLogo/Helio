@@ -1,9 +1,10 @@
 <template>
   <UFileUpload
     ref="fileUploadRef"
+    v-model="modelValue"
     icon="i-lucide-file-up"
     layout="list"
-    @update:model-value="(f) => emit('select', f)"
+    :multiple="multiple"
   >
     <template v-if="includeBrowseButton" #actions="{ open }">
       <USeparator label="or" orientation="horizontal" class="my-4" />
@@ -54,18 +55,19 @@ export const makeFileSchema = ({
     );
 </script>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends File | File[] | null | undefined">
 withDefaults(
   defineProps<{
     includeBrowseButton?: boolean;
+    multiple?: boolean;
   }>(),
   {
     includeBrowseButton: false,
+    multiple: false,
   },
 );
-const emit = defineEmits<{
-  select: [file: File | null | undefined];
-}>();
+
+const modelValue = defineModel<T>();
 
 const fileUploadRef = useTemplateRef("fileUploadRef");
 defineExpose({

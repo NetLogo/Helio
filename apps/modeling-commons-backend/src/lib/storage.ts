@@ -17,7 +17,22 @@ const storage = new S3Client({
   },
 
   endpoint: env.storage.endpoint,
+  forcePathStyle: true,
 });
+
+function getDockerStorageClient() {
+  return new S3Client({
+    region: env.storage.region,
+
+    credentials: {
+      accessKeyId: env.storage.accessKey,
+      secretAccessKey: env.storage.secretKey,
+    },
+
+    endpoint: env.storage.dockerEndpoint,
+    forcePathStyle: true,
+  });
+}
 
 const buckets = await storage.send(new ListBucketsCommand({}));
 let maybeBucket = buckets.Buckets?.find((b: Bucket) => b.Name === env.storage.bucket);
@@ -32,4 +47,4 @@ if (!maybeBucket) {
 const bucket: Bucket = maybeBucket;
 
 export default storage;
-export { bucket };
+export { bucket, getDockerStorageClient };

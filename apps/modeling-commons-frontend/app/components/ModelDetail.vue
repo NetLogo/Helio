@@ -31,7 +31,7 @@
     </section>
 
     <NetlogoWebEmbed
-      v-if="card.latestVersion && previewImageUrl"
+      v-if="card.latestVersion"
       class="flex-1"
       :model-url="downloadUrl ?? ''"
       :preview-image-url="previewImageUrl"
@@ -66,7 +66,11 @@
       </div>
       <ModelDiscussionTab v-if="activeTab === 'discussion'" />
 
-      <ModelFilesTab v-else-if="activeTab === 'files'" :files="[]" @download="handleFileDownload" />
+      <ModelFilesTab
+        v-else-if="activeTab === 'files'"
+        :files="attachedFiles"
+        @download="handleFileDownload"
+      />
 
       <ModelVersionsTab
         v-else-if="activeTab === 'versions'"
@@ -85,6 +89,8 @@
 </template>
 
 <script setup lang="ts">
+import type { AttachedFile } from "./model-detail/types";
+
 const props = defineProps<{ card: ModelCard }>();
 
 type TabKey = "discussion" | "files" | "versions" | "family";
@@ -98,6 +104,28 @@ const {
   execute: loadVersions,
   status: versionsStatus,
 } = useModelVersions(modelId, { immediate: false });
+const {
+  data: additionalFiles,
+  execute: loadFiles,
+  status: filesStatus,
+} = useModelAdditionalFiles(modelId, { immediate: false });
+
+const fileDownloadUrls = new Map<string, string>();
+const attachedFiles = computed<AttachedFile[]>(() => {
+  fileDownloadUrls.clear();
+  return (additionalFiles.value ?? []).map((file) => {
+    fileDownloadUrls.set(file.id, file.downloadUrl);
+    return {
+      id: file.id,
+      title: file.filename,
+      description: "",
+      type: file.contentType,
+      authorName: primaryAuthor.value?.name ?? "",
+      updatedAt: new Date(file.createdAt).toLocaleDateString(),
+      isPending: false,
+    };
+  });
+});
 
 const tabs = computed(() => [
   { key: "discussion" as const, label: "Discussion" },
@@ -114,8 +142,6 @@ const authors = computed(() =>
 );
 
 const primaryAuthor = computed(() => authors.value[0]);
-
-const apiBase = useRuntimeConfig().public.apiBase;
 
 const downloadUrl = computed(() => {
   if (!props.card?.latestVersion) return null;
@@ -135,6 +161,9 @@ function onTabChange(key: TabKey) {
   if (key === "versions" && versionsStatus.value === "idle") {
     void loadVersions();
   }
+  if (key === "files" && filesStatus.value === "idle") {
+    void loadFiles();
+  }
 }
 
 function handleEmbed() {}
@@ -144,6 +173,7 @@ function handleShare() {}
 function handleCompare() {}
 
 function handleFileDownload(fileId: string) {
-  window.open(`${apiBase}/${getFileURI(fileId)}`, "_blank");
+  const url = fileDownloadUrls.get(fileId);
+  if (url) window.open(url, "_blank");
 }
 </script>

@@ -8,6 +8,8 @@ import {
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
+import { mockModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.mock.ts';
+import modelAuthorDomain from '#src/modules/model-author/domain/model-author.domain.ts';
 import type { Model } from '#prisma/index';
 
 function makeModel(overrides: Partial<Model> = {}): Model {
@@ -28,13 +30,17 @@ function makeModel(overrides: Partial<Model> = {}): Model {
 describe('modelService', () => {
   const modelRepository = mockModelRepository();
   const eventRepository = mockEventRepository();
+  const modelAuthorRepositoryMock = mockModelAuthorRepository();
   const transactionManager = mockTransactionManager();
   const domain = modelDomain();
+  const authorDomain = modelAuthorDomain();
 
   const service = makeModelService({
     transactionManager,
     modelRepository,
     modelDomain: domain,
+    modelAuthorRepository: modelAuthorRepositoryMock,
+    modelAuthorDomain: authorDomain,
     eventRepository,
   } as never);
 

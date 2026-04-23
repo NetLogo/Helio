@@ -289,5 +289,10 @@ export default defineAppConfig({
         },
       ],
     },
+    formField: {
+      slots: {
+        label: "text-md leading-normal",
+      },
+    },
   },
 });

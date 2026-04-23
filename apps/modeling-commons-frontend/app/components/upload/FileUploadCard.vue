@@ -25,6 +25,7 @@
           v-model="modelFiles"
           description="Upload files required to run the model, such as datasets or extensions."
           class="w-fill min-h-80"
+          multiple
         />
       </div>
       <div class="flex flex-col gap-5">
@@ -34,6 +35,7 @@
           v-model="additionalFiles"
           description="Upload any additional files, such as documentation, related paper, or license."
           class="w-fill min-h-80"
+          multiple
         />
       </div>
     </div>

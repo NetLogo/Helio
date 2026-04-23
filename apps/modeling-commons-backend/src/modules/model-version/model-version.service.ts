@@ -27,7 +27,7 @@ export default function makeModelVersionService({
         buffer: nlogoxFile.buffer,
         contentType: nlogoxFile.contentType,
         access: 'private',
-        pathPrefix: `models/${modelId}/versions`,
+        pathPrefix: `uploads/models/${modelId}/versions`,
       });
 
       return transactionManager.run(async (ctx) => {
@@ -46,7 +46,17 @@ export default function makeModelVersionService({
           netlogoFileKey,
         });
 
-        await modelVersionRepository.insertTx(ctx, entity);
+        const maybeDraft = await modelVersionRepository.getDraftByModelAndVersionIfExists(
+          ctx,
+          modelId,
+          versionNumber,
+        );
+
+        if (maybeDraft) {
+          await modelVersionRepository.publishDraft(ctx, modelId, entity);
+        } else {
+          await modelVersionRepository.insertTx(ctx, entity);
+        }
         await modelRepository.setLatestVersion(ctx, modelId, versionNumber);
 
         await eventRepository.insert(ctx, {

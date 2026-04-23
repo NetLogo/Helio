@@ -36,20 +36,16 @@
           </div>
         </div>
 
-        <UFormField
-          :label-class="'font-[family-name:var(--font-sans)] text-base font-medium leading-normal text-text'"
-          required
-        >
-          <template #label> Model Name </template>
-          <UInput v-model="state.name" placeholder="Ex: COVID 19 spread" size="lg" class="w-full" />
+        <UFormField required name="title" label="Model Title">
+          <UInput
+            v-model="state.title"
+            placeholder="Ex: COVID 19 spread"
+            size="lg"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField>
-          <template #label>
-            <span class="font-sans text-base font-medium leading-normal text-text"
-              >Description</span
-            >
-          </template>
+        <UFormField required name="description" label="Description">
           <UTextarea
             v-model="state.description"
             placeholder="Write 1-2 lines to give a brief overview of your model"
@@ -58,22 +54,11 @@
           />
         </UFormField>
 
-        <UFormField>
-          <template #label>
-            <span class="font-sans text-base font-medium leading-normal text-text"
-              >Tags <span class="text-coral">*</span></span
-            >
-          </template>
-
+        <UFormField name="tags" label="Tags">
           <UInputTags v-model="state.tags" placeholder="e.g. Biology" size="lg" class="w-full" />
         </UFormField>
 
-        <UFormField>
-          <template #label>
-            <span class="font-sans text-base font-medium leading-normal text-text"
-              >Best Usecases</span
-            >
-          </template>
+        <UFormField name="usecases" label="Best Usecases">
           <UCheckboxGroup v-model="state.usecases" :items="modelUsecases" />
         </UFormField>
       </div>

@@ -7,3 +7,11 @@ export const idDtoSchema = Type.Object({
     description: "Entity's id",
   }),
 });
+
+export const versionNumberDtoSchema = Type.Object({
+  versionNumber: Type.Integer({
+    minimum: 1,
+    example: 1,
+    description: "Entity's version number",
+  }),
+});

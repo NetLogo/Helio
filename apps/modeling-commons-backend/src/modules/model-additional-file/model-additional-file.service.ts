@@ -26,7 +26,7 @@ export default function makeModelAdditionalFileService({
         buffer: fileBuffer,
         contentType,
         access: 'private',
-        pathPrefix: `models/${modelId}/additional-files`,
+        pathPrefix: `uploads/models/${modelId}/additional-files`,
       });
 
       const entity = modelAdditionalFileDomain.createAdditionalFile({

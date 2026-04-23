@@ -9696,6 +9696,7 @@ export namespace Prisma {
     infoTab: string | null
     createdAt: Date | null
     finalizedAt: Date | null
+    isDraft: boolean | null
   }
 
   export type ModelVersionMaxAggregateOutputType = {
@@ -9709,6 +9710,7 @@ export namespace Prisma {
     infoTab: string | null
     createdAt: Date | null
     finalizedAt: Date | null
+    isDraft: boolean | null
   }
 
   export type ModelVersionCountAggregateOutputType = {
@@ -9722,6 +9724,7 @@ export namespace Prisma {
     infoTab: number
     createdAt: number
     finalizedAt: number
+    isDraft: number
     _all: number
   }
 
@@ -9745,6 +9748,7 @@ export namespace Prisma {
     infoTab?: true
     createdAt?: true
     finalizedAt?: true
+    isDraft?: true
   }
 
   export type ModelVersionMaxAggregateInputType = {
@@ -9758,6 +9762,7 @@ export namespace Prisma {
     infoTab?: true
     createdAt?: true
     finalizedAt?: true
+    isDraft?: true
   }
 
   export type ModelVersionCountAggregateInputType = {
@@ -9771,6 +9776,7 @@ export namespace Prisma {
     infoTab?: true
     createdAt?: true
     finalizedAt?: true
+    isDraft?: true
     _all?: true
   }
 
@@ -9871,6 +9877,7 @@ export namespace Prisma {
     infoTab: string | null
     createdAt: Date
     finalizedAt: Date | null
+    isDraft: boolean
     _count: ModelVersionCountAggregateOutputType | null
     _avg: ModelVersionAvgAggregateOutputType | null
     _sum: ModelVersionSumAggregateOutputType | null
@@ -9903,6 +9910,7 @@ export namespace Prisma {
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
+    isDraft?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
     latestOfModel?: boolean | ModelVersion$latestOfModelArgs<ExtArgs>
     parentOfModels?: boolean | ModelVersion$parentOfModelsArgs<ExtArgs>
@@ -9923,6 +9931,7 @@ export namespace Prisma {
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
+    isDraft?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersion"]>
 
@@ -9937,6 +9946,7 @@ export namespace Prisma {
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
+    isDraft?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersion"]>
 
@@ -9951,9 +9961,10 @@ export namespace Prisma {
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
+    isDraft?: boolean
   }
 
-  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImage" | "netlogoFileKey" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt", ExtArgs["result"]["modelVersion"]>
+  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImage" | "netlogoFileKey" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt" | "isDraft", ExtArgs["result"]["modelVersion"]>
   export type ModelVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     latestOfModel?: boolean | ModelVersion$latestOfModelArgs<ExtArgs>
@@ -9991,6 +10002,7 @@ export namespace Prisma {
       infoTab: string | null
       createdAt: Date
       finalizedAt: Date | null
+      isDraft: boolean
     }, ExtArgs["result"]["modelVersion"]>
     composites: {}
   }
@@ -10430,6 +10442,7 @@ export namespace Prisma {
     readonly infoTab: FieldRef<"ModelVersion", 'String'>
     readonly createdAt: FieldRef<"ModelVersion", 'DateTime'>
     readonly finalizedAt: FieldRef<"ModelVersion", 'DateTime'>
+    readonly isDraft: FieldRef<"ModelVersion", 'Boolean'>
   }
     
 
@@ -18677,7 +18690,8 @@ export namespace Prisma {
     netlogoVersion: 'netlogoVersion',
     infoTab: 'infoTab',
     createdAt: 'createdAt',
-    finalizedAt: 'finalizedAt'
+    finalizedAt: 'finalizedAt',
+    isDraft: 'isDraft'
   };
 
   export type ModelVersionScalarFieldEnum = (typeof ModelVersionScalarFieldEnum)[keyof typeof ModelVersionScalarFieldEnum]
@@ -19526,6 +19540,7 @@ export namespace Prisma {
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableFilter<"ModelVersion"> | Date | string | null
+    isDraft?: BoolFilter<"ModelVersion"> | boolean
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
     latestOfModel?: XOR<ModelNullableScalarRelationFilter, ModelWhereInput> | null
     parentOfModels?: ModelListRelationFilter
@@ -19545,6 +19560,7 @@ export namespace Prisma {
     infoTab?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrderInput | SortOrder
+    isDraft?: SortOrder
     model?: ModelOrderByWithRelationInput
     latestOfModel?: ModelOrderByWithRelationInput
     parentOfModels?: ModelOrderByRelationAggregateInput
@@ -19568,6 +19584,7 @@ export namespace Prisma {
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableFilter<"ModelVersion"> | Date | string | null
+    isDraft?: BoolFilter<"ModelVersion"> | boolean
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
     latestOfModel?: XOR<ModelNullableScalarRelationFilter, ModelWhereInput> | null
     parentOfModels?: ModelListRelationFilter
@@ -19587,6 +19604,7 @@ export namespace Prisma {
     infoTab?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrderInput | SortOrder
+    isDraft?: SortOrder
     _count?: ModelVersionCountOrderByAggregateInput
     _avg?: ModelVersionAvgOrderByAggregateInput
     _max?: ModelVersionMaxOrderByAggregateInput
@@ -19608,6 +19626,7 @@ export namespace Prisma {
     infoTab?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableWithAggregatesFilter<"ModelVersion"> | Date | string | null
+    isDraft?: BoolWithAggregatesFilter<"ModelVersion"> | boolean
   }
 
   export type ModelVersionFileWhereInput = {
@@ -20633,6 +20652,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
@@ -20652,6 +20672,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
@@ -20669,6 +20690,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
@@ -20688,6 +20710,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -20706,6 +20729,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
   }
 
   export type ModelVersionUpdateManyMutationInput = {
@@ -20718,6 +20742,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ModelVersionUncheckedUpdateManyInput = {
@@ -20731,6 +20756,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ModelVersionFileCreateInput = {
@@ -21795,6 +21821,7 @@ export namespace Prisma {
     infoTab?: SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrder
+    isDraft?: SortOrder
   }
 
   export type ModelVersionAvgOrderByAggregateInput = {
@@ -21812,6 +21839,7 @@ export namespace Prisma {
     infoTab?: SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrder
+    isDraft?: SortOrder
   }
 
   export type ModelVersionMinOrderByAggregateInput = {
@@ -21825,6 +21853,7 @@ export namespace Prisma {
     infoTab?: SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrder
+    isDraft?: SortOrder
   }
 
   export type ModelVersionSumOrderByAggregateInput = {
@@ -24429,6 +24458,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -24447,6 +24477,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
     tags?: ModelVersionTagUncheckedCreateNestedManyWithoutModelVersionInput
@@ -24545,6 +24576,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -24563,6 +24595,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
     tags?: ModelVersionTagUncheckedCreateNestedManyWithoutModelVersionInput
@@ -24584,6 +24617,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -24601,6 +24635,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
@@ -24709,6 +24744,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -24727,6 +24763,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
     tags?: ModelVersionTagUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -24827,6 +24864,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -24845,6 +24883,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
     tags?: ModelVersionTagUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -24881,6 +24920,7 @@ export namespace Prisma {
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableFilter<"ModelVersion"> | Date | string | null
+    isDraft?: BoolFilter<"ModelVersion"> | boolean
   }
 
   export type ModelAuthorUpsertWithWhereUniqueWithoutModelInput = {
@@ -25293,6 +25333,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
@@ -25311,6 +25352,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     tags?: ModelVersionTagUncheckedCreateNestedManyWithoutModelVersionInput
@@ -25343,6 +25385,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
@@ -25361,6 +25404,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     tags?: ModelVersionTagUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -25377,6 +25421,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
@@ -25395,6 +25440,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
@@ -25446,6 +25492,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
@@ -25464,6 +25511,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -25541,6 +25589,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
@@ -25559,6 +25608,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
@@ -25633,6 +25683,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
@@ -25651,6 +25702,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -26491,6 +26543,7 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
+    isDraft?: boolean
   }
 
   export type ModelAuthorCreateManyModelInput = {
@@ -26565,6 +26618,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -26582,6 +26636,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -26599,6 +26654,7 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ModelAuthorUpdateWithoutModelInput = {

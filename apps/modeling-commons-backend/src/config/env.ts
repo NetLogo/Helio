@@ -25,6 +25,7 @@ const schema = Type.Object({
   REDIS_PORT: Type.Number(),
   REDIS_URL: Type.String(),
   RUSTFS_ENDPOINT: Type.String(),
+  RUSTFS_DOCKER_ENDPOINT: Type.Optional(Type.String()),
   RUSTFS_CONSOLE_URL: Type.String(),
   RUSTFS_ACCESS_KEY: Type.String(),
   RUSTFS_SECRET_KEY: Type.String(),
@@ -95,6 +96,7 @@ export default {
   },
   storage: {
     endpoint: env.RUSTFS_ENDPOINT,
+    dockerEndpoint: env.RUSTFS_DOCKER_ENDPOINT,
     consoleUrl: env.RUSTFS_CONSOLE_URL,
     accessKey: env.RUSTFS_ACCESS_KEY,
     secretKey: env.RUSTFS_SECRET_KEY,

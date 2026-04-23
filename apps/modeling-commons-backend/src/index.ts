@@ -4,6 +4,7 @@ import server from '#src/server/index.ts';
 import { prisma } from '#src/shared/db/prisma.client.ts';
 import Fastify from 'fastify';
 import { randomUUID } from 'node:crypto';
+import adminjs from './server/plugins/adminjs.ts';
 
 async function init(): Promise<void> {
   const fastify = Fastify({

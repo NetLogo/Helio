@@ -1,16 +1,19 @@
-import '@fastify/multipart';
+import multipart from '@fastify/multipart';
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
+import rules from '#src/config/rules.ts';
+import env from '#src/config/env.ts';
 
-async function multipartPlugin(_fastify: FastifyInstance) {
-  // await fastify.register(multipart, {
-  //   limits: {
-  //     fileSize: rules.limits.fileUpload.size.max,
-  //     files: rules.limits.fileUpload.filesPerUpload.max,
-  //   },
-  //   logLevel: env.log.level,
-  //   throwFileSizeLimit: true,
-  // });
+async function multipartPlugin(fastify: FastifyInstance) {
+  await fastify.register(multipart, {
+    limits: {
+      fileSize: rules.limits.fileUpload.size.max,
+      files: rules.limits.fileUpload.filesPerUpload.max,
+    },
+    logLevel: env.log.level,
+    throwFileSizeLimit: true,
+    // attachFieldsToBody: true, // Attach non-file fields to request.body
+  });
 }
 
 export default fp(multipartPlugin, {

@@ -15,7 +15,7 @@
           <div
             class="h-40 bg-linear-to-br from-primary-50/60 via-elevated to-primary-100/40 relative overflow-hidden"
           >
-            <template v-if="imageUrl">
+            <template v-if="imageUrl && !imageError">
               <NuxtImg
                 :src="imageUrl"
                 alt="Card image"
@@ -23,6 +23,7 @@
                 crossorigin="use-credentials"
                 defer
                 :placeholder="[30, 30]"
+                @error="imageError = true"
               />
             </template>
             <template v-else>
@@ -100,4 +101,5 @@ defineProps<{
 
 const slots = useSlots();
 const hasFooter = computed(() => !!slots.footer);
+const imageError = ref(false);
 </script>

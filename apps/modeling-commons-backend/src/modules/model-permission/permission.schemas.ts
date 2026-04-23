@@ -1,14 +1,15 @@
+import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
 import { Type, type Static } from 'typebox';
 
-export const permissionParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-});
+export const permissionParamsSchema = idDtoSchema;
 export type PermissionParams = Static<typeof permissionParamsSchema>;
 
-export const permissionGranteeParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  granteeUserId: Type.String({ format: 'uuid' }),
-});
+export const permissionGranteeParamsSchema = Type.Intersect([
+  permissionParamsSchema,
+  Type.Object({
+    granteeUserId: Type.String({ format: 'uuid' }),
+  }),
+]);
 export type PermissionGranteeParams = Static<typeof permissionGranteeParamsSchema>;
 
 export const grantPermissionRequestDtoSchema = Type.Object({

@@ -2,6 +2,10 @@
 # Usage: docker-compose -f docker-compose.dev.yml up
 # Run the app locally: npm run dev
 
+networks:
+  app_network:
+    driver: bridge
+
 services:
   postgres:
     image: postgres:18
@@ -22,15 +26,33 @@ services:
     image: rustfs/rustfs:latest
     command: /data
     ports:
-      - 41090:9000
-      - 9001:9001
+      - 41090:41090 # API
+      - 41091:41091 # Console
     environment:
-      RUSTFS_ADDRESS: :9000
+      RUSTFS_ADDRESS: :41090
       RUSTFS_CONSOLE_ENABLE: 'true'
       RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
       RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
+      RUSTFS_CORS_ALLOWED_ORIGINS: "*"
+      RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS: "*"
+      RUSTFS_OBS_LOGGER_LEVEL: info
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl -f http://localhost:41090/health && curl -f http://localhost:9001/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     volumes:
       - /tmp/modeling-commons-rustfs-data:/data
+      - /tmp/com.netlogo.modeling-commons/rustfs/logs:/logs
+    networks:
+      - app_network
 
   redis:
     image: redis:8-alpine
@@ -45,7 +67,7 @@ services:
       timeout: 3s
       retries: 5
     volumes:
-      - /tmp/modeling-commons-redis-data:/data
+      - /tmp/com.netlogo.modeling-commons/redis/data:/data
 
   # galapagos:
   #   profiles:
@@ -66,3 +88,5 @@ services:
     profiles:
       - lambda
       - optional
+    networks:
+      - app_network

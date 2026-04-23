@@ -46,8 +46,8 @@ export function createStorageKey(filename: string, path: string): string {
   const id = randomUUID().substring(0, 8);
 
   if (normalizedPath.length === 0) {
-    return `${timepath}/${id}-${sanitizedFilename}`;
+    return `${timepath}/${id}/${sanitizedFilename}`;
   }
 
-  return `${normalizedPath}/${timepath}/${id}-${sanitizedFilename}`;
+  return `${normalizedPath}/${timepath}/${id}/${sanitizedFilename}`;
 }

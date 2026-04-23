@@ -17,6 +17,13 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
     fastify.diContainer.cradle;
 
   async function toResponse(entity: ModelAdditionalFileEntity) {
+    try {
+      const info = await fileService.getMetadata(entity.fileKey);
+      fastify.log.warn(info, 'File metadata');
+    } catch (error) {
+      fastify.log.error({ err: error, fileKey: entity.fileKey }, 'Error fetching file metadata');
+      throw error;
+    }
     const info = await fileService.getMetadata(entity.fileKey);
     const downloadUrl = await fileService.getUrl(entity.fileKey);
     return {
@@ -39,6 +46,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
         params: modelIdParamsSchema,
         response: { 201: modelAdditionalFileResponseDtoSchema },
         tags: ['Model', 'File'],
+        consumes: ['multipart/form-data'],
         description:
           'Upload an additional file for a model. The file is sent as multipart/form-data with the file field named "file".',
       },

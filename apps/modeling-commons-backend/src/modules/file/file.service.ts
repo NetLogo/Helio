@@ -1,8 +1,8 @@
 import env from '#src/config/env.ts';
 import { FileNotFoundError } from '#src/modules/file/domain/file.errors.ts';
 import {
-  fileMetadataSchema,
   isPublicKey,
+  parseMetadata,
   type FileAccess,
   type FileMetadata,
 } from '#src/modules/file/domain/file.types.ts';
@@ -12,6 +12,7 @@ import {
   getSignedUrl,
   HeadObjectCommand,
   PutObjectCommand,
+  type StorageClient,
 } from '#src/shared/storage/index.ts';
 
 export type FileInfo = {
@@ -24,12 +25,6 @@ export type FileInfo = {
 
 export default function makeFileService({ fileDomain, storage, bucket }: Dependencies) {
   const publicBaseUrl = env.storage.publicBaseUrl.replace(/\/+$/, '');
-
-  function parseMetadata(key: string, raw: unknown): FileMetadata {
-    const parsed = fileMetadataSchema.Parse(raw ?? {});
-    if (parsed.deletedAt) throw new FileNotFoundError(key);
-    return parsed;
-  }
 
   return {
     async upload(params: {
@@ -66,12 +61,15 @@ export default function makeFileService({ fileDomain, storage, bucket }: Depende
       };
     },
 
-    async getUrl(key: string, options: { expiresIn?: number } = {}): Promise<string> {
+    async getUrl(
+      key: string,
+      options: { client?: StorageClient; expiresIn?: number } = {},
+    ): Promise<string> {
       if (isPublicKey(key)) {
         return `${publicBaseUrl}/${key}`;
       }
-      const { expiresIn = 3600 } = options;
-      return getSignedUrl(storage, new GetObjectCommand({ Bucket: bucket.Name, Key: key }), {
+      const { expiresIn = 3600, client = storage } = options;
+      return getSignedUrl(client, new GetObjectCommand({ Bucket: bucket.Name, Key: key }), {
         expiresIn,
       });
     },

@@ -1,5 +1,5 @@
 import {
-  ALLOWED_CONTENT_TYPES,
+  DENIED_CONTENT_TYPES,
   MAX_FILE_SIZE,
   PUBLIC_PREFIX,
   type FileAccess,
@@ -12,6 +12,13 @@ import {
 import { createStorageKey, sanitizeFilename } from '#src/shared/storage/utils.ts';
 
 export default function fileDomain() {
+  function checkContentType(contentType: string): boolean {
+    if (DENIED_CONTENT_TYPES.includes(contentType as (typeof DENIED_CONTENT_TYPES)[number])) {
+      return false;
+    }
+    return true;
+  }
+
   return {
     createFile(props: {
       buffer: Buffer<ArrayBuffer>;
@@ -23,9 +30,7 @@ export default function fileDomain() {
       if (props.buffer.length > MAX_FILE_SIZE) {
         throw new FileTooLargeError(props.buffer.length, MAX_FILE_SIZE);
       }
-      if (
-        !ALLOWED_CONTENT_TYPES.includes(props.contentType as (typeof ALLOWED_CONTENT_TYPES)[number])
-      ) {
+      if (!checkContentType(props.contentType)) {
         throw new FileTypeNotAllowedError(props.contentType);
       }
 

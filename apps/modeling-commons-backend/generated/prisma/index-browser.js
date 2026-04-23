@@ -212,7 +212,8 @@ exports.Prisma.ModelVersionScalarFieldEnum = {
   netlogoVersion: 'netlogoVersion',
   infoTab: 'infoTab',
   createdAt: 'createdAt',
-  finalizedAt: 'finalizedAt'
+  finalizedAt: 'finalizedAt',
+  isDraft: 'isDraft'
 };
 
 exports.Prisma.ModelVersionFileScalarFieldEnum = {

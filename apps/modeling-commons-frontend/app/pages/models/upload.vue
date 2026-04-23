@@ -17,6 +17,7 @@
             <UStepper
               v-model="stepIndex"
               :items="stepperItems"
+              :linear="false"
               :ui="{
                 header: 'basis-[25%] ',
                 item: 'min-h-20',
@@ -33,7 +34,7 @@
                 />
               </template>
               <template #details>
-                <UForm :schema="AddDetailsCardSchema" nested>
+                <UForm :schema="AddDetailsCardSchema" nested :validate-on-input-delay="100">
                   <AddDetailsCard v-model="formState" />
                 </UForm>
               </template>
@@ -51,7 +52,7 @@
                   square
                   icon="i-lucide-chevron-left"
                   title="Previous Step"
-                  :disabled="stepIndex === 0"
+                  :disabled="stepIndex === 0 || submitting"
                   @click="prev"
                 >
                 </UButton>
@@ -59,21 +60,36 @@
                   square
                   icon="i-lucide-chevron-right"
                   title="Next Step"
-                  :disabled="stepIndex === stepperItems.length - 1"
+                  :disabled="stepIndex === stepperItems.length - 1 || submitting"
                   @click="next"
                 >
                 </UButton>
               </UFieldGroup>
 
               <div class="flex gap-4">
-                <UButton variant="outline" color="neutral"> Save as Draft </UButton>
-                <UButton :disabled="submitting" variant="solid" color="primary"> Publish </UButton>
+                <UButton
+                  variant="outline"
+                  color="neutral"
+                  :disabled="submitting"
+                  @click="submit('private')"
+                >
+                  Save as Draft
+                </UButton>
+                <UButton
+                  :loading="submitting"
+                  :disabled="submitting"
+                  variant="solid"
+                  color="primary"
+                  @click="submit(formState.permission === 'private' ? 'private' : 'public')"
+                >
+                  Publish
+                </UButton>
               </div>
             </div>
           </UForm>
         </UCard>
         <div
-          class="hidden md:flex flex-col gap-5 sticky top-[calc(1rem+var(--ui-header-height))] self-start"
+          class="hidden md:flex flex-col gap-5 sticky top-[calc(1.5rem+var(--ui-header-height))] self-start"
         >
           <h5>Upload Preview</h5>
           <ModelCard
@@ -89,10 +105,15 @@
               parentVersionNumber: null,
               visibility: formState.permission ?? 'private',
               isEndorsed: false,
-              title: formState.name || formState.nlogoxFile.name,
+              title: formState.title || formState.nlogoxFile.name,
               description: formState.description,
             }"
             :image-url="previewImageUrl"
+          />
+          <UInput
+            readonly
+            label="Model URL"
+            :model-value="modelUrl ? withSiteUrl(modelUrl).value : '...'"
           />
         </div>
       </div>
@@ -106,10 +127,12 @@ import type AddDetailsCard from "~/components/upload/AddDetailsCard.vue";
 import type PeerReviewCard from "~/components/upload/PeerReviewCard.vue";
 import SetPermissionsCard from "~/components/upload/SetPermissionsCard.vue";
 import type { UploadFormInput } from "~/components/upload/form";
-import { AddDetailsCardSchema, UploadFormSchema } from "~/components/upload/form";
+import { AddDetailsCardSchema } from "~/components/upload/form";
+import type { Visibility } from "~/composables/useUploadModel";
 
 definePageMeta({
   layout: "default",
+  middleware: ["auth"],
 });
 
 useSeoMeta({
@@ -117,16 +140,15 @@ useSeoMeta({
   description: "Upload a new NetLogo model to Modeling Commons",
 });
 
-const modelFile = ref<File | null>(null);
-const submitting = ref(false);
+const toast = useToast();
+const { submit: uploadModel, submitting, submitDraft, modelUrl } = useUploadModel();
 
 const stepIndex = ref(0);
 
-const formSchema = UploadFormSchema;
 const defaultFormValues: UploadFormInput = {
   nlogoxFile: null,
   imageFile: null,
-  name: "",
+  title: "",
   description: "",
   tags: [],
   usecases: [],
@@ -142,12 +164,19 @@ const formState = ref<UploadFormInput>({ ...defaultFormValues });
 const previewImageUrl = computed(() =>
   formState.value.imageFile ? URL.createObjectURL(formState.value.imageFile) : undefined,
 );
-
 watch(
   () => formState.value.nlogoxFile,
-  (newValue) => {
-    if (formState.value.name === "" && newValue) {
-      formState.value.name = newValue.name.replace(/\.nlogox$/i, "");
+  async (newValue) => {
+    if (formState.value.title === "" && newValue) {
+      formState.value.title = newValue.name.replace(/\.nlogox$/i, "");
+      const infoTab = await readInfoTabFromNlogox(await newValue.text());
+      if (infoTab && formState.value.description === "") {
+        formState.value.description = infoTab.firstParagraphText;
+      }
+      submitDraft({
+        title: formState.value.title,
+        description: formState.value.description,
+      });
     }
     if (!newValue) {
       formState.value = { ...defaultFormValues };
@@ -191,6 +220,39 @@ function goToStep(index: number) {
 }
 const next = () => goToStep(stepIndex.value + 1);
 const prev = () => goToStep(stepIndex.value - 1);
+
+async function submit(visibility: Visibility) {
+  if (submitting.value) return;
+
+  try {
+    const { id } = await uploadModel({
+      form: formState.value,
+      modelFiles: modelFiles.value,
+      additionalFiles: additionalFiles.value,
+      visibility,
+    });
+
+    toast.add({
+      title: visibility === "private" ? "Draft saved" : "Model published",
+      description:
+        visibility === "private"
+          ? "Your model is saved privately."
+          : "Your model is now available on Modeling Commons.",
+      icon: "i-lucide-badge-check",
+      color: "success",
+    });
+
+    await navigateTo(`/models/${id}`);
+  } catch (err) {
+    toast.add({
+      title: "Upload failed",
+      description:
+        err instanceof Error ? err.message : "Something went wrong while uploading your model.",
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+  }
+}
 </script>
 
 <style lang="scss" scoped>
