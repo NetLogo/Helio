@@ -256,7 +256,7 @@ const page = {
         preview: "/models/ants.mov",
       },
       {
-        title: "Spaceship Programming Model",
+        title: "Spaceship Model",
         description:
           "A model where you can program a spaceship to navigate through space using NetTango Web blocks, demonstrating more advanced programming concepts.",
         link: "https://ct-stem.s3.amazonaws.com/uploads/jzkelter/2023/02/27/page%202%20spaceship%20programming%20with%20maze_2023-02-27-21-41-44-521974.html",
