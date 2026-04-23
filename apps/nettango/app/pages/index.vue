@@ -6,7 +6,7 @@
       orientation="horizontal"
       :ui="{
         container: '!pb-20 py-20 sm:py-32 lg:py-25',
-        title: 'text-5xl sm:text-7xl',
+        title: 'text-4xl sm:text-6xl',
         wrapper: 'lg:min-h-[540px]',
       }"
     >
@@ -21,7 +21,7 @@
 
       <template #title>
         <span class="text-primary">{{ page.hero.title }}</span
-        ><br /><span class="text-4xl block">{{ page.hero.subtitle }}</span>
+        ><br /><span class="text-3xl sm:text-4xl">{{ page.hero.subtitle }}</span>
       </template>
 
       <template #description>
@@ -60,6 +60,73 @@
         <BlockHero />
       </UPageCard>
     </UPageHero>
+
+    <UPageSection
+      :title="page.exampleModels.title"
+      :description="page.exampleModels.description"
+      :ui="{ container: '!pt-10 !pb-16' }"
+      class="bg-white border-t border-gray-200"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center gap-6">
+        <article
+          v-for="(model, index) in page.exampleModels.models"
+          :key="index"
+          class="group w-full max-w-[420px] rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+        >
+          <h3 class="mb-5 text-2xl font-semibold leading-tight text-slate-900">
+            {{ model.title }}
+          </h3>
+
+          <div
+            class="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl border border-slate-300 bg-slate-100"
+          >
+            <video
+              v-if="model.previewType === 'video'"
+              :src="model.preview"
+              :aria-label="`${model.title} preview`"
+              class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            />
+            <img
+              v-else-if="model.previewType === 'image'"
+              :src="model.preview"
+              :alt="`${model.title} preview`"
+              class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+            />
+            <div
+              v-else
+              class="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-200 via-slate-100 to-white"
+            >
+              <span class="text-lg font-semibold tracking-wide text-slate-600">model</span>
+            </div>
+
+            <div class="pointer-events-none absolute inset-0 bg-black/10" />
+            <div
+              class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/35 px-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            >
+              <p class="max-w-[24rem] text-sm leading-relaxed text-white/95">
+                {{ model.description }}
+              </p>
+            </div>
+          </div>
+
+          <UButton
+            :to="model.link"
+            target="_blank"
+            rel="noopener noreferrer"
+            size="sm"
+            class="rounded-2xl border border-red-700 bg-red-600 px-8 py-2 text-white shadow-md shadow-red-600/25 transition-all duration-300 hover:scale-[1.02] hover:bg-red-700"
+          >
+            Explore
+          </UButton>
+        </article>
+      </div>
+    </UPageSection>
 
     <UPageSection
       :title="page.ecosystem.title"
@@ -165,6 +232,44 @@ const page = {
         to: "https://ccl.northwestern.edu/nettangoweb/tutorial/",
         variant: "outline",
         icon: "i-lucide-book",
+      },
+    ],
+  },
+  exampleModels: {
+    title: "Example Models",
+    description: "Explore some of the models created with NetTango Web.",
+    models: [
+      {
+        title: "Rollypollies",
+        description:
+          "Make your own computational model of roly-polies. You will use a computational tool called NetTango to code animal behavior using blocks.",
+        link: "https://ct-stem.northwestern.edu/curriculum/preview/1530/page/4/",
+        previewType: "video",
+        preview: "/models/rollypolies.mov",
+      },
+      {
+        title: "Ants Model",
+        description:
+          "A colony of ants forages for food. Though each ant follows a set of simple rules, the colony as a whole acts in a sophisticated way.",
+        link: "https://ccl.northwestern.edu/nettangoweb/tutorial/",
+        previewType: "video",
+        preview: "/models/ants.mov",
+      },
+      {
+        title: "Spaceship Programming Model",
+        description:
+          "A model where you can program a spaceship to navigate through space using NetTango Web blocks, demonstrating more advanced programming concepts.",
+        link: "https://ct-stem.s3.amazonaws.com/uploads/jzkelter/2023/02/27/page%202%20spaceship%20programming%20with%20maze_2023-02-27-21-41-44-521974.html",
+        previewType: "image",
+        preview: "/models/spaceship.png",
+      },
+      {
+        title: "Wolves and Sheep",
+        description:
+          "A simple predator-prey model where you can experiment with the behavior of wolves and sheep using blocks.",
+        link: "https://www.netlogoweb.org/launch#http://ccl.northwestern.edu/netlogo/models/models/Sample%20Models/Biology/Wolf%20Sheep%20Predation.nlogox",
+        previewType: "video",
+        preview: "/models/wolfsheep.mov",
       },
     ],
   },
