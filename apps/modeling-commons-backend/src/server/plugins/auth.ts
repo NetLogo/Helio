@@ -83,6 +83,7 @@ async function authPlugin(fastify: FastifyInstance) {
 
   fastify.decorate('authService', authService);
   fastify.decorateRequest('user', null);
+  fastify.decorateRequest('session', null);
 
   fastify.route({
     method: ['GET', 'POST'],
@@ -112,6 +113,7 @@ async function authPlugin(fastify: FastifyInstance) {
 
     const session = await authService.getSession(request);
     request.user = session?.user ?? null;
+    request.session = session?.session ?? null;
   });
 
   // fastify.addHook('preHandler', async (request) => {
@@ -132,6 +134,7 @@ export default fp(authPlugin, {
 declare module 'fastify' {
   interface FastifyRequest {
     user: UserSession['user'] | null;
+    session: UserSession['session'] | null;
   }
   interface FastifyInstance {
     authService: AuthService;

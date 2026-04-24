@@ -115,3 +115,18 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
+
+export const getModelVisibilityDisplayInfo = (
+  visibility: string,
+): { label: string; icon: string } => {
+  switch (visibility) {
+    case "public":
+      return { label: "public", icon: "i-lucide-globe" };
+    case "private":
+      return { label: "private", icon: "i-lucide-lock" };
+    case "unlisted":
+      return { label: "unlisted", icon: "i-lucide-link-2" };
+    default:
+      return { label: capitalize(visibility), icon: "i-lucide-lock-open" };
+  }
+};

@@ -57,6 +57,7 @@ const schema = Type.Object({
       default: 'cf-connecting-ip,X-Forwarded-For',
     }),
   ), // comma-separated list of IP address headers
+  IP_HASH_SALT: Type.String({ default: 'change-me-ip-hash-salt' }),
 });
 
 const env = envSchema<Static<typeof schema>>({
@@ -84,6 +85,7 @@ export default {
     port: env.PORT,
     endpoint: env.NODE_ENV === NodeEnv.development ? `${env.HOST}:${env.PORT}` : `${env.HOST}`,
     ipAddressHeaders: envVariableToList(env.IP_ADDRESS_HEADERS),
+    ipHashSalt: env.IP_HASH_SALT,
   },
   db: {
     url: `postgres://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_URL}/${env.POSTGRES_DB}?sslmode=disable`,

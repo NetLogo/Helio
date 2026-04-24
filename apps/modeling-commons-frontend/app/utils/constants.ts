@@ -37,10 +37,28 @@ export const knownFileTypes: Record<string, {
     icon: 'i-lucide-book',
     label: 'Book'
   },
+  'document': {
+    extensions: ['.doc', '.docx', '.odt', '.rtf', '.txt', '.md', '.markdown', '.pages'],
+    icon: 'i-lucide-file-text',
+    label: 'Document'
+  },
   'config': {
-    extensions: ['.json', '.yaml', '.yml', '.ini', '.cfg', '.toml', '.env', '.xml', '.csv', '.tsv'],
+    extensions: ['.yaml', '.yml', '.ini', '.cfg', '.toml', '.env', '.xml'],
     icon: 'i-lucide-settings',
     label: 'Config'
+  },
+
+  'columndata': {
+    extensions: ['.csv', '.tsv', '.xlsx', '.xls'],
+    icon: 'i-lucide-file-spreadsheet',
+    label: 'Spreadsheet Dataset'
+  },
+  'dataset': {
+    extensions: ['.json', '.jsonl', '.parquet', '.avro', '.orc', '.db', '.sqlite',
+                  '.sql', '.dbf', '.dta', '.sav', '.sas7bdat', '.hdf5', '.h5', '.nc',
+                  '.rdata', '.rds', '.dta', '.spss', '.stata', '.feather'],
+    icon: 'i-lucide-database',
+    label: 'Dataset'
   },
   'binary': {
     extensions: ['.bin', '.exe', '.dll', '.so',

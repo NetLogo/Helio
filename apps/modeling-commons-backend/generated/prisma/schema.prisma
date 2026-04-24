@@ -39,6 +39,13 @@ enum PermissionLevel {
   admin
 }
 
+enum ModelInteractionKind {
+  view
+  run
+  download
+  share
+}
+
 // Better Auth core tables
 
 model User {
@@ -65,6 +72,8 @@ model User {
   authoredModels     ModelAuthor[]
   grantedPermissions ModelPermission[]
   events             Event[]
+  modelLikes         ModelLike[]
+  modelInteractions  ModelInteraction[]
 
   // Better Auth Admin plugin
   role       String?
@@ -166,6 +175,8 @@ model Model {
   authors         ModelAuthor[]
   permissions     ModelPermission[]
   additionalFiles ModelAdditionalFile[]
+  likes           ModelLike[]
+  interactions    ModelInteraction[]
 
   @@unique([id, latestVersionNumber])
   @@index([parentModelId])
@@ -274,6 +285,43 @@ model ModelPermission {
   @@unique([modelId, granteeUserId])
   @@index([modelId])
   @@index([granteeUserId])
+}
+
+model ModelLike {
+  modelId   String
+  userId    String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([modelId, userId])
+  @@index([userId])
+  @@index([modelId, createdAt])
+}
+
+model ModelInteraction {
+  id            String               @id @default(uuid())
+  modelId       String
+  versionNumber Int?
+  kind          ModelInteractionKind
+  userId        String?
+  sessionId     String?
+  ipHash        String?
+  userAgent     String?
+  referer       String?
+  geo           Json?
+  cookie        String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  user  User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([modelId, kind, createdAt])
+  @@index([modelId, kind, userId])
+  @@index([userId, createdAt])
+  @@index([createdAt])
 }
 
 model Event {

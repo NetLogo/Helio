@@ -79,6 +79,16 @@ export type ModelAuthor = $Result.DefaultSelection<Prisma.$ModelAuthorPayload>
  */
 export type ModelPermission = $Result.DefaultSelection<Prisma.$ModelPermissionPayload>
 /**
+ * Model ModelLike
+ * 
+ */
+export type ModelLike = $Result.DefaultSelection<Prisma.$ModelLikePayload>
+/**
+ * Model ModelInteraction
+ * 
+ */
+export type ModelInteraction = $Result.DefaultSelection<Prisma.$ModelInteractionPayload>
+/**
  * Model Event
  * 
  */
@@ -132,6 +142,16 @@ export const PermissionLevel: {
 
 export type PermissionLevel = (typeof PermissionLevel)[keyof typeof PermissionLevel]
 
+
+export const ModelInteractionKind: {
+  view: 'view',
+  run: 'run',
+  download: 'download',
+  share: 'share'
+};
+
+export type ModelInteractionKind = (typeof ModelInteractionKind)[keyof typeof ModelInteractionKind]
+
 }
 
 export type ModelVisibility = $Enums.ModelVisibility
@@ -153,6 +173,10 @@ export const AuthorRole: typeof $Enums.AuthorRole
 export type PermissionLevel = $Enums.PermissionLevel
 
 export const PermissionLevel: typeof $Enums.PermissionLevel
+
+export type ModelInteractionKind = $Enums.ModelInteractionKind
+
+export const ModelInteractionKind: typeof $Enums.ModelInteractionKind
 
 /**
  * ##  Prisma Client ʲˢ
@@ -404,6 +428,26 @@ export class PrismaClient<
     * ```
     */
   get modelPermission(): Prisma.ModelPermissionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.modelLike`: Exposes CRUD operations for the **ModelLike** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ModelLikes
+    * const modelLikes = await prisma.modelLike.findMany()
+    * ```
+    */
+  get modelLike(): Prisma.ModelLikeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.modelInteraction`: Exposes CRUD operations for the **ModelInteraction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ModelInteractions
+    * const modelInteractions = await prisma.modelInteraction.findMany()
+    * ```
+    */
+  get modelInteraction(): Prisma.ModelInteractionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.event`: Exposes CRUD operations for the **Event** model.
@@ -861,6 +905,8 @@ export namespace Prisma {
     Tag: 'Tag',
     ModelAuthor: 'ModelAuthor',
     ModelPermission: 'ModelPermission',
+    ModelLike: 'ModelLike',
+    ModelInteraction: 'ModelInteraction',
     Event: 'Event'
   };
 
@@ -877,7 +923,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionFile" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "event"
+      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionFile" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "modelLike" | "modelInteraction" | "event"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1843,6 +1889,154 @@ export namespace Prisma {
           }
         }
       }
+      ModelLike: {
+        payload: Prisma.$ModelLikePayload<ExtArgs>
+        fields: Prisma.ModelLikeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ModelLikeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ModelLikeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>
+          }
+          findFirst: {
+            args: Prisma.ModelLikeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ModelLikeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>
+          }
+          findMany: {
+            args: Prisma.ModelLikeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>[]
+          }
+          create: {
+            args: Prisma.ModelLikeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>
+          }
+          createMany: {
+            args: Prisma.ModelLikeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ModelLikeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>[]
+          }
+          delete: {
+            args: Prisma.ModelLikeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>
+          }
+          update: {
+            args: Prisma.ModelLikeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>
+          }
+          deleteMany: {
+            args: Prisma.ModelLikeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ModelLikeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ModelLikeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>[]
+          }
+          upsert: {
+            args: Prisma.ModelLikeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelLikePayload>
+          }
+          aggregate: {
+            args: Prisma.ModelLikeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateModelLike>
+          }
+          groupBy: {
+            args: Prisma.ModelLikeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ModelLikeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ModelLikeCountArgs<ExtArgs>
+            result: $Utils.Optional<ModelLikeCountAggregateOutputType> | number
+          }
+        }
+      }
+      ModelInteraction: {
+        payload: Prisma.$ModelInteractionPayload<ExtArgs>
+        fields: Prisma.ModelInteractionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ModelInteractionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ModelInteractionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>
+          }
+          findFirst: {
+            args: Prisma.ModelInteractionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ModelInteractionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>
+          }
+          findMany: {
+            args: Prisma.ModelInteractionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>[]
+          }
+          create: {
+            args: Prisma.ModelInteractionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>
+          }
+          createMany: {
+            args: Prisma.ModelInteractionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ModelInteractionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>[]
+          }
+          delete: {
+            args: Prisma.ModelInteractionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>
+          }
+          update: {
+            args: Prisma.ModelInteractionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ModelInteractionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ModelInteractionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ModelInteractionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ModelInteractionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelInteractionPayload>
+          }
+          aggregate: {
+            args: Prisma.ModelInteractionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateModelInteraction>
+          }
+          groupBy: {
+            args: Prisma.ModelInteractionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ModelInteractionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ModelInteractionCountArgs<ExtArgs>
+            result: $Utils.Optional<ModelInteractionCountAggregateOutputType> | number
+          }
+        }
+      }
       Event: {
         payload: Prisma.$EventPayload<ExtArgs>
         fields: Prisma.EventFieldRefs
@@ -2038,6 +2232,8 @@ export namespace Prisma {
     tag?: TagOmit
     modelAuthor?: ModelAuthorOmit
     modelPermission?: ModelPermissionOmit
+    modelLike?: ModelLikeOmit
+    modelInteraction?: ModelInteractionOmit
     event?: EventOmit
   }
 
@@ -2125,6 +2321,8 @@ export namespace Prisma {
     authoredModels: number
     grantedPermissions: number
     events: number
+    modelLikes: number
+    modelInteractions: number
     passkeys: number
   }
 
@@ -2135,6 +2333,8 @@ export namespace Prisma {
     authoredModels?: boolean | UserCountOutputTypeCountAuthoredModelsArgs
     grantedPermissions?: boolean | UserCountOutputTypeCountGrantedPermissionsArgs
     events?: boolean | UserCountOutputTypeCountEventsArgs
+    modelLikes?: boolean | UserCountOutputTypeCountModelLikesArgs
+    modelInteractions?: boolean | UserCountOutputTypeCountModelInteractionsArgs
     passkeys?: boolean | UserCountOutputTypeCountPasskeysArgs
   }
 
@@ -2194,6 +2394,20 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountModelLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelLikeWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountModelInteractionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelInteractionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountPasskeysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PasskeyWhereInput
   }
@@ -2209,6 +2423,8 @@ export namespace Prisma {
     authors: number
     permissions: number
     additionalFiles: number
+    likes: number
+    interactions: number
   }
 
   export type ModelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2217,6 +2433,8 @@ export namespace Prisma {
     authors?: boolean | ModelCountOutputTypeCountAuthorsArgs
     permissions?: boolean | ModelCountOutputTypeCountPermissionsArgs
     additionalFiles?: boolean | ModelCountOutputTypeCountAdditionalFilesArgs
+    likes?: boolean | ModelCountOutputTypeCountLikesArgs
+    interactions?: boolean | ModelCountOutputTypeCountInteractionsArgs
   }
 
   // Custom InputTypes
@@ -2263,6 +2481,20 @@ export namespace Prisma {
    */
   export type ModelCountOutputTypeCountAdditionalFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ModelAdditionalFileWhereInput
+  }
+
+  /**
+   * ModelCountOutputType without action
+   */
+  export type ModelCountOutputTypeCountLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelLikeWhereInput
+  }
+
+  /**
+   * ModelCountOutputType without action
+   */
+  export type ModelCountOutputTypeCountInteractionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelInteractionWhereInput
   }
 
 
@@ -2609,6 +2841,8 @@ export namespace Prisma {
     authoredModels?: boolean | User$authoredModelsArgs<ExtArgs>
     grantedPermissions?: boolean | User$grantedPermissionsArgs<ExtArgs>
     events?: boolean | User$eventsArgs<ExtArgs>
+    modelLikes?: boolean | User$modelLikesArgs<ExtArgs>
+    modelInteractions?: boolean | User$modelInteractionsArgs<ExtArgs>
     passkeys?: boolean | User$passkeysArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -2675,6 +2909,8 @@ export namespace Prisma {
     authoredModels?: boolean | User$authoredModelsArgs<ExtArgs>
     grantedPermissions?: boolean | User$grantedPermissionsArgs<ExtArgs>
     events?: boolean | User$eventsArgs<ExtArgs>
+    modelLikes?: boolean | User$modelLikesArgs<ExtArgs>
+    modelInteractions?: boolean | User$modelInteractionsArgs<ExtArgs>
     passkeys?: boolean | User$passkeysArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2690,6 +2926,8 @@ export namespace Prisma {
       authoredModels: Prisma.$ModelAuthorPayload<ExtArgs>[]
       grantedPermissions: Prisma.$ModelPermissionPayload<ExtArgs>[]
       events: Prisma.$EventPayload<ExtArgs>[]
+      modelLikes: Prisma.$ModelLikePayload<ExtArgs>[]
+      modelInteractions: Prisma.$ModelInteractionPayload<ExtArgs>[]
       passkeys: Prisma.$PasskeyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3108,6 +3346,8 @@ export namespace Prisma {
     authoredModels<T extends User$authoredModelsArgs<ExtArgs> = {}>(args?: Subset<T, User$authoredModelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelAuthorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     grantedPermissions<T extends User$grantedPermissionsArgs<ExtArgs> = {}>(args?: Subset<T, User$grantedPermissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     events<T extends User$eventsArgs<ExtArgs> = {}>(args?: Subset<T, User$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    modelLikes<T extends User$modelLikesArgs<ExtArgs> = {}>(args?: Subset<T, User$modelLikesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    modelInteractions<T extends User$modelInteractionsArgs<ExtArgs> = {}>(args?: Subset<T, User$modelInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     passkeys<T extends User$passkeysArgs<ExtArgs> = {}>(args?: Subset<T, User$passkeysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasskeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3687,6 +3927,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * User.modelLikes
+   */
+  export type User$modelLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    where?: ModelLikeWhereInput
+    orderBy?: ModelLikeOrderByWithRelationInput | ModelLikeOrderByWithRelationInput[]
+    cursor?: ModelLikeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelLikeScalarFieldEnum | ModelLikeScalarFieldEnum[]
+  }
+
+  /**
+   * User.modelInteractions
+   */
+  export type User$modelInteractionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    where?: ModelInteractionWhereInput
+    orderBy?: ModelInteractionOrderByWithRelationInput | ModelInteractionOrderByWithRelationInput[]
+    cursor?: ModelInteractionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelInteractionScalarFieldEnum | ModelInteractionScalarFieldEnum[]
   }
 
   /**
@@ -8539,6 +8827,8 @@ export namespace Prisma {
     authors?: boolean | Model$authorsArgs<ExtArgs>
     permissions?: boolean | Model$permissionsArgs<ExtArgs>
     additionalFiles?: boolean | Model$additionalFilesArgs<ExtArgs>
+    likes?: boolean | Model$likesArgs<ExtArgs>
+    interactions?: boolean | Model$interactionsArgs<ExtArgs>
     _count?: boolean | ModelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["model"]>
 
@@ -8594,6 +8884,8 @@ export namespace Prisma {
     authors?: boolean | Model$authorsArgs<ExtArgs>
     permissions?: boolean | Model$permissionsArgs<ExtArgs>
     additionalFiles?: boolean | Model$additionalFilesArgs<ExtArgs>
+    likes?: boolean | Model$likesArgs<ExtArgs>
+    interactions?: boolean | Model$interactionsArgs<ExtArgs>
     _count?: boolean | ModelCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ModelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8618,6 +8910,8 @@ export namespace Prisma {
       authors: Prisma.$ModelAuthorPayload<ExtArgs>[]
       permissions: Prisma.$ModelPermissionPayload<ExtArgs>[]
       additionalFiles: Prisma.$ModelAdditionalFilePayload<ExtArgs>[]
+      likes: Prisma.$ModelLikePayload<ExtArgs>[]
+      interactions: Prisma.$ModelInteractionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9031,6 +9325,8 @@ export namespace Prisma {
     authors<T extends Model$authorsArgs<ExtArgs> = {}>(args?: Subset<T, Model$authorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelAuthorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     permissions<T extends Model$permissionsArgs<ExtArgs> = {}>(args?: Subset<T, Model$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     additionalFiles<T extends Model$additionalFilesArgs<ExtArgs> = {}>(args?: Subset<T, Model$additionalFilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelAdditionalFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    likes<T extends Model$likesArgs<ExtArgs> = {}>(args?: Subset<T, Model$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    interactions<T extends Model$interactionsArgs<ExtArgs> = {}>(args?: Subset<T, Model$interactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9644,6 +9940,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ModelAdditionalFileScalarFieldEnum | ModelAdditionalFileScalarFieldEnum[]
+  }
+
+  /**
+   * Model.likes
+   */
+  export type Model$likesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    where?: ModelLikeWhereInput
+    orderBy?: ModelLikeOrderByWithRelationInput | ModelLikeOrderByWithRelationInput[]
+    cursor?: ModelLikeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelLikeScalarFieldEnum | ModelLikeScalarFieldEnum[]
+  }
+
+  /**
+   * Model.interactions
+   */
+  export type Model$interactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    where?: ModelInteractionWhereInput
+    orderBy?: ModelInteractionOrderByWithRelationInput | ModelInteractionOrderByWithRelationInput[]
+    cursor?: ModelInteractionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelInteractionScalarFieldEnum | ModelInteractionScalarFieldEnum[]
   }
 
   /**
@@ -17469,6 +17813,2262 @@ export namespace Prisma {
 
 
   /**
+   * Model ModelLike
+   */
+
+  export type AggregateModelLike = {
+    _count: ModelLikeCountAggregateOutputType | null
+    _min: ModelLikeMinAggregateOutputType | null
+    _max: ModelLikeMaxAggregateOutputType | null
+  }
+
+  export type ModelLikeMinAggregateOutputType = {
+    modelId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type ModelLikeMaxAggregateOutputType = {
+    modelId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type ModelLikeCountAggregateOutputType = {
+    modelId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ModelLikeMinAggregateInputType = {
+    modelId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type ModelLikeMaxAggregateInputType = {
+    modelId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type ModelLikeCountAggregateInputType = {
+    modelId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ModelLikeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelLike to aggregate.
+     */
+    where?: ModelLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelLikes to fetch.
+     */
+    orderBy?: ModelLikeOrderByWithRelationInput | ModelLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ModelLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ModelLikes
+    **/
+    _count?: true | ModelLikeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModelLikeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModelLikeMaxAggregateInputType
+  }
+
+  export type GetModelLikeAggregateType<T extends ModelLikeAggregateArgs> = {
+        [P in keyof T & keyof AggregateModelLike]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateModelLike[P]>
+      : GetScalarType<T[P], AggregateModelLike[P]>
+  }
+
+
+
+
+  export type ModelLikeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelLikeWhereInput
+    orderBy?: ModelLikeOrderByWithAggregationInput | ModelLikeOrderByWithAggregationInput[]
+    by: ModelLikeScalarFieldEnum[] | ModelLikeScalarFieldEnum
+    having?: ModelLikeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ModelLikeCountAggregateInputType | true
+    _min?: ModelLikeMinAggregateInputType
+    _max?: ModelLikeMaxAggregateInputType
+  }
+
+  export type ModelLikeGroupByOutputType = {
+    modelId: string
+    userId: string
+    createdAt: Date
+    _count: ModelLikeCountAggregateOutputType | null
+    _min: ModelLikeMinAggregateOutputType | null
+    _max: ModelLikeMaxAggregateOutputType | null
+  }
+
+  type GetModelLikeGroupByPayload<T extends ModelLikeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ModelLikeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ModelLikeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ModelLikeGroupByOutputType[P]>
+            : GetScalarType<T[P], ModelLikeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ModelLikeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    modelId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["modelLike"]>
+
+  export type ModelLikeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    modelId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["modelLike"]>
+
+  export type ModelLikeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    modelId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["modelLike"]>
+
+  export type ModelLikeSelectScalar = {
+    modelId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ModelLikeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "userId" | "createdAt", ExtArgs["result"]["modelLike"]>
+  export type ModelLikeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ModelLikeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ModelLikeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ModelLikePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ModelLike"
+    objects: {
+      model: Prisma.$ModelPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      modelId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["modelLike"]>
+    composites: {}
+  }
+
+  type ModelLikeGetPayload<S extends boolean | null | undefined | ModelLikeDefaultArgs> = $Result.GetResult<Prisma.$ModelLikePayload, S>
+
+  type ModelLikeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ModelLikeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ModelLikeCountAggregateInputType | true
+    }
+
+  export interface ModelLikeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ModelLike'], meta: { name: 'ModelLike' } }
+    /**
+     * Find zero or one ModelLike that matches the filter.
+     * @param {ModelLikeFindUniqueArgs} args - Arguments to find a ModelLike
+     * @example
+     * // Get one ModelLike
+     * const modelLike = await prisma.modelLike.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ModelLikeFindUniqueArgs>(args: SelectSubset<T, ModelLikeFindUniqueArgs<ExtArgs>>): Prisma__ModelLikeClient<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ModelLike that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ModelLikeFindUniqueOrThrowArgs} args - Arguments to find a ModelLike
+     * @example
+     * // Get one ModelLike
+     * const modelLike = await prisma.modelLike.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ModelLikeFindUniqueOrThrowArgs>(args: SelectSubset<T, ModelLikeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ModelLikeClient<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelLike that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelLikeFindFirstArgs} args - Arguments to find a ModelLike
+     * @example
+     * // Get one ModelLike
+     * const modelLike = await prisma.modelLike.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ModelLikeFindFirstArgs>(args?: SelectSubset<T, ModelLikeFindFirstArgs<ExtArgs>>): Prisma__ModelLikeClient<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelLike that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelLikeFindFirstOrThrowArgs} args - Arguments to find a ModelLike
+     * @example
+     * // Get one ModelLike
+     * const modelLike = await prisma.modelLike.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ModelLikeFindFirstOrThrowArgs>(args?: SelectSubset<T, ModelLikeFindFirstOrThrowArgs<ExtArgs>>): Prisma__ModelLikeClient<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ModelLikes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelLikeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModelLikes
+     * const modelLikes = await prisma.modelLike.findMany()
+     * 
+     * // Get first 10 ModelLikes
+     * const modelLikes = await prisma.modelLike.findMany({ take: 10 })
+     * 
+     * // Only select the `modelId`
+     * const modelLikeWithModelIdOnly = await prisma.modelLike.findMany({ select: { modelId: true } })
+     * 
+     */
+    findMany<T extends ModelLikeFindManyArgs>(args?: SelectSubset<T, ModelLikeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ModelLike.
+     * @param {ModelLikeCreateArgs} args - Arguments to create a ModelLike.
+     * @example
+     * // Create one ModelLike
+     * const ModelLike = await prisma.modelLike.create({
+     *   data: {
+     *     // ... data to create a ModelLike
+     *   }
+     * })
+     * 
+     */
+    create<T extends ModelLikeCreateArgs>(args: SelectSubset<T, ModelLikeCreateArgs<ExtArgs>>): Prisma__ModelLikeClient<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ModelLikes.
+     * @param {ModelLikeCreateManyArgs} args - Arguments to create many ModelLikes.
+     * @example
+     * // Create many ModelLikes
+     * const modelLike = await prisma.modelLike.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ModelLikeCreateManyArgs>(args?: SelectSubset<T, ModelLikeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ModelLikes and returns the data saved in the database.
+     * @param {ModelLikeCreateManyAndReturnArgs} args - Arguments to create many ModelLikes.
+     * @example
+     * // Create many ModelLikes
+     * const modelLike = await prisma.modelLike.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ModelLikes and only return the `modelId`
+     * const modelLikeWithModelIdOnly = await prisma.modelLike.createManyAndReturn({
+     *   select: { modelId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ModelLikeCreateManyAndReturnArgs>(args?: SelectSubset<T, ModelLikeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ModelLike.
+     * @param {ModelLikeDeleteArgs} args - Arguments to delete one ModelLike.
+     * @example
+     * // Delete one ModelLike
+     * const ModelLike = await prisma.modelLike.delete({
+     *   where: {
+     *     // ... filter to delete one ModelLike
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ModelLikeDeleteArgs>(args: SelectSubset<T, ModelLikeDeleteArgs<ExtArgs>>): Prisma__ModelLikeClient<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ModelLike.
+     * @param {ModelLikeUpdateArgs} args - Arguments to update one ModelLike.
+     * @example
+     * // Update one ModelLike
+     * const modelLike = await prisma.modelLike.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ModelLikeUpdateArgs>(args: SelectSubset<T, ModelLikeUpdateArgs<ExtArgs>>): Prisma__ModelLikeClient<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ModelLikes.
+     * @param {ModelLikeDeleteManyArgs} args - Arguments to filter ModelLikes to delete.
+     * @example
+     * // Delete a few ModelLikes
+     * const { count } = await prisma.modelLike.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ModelLikeDeleteManyArgs>(args?: SelectSubset<T, ModelLikeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelLikes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelLikeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModelLikes
+     * const modelLike = await prisma.modelLike.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ModelLikeUpdateManyArgs>(args: SelectSubset<T, ModelLikeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelLikes and returns the data updated in the database.
+     * @param {ModelLikeUpdateManyAndReturnArgs} args - Arguments to update many ModelLikes.
+     * @example
+     * // Update many ModelLikes
+     * const modelLike = await prisma.modelLike.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ModelLikes and only return the `modelId`
+     * const modelLikeWithModelIdOnly = await prisma.modelLike.updateManyAndReturn({
+     *   select: { modelId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ModelLikeUpdateManyAndReturnArgs>(args: SelectSubset<T, ModelLikeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ModelLike.
+     * @param {ModelLikeUpsertArgs} args - Arguments to update or create a ModelLike.
+     * @example
+     * // Update or create a ModelLike
+     * const modelLike = await prisma.modelLike.upsert({
+     *   create: {
+     *     // ... data to create a ModelLike
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModelLike we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ModelLikeUpsertArgs>(args: SelectSubset<T, ModelLikeUpsertArgs<ExtArgs>>): Prisma__ModelLikeClient<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ModelLikes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelLikeCountArgs} args - Arguments to filter ModelLikes to count.
+     * @example
+     * // Count the number of ModelLikes
+     * const count = await prisma.modelLike.count({
+     *   where: {
+     *     // ... the filter for the ModelLikes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModelLikeCountArgs>(
+      args?: Subset<T, ModelLikeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ModelLikeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ModelLike.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelLikeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModelLikeAggregateArgs>(args: Subset<T, ModelLikeAggregateArgs>): Prisma.PrismaPromise<GetModelLikeAggregateType<T>>
+
+    /**
+     * Group by ModelLike.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelLikeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ModelLikeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ModelLikeGroupByArgs['orderBy'] }
+        : { orderBy?: ModelLikeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ModelLikeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModelLikeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ModelLike model
+   */
+  readonly fields: ModelLikeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ModelLike.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ModelLikeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    model<T extends ModelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelDefaultArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ModelLike model
+   */
+  interface ModelLikeFieldRefs {
+    readonly modelId: FieldRef<"ModelLike", 'String'>
+    readonly userId: FieldRef<"ModelLike", 'String'>
+    readonly createdAt: FieldRef<"ModelLike", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ModelLike findUnique
+   */
+  export type ModelLikeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelLike to fetch.
+     */
+    where: ModelLikeWhereUniqueInput
+  }
+
+  /**
+   * ModelLike findUniqueOrThrow
+   */
+  export type ModelLikeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelLike to fetch.
+     */
+    where: ModelLikeWhereUniqueInput
+  }
+
+  /**
+   * ModelLike findFirst
+   */
+  export type ModelLikeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelLike to fetch.
+     */
+    where?: ModelLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelLikes to fetch.
+     */
+    orderBy?: ModelLikeOrderByWithRelationInput | ModelLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelLikes.
+     */
+    cursor?: ModelLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelLikes.
+     */
+    distinct?: ModelLikeScalarFieldEnum | ModelLikeScalarFieldEnum[]
+  }
+
+  /**
+   * ModelLike findFirstOrThrow
+   */
+  export type ModelLikeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelLike to fetch.
+     */
+    where?: ModelLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelLikes to fetch.
+     */
+    orderBy?: ModelLikeOrderByWithRelationInput | ModelLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelLikes.
+     */
+    cursor?: ModelLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelLikes.
+     */
+    distinct?: ModelLikeScalarFieldEnum | ModelLikeScalarFieldEnum[]
+  }
+
+  /**
+   * ModelLike findMany
+   */
+  export type ModelLikeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelLikes to fetch.
+     */
+    where?: ModelLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelLikes to fetch.
+     */
+    orderBy?: ModelLikeOrderByWithRelationInput | ModelLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ModelLikes.
+     */
+    cursor?: ModelLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelLikes.
+     */
+    distinct?: ModelLikeScalarFieldEnum | ModelLikeScalarFieldEnum[]
+  }
+
+  /**
+   * ModelLike create
+   */
+  export type ModelLikeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ModelLike.
+     */
+    data: XOR<ModelLikeCreateInput, ModelLikeUncheckedCreateInput>
+  }
+
+  /**
+   * ModelLike createMany
+   */
+  export type ModelLikeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ModelLikes.
+     */
+    data: ModelLikeCreateManyInput | ModelLikeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ModelLike createManyAndReturn
+   */
+  export type ModelLikeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * The data used to create many ModelLikes.
+     */
+    data: ModelLikeCreateManyInput | ModelLikeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelLike update
+   */
+  export type ModelLikeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ModelLike.
+     */
+    data: XOR<ModelLikeUpdateInput, ModelLikeUncheckedUpdateInput>
+    /**
+     * Choose, which ModelLike to update.
+     */
+    where: ModelLikeWhereUniqueInput
+  }
+
+  /**
+   * ModelLike updateMany
+   */
+  export type ModelLikeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ModelLikes.
+     */
+    data: XOR<ModelLikeUpdateManyMutationInput, ModelLikeUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelLikes to update
+     */
+    where?: ModelLikeWhereInput
+    /**
+     * Limit how many ModelLikes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelLike updateManyAndReturn
+   */
+  export type ModelLikeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * The data used to update ModelLikes.
+     */
+    data: XOR<ModelLikeUpdateManyMutationInput, ModelLikeUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelLikes to update
+     */
+    where?: ModelLikeWhereInput
+    /**
+     * Limit how many ModelLikes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelLike upsert
+   */
+  export type ModelLikeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ModelLike to update in case it exists.
+     */
+    where: ModelLikeWhereUniqueInput
+    /**
+     * In case the ModelLike found by the `where` argument doesn't exist, create a new ModelLike with this data.
+     */
+    create: XOR<ModelLikeCreateInput, ModelLikeUncheckedCreateInput>
+    /**
+     * In case the ModelLike was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ModelLikeUpdateInput, ModelLikeUncheckedUpdateInput>
+  }
+
+  /**
+   * ModelLike delete
+   */
+  export type ModelLikeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+    /**
+     * Filter which ModelLike to delete.
+     */
+    where: ModelLikeWhereUniqueInput
+  }
+
+  /**
+   * ModelLike deleteMany
+   */
+  export type ModelLikeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelLikes to delete
+     */
+    where?: ModelLikeWhereInput
+    /**
+     * Limit how many ModelLikes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelLike without action
+   */
+  export type ModelLikeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelLike
+     */
+    select?: ModelLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelLike
+     */
+    omit?: ModelLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelLikeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ModelInteraction
+   */
+
+  export type AggregateModelInteraction = {
+    _count: ModelInteractionCountAggregateOutputType | null
+    _avg: ModelInteractionAvgAggregateOutputType | null
+    _sum: ModelInteractionSumAggregateOutputType | null
+    _min: ModelInteractionMinAggregateOutputType | null
+    _max: ModelInteractionMaxAggregateOutputType | null
+  }
+
+  export type ModelInteractionAvgAggregateOutputType = {
+    versionNumber: number | null
+  }
+
+  export type ModelInteractionSumAggregateOutputType = {
+    versionNumber: number | null
+  }
+
+  export type ModelInteractionMinAggregateOutputType = {
+    id: string | null
+    modelId: string | null
+    versionNumber: number | null
+    kind: $Enums.ModelInteractionKind | null
+    userId: string | null
+    sessionId: string | null
+    ipHash: string | null
+    userAgent: string | null
+    referer: string | null
+    cookie: string | null
+    createdAt: Date | null
+  }
+
+  export type ModelInteractionMaxAggregateOutputType = {
+    id: string | null
+    modelId: string | null
+    versionNumber: number | null
+    kind: $Enums.ModelInteractionKind | null
+    userId: string | null
+    sessionId: string | null
+    ipHash: string | null
+    userAgent: string | null
+    referer: string | null
+    cookie: string | null
+    createdAt: Date | null
+  }
+
+  export type ModelInteractionCountAggregateOutputType = {
+    id: number
+    modelId: number
+    versionNumber: number
+    kind: number
+    userId: number
+    sessionId: number
+    ipHash: number
+    userAgent: number
+    referer: number
+    geo: number
+    cookie: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ModelInteractionAvgAggregateInputType = {
+    versionNumber?: true
+  }
+
+  export type ModelInteractionSumAggregateInputType = {
+    versionNumber?: true
+  }
+
+  export type ModelInteractionMinAggregateInputType = {
+    id?: true
+    modelId?: true
+    versionNumber?: true
+    kind?: true
+    userId?: true
+    sessionId?: true
+    ipHash?: true
+    userAgent?: true
+    referer?: true
+    cookie?: true
+    createdAt?: true
+  }
+
+  export type ModelInteractionMaxAggregateInputType = {
+    id?: true
+    modelId?: true
+    versionNumber?: true
+    kind?: true
+    userId?: true
+    sessionId?: true
+    ipHash?: true
+    userAgent?: true
+    referer?: true
+    cookie?: true
+    createdAt?: true
+  }
+
+  export type ModelInteractionCountAggregateInputType = {
+    id?: true
+    modelId?: true
+    versionNumber?: true
+    kind?: true
+    userId?: true
+    sessionId?: true
+    ipHash?: true
+    userAgent?: true
+    referer?: true
+    geo?: true
+    cookie?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ModelInteractionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelInteraction to aggregate.
+     */
+    where?: ModelInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelInteractions to fetch.
+     */
+    orderBy?: ModelInteractionOrderByWithRelationInput | ModelInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ModelInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ModelInteractions
+    **/
+    _count?: true | ModelInteractionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ModelInteractionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModelInteractionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModelInteractionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModelInteractionMaxAggregateInputType
+  }
+
+  export type GetModelInteractionAggregateType<T extends ModelInteractionAggregateArgs> = {
+        [P in keyof T & keyof AggregateModelInteraction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateModelInteraction[P]>
+      : GetScalarType<T[P], AggregateModelInteraction[P]>
+  }
+
+
+
+
+  export type ModelInteractionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelInteractionWhereInput
+    orderBy?: ModelInteractionOrderByWithAggregationInput | ModelInteractionOrderByWithAggregationInput[]
+    by: ModelInteractionScalarFieldEnum[] | ModelInteractionScalarFieldEnum
+    having?: ModelInteractionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ModelInteractionCountAggregateInputType | true
+    _avg?: ModelInteractionAvgAggregateInputType
+    _sum?: ModelInteractionSumAggregateInputType
+    _min?: ModelInteractionMinAggregateInputType
+    _max?: ModelInteractionMaxAggregateInputType
+  }
+
+  export type ModelInteractionGroupByOutputType = {
+    id: string
+    modelId: string
+    versionNumber: number | null
+    kind: $Enums.ModelInteractionKind
+    userId: string | null
+    sessionId: string | null
+    ipHash: string | null
+    userAgent: string | null
+    referer: string | null
+    geo: JsonValue | null
+    cookie: string | null
+    createdAt: Date
+    _count: ModelInteractionCountAggregateOutputType | null
+    _avg: ModelInteractionAvgAggregateOutputType | null
+    _sum: ModelInteractionSumAggregateOutputType | null
+    _min: ModelInteractionMinAggregateOutputType | null
+    _max: ModelInteractionMaxAggregateOutputType | null
+  }
+
+  type GetModelInteractionGroupByPayload<T extends ModelInteractionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ModelInteractionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ModelInteractionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ModelInteractionGroupByOutputType[P]>
+            : GetScalarType<T[P], ModelInteractionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ModelInteractionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
+    kind?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    ipHash?: boolean
+    userAgent?: boolean
+    referer?: boolean
+    geo?: boolean
+    cookie?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelInteraction$userArgs<ExtArgs>
+  }, ExtArgs["result"]["modelInteraction"]>
+
+  export type ModelInteractionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
+    kind?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    ipHash?: boolean
+    userAgent?: boolean
+    referer?: boolean
+    geo?: boolean
+    cookie?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelInteraction$userArgs<ExtArgs>
+  }, ExtArgs["result"]["modelInteraction"]>
+
+  export type ModelInteractionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
+    kind?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    ipHash?: boolean
+    userAgent?: boolean
+    referer?: boolean
+    geo?: boolean
+    cookie?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelInteraction$userArgs<ExtArgs>
+  }, ExtArgs["result"]["modelInteraction"]>
+
+  export type ModelInteractionSelectScalar = {
+    id?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
+    kind?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    ipHash?: boolean
+    userAgent?: boolean
+    referer?: boolean
+    geo?: boolean
+    cookie?: boolean
+    createdAt?: boolean
+  }
+
+  export type ModelInteractionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "modelId" | "versionNumber" | "kind" | "userId" | "sessionId" | "ipHash" | "userAgent" | "referer" | "geo" | "cookie" | "createdAt", ExtArgs["result"]["modelInteraction"]>
+  export type ModelInteractionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelInteraction$userArgs<ExtArgs>
+  }
+  export type ModelInteractionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelInteraction$userArgs<ExtArgs>
+  }
+  export type ModelInteractionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelInteraction$userArgs<ExtArgs>
+  }
+
+  export type $ModelInteractionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ModelInteraction"
+    objects: {
+      model: Prisma.$ModelPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      modelId: string
+      versionNumber: number | null
+      kind: $Enums.ModelInteractionKind
+      userId: string | null
+      sessionId: string | null
+      ipHash: string | null
+      userAgent: string | null
+      referer: string | null
+      geo: Prisma.JsonValue | null
+      cookie: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["modelInteraction"]>
+    composites: {}
+  }
+
+  type ModelInteractionGetPayload<S extends boolean | null | undefined | ModelInteractionDefaultArgs> = $Result.GetResult<Prisma.$ModelInteractionPayload, S>
+
+  type ModelInteractionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ModelInteractionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ModelInteractionCountAggregateInputType | true
+    }
+
+  export interface ModelInteractionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ModelInteraction'], meta: { name: 'ModelInteraction' } }
+    /**
+     * Find zero or one ModelInteraction that matches the filter.
+     * @param {ModelInteractionFindUniqueArgs} args - Arguments to find a ModelInteraction
+     * @example
+     * // Get one ModelInteraction
+     * const modelInteraction = await prisma.modelInteraction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ModelInteractionFindUniqueArgs>(args: SelectSubset<T, ModelInteractionFindUniqueArgs<ExtArgs>>): Prisma__ModelInteractionClient<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ModelInteraction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ModelInteractionFindUniqueOrThrowArgs} args - Arguments to find a ModelInteraction
+     * @example
+     * // Get one ModelInteraction
+     * const modelInteraction = await prisma.modelInteraction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ModelInteractionFindUniqueOrThrowArgs>(args: SelectSubset<T, ModelInteractionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ModelInteractionClient<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelInteraction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelInteractionFindFirstArgs} args - Arguments to find a ModelInteraction
+     * @example
+     * // Get one ModelInteraction
+     * const modelInteraction = await prisma.modelInteraction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ModelInteractionFindFirstArgs>(args?: SelectSubset<T, ModelInteractionFindFirstArgs<ExtArgs>>): Prisma__ModelInteractionClient<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelInteraction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelInteractionFindFirstOrThrowArgs} args - Arguments to find a ModelInteraction
+     * @example
+     * // Get one ModelInteraction
+     * const modelInteraction = await prisma.modelInteraction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ModelInteractionFindFirstOrThrowArgs>(args?: SelectSubset<T, ModelInteractionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ModelInteractionClient<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ModelInteractions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelInteractionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModelInteractions
+     * const modelInteractions = await prisma.modelInteraction.findMany()
+     * 
+     * // Get first 10 ModelInteractions
+     * const modelInteractions = await prisma.modelInteraction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const modelInteractionWithIdOnly = await prisma.modelInteraction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ModelInteractionFindManyArgs>(args?: SelectSubset<T, ModelInteractionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ModelInteraction.
+     * @param {ModelInteractionCreateArgs} args - Arguments to create a ModelInteraction.
+     * @example
+     * // Create one ModelInteraction
+     * const ModelInteraction = await prisma.modelInteraction.create({
+     *   data: {
+     *     // ... data to create a ModelInteraction
+     *   }
+     * })
+     * 
+     */
+    create<T extends ModelInteractionCreateArgs>(args: SelectSubset<T, ModelInteractionCreateArgs<ExtArgs>>): Prisma__ModelInteractionClient<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ModelInteractions.
+     * @param {ModelInteractionCreateManyArgs} args - Arguments to create many ModelInteractions.
+     * @example
+     * // Create many ModelInteractions
+     * const modelInteraction = await prisma.modelInteraction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ModelInteractionCreateManyArgs>(args?: SelectSubset<T, ModelInteractionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ModelInteractions and returns the data saved in the database.
+     * @param {ModelInteractionCreateManyAndReturnArgs} args - Arguments to create many ModelInteractions.
+     * @example
+     * // Create many ModelInteractions
+     * const modelInteraction = await prisma.modelInteraction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ModelInteractions and only return the `id`
+     * const modelInteractionWithIdOnly = await prisma.modelInteraction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ModelInteractionCreateManyAndReturnArgs>(args?: SelectSubset<T, ModelInteractionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ModelInteraction.
+     * @param {ModelInteractionDeleteArgs} args - Arguments to delete one ModelInteraction.
+     * @example
+     * // Delete one ModelInteraction
+     * const ModelInteraction = await prisma.modelInteraction.delete({
+     *   where: {
+     *     // ... filter to delete one ModelInteraction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ModelInteractionDeleteArgs>(args: SelectSubset<T, ModelInteractionDeleteArgs<ExtArgs>>): Prisma__ModelInteractionClient<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ModelInteraction.
+     * @param {ModelInteractionUpdateArgs} args - Arguments to update one ModelInteraction.
+     * @example
+     * // Update one ModelInteraction
+     * const modelInteraction = await prisma.modelInteraction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ModelInteractionUpdateArgs>(args: SelectSubset<T, ModelInteractionUpdateArgs<ExtArgs>>): Prisma__ModelInteractionClient<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ModelInteractions.
+     * @param {ModelInteractionDeleteManyArgs} args - Arguments to filter ModelInteractions to delete.
+     * @example
+     * // Delete a few ModelInteractions
+     * const { count } = await prisma.modelInteraction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ModelInteractionDeleteManyArgs>(args?: SelectSubset<T, ModelInteractionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelInteractions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelInteractionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModelInteractions
+     * const modelInteraction = await prisma.modelInteraction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ModelInteractionUpdateManyArgs>(args: SelectSubset<T, ModelInteractionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelInteractions and returns the data updated in the database.
+     * @param {ModelInteractionUpdateManyAndReturnArgs} args - Arguments to update many ModelInteractions.
+     * @example
+     * // Update many ModelInteractions
+     * const modelInteraction = await prisma.modelInteraction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ModelInteractions and only return the `id`
+     * const modelInteractionWithIdOnly = await prisma.modelInteraction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ModelInteractionUpdateManyAndReturnArgs>(args: SelectSubset<T, ModelInteractionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ModelInteraction.
+     * @param {ModelInteractionUpsertArgs} args - Arguments to update or create a ModelInteraction.
+     * @example
+     * // Update or create a ModelInteraction
+     * const modelInteraction = await prisma.modelInteraction.upsert({
+     *   create: {
+     *     // ... data to create a ModelInteraction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModelInteraction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ModelInteractionUpsertArgs>(args: SelectSubset<T, ModelInteractionUpsertArgs<ExtArgs>>): Prisma__ModelInteractionClient<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ModelInteractions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelInteractionCountArgs} args - Arguments to filter ModelInteractions to count.
+     * @example
+     * // Count the number of ModelInteractions
+     * const count = await prisma.modelInteraction.count({
+     *   where: {
+     *     // ... the filter for the ModelInteractions we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModelInteractionCountArgs>(
+      args?: Subset<T, ModelInteractionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ModelInteractionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ModelInteraction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelInteractionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModelInteractionAggregateArgs>(args: Subset<T, ModelInteractionAggregateArgs>): Prisma.PrismaPromise<GetModelInteractionAggregateType<T>>
+
+    /**
+     * Group by ModelInteraction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelInteractionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ModelInteractionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ModelInteractionGroupByArgs['orderBy'] }
+        : { orderBy?: ModelInteractionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ModelInteractionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModelInteractionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ModelInteraction model
+   */
+  readonly fields: ModelInteractionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ModelInteraction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ModelInteractionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    model<T extends ModelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelDefaultArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends ModelInteraction$userArgs<ExtArgs> = {}>(args?: Subset<T, ModelInteraction$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ModelInteraction model
+   */
+  interface ModelInteractionFieldRefs {
+    readonly id: FieldRef<"ModelInteraction", 'String'>
+    readonly modelId: FieldRef<"ModelInteraction", 'String'>
+    readonly versionNumber: FieldRef<"ModelInteraction", 'Int'>
+    readonly kind: FieldRef<"ModelInteraction", 'ModelInteractionKind'>
+    readonly userId: FieldRef<"ModelInteraction", 'String'>
+    readonly sessionId: FieldRef<"ModelInteraction", 'String'>
+    readonly ipHash: FieldRef<"ModelInteraction", 'String'>
+    readonly userAgent: FieldRef<"ModelInteraction", 'String'>
+    readonly referer: FieldRef<"ModelInteraction", 'String'>
+    readonly geo: FieldRef<"ModelInteraction", 'Json'>
+    readonly cookie: FieldRef<"ModelInteraction", 'String'>
+    readonly createdAt: FieldRef<"ModelInteraction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ModelInteraction findUnique
+   */
+  export type ModelInteractionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelInteraction to fetch.
+     */
+    where: ModelInteractionWhereUniqueInput
+  }
+
+  /**
+   * ModelInteraction findUniqueOrThrow
+   */
+  export type ModelInteractionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelInteraction to fetch.
+     */
+    where: ModelInteractionWhereUniqueInput
+  }
+
+  /**
+   * ModelInteraction findFirst
+   */
+  export type ModelInteractionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelInteraction to fetch.
+     */
+    where?: ModelInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelInteractions to fetch.
+     */
+    orderBy?: ModelInteractionOrderByWithRelationInput | ModelInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelInteractions.
+     */
+    cursor?: ModelInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelInteractions.
+     */
+    distinct?: ModelInteractionScalarFieldEnum | ModelInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * ModelInteraction findFirstOrThrow
+   */
+  export type ModelInteractionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelInteraction to fetch.
+     */
+    where?: ModelInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelInteractions to fetch.
+     */
+    orderBy?: ModelInteractionOrderByWithRelationInput | ModelInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelInteractions.
+     */
+    cursor?: ModelInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelInteractions.
+     */
+    distinct?: ModelInteractionScalarFieldEnum | ModelInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * ModelInteraction findMany
+   */
+  export type ModelInteractionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelInteractions to fetch.
+     */
+    where?: ModelInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelInteractions to fetch.
+     */
+    orderBy?: ModelInteractionOrderByWithRelationInput | ModelInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ModelInteractions.
+     */
+    cursor?: ModelInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelInteractions.
+     */
+    distinct?: ModelInteractionScalarFieldEnum | ModelInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * ModelInteraction create
+   */
+  export type ModelInteractionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ModelInteraction.
+     */
+    data: XOR<ModelInteractionCreateInput, ModelInteractionUncheckedCreateInput>
+  }
+
+  /**
+   * ModelInteraction createMany
+   */
+  export type ModelInteractionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ModelInteractions.
+     */
+    data: ModelInteractionCreateManyInput | ModelInteractionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ModelInteraction createManyAndReturn
+   */
+  export type ModelInteractionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * The data used to create many ModelInteractions.
+     */
+    data: ModelInteractionCreateManyInput | ModelInteractionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelInteraction update
+   */
+  export type ModelInteractionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ModelInteraction.
+     */
+    data: XOR<ModelInteractionUpdateInput, ModelInteractionUncheckedUpdateInput>
+    /**
+     * Choose, which ModelInteraction to update.
+     */
+    where: ModelInteractionWhereUniqueInput
+  }
+
+  /**
+   * ModelInteraction updateMany
+   */
+  export type ModelInteractionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ModelInteractions.
+     */
+    data: XOR<ModelInteractionUpdateManyMutationInput, ModelInteractionUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelInteractions to update
+     */
+    where?: ModelInteractionWhereInput
+    /**
+     * Limit how many ModelInteractions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelInteraction updateManyAndReturn
+   */
+  export type ModelInteractionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * The data used to update ModelInteractions.
+     */
+    data: XOR<ModelInteractionUpdateManyMutationInput, ModelInteractionUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelInteractions to update
+     */
+    where?: ModelInteractionWhereInput
+    /**
+     * Limit how many ModelInteractions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelInteraction upsert
+   */
+  export type ModelInteractionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ModelInteraction to update in case it exists.
+     */
+    where: ModelInteractionWhereUniqueInput
+    /**
+     * In case the ModelInteraction found by the `where` argument doesn't exist, create a new ModelInteraction with this data.
+     */
+    create: XOR<ModelInteractionCreateInput, ModelInteractionUncheckedCreateInput>
+    /**
+     * In case the ModelInteraction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ModelInteractionUpdateInput, ModelInteractionUncheckedUpdateInput>
+  }
+
+  /**
+   * ModelInteraction delete
+   */
+  export type ModelInteractionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+    /**
+     * Filter which ModelInteraction to delete.
+     */
+    where: ModelInteractionWhereUniqueInput
+  }
+
+  /**
+   * ModelInteraction deleteMany
+   */
+  export type ModelInteractionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelInteractions to delete
+     */
+    where?: ModelInteractionWhereInput
+    /**
+     * Limit how many ModelInteractions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelInteraction.user
+   */
+  export type ModelInteraction$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ModelInteraction without action
+   */
+  export type ModelInteractionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelInteraction
+     */
+    select?: ModelInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelInteraction
+     */
+    omit?: ModelInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInteractionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Event
    */
 
@@ -18759,6 +21359,33 @@ export namespace Prisma {
   export type ModelPermissionScalarFieldEnum = (typeof ModelPermissionScalarFieldEnum)[keyof typeof ModelPermissionScalarFieldEnum]
 
 
+  export const ModelLikeScalarFieldEnum: {
+    modelId: 'modelId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type ModelLikeScalarFieldEnum = (typeof ModelLikeScalarFieldEnum)[keyof typeof ModelLikeScalarFieldEnum]
+
+
+  export const ModelInteractionScalarFieldEnum: {
+    id: 'id',
+    modelId: 'modelId',
+    versionNumber: 'versionNumber',
+    kind: 'kind',
+    userId: 'userId',
+    sessionId: 'sessionId',
+    ipHash: 'ipHash',
+    userAgent: 'userAgent',
+    referer: 'referer',
+    geo: 'geo',
+    cookie: 'cookie',
+    createdAt: 'createdAt'
+  };
+
+  export type ModelInteractionScalarFieldEnum = (typeof ModelInteractionScalarFieldEnum)[keyof typeof ModelInteractionScalarFieldEnum]
+
+
   export const EventScalarFieldEnum: {
     id: 'id',
     type: 'type',
@@ -18779,6 +21406,14 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const JsonNullValueInput: {
@@ -18952,6 +21587,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ModelInteractionKind'
+   */
+  export type EnumModelInteractionKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModelInteractionKind'>
+    
+
+
+  /**
+   * Reference to a field of type 'ModelInteractionKind[]'
+   */
+  export type ListEnumModelInteractionKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModelInteractionKind[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Json'
    */
   export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -19007,6 +21656,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorListRelationFilter
     grantedPermissions?: ModelPermissionListRelationFilter
     events?: EventListRelationFilter
+    modelLikes?: ModelLikeListRelationFilter
+    modelInteractions?: ModelInteractionListRelationFilter
     passkeys?: PasskeyListRelationFilter
   }
 
@@ -19032,6 +21683,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorOrderByRelationAggregateInput
     grantedPermissions?: ModelPermissionOrderByRelationAggregateInput
     events?: EventOrderByRelationAggregateInput
+    modelLikes?: ModelLikeOrderByRelationAggregateInput
+    modelInteractions?: ModelInteractionOrderByRelationAggregateInput
     passkeys?: PasskeyOrderByRelationAggregateInput
   }
 
@@ -19060,6 +21713,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorListRelationFilter
     grantedPermissions?: ModelPermissionListRelationFilter
     events?: EventListRelationFilter
+    modelLikes?: ModelLikeListRelationFilter
+    modelInteractions?: ModelInteractionListRelationFilter
     passkeys?: PasskeyListRelationFilter
   }, "id" | "email">
 
@@ -19448,6 +22103,8 @@ export namespace Prisma {
     authors?: ModelAuthorListRelationFilter
     permissions?: ModelPermissionListRelationFilter
     additionalFiles?: ModelAdditionalFileListRelationFilter
+    likes?: ModelLikeListRelationFilter
+    interactions?: ModelInteractionListRelationFilter
   }
 
   export type ModelOrderByWithRelationInput = {
@@ -19468,6 +22125,8 @@ export namespace Prisma {
     authors?: ModelAuthorOrderByRelationAggregateInput
     permissions?: ModelPermissionOrderByRelationAggregateInput
     additionalFiles?: ModelAdditionalFileOrderByRelationAggregateInput
+    likes?: ModelLikeOrderByRelationAggregateInput
+    interactions?: ModelInteractionOrderByRelationAggregateInput
   }
 
   export type ModelWhereUniqueInput = Prisma.AtLeast<{
@@ -19492,6 +22151,8 @@ export namespace Prisma {
     authors?: ModelAuthorListRelationFilter
     permissions?: ModelPermissionListRelationFilter
     additionalFiles?: ModelAdditionalFileListRelationFilter
+    likes?: ModelLikeListRelationFilter
+    interactions?: ModelInteractionListRelationFilter
   }, "id" | "id_latestVersionNumber">
 
   export type ModelOrderByWithAggregationInput = {
@@ -19960,6 +22621,150 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ModelPermission"> | Date | string
   }
 
+  export type ModelLikeWhereInput = {
+    AND?: ModelLikeWhereInput | ModelLikeWhereInput[]
+    OR?: ModelLikeWhereInput[]
+    NOT?: ModelLikeWhereInput | ModelLikeWhereInput[]
+    modelId?: StringFilter<"ModelLike"> | string
+    userId?: StringFilter<"ModelLike"> | string
+    createdAt?: DateTimeFilter<"ModelLike"> | Date | string
+    model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ModelLikeOrderByWithRelationInput = {
+    modelId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    model?: ModelOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ModelLikeWhereUniqueInput = Prisma.AtLeast<{
+    modelId_userId?: ModelLikeModelIdUserIdCompoundUniqueInput
+    AND?: ModelLikeWhereInput | ModelLikeWhereInput[]
+    OR?: ModelLikeWhereInput[]
+    NOT?: ModelLikeWhereInput | ModelLikeWhereInput[]
+    modelId?: StringFilter<"ModelLike"> | string
+    userId?: StringFilter<"ModelLike"> | string
+    createdAt?: DateTimeFilter<"ModelLike"> | Date | string
+    model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "modelId_userId">
+
+  export type ModelLikeOrderByWithAggregationInput = {
+    modelId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: ModelLikeCountOrderByAggregateInput
+    _max?: ModelLikeMaxOrderByAggregateInput
+    _min?: ModelLikeMinOrderByAggregateInput
+  }
+
+  export type ModelLikeScalarWhereWithAggregatesInput = {
+    AND?: ModelLikeScalarWhereWithAggregatesInput | ModelLikeScalarWhereWithAggregatesInput[]
+    OR?: ModelLikeScalarWhereWithAggregatesInput[]
+    NOT?: ModelLikeScalarWhereWithAggregatesInput | ModelLikeScalarWhereWithAggregatesInput[]
+    modelId?: StringWithAggregatesFilter<"ModelLike"> | string
+    userId?: StringWithAggregatesFilter<"ModelLike"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ModelLike"> | Date | string
+  }
+
+  export type ModelInteractionWhereInput = {
+    AND?: ModelInteractionWhereInput | ModelInteractionWhereInput[]
+    OR?: ModelInteractionWhereInput[]
+    NOT?: ModelInteractionWhereInput | ModelInteractionWhereInput[]
+    id?: StringFilter<"ModelInteraction"> | string
+    modelId?: StringFilter<"ModelInteraction"> | string
+    versionNumber?: IntNullableFilter<"ModelInteraction"> | number | null
+    kind?: EnumModelInteractionKindFilter<"ModelInteraction"> | $Enums.ModelInteractionKind
+    userId?: StringNullableFilter<"ModelInteraction"> | string | null
+    sessionId?: StringNullableFilter<"ModelInteraction"> | string | null
+    ipHash?: StringNullableFilter<"ModelInteraction"> | string | null
+    userAgent?: StringNullableFilter<"ModelInteraction"> | string | null
+    referer?: StringNullableFilter<"ModelInteraction"> | string | null
+    geo?: JsonNullableFilter<"ModelInteraction">
+    cookie?: StringNullableFilter<"ModelInteraction"> | string | null
+    createdAt?: DateTimeFilter<"ModelInteraction"> | Date | string
+    model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type ModelInteractionOrderByWithRelationInput = {
+    id?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrderInput | SortOrder
+    kind?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    ipHash?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    referer?: SortOrderInput | SortOrder
+    geo?: SortOrderInput | SortOrder
+    cookie?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    model?: ModelOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ModelInteractionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ModelInteractionWhereInput | ModelInteractionWhereInput[]
+    OR?: ModelInteractionWhereInput[]
+    NOT?: ModelInteractionWhereInput | ModelInteractionWhereInput[]
+    modelId?: StringFilter<"ModelInteraction"> | string
+    versionNumber?: IntNullableFilter<"ModelInteraction"> | number | null
+    kind?: EnumModelInteractionKindFilter<"ModelInteraction"> | $Enums.ModelInteractionKind
+    userId?: StringNullableFilter<"ModelInteraction"> | string | null
+    sessionId?: StringNullableFilter<"ModelInteraction"> | string | null
+    ipHash?: StringNullableFilter<"ModelInteraction"> | string | null
+    userAgent?: StringNullableFilter<"ModelInteraction"> | string | null
+    referer?: StringNullableFilter<"ModelInteraction"> | string | null
+    geo?: JsonNullableFilter<"ModelInteraction">
+    cookie?: StringNullableFilter<"ModelInteraction"> | string | null
+    createdAt?: DateTimeFilter<"ModelInteraction"> | Date | string
+    model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type ModelInteractionOrderByWithAggregationInput = {
+    id?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrderInput | SortOrder
+    kind?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    ipHash?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    referer?: SortOrderInput | SortOrder
+    geo?: SortOrderInput | SortOrder
+    cookie?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ModelInteractionCountOrderByAggregateInput
+    _avg?: ModelInteractionAvgOrderByAggregateInput
+    _max?: ModelInteractionMaxOrderByAggregateInput
+    _min?: ModelInteractionMinOrderByAggregateInput
+    _sum?: ModelInteractionSumOrderByAggregateInput
+  }
+
+  export type ModelInteractionScalarWhereWithAggregatesInput = {
+    AND?: ModelInteractionScalarWhereWithAggregatesInput | ModelInteractionScalarWhereWithAggregatesInput[]
+    OR?: ModelInteractionScalarWhereWithAggregatesInput[]
+    NOT?: ModelInteractionScalarWhereWithAggregatesInput | ModelInteractionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ModelInteraction"> | string
+    modelId?: StringWithAggregatesFilter<"ModelInteraction"> | string
+    versionNumber?: IntNullableWithAggregatesFilter<"ModelInteraction"> | number | null
+    kind?: EnumModelInteractionKindWithAggregatesFilter<"ModelInteraction"> | $Enums.ModelInteractionKind
+    userId?: StringNullableWithAggregatesFilter<"ModelInteraction"> | string | null
+    sessionId?: StringNullableWithAggregatesFilter<"ModelInteraction"> | string | null
+    ipHash?: StringNullableWithAggregatesFilter<"ModelInteraction"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"ModelInteraction"> | string | null
+    referer?: StringNullableWithAggregatesFilter<"ModelInteraction"> | string | null
+    geo?: JsonNullableWithAggregatesFilter<"ModelInteraction">
+    cookie?: StringNullableWithAggregatesFilter<"ModelInteraction"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ModelInteraction"> | Date | string
+  }
+
   export type EventWhereInput = {
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
@@ -20052,6 +22857,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -20077,6 +22884,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -20102,6 +22911,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -20127,6 +22938,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -20558,6 +23371,8 @@ export namespace Prisma {
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateInput = {
@@ -20575,6 +23390,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelUpdateInput = {
@@ -20591,6 +23408,8 @@ export namespace Prisma {
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateInput = {
@@ -20608,6 +23427,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelCreateManyInput = {
@@ -21056,6 +23877,149 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModelLikeCreateInput = {
+    createdAt?: Date | string
+    model: ModelCreateNestedOneWithoutLikesInput
+    user: UserCreateNestedOneWithoutModelLikesInput
+  }
+
+  export type ModelLikeUncheckedCreateInput = {
+    modelId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelLikeUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    model?: ModelUpdateOneRequiredWithoutLikesNestedInput
+    user?: UserUpdateOneRequiredWithoutModelLikesNestedInput
+  }
+
+  export type ModelLikeUncheckedUpdateInput = {
+    modelId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelLikeCreateManyInput = {
+    modelId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelLikeUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelLikeUncheckedUpdateManyInput = {
+    modelId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelInteractionCreateInput = {
+    id?: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
+    model: ModelCreateNestedOneWithoutInteractionsInput
+    user?: UserCreateNestedOneWithoutModelInteractionsInput
+  }
+
+  export type ModelInteractionUncheckedCreateInput = {
+    id?: string
+    modelId: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    userId?: string | null
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ModelInteractionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    model?: ModelUpdateOneRequiredWithoutInteractionsNestedInput
+    user?: UserUpdateOneWithoutModelInteractionsNestedInput
+  }
+
+  export type ModelInteractionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelInteractionCreateManyInput = {
+    id?: string
+    modelId: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    userId?: string | null
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ModelInteractionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelInteractionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EventCreateInput = {
     id?: string
     type: string
@@ -21244,6 +24208,18 @@ export namespace Prisma {
     none?: EventWhereInput
   }
 
+  export type ModelLikeListRelationFilter = {
+    every?: ModelLikeWhereInput
+    some?: ModelLikeWhereInput
+    none?: ModelLikeWhereInput
+  }
+
+  export type ModelInteractionListRelationFilter = {
+    every?: ModelInteractionWhereInput
+    some?: ModelInteractionWhereInput
+    none?: ModelInteractionWhereInput
+  }
+
   export type PasskeyListRelationFilter = {
     every?: PasskeyWhereInput
     some?: PasskeyWhereInput
@@ -21276,6 +24252,14 @@ export namespace Prisma {
   }
 
   export type EventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ModelLikeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ModelInteractionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22085,6 +25069,146 @@ export namespace Prisma {
     _min?: NestedEnumPermissionLevelFilter<$PrismaModel>
     _max?: NestedEnumPermissionLevelFilter<$PrismaModel>
   }
+
+  export type ModelLikeModelIdUserIdCompoundUniqueInput = {
+    modelId: string
+    userId: string
+  }
+
+  export type ModelLikeCountOrderByAggregateInput = {
+    modelId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ModelLikeMaxOrderByAggregateInput = {
+    modelId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ModelLikeMinOrderByAggregateInput = {
+    modelId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumModelInteractionKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.ModelInteractionKind | EnumModelInteractionKindFieldRefInput<$PrismaModel>
+    in?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumModelInteractionKindFilter<$PrismaModel> | $Enums.ModelInteractionKind
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type ModelInteractionCountOrderByAggregateInput = {
+    id?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
+    kind?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    ipHash?: SortOrder
+    userAgent?: SortOrder
+    referer?: SortOrder
+    geo?: SortOrder
+    cookie?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ModelInteractionAvgOrderByAggregateInput = {
+    versionNumber?: SortOrder
+  }
+
+  export type ModelInteractionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
+    kind?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    ipHash?: SortOrder
+    userAgent?: SortOrder
+    referer?: SortOrder
+    cookie?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ModelInteractionMinOrderByAggregateInput = {
+    id?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
+    kind?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    ipHash?: SortOrder
+    userAgent?: SortOrder
+    referer?: SortOrder
+    cookie?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ModelInteractionSumOrderByAggregateInput = {
+    versionNumber?: SortOrder
+  }
+
+  export type EnumModelInteractionKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ModelInteractionKind | EnumModelInteractionKindFieldRefInput<$PrismaModel>
+    in?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumModelInteractionKindWithAggregatesFilter<$PrismaModel> | $Enums.ModelInteractionKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumModelInteractionKindFilter<$PrismaModel>
+    _max?: NestedEnumModelInteractionKindFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -22208,6 +25332,20 @@ export namespace Prisma {
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
   }
 
+  export type ModelLikeCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelLikeCreateWithoutUserInput, ModelLikeUncheckedCreateWithoutUserInput> | ModelLikeCreateWithoutUserInput[] | ModelLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelLikeCreateOrConnectWithoutUserInput | ModelLikeCreateOrConnectWithoutUserInput[]
+    createMany?: ModelLikeCreateManyUserInputEnvelope
+    connect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+  }
+
+  export type ModelInteractionCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelInteractionCreateWithoutUserInput, ModelInteractionUncheckedCreateWithoutUserInput> | ModelInteractionCreateWithoutUserInput[] | ModelInteractionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelInteractionCreateOrConnectWithoutUserInput | ModelInteractionCreateOrConnectWithoutUserInput[]
+    createMany?: ModelInteractionCreateManyUserInputEnvelope
+    connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+  }
+
   export type PasskeyCreateNestedManyWithoutUserInput = {
     create?: XOR<PasskeyCreateWithoutUserInput, PasskeyUncheckedCreateWithoutUserInput> | PasskeyCreateWithoutUserInput[] | PasskeyUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasskeyCreateOrConnectWithoutUserInput | PasskeyCreateOrConnectWithoutUserInput[]
@@ -22255,6 +25393,20 @@ export namespace Prisma {
     connectOrCreate?: EventCreateOrConnectWithoutActorInput | EventCreateOrConnectWithoutActorInput[]
     createMany?: EventCreateManyActorInputEnvelope
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+  }
+
+  export type ModelLikeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelLikeCreateWithoutUserInput, ModelLikeUncheckedCreateWithoutUserInput> | ModelLikeCreateWithoutUserInput[] | ModelLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelLikeCreateOrConnectWithoutUserInput | ModelLikeCreateOrConnectWithoutUserInput[]
+    createMany?: ModelLikeCreateManyUserInputEnvelope
+    connect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+  }
+
+  export type ModelInteractionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelInteractionCreateWithoutUserInput, ModelInteractionUncheckedCreateWithoutUserInput> | ModelInteractionCreateWithoutUserInput[] | ModelInteractionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelInteractionCreateOrConnectWithoutUserInput | ModelInteractionCreateOrConnectWithoutUserInput[]
+    createMany?: ModelInteractionCreateManyUserInputEnvelope
+    connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
   }
 
   export type PasskeyUncheckedCreateNestedManyWithoutUserInput = {
@@ -22380,6 +25532,34 @@ export namespace Prisma {
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
   }
 
+  export type ModelLikeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelLikeCreateWithoutUserInput, ModelLikeUncheckedCreateWithoutUserInput> | ModelLikeCreateWithoutUserInput[] | ModelLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelLikeCreateOrConnectWithoutUserInput | ModelLikeCreateOrConnectWithoutUserInput[]
+    upsert?: ModelLikeUpsertWithWhereUniqueWithoutUserInput | ModelLikeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelLikeCreateManyUserInputEnvelope
+    set?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    disconnect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    delete?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    connect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    update?: ModelLikeUpdateWithWhereUniqueWithoutUserInput | ModelLikeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelLikeUpdateManyWithWhereWithoutUserInput | ModelLikeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelLikeScalarWhereInput | ModelLikeScalarWhereInput[]
+  }
+
+  export type ModelInteractionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelInteractionCreateWithoutUserInput, ModelInteractionUncheckedCreateWithoutUserInput> | ModelInteractionCreateWithoutUserInput[] | ModelInteractionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelInteractionCreateOrConnectWithoutUserInput | ModelInteractionCreateOrConnectWithoutUserInput[]
+    upsert?: ModelInteractionUpsertWithWhereUniqueWithoutUserInput | ModelInteractionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelInteractionCreateManyUserInputEnvelope
+    set?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    disconnect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    delete?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    update?: ModelInteractionUpdateWithWhereUniqueWithoutUserInput | ModelInteractionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelInteractionUpdateManyWithWhereWithoutUserInput | ModelInteractionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
+  }
+
   export type PasskeyUpdateManyWithoutUserNestedInput = {
     create?: XOR<PasskeyCreateWithoutUserInput, PasskeyUncheckedCreateWithoutUserInput> | PasskeyCreateWithoutUserInput[] | PasskeyUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasskeyCreateOrConnectWithoutUserInput | PasskeyCreateOrConnectWithoutUserInput[]
@@ -22476,6 +25656,34 @@ export namespace Prisma {
     update?: EventUpdateWithWhereUniqueWithoutActorInput | EventUpdateWithWhereUniqueWithoutActorInput[]
     updateMany?: EventUpdateManyWithWhereWithoutActorInput | EventUpdateManyWithWhereWithoutActorInput[]
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
+  }
+
+  export type ModelLikeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelLikeCreateWithoutUserInput, ModelLikeUncheckedCreateWithoutUserInput> | ModelLikeCreateWithoutUserInput[] | ModelLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelLikeCreateOrConnectWithoutUserInput | ModelLikeCreateOrConnectWithoutUserInput[]
+    upsert?: ModelLikeUpsertWithWhereUniqueWithoutUserInput | ModelLikeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelLikeCreateManyUserInputEnvelope
+    set?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    disconnect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    delete?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    connect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    update?: ModelLikeUpdateWithWhereUniqueWithoutUserInput | ModelLikeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelLikeUpdateManyWithWhereWithoutUserInput | ModelLikeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelLikeScalarWhereInput | ModelLikeScalarWhereInput[]
+  }
+
+  export type ModelInteractionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelInteractionCreateWithoutUserInput, ModelInteractionUncheckedCreateWithoutUserInput> | ModelInteractionCreateWithoutUserInput[] | ModelInteractionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelInteractionCreateOrConnectWithoutUserInput | ModelInteractionCreateOrConnectWithoutUserInput[]
+    upsert?: ModelInteractionUpsertWithWhereUniqueWithoutUserInput | ModelInteractionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelInteractionCreateManyUserInputEnvelope
+    set?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    disconnect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    delete?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    update?: ModelInteractionUpdateWithWhereUniqueWithoutUserInput | ModelInteractionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelInteractionUpdateManyWithWhereWithoutUserInput | ModelInteractionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
   }
 
   export type PasskeyUncheckedUpdateManyWithoutUserNestedInput = {
@@ -22611,6 +25819,20 @@ export namespace Prisma {
     connect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
   }
 
+  export type ModelLikeCreateNestedManyWithoutModelInput = {
+    create?: XOR<ModelLikeCreateWithoutModelInput, ModelLikeUncheckedCreateWithoutModelInput> | ModelLikeCreateWithoutModelInput[] | ModelLikeUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelLikeCreateOrConnectWithoutModelInput | ModelLikeCreateOrConnectWithoutModelInput[]
+    createMany?: ModelLikeCreateManyModelInputEnvelope
+    connect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+  }
+
+  export type ModelInteractionCreateNestedManyWithoutModelInput = {
+    create?: XOR<ModelInteractionCreateWithoutModelInput, ModelInteractionUncheckedCreateWithoutModelInput> | ModelInteractionCreateWithoutModelInput[] | ModelInteractionUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelInteractionCreateOrConnectWithoutModelInput | ModelInteractionCreateOrConnectWithoutModelInput[]
+    createMany?: ModelInteractionCreateManyModelInputEnvelope
+    connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+  }
+
   export type ModelUncheckedCreateNestedManyWithoutParentModelInput = {
     create?: XOR<ModelCreateWithoutParentModelInput, ModelUncheckedCreateWithoutParentModelInput> | ModelCreateWithoutParentModelInput[] | ModelUncheckedCreateWithoutParentModelInput[]
     connectOrCreate?: ModelCreateOrConnectWithoutParentModelInput | ModelCreateOrConnectWithoutParentModelInput[]
@@ -22644,6 +25866,20 @@ export namespace Prisma {
     connectOrCreate?: ModelAdditionalFileCreateOrConnectWithoutModelInput | ModelAdditionalFileCreateOrConnectWithoutModelInput[]
     createMany?: ModelAdditionalFileCreateManyModelInputEnvelope
     connect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
+  }
+
+  export type ModelLikeUncheckedCreateNestedManyWithoutModelInput = {
+    create?: XOR<ModelLikeCreateWithoutModelInput, ModelLikeUncheckedCreateWithoutModelInput> | ModelLikeCreateWithoutModelInput[] | ModelLikeUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelLikeCreateOrConnectWithoutModelInput | ModelLikeCreateOrConnectWithoutModelInput[]
+    createMany?: ModelLikeCreateManyModelInputEnvelope
+    connect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+  }
+
+  export type ModelInteractionUncheckedCreateNestedManyWithoutModelInput = {
+    create?: XOR<ModelInteractionCreateWithoutModelInput, ModelInteractionUncheckedCreateWithoutModelInput> | ModelInteractionCreateWithoutModelInput[] | ModelInteractionUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelInteractionCreateOrConnectWithoutModelInput | ModelInteractionCreateOrConnectWithoutModelInput[]
+    createMany?: ModelInteractionCreateManyModelInputEnvelope
+    connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
   }
 
   export type EnumModelVisibilityFieldUpdateOperationsInput = {
@@ -22750,6 +25986,34 @@ export namespace Prisma {
     deleteMany?: ModelAdditionalFileScalarWhereInput | ModelAdditionalFileScalarWhereInput[]
   }
 
+  export type ModelLikeUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ModelLikeCreateWithoutModelInput, ModelLikeUncheckedCreateWithoutModelInput> | ModelLikeCreateWithoutModelInput[] | ModelLikeUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelLikeCreateOrConnectWithoutModelInput | ModelLikeCreateOrConnectWithoutModelInput[]
+    upsert?: ModelLikeUpsertWithWhereUniqueWithoutModelInput | ModelLikeUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: ModelLikeCreateManyModelInputEnvelope
+    set?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    disconnect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    delete?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    connect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    update?: ModelLikeUpdateWithWhereUniqueWithoutModelInput | ModelLikeUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ModelLikeUpdateManyWithWhereWithoutModelInput | ModelLikeUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ModelLikeScalarWhereInput | ModelLikeScalarWhereInput[]
+  }
+
+  export type ModelInteractionUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ModelInteractionCreateWithoutModelInput, ModelInteractionUncheckedCreateWithoutModelInput> | ModelInteractionCreateWithoutModelInput[] | ModelInteractionUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelInteractionCreateOrConnectWithoutModelInput | ModelInteractionCreateOrConnectWithoutModelInput[]
+    upsert?: ModelInteractionUpsertWithWhereUniqueWithoutModelInput | ModelInteractionUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: ModelInteractionCreateManyModelInputEnvelope
+    set?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    disconnect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    delete?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    update?: ModelInteractionUpdateWithWhereUniqueWithoutModelInput | ModelInteractionUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ModelInteractionUpdateManyWithWhereWithoutModelInput | ModelInteractionUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
+  }
+
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -22826,6 +26090,34 @@ export namespace Prisma {
     update?: ModelAdditionalFileUpdateWithWhereUniqueWithoutModelInput | ModelAdditionalFileUpdateWithWhereUniqueWithoutModelInput[]
     updateMany?: ModelAdditionalFileUpdateManyWithWhereWithoutModelInput | ModelAdditionalFileUpdateManyWithWhereWithoutModelInput[]
     deleteMany?: ModelAdditionalFileScalarWhereInput | ModelAdditionalFileScalarWhereInput[]
+  }
+
+  export type ModelLikeUncheckedUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ModelLikeCreateWithoutModelInput, ModelLikeUncheckedCreateWithoutModelInput> | ModelLikeCreateWithoutModelInput[] | ModelLikeUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelLikeCreateOrConnectWithoutModelInput | ModelLikeCreateOrConnectWithoutModelInput[]
+    upsert?: ModelLikeUpsertWithWhereUniqueWithoutModelInput | ModelLikeUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: ModelLikeCreateManyModelInputEnvelope
+    set?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    disconnect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    delete?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    connect?: ModelLikeWhereUniqueInput | ModelLikeWhereUniqueInput[]
+    update?: ModelLikeUpdateWithWhereUniqueWithoutModelInput | ModelLikeUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ModelLikeUpdateManyWithWhereWithoutModelInput | ModelLikeUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ModelLikeScalarWhereInput | ModelLikeScalarWhereInput[]
+  }
+
+  export type ModelInteractionUncheckedUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ModelInteractionCreateWithoutModelInput, ModelInteractionUncheckedCreateWithoutModelInput> | ModelInteractionCreateWithoutModelInput[] | ModelInteractionUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelInteractionCreateOrConnectWithoutModelInput | ModelInteractionCreateOrConnectWithoutModelInput[]
+    upsert?: ModelInteractionUpsertWithWhereUniqueWithoutModelInput | ModelInteractionUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: ModelInteractionCreateManyModelInputEnvelope
+    set?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    disconnect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    delete?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+    update?: ModelInteractionUpdateWithWhereUniqueWithoutModelInput | ModelInteractionUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ModelInteractionUpdateManyWithWhereWithoutModelInput | ModelInteractionUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
   }
 
   export type ModelCreateNestedOneWithoutVersionsInput = {
@@ -23224,6 +26516,68 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutGrantedPermissionsInput, UserUpdateWithoutGrantedPermissionsInput>, UserUncheckedUpdateWithoutGrantedPermissionsInput>
   }
 
+  export type ModelCreateNestedOneWithoutLikesInput = {
+    create?: XOR<ModelCreateWithoutLikesInput, ModelUncheckedCreateWithoutLikesInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutLikesInput
+    connect?: ModelWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutModelLikesInput = {
+    create?: XOR<UserCreateWithoutModelLikesInput, UserUncheckedCreateWithoutModelLikesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutModelLikesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ModelUpdateOneRequiredWithoutLikesNestedInput = {
+    create?: XOR<ModelCreateWithoutLikesInput, ModelUncheckedCreateWithoutLikesInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutLikesInput
+    upsert?: ModelUpsertWithoutLikesInput
+    connect?: ModelWhereUniqueInput
+    update?: XOR<XOR<ModelUpdateToOneWithWhereWithoutLikesInput, ModelUpdateWithoutLikesInput>, ModelUncheckedUpdateWithoutLikesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutModelLikesNestedInput = {
+    create?: XOR<UserCreateWithoutModelLikesInput, UserUncheckedCreateWithoutModelLikesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutModelLikesInput
+    upsert?: UserUpsertWithoutModelLikesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutModelLikesInput, UserUpdateWithoutModelLikesInput>, UserUncheckedUpdateWithoutModelLikesInput>
+  }
+
+  export type ModelCreateNestedOneWithoutInteractionsInput = {
+    create?: XOR<ModelCreateWithoutInteractionsInput, ModelUncheckedCreateWithoutInteractionsInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutInteractionsInput
+    connect?: ModelWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutModelInteractionsInput = {
+    create?: XOR<UserCreateWithoutModelInteractionsInput, UserUncheckedCreateWithoutModelInteractionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutModelInteractionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumModelInteractionKindFieldUpdateOperationsInput = {
+    set?: $Enums.ModelInteractionKind
+  }
+
+  export type ModelUpdateOneRequiredWithoutInteractionsNestedInput = {
+    create?: XOR<ModelCreateWithoutInteractionsInput, ModelUncheckedCreateWithoutInteractionsInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutInteractionsInput
+    upsert?: ModelUpsertWithoutInteractionsInput
+    connect?: ModelWhereUniqueInput
+    update?: XOR<XOR<ModelUpdateToOneWithWhereWithoutInteractionsInput, ModelUpdateWithoutInteractionsInput>, ModelUncheckedUpdateWithoutInteractionsInput>
+  }
+
+  export type UserUpdateOneWithoutModelInteractionsNestedInput = {
+    create?: XOR<UserCreateWithoutModelInteractionsInput, UserUncheckedCreateWithoutModelInteractionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutModelInteractionsInput
+    upsert?: UserUpsertWithoutModelInteractionsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutModelInteractionsInput, UserUpdateWithoutModelInteractionsInput>, UserUncheckedUpdateWithoutModelInteractionsInput>
+  }
+
   export type UserCreateNestedOneWithoutEventsInput = {
     create?: XOR<UserCreateWithoutEventsInput, UserUncheckedCreateWithoutEventsInput>
     connectOrCreate?: UserCreateOrConnectWithoutEventsInput
@@ -23553,6 +26907,46 @@ export namespace Prisma {
     _min?: NestedEnumPermissionLevelFilter<$PrismaModel>
     _max?: NestedEnumPermissionLevelFilter<$PrismaModel>
   }
+
+  export type NestedEnumModelInteractionKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.ModelInteractionKind | EnumModelInteractionKindFieldRefInput<$PrismaModel>
+    in?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumModelInteractionKindFilter<$PrismaModel> | $Enums.ModelInteractionKind
+  }
+
+  export type NestedEnumModelInteractionKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ModelInteractionKind | EnumModelInteractionKindFieldRefInput<$PrismaModel>
+    in?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumModelInteractionKindWithAggregatesFilter<$PrismaModel> | $Enums.ModelInteractionKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumModelInteractionKindFilter<$PrismaModel>
+    _max?: NestedEnumModelInteractionKindFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -23750,6 +27144,64 @@ export namespace Prisma {
 
   export type EventCreateManyActorInputEnvelope = {
     data: EventCreateManyActorInput | EventCreateManyActorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ModelLikeCreateWithoutUserInput = {
+    createdAt?: Date | string
+    model: ModelCreateNestedOneWithoutLikesInput
+  }
+
+  export type ModelLikeUncheckedCreateWithoutUserInput = {
+    modelId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelLikeCreateOrConnectWithoutUserInput = {
+    where: ModelLikeWhereUniqueInput
+    create: XOR<ModelLikeCreateWithoutUserInput, ModelLikeUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelLikeCreateManyUserInputEnvelope = {
+    data: ModelLikeCreateManyUserInput | ModelLikeCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ModelInteractionCreateWithoutUserInput = {
+    id?: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
+    model: ModelCreateNestedOneWithoutInteractionsInput
+  }
+
+  export type ModelInteractionUncheckedCreateWithoutUserInput = {
+    id?: string
+    modelId: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ModelInteractionCreateOrConnectWithoutUserInput = {
+    where: ModelInteractionWhereUniqueInput
+    create: XOR<ModelInteractionCreateWithoutUserInput, ModelInteractionUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelInteractionCreateManyUserInputEnvelope = {
+    data: ModelInteractionCreateManyUserInput | ModelInteractionCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -23967,6 +27419,65 @@ export namespace Prisma {
     processedAt?: DateTimeNullableFilter<"Event"> | Date | string | null
   }
 
+  export type ModelLikeUpsertWithWhereUniqueWithoutUserInput = {
+    where: ModelLikeWhereUniqueInput
+    update: XOR<ModelLikeUpdateWithoutUserInput, ModelLikeUncheckedUpdateWithoutUserInput>
+    create: XOR<ModelLikeCreateWithoutUserInput, ModelLikeUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelLikeUpdateWithWhereUniqueWithoutUserInput = {
+    where: ModelLikeWhereUniqueInput
+    data: XOR<ModelLikeUpdateWithoutUserInput, ModelLikeUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ModelLikeUpdateManyWithWhereWithoutUserInput = {
+    where: ModelLikeScalarWhereInput
+    data: XOR<ModelLikeUpdateManyMutationInput, ModelLikeUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ModelLikeScalarWhereInput = {
+    AND?: ModelLikeScalarWhereInput | ModelLikeScalarWhereInput[]
+    OR?: ModelLikeScalarWhereInput[]
+    NOT?: ModelLikeScalarWhereInput | ModelLikeScalarWhereInput[]
+    modelId?: StringFilter<"ModelLike"> | string
+    userId?: StringFilter<"ModelLike"> | string
+    createdAt?: DateTimeFilter<"ModelLike"> | Date | string
+  }
+
+  export type ModelInteractionUpsertWithWhereUniqueWithoutUserInput = {
+    where: ModelInteractionWhereUniqueInput
+    update: XOR<ModelInteractionUpdateWithoutUserInput, ModelInteractionUncheckedUpdateWithoutUserInput>
+    create: XOR<ModelInteractionCreateWithoutUserInput, ModelInteractionUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelInteractionUpdateWithWhereUniqueWithoutUserInput = {
+    where: ModelInteractionWhereUniqueInput
+    data: XOR<ModelInteractionUpdateWithoutUserInput, ModelInteractionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ModelInteractionUpdateManyWithWhereWithoutUserInput = {
+    where: ModelInteractionScalarWhereInput
+    data: XOR<ModelInteractionUpdateManyMutationInput, ModelInteractionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ModelInteractionScalarWhereInput = {
+    AND?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
+    OR?: ModelInteractionScalarWhereInput[]
+    NOT?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
+    id?: StringFilter<"ModelInteraction"> | string
+    modelId?: StringFilter<"ModelInteraction"> | string
+    versionNumber?: IntNullableFilter<"ModelInteraction"> | number | null
+    kind?: EnumModelInteractionKindFilter<"ModelInteraction"> | $Enums.ModelInteractionKind
+    userId?: StringNullableFilter<"ModelInteraction"> | string | null
+    sessionId?: StringNullableFilter<"ModelInteraction"> | string | null
+    ipHash?: StringNullableFilter<"ModelInteraction"> | string | null
+    userAgent?: StringNullableFilter<"ModelInteraction"> | string | null
+    referer?: StringNullableFilter<"ModelInteraction"> | string | null
+    geo?: JsonNullableFilter<"ModelInteraction">
+    cookie?: StringNullableFilter<"ModelInteraction"> | string | null
+    createdAt?: DateTimeFilter<"ModelInteraction"> | Date | string
+  }
+
   export type PasskeyUpsertWithWhereUniqueWithoutUserInput = {
     where: PasskeyWhereUniqueInput
     update: XOR<PasskeyUpdateWithoutUserInput, PasskeyUncheckedUpdateWithoutUserInput>
@@ -24021,6 +27532,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -24045,6 +27558,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -24085,6 +27600,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -24109,6 +27626,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -24133,6 +27652,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -24157,6 +27678,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -24197,6 +27720,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -24221,6 +27746,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -24245,6 +27772,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -24269,6 +27798,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -24309,6 +27840,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -24333,6 +27866,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -24358,6 +27893,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPasskeysInput = {
@@ -24382,6 +27919,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPasskeysInput = {
@@ -24422,6 +27961,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPasskeysInput = {
@@ -24446,6 +27987,8 @@ export namespace Prisma {
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ModelVersionCreateWithoutLatestOfModelInput = {
@@ -24502,6 +28045,8 @@ export namespace Prisma {
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutChildModelsInput = {
@@ -24518,6 +28063,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutChildModelsInput = {
@@ -24538,6 +28085,8 @@ export namespace Prisma {
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutParentModelInput = {
@@ -24554,6 +28103,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutParentModelInput = {
@@ -24723,6 +28274,64 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ModelLikeCreateWithoutModelInput = {
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutModelLikesInput
+  }
+
+  export type ModelLikeUncheckedCreateWithoutModelInput = {
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelLikeCreateOrConnectWithoutModelInput = {
+    where: ModelLikeWhereUniqueInput
+    create: XOR<ModelLikeCreateWithoutModelInput, ModelLikeUncheckedCreateWithoutModelInput>
+  }
+
+  export type ModelLikeCreateManyModelInputEnvelope = {
+    data: ModelLikeCreateManyModelInput | ModelLikeCreateManyModelInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ModelInteractionCreateWithoutModelInput = {
+    id?: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutModelInteractionsInput
+  }
+
+  export type ModelInteractionUncheckedCreateWithoutModelInput = {
+    id?: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    userId?: string | null
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ModelInteractionCreateOrConnectWithoutModelInput = {
+    where: ModelInteractionWhereUniqueInput
+    create: XOR<ModelInteractionCreateWithoutModelInput, ModelInteractionUncheckedCreateWithoutModelInput>
+  }
+
+  export type ModelInteractionCreateManyModelInputEnvelope = {
+    data: ModelInteractionCreateManyModelInput | ModelInteractionCreateManyModelInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ModelVersionUpsertWithoutLatestOfModelInput = {
     update: XOR<ModelVersionUpdateWithoutLatestOfModelInput, ModelVersionUncheckedUpdateWithoutLatestOfModelInput>
     create: XOR<ModelVersionCreateWithoutLatestOfModelInput, ModelVersionUncheckedCreateWithoutLatestOfModelInput>
@@ -24794,6 +28403,8 @@ export namespace Prisma {
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutChildModelsInput = {
@@ -24810,6 +28421,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithWhereUniqueWithoutParentModelInput = {
@@ -24982,6 +28595,38 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ModelAdditionalFile"> | Date | string
   }
 
+  export type ModelLikeUpsertWithWhereUniqueWithoutModelInput = {
+    where: ModelLikeWhereUniqueInput
+    update: XOR<ModelLikeUpdateWithoutModelInput, ModelLikeUncheckedUpdateWithoutModelInput>
+    create: XOR<ModelLikeCreateWithoutModelInput, ModelLikeUncheckedCreateWithoutModelInput>
+  }
+
+  export type ModelLikeUpdateWithWhereUniqueWithoutModelInput = {
+    where: ModelLikeWhereUniqueInput
+    data: XOR<ModelLikeUpdateWithoutModelInput, ModelLikeUncheckedUpdateWithoutModelInput>
+  }
+
+  export type ModelLikeUpdateManyWithWhereWithoutModelInput = {
+    where: ModelLikeScalarWhereInput
+    data: XOR<ModelLikeUpdateManyMutationInput, ModelLikeUncheckedUpdateManyWithoutModelInput>
+  }
+
+  export type ModelInteractionUpsertWithWhereUniqueWithoutModelInput = {
+    where: ModelInteractionWhereUniqueInput
+    update: XOR<ModelInteractionUpdateWithoutModelInput, ModelInteractionUncheckedUpdateWithoutModelInput>
+    create: XOR<ModelInteractionCreateWithoutModelInput, ModelInteractionUncheckedCreateWithoutModelInput>
+  }
+
+  export type ModelInteractionUpdateWithWhereUniqueWithoutModelInput = {
+    where: ModelInteractionWhereUniqueInput
+    data: XOR<ModelInteractionUpdateWithoutModelInput, ModelInteractionUncheckedUpdateWithoutModelInput>
+  }
+
+  export type ModelInteractionUpdateManyWithWhereWithoutModelInput = {
+    where: ModelInteractionScalarWhereInput
+    data: XOR<ModelInteractionUpdateManyMutationInput, ModelInteractionUncheckedUpdateManyWithoutModelInput>
+  }
+
   export type ModelCreateWithoutVersionsInput = {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
@@ -24995,6 +28640,8 @@ export namespace Prisma {
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutVersionsInput = {
@@ -25011,6 +28658,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutVersionsInput = {
@@ -25031,6 +28680,8 @@ export namespace Prisma {
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutLatestVersionInput = {
@@ -25046,6 +28697,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutLatestVersionInput = {
@@ -25066,6 +28719,8 @@ export namespace Prisma {
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutParentVersionInput = {
@@ -25081,6 +28736,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutParentVersionInput = {
@@ -25180,6 +28837,8 @@ export namespace Prisma {
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutVersionsInput = {
@@ -25196,6 +28855,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithoutLatestVersionInput = {
@@ -25222,6 +28883,8 @@ export namespace Prisma {
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutLatestVersionInput = {
@@ -25237,6 +28900,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithWhereUniqueWithoutParentVersionInput = {
@@ -25556,6 +29221,8 @@ export namespace Prisma {
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutAdditionalFilesInput = {
@@ -25572,6 +29239,8 @@ export namespace Prisma {
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutAdditionalFilesInput = {
@@ -25644,6 +29313,8 @@ export namespace Prisma {
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutAdditionalFilesInput = {
@@ -25660,6 +29331,8 @@ export namespace Prisma {
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelVersionUpsertWithoutTaggedAdditionalFilesInput = {
@@ -25759,6 +29432,8 @@ export namespace Prisma {
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutAuthorsInput = {
@@ -25775,6 +29450,8 @@ export namespace Prisma {
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutAuthorsInput = {
@@ -25803,6 +29480,8 @@ export namespace Prisma {
     verifications?: VerificationCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -25827,6 +29506,8 @@ export namespace Prisma {
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -25859,6 +29540,8 @@ export namespace Prisma {
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutAuthorsInput = {
@@ -25875,6 +29558,8 @@ export namespace Prisma {
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutAuthoredModelsInput = {
@@ -25909,6 +29594,8 @@ export namespace Prisma {
     verifications?: VerificationUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -25933,6 +29620,8 @@ export namespace Prisma {
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -25949,6 +29638,8 @@ export namespace Prisma {
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutPermissionsInput = {
@@ -25965,6 +29656,8 @@ export namespace Prisma {
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutPermissionsInput = {
@@ -25993,6 +29686,8 @@ export namespace Prisma {
     verifications?: VerificationCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -26017,6 +29712,8 @@ export namespace Prisma {
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -26049,6 +29746,8 @@ export namespace Prisma {
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutPermissionsInput = {
@@ -26065,6 +29764,8 @@ export namespace Prisma {
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutGrantedPermissionsInput = {
@@ -26099,6 +29800,8 @@ export namespace Prisma {
     verifications?: VerificationUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -26123,6 +29826,420 @@ export namespace Prisma {
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ModelCreateWithoutLikesInput = {
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    latestVersion?: ModelVersionCreateNestedOneWithoutLatestOfModelInput
+    parentModel?: ModelCreateNestedOneWithoutChildModelsInput
+    childModels?: ModelCreateNestedManyWithoutParentModelInput
+    parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
+    versions?: ModelVersionCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelUncheckedCreateWithoutLikesInput = {
+    id?: string
+    latestVersionNumber?: number | null
+    parentModelId?: string | null
+    parentVersionNumber?: number | null
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
+    versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelCreateOrConnectWithoutLikesInput = {
+    where: ModelWhereUniqueInput
+    create: XOR<ModelCreateWithoutLikesInput, ModelUncheckedCreateWithoutLikesInput>
+  }
+
+  export type UserCreateWithoutModelLikesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    verifications?: VerificationCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
+    events?: EventCreateNestedManyWithoutActorInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutModelLikesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
+    events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutModelLikesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutModelLikesInput, UserUncheckedCreateWithoutModelLikesInput>
+  }
+
+  export type ModelUpsertWithoutLikesInput = {
+    update: XOR<ModelUpdateWithoutLikesInput, ModelUncheckedUpdateWithoutLikesInput>
+    create: XOR<ModelCreateWithoutLikesInput, ModelUncheckedCreateWithoutLikesInput>
+    where?: ModelWhereInput
+  }
+
+  export type ModelUpdateToOneWithWhereWithoutLikesInput = {
+    where?: ModelWhereInput
+    data: XOR<ModelUpdateWithoutLikesInput, ModelUncheckedUpdateWithoutLikesInput>
+  }
+
+  export type ModelUpdateWithoutLikesInput = {
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestVersion?: ModelVersionUpdateOneWithoutLatestOfModelNestedInput
+    parentModel?: ModelUpdateOneWithoutChildModelsNestedInput
+    childModels?: ModelUpdateManyWithoutParentModelNestedInput
+    parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
+    versions?: ModelVersionUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+  }
+
+  export type ModelUncheckedUpdateWithoutLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
+    versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+  }
+
+  export type UserUpsertWithoutModelLikesInput = {
+    update: XOR<UserUpdateWithoutModelLikesInput, UserUncheckedUpdateWithoutModelLikesInput>
+    create: XOR<UserCreateWithoutModelLikesInput, UserUncheckedCreateWithoutModelLikesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutModelLikesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutModelLikesInput, UserUncheckedUpdateWithoutModelLikesInput>
+  }
+
+  export type UserUpdateWithoutModelLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUpdateManyWithoutActorNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutModelLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ModelCreateWithoutInteractionsInput = {
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    latestVersion?: ModelVersionCreateNestedOneWithoutLatestOfModelInput
+    parentModel?: ModelCreateNestedOneWithoutChildModelsInput
+    childModels?: ModelCreateNestedManyWithoutParentModelInput
+    parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
+    versions?: ModelVersionCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelUncheckedCreateWithoutInteractionsInput = {
+    id?: string
+    latestVersionNumber?: number | null
+    parentModelId?: string | null
+    parentVersionNumber?: number | null
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
+    versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelCreateOrConnectWithoutInteractionsInput = {
+    where: ModelWhereUniqueInput
+    create: XOR<ModelCreateWithoutInteractionsInput, ModelUncheckedCreateWithoutInteractionsInput>
+  }
+
+  export type UserCreateWithoutModelInteractionsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    verifications?: VerificationCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
+    events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutModelInteractionsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
+    events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutModelInteractionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutModelInteractionsInput, UserUncheckedCreateWithoutModelInteractionsInput>
+  }
+
+  export type ModelUpsertWithoutInteractionsInput = {
+    update: XOR<ModelUpdateWithoutInteractionsInput, ModelUncheckedUpdateWithoutInteractionsInput>
+    create: XOR<ModelCreateWithoutInteractionsInput, ModelUncheckedCreateWithoutInteractionsInput>
+    where?: ModelWhereInput
+  }
+
+  export type ModelUpdateToOneWithWhereWithoutInteractionsInput = {
+    where?: ModelWhereInput
+    data: XOR<ModelUpdateWithoutInteractionsInput, ModelUncheckedUpdateWithoutInteractionsInput>
+  }
+
+  export type ModelUpdateWithoutInteractionsInput = {
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestVersion?: ModelVersionUpdateOneWithoutLatestOfModelNestedInput
+    parentModel?: ModelUpdateOneWithoutChildModelsNestedInput
+    childModels?: ModelUpdateManyWithoutParentModelNestedInput
+    parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
+    versions?: ModelVersionUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+  }
+
+  export type ModelUncheckedUpdateWithoutInteractionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
+    versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+  }
+
+  export type UserUpsertWithoutModelInteractionsInput = {
+    update: XOR<UserUpdateWithoutModelInteractionsInput, UserUncheckedUpdateWithoutModelInteractionsInput>
+    create: XOR<UserCreateWithoutModelInteractionsInput, UserUncheckedCreateWithoutModelInteractionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutModelInteractionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutModelInteractionsInput, UserUncheckedUpdateWithoutModelInteractionsInput>
+  }
+
+  export type UserUpdateWithoutModelInteractionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutModelInteractionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -26147,6 +30264,8 @@ export namespace Prisma {
     verifications?: VerificationCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -26171,6 +30290,8 @@ export namespace Prisma {
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -26211,6 +30332,8 @@ export namespace Prisma {
     verifications?: VerificationUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -26235,6 +30358,8 @@ export namespace Prisma {
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -26294,6 +30419,25 @@ export namespace Prisma {
     payload: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     processedAt?: Date | string | null
+  }
+
+  export type ModelLikeCreateManyUserInput = {
+    modelId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelInteractionCreateManyUserInput = {
+    id?: string
+    modelId: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
   }
 
   export type PasskeyCreateManyUserInput = {
@@ -26483,6 +30627,63 @@ export namespace Prisma {
     processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type ModelLikeUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    model?: ModelUpdateOneRequiredWithoutLikesNestedInput
+  }
+
+  export type ModelLikeUncheckedUpdateWithoutUserInput = {
+    modelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelLikeUncheckedUpdateManyWithoutUserInput = {
+    modelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelInteractionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    model?: ModelUpdateOneRequiredWithoutInteractionsNestedInput
+  }
+
+  export type ModelInteractionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelInteractionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PasskeyUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26566,6 +30767,25 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type ModelLikeCreateManyModelInput = {
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelInteractionCreateManyModelInput = {
+    id?: string
+    versionNumber?: number | null
+    kind: $Enums.ModelInteractionKind
+    userId?: string | null
+    sessionId?: string | null
+    ipHash?: string | null
+    userAgent?: string | null
+    referer?: string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: string | null
+    createdAt?: Date | string
+  }
+
   export type ModelUpdateWithoutParentModelInput = {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
@@ -26579,6 +30799,8 @@ export namespace Prisma {
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutParentModelInput = {
@@ -26595,6 +30817,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateManyWithoutParentModelInput = {
@@ -26717,6 +30941,63 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModelLikeUpdateWithoutModelInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutModelLikesNestedInput
+  }
+
+  export type ModelLikeUncheckedUpdateWithoutModelInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelLikeUncheckedUpdateManyWithoutModelInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelInteractionUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutModelInteractionsNestedInput
+  }
+
+  export type ModelInteractionUncheckedUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelInteractionUncheckedUpdateManyWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    kind?: EnumModelInteractionKindFieldUpdateOperationsInput | $Enums.ModelInteractionKind
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    ipHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    geo?: NullableJsonNullValueInput | InputJsonValue
+    cookie?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ModelCreateManyParentVersionInput = {
     id?: string
     latestVersionNumber?: number | null
@@ -26756,6 +31037,8 @@ export namespace Prisma {
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutParentVersionInput = {
@@ -26771,6 +31054,8 @@ export namespace Prisma {
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateManyWithoutParentVersionInput = {

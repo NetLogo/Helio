@@ -16,7 +16,14 @@
           :model-visibility="modelVisibility"
           :preview-image-url="previewImageUrl"
         />
-        <UButton v-if="downloadUrl" icon="i-lucide-download" :to="downloadUrl" external size="sm">
+        <UButton
+          v-if="downloadUrl"
+          icon="i-lucide-download"
+          :to="downloadUrl"
+          external
+          size="sm"
+          @click="$emit('download')"
+        >
           Download
         </UButton>
       </div>
@@ -58,6 +65,11 @@
       </div>
       <Middot v-if="primaryAuthor" />
       <span>{{ relativeDate }}</span>
+      <Middot v-if="modelVisibility" />
+      <span class="flex items-center gap-1">
+        <UIcon :name="visibility.icon" />
+        {{ visibility.label }}
+      </span>
       <template v-if="netlogoVersion">
         <Middot v-if="primaryAuthor" />
         <span>Written in {{ netlogoVersion }}</span>
@@ -94,7 +106,9 @@ const props = defineProps<{
 
 defineEmits<{
   embed: [];
+  download: [];
 }>();
 
 const relativeDate = computed(() => formatRelativeDate(props.createdAt));
+const visibility = getModelVisibilityDisplayInfo(props.modelVisibility || "");
 </script>

@@ -69,10 +69,34 @@ services:
     volumes:
       - /tmp/com.netlogo.modeling-commons/redis/data:/data
 
-  # galapagos:
-  #   profiles:
-  #     - frontend
-  #     - optional
+  galapagos:
+    profiles:
+      - frontend
+      - optional
+    build:
+      context: .
+      dockerfile: ./docker/galapagos/Dockerfile
+    container_name: galapagos
+    ports:
+      - "9009:9000"
+    volumes:
+      - /tmp/com.netlogo.modeling-commons/galapagos:/opt/galapagos
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: >
+      bash -lc '
+        if [ ! -d /opt/galapagos/.git ]; then
+          git clone --branch main --single-branch --recursive https://github.com/NetLogo/Galapagos.git /opt/galapagos;
+        else
+          cd /opt/galapagos &&
+          git fetch origin main &&
+          git reset --hard origin/main &&
+          git submodule update --init --recursive;
+        fi &&
+        cd /opt/galapagos &&
+        sbt "run 0.0.0.0:9000"
+      '
+    restart: unless-stopped
 
   netlogo-services:
     image: ghcr.io/netlogo/netlogo-services:latest

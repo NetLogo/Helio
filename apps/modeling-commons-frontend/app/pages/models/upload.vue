@@ -28,7 +28,6 @@
             >
               <template #files>
                 <FileUploadCard
-                  v-model:nlogox-file="formState.nlogoxFile"
                   v-model:model-files="modelFiles"
                   v-model:additional-files="additionalFiles"
                 />
@@ -89,9 +88,22 @@
           </UForm>
         </UCard>
         <div
-          class="hidden md:flex flex-col gap-5 sticky top-[calc(1.5rem+var(--ui-header-height))] self-start"
+          class="hidden md:flex flex-col flex-0 gap-5 sticky top-[calc(1.5rem+var(--ui-header-height))] self-start"
         >
-          <h5>Upload Preview</h5>
+          <div class="flex flex-col gap-5">
+            <h6>Netlogo File <span class="text-coral">*</span></h6>
+            <NetlogoFileUpload
+              v-model="formState.nlogoxFile"
+              class="w-full"
+              :ui="{
+                base: 'hidden',
+              }"
+            />
+          </div>
+
+          <USeparator />
+
+          <h6>Upload Preview</h6>
           <ModelCard
             v-if="formState.nlogoxFile"
             class="w-60 h-fit"
@@ -110,11 +122,18 @@
             }"
             :image-url="previewImageUrl"
           />
-          <UInput
-            readonly
-            label="Model URL"
-            :model-value="modelUrl ? withSiteUrl(modelUrl).value : '...'"
-          />
+          <UFieldGroup label="Model URL">
+            <UInput
+              readonly
+              label="Model URL"
+              leading-icon="i-lucide-link-2"
+              :model-value="modelUrl ? withSiteUrl(modelUrl).value : 'Uploading model...'"
+            />
+            <CopyButton
+              :text="modelUrl ? withSiteUrl(modelUrl).value : ''"
+              disabled="{!modelUrl}"
+            />
+          </UFieldGroup>
         </div>
       </div>
     </UContainer>

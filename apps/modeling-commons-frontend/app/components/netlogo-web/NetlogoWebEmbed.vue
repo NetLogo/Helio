@@ -9,7 +9,7 @@
       v-if="state === NLWEmbedState.Preview"
       :data-model-url="modelUrl"
       class="w-full h-full flex flex-col my-auto items-center justify-center gap-3 text-dimmed cursor-pointer relative group"
-      @click="state = NLWEmbedState.Running"
+      @click="onRun"
     >
       <NuxtImg
         v-if="previewImageUrl"
@@ -46,8 +46,14 @@ const props = defineProps<{
   modelTitle?: string;
 }>();
 
+const emit = defineEmits<{ run: [] }>();
 const state = ref<NLWEmbedState>(NLWEmbedState.Preview);
 const nlwUrl = computed(() => getNetlogoWebEmbedUrl(props.modelUrl, props.modelTitle));
+
+function onRun() {
+  state.value = NLWEmbedState.Running;
+  emit("run");
+}
 </script>
 
 <script lang="ts">

@@ -32,6 +32,15 @@ export const modelCardVersionExtendedResponseDtoSchema = Type.Intersect([
   }),
 ]);
 
+export const modelCardStatsSchema = Type.Object({
+  likes: Type.Integer({ minimum: 0 }),
+  views: Type.Integer({ minimum: 0 }),
+  runs: Type.Integer({ minimum: 0 }),
+  downloads: Type.Integer({ minimum: 0 }),
+  shares: Type.Integer({ minimum: 0 }),
+  likedByMe: Type.Boolean(),
+});
+
 export const modelCardResponseDtoSchema = Type.Object({
   model: modelResponseDtoSchema,
   latestVersion: Type.Union([modelCardVersionExtendedResponseDtoSchema, Type.Null()]),
@@ -42,6 +51,7 @@ export const modelCardResponseDtoSchema = Type.Object({
     versions: Type.Integer(),
     children: Type.Integer(),
   }),
+  stats: modelCardStatsSchema,
 });
 
 export type ModelCardResponseDto = Static<typeof modelCardResponseDtoSchema>;

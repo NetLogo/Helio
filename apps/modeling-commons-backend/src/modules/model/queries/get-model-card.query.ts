@@ -9,9 +9,11 @@ export default function makeGetModelCardQuery({
   modelAuthorMapper,
   tagMapper,
   fileService,
+  modelInteractionRepository,
+  modelLikeRepository,
 }: Dependencies) {
   return {
-    async execute(modelId: string): Promise<ModelCardResponseDto> {
+    async execute(modelId: string, viewerUserId: string | null = null): Promise<ModelCardResponseDto> {
       const card = await modelRepository.findCard(modelId);
       if (!card) throw new ModelNotFoundError(modelId);
 
@@ -25,6 +27,14 @@ export default function makeGetModelCardQuery({
       const previewImageUrl = latestWithTags?.previewImage
         ? getModelPreviewImageUrl(modelId, latestWithTags.versionNumber)
         : null;
+
+      const [interactionCounts, likes, likedByMe] = await Promise.all([
+        modelInteractionRepository.countsByKindForModel(modelId),
+        modelLikeRepository.countByModel(modelId),
+        viewerUserId
+          ? modelLikeRepository.existsFor(modelId, viewerUserId)
+          : Promise.resolve(false),
+      ]);
 
       return {
         model: modelMapper.toResponse(model),
@@ -45,6 +55,14 @@ export default function makeGetModelCardQuery({
         counts: {
           versions: _count.versions,
           children: _count.childModels,
+        },
+        stats: {
+          likes,
+          views: interactionCounts.view,
+          runs: interactionCounts.run,
+          downloads: interactionCounts.download,
+          shares: interactionCounts.share,
+          likedByMe,
         },
       };
     },

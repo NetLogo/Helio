@@ -260,6 +260,27 @@ exports.Prisma.ModelPermissionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ModelLikeScalarFieldEnum = {
+  modelId: 'modelId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ModelInteractionScalarFieldEnum = {
+  id: 'id',
+  modelId: 'modelId',
+  versionNumber: 'versionNumber',
+  kind: 'kind',
+  userId: 'userId',
+  sessionId: 'sessionId',
+  ipHash: 'ipHash',
+  userAgent: 'userAgent',
+  referer: 'referer',
+  geo: 'geo',
+  cookie: 'cookie',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.EventScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -274,6 +295,11 @@ exports.Prisma.EventScalarFieldEnum = {
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.JsonNullValueInput = {
@@ -325,6 +351,13 @@ exports.PermissionLevel = exports.$Enums.PermissionLevel = {
   admin: 'admin'
 };
 
+exports.ModelInteractionKind = exports.$Enums.ModelInteractionKind = {
+  view: 'view',
+  run: 'run',
+  download: 'download',
+  share: 'share'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Account: 'Account',
@@ -339,6 +372,8 @@ exports.Prisma.ModelName = {
   Tag: 'Tag',
   ModelAuthor: 'ModelAuthor',
   ModelPermission: 'ModelPermission',
+  ModelLike: 'ModelLike',
+  ModelInteraction: 'ModelInteraction',
   Event: 'Event'
 };
 

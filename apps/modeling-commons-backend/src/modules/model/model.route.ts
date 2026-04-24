@@ -99,7 +99,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       preHandler: [resolveModel('read')],
     },
     async (request) => {
-      return getModelCardQuery.execute(request.params.id);
+      return getModelCardQuery.execute(request.params.id, request.user?.id ?? null);
     },
   );
 

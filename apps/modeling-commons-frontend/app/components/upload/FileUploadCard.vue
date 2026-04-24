@@ -9,16 +9,6 @@
       <UploadCardTitle title="Upload Files" />
 
       <div class="flex flex-col gap-5">
-        <h6>Netlogo File <span class="text-coral">*</span></h6>
-        <NetlogoFileUpload
-          v-model="nlogoxFile"
-          class="w-full"
-          :ui="{
-            base: 'hidden',
-          }"
-        />
-      </div>
-      <div class="flex flex-col gap-5">
         <h6>Model Files</h6>
 
         <FileUploader

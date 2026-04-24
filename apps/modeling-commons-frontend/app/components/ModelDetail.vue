@@ -16,6 +16,7 @@
         :model-visibility="card.model.visibility"
         :preview-image-url="previewImageUrl"
         @embed="handleEmbed"
+        @download="handleDownload"
       />
 
       <article v-if="card.latestVersion?.description" class="docs prose prose-sm max-w-none">
@@ -36,14 +37,17 @@
       :model-url="downloadUrl ?? ''"
       :preview-image-url="previewImageUrl"
       :model-title="card.latestVersion.title ?? 'NetLogo Model'"
+      @run="handleRun"
     />
 
     <ModelStats
-      :likes="0"
-      :downloads="0"
-      :views="0"
-      :runs="0"
-      @like="handleLike"
+      :likes="stats.likes"
+      :downloads="stats.downloads"
+      :views="stats.views"
+      :runs="stats.runs"
+      :liked-by-me="stats.likedByMe"
+      :busy="likeBusy"
+      @toggle-like="handleToggleLike"
       @share="handleShare"
       @compare="handleCompare"
     />
@@ -69,6 +73,7 @@
       <ModelFilesTab
         v-else-if="activeTab === 'files'"
         :files="attachedFiles"
+        :status="filesStatus"
         @download="handleFileDownload"
       />
 
@@ -166,11 +171,91 @@ function onTabChange(key: TabKey) {
   }
 }
 
+const interactions = useModelInteractions();
+const toast = useToast();
+
+type CardStats = {
+  likes: number;
+  downloads: number;
+  views: number;
+  runs: number;
+  shares: number;
+  likedByMe: boolean;
+};
+
+const initialStats = computed<CardStats>(() => {
+  const s = (props.card as unknown as { stats?: Partial<CardStats> })?.stats ?? {};
+  return {
+    likes: s.likes ?? 0,
+    downloads: s.downloads ?? 0,
+    views: s.views ?? 0,
+    runs: s.runs ?? 0,
+    shares: s.shares ?? 0,
+    likedByMe: s.likedByMe ?? false,
+  };
+});
+
+const stats = reactive({ ...initialStats.value });
+watch(initialStats, (next) => Object.assign(stats, next));
+
+const likeBusy = ref(false);
+
+onMounted(() => {
+  if (modelId.value) void interactions.recordView(modelId.value);
+});
+
+async function handleToggleLike() {
+  if (!modelId.value || likeBusy.value) return;
+  likeBusy.value = true;
+  const wasLiked = stats.likedByMe;
+  stats.likedByMe = !wasLiked;
+  stats.likes += wasLiked ? -1 : 1;
+  try {
+    if (wasLiked) {
+      await interactions.unlike(modelId.value);
+    } else {
+      await interactions.like(modelId.value);
+    }
+  } catch {
+    stats.likedByMe = wasLiked;
+    stats.likes += wasLiked ? 1 : -1;
+    toast.add({ title: "Failed to update like", color: "error" });
+  } finally {
+    likeBusy.value = false;
+  }
+}
+
+async function handleShare() {
+  if (!modelId.value) return;
+  const url = typeof window !== "undefined" ? window.location.href : "";
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: props.card?.latestVersion?.title ?? "Model", url });
+    } else if (url && navigator.clipboard) {
+      await navigator.clipboard.writeText(url);
+      toast.add({ title: "Link copied to clipboard" });
+    }
+    void interactions.recordShare(modelId.value);
+  } catch {
+    // user cancelled share; no-op
+  }
+}
+
 function handleEmbed() {}
 function handleAddTag() {}
-function handleLike() {}
-function handleShare() {}
 function handleCompare() {}
+
+function handleDownload() {
+  if (!modelId.value) return;
+  stats.downloads += 1;
+  void interactions.recordDownload(modelId.value);
+}
+
+function handleRun() {
+  if (!modelId.value) return;
+  stats.runs += 1;
+  void interactions.recordRun(modelId.value);
+}
 
 function handleFileDownload(fileId: string) {
   const url = fileDownloadUrls.get(fileId);
