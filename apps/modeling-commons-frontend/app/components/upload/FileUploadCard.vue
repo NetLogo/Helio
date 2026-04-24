@@ -33,7 +33,6 @@
 </template>
 
 <script setup lang="ts">
-const nlogoxFile = defineModel<File | null>("nlogoxFile", { required: true });
 const modelFiles = defineModel<Array<File>>("modelFiles", { required: true });
 const additionalFiles = defineModel<Array<File>>("additionalFiles", { required: true });
 </script>

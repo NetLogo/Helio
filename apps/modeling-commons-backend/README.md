@@ -40,3 +40,6 @@ To authenticate Docker, use the following command
 gh auth refresh -h github.com -s read:packages
 gh auth token | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
 ```
+
+#### Volumes
+Docker uses `/tmp/com.netlogo.modeling-commons` as a volume for persistent storage.
