@@ -83,7 +83,7 @@ For help running models made in old versions, see the
 * Color themes / Dark mode
   * The default color theme was not syncing with the device’s system-wide settings
   * The divider between the widget area and the Command Center could erroneously take on a shade of gray that did not visually distinguish the two sections very well.
-  * Apply to System Dynamics Modeler tabs
+  * Apply to System Dynamics Modeler tabs and code editor
   * Apply to “Import from Library” button in shapes editor dialogs
   * Apply to code block text in rendered Info tab content
   * Don’t apply to plotting area borders; use value of `set-plot-background-color` instead
@@ -100,6 +100,8 @@ For help running models made in old versions, see the
   * Old autosaves of models were being kept around for far too long
   * Models were not being marked as in need of saving after changing the view update mode
   * Improved the contrast of buttons that are disabled until ticks start
+  * The interactable model list in the Models Library dialog had the same background color as the non-interactable sections of that dialog
+  * Code editors with compiler errors were sometimes scrolling to the bottom whenever they were made visible
   * Documentation, text labels, and file names were inconsistently using the terms “BehaviorSearch” and “Behaviorsearch”.  It is now consistently “BehaviorSearch”.
   * Attempting to open NetLogo models from Finder with the Mac launcher installed was opening the application but not loading the selected file
   * Error messages were unhelpful when headlessly launching BehaviorSpace experiments in invalid configurations
