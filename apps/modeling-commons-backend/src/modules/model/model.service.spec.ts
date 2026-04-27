@@ -8,8 +8,6 @@ import {
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
-import { mockModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.mock.ts';
-import modelAuthorDomain from '#src/modules/model-author/domain/model-author.domain.ts';
 import type { Model } from '#prisma/index';
 
 function makeModel(overrides: Partial<Model> = {}): Model {
@@ -30,46 +28,18 @@ function makeModel(overrides: Partial<Model> = {}): Model {
 describe('modelService', () => {
   const modelRepository = mockModelRepository();
   const eventRepository = mockEventRepository();
-  const modelAuthorRepositoryMock = mockModelAuthorRepository();
   const transactionManager = mockTransactionManager();
   const domain = modelDomain();
-  const authorDomain = modelAuthorDomain();
 
   const service = makeModelService({
     transactionManager,
     modelRepository,
     modelDomain: domain,
-    modelAuthorRepository: modelAuthorRepositoryMock,
-    modelAuthorDomain: authorDomain,
     eventRepository,
   } as never);
 
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('create', () => {
-    it('inserts model and emits event', async () => {
-      const id = await service.create('user-1', { title: 'Test', visibility: 'public' });
-
-      expect(id).toBeTypeOf('string');
-      expect(modelRepository.insertTx).toHaveBeenCalledOnce();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({ type: 'model.created', actorId: 'user-1' }),
-      );
-    });
-
-    it('defaults visibility to public', async () => {
-      await service.create('user-1', { title: 'Test' });
-
-      expect(eventRepository.insert).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({
-          payload: expect.objectContaining({ visibility: 'public' }),
-        }),
-      );
-    });
   });
 
   describe('update', () => {

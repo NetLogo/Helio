@@ -4,7 +4,8 @@ import { deepMerge } from "@repo/utils/std/objects";
 import type { ComponentProps, ComponentSlots } from "@repo/vue-ui/utils";
 
 type UTableUIProp = NonNullable<ComponentProps<typeof UTable>["ui"]>;
-const props = defineProps<{ data: T[]; ui?: UTableUIProp }>();
+type UTableColumnsProp = NonNullable<ComponentProps<typeof UTable<T>>["columns"]>;
+const props = defineProps<{ data: T[]; ui?: UTableUIProp; columns?: UTableColumnsProp }>();
 const stripedUi = {
   tbody: "bg-white [&_tr:nth-child(even)]:bg-page-bg",
   tr: "hover:bg-royal-blue-lightest data-[state=selected]:bg-neutral-lightest",
@@ -18,6 +19,7 @@ defineSlots<Slots>();
   <UTable
     :ui="deepMerge<typeof stripedUi, UTableUIProp>(stripedUi, props.ui ?? {})"
     :data="props.data"
+    :columns="props.columns"
   >
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData ?? {}" />

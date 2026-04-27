@@ -38,28 +38,5 @@ export async function readInfoTabFromNlogox(nlogoxContent: string) {
   if (!infoTab) {
     return null;
   }
-  const md = await parseMarkdown(infoTab.textContent || "");
-  const firstParagraph = md.body.children.find(
-    (child) => child.type === "element" && child.tag === "p",
-  );
-  const firstParagraphText = firstParagraph
-    ? (
-        firstParagraph as {
-          type: "element";
-          tag: string;
-          children: {
-            type: string;
-            value: string;
-          }[];
-        }
-      ).children
-        .filter((c): c is { type: "text"; value: string } => c.type === "text")
-        .map((c) => c.value)
-        .join("")
-    : "";
-
-  return {
-    ...md,
-    firstParagraphText: firstParagraphText ?? "",
-  };
+  return infoTab.textContent ?? "";
 }

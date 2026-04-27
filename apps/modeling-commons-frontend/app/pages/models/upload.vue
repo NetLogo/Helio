@@ -51,7 +51,7 @@
                   square
                   icon="i-lucide-chevron-left"
                   title="Previous Step"
-                  :disabled="stepIndex === 0 || submitting"
+                  :disabled="stepIndex === 0 || publishing"
                   @click="prev"
                 >
                 </UButton>
@@ -59,27 +59,30 @@
                   square
                   icon="i-lucide-chevron-right"
                   title="Next Step"
-                  :disabled="stepIndex === stepperItems.length - 1 || submitting"
+                  :disabled="stepIndex === stepperItems.length - 1 || publishing"
                   @click="next"
                 >
                 </UButton>
               </UFieldGroup>
 
-              <div class="flex gap-4">
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-muted" aria-live="polite">
+                  {{ saveStatusLabel }}
+                </span>
                 <UButton
                   variant="outline"
                   color="neutral"
-                  :disabled="submitting"
-                  @click="submit('private')"
+                  :disabled="publishing || !draftId"
+                  @click="onDiscard"
                 >
-                  Save as Draft
+                  Discard draft
                 </UButton>
                 <UButton
-                  :loading="submitting"
-                  :disabled="submitting"
+                  :loading="publishing"
+                  :disabled="publishing"
                   variant="solid"
                   color="primary"
-                  @click="submit(formState.permission === 'private' ? 'private' : 'public')"
+                  @click="onPublish(formState.permission === 'private' ? 'private' : 'public')"
                 >
                   Publish
                 </UButton>
@@ -122,18 +125,6 @@
             }"
             :image-url="previewImageUrl"
           />
-          <UFieldGroup label="Model URL">
-            <UInput
-              readonly
-              label="Model URL"
-              leading-icon="i-lucide-link-2"
-              :model-value="modelUrl ? withSiteUrl(modelUrl).value : 'Uploading model...'"
-            />
-            <CopyButton
-              :text="modelUrl ? withSiteUrl(modelUrl).value : ''"
-              disabled="{!modelUrl}"
-            />
-          </UFieldGroup>
         </div>
       </div>
     </UContainer>
@@ -147,7 +138,7 @@ import type PeerReviewCard from "~/components/upload/PeerReviewCard.vue";
 import SetPermissionsCard from "~/components/upload/SetPermissionsCard.vue";
 import type { UploadFormInput } from "~/components/upload/form";
 import { AddDetailsCardSchema } from "~/components/upload/form";
-import type { Visibility } from "~/composables/useUploadModel";
+import type { Visibility } from "~/composables/useModelDraft";
 
 definePageMeta({
   layout: "default",
@@ -160,7 +151,22 @@ useSeoMeta({
 });
 
 const toast = useToast();
-const { submit: uploadModel, submitting, submitDraft, modelUrl } = useUploadModel();
+const route = useRoute();
+const initialDraftId = (route.query.draft as string | undefined) ?? undefined;
+
+const {
+  draftId,
+  saving,
+  publishing,
+  ensureDraft,
+  load,
+  patch,
+  uploadPrimaryFile,
+  uploadAttachment,
+  removeFile,
+  publish,
+  abandon,
+} = useModelDraft(initialDraftId);
 
 const stepIndex = ref(0);
 
@@ -183,29 +189,127 @@ const formState = ref<UploadFormInput>({ ...defaultFormValues });
 const previewImageUrl = computed(() =>
   formState.value.imageFile ? URL.createObjectURL(formState.value.imageFile) : undefined,
 );
-watch(
-  () => formState.value.nlogoxFile,
-  async (newValue) => {
-    if (formState.value.title === "" && newValue) {
-      formState.value.title = newValue.name.replace(/\.nlogox$/i, "");
-      const infoTab = await readInfoTabFromNlogox(await newValue.text());
-      if (infoTab && formState.value.description === "") {
-        formState.value.description = infoTab.firstParagraphText;
-      }
-      submitDraft({
-        title: formState.value.title,
-        description: formState.value.description,
-      });
-    }
-    if (!newValue) {
-      formState.value = { ...defaultFormValues };
-    }
-  },
-  { immediate: true },
-);
 
 const modelFiles = ref<File[]>([]);
 const additionalFiles = ref<File[]>([]);
+
+const stagedPrimary = ref<{ fileId: string; filename: string } | null>(null);
+const stagedAttachments = ref<Array<{ fileId: string; filename: string }>>([]);
+
+const saveStatusLabel = computed(() => {
+  if (!draftId.value) return "";
+  if (saving.value) return "Saving…";
+  return "Saved";
+});
+
+onMounted(async () => {
+  if (!initialDraftId) return;
+  try {
+    await load(initialDraftId);
+  } catch {
+    toast.add({
+      title: "Draft not found",
+      description: "We could not load that draft. Starting fresh.",
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+  }
+});
+
+watch(
+  () => formState.value.nlogoxFile,
+  async (file) => {
+    if (!file) {
+      formState.value = { ...defaultFormValues };
+      return;
+    }
+    if (formState.value.title === "") {
+      formState.value.title = file.name.replace(/\.nlogox$/i, "");
+      try {
+        const infoTab = await readInfoTabFromNlogox(await file.text());
+        if (infoTab && formState.value.description === "") {
+          formState.value.description = await getFirstParagraphTextFromMarkdown(infoTab);
+        }
+      } catch {
+        // Ignore info-tab parse failures; description stays blank.
+      }
+    }
+    try {
+      await ensureDraft();
+      const staged = await uploadPrimaryFile(file);
+      stagedPrimary.value = { fileId: staged.fileId, filename: staged.filename };
+      await patch({
+        title: formState.value.title,
+        description: formState.value.description,
+      });
+    } catch (err) {
+      toast.add({
+        title: "Upload failed",
+        description: err instanceof Error ? err.message : "Could not stage the model file.",
+        icon: "i-lucide-circle-alert",
+        color: "error",
+      });
+    }
+  },
+);
+
+watch(
+  () => formState.value.title,
+  (v) => {
+    void patch({ title: v });
+  },
+);
+watch(
+  () => formState.value.description,
+  (v) => {
+    void patch({ description: v });
+  },
+);
+watch(
+  () => [
+    ...(formState.value.tags ?? []),
+    ...(formState.value.subjects ?? []),
+    ...(formState.value.usecases ?? []),
+  ],
+  () => {
+    void patch({ tags: collectTagNames(formState.value) });
+  },
+);
+
+async function syncAttachments(files: File[] | undefined, prev: File[] | undefined): Promise<void> {
+  const current = files ?? [];
+  const previous = prev ?? [];
+  const added = current.filter((f) => !previous.includes(f));
+  for (const file of added) {
+    try {
+      const staged = await uploadAttachment(file);
+      stagedAttachments.value.push({ fileId: staged.fileId, filename: staged.filename });
+    } catch (err) {
+      toast.add({
+        title: "Upload failed",
+        description: err instanceof Error ? err.message : `Failed to upload ${file.name}.`,
+        icon: "i-lucide-circle-alert",
+        color: "error",
+      });
+    }
+  }
+  const removed = previous.filter((f) => !current.includes(f));
+  for (const file of removed) {
+    const match = stagedAttachments.value.find((s) => s.filename === file.name);
+    if (match) {
+      stagedAttachments.value = stagedAttachments.value.filter((s) => s !== match);
+      await removeFile(match.fileId).catch(() => null);
+    }
+  }
+}
+
+watch(modelFiles, (files, prev) => {
+  void syncAttachments(files, prev);
+});
+
+watch(additionalFiles, (files, prev) => {
+  void syncAttachments(files, prev);
+});
 
 const stepperItems = [
   {
@@ -240,33 +344,75 @@ function goToStep(index: number) {
 const next = () => goToStep(stepIndex.value + 1);
 const prev = () => goToStep(stepIndex.value - 1);
 
-async function submit(visibility: Visibility) {
-  if (submitting.value) return;
+function collectTagNames(form: UploadFormInput): string[] {
+  return [
+    ...(form.tags ?? []).map((t) => t.trim()).filter(Boolean),
+    ...(form.subjects ?? []).map((s) => s.trim()).filter(Boolean),
+    ...(form.usecases ?? []).map((u) => `usecase:${u}`),
+  ];
+}
+
+async function onPublish(visibility: Visibility) {
+  if (publishing.value) return;
+  if (!stagedPrimary.value) {
+    toast.add({
+      title: "Missing model file",
+      description: "Upload a .nlogox before publishing.",
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+    return;
+  }
+  if (!formState.value.title.trim()) {
+    toast.add({
+      title: "Missing title",
+      description: "Add a title before publishing.",
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+    return;
+  }
 
   try {
-    const { id } = await uploadModel({
-      form: formState.value,
-      modelFiles: modelFiles.value,
-      additionalFiles: additionalFiles.value,
-      visibility,
-    });
+    await patch.flush();
+    await patch({ visibility, tags: collectTagNames(formState.value) });
+    await patch.flush();
+
+    const result = await publish();
 
     toast.add({
-      title: visibility === "private" ? "Draft saved" : "Model published",
-      description:
-        visibility === "private"
-          ? "Your model is saved privately."
-          : "Your model is now available on Modeling Commons.",
+      title: "Model published",
+      description: "Your model is now available on Modeling Commons.",
       icon: "i-lucide-badge-check",
       color: "success",
     });
 
-    await navigateTo(`/models/${id}`);
+    await navigateTo(`/models/${result.id}`);
   } catch (err) {
     toast.add({
-      title: "Upload failed",
+      title: "Publish failed",
       description:
-        err instanceof Error ? err.message : "Something went wrong while uploading your model.",
+        err instanceof Error ? err.message : "Something went wrong while publishing your model.",
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+  }
+}
+
+async function onDiscard() {
+  if (!draftId.value) return;
+  try {
+    await abandon();
+    toast.add({
+      title: "Draft discarded",
+      icon: "i-lucide-trash-2",
+      color: "neutral",
+    });
+    await navigateTo("/models");
+  } catch (err) {
+    toast.add({
+      title: "Could not discard",
+      description: err instanceof Error ? err.message : "Something went wrong.",
       icon: "i-lucide-circle-alert",
       color: "error",
     });

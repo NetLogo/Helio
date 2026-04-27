@@ -2,21 +2,18 @@ import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
 import type { FastifyInstance } from 'fastify';
 import {
-  createModelRequestDtoSchema,
   modelIdParamsSchema,
   modelPaginatedResponseSchema,
   modelResponseDtoSchema,
   modelSearchQuerySchema,
   updateModelRequestDtoSchema,
-  type CreateModelRequestDto,
   type ModelIdParams,
   type ModelSearchQuery,
   type UpdateModelRequestDto,
 } from '#src/modules/model/dtos/model.dto.ts';
 import { modelCardResponseDtoSchema } from '#src/modules/model/dtos/model.card.dto.ts';
 import { modelFamilyCardResponseDtoSchema } from '#src/modules/model/dtos/model.family-card.dto.ts';
-import { idDtoSchema, versionNumberDtoSchema } from '#src/shared/api/id.response.dto.ts';
-import { Type, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
 export default async function modelRoutes(fastify: FastifyInstance) {
   const {
@@ -27,22 +24,6 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     getModelCardQuery,
     getModelFamilyCardQuery,
   } = fastify.diContainer.cradle;
-
-  fastify.post<{ Body: CreateModelRequestDto }>(
-    '/v1/models',
-    {
-      schema: {
-        body: createModelRequestDtoSchema,
-        response: { 201: Type.Intersect([idDtoSchema, versionNumberDtoSchema]) },
-        tags: ['Model'],
-      },
-      preHandler: [requireAuth],
-    },
-    async (request, reply) => {
-      const res = await modelService.create(request.user!.id, request.body);
-      return reply.code(201).send({ id: res.id, versionNumber: res.versionNumber });
-    },
-  );
 
   fastify.patch<{ Params: ModelIdParams; Body: UpdateModelRequestDto }>(
     '/v1/models/:id',

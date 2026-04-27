@@ -89,6 +89,11 @@ export type ModelLike = $Result.DefaultSelection<Prisma.$ModelLikePayload>
  */
 export type ModelInteraction = $Result.DefaultSelection<Prisma.$ModelInteractionPayload>
 /**
+ * Model ModelDraft
+ * 
+ */
+export type ModelDraft = $Result.DefaultSelection<Prisma.$ModelDraftPayload>
+/**
  * Model Event
  * 
  */
@@ -448,6 +453,16 @@ export class PrismaClient<
     * ```
     */
   get modelInteraction(): Prisma.ModelInteractionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.modelDraft`: Exposes CRUD operations for the **ModelDraft** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ModelDrafts
+    * const modelDrafts = await prisma.modelDraft.findMany()
+    * ```
+    */
+  get modelDraft(): Prisma.ModelDraftDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.event`: Exposes CRUD operations for the **Event** model.
@@ -907,6 +922,7 @@ export namespace Prisma {
     ModelPermission: 'ModelPermission',
     ModelLike: 'ModelLike',
     ModelInteraction: 'ModelInteraction',
+    ModelDraft: 'ModelDraft',
     Event: 'Event'
   };
 
@@ -923,7 +939,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionFile" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "modelLike" | "modelInteraction" | "event"
+      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionFile" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "modelLike" | "modelInteraction" | "modelDraft" | "event"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2037,6 +2053,80 @@ export namespace Prisma {
           }
         }
       }
+      ModelDraft: {
+        payload: Prisma.$ModelDraftPayload<ExtArgs>
+        fields: Prisma.ModelDraftFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ModelDraftFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ModelDraftFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>
+          }
+          findFirst: {
+            args: Prisma.ModelDraftFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ModelDraftFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>
+          }
+          findMany: {
+            args: Prisma.ModelDraftFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>[]
+          }
+          create: {
+            args: Prisma.ModelDraftCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>
+          }
+          createMany: {
+            args: Prisma.ModelDraftCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ModelDraftCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>[]
+          }
+          delete: {
+            args: Prisma.ModelDraftDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>
+          }
+          update: {
+            args: Prisma.ModelDraftUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>
+          }
+          deleteMany: {
+            args: Prisma.ModelDraftDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ModelDraftUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ModelDraftUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>[]
+          }
+          upsert: {
+            args: Prisma.ModelDraftUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelDraftPayload>
+          }
+          aggregate: {
+            args: Prisma.ModelDraftAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateModelDraft>
+          }
+          groupBy: {
+            args: Prisma.ModelDraftGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ModelDraftGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ModelDraftCountArgs<ExtArgs>
+            result: $Utils.Optional<ModelDraftCountAggregateOutputType> | number
+          }
+        }
+      }
       Event: {
         payload: Prisma.$EventPayload<ExtArgs>
         fields: Prisma.EventFieldRefs
@@ -2234,6 +2324,7 @@ export namespace Prisma {
     modelPermission?: ModelPermissionOmit
     modelLike?: ModelLikeOmit
     modelInteraction?: ModelInteractionOmit
+    modelDraft?: ModelDraftOmit
     event?: EventOmit
   }
 
@@ -2323,6 +2414,7 @@ export namespace Prisma {
     events: number
     modelLikes: number
     modelInteractions: number
+    modelDrafts: number
     passkeys: number
   }
 
@@ -2335,6 +2427,7 @@ export namespace Prisma {
     events?: boolean | UserCountOutputTypeCountEventsArgs
     modelLikes?: boolean | UserCountOutputTypeCountModelLikesArgs
     modelInteractions?: boolean | UserCountOutputTypeCountModelInteractionsArgs
+    modelDrafts?: boolean | UserCountOutputTypeCountModelDraftsArgs
     passkeys?: boolean | UserCountOutputTypeCountPasskeysArgs
   }
 
@@ -2408,6 +2501,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountModelDraftsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelDraftWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountPasskeysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PasskeyWhereInput
   }
@@ -2425,6 +2525,7 @@ export namespace Prisma {
     additionalFiles: number
     likes: number
     interactions: number
+    drafts: number
   }
 
   export type ModelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2435,6 +2536,7 @@ export namespace Prisma {
     additionalFiles?: boolean | ModelCountOutputTypeCountAdditionalFilesArgs
     likes?: boolean | ModelCountOutputTypeCountLikesArgs
     interactions?: boolean | ModelCountOutputTypeCountInteractionsArgs
+    drafts?: boolean | ModelCountOutputTypeCountDraftsArgs
   }
 
   // Custom InputTypes
@@ -2495,6 +2597,13 @@ export namespace Prisma {
    */
   export type ModelCountOutputTypeCountInteractionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ModelInteractionWhereInput
+  }
+
+  /**
+   * ModelCountOutputType without action
+   */
+  export type ModelCountOutputTypeCountDraftsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelDraftWhereInput
   }
 
 
@@ -2843,6 +2952,7 @@ export namespace Prisma {
     events?: boolean | User$eventsArgs<ExtArgs>
     modelLikes?: boolean | User$modelLikesArgs<ExtArgs>
     modelInteractions?: boolean | User$modelInteractionsArgs<ExtArgs>
+    modelDrafts?: boolean | User$modelDraftsArgs<ExtArgs>
     passkeys?: boolean | User$passkeysArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -2911,6 +3021,7 @@ export namespace Prisma {
     events?: boolean | User$eventsArgs<ExtArgs>
     modelLikes?: boolean | User$modelLikesArgs<ExtArgs>
     modelInteractions?: boolean | User$modelInteractionsArgs<ExtArgs>
+    modelDrafts?: boolean | User$modelDraftsArgs<ExtArgs>
     passkeys?: boolean | User$passkeysArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2928,6 +3039,7 @@ export namespace Prisma {
       events: Prisma.$EventPayload<ExtArgs>[]
       modelLikes: Prisma.$ModelLikePayload<ExtArgs>[]
       modelInteractions: Prisma.$ModelInteractionPayload<ExtArgs>[]
+      modelDrafts: Prisma.$ModelDraftPayload<ExtArgs>[]
       passkeys: Prisma.$PasskeyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3348,6 +3460,7 @@ export namespace Prisma {
     events<T extends User$eventsArgs<ExtArgs> = {}>(args?: Subset<T, User$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     modelLikes<T extends User$modelLikesArgs<ExtArgs> = {}>(args?: Subset<T, User$modelLikesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     modelInteractions<T extends User$modelInteractionsArgs<ExtArgs> = {}>(args?: Subset<T, User$modelInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    modelDrafts<T extends User$modelDraftsArgs<ExtArgs> = {}>(args?: Subset<T, User$modelDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     passkeys<T extends User$passkeysArgs<ExtArgs> = {}>(args?: Subset<T, User$passkeysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasskeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3975,6 +4088,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ModelInteractionScalarFieldEnum | ModelInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * User.modelDrafts
+   */
+  export type User$modelDraftsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    where?: ModelDraftWhereInput
+    orderBy?: ModelDraftOrderByWithRelationInput | ModelDraftOrderByWithRelationInput[]
+    cursor?: ModelDraftWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelDraftScalarFieldEnum | ModelDraftScalarFieldEnum[]
   }
 
   /**
@@ -8829,6 +8966,7 @@ export namespace Prisma {
     additionalFiles?: boolean | Model$additionalFilesArgs<ExtArgs>
     likes?: boolean | Model$likesArgs<ExtArgs>
     interactions?: boolean | Model$interactionsArgs<ExtArgs>
+    drafts?: boolean | Model$draftsArgs<ExtArgs>
     _count?: boolean | ModelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["model"]>
 
@@ -8886,6 +9024,7 @@ export namespace Prisma {
     additionalFiles?: boolean | Model$additionalFilesArgs<ExtArgs>
     likes?: boolean | Model$likesArgs<ExtArgs>
     interactions?: boolean | Model$interactionsArgs<ExtArgs>
+    drafts?: boolean | Model$draftsArgs<ExtArgs>
     _count?: boolean | ModelCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ModelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8912,6 +9051,7 @@ export namespace Prisma {
       additionalFiles: Prisma.$ModelAdditionalFilePayload<ExtArgs>[]
       likes: Prisma.$ModelLikePayload<ExtArgs>[]
       interactions: Prisma.$ModelInteractionPayload<ExtArgs>[]
+      drafts: Prisma.$ModelDraftPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9327,6 +9467,7 @@ export namespace Prisma {
     additionalFiles<T extends Model$additionalFilesArgs<ExtArgs> = {}>(args?: Subset<T, Model$additionalFilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelAdditionalFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     likes<T extends Model$likesArgs<ExtArgs> = {}>(args?: Subset<T, Model$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     interactions<T extends Model$interactionsArgs<ExtArgs> = {}>(args?: Subset<T, Model$interactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    drafts<T extends Model$draftsArgs<ExtArgs> = {}>(args?: Subset<T, Model$draftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9991,6 +10132,30 @@ export namespace Prisma {
   }
 
   /**
+   * Model.drafts
+   */
+  export type Model$draftsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    where?: ModelDraftWhereInput
+    orderBy?: ModelDraftOrderByWithRelationInput | ModelDraftOrderByWithRelationInput[]
+    cursor?: ModelDraftWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelDraftScalarFieldEnum | ModelDraftScalarFieldEnum[]
+  }
+
+  /**
    * Model without action
    */
   export type ModelDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10040,7 +10205,6 @@ export namespace Prisma {
     infoTab: string | null
     createdAt: Date | null
     finalizedAt: Date | null
-    isDraft: boolean | null
   }
 
   export type ModelVersionMaxAggregateOutputType = {
@@ -10054,7 +10218,6 @@ export namespace Prisma {
     infoTab: string | null
     createdAt: Date | null
     finalizedAt: Date | null
-    isDraft: boolean | null
   }
 
   export type ModelVersionCountAggregateOutputType = {
@@ -10068,7 +10231,6 @@ export namespace Prisma {
     infoTab: number
     createdAt: number
     finalizedAt: number
-    isDraft: number
     _all: number
   }
 
@@ -10092,7 +10254,6 @@ export namespace Prisma {
     infoTab?: true
     createdAt?: true
     finalizedAt?: true
-    isDraft?: true
   }
 
   export type ModelVersionMaxAggregateInputType = {
@@ -10106,7 +10267,6 @@ export namespace Prisma {
     infoTab?: true
     createdAt?: true
     finalizedAt?: true
-    isDraft?: true
   }
 
   export type ModelVersionCountAggregateInputType = {
@@ -10120,7 +10280,6 @@ export namespace Prisma {
     infoTab?: true
     createdAt?: true
     finalizedAt?: true
-    isDraft?: true
     _all?: true
   }
 
@@ -10221,7 +10380,6 @@ export namespace Prisma {
     infoTab: string | null
     createdAt: Date
     finalizedAt: Date | null
-    isDraft: boolean
     _count: ModelVersionCountAggregateOutputType | null
     _avg: ModelVersionAvgAggregateOutputType | null
     _sum: ModelVersionSumAggregateOutputType | null
@@ -10254,7 +10412,6 @@ export namespace Prisma {
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
-    isDraft?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
     latestOfModel?: boolean | ModelVersion$latestOfModelArgs<ExtArgs>
     parentOfModels?: boolean | ModelVersion$parentOfModelsArgs<ExtArgs>
@@ -10275,7 +10432,6 @@ export namespace Prisma {
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
-    isDraft?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersion"]>
 
@@ -10290,7 +10446,6 @@ export namespace Prisma {
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
-    isDraft?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["modelVersion"]>
 
@@ -10305,10 +10460,9 @@ export namespace Prisma {
     infoTab?: boolean
     createdAt?: boolean
     finalizedAt?: boolean
-    isDraft?: boolean
   }
 
-  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImage" | "netlogoFileKey" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt" | "isDraft", ExtArgs["result"]["modelVersion"]>
+  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImage" | "netlogoFileKey" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt", ExtArgs["result"]["modelVersion"]>
   export type ModelVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     latestOfModel?: boolean | ModelVersion$latestOfModelArgs<ExtArgs>
@@ -10346,7 +10500,6 @@ export namespace Prisma {
       infoTab: string | null
       createdAt: Date
       finalizedAt: Date | null
-      isDraft: boolean
     }, ExtArgs["result"]["modelVersion"]>
     composites: {}
   }
@@ -10786,7 +10939,6 @@ export namespace Prisma {
     readonly infoTab: FieldRef<"ModelVersion", 'String'>
     readonly createdAt: FieldRef<"ModelVersion", 'DateTime'>
     readonly finalizedAt: FieldRef<"ModelVersion", 'DateTime'>
-    readonly isDraft: FieldRef<"ModelVersion", 'Boolean'>
   }
     
 
@@ -20069,6 +20221,1152 @@ export namespace Prisma {
 
 
   /**
+   * Model ModelDraft
+   */
+
+  export type AggregateModelDraft = {
+    _count: ModelDraftCountAggregateOutputType | null
+    _avg: ModelDraftAvgAggregateOutputType | null
+    _sum: ModelDraftSumAggregateOutputType | null
+    _min: ModelDraftMinAggregateOutputType | null
+    _max: ModelDraftMaxAggregateOutputType | null
+  }
+
+  export type ModelDraftAvgAggregateOutputType = {
+    schemaVersion: number | null
+  }
+
+  export type ModelDraftSumAggregateOutputType = {
+    schemaVersion: number | null
+  }
+
+  export type ModelDraftMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    modelId: string | null
+    schemaVersion: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ModelDraftMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    modelId: string | null
+    schemaVersion: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ModelDraftCountAggregateOutputType = {
+    id: number
+    userId: number
+    modelId: number
+    schemaVersion: number
+    data: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ModelDraftAvgAggregateInputType = {
+    schemaVersion?: true
+  }
+
+  export type ModelDraftSumAggregateInputType = {
+    schemaVersion?: true
+  }
+
+  export type ModelDraftMinAggregateInputType = {
+    id?: true
+    userId?: true
+    modelId?: true
+    schemaVersion?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ModelDraftMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    modelId?: true
+    schemaVersion?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ModelDraftCountAggregateInputType = {
+    id?: true
+    userId?: true
+    modelId?: true
+    schemaVersion?: true
+    data?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ModelDraftAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelDraft to aggregate.
+     */
+    where?: ModelDraftWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelDrafts to fetch.
+     */
+    orderBy?: ModelDraftOrderByWithRelationInput | ModelDraftOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ModelDraftWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelDrafts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelDrafts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ModelDrafts
+    **/
+    _count?: true | ModelDraftCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ModelDraftAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModelDraftSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModelDraftMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModelDraftMaxAggregateInputType
+  }
+
+  export type GetModelDraftAggregateType<T extends ModelDraftAggregateArgs> = {
+        [P in keyof T & keyof AggregateModelDraft]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateModelDraft[P]>
+      : GetScalarType<T[P], AggregateModelDraft[P]>
+  }
+
+
+
+
+  export type ModelDraftGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelDraftWhereInput
+    orderBy?: ModelDraftOrderByWithAggregationInput | ModelDraftOrderByWithAggregationInput[]
+    by: ModelDraftScalarFieldEnum[] | ModelDraftScalarFieldEnum
+    having?: ModelDraftScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ModelDraftCountAggregateInputType | true
+    _avg?: ModelDraftAvgAggregateInputType
+    _sum?: ModelDraftSumAggregateInputType
+    _min?: ModelDraftMinAggregateInputType
+    _max?: ModelDraftMaxAggregateInputType
+  }
+
+  export type ModelDraftGroupByOutputType = {
+    id: string
+    userId: string
+    modelId: string | null
+    schemaVersion: number
+    data: JsonValue
+    createdAt: Date
+    updatedAt: Date
+    _count: ModelDraftCountAggregateOutputType | null
+    _avg: ModelDraftAvgAggregateOutputType | null
+    _sum: ModelDraftSumAggregateOutputType | null
+    _min: ModelDraftMinAggregateOutputType | null
+    _max: ModelDraftMaxAggregateOutputType | null
+  }
+
+  type GetModelDraftGroupByPayload<T extends ModelDraftGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ModelDraftGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ModelDraftGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ModelDraftGroupByOutputType[P]>
+            : GetScalarType<T[P], ModelDraftGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ModelDraftSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    modelId?: boolean
+    schemaVersion?: boolean
+    data?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    model?: boolean | ModelDraft$modelArgs<ExtArgs>
+  }, ExtArgs["result"]["modelDraft"]>
+
+  export type ModelDraftSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    modelId?: boolean
+    schemaVersion?: boolean
+    data?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    model?: boolean | ModelDraft$modelArgs<ExtArgs>
+  }, ExtArgs["result"]["modelDraft"]>
+
+  export type ModelDraftSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    modelId?: boolean
+    schemaVersion?: boolean
+    data?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    model?: boolean | ModelDraft$modelArgs<ExtArgs>
+  }, ExtArgs["result"]["modelDraft"]>
+
+  export type ModelDraftSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    modelId?: boolean
+    schemaVersion?: boolean
+    data?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ModelDraftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "modelId" | "schemaVersion" | "data" | "createdAt" | "updatedAt", ExtArgs["result"]["modelDraft"]>
+  export type ModelDraftInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    model?: boolean | ModelDraft$modelArgs<ExtArgs>
+  }
+  export type ModelDraftIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    model?: boolean | ModelDraft$modelArgs<ExtArgs>
+  }
+  export type ModelDraftIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    model?: boolean | ModelDraft$modelArgs<ExtArgs>
+  }
+
+  export type $ModelDraftPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ModelDraft"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      model: Prisma.$ModelPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      modelId: string | null
+      schemaVersion: number
+      data: Prisma.JsonValue
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["modelDraft"]>
+    composites: {}
+  }
+
+  type ModelDraftGetPayload<S extends boolean | null | undefined | ModelDraftDefaultArgs> = $Result.GetResult<Prisma.$ModelDraftPayload, S>
+
+  type ModelDraftCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ModelDraftFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ModelDraftCountAggregateInputType | true
+    }
+
+  export interface ModelDraftDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ModelDraft'], meta: { name: 'ModelDraft' } }
+    /**
+     * Find zero or one ModelDraft that matches the filter.
+     * @param {ModelDraftFindUniqueArgs} args - Arguments to find a ModelDraft
+     * @example
+     * // Get one ModelDraft
+     * const modelDraft = await prisma.modelDraft.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ModelDraftFindUniqueArgs>(args: SelectSubset<T, ModelDraftFindUniqueArgs<ExtArgs>>): Prisma__ModelDraftClient<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ModelDraft that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ModelDraftFindUniqueOrThrowArgs} args - Arguments to find a ModelDraft
+     * @example
+     * // Get one ModelDraft
+     * const modelDraft = await prisma.modelDraft.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ModelDraftFindUniqueOrThrowArgs>(args: SelectSubset<T, ModelDraftFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ModelDraftClient<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelDraft that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelDraftFindFirstArgs} args - Arguments to find a ModelDraft
+     * @example
+     * // Get one ModelDraft
+     * const modelDraft = await prisma.modelDraft.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ModelDraftFindFirstArgs>(args?: SelectSubset<T, ModelDraftFindFirstArgs<ExtArgs>>): Prisma__ModelDraftClient<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelDraft that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelDraftFindFirstOrThrowArgs} args - Arguments to find a ModelDraft
+     * @example
+     * // Get one ModelDraft
+     * const modelDraft = await prisma.modelDraft.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ModelDraftFindFirstOrThrowArgs>(args?: SelectSubset<T, ModelDraftFindFirstOrThrowArgs<ExtArgs>>): Prisma__ModelDraftClient<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ModelDrafts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelDraftFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModelDrafts
+     * const modelDrafts = await prisma.modelDraft.findMany()
+     * 
+     * // Get first 10 ModelDrafts
+     * const modelDrafts = await prisma.modelDraft.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const modelDraftWithIdOnly = await prisma.modelDraft.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ModelDraftFindManyArgs>(args?: SelectSubset<T, ModelDraftFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ModelDraft.
+     * @param {ModelDraftCreateArgs} args - Arguments to create a ModelDraft.
+     * @example
+     * // Create one ModelDraft
+     * const ModelDraft = await prisma.modelDraft.create({
+     *   data: {
+     *     // ... data to create a ModelDraft
+     *   }
+     * })
+     * 
+     */
+    create<T extends ModelDraftCreateArgs>(args: SelectSubset<T, ModelDraftCreateArgs<ExtArgs>>): Prisma__ModelDraftClient<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ModelDrafts.
+     * @param {ModelDraftCreateManyArgs} args - Arguments to create many ModelDrafts.
+     * @example
+     * // Create many ModelDrafts
+     * const modelDraft = await prisma.modelDraft.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ModelDraftCreateManyArgs>(args?: SelectSubset<T, ModelDraftCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ModelDrafts and returns the data saved in the database.
+     * @param {ModelDraftCreateManyAndReturnArgs} args - Arguments to create many ModelDrafts.
+     * @example
+     * // Create many ModelDrafts
+     * const modelDraft = await prisma.modelDraft.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ModelDrafts and only return the `id`
+     * const modelDraftWithIdOnly = await prisma.modelDraft.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ModelDraftCreateManyAndReturnArgs>(args?: SelectSubset<T, ModelDraftCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ModelDraft.
+     * @param {ModelDraftDeleteArgs} args - Arguments to delete one ModelDraft.
+     * @example
+     * // Delete one ModelDraft
+     * const ModelDraft = await prisma.modelDraft.delete({
+     *   where: {
+     *     // ... filter to delete one ModelDraft
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ModelDraftDeleteArgs>(args: SelectSubset<T, ModelDraftDeleteArgs<ExtArgs>>): Prisma__ModelDraftClient<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ModelDraft.
+     * @param {ModelDraftUpdateArgs} args - Arguments to update one ModelDraft.
+     * @example
+     * // Update one ModelDraft
+     * const modelDraft = await prisma.modelDraft.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ModelDraftUpdateArgs>(args: SelectSubset<T, ModelDraftUpdateArgs<ExtArgs>>): Prisma__ModelDraftClient<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ModelDrafts.
+     * @param {ModelDraftDeleteManyArgs} args - Arguments to filter ModelDrafts to delete.
+     * @example
+     * // Delete a few ModelDrafts
+     * const { count } = await prisma.modelDraft.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ModelDraftDeleteManyArgs>(args?: SelectSubset<T, ModelDraftDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelDrafts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelDraftUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModelDrafts
+     * const modelDraft = await prisma.modelDraft.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ModelDraftUpdateManyArgs>(args: SelectSubset<T, ModelDraftUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelDrafts and returns the data updated in the database.
+     * @param {ModelDraftUpdateManyAndReturnArgs} args - Arguments to update many ModelDrafts.
+     * @example
+     * // Update many ModelDrafts
+     * const modelDraft = await prisma.modelDraft.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ModelDrafts and only return the `id`
+     * const modelDraftWithIdOnly = await prisma.modelDraft.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ModelDraftUpdateManyAndReturnArgs>(args: SelectSubset<T, ModelDraftUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ModelDraft.
+     * @param {ModelDraftUpsertArgs} args - Arguments to update or create a ModelDraft.
+     * @example
+     * // Update or create a ModelDraft
+     * const modelDraft = await prisma.modelDraft.upsert({
+     *   create: {
+     *     // ... data to create a ModelDraft
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModelDraft we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ModelDraftUpsertArgs>(args: SelectSubset<T, ModelDraftUpsertArgs<ExtArgs>>): Prisma__ModelDraftClient<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ModelDrafts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelDraftCountArgs} args - Arguments to filter ModelDrafts to count.
+     * @example
+     * // Count the number of ModelDrafts
+     * const count = await prisma.modelDraft.count({
+     *   where: {
+     *     // ... the filter for the ModelDrafts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModelDraftCountArgs>(
+      args?: Subset<T, ModelDraftCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ModelDraftCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ModelDraft.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelDraftAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModelDraftAggregateArgs>(args: Subset<T, ModelDraftAggregateArgs>): Prisma.PrismaPromise<GetModelDraftAggregateType<T>>
+
+    /**
+     * Group by ModelDraft.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelDraftGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ModelDraftGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ModelDraftGroupByArgs['orderBy'] }
+        : { orderBy?: ModelDraftGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ModelDraftGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModelDraftGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ModelDraft model
+   */
+  readonly fields: ModelDraftFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ModelDraft.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ModelDraftClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    model<T extends ModelDraft$modelArgs<ExtArgs> = {}>(args?: Subset<T, ModelDraft$modelArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ModelDraft model
+   */
+  interface ModelDraftFieldRefs {
+    readonly id: FieldRef<"ModelDraft", 'String'>
+    readonly userId: FieldRef<"ModelDraft", 'String'>
+    readonly modelId: FieldRef<"ModelDraft", 'String'>
+    readonly schemaVersion: FieldRef<"ModelDraft", 'Int'>
+    readonly data: FieldRef<"ModelDraft", 'Json'>
+    readonly createdAt: FieldRef<"ModelDraft", 'DateTime'>
+    readonly updatedAt: FieldRef<"ModelDraft", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ModelDraft findUnique
+   */
+  export type ModelDraftFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelDraft to fetch.
+     */
+    where: ModelDraftWhereUniqueInput
+  }
+
+  /**
+   * ModelDraft findUniqueOrThrow
+   */
+  export type ModelDraftFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelDraft to fetch.
+     */
+    where: ModelDraftWhereUniqueInput
+  }
+
+  /**
+   * ModelDraft findFirst
+   */
+  export type ModelDraftFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelDraft to fetch.
+     */
+    where?: ModelDraftWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelDrafts to fetch.
+     */
+    orderBy?: ModelDraftOrderByWithRelationInput | ModelDraftOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelDrafts.
+     */
+    cursor?: ModelDraftWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelDrafts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelDrafts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelDrafts.
+     */
+    distinct?: ModelDraftScalarFieldEnum | ModelDraftScalarFieldEnum[]
+  }
+
+  /**
+   * ModelDraft findFirstOrThrow
+   */
+  export type ModelDraftFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelDraft to fetch.
+     */
+    where?: ModelDraftWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelDrafts to fetch.
+     */
+    orderBy?: ModelDraftOrderByWithRelationInput | ModelDraftOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelDrafts.
+     */
+    cursor?: ModelDraftWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelDrafts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelDrafts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelDrafts.
+     */
+    distinct?: ModelDraftScalarFieldEnum | ModelDraftScalarFieldEnum[]
+  }
+
+  /**
+   * ModelDraft findMany
+   */
+  export type ModelDraftFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelDrafts to fetch.
+     */
+    where?: ModelDraftWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelDrafts to fetch.
+     */
+    orderBy?: ModelDraftOrderByWithRelationInput | ModelDraftOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ModelDrafts.
+     */
+    cursor?: ModelDraftWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelDrafts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelDrafts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelDrafts.
+     */
+    distinct?: ModelDraftScalarFieldEnum | ModelDraftScalarFieldEnum[]
+  }
+
+  /**
+   * ModelDraft create
+   */
+  export type ModelDraftCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ModelDraft.
+     */
+    data: XOR<ModelDraftCreateInput, ModelDraftUncheckedCreateInput>
+  }
+
+  /**
+   * ModelDraft createMany
+   */
+  export type ModelDraftCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ModelDrafts.
+     */
+    data: ModelDraftCreateManyInput | ModelDraftCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ModelDraft createManyAndReturn
+   */
+  export type ModelDraftCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * The data used to create many ModelDrafts.
+     */
+    data: ModelDraftCreateManyInput | ModelDraftCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelDraft update
+   */
+  export type ModelDraftUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ModelDraft.
+     */
+    data: XOR<ModelDraftUpdateInput, ModelDraftUncheckedUpdateInput>
+    /**
+     * Choose, which ModelDraft to update.
+     */
+    where: ModelDraftWhereUniqueInput
+  }
+
+  /**
+   * ModelDraft updateMany
+   */
+  export type ModelDraftUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ModelDrafts.
+     */
+    data: XOR<ModelDraftUpdateManyMutationInput, ModelDraftUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelDrafts to update
+     */
+    where?: ModelDraftWhereInput
+    /**
+     * Limit how many ModelDrafts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelDraft updateManyAndReturn
+   */
+  export type ModelDraftUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * The data used to update ModelDrafts.
+     */
+    data: XOR<ModelDraftUpdateManyMutationInput, ModelDraftUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelDrafts to update
+     */
+    where?: ModelDraftWhereInput
+    /**
+     * Limit how many ModelDrafts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelDraft upsert
+   */
+  export type ModelDraftUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ModelDraft to update in case it exists.
+     */
+    where: ModelDraftWhereUniqueInput
+    /**
+     * In case the ModelDraft found by the `where` argument doesn't exist, create a new ModelDraft with this data.
+     */
+    create: XOR<ModelDraftCreateInput, ModelDraftUncheckedCreateInput>
+    /**
+     * In case the ModelDraft was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ModelDraftUpdateInput, ModelDraftUncheckedUpdateInput>
+  }
+
+  /**
+   * ModelDraft delete
+   */
+  export type ModelDraftDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+    /**
+     * Filter which ModelDraft to delete.
+     */
+    where: ModelDraftWhereUniqueInput
+  }
+
+  /**
+   * ModelDraft deleteMany
+   */
+  export type ModelDraftDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelDrafts to delete
+     */
+    where?: ModelDraftWhereInput
+    /**
+     * Limit how many ModelDrafts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelDraft.model
+   */
+  export type ModelDraft$modelArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Model
+     */
+    select?: ModelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Model
+     */
+    omit?: ModelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelInclude<ExtArgs> | null
+    where?: ModelWhereInput
+  }
+
+  /**
+   * ModelDraft without action
+   */
+  export type ModelDraftDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelDraft
+     */
+    select?: ModelDraftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelDraft
+     */
+    omit?: ModelDraftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelDraftInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Event
    */
 
@@ -21290,8 +22588,7 @@ export namespace Prisma {
     netlogoVersion: 'netlogoVersion',
     infoTab: 'infoTab',
     createdAt: 'createdAt',
-    finalizedAt: 'finalizedAt',
-    isDraft: 'isDraft'
+    finalizedAt: 'finalizedAt'
   };
 
   export type ModelVersionScalarFieldEnum = (typeof ModelVersionScalarFieldEnum)[keyof typeof ModelVersionScalarFieldEnum]
@@ -21384,6 +22681,19 @@ export namespace Prisma {
   };
 
   export type ModelInteractionScalarFieldEnum = (typeof ModelInteractionScalarFieldEnum)[keyof typeof ModelInteractionScalarFieldEnum]
+
+
+  export const ModelDraftScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    modelId: 'modelId',
+    schemaVersion: 'schemaVersion',
+    data: 'data',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ModelDraftScalarFieldEnum = (typeof ModelDraftScalarFieldEnum)[keyof typeof ModelDraftScalarFieldEnum]
 
 
   export const EventScalarFieldEnum: {
@@ -21658,6 +22968,7 @@ export namespace Prisma {
     events?: EventListRelationFilter
     modelLikes?: ModelLikeListRelationFilter
     modelInteractions?: ModelInteractionListRelationFilter
+    modelDrafts?: ModelDraftListRelationFilter
     passkeys?: PasskeyListRelationFilter
   }
 
@@ -21685,6 +22996,7 @@ export namespace Prisma {
     events?: EventOrderByRelationAggregateInput
     modelLikes?: ModelLikeOrderByRelationAggregateInput
     modelInteractions?: ModelInteractionOrderByRelationAggregateInput
+    modelDrafts?: ModelDraftOrderByRelationAggregateInput
     passkeys?: PasskeyOrderByRelationAggregateInput
   }
 
@@ -21715,6 +23027,7 @@ export namespace Prisma {
     events?: EventListRelationFilter
     modelLikes?: ModelLikeListRelationFilter
     modelInteractions?: ModelInteractionListRelationFilter
+    modelDrafts?: ModelDraftListRelationFilter
     passkeys?: PasskeyListRelationFilter
   }, "id" | "email">
 
@@ -22105,6 +23418,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileListRelationFilter
     likes?: ModelLikeListRelationFilter
     interactions?: ModelInteractionListRelationFilter
+    drafts?: ModelDraftListRelationFilter
   }
 
   export type ModelOrderByWithRelationInput = {
@@ -22127,6 +23441,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileOrderByRelationAggregateInput
     likes?: ModelLikeOrderByRelationAggregateInput
     interactions?: ModelInteractionOrderByRelationAggregateInput
+    drafts?: ModelDraftOrderByRelationAggregateInput
   }
 
   export type ModelWhereUniqueInput = Prisma.AtLeast<{
@@ -22153,6 +23468,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileListRelationFilter
     likes?: ModelLikeListRelationFilter
     interactions?: ModelInteractionListRelationFilter
+    drafts?: ModelDraftListRelationFilter
   }, "id" | "id_latestVersionNumber">
 
   export type ModelOrderByWithAggregationInput = {
@@ -22201,7 +23517,6 @@ export namespace Prisma {
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableFilter<"ModelVersion"> | Date | string | null
-    isDraft?: BoolFilter<"ModelVersion"> | boolean
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
     latestOfModel?: XOR<ModelNullableScalarRelationFilter, ModelWhereInput> | null
     parentOfModels?: ModelListRelationFilter
@@ -22221,7 +23536,6 @@ export namespace Prisma {
     infoTab?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrderInput | SortOrder
-    isDraft?: SortOrder
     model?: ModelOrderByWithRelationInput
     latestOfModel?: ModelOrderByWithRelationInput
     parentOfModels?: ModelOrderByRelationAggregateInput
@@ -22245,7 +23559,6 @@ export namespace Prisma {
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableFilter<"ModelVersion"> | Date | string | null
-    isDraft?: BoolFilter<"ModelVersion"> | boolean
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
     latestOfModel?: XOR<ModelNullableScalarRelationFilter, ModelWhereInput> | null
     parentOfModels?: ModelListRelationFilter
@@ -22265,7 +23578,6 @@ export namespace Prisma {
     infoTab?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrderInput | SortOrder
-    isDraft?: SortOrder
     _count?: ModelVersionCountOrderByAggregateInput
     _avg?: ModelVersionAvgOrderByAggregateInput
     _max?: ModelVersionMaxOrderByAggregateInput
@@ -22287,7 +23599,6 @@ export namespace Prisma {
     infoTab?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableWithAggregatesFilter<"ModelVersion"> | Date | string | null
-    isDraft?: BoolWithAggregatesFilter<"ModelVersion"> | boolean
   }
 
   export type ModelVersionFileWhereInput = {
@@ -22765,6 +24076,76 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ModelInteraction"> | Date | string
   }
 
+  export type ModelDraftWhereInput = {
+    AND?: ModelDraftWhereInput | ModelDraftWhereInput[]
+    OR?: ModelDraftWhereInput[]
+    NOT?: ModelDraftWhereInput | ModelDraftWhereInput[]
+    id?: StringFilter<"ModelDraft"> | string
+    userId?: StringFilter<"ModelDraft"> | string
+    modelId?: StringNullableFilter<"ModelDraft"> | string | null
+    schemaVersion?: IntFilter<"ModelDraft"> | number
+    data?: JsonFilter<"ModelDraft">
+    createdAt?: DateTimeFilter<"ModelDraft"> | Date | string
+    updatedAt?: DateTimeFilter<"ModelDraft"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    model?: XOR<ModelNullableScalarRelationFilter, ModelWhereInput> | null
+  }
+
+  export type ModelDraftOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    modelId?: SortOrderInput | SortOrder
+    schemaVersion?: SortOrder
+    data?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    model?: ModelOrderByWithRelationInput
+  }
+
+  export type ModelDraftWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ModelDraftWhereInput | ModelDraftWhereInput[]
+    OR?: ModelDraftWhereInput[]
+    NOT?: ModelDraftWhereInput | ModelDraftWhereInput[]
+    userId?: StringFilter<"ModelDraft"> | string
+    modelId?: StringNullableFilter<"ModelDraft"> | string | null
+    schemaVersion?: IntFilter<"ModelDraft"> | number
+    data?: JsonFilter<"ModelDraft">
+    createdAt?: DateTimeFilter<"ModelDraft"> | Date | string
+    updatedAt?: DateTimeFilter<"ModelDraft"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    model?: XOR<ModelNullableScalarRelationFilter, ModelWhereInput> | null
+  }, "id">
+
+  export type ModelDraftOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    modelId?: SortOrderInput | SortOrder
+    schemaVersion?: SortOrder
+    data?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ModelDraftCountOrderByAggregateInput
+    _avg?: ModelDraftAvgOrderByAggregateInput
+    _max?: ModelDraftMaxOrderByAggregateInput
+    _min?: ModelDraftMinOrderByAggregateInput
+    _sum?: ModelDraftSumOrderByAggregateInput
+  }
+
+  export type ModelDraftScalarWhereWithAggregatesInput = {
+    AND?: ModelDraftScalarWhereWithAggregatesInput | ModelDraftScalarWhereWithAggregatesInput[]
+    OR?: ModelDraftScalarWhereWithAggregatesInput[]
+    NOT?: ModelDraftScalarWhereWithAggregatesInput | ModelDraftScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ModelDraft"> | string
+    userId?: StringWithAggregatesFilter<"ModelDraft"> | string
+    modelId?: StringNullableWithAggregatesFilter<"ModelDraft"> | string | null
+    schemaVersion?: IntWithAggregatesFilter<"ModelDraft"> | number
+    data?: JsonWithAggregatesFilter<"ModelDraft">
+    createdAt?: DateTimeWithAggregatesFilter<"ModelDraft"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ModelDraft"> | Date | string
+  }
+
   export type EventWhereInput = {
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
@@ -22859,6 +24240,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -22886,6 +24268,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -22913,6 +24296,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -22940,6 +24324,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -23373,6 +24758,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateInput = {
@@ -23392,6 +24778,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelUpdateInput = {
@@ -23410,6 +24797,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateInput = {
@@ -23429,6 +24817,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelCreateManyInput = {
@@ -23473,7 +24862,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
@@ -23493,7 +24881,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
@@ -23511,7 +24898,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
@@ -23531,7 +24917,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -23550,7 +24935,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
   }
 
   export type ModelVersionUpdateManyMutationInput = {
@@ -23563,7 +24947,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ModelVersionUncheckedUpdateManyInput = {
@@ -23577,7 +24960,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ModelVersionFileCreateInput = {
@@ -24020,6 +25402,74 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModelDraftCreateInput = {
+    id?: string
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutModelDraftsInput
+    model?: ModelCreateNestedOneWithoutDraftsInput
+  }
+
+  export type ModelDraftUncheckedCreateInput = {
+    id?: string
+    userId: string
+    modelId?: string | null
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ModelDraftUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutModelDraftsNestedInput
+    model?: ModelUpdateOneWithoutDraftsNestedInput
+  }
+
+  export type ModelDraftUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    modelId?: NullableStringFieldUpdateOperationsInput | string | null
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelDraftCreateManyInput = {
+    id?: string
+    userId: string
+    modelId?: string | null
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ModelDraftUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelDraftUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    modelId?: NullableStringFieldUpdateOperationsInput | string | null
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EventCreateInput = {
     id?: string
     type: string
@@ -24220,6 +25670,12 @@ export namespace Prisma {
     none?: ModelInteractionWhereInput
   }
 
+  export type ModelDraftListRelationFilter = {
+    every?: ModelDraftWhereInput
+    some?: ModelDraftWhereInput
+    none?: ModelDraftWhereInput
+  }
+
   export type PasskeyListRelationFilter = {
     every?: PasskeyWhereInput
     some?: PasskeyWhereInput
@@ -24260,6 +25716,10 @@ export namespace Prisma {
   }
 
   export type ModelInteractionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ModelDraftOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -24805,7 +26265,6 @@ export namespace Prisma {
     infoTab?: SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrder
-    isDraft?: SortOrder
   }
 
   export type ModelVersionAvgOrderByAggregateInput = {
@@ -24823,7 +26282,6 @@ export namespace Prisma {
     infoTab?: SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrder
-    isDraft?: SortOrder
   }
 
   export type ModelVersionMinOrderByAggregateInput = {
@@ -24837,7 +26295,6 @@ export namespace Prisma {
     infoTab?: SortOrder
     createdAt?: SortOrder
     finalizedAt?: SortOrder
-    isDraft?: SortOrder
   }
 
   export type ModelVersionSumOrderByAggregateInput = {
@@ -25233,6 +26690,68 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type ModelDraftCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    modelId?: SortOrder
+    schemaVersion?: SortOrder
+    data?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ModelDraftAvgOrderByAggregateInput = {
+    schemaVersion?: SortOrder
+  }
+
+  export type ModelDraftMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    modelId?: SortOrder
+    schemaVersion?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ModelDraftMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    modelId?: SortOrder
+    schemaVersion?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ModelDraftSumOrderByAggregateInput = {
+    schemaVersion?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
   export type EventCountOrderByAggregateInput = {
     id?: SortOrder
     type?: SortOrder
@@ -25262,32 +26781,6 @@ export namespace Prisma {
     resourceId?: SortOrder
     createdAt?: SortOrder
     processedAt?: SortOrder
-  }
-  export type JsonWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedJsonFilter<$PrismaModel>
-    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -25344,6 +26837,13 @@ export namespace Prisma {
     connectOrCreate?: ModelInteractionCreateOrConnectWithoutUserInput | ModelInteractionCreateOrConnectWithoutUserInput[]
     createMany?: ModelInteractionCreateManyUserInputEnvelope
     connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+  }
+
+  export type ModelDraftCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelDraftCreateWithoutUserInput, ModelDraftUncheckedCreateWithoutUserInput> | ModelDraftCreateWithoutUserInput[] | ModelDraftUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelDraftCreateOrConnectWithoutUserInput | ModelDraftCreateOrConnectWithoutUserInput[]
+    createMany?: ModelDraftCreateManyUserInputEnvelope
+    connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
   }
 
   export type PasskeyCreateNestedManyWithoutUserInput = {
@@ -25407,6 +26907,13 @@ export namespace Prisma {
     connectOrCreate?: ModelInteractionCreateOrConnectWithoutUserInput | ModelInteractionCreateOrConnectWithoutUserInput[]
     createMany?: ModelInteractionCreateManyUserInputEnvelope
     connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+  }
+
+  export type ModelDraftUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelDraftCreateWithoutUserInput, ModelDraftUncheckedCreateWithoutUserInput> | ModelDraftCreateWithoutUserInput[] | ModelDraftUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelDraftCreateOrConnectWithoutUserInput | ModelDraftCreateOrConnectWithoutUserInput[]
+    createMany?: ModelDraftCreateManyUserInputEnvelope
+    connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
   }
 
   export type PasskeyUncheckedCreateNestedManyWithoutUserInput = {
@@ -25560,6 +27067,20 @@ export namespace Prisma {
     deleteMany?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
   }
 
+  export type ModelDraftUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelDraftCreateWithoutUserInput, ModelDraftUncheckedCreateWithoutUserInput> | ModelDraftCreateWithoutUserInput[] | ModelDraftUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelDraftCreateOrConnectWithoutUserInput | ModelDraftCreateOrConnectWithoutUserInput[]
+    upsert?: ModelDraftUpsertWithWhereUniqueWithoutUserInput | ModelDraftUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelDraftCreateManyUserInputEnvelope
+    set?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    disconnect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    delete?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    update?: ModelDraftUpdateWithWhereUniqueWithoutUserInput | ModelDraftUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelDraftUpdateManyWithWhereWithoutUserInput | ModelDraftUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
+  }
+
   export type PasskeyUpdateManyWithoutUserNestedInput = {
     create?: XOR<PasskeyCreateWithoutUserInput, PasskeyUncheckedCreateWithoutUserInput> | PasskeyCreateWithoutUserInput[] | PasskeyUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasskeyCreateOrConnectWithoutUserInput | PasskeyCreateOrConnectWithoutUserInput[]
@@ -25684,6 +27205,20 @@ export namespace Prisma {
     update?: ModelInteractionUpdateWithWhereUniqueWithoutUserInput | ModelInteractionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ModelInteractionUpdateManyWithWhereWithoutUserInput | ModelInteractionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
+  }
+
+  export type ModelDraftUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelDraftCreateWithoutUserInput, ModelDraftUncheckedCreateWithoutUserInput> | ModelDraftCreateWithoutUserInput[] | ModelDraftUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelDraftCreateOrConnectWithoutUserInput | ModelDraftCreateOrConnectWithoutUserInput[]
+    upsert?: ModelDraftUpsertWithWhereUniqueWithoutUserInput | ModelDraftUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelDraftCreateManyUserInputEnvelope
+    set?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    disconnect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    delete?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    update?: ModelDraftUpdateWithWhereUniqueWithoutUserInput | ModelDraftUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelDraftUpdateManyWithWhereWithoutUserInput | ModelDraftUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
   }
 
   export type PasskeyUncheckedUpdateManyWithoutUserNestedInput = {
@@ -25833,6 +27368,13 @@ export namespace Prisma {
     connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
   }
 
+  export type ModelDraftCreateNestedManyWithoutModelInput = {
+    create?: XOR<ModelDraftCreateWithoutModelInput, ModelDraftUncheckedCreateWithoutModelInput> | ModelDraftCreateWithoutModelInput[] | ModelDraftUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelDraftCreateOrConnectWithoutModelInput | ModelDraftCreateOrConnectWithoutModelInput[]
+    createMany?: ModelDraftCreateManyModelInputEnvelope
+    connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+  }
+
   export type ModelUncheckedCreateNestedManyWithoutParentModelInput = {
     create?: XOR<ModelCreateWithoutParentModelInput, ModelUncheckedCreateWithoutParentModelInput> | ModelCreateWithoutParentModelInput[] | ModelUncheckedCreateWithoutParentModelInput[]
     connectOrCreate?: ModelCreateOrConnectWithoutParentModelInput | ModelCreateOrConnectWithoutParentModelInput[]
@@ -25880,6 +27422,13 @@ export namespace Prisma {
     connectOrCreate?: ModelInteractionCreateOrConnectWithoutModelInput | ModelInteractionCreateOrConnectWithoutModelInput[]
     createMany?: ModelInteractionCreateManyModelInputEnvelope
     connect?: ModelInteractionWhereUniqueInput | ModelInteractionWhereUniqueInput[]
+  }
+
+  export type ModelDraftUncheckedCreateNestedManyWithoutModelInput = {
+    create?: XOR<ModelDraftCreateWithoutModelInput, ModelDraftUncheckedCreateWithoutModelInput> | ModelDraftCreateWithoutModelInput[] | ModelDraftUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelDraftCreateOrConnectWithoutModelInput | ModelDraftCreateOrConnectWithoutModelInput[]
+    createMany?: ModelDraftCreateManyModelInputEnvelope
+    connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
   }
 
   export type EnumModelVisibilityFieldUpdateOperationsInput = {
@@ -26014,6 +27563,20 @@ export namespace Prisma {
     deleteMany?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
   }
 
+  export type ModelDraftUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ModelDraftCreateWithoutModelInput, ModelDraftUncheckedCreateWithoutModelInput> | ModelDraftCreateWithoutModelInput[] | ModelDraftUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelDraftCreateOrConnectWithoutModelInput | ModelDraftCreateOrConnectWithoutModelInput[]
+    upsert?: ModelDraftUpsertWithWhereUniqueWithoutModelInput | ModelDraftUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: ModelDraftCreateManyModelInputEnvelope
+    set?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    disconnect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    delete?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    update?: ModelDraftUpdateWithWhereUniqueWithoutModelInput | ModelDraftUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ModelDraftUpdateManyWithWhereWithoutModelInput | ModelDraftUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
+  }
+
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -26118,6 +27681,20 @@ export namespace Prisma {
     update?: ModelInteractionUpdateWithWhereUniqueWithoutModelInput | ModelInteractionUpdateWithWhereUniqueWithoutModelInput[]
     updateMany?: ModelInteractionUpdateManyWithWhereWithoutModelInput | ModelInteractionUpdateManyWithWhereWithoutModelInput[]
     deleteMany?: ModelInteractionScalarWhereInput | ModelInteractionScalarWhereInput[]
+  }
+
+  export type ModelDraftUncheckedUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ModelDraftCreateWithoutModelInput, ModelDraftUncheckedCreateWithoutModelInput> | ModelDraftCreateWithoutModelInput[] | ModelDraftUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelDraftCreateOrConnectWithoutModelInput | ModelDraftCreateOrConnectWithoutModelInput[]
+    upsert?: ModelDraftUpsertWithWhereUniqueWithoutModelInput | ModelDraftUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: ModelDraftCreateManyModelInputEnvelope
+    set?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    disconnect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    delete?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+    update?: ModelDraftUpdateWithWhereUniqueWithoutModelInput | ModelDraftUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ModelDraftUpdateManyWithWhereWithoutModelInput | ModelDraftUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
   }
 
   export type ModelCreateNestedOneWithoutVersionsInput = {
@@ -26576,6 +28153,36 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutModelInteractionsInput, UserUpdateWithoutModelInteractionsInput>, UserUncheckedUpdateWithoutModelInteractionsInput>
+  }
+
+  export type UserCreateNestedOneWithoutModelDraftsInput = {
+    create?: XOR<UserCreateWithoutModelDraftsInput, UserUncheckedCreateWithoutModelDraftsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutModelDraftsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ModelCreateNestedOneWithoutDraftsInput = {
+    create?: XOR<ModelCreateWithoutDraftsInput, ModelUncheckedCreateWithoutDraftsInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutDraftsInput
+    connect?: ModelWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutModelDraftsNestedInput = {
+    create?: XOR<UserCreateWithoutModelDraftsInput, UserUncheckedCreateWithoutModelDraftsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutModelDraftsInput
+    upsert?: UserUpsertWithoutModelDraftsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutModelDraftsInput, UserUpdateWithoutModelDraftsInput>, UserUncheckedUpdateWithoutModelDraftsInput>
+  }
+
+  export type ModelUpdateOneWithoutDraftsNestedInput = {
+    create?: XOR<ModelCreateWithoutDraftsInput, ModelUncheckedCreateWithoutDraftsInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutDraftsInput
+    upsert?: ModelUpsertWithoutDraftsInput
+    disconnect?: ModelWhereInput | boolean
+    delete?: ModelWhereInput | boolean
+    connect?: ModelWhereUniqueInput
+    update?: XOR<XOR<ModelUpdateToOneWithWhereWithoutDraftsInput, ModelUpdateWithoutDraftsInput>, ModelUncheckedUpdateWithoutDraftsInput>
   }
 
   export type UserCreateNestedOneWithoutEventsInput = {
@@ -27205,6 +28812,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ModelDraftCreateWithoutUserInput = {
+    id?: string
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    model?: ModelCreateNestedOneWithoutDraftsInput
+  }
+
+  export type ModelDraftUncheckedCreateWithoutUserInput = {
+    id?: string
+    modelId?: string | null
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ModelDraftCreateOrConnectWithoutUserInput = {
+    where: ModelDraftWhereUniqueInput
+    create: XOR<ModelDraftCreateWithoutUserInput, ModelDraftUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelDraftCreateManyUserInputEnvelope = {
+    data: ModelDraftCreateManyUserInput | ModelDraftCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PasskeyCreateWithoutUserInput = {
     id?: string
     name?: string | null
@@ -27478,6 +29113,35 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ModelInteraction"> | Date | string
   }
 
+  export type ModelDraftUpsertWithWhereUniqueWithoutUserInput = {
+    where: ModelDraftWhereUniqueInput
+    update: XOR<ModelDraftUpdateWithoutUserInput, ModelDraftUncheckedUpdateWithoutUserInput>
+    create: XOR<ModelDraftCreateWithoutUserInput, ModelDraftUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelDraftUpdateWithWhereUniqueWithoutUserInput = {
+    where: ModelDraftWhereUniqueInput
+    data: XOR<ModelDraftUpdateWithoutUserInput, ModelDraftUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ModelDraftUpdateManyWithWhereWithoutUserInput = {
+    where: ModelDraftScalarWhereInput
+    data: XOR<ModelDraftUpdateManyMutationInput, ModelDraftUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ModelDraftScalarWhereInput = {
+    AND?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
+    OR?: ModelDraftScalarWhereInput[]
+    NOT?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
+    id?: StringFilter<"ModelDraft"> | string
+    userId?: StringFilter<"ModelDraft"> | string
+    modelId?: StringNullableFilter<"ModelDraft"> | string | null
+    schemaVersion?: IntFilter<"ModelDraft"> | number
+    data?: JsonFilter<"ModelDraft">
+    createdAt?: DateTimeFilter<"ModelDraft"> | Date | string
+    updatedAt?: DateTimeFilter<"ModelDraft"> | Date | string
+  }
+
   export type PasskeyUpsertWithWhereUniqueWithoutUserInput = {
     where: PasskeyWhereUniqueInput
     update: XOR<PasskeyUpdateWithoutUserInput, PasskeyUncheckedUpdateWithoutUserInput>
@@ -27534,6 +29198,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -27560,6 +29225,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -27602,6 +29268,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -27628,6 +29295,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -27654,6 +29322,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -27680,6 +29349,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -27722,6 +29392,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -27748,6 +29419,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -27774,6 +29446,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -27800,6 +29473,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -27842,6 +29516,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -27868,6 +29543,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -27895,6 +29571,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPasskeysInput = {
@@ -27921,6 +29598,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPasskeysInput = {
@@ -27963,6 +29641,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPasskeysInput = {
@@ -27989,6 +29668,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ModelVersionCreateWithoutLatestOfModelInput = {
@@ -28001,7 +29681,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -28020,7 +29699,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
     tags?: ModelVersionTagUncheckedCreateNestedManyWithoutModelVersionInput
@@ -28047,6 +29725,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutChildModelsInput = {
@@ -28065,6 +29744,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutChildModelsInput = {
@@ -28087,6 +29767,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutParentModelInput = {
@@ -28105,6 +29786,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutParentModelInput = {
@@ -28127,7 +29809,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -28146,7 +29827,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
     tags?: ModelVersionTagUncheckedCreateNestedManyWithoutModelVersionInput
@@ -28168,7 +29848,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileCreateNestedManyWithoutModelVersionInput
@@ -28186,7 +29865,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
@@ -28332,6 +30010,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ModelDraftCreateWithoutModelInput = {
+    id?: string
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutModelDraftsInput
+  }
+
+  export type ModelDraftUncheckedCreateWithoutModelInput = {
+    id?: string
+    userId: string
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ModelDraftCreateOrConnectWithoutModelInput = {
+    where: ModelDraftWhereUniqueInput
+    create: XOR<ModelDraftCreateWithoutModelInput, ModelDraftUncheckedCreateWithoutModelInput>
+  }
+
+  export type ModelDraftCreateManyModelInputEnvelope = {
+    data: ModelDraftCreateManyModelInput | ModelDraftCreateManyModelInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ModelVersionUpsertWithoutLatestOfModelInput = {
     update: XOR<ModelVersionUpdateWithoutLatestOfModelInput, ModelVersionUncheckedUpdateWithoutLatestOfModelInput>
     create: XOR<ModelVersionCreateWithoutLatestOfModelInput, ModelVersionUncheckedCreateWithoutLatestOfModelInput>
@@ -28353,7 +30059,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -28372,7 +30077,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
     tags?: ModelVersionTagUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -28405,6 +30109,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutChildModelsInput = {
@@ -28423,6 +30128,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithWhereUniqueWithoutParentModelInput = {
@@ -28477,7 +30183,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -28496,7 +30201,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
     tags?: ModelVersionTagUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -28533,7 +30237,6 @@ export namespace Prisma {
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
     createdAt?: DateTimeFilter<"ModelVersion"> | Date | string
     finalizedAt?: DateTimeNullableFilter<"ModelVersion"> | Date | string | null
-    isDraft?: BoolFilter<"ModelVersion"> | boolean
   }
 
   export type ModelAuthorUpsertWithWhereUniqueWithoutModelInput = {
@@ -28627,6 +30330,22 @@ export namespace Prisma {
     data: XOR<ModelInteractionUpdateManyMutationInput, ModelInteractionUncheckedUpdateManyWithoutModelInput>
   }
 
+  export type ModelDraftUpsertWithWhereUniqueWithoutModelInput = {
+    where: ModelDraftWhereUniqueInput
+    update: XOR<ModelDraftUpdateWithoutModelInput, ModelDraftUncheckedUpdateWithoutModelInput>
+    create: XOR<ModelDraftCreateWithoutModelInput, ModelDraftUncheckedCreateWithoutModelInput>
+  }
+
+  export type ModelDraftUpdateWithWhereUniqueWithoutModelInput = {
+    where: ModelDraftWhereUniqueInput
+    data: XOR<ModelDraftUpdateWithoutModelInput, ModelDraftUncheckedUpdateWithoutModelInput>
+  }
+
+  export type ModelDraftUpdateManyWithWhereWithoutModelInput = {
+    where: ModelDraftScalarWhereInput
+    data: XOR<ModelDraftUpdateManyMutationInput, ModelDraftUncheckedUpdateManyWithoutModelInput>
+  }
+
   export type ModelCreateWithoutVersionsInput = {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
@@ -28642,6 +30361,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutVersionsInput = {
@@ -28660,6 +30380,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutVersionsInput = {
@@ -28682,6 +30403,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutLatestVersionInput = {
@@ -28699,6 +30421,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutLatestVersionInput = {
@@ -28721,6 +30444,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutParentVersionInput = {
@@ -28738,6 +30462,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutParentVersionInput = {
@@ -28839,6 +30564,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutVersionsInput = {
@@ -28857,6 +30583,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithoutLatestVersionInput = {
@@ -28885,6 +30612,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutLatestVersionInput = {
@@ -28902,6 +30630,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithWhereUniqueWithoutParentVersionInput = {
@@ -28998,7 +30727,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
@@ -29017,7 +30745,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     tags?: ModelVersionTagUncheckedCreateNestedManyWithoutModelVersionInput
@@ -29050,7 +30777,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
@@ -29069,7 +30795,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     tags?: ModelVersionTagUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -29086,7 +30811,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
@@ -29105,7 +30829,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
@@ -29157,7 +30880,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
@@ -29176,7 +30898,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -29223,6 +30944,7 @@ export namespace Prisma {
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutAdditionalFilesInput = {
@@ -29241,6 +30963,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutAdditionalFilesInput = {
@@ -29258,7 +30981,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     model: ModelCreateNestedOneWithoutVersionsInput
     latestOfModel?: ModelCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelCreateNestedManyWithoutParentVersionInput
@@ -29277,7 +30999,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
     latestOfModel?: ModelUncheckedCreateNestedOneWithoutLatestVersionInput
     parentOfModels?: ModelUncheckedCreateNestedManyWithoutParentVersionInput
     files?: ModelVersionFileUncheckedCreateNestedManyWithoutModelVersionInput
@@ -29315,6 +31036,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutAdditionalFilesInput = {
@@ -29333,6 +31055,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelVersionUpsertWithoutTaggedAdditionalFilesInput = {
@@ -29356,7 +31079,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     model?: ModelUpdateOneRequiredWithoutVersionsNestedInput
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
@@ -29375,7 +31097,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -29434,6 +31155,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutAuthorsInput = {
@@ -29452,6 +31174,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutAuthorsInput = {
@@ -29482,6 +31205,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -29508,6 +31232,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -29542,6 +31267,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutAuthorsInput = {
@@ -29560,6 +31286,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutAuthoredModelsInput = {
@@ -29596,6 +31323,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -29622,6 +31350,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -29640,6 +31369,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutPermissionsInput = {
@@ -29658,6 +31388,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutPermissionsInput = {
@@ -29688,6 +31419,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -29714,6 +31446,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -29748,6 +31481,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutPermissionsInput = {
@@ -29766,6 +31500,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutGrantedPermissionsInput = {
@@ -29802,6 +31537,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -29828,6 +31564,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -29846,6 +31583,7 @@ export namespace Prisma {
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutLikesInput = {
@@ -29864,6 +31602,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutLikesInput = {
@@ -29894,6 +31633,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     events?: EventCreateNestedManyWithoutActorInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -29920,6 +31660,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -29954,6 +31695,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutLikesInput = {
@@ -29972,6 +31714,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutModelLikesInput = {
@@ -30008,6 +31751,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -30034,6 +31778,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -30052,6 +31797,7 @@ export namespace Prisma {
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutInteractionsInput = {
@@ -30070,6 +31816,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutInteractionsInput = {
@@ -30100,6 +31847,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -30126,6 +31874,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -30160,6 +31909,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutInteractionsInput = {
@@ -30178,6 +31928,7 @@ export namespace Prisma {
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutModelInteractionsInput = {
@@ -30214,6 +31965,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -30240,7 +31992,222 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutModelDraftsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    verifications?: VerificationCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
+    events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutModelDraftsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
+    events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutModelDraftsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutModelDraftsInput, UserUncheckedCreateWithoutModelDraftsInput>
+  }
+
+  export type ModelCreateWithoutDraftsInput = {
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    latestVersion?: ModelVersionCreateNestedOneWithoutLatestOfModelInput
+    parentModel?: ModelCreateNestedOneWithoutChildModelsInput
+    childModels?: ModelCreateNestedManyWithoutParentModelInput
+    parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
+    versions?: ModelVersionCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelUncheckedCreateWithoutDraftsInput = {
+    id?: string
+    latestVersionNumber?: number | null
+    parentModelId?: string | null
+    parentVersionNumber?: number | null
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
+    versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelCreateOrConnectWithoutDraftsInput = {
+    where: ModelWhereUniqueInput
+    create: XOR<ModelCreateWithoutDraftsInput, ModelUncheckedCreateWithoutDraftsInput>
+  }
+
+  export type UserUpsertWithoutModelDraftsInput = {
+    update: XOR<UserUpdateWithoutModelDraftsInput, UserUncheckedUpdateWithoutModelDraftsInput>
+    create: XOR<UserCreateWithoutModelDraftsInput, UserUncheckedCreateWithoutModelDraftsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutModelDraftsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutModelDraftsInput, UserUncheckedUpdateWithoutModelDraftsInput>
+  }
+
+  export type UserUpdateWithoutModelDraftsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutModelDraftsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ModelUpsertWithoutDraftsInput = {
+    update: XOR<ModelUpdateWithoutDraftsInput, ModelUncheckedUpdateWithoutDraftsInput>
+    create: XOR<ModelCreateWithoutDraftsInput, ModelUncheckedCreateWithoutDraftsInput>
+    where?: ModelWhereInput
+  }
+
+  export type ModelUpdateToOneWithWhereWithoutDraftsInput = {
+    where?: ModelWhereInput
+    data: XOR<ModelUpdateWithoutDraftsInput, ModelUncheckedUpdateWithoutDraftsInput>
+  }
+
+  export type ModelUpdateWithoutDraftsInput = {
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestVersion?: ModelVersionUpdateOneWithoutLatestOfModelNestedInput
+    parentModel?: ModelUpdateOneWithoutChildModelsNestedInput
+    childModels?: ModelUpdateManyWithoutParentModelNestedInput
+    parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
+    versions?: ModelVersionUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+  }
+
+  export type ModelUncheckedUpdateWithoutDraftsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
+    versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserCreateWithoutEventsInput = {
@@ -30266,6 +32233,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -30292,6 +32260,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -30334,6 +32303,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -30360,6 +32330,7 @@ export namespace Prisma {
     grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -30438,6 +32409,15 @@ export namespace Prisma {
     geo?: NullableJsonNullValueInput | InputJsonValue
     cookie?: string | null
     createdAt?: Date | string
+  }
+
+  export type ModelDraftCreateManyUserInput = {
+    id?: string
+    modelId?: string | null
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PasskeyCreateManyUserInput = {
@@ -30684,6 +32664,33 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModelDraftUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    model?: ModelUpdateOneWithoutDraftsNestedInput
+  }
+
+  export type ModelDraftUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    modelId?: NullableStringFieldUpdateOperationsInput | string | null
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelDraftUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    modelId?: NullableStringFieldUpdateOperationsInput | string | null
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PasskeyUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30744,7 +32751,6 @@ export namespace Prisma {
     infoTab?: string | null
     createdAt?: Date | string
     finalizedAt?: Date | string | null
-    isDraft?: boolean
   }
 
   export type ModelAuthorCreateManyModelInput = {
@@ -30786,6 +32792,15 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type ModelDraftCreateManyModelInput = {
+    id?: string
+    userId: string
+    schemaVersion: number
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ModelUpdateWithoutParentModelInput = {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
@@ -30801,6 +32816,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutParentModelInput = {
@@ -30819,6 +32835,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateManyWithoutParentModelInput = {
@@ -30842,7 +32859,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUpdateManyWithoutModelVersionNestedInput
@@ -30860,7 +32876,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
     latestOfModel?: ModelUncheckedUpdateOneWithoutLatestVersionNestedInput
     parentOfModels?: ModelUncheckedUpdateManyWithoutParentVersionNestedInput
     files?: ModelVersionFileUncheckedUpdateManyWithoutModelVersionNestedInput
@@ -30878,7 +32893,6 @@ export namespace Prisma {
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isDraft?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ModelAuthorUpdateWithoutModelInput = {
@@ -30998,6 +33012,33 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModelDraftUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutModelDraftsNestedInput
+  }
+
+  export type ModelDraftUncheckedUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelDraftUncheckedUpdateManyWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ModelCreateManyParentVersionInput = {
     id?: string
     latestVersionNumber?: number | null
@@ -31039,6 +33080,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutParentVersionInput = {
@@ -31056,6 +33098,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateManyWithoutParentVersionInput = {

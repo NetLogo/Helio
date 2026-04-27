@@ -22,27 +22,6 @@ export default function modelVersionDomain() {
         infoTab: null,
         createdAt: new Date(),
         finalizedAt: null,
-        isDraft: false,
-      };
-    },
-
-    createDraftVersion(props: {
-      modelId: string;
-      title: string;
-      description?: string;
-    }): ModelVersionEntity {
-      return {
-        modelId: props.modelId,
-        versionNumber: 1,
-        title: props.title,
-        description: props.description ?? null,
-        previewImage: null,
-        netlogoFileKey: '',
-        netlogoVersion: null,
-        infoTab: null,
-        createdAt: new Date(),
-        finalizedAt: null,
-        isDraft: true,
       };
     },
 

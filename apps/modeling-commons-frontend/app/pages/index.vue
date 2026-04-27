@@ -110,13 +110,15 @@ useSeoMeta({
   ogDescription: meta.value.description,
 });
 
-async function enrichModels(models: ModelListRow[]): Promise<ModelListRow[]> {
-  const { GET } = useApi();
+async function enrichModels(
+  api: ReturnType<typeof useApi>,
+  models: ModelListRow[],
+): Promise<ModelListRow[]> {
   return Promise.all(
     models.map(async (model) => {
       if (!model.latestVersionNumber) return model;
       try {
-        const { data } = await GET("/api/v1/models/{id}/versions", {
+        const { data } = await api.GET("/api/v1/models/{id}/versions", {
           params: { path: { id: model.id }, query: { limit: 1, page: 0 } },
         });
         const versionsData = data as
@@ -138,11 +140,11 @@ async function enrichModels(models: ModelListRow[]): Promise<ModelListRow[]> {
   );
 }
 
+const api = useApi();
 const { data, error, status, refresh } = await useAsyncData("home-models", async () => {
-  const { GET } = useApi();
   const [featuredRes, recentRes] = await Promise.all([
-    GET("/api/v1/models", { params: { query: { limit: 3, isEndorsed: true } } }),
-    GET("/api/v1/models", { params: { query: { limit: 6 } } }),
+    api.GET("/api/v1/models", { params: { query: { limit: 3, isEndorsed: true } } }),
+    api.GET("/api/v1/models", { params: { query: { limit: 6 } } }),
   ]);
 
   const toList = (res: typeof featuredRes) => {
@@ -151,8 +153,8 @@ const { data, error, status, refresh } = await useAsyncData("home-models", async
   };
 
   const [featured, recent] = await Promise.all([
-    enrichModels(toList(featuredRes)),
-    enrichModels(toList(recentRes)),
+    enrichModels(api, toList(featuredRes)),
+    enrichModels(api, toList(recentRes)),
   ]);
 
   return { featured, recent };

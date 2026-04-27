@@ -22,7 +22,8 @@ export default defineNuxtConfig({
 
   // prettier-ignore
   modules: [
-    "@nuxt/image"
+    "@nuxt/image",
+    "@nuxt/test-utils/module",
   ],
 
   gtag: {

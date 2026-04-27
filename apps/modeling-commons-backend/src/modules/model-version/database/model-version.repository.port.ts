@@ -21,10 +21,4 @@ export interface ModelVersionRepository {
     params: PaginatedQueryParams,
   ): Promise<Paginated<ModelVersionEntity>>;
   getNextVersionNumber(ctx: TransactionContext, modelId: string): Promise<number>;
-  getDraftByModelAndVersionIfExists(
-    ctx: TransactionContext,
-    modelId: string,
-    versionNumber: number,
-  ): Promise<ModelVersionEntity | undefined>;
-  publishDraft(ctx: TransactionContext, modelId: string, entity: ModelVersionEntity): Promise<void>;
 }

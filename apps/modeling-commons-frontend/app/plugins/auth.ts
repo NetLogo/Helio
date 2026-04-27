@@ -5,13 +5,33 @@ import { adminClient } from "better-auth/client/plugins";
 export default defineNuxtPlugin({
   name: "auth",
   enforce: "pre",
-  setup(nuxtApp) {
+  async setup(nuxtApp) {
+    const headers = import.meta.server ? useRequestHeaders(["cookie"]) : undefined;
+
     const authClient = createAuthClient({
       baseURL: useRuntimeConfig().public.authApiBase,
       plugins: [adminClient(), passkeyClient()],
+      fetchOptions: {
+        credentials: "include",
+        headers,
+      },
     });
 
     const session = nuxtApp.runWithContext(() => authClient.useSession());
+
+    if (import.meta.server) {
+      const { data } = await authClient.getSession({
+        fetchOptions: { headers },
+      });
+      session.value = { ...session.value, data, isPending: false };
+      nuxtApp.payload.authSession = data;
+    } else if (nuxtApp.payload.authSession !== undefined) {
+      session.value = {
+        ...session.value,
+        data: nuxtApp.payload.authSession as typeof session.value.data,
+        isPending: false,
+      };
+    }
 
     return {
       provide: {

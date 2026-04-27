@@ -60,7 +60,11 @@ export const signUpValidator = z
     email: emailValidator,
     password: passwordValidator,
     confirmPassword: z.string("Please confirm your password"),
-    userKind: userKindValidator,
+    userKind: z
+      .object({
+        value: userKindValidator,
+      })
+      .optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -106,7 +110,7 @@ export const signUpFields: Array<AuthFormField> = [
   },
   {
     name: "userKind",
-    label: "What brings you to the Modeling Commons? I am a ...",
+    label: "I am a ...",
     type: "select" as const,
     placeholder: "Student, Teacher, Researcher, or Other",
     items: [

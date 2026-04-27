@@ -74,6 +74,7 @@ model User {
   events           Event[]
   modelLikes       ModelLike[]
   modelInteractions ModelInteraction[]
+  modelDrafts      ModelDraft[]
 
   // Better Auth Admin plugin
   role String?
@@ -177,6 +178,7 @@ model Model {
   additionalFiles ModelAdditionalFile[]
   likes           ModelLike[]
   interactions    ModelInteraction[]
+  drafts          ModelDraft[]
 
   @@unique([id, latestVersionNumber])
   @@index([parentModelId])
@@ -194,8 +196,6 @@ model ModelVersion {
   infoTab          String?
   createdAt        DateTime  @default(now())
   finalizedAt      DateTime?
-
-  isDraft          Boolean   @default(false)
 
   model       Model  @relation("ModelVersions", fields: [modelId], references: [id], onDelete: Cascade)
 
@@ -323,6 +323,24 @@ model ModelInteraction {
   @@index([modelId, kind, userId])
   @@index([userId, createdAt])
   @@index([createdAt])
+}
+
+model ModelDraft {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  modelId       String?
+  model         Model?   @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  schemaVersion Int
+  data          Json
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([modelId])
 }
 
 model Event {

@@ -21,7 +21,7 @@ export default function modelVersionRepository({
       versionNumber: number,
     ): Promise<ModelVersionEntity | undefined> {
       const record = await db.modelVersion.findUnique({
-        where: { modelId_versionNumber: { modelId, versionNumber }, isDraft: false },
+        where: { modelId_versionNumber: { modelId, versionNumber } },
       });
       return record
         ? modelVersionMapper.toDomain(record as unknown as ModelVersionRecord)
@@ -30,7 +30,7 @@ export default function modelVersionRepository({
 
     async findLatestByModel(modelId: string): Promise<ModelVersionEntity | undefined> {
       const record = await db.modelVersion.findFirst({
-        where: { modelId, isDraft: false },
+        where: { modelId },
         orderBy: { versionNumber: 'desc' },
       });
       return record
@@ -41,7 +41,7 @@ export default function modelVersionRepository({
     async finalize(ctx: TransactionContext, modelId: string, versionNumber: number): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelVersion.update({
-        where: { modelId_versionNumber: { modelId, versionNumber }, isDraft: false },
+        where: { modelId_versionNumber: { modelId, versionNumber } },
         data: { finalizedAt: new Date() },
       });
     },
@@ -54,7 +54,7 @@ export default function modelVersionRepository({
     ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelVersion.update({
-        where: { modelId_versionNumber: { modelId, versionNumber }, isDraft: false },
+        where: { modelId_versionNumber: { modelId, versionNumber } },
         data,
       });
     },
@@ -63,7 +63,7 @@ export default function modelVersionRepository({
       modelId: string,
       params: PaginatedQueryParams,
     ): Promise<Paginated<ModelVersionEntity>> {
-      const where = { modelId, isDraft: false };
+      const where = { modelId };
       const [count, records] = await Promise.all([
         db.modelVersion.count({ where }),
         db.modelVersion.findMany({
@@ -84,46 +84,11 @@ export default function modelVersionRepository({
     async getNextVersionNumber(ctx: TransactionContext, modelId: string): Promise<number> {
       const client = resolveTransaction(ctx);
       const latest = await client.modelVersion.findFirst({
-        where: { modelId, isDraft: false },
+        where: { modelId },
         orderBy: { versionNumber: 'desc' },
         select: { versionNumber: true },
       });
       return (latest?.versionNumber ?? 0) + 1;
-    },
-
-    async getDraftByModelAndVersionIfExists(
-      ctx: TransactionContext,
-      modelId: string,
-      versionNumber: number,
-    ): Promise<ModelVersionEntity | undefined> {
-      const client = resolveTransaction(ctx);
-      const record = await client.modelVersion.findFirst({
-        where: { modelId, versionNumber, isDraft: true },
-        orderBy: { createdAt: 'desc' },
-      });
-      return record
-        ? modelVersionMapper.toDomain(record as unknown as ModelVersionRecord)
-        : undefined;
-    },
-
-    async publishDraft(
-      ctx: TransactionContext,
-      modelId: string,
-      entity: ModelVersionEntity,
-    ): Promise<void> {
-      const client = resolveTransaction(ctx);
-      const data = {
-        ...modelVersionMapper.toPersistence(entity),
-        isDraft: false,
-      };
-
-      await client.modelVersion.update({
-        where: {
-          modelId_versionNumber: { modelId, versionNumber: entity.versionNumber },
-          isDraft: true,
-        },
-        data,
-      });
     },
   };
 }

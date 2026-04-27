@@ -39,7 +39,7 @@
         v-if="user.isLoggedIn"
         v-slot="{ open }"
         :items="userDropdownItems"
-        :modal="true"
+        :content="{ align: 'end' }"
       >
         <div
           class="group hover:cursor-pointer flex gap-2 items-center p-1 hover:bg-neutral-lighter/30 rounded-full"
@@ -146,7 +146,13 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
       [
         {
           label: user.value.name,
-          avatar: { src: user.value.image ?? undefined, lazy: true, alt: user.value.name },
+          avatar: {
+            src: user.value.image ?? undefined,
+            lazy: true,
+            alt: user.value.name,
+            size: "md",
+          },
+          description: user.value.email ?? undefined,
           type: "label",
         },
       ],
@@ -157,6 +163,18 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           href: "/profile/settings",
         },
         {
+          label: "Models",
+          icon: "i-lucide-box",
+          href: "/profile/models",
+        },
+        {
+          label: "Saved Models",
+          icon: "i-lucide-heart",
+          href: "/profile/saved-models",
+        },
+      ],
+      [
+        {
           label: "Settings",
           icon: "i-lucide-settings",
           href: "/profile/settings",
@@ -166,20 +184,11 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
         {
           label: "Sign out",
           icon: "i-lucide-log-out",
-          color: "error",
+          class: "font-semibold cursor-pointer",
           onClick: async () => {
             await signOut();
-            router.push("/login");
+            router.push("/");
           },
-        },
-      ],
-      [
-        {
-          label: "Admin Dashboard",
-          icon: "i-lucide-shield-check",
-          href: adminDashboardUrl,
-          visible: true,
-          color: "primary",
         },
       ],
     ];
@@ -196,10 +205,6 @@ const brandAttrs = computed(() =>
     ? { style: { width: "10rem" } }
     : { width: "15rem", style: { width: "15rem", marginLeft: "0" }, class: "[&>svg]:w-full!" },
 );
-
-const {
-  public: { adminDashboardUrl },
-} = useRuntimeConfig();
 
 const handleMediaQueryChange = (): void => {
   if (import.meta.client) {

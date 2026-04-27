@@ -66,6 +66,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 <template>
   <div>
     <UAuthForm
+      ref="authform"
       :fields="fields"
       :schema="schema"
       title="Sign Up"
@@ -91,8 +92,8 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
         <span class="text-muted">
           By signing up, you agree to our
           <ULink to="/terms-of-service" class="font-medium text-primary underline">
-            Terms of Service
-          </ULink>.
+            Terms of Service </ULink
+          >.
         </span>
       </template>
     </UAuthForm>

@@ -1,10 +1,10 @@
+import env from '#src/config/env.ts';
 import AdminJSFastify from '@adminjs/fastify';
+import { Adapter, Database, Resource } from '@adminjs/sql';
+import fastifyMultipart from '@fastify/multipart';
 import AdminJS from 'adminjs';
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import { Adapter, Resource, Database } from '@adminjs/sql';
-import env from '#src/config/env.ts';
-import fastifyMultipart from '@fastify/multipart';
 
 AdminJS.registerAdapter({ Database, Resource });
 
@@ -39,6 +39,7 @@ async function adminJsPlugin(fastify: FastifyInstance) {
       { resource: db.table('ModelVersionFile'), options: { navigation: modelNavigation } },
       { resource: db.table('ModelPermission'), options: { navigation: modelNavigation } },
       { resource: db.table('ModelAuthor'), options: { navigation: modelNavigation } },
+      { resource: db.table('ModelDraft'), options: { navigation: modelNavigation } },
     ],
     branding: {
       companyName: `${env.product.name} Admin`,

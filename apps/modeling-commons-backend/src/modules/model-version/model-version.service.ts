@@ -46,17 +46,7 @@ export default function makeModelVersionService({
           netlogoFileKey,
         });
 
-        const maybeDraft = await modelVersionRepository.getDraftByModelAndVersionIfExists(
-          ctx,
-          modelId,
-          versionNumber,
-        );
-
-        if (maybeDraft) {
-          await modelVersionRepository.publishDraft(ctx, modelId, entity);
-        } else {
-          await modelVersionRepository.insertTx(ctx, entity);
-        }
+        await modelVersionRepository.insertTx(ctx, entity);
         await modelRepository.setLatestVersion(ctx, modelId, versionNumber);
 
         await eventRepository.insert(ctx, {

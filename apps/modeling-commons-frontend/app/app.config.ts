@@ -294,5 +294,19 @@ export default defineAppConfig({
         label: "text-md leading-normal",
       },
     },
+
+    dropdownMenu: {
+      slots: {
+        item: "font-normal",
+      },
+      variants: {
+        size: {
+          md: {
+            label: "px-3 py-2",
+            item: "px-3 py-2 rounded-sm",
+          },
+        },
+      },
+    },
   },
 });

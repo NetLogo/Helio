@@ -212,8 +212,7 @@ exports.Prisma.ModelVersionScalarFieldEnum = {
   netlogoVersion: 'netlogoVersion',
   infoTab: 'infoTab',
   createdAt: 'createdAt',
-  finalizedAt: 'finalizedAt',
-  isDraft: 'isDraft'
+  finalizedAt: 'finalizedAt'
 };
 
 exports.Prisma.ModelVersionFileScalarFieldEnum = {
@@ -279,6 +278,16 @@ exports.Prisma.ModelInteractionScalarFieldEnum = {
   geo: 'geo',
   cookie: 'cookie',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.ModelDraftScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  modelId: 'modelId',
+  schemaVersion: 'schemaVersion',
+  data: 'data',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.EventScalarFieldEnum = {
@@ -374,6 +383,7 @@ exports.Prisma.ModelName = {
   ModelPermission: 'ModelPermission',
   ModelLike: 'ModelLike',
   ModelInteraction: 'ModelInteraction',
+  ModelDraft: 'ModelDraft',
   Event: 'Event'
 };
 
