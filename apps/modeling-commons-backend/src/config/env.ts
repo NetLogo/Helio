@@ -49,9 +49,23 @@ const schema = Type.Object({
     default:
       'netlogo,modeling,commons,simulation,agent-based,platform,constructionism,education,science,open-source',
   }),
+  PRODUCT_LOGO_URL: Type.String({
+    default: 'https://www.modelingcommons.org/logo.png',
+  }),
+  PRODUCT_BRAND_COLOR: Type.String({
+    default: '#4e3bdd',
+  }),
   PRODUCT_VERSION: Type.String({ default: '0.1.0' }),
   PRODUCT_DISPLAY_NAME: Type.Optional(Type.String()),
   PRODUCT_WEBSITE: Type.String({ default: 'https://www.modelingcommons.org' }),
+  PRODUCT_SUPPORT_EMAIL: Type.String({ default: 'feedback@ccl.northwestern.edu' }),
+  SMTP_HOST: Type.String(),
+  SMTP_PORT: Type.Number({ default: 587 }),
+  SMTP_USER: Type.String(),
+  SMTP_PASSWORD: Type.String(),
+  SMTP_SECURE: Type.Boolean({ default: false }),
+  SENDER_ADDRESS: Type.String(),
+
   IP_ADDRESS_HEADERS: Type.Optional(
     Type.String({
       default: 'cf-connecting-ip,X-Forwarded-For',
@@ -126,5 +140,17 @@ export default {
     version: env.PRODUCT_VERSION,
     displayName: env.PRODUCT_DISPLAY_NAME || env.PRODUCT_NAME,
     website: env.PRODUCT_WEBSITE,
+    logoUrl: env.PRODUCT_LOGO_URL,
+    brandColor: env.PRODUCT_BRAND_COLOR,
+    supportEmail: env.PRODUCT_SUPPORT_EMAIL,
+  },
+  smtp: {
+    host: env.SMTP_HOST,
+    port: env.SMTP_PORT,
+    user: env.SMTP_USER,
+    password: env.SMTP_PASSWORD,
+    secure: env.SMTP_SECURE,
+    senderAddress: env.SENDER_ADDRESS,
+    senderName: env.PRODUCT_NAME,
   },
 };

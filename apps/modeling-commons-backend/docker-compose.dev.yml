@@ -15,12 +15,12 @@ services:
       - path: ./.env
         required: true
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 5s
       timeout: 3s
       retries: 5
     volumes:
-      - /tmp/modeling-commons-postgres-data:/var/lib/postgresql
+      - /tmp/com.netlogo.modeling-commons/postgresql:/var/lib/postgresql
 
   rustfs:
     image: rustfs/rustfs:latest
@@ -30,7 +30,8 @@ services:
       - 41091:41091 # Console
     environment:
       RUSTFS_ADDRESS: :41090
-      RUSTFS_CONSOLE_ENABLE: 'true'
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_CONSOLE_ADDRESS: :41091
       RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
       RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
       RUSTFS_CORS_ALLOWED_ORIGINS: "*"
@@ -42,7 +43,8 @@ services:
           "CMD",
           "sh",
           "-c",
-          "curl -f http://localhost:41090/health && curl -f http://localhost:9001/health",
+          "curl -f http://localhost:41090/health && curl -f
+            http://localhost:9001/health",
         ]
       interval: 30s
       timeout: 10s
@@ -62,7 +64,7 @@ services:
     ports:
       - ${REDIS_PORT:-6379}:6379
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
       timeout: 3s
       retries: 5

@@ -103,6 +103,12 @@ export default defineNuxtConfig({
     },
   ],
 
+  typescript: {
+    tsConfig: {
+      include: ["../tests/**/*"],
+    },
+  },
+
   nitro: {
     static: false,
     serveStatic: true,

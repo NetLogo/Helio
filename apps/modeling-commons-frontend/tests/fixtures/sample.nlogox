@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model version="NetLogo 7.0.0-beta1">
+  <code><![CDATA[
+to setup
+  clear-all
+  reset-ticks
+end
+  ]]></code>
+  <widgets>
+    <view xcor="0" ycor="0" patch-size="13" min-pxcor="-16" max-pxcor="16" min-pycor="-16" max-pycor="16" />
+  </widgets>
+  <info><![CDATA[## WHAT IS IT?
+
+Minimal NetLogo model used as a fixture for E2E tests.
+]]></info>
+  <turtleshapes />
+  <linkshapes />
+</model>

@@ -82,6 +82,10 @@ model User {
   banReason String?
 	banExpires DateTime? @db.Timestamptz(3)
 
+  // Application behavior
+  onboardedAt DateTime? @db.Timestamptz(3)
+  legacyId Int? @unique
+
   // Passkey relations
   passkeys Passkey[]
 }
@@ -158,6 +162,7 @@ model Passkey {
 
 model Model {
   id                  String          @id @default(uuid())
+  legacyId            Int?            @unique
   latestVersionNumber Int?
   parentModelId       String?
   parentVersionNumber Int?
@@ -179,6 +184,7 @@ model Model {
   likes           ModelLike[]
   interactions    ModelInteraction[]
   drafts          ModelDraft[]
+
 
   @@unique([id, latestVersionNumber])
   @@index([parentModelId])
@@ -253,6 +259,7 @@ model ModelAdditionalFile {
 
 model Tag {
   id          String   @id @default(uuid())
+  legacyId    Int?     @unique
   name        String   @unique
   displayName String?
   createdAt   DateTime @default(now())

@@ -128,7 +128,7 @@ async function authPlugin(fastify: FastifyInstance) {
 
 export default fp(authPlugin, {
   name: 'auth',
-  dependencies: ['correlationId'],
+  dependencies: ['correlationId', 'fastify-mailer'],
 });
 
 declare module 'fastify' {

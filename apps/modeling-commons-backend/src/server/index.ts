@@ -3,12 +3,10 @@ import { di } from '#src/server/di/index.ts';
 import AutoLoad from '@fastify/autoload';
 import Cors from '@fastify/cors';
 import Helmet from '@fastify/helmet';
-import Multipart from '@fastify/multipart';
 import { TypeBoxValidatorCompiler, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import UnderPressure from '@fastify/under-pressure';
 import type { FastifyInstance } from 'fastify';
 import path from 'node:path';
-import rules from '#src/config/rules.ts';
 
 export default async function createServer(fastify: FastifyInstance): Promise<FastifyInstance> {
   // Set sensible default security headers
