@@ -22,6 +22,7 @@ export type UserEntity = {
   systemRole: SystemRole;
   userKind: UserKind;
   isProfilePublic: boolean;
+  onboardedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
@@ -33,6 +34,7 @@ export type UpdateUserProfileProps = {
   userKind?: UserKind;
   isProfilePublic?: boolean;
   systemRole?: SystemRole;
+  onboardedAt?: Date | null;
 };
 
 export type UserSearchFilters = {

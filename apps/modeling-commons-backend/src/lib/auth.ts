@@ -25,6 +25,10 @@ export const auth = betterAuth({
       isProfilePublic: {
         type: 'boolean',
       },
+      onboardedAt: {
+        type: 'date',
+        required: false,
+      },
     },
     deleteUser: {
       enabled: false,

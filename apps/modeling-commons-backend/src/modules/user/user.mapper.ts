@@ -12,6 +12,7 @@ export type UserRecord = {
   systemRole: SystemRole;
   userKind: UserKind;
   isProfilePublic: boolean;
+  onboardedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
@@ -31,6 +32,7 @@ export default function userMapper(): Mapper<UserEntity, UserRecord, UserRespons
         systemRole: record.systemRole,
         userKind: record.userKind,
         isProfilePublic: record.isProfilePublic,
+        onboardedAt: record.onboardedAt ? new Date(record.onboardedAt) : null,
         createdAt: new Date(record.createdAt),
         updatedAt: new Date(record.updatedAt),
         deletedAt: record.deletedAt ? new Date(record.deletedAt) : null,
@@ -47,6 +49,7 @@ export default function userMapper(): Mapper<UserEntity, UserRecord, UserRespons
         systemRole: entity.systemRole,
         userKind: entity.userKind,
         isProfilePublic: entity.isProfilePublic,
+        onboardedAt: entity.onboardedAt ? entity.onboardedAt.toISOString() : null,
         createdAt: entity.createdAt.toISOString(),
         updatedAt: entity.updatedAt.toISOString(),
       };
@@ -62,6 +65,7 @@ export default function userMapper(): Mapper<UserEntity, UserRecord, UserRespons
         systemRole: entity.systemRole,
         userKind: entity.userKind,
         isProfilePublic: entity.isProfilePublic,
+        onboardedAt: entity.onboardedAt,
         createdAt: entity.createdAt,
         updatedAt: entity.updatedAt,
         deletedAt: entity.deletedAt,

@@ -29,6 +29,9 @@ export const userResponseDtoSchema = Type.Intersect([
     systemRole: Type.String({ description: 'admin | moderator | user' }),
     userKind: Type.String({ description: 'student | teacher | researcher | other' }),
     isProfilePublic: Type.Boolean(),
+    onboardedAt: Type.Union([Type.String({ format: 'date-time' }), Type.Null()], {
+      description: 'Timestamp when the user completed onboarding, null if not yet onboarded',
+    }),
   }),
 ]);
 

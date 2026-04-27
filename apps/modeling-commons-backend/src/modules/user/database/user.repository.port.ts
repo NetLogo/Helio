@@ -17,7 +17,12 @@ export interface UserRepository extends RepositoryPort<UserEntity> {
   updateFields(
     ctx: TransactionContext,
     id: string,
-    data: { userKind?: UserKind; isProfilePublic?: boolean; systemRole?: SystemRole },
+    data: {
+      userKind?: UserKind;
+      isProfilePublic?: boolean;
+      systemRole?: SystemRole;
+      onboardedAt?: Date | null;
+    },
   ): Promise<void>;
   search(
     filters: UserSearchFilters,

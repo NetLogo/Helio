@@ -29,6 +29,9 @@ export const updateUserRequestDtoSchema = Type.Object({
   systemRole: Type.Optional(
     Type.Union([...Object.values(SystemRoleDto).map((role) => Type.Literal(role))]),
   ),
+  onboardedAt: Type.Optional(
+    Type.Union([Type.String({ format: 'date-time' }), Type.Null()]),
+  ),
 });
 export type UpdateUserRequestDto = Static<typeof updateUserRequestDtoSchema>;
 

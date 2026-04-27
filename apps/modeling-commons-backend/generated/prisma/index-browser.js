@@ -135,7 +135,9 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   banned: 'banned',
   banReason: 'banReason',
-  banExpires: 'banExpires'
+  banExpires: 'banExpires',
+  onboardedAt: 'onboardedAt',
+  legacyId: 'legacyId'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -192,6 +194,7 @@ exports.Prisma.PasskeyScalarFieldEnum = {
 
 exports.Prisma.ModelScalarFieldEnum = {
   id: 'id',
+  legacyId: 'legacyId',
   latestVersionNumber: 'latestVersionNumber',
   parentModelId: 'parentModelId',
   parentVersionNumber: 'parentVersionNumber',
@@ -239,6 +242,7 @@ exports.Prisma.ModelAdditionalFileScalarFieldEnum = {
 
 exports.Prisma.TagScalarFieldEnum = {
   id: 'id',
+  legacyId: 'legacyId',
   name: 'name',
   displayName: 'displayName',
   createdAt: 'createdAt'

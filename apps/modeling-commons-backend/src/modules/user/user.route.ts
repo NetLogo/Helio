@@ -30,11 +30,17 @@ export default async function userRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth],
     },
     async (request, reply) => {
+      const { onboardedAt, ...rest } = request.body;
       await userService.updateProfile(
         request.params.id,
         request.user!.id,
         request.user!.systemRole,
-        request.body,
+        {
+          ...rest,
+          ...(onboardedAt !== undefined
+            ? { onboardedAt: onboardedAt === null ? null : new Date(onboardedAt) }
+            : {}),
+        },
       );
       return reply.code(204).send();
     },

@@ -2706,8 +2706,18 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserAvgAggregateOutputType = {
+    legacyId: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    legacyId: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -2726,6 +2736,8 @@ export namespace Prisma {
     banned: boolean | null
     banReason: string | null
     banExpires: Date | null
+    onboardedAt: Date | null
+    legacyId: number | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2744,6 +2756,8 @@ export namespace Prisma {
     banned: boolean | null
     banReason: string | null
     banExpires: Date | null
+    onboardedAt: Date | null
+    legacyId: number | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2762,9 +2776,19 @@ export namespace Prisma {
     banned: number
     banReason: number
     banExpires: number
+    onboardedAt: number
+    legacyId: number
     _all: number
   }
 
+
+  export type UserAvgAggregateInputType = {
+    legacyId?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    legacyId?: true
+  }
 
   export type UserMinAggregateInputType = {
     id?: true
@@ -2782,6 +2806,8 @@ export namespace Prisma {
     banned?: true
     banReason?: true
     banExpires?: true
+    onboardedAt?: true
+    legacyId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2800,6 +2826,8 @@ export namespace Prisma {
     banned?: true
     banReason?: true
     banExpires?: true
+    onboardedAt?: true
+    legacyId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2818,6 +2846,8 @@ export namespace Prisma {
     banned?: true
     banReason?: true
     banExpires?: true
+    onboardedAt?: true
+    legacyId?: true
     _all?: true
   }
 
@@ -2859,6 +2889,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -2889,6 +2931,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
@@ -2909,7 +2953,11 @@ export namespace Prisma {
     banned: boolean | null
     banReason: string | null
     banExpires: Date | null
+    onboardedAt: Date | null
+    legacyId: number | null
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -2944,6 +2992,8 @@ export namespace Prisma {
     banned?: boolean
     banReason?: boolean
     banExpires?: boolean
+    onboardedAt?: boolean
+    legacyId?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     verifications?: boolean | User$verificationsArgs<ExtArgs>
@@ -2973,6 +3023,8 @@ export namespace Prisma {
     banned?: boolean
     banReason?: boolean
     banExpires?: boolean
+    onboardedAt?: boolean
+    legacyId?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2991,6 +3043,8 @@ export namespace Prisma {
     banned?: boolean
     banReason?: boolean
     banExpires?: boolean
+    onboardedAt?: boolean
+    legacyId?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -3009,9 +3063,11 @@ export namespace Prisma {
     banned?: boolean
     banReason?: boolean
     banExpires?: boolean
+    onboardedAt?: boolean
+    legacyId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "systemRole" | "userKind" | "isProfilePublic" | "deletedAt" | "role" | "banned" | "banReason" | "banExpires", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "systemRole" | "userKind" | "isProfilePublic" | "deletedAt" | "role" | "banned" | "banReason" | "banExpires" | "onboardedAt" | "legacyId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -3058,6 +3114,8 @@ export namespace Prisma {
       banned: boolean | null
       banReason: string | null
       banExpires: Date | null
+      onboardedAt: Date | null
+      legacyId: number | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3506,6 +3564,8 @@ export namespace Prisma {
     readonly banned: FieldRef<"User", 'Boolean'>
     readonly banReason: FieldRef<"User", 'String'>
     readonly banExpires: FieldRef<"User", 'DateTime'>
+    readonly onboardedAt: FieldRef<"User", 'DateTime'>
+    readonly legacyId: FieldRef<"User", 'Int'>
   }
     
 
@@ -8735,17 +8795,20 @@ export namespace Prisma {
   }
 
   export type ModelAvgAggregateOutputType = {
+    legacyId: number | null
     latestVersionNumber: number | null
     parentVersionNumber: number | null
   }
 
   export type ModelSumAggregateOutputType = {
+    legacyId: number | null
     latestVersionNumber: number | null
     parentVersionNumber: number | null
   }
 
   export type ModelMinAggregateOutputType = {
     id: string | null
+    legacyId: number | null
     latestVersionNumber: number | null
     parentModelId: string | null
     parentVersionNumber: number | null
@@ -8758,6 +8821,7 @@ export namespace Prisma {
 
   export type ModelMaxAggregateOutputType = {
     id: string | null
+    legacyId: number | null
     latestVersionNumber: number | null
     parentModelId: string | null
     parentVersionNumber: number | null
@@ -8770,6 +8834,7 @@ export namespace Prisma {
 
   export type ModelCountAggregateOutputType = {
     id: number
+    legacyId: number
     latestVersionNumber: number
     parentModelId: number
     parentVersionNumber: number
@@ -8783,17 +8848,20 @@ export namespace Prisma {
 
 
   export type ModelAvgAggregateInputType = {
+    legacyId?: true
     latestVersionNumber?: true
     parentVersionNumber?: true
   }
 
   export type ModelSumAggregateInputType = {
+    legacyId?: true
     latestVersionNumber?: true
     parentVersionNumber?: true
   }
 
   export type ModelMinAggregateInputType = {
     id?: true
+    legacyId?: true
     latestVersionNumber?: true
     parentModelId?: true
     parentVersionNumber?: true
@@ -8806,6 +8874,7 @@ export namespace Prisma {
 
   export type ModelMaxAggregateInputType = {
     id?: true
+    legacyId?: true
     latestVersionNumber?: true
     parentModelId?: true
     parentVersionNumber?: true
@@ -8818,6 +8887,7 @@ export namespace Prisma {
 
   export type ModelCountAggregateInputType = {
     id?: true
+    legacyId?: true
     latestVersionNumber?: true
     parentModelId?: true
     parentVersionNumber?: true
@@ -8917,6 +8987,7 @@ export namespace Prisma {
 
   export type ModelGroupByOutputType = {
     id: string
+    legacyId: number | null
     latestVersionNumber: number | null
     parentModelId: string | null
     parentVersionNumber: number | null
@@ -8948,6 +9019,7 @@ export namespace Prisma {
 
   export type ModelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    legacyId?: boolean
     latestVersionNumber?: boolean
     parentModelId?: boolean
     parentVersionNumber?: boolean
@@ -8972,6 +9044,7 @@ export namespace Prisma {
 
   export type ModelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    legacyId?: boolean
     latestVersionNumber?: boolean
     parentModelId?: boolean
     parentVersionNumber?: boolean
@@ -8987,6 +9060,7 @@ export namespace Prisma {
 
   export type ModelSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    legacyId?: boolean
     latestVersionNumber?: boolean
     parentModelId?: boolean
     parentVersionNumber?: boolean
@@ -9002,6 +9076,7 @@ export namespace Prisma {
 
   export type ModelSelectScalar = {
     id?: boolean
+    legacyId?: boolean
     latestVersionNumber?: boolean
     parentModelId?: boolean
     parentVersionNumber?: boolean
@@ -9012,7 +9087,7 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type ModelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "latestVersionNumber" | "parentModelId" | "parentVersionNumber" | "visibility" | "isEndorsed" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["model"]>
+  export type ModelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "legacyId" | "latestVersionNumber" | "parentModelId" | "parentVersionNumber" | "visibility" | "isEndorsed" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["model"]>
   export type ModelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     latestVersion?: boolean | Model$latestVersionArgs<ExtArgs>
     parentModel?: boolean | Model$parentModelArgs<ExtArgs>
@@ -9055,6 +9130,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      legacyId: number | null
       latestVersionNumber: number | null
       parentModelId: string | null
       parentVersionNumber: number | null
@@ -9498,6 +9574,7 @@ export namespace Prisma {
    */
   interface ModelFieldRefs {
     readonly id: FieldRef<"Model", 'String'>
+    readonly legacyId: FieldRef<"Model", 'Int'>
     readonly latestVersionNumber: FieldRef<"Model", 'Int'>
     readonly parentModelId: FieldRef<"Model", 'String'>
     readonly parentVersionNumber: FieldRef<"Model", 'Int'>
@@ -14760,12 +14837,23 @@ export namespace Prisma {
 
   export type AggregateTag = {
     _count: TagCountAggregateOutputType | null
+    _avg: TagAvgAggregateOutputType | null
+    _sum: TagSumAggregateOutputType | null
     _min: TagMinAggregateOutputType | null
     _max: TagMaxAggregateOutputType | null
   }
 
+  export type TagAvgAggregateOutputType = {
+    legacyId: number | null
+  }
+
+  export type TagSumAggregateOutputType = {
+    legacyId: number | null
+  }
+
   export type TagMinAggregateOutputType = {
     id: string | null
+    legacyId: number | null
     name: string | null
     displayName: string | null
     createdAt: Date | null
@@ -14773,6 +14861,7 @@ export namespace Prisma {
 
   export type TagMaxAggregateOutputType = {
     id: string | null
+    legacyId: number | null
     name: string | null
     displayName: string | null
     createdAt: Date | null
@@ -14780,6 +14869,7 @@ export namespace Prisma {
 
   export type TagCountAggregateOutputType = {
     id: number
+    legacyId: number
     name: number
     displayName: number
     createdAt: number
@@ -14787,8 +14877,17 @@ export namespace Prisma {
   }
 
 
+  export type TagAvgAggregateInputType = {
+    legacyId?: true
+  }
+
+  export type TagSumAggregateInputType = {
+    legacyId?: true
+  }
+
   export type TagMinAggregateInputType = {
     id?: true
+    legacyId?: true
     name?: true
     displayName?: true
     createdAt?: true
@@ -14796,6 +14895,7 @@ export namespace Prisma {
 
   export type TagMaxAggregateInputType = {
     id?: true
+    legacyId?: true
     name?: true
     displayName?: true
     createdAt?: true
@@ -14803,6 +14903,7 @@ export namespace Prisma {
 
   export type TagCountAggregateInputType = {
     id?: true
+    legacyId?: true
     name?: true
     displayName?: true
     createdAt?: true
@@ -14847,6 +14948,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: TagAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TagSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: TagMinAggregateInputType
@@ -14877,16 +14990,21 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: TagCountAggregateInputType | true
+    _avg?: TagAvgAggregateInputType
+    _sum?: TagSumAggregateInputType
     _min?: TagMinAggregateInputType
     _max?: TagMaxAggregateInputType
   }
 
   export type TagGroupByOutputType = {
     id: string
+    legacyId: number | null
     name: string
     displayName: string | null
     createdAt: Date
     _count: TagCountAggregateOutputType | null
+    _avg: TagAvgAggregateOutputType | null
+    _sum: TagSumAggregateOutputType | null
     _min: TagMinAggregateOutputType | null
     _max: TagMaxAggregateOutputType | null
   }
@@ -14907,6 +15025,7 @@ export namespace Prisma {
 
   export type TagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    legacyId?: boolean
     name?: boolean
     displayName?: boolean
     createdAt?: boolean
@@ -14916,6 +15035,7 @@ export namespace Prisma {
 
   export type TagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    legacyId?: boolean
     name?: boolean
     displayName?: boolean
     createdAt?: boolean
@@ -14923,6 +15043,7 @@ export namespace Prisma {
 
   export type TagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    legacyId?: boolean
     name?: boolean
     displayName?: boolean
     createdAt?: boolean
@@ -14930,12 +15051,13 @@ export namespace Prisma {
 
   export type TagSelectScalar = {
     id?: boolean
+    legacyId?: boolean
     name?: boolean
     displayName?: boolean
     createdAt?: boolean
   }
 
-  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "displayName" | "createdAt", ExtArgs["result"]["tag"]>
+  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "legacyId" | "name" | "displayName" | "createdAt", ExtArgs["result"]["tag"]>
   export type TagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     modelVersions?: boolean | Tag$modelVersionsArgs<ExtArgs>
     _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
@@ -14950,6 +15072,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      legacyId: number | null
       name: string
       displayName: string | null
       createdAt: Date
@@ -15378,6 +15501,7 @@ export namespace Prisma {
    */
   interface TagFieldRefs {
     readonly id: FieldRef<"Tag", 'String'>
+    readonly legacyId: FieldRef<"Tag", 'Int'>
     readonly name: FieldRef<"Tag", 'String'>
     readonly displayName: FieldRef<"Tag", 'String'>
     readonly createdAt: FieldRef<"Tag", 'DateTime'>
@@ -22493,7 +22617,9 @@ export namespace Prisma {
     role: 'role',
     banned: 'banned',
     banReason: 'banReason',
-    banExpires: 'banExpires'
+    banExpires: 'banExpires',
+    onboardedAt: 'onboardedAt',
+    legacyId: 'legacyId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -22565,6 +22691,7 @@ export namespace Prisma {
 
   export const ModelScalarFieldEnum: {
     id: 'id',
+    legacyId: 'legacyId',
     latestVersionNumber: 'latestVersionNumber',
     parentModelId: 'parentModelId',
     parentVersionNumber: 'parentVersionNumber',
@@ -22627,6 +22754,7 @@ export namespace Prisma {
 
   export const TagScalarFieldEnum: {
     id: 'id',
+    legacyId: 'legacyId',
     name: 'name',
     displayName: 'displayName',
     createdAt: 'createdAt'
@@ -22960,6 +23088,8 @@ export namespace Prisma {
     banned?: BoolNullableFilter<"User"> | boolean | null
     banReason?: StringNullableFilter<"User"> | string | null
     banExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    onboardedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    legacyId?: IntNullableFilter<"User"> | number | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     verifications?: VerificationListRelationFilter
@@ -22988,6 +23118,8 @@ export namespace Prisma {
     banned?: SortOrderInput | SortOrder
     banReason?: SortOrderInput | SortOrder
     banExpires?: SortOrderInput | SortOrder
+    onboardedAt?: SortOrderInput | SortOrder
+    legacyId?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     verifications?: VerificationOrderByRelationAggregateInput
@@ -23003,6 +23135,7 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    legacyId?: number
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -23019,6 +23152,7 @@ export namespace Prisma {
     banned?: BoolNullableFilter<"User"> | boolean | null
     banReason?: StringNullableFilter<"User"> | string | null
     banExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    onboardedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     verifications?: VerificationListRelationFilter
@@ -23029,7 +23163,7 @@ export namespace Prisma {
     modelInteractions?: ModelInteractionListRelationFilter
     modelDrafts?: ModelDraftListRelationFilter
     passkeys?: PasskeyListRelationFilter
-  }, "id" | "email">
+  }, "id" | "email" | "legacyId">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -23047,9 +23181,13 @@ export namespace Prisma {
     banned?: SortOrderInput | SortOrder
     banReason?: SortOrderInput | SortOrder
     banExpires?: SortOrderInput | SortOrder
+    onboardedAt?: SortOrderInput | SortOrder
+    legacyId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -23071,6 +23209,8 @@ export namespace Prisma {
     banned?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
     banReason?: StringNullableWithAggregatesFilter<"User"> | string | null
     banExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    onboardedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    legacyId?: IntNullableWithAggregatesFilter<"User"> | number | null
   }
 
   export type AccountWhereInput = {
@@ -23400,6 +23540,7 @@ export namespace Prisma {
     OR?: ModelWhereInput[]
     NOT?: ModelWhereInput | ModelWhereInput[]
     id?: StringFilter<"Model"> | string
+    legacyId?: IntNullableFilter<"Model"> | number | null
     latestVersionNumber?: IntNullableFilter<"Model"> | number | null
     parentModelId?: StringNullableFilter<"Model"> | string | null
     parentVersionNumber?: IntNullableFilter<"Model"> | number | null
@@ -23423,6 +23564,7 @@ export namespace Prisma {
 
   export type ModelOrderByWithRelationInput = {
     id?: SortOrder
+    legacyId?: SortOrderInput | SortOrder
     latestVersionNumber?: SortOrderInput | SortOrder
     parentModelId?: SortOrderInput | SortOrder
     parentVersionNumber?: SortOrderInput | SortOrder
@@ -23446,6 +23588,7 @@ export namespace Prisma {
 
   export type ModelWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    legacyId?: number
     id_latestVersionNumber?: ModelIdLatestVersionNumberCompoundUniqueInput
     AND?: ModelWhereInput | ModelWhereInput[]
     OR?: ModelWhereInput[]
@@ -23469,10 +23612,11 @@ export namespace Prisma {
     likes?: ModelLikeListRelationFilter
     interactions?: ModelInteractionListRelationFilter
     drafts?: ModelDraftListRelationFilter
-  }, "id" | "id_latestVersionNumber">
+  }, "id" | "legacyId" | "id_latestVersionNumber">
 
   export type ModelOrderByWithAggregationInput = {
     id?: SortOrder
+    legacyId?: SortOrderInput | SortOrder
     latestVersionNumber?: SortOrderInput | SortOrder
     parentModelId?: SortOrderInput | SortOrder
     parentVersionNumber?: SortOrderInput | SortOrder
@@ -23493,6 +23637,7 @@ export namespace Prisma {
     OR?: ModelScalarWhereWithAggregatesInput[]
     NOT?: ModelScalarWhereWithAggregatesInput | ModelScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Model"> | string
+    legacyId?: IntNullableWithAggregatesFilter<"Model"> | number | null
     latestVersionNumber?: IntNullableWithAggregatesFilter<"Model"> | number | null
     parentModelId?: StringNullableWithAggregatesFilter<"Model"> | string | null
     parentVersionNumber?: IntNullableWithAggregatesFilter<"Model"> | number | null
@@ -23774,6 +23919,7 @@ export namespace Prisma {
     OR?: TagWhereInput[]
     NOT?: TagWhereInput | TagWhereInput[]
     id?: StringFilter<"Tag"> | string
+    legacyId?: IntNullableFilter<"Tag"> | number | null
     name?: StringFilter<"Tag"> | string
     displayName?: StringNullableFilter<"Tag"> | string | null
     createdAt?: DateTimeFilter<"Tag"> | Date | string
@@ -23782,6 +23928,7 @@ export namespace Prisma {
 
   export type TagOrderByWithRelationInput = {
     id?: SortOrder
+    legacyId?: SortOrderInput | SortOrder
     name?: SortOrder
     displayName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -23790,6 +23937,7 @@ export namespace Prisma {
 
   export type TagWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    legacyId?: number
     name?: string
     AND?: TagWhereInput | TagWhereInput[]
     OR?: TagWhereInput[]
@@ -23797,16 +23945,19 @@ export namespace Prisma {
     displayName?: StringNullableFilter<"Tag"> | string | null
     createdAt?: DateTimeFilter<"Tag"> | Date | string
     modelVersions?: ModelVersionTagListRelationFilter
-  }, "id" | "name">
+  }, "id" | "legacyId" | "name">
 
   export type TagOrderByWithAggregationInput = {
     id?: SortOrder
+    legacyId?: SortOrderInput | SortOrder
     name?: SortOrder
     displayName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: TagCountOrderByAggregateInput
+    _avg?: TagAvgOrderByAggregateInput
     _max?: TagMaxOrderByAggregateInput
     _min?: TagMinOrderByAggregateInput
+    _sum?: TagSumOrderByAggregateInput
   }
 
   export type TagScalarWhereWithAggregatesInput = {
@@ -23814,6 +23965,7 @@ export namespace Prisma {
     OR?: TagScalarWhereWithAggregatesInput[]
     NOT?: TagScalarWhereWithAggregatesInput | TagScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Tag"> | string
+    legacyId?: IntNullableWithAggregatesFilter<"Tag"> | number | null
     name?: StringWithAggregatesFilter<"Tag"> | string
     displayName?: StringNullableWithAggregatesFilter<"Tag"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string
@@ -24232,6 +24384,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
@@ -24260,6 +24414,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
@@ -24288,6 +24444,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
@@ -24316,6 +24474,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -24344,6 +24504,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -24362,6 +24524,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -24380,6 +24544,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type AccountCreateInput = {
@@ -24743,6 +24909,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -24763,6 +24930,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -24782,6 +24950,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24802,6 +24971,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -24822,6 +24992,7 @@ export namespace Prisma {
 
   export type ModelCreateManyInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -24833,6 +25004,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateManyMutationInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24842,6 +25014,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -25107,6 +25280,7 @@ export namespace Prisma {
 
   export type TagCreateInput = {
     id?: string
+    legacyId?: number | null
     name: string
     displayName?: string | null
     createdAt?: Date | string
@@ -25115,6 +25289,7 @@ export namespace Prisma {
 
   export type TagUncheckedCreateInput = {
     id?: string
+    legacyId?: number | null
     name: string
     displayName?: string | null
     createdAt?: Date | string
@@ -25123,6 +25298,7 @@ export namespace Prisma {
 
   export type TagUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25131,6 +25307,7 @@ export namespace Prisma {
 
   export type TagUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25139,6 +25316,7 @@ export namespace Prisma {
 
   export type TagCreateManyInput = {
     id?: string
+    legacyId?: number | null
     name: string
     displayName?: string | null
     createdAt?: Date | string
@@ -25146,6 +25324,7 @@ export namespace Prisma {
 
   export type TagUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25153,6 +25332,7 @@ export namespace Prisma {
 
   export type TagUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25622,6 +25802,17 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type AccountListRelationFilter = {
     every?: AccountWhereInput
     some?: AccountWhereInput
@@ -25743,6 +25934,12 @@ export namespace Prisma {
     banned?: SortOrder
     banReason?: SortOrder
     banExpires?: SortOrder
+    onboardedAt?: SortOrder
+    legacyId?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    legacyId?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -25761,6 +25958,8 @@ export namespace Prisma {
     banned?: SortOrder
     banReason?: SortOrder
     banExpires?: SortOrder
+    onboardedAt?: SortOrder
+    legacyId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -25779,6 +25978,12 @@ export namespace Prisma {
     banned?: SortOrder
     banReason?: SortOrder
     banExpires?: SortOrder
+    onboardedAt?: SortOrder
+    legacyId?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    legacyId?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -25879,6 +26084,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -26082,17 +26303,6 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type EnumModelVisibilityFilter<$PrismaModel = never> = {
     equals?: $Enums.ModelVisibility | EnumModelVisibilityFieldRefInput<$PrismaModel>
     in?: $Enums.ModelVisibility[] | ListEnumModelVisibilityFieldRefInput<$PrismaModel>
@@ -26147,6 +26357,7 @@ export namespace Prisma {
 
   export type ModelCountOrderByAggregateInput = {
     id?: SortOrder
+    legacyId?: SortOrder
     latestVersionNumber?: SortOrder
     parentModelId?: SortOrder
     parentVersionNumber?: SortOrder
@@ -26158,12 +26369,14 @@ export namespace Prisma {
   }
 
   export type ModelAvgOrderByAggregateInput = {
+    legacyId?: SortOrder
     latestVersionNumber?: SortOrder
     parentVersionNumber?: SortOrder
   }
 
   export type ModelMaxOrderByAggregateInput = {
     id?: SortOrder
+    legacyId?: SortOrder
     latestVersionNumber?: SortOrder
     parentModelId?: SortOrder
     parentVersionNumber?: SortOrder
@@ -26176,6 +26389,7 @@ export namespace Prisma {
 
   export type ModelMinOrderByAggregateInput = {
     id?: SortOrder
+    legacyId?: SortOrder
     latestVersionNumber?: SortOrder
     parentModelId?: SortOrder
     parentVersionNumber?: SortOrder
@@ -26187,24 +26401,9 @@ export namespace Prisma {
   }
 
   export type ModelSumOrderByAggregateInput = {
+    legacyId?: SortOrder
     latestVersionNumber?: SortOrder
     parentVersionNumber?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumModelVisibilityWithAggregatesFilter<$PrismaModel = never> = {
@@ -26419,13 +26618,19 @@ export namespace Prisma {
 
   export type TagCountOrderByAggregateInput = {
     id?: SortOrder
+    legacyId?: SortOrder
     name?: SortOrder
     displayName?: SortOrder
     createdAt?: SortOrder
   }
 
+  export type TagAvgOrderByAggregateInput = {
+    legacyId?: SortOrder
+  }
+
   export type TagMaxOrderByAggregateInput = {
     id?: SortOrder
+    legacyId?: SortOrder
     name?: SortOrder
     displayName?: SortOrder
     createdAt?: SortOrder
@@ -26433,9 +26638,14 @@ export namespace Prisma {
 
   export type TagMinOrderByAggregateInput = {
     id?: SortOrder
+    legacyId?: SortOrder
     name?: SortOrder
     displayName?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type TagSumOrderByAggregateInput = {
+    legacyId?: SortOrder
   }
 
   export type EnumAuthorRoleFilter<$PrismaModel = never> = {
@@ -26953,6 +27163,14 @@ export namespace Prisma {
 
   export type NullableBoolFieldUpdateOperationsInput = {
     set?: boolean | null
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type AccountUpdateManyWithoutUserNestedInput = {
@@ -27575,14 +27793,6 @@ export namespace Prisma {
     update?: ModelDraftUpdateWithWhereUniqueWithoutModelInput | ModelDraftUpdateWithWhereUniqueWithoutModelInput[]
     updateMany?: ModelDraftUpdateManyWithWhereWithoutModelInput | ModelDraftUpdateManyWithWhereWithoutModelInput[]
     deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type ModelUncheckedUpdateManyWithoutParentModelNestedInput = {
@@ -28273,6 +28483,17 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -28316,17 +28537,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -28393,6 +28603,33 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -28425,33 +28662,6 @@ export namespace Prisma {
     in?: $Enums.ModelVisibility[] | ListEnumModelVisibilityFieldRefInput<$PrismaModel>
     notIn?: $Enums.ModelVisibility[] | ListEnumModelVisibilityFieldRefInput<$PrismaModel>
     not?: NestedEnumModelVisibilityFilter<$PrismaModel> | $Enums.ModelVisibility
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumModelVisibilityWithAggregatesFilter<$PrismaModel = never> = {
@@ -29191,6 +29401,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
@@ -29218,6 +29430,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
@@ -29261,6 +29475,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
@@ -29288,6 +29504,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
@@ -29315,6 +29533,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
@@ -29342,6 +29562,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
@@ -29385,6 +29607,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
@@ -29412,6 +29636,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
@@ -29439,6 +29665,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
@@ -29466,6 +29694,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
@@ -29509,6 +29739,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
@@ -29536,6 +29768,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
@@ -29563,6 +29797,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
@@ -29590,6 +29826,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
@@ -29633,6 +29871,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
@@ -29660,6 +29900,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -29711,6 +29953,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutChildModelsInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -29730,6 +29973,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutChildModelsInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -29753,6 +29997,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutParentModelInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -29772,6 +30017,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutParentModelInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
@@ -30095,6 +30341,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutChildModelsInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30114,6 +30361,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutChildModelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -30152,6 +30400,7 @@ export namespace Prisma {
     OR?: ModelScalarWhereInput[]
     NOT?: ModelScalarWhereInput | ModelScalarWhereInput[]
     id?: StringFilter<"Model"> | string
+    legacyId?: IntNullableFilter<"Model"> | number | null
     latestVersionNumber?: IntNullableFilter<"Model"> | number | null
     parentModelId?: StringNullableFilter<"Model"> | string | null
     parentVersionNumber?: IntNullableFilter<"Model"> | number | null
@@ -30347,6 +30596,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutVersionsInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -30366,6 +30616,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutVersionsInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -30389,6 +30640,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutLatestVersionInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -30407,6 +30659,7 @@ export namespace Prisma {
   }
 
   export type ModelUncheckedCreateWithoutLatestVersionInput = {
+    legacyId?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
@@ -30430,6 +30683,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutParentVersionInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -30449,6 +30703,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutParentVersionInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
@@ -30550,6 +30805,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutVersionsInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30569,6 +30825,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutVersionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -30598,6 +30855,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutLatestVersionInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30616,6 +30874,7 @@ export namespace Prisma {
   }
 
   export type ModelUncheckedUpdateWithoutLatestVersionInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
@@ -30842,6 +31101,7 @@ export namespace Prisma {
 
   export type TagCreateWithoutModelVersionsInput = {
     id?: string
+    legacyId?: number | null
     name: string
     displayName?: string | null
     createdAt?: Date | string
@@ -30849,6 +31109,7 @@ export namespace Prisma {
 
   export type TagUncheckedCreateWithoutModelVersionsInput = {
     id?: string
+    legacyId?: number | null
     name: string
     displayName?: string | null
     createdAt?: Date | string
@@ -30917,6 +31178,7 @@ export namespace Prisma {
 
   export type TagUpdateWithoutModelVersionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30924,12 +31186,14 @@ export namespace Prisma {
 
   export type TagUncheckedUpdateWithoutModelVersionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     displayName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelCreateWithoutAdditionalFilesInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -30949,6 +31213,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutAdditionalFilesInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -31022,6 +31287,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutAdditionalFilesInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31041,6 +31307,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutAdditionalFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -31141,6 +31408,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutAuthorsInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -31160,6 +31428,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutAuthorsInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -31198,6 +31467,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
@@ -31225,6 +31496,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31253,6 +31526,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutAuthorsInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31272,6 +31546,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutAuthorsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -31316,6 +31591,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
@@ -31343,6 +31620,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31355,6 +31634,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutPermissionsInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -31374,6 +31654,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutPermissionsInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -31412,6 +31693,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
@@ -31439,6 +31722,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31467,6 +31752,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutPermissionsInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31486,6 +31772,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutPermissionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -31530,6 +31817,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
@@ -31557,6 +31846,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31569,6 +31860,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutLikesInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -31588,6 +31880,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutLikesInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -31626,6 +31919,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
@@ -31653,6 +31948,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31681,6 +31978,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutLikesInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31700,6 +31998,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutLikesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -31744,6 +32043,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
@@ -31771,6 +32072,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31783,6 +32086,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutInteractionsInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -31802,6 +32106,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutInteractionsInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -31840,6 +32145,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
@@ -31867,6 +32174,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31895,6 +32204,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutInteractionsInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31914,6 +32224,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutInteractionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -31958,6 +32269,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
@@ -31985,6 +32298,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -32012,6 +32327,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
@@ -32039,6 +32356,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
@@ -32056,6 +32375,7 @@ export namespace Prisma {
   }
 
   export type ModelCreateWithoutDraftsInput = {
+    legacyId?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     createdAt?: Date | string
@@ -32075,6 +32395,7 @@ export namespace Prisma {
 
   export type ModelUncheckedCreateWithoutDraftsInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentModelId?: string | null
     parentVersionNumber?: number | null
@@ -32124,6 +32445,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
@@ -32151,6 +32474,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -32174,6 +32499,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutDraftsInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32193,6 +32519,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutDraftsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
@@ -32226,6 +32553,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     verifications?: VerificationCreateNestedManyWithoutUserInput
@@ -32253,6 +32582,8 @@ export namespace Prisma {
     banned?: boolean | null
     banReason?: string | null
     banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
@@ -32296,6 +32627,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     verifications?: VerificationUpdateManyWithoutUserNestedInput
@@ -32323,6 +32656,8 @@ export namespace Prisma {
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
     banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -32732,6 +33067,7 @@ export namespace Prisma {
 
   export type ModelCreateManyParentModelInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     parentVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
@@ -32802,6 +33138,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutParentModelInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32821,6 +33158,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutParentModelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
@@ -32840,6 +33178,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateManyWithoutParentModelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
@@ -33041,6 +33380,7 @@ export namespace Prisma {
 
   export type ModelCreateManyParentVersionInput = {
     id?: string
+    legacyId?: number | null
     latestVersionNumber?: number | null
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
@@ -33066,6 +33406,7 @@ export namespace Prisma {
   }
 
   export type ModelUpdateWithoutParentVersionInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33085,6 +33426,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateWithoutParentVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
@@ -33103,6 +33445,7 @@ export namespace Prisma {
 
   export type ModelUncheckedUpdateManyWithoutParentVersionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean

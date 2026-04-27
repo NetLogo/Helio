@@ -29,6 +29,7 @@ export type UserSession = {
     systemRole: SystemRole;
     userKind: UserKind;
     isProfilePublic: boolean;
+    onboardedAt: Date | null;
     deletedAt: Date | null;
   };
 };
@@ -64,6 +65,7 @@ class AuthService {
         systemRole: dbUser.systemRole as SystemRole,
         userKind: dbUser.userKind as UserKind,
         isProfilePublic: dbUser.isProfilePublic,
+        onboardedAt: dbUser.onboardedAt,
         deletedAt: dbUser.deletedAt,
       },
     };

@@ -14,6 +14,7 @@ function makeUser(overrides: Partial<UserEntity> = {}): UserEntity {
     systemRole: 'user',
     userKind: 'researcher',
     isProfilePublic: true,
+    onboardedAt: null,
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,

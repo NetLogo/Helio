@@ -40,7 +40,12 @@ export default function userRepository({
     async updateFields(
       ctx: TransactionContext,
       id: string,
-      data: { userKind?: UserKind; isProfilePublic?: boolean; systemRole?: SystemRole },
+      data: {
+        userKind?: UserKind;
+        isProfilePublic?: boolean;
+        systemRole?: SystemRole;
+        onboardedAt?: Date | null;
+      },
     ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.user.update({ where: { id }, data });

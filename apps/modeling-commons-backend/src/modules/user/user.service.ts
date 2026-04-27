@@ -43,6 +43,7 @@ export default function makeUserService({
       if (input.userKind !== undefined) updateData.userKind = input.userKind;
       if (input.isProfilePublic !== undefined) updateData.isProfilePublic = input.isProfilePublic;
       if (input.systemRole !== undefined) updateData.systemRole = input.systemRole;
+      if (input.onboardedAt !== undefined) updateData.onboardedAt = input.onboardedAt;
 
       await transactionManager.run(async (ctx) => {
         await userRepository.updateFields(ctx, userId, updateData);
