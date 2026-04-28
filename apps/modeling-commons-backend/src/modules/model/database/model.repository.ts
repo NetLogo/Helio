@@ -3,11 +3,18 @@ import type { ModelCardRecord } from '#src/modules/model/database/model.card.rec
 import { modelCardArgs } from '#src/modules/model/database/model.card.record.ts';
 import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 import type { ModelRecord } from '#src/modules/model/database/model.record.ts';
-import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters, ModelSortBy } from '#src/modules/model/dtos/model.dto.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
+import { ModelInteractionKind } from '#src/modules/model-interaction/domain/model-interaction.types.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
+
+const interactionKindBySortKey: Partial<Record<ModelSortBy, ModelInteractionKind>> = {
+  views: ModelInteractionKind.view,
+  runs: ModelInteractionKind.run,
+  downloads: ModelInteractionKind.download,
+};
 
 export default function modelRepository({
   db,
@@ -109,13 +116,51 @@ export default function modelRepository({
         ];
       }
 
+      const interactionKind = filters.sortBy
+        ? interactionKindBySortKey[filters.sortBy]
+        : undefined;
+
+      if (interactionKind) {
+        const [count, grouped] = await Promise.all([
+          db.model.count({ where }),
+          db.modelInteraction.groupBy({
+            by: ['modelId'],
+            where: { kind: interactionKind, model: where },
+            _count: { _all: true },
+            orderBy: { _count: { id: 'desc' } },
+            skip: params.offset,
+            take: params.limit,
+          }),
+        ]);
+        const orderedIds = grouped.map((g) => g.modelId);
+        const records = orderedIds.length === 0
+          ? []
+          : await db.model.findMany({ where: { ...where, id: { in: orderedIds } } });
+        const byId = new Map(records.map((r: ModelRecord) => [r.id, r]));
+        const sorted = orderedIds
+          .map((id) => byId.get(id))
+          .filter((r): r is ModelRecord => r !== undefined);
+
+        return {
+          count,
+          limit: params.limit,
+          page: params.page,
+          data: sorted.map((r) => modelMapper.toDomain(r)),
+        };
+      }
+
+      const orderBy =
+        filters.sortBy === 'likes'
+          ? { likes: { _count: 'desc' as const } }
+          : params.orderBy
+            ? { [params.orderBy.field]: params.orderBy.param }
+            : { createdAt: 'desc' as const };
+
       const [count, records] = await Promise.all([
         db.model.count({ where }),
         db.model.findMany({
           where,
-          orderBy: params.orderBy
-            ? { [params.orderBy.field]: params.orderBy.param }
-            : { createdAt: 'desc' },
+          orderBy,
           skip: params.offset,
           take: params.limit,
         }),

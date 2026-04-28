@@ -44,7 +44,7 @@ services:
           "sh",
           "-c",
           "curl -f http://localhost:41090/health && curl -f
-            http://localhost:9001/health",
+            http://localhost:41091/health",
         ]
       interval: 30s
       timeout: 10s
@@ -89,6 +89,7 @@ services:
   netlogo-services:
     image: ghcr.io/netlogo/netlogo-services:latest
     platform: linux/amd64
+    pull_policy: always
     ports:
       - 51090:8080
     extra_hosts:

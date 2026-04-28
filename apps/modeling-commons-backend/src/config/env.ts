@@ -65,7 +65,7 @@ const schema = Type.Object({
   SMTP_PASSWORD: Type.String(),
   SMTP_SECURE: Type.Boolean({ default: false }),
   SENDER_ADDRESS: Type.String(),
-
+  WORKERS_ENABLED: Type.Boolean({ default: true }),
   IP_ADDRESS_HEADERS: Type.Optional(
     Type.String({
       default: 'cf-connecting-ip,X-Forwarded-For',
@@ -152,5 +152,8 @@ export default {
     secure: env.SMTP_SECURE,
     senderAddress: env.SENDER_ADDRESS,
     senderName: env.PRODUCT_NAME,
+  },
+  workers: {
+    enabled: env.WORKERS_ENABLED,
   },
 };

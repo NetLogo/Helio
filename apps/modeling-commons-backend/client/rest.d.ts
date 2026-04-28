@@ -80,141 +80,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/models": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Specifies a limit of returned records */
-                    limit?: number;
-                    /** @description Page number */
-                    page?: number;
-                    tag?: string;
-                    authorId?: string;
-                    parentModelId?: string;
-                    isEndorsed?: boolean;
-                    keyword?: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Default Response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description Total number of items
-                             * @example 5
-                             */
-                            count: number;
-                            /**
-                             * @description Number of items per page
-                             * @example 10
-                             */
-                            limit: number;
-                            /**
-                             * @description Page number
-                             * @example 0
-                             */
-                            page: number;
-                            data: unknown[];
-                        } & {
-                            data: (({
-                                /**
-                                 * Format: uuid
-                                 * @description Entity's id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
-                                 */
-                                id: string;
-                            } & {
-                                /**
-                                 * @description Entity creation date
-                                 * @example 2020-11-24T17:43:15.970Z
-                                 */
-                                createdAt: string;
-                                /**
-                                 * @description Entity last update date
-                                 * @example 2020-11-24T17:43:15.970Z
-                                 */
-                                updatedAt: string;
-                            }) & {
-                                latestVersionNumber: number | null;
-                                parentModelId: string | null;
-                                parentVersionNumber: number | null;
-                                /** @enum {unknown} */
-                                visibility: "public" | "private" | "unlisted";
-                                isEndorsed: boolean;
-                            })[];
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        /** @description Model title */
-                        title: string;
-                        /** @description Model description */
-                        description?: string;
-                        /** @enum {unknown} */
-                        visibility?: "public" | "private" | "unlisted";
-                        /** Format: uuid */
-                        parentModelId?: string;
-                        parentVersionNumber?: number;
-                    };
-                };
-            };
-            responses: {
-                /** @description Default Response */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * Format: uuid
-                             * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
-                             */
-                            id: string;
-                        } & {
-                            /**
-                             * @description Entity's version number
-                             * @example 1
-                             */
-                            versionNumber: number;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/models/{id}": {
         parameters: {
             query?: never;
@@ -430,6 +295,14 @@ export interface paths {
                                 versions: number;
                                 children: number;
                             };
+                            stats: {
+                                likes: number;
+                                views: number;
+                                runs: number;
+                                downloads: number;
+                                shares: number;
+                                likedByMe: boolean;
+                            };
                         };
                     };
                 };
@@ -532,6 +405,95 @@ export interface paths {
                                 versionCount: number;
                                 linkedVersionNumber: number | null;
                             }[];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Specifies a limit of returned records */
+                    limit?: number;
+                    /** @description Page number */
+                    page?: number;
+                    tag?: string;
+                    authorId?: string;
+                    parentModelId?: string;
+                    isEndorsed?: boolean;
+                    keyword?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Total number of items
+                             * @example 5
+                             */
+                            count: number;
+                            /**
+                             * @description Number of items per page
+                             * @example 10
+                             */
+                            limit: number;
+                            /**
+                             * @description Page number
+                             * @example 0
+                             */
+                            page: number;
+                            data: unknown[];
+                        } & {
+                            data: (({
+                                /**
+                                 * Format: uuid
+                                 * @description Entity's id
+                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 */
+                                id: string;
+                            } & {
+                                /**
+                                 * @description Entity creation date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                createdAt: string;
+                                /**
+                                 * @description Entity last update date
+                                 * @example 2020-11-24T17:43:15.970Z
+                                 */
+                                updatedAt: string;
+                            }) & {
+                                latestVersionNumber: number | null;
+                                parentModelId: string | null;
+                                parentVersionNumber: number | null;
+                                /** @enum {unknown} */
+                                visibility: "public" | "private" | "unlisted";
+                                isEndorsed: boolean;
+                            })[];
                         };
                     };
                 };
@@ -1015,6 +977,667 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/model-drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Specifies a limit of returned records */
+                    limit?: number;
+                    /** @description Page number */
+                    page?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Total number of items
+                             * @example 5
+                             */
+                            count: number;
+                            /**
+                             * @description Number of items per page
+                             * @example 10
+                             */
+                            limit: number;
+                            /**
+                             * @description Page number
+                             * @example 0
+                             */
+                            page: number;
+                            data: unknown[];
+                        } & {
+                            data: {
+                                id: string;
+                                userId: string;
+                                modelId: string | null;
+                                schemaVersion: number;
+                                data: {
+                                    title?: string;
+                                    description?: string;
+                                    /** @enum {unknown} */
+                                    visibility?: "public" | "private" | "unlisted";
+                                    tags?: string[];
+                                    primaryFile?: {
+                                        s3Key: string;
+                                        filename: string;
+                                        sizeBytes: number;
+                                        mimeType: string;
+                                    };
+                                    attachments?: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        s3Key: string;
+                                        filename: string;
+                                        sizeBytes: number;
+                                        mimeType: string;
+                                    }[];
+                                };
+                                /** Format: date-time */
+                                createdAt: string;
+                                /** Format: date-time */
+                                updatedAt: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        modelId?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * Format: uuid
+                             * @description Entity's id
+                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             */
+                            id: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/model-drafts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            userId: string;
+                            modelId: string | null;
+                            schemaVersion: number;
+                            data: {
+                                title?: string;
+                                description?: string;
+                                /** @enum {unknown} */
+                                visibility?: "public" | "private" | "unlisted";
+                                tags?: string[];
+                                primaryFile?: {
+                                    s3Key: string;
+                                    filename: string;
+                                    sizeBytes: number;
+                                    mimeType: string;
+                                };
+                                attachments?: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    s3Key: string;
+                                    filename: string;
+                                    sizeBytes: number;
+                                    mimeType: string;
+                                }[];
+                            };
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        title?: string;
+                        description?: string;
+                        /** @enum {unknown} */
+                        visibility?: "public" | "private" | "unlisted";
+                        tags?: string[];
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/api/v1/model-drafts/{id}/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "attachment"). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uuid */
+                            id?: string;
+                            role: "primary" | "attachment";
+                            s3Key: string;
+                            filename: string;
+                            sizeBytes: number;
+                            mimeType: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/model-drafts/{id}/files/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    fileId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/model-drafts/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            modelId: string;
+                            versionNumber: number;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        versionNumber?: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        versionNumber?: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/downloads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        versionNumber?: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/shares": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        versionNumber?: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/interactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            likes: number;
+                            views: number;
+                            runs: number;
+                            downloads: number;
+                            shares: number;
+                            likedByMe: boolean;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/likes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            count: number;
+                            likedByMe: boolean;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/models/{id}/permissions": {
         parameters: {
             query?: never;
@@ -1027,6 +1650,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -1064,6 +1688,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -1128,6 +1753,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                     granteeUserId: string;
                 };
@@ -1621,6 +2247,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dev/fill-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tags": {
         parameters: {
             query?: never;
@@ -1807,6 +2466,8 @@ export interface paths {
                             /** @description student | teacher | researcher | other */
                             userKind: string;
                             isProfilePublic: boolean;
+                            /** @description Timestamp when the user completed onboarding, null if not yet onboarded */
+                            onboardedAt: string | null;
                         }) | (({
                             /**
                              * Format: uuid
@@ -1874,6 +2535,7 @@ export interface paths {
                         userKind?: "student" | "teacher" | "researcher" | "other";
                         isProfilePublic?: boolean;
                         systemRole?: "admin" | "moderator" | "user";
+                        onboardedAt?: string | null;
                     };
                 };
             };
@@ -1967,6 +2629,8 @@ export interface paths {
                                 /** @description student | teacher | researcher | other */
                                 userKind: string;
                                 isProfilePublic: boolean;
+                                /** @description Timestamp when the user completed onboarding, null if not yet onboarded */
+                                onboardedAt: string | null;
                             })[];
                         };
                     };

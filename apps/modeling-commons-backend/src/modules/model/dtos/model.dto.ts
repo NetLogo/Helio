@@ -2,6 +2,7 @@ import { Type, type Static } from 'typebox';
 import { baseResponseDtoSchema } from '#src/shared/api/response.base.ts';
 import { paginatedResponseBaseSchema } from '#src/shared/api/paginated.response.base.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
+import { sortQueryRequestDtoSchema } from '#src/shared/api/sort-query.request.dto.ts';
 import { visibilitySchema } from '#src/modules/model/shared/enums.ts';
 
 export const createModelRequestDtoSchema = Type.Object({
@@ -30,8 +31,20 @@ export const modelVersionParamsSchema = Type.Object({
   version: Type.Integer({ minimum: 1 }),
 });
 
+export const modelSortBySchema = Type.Union(
+  [
+    Type.Literal('recent'),
+    Type.Literal('views'),
+    Type.Literal('downloads'),
+    Type.Literal('runs'),
+    Type.Literal('likes'),
+  ],
+  { $id: 'ModelSortBy', description: 'Sort order for model search results' },
+);
+
 export const modelSearchQuerySchema = Type.Intersect([
   paginatedQueryRequestDtoSchema,
+  sortQueryRequestDtoSchema(modelSortBySchema),
   Type.Object({
     tag: Type.Optional(Type.String()),
     authorId: Type.Optional(Type.String({ format: 'uuid' })),
@@ -40,6 +53,8 @@ export const modelSearchQuerySchema = Type.Intersect([
     keyword: Type.Optional(Type.String()),
   }),
 ]);
+
+export type ModelSortBy = Static<typeof modelSortBySchema>;
 
 export const modelResponseDtoSchema = Type.Intersect([
   baseResponseDtoSchema,
