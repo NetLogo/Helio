@@ -107,24 +107,7 @@
           <USeparator />
 
           <h6>Upload Preview</h6>
-          <ModelCard
-            v-if="formState.nlogoxFile"
-            class="w-60 h-fit"
-            to="#"
-            :model="{
-              id: '',
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-              latestVersionNumber: 1,
-              parentModelId: null,
-              parentVersionNumber: null,
-              visibility: formState.permission ?? 'private',
-              isEndorsed: false,
-              title: formState.title || formState.nlogoxFile.name,
-              description: formState.description,
-            }"
-            :image-url="previewImageUrl"
-          />
+          <ModelCard v-if="formState.nlogoxFile" class="w-60 h-fit" :card="previewCard" />
         </div>
       </div>
     </UContainer>
@@ -138,6 +121,7 @@ import type PeerReviewCard from "~/components/upload/PeerReviewCard.vue";
 import SetPermissionsCard from "~/components/upload/SetPermissionsCard.vue";
 import type { UploadFormInput } from "~/components/upload/form";
 import { AddDetailsCardSchema } from "~/components/upload/form";
+import type { ModelCard } from "~/composables/useModelCard";
 import type { Visibility } from "~/composables/useModelDraft";
 
 definePageMeta({
@@ -187,8 +171,57 @@ const defaultFormValues: UploadFormInput = {
 };
 const formState = ref<UploadFormInput>({ ...defaultFormValues });
 const previewImageUrl = computed(() =>
-  formState.value.imageFile ? URL.createObjectURL(formState.value.imageFile) : undefined,
+  formState.value.imageFile ? URL.createObjectURL(formState.value.imageFile) : null,
 );
+
+const currentUser = useUser();
+
+const previewCard = computed<ModelCard>(() => {
+  const now = new Date().toISOString();
+  const file = formState.value.nlogoxFile;
+  const me = currentUser.value;
+  return {
+    model: {
+      id: "",
+      createdAt: now,
+      updatedAt: now,
+      latestVersionNumber: 1,
+      parentModelId: null,
+      parentVersionNumber: null,
+      visibility: (formState.value.permission ?? "private") as "public" | "private" | "unlisted",
+      isEndorsed: false,
+    },
+    latestVersion: {
+      modelId: "",
+      versionNumber: 1,
+      title: formState.value.title || file?.name || "Untitled Model",
+      description: formState.value.description || null,
+      netlogoFileKey: null,
+      netlogoVersion: null,
+      infoTab: null,
+      createdAt: now,
+      isFinalized: false,
+      netlogoFileDownloadUrl: null,
+      previewImageUrl: previewImageUrl.value,
+    },
+    authors: me.isLoggedIn
+      ? [
+          {
+            modelId: "",
+            userId: me.user.id,
+            role: "owner",
+            createdAt: now,
+            userName: me.user.name ?? null,
+            userImage: me.user.image ?? null,
+          },
+        ]
+      : [],
+    tagsOnLatestVersion: [],
+    previewImageUrl: previewImageUrl.value,
+    counts: { versions: 0, children: 0 },
+    stats: { likes: 0, views: 0, runs: 0, downloads: 0, shares: 0, likedByMe: false },
+  };
+});
 
 const modelFiles = ref<File[]>([]);
 const additionalFiles = ref<File[]>([]);

@@ -2,10 +2,6 @@ import type { ResponseSuccessData } from "~/utils/openapi";
 
 export type ModelCard = ResponseSuccessData<"GET", "/api/v1/models/{id}/card">;
 
-export type ModelListItem = ResponseSuccessData<"GET", "/api/v1/models">[number] extends infer T
-  ? T
-  : never;
-
 export function makeUser(overrides: Partial<{
   id: string;
   name: string;
@@ -48,43 +44,50 @@ export function makeAuthState(loggedIn = true) {
   };
 }
 
-export function makeModelListItem(overrides: Partial<{
-  id: string;
-  title: string;
-  description: string | null;
-  visibility: "public" | "private" | "unlisted";
-  isEndorsed: boolean;
-  parentModelId: string | null;
-  previewImageUri: string | null;
-  createdAt: string;
-}> = {}) {
+export function makeModelCard(
+  overrides: {
+    id?: string;
+    title?: string;
+    description?: string | null;
+    visibility?: "public" | "private" | "unlisted";
+    isEndorsed?: boolean;
+    parentModelId?: string | null;
+    previewImageUrl?: string | null;
+    createdAt?: string;
+  } = {},
+): ModelCard {
+  const id = overrides.id ?? "model-1";
+  const createdAt = overrides.createdAt ?? new Date("2026-04-01T00:00:00Z").toISOString();
+  const updatedAt = new Date("2026-04-15T00:00:00Z").toISOString();
   return {
-    id: "model-1",
-    title: "Wolf Sheep Predation",
-    description: "Classic predator-prey simulation.",
-    visibility: "public" as const,
-    isEndorsed: false,
-    parentModelId: null,
-    previewImageUri: "api/v1/models/model-1/versions/1/preview-image",
-    createdAt: new Date("2026-04-01T00:00:00Z").toISOString(),
-    ...overrides,
-  };
-}
-
-export function makeModelCard(overrides: Partial<Record<string, unknown>> = {}) {
-  return {
-    id: "model-1",
-    title: "Wolf Sheep Predation",
-    description: "Classic predator-prey simulation.",
-    visibility: "public",
-    author: makeUser(),
-    createdAt: new Date("2026-04-01T00:00:00Z").toISOString(),
-    updatedAt: new Date("2026-04-15T00:00:00Z").toISOString(),
-    tags: ["biology", "ecology"],
-    stats: { likes: 12, views: 340, runs: 25, downloads: 8, shares: 2 },
-    isLiked: false,
-    latestVersion: { versionNumber: 1, createdAt: new Date("2026-04-01T00:00:00Z").toISOString() },
-    ...overrides,
+    model: {
+      id,
+      createdAt,
+      updatedAt,
+      latestVersionNumber: 1,
+      parentModelId: overrides.parentModelId ?? null,
+      parentVersionNumber: null,
+      visibility: overrides.visibility ?? "public",
+      isEndorsed: overrides.isEndorsed ?? false,
+    },
+    latestVersion: {
+      modelId: id,
+      versionNumber: 1,
+      title: overrides.title ?? "Wolf Sheep Predation",
+      description: overrides.description ?? "Classic predator-prey simulation.",
+      netlogoFileKey: null,
+      netlogoVersion: null,
+      infoTab: null,
+      createdAt,
+      isFinalized: true,
+      netlogoFileDownloadUrl: null,
+      previewImageUrl: overrides.previewImageUrl ?? null,
+    },
+    authors: [],
+    tagsOnLatestVersion: [],
+    previewImageUrl: overrides.previewImageUrl ?? null,
+    counts: { versions: 1, children: 0 },
+    stats: { likes: 0, views: 0, runs: 0, downloads: 0, shares: 0, likedByMe: false },
   };
 }
 

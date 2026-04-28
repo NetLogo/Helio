@@ -7,7 +7,7 @@ export default defineAppConfig({
     },
 
     container: {
-      base: "max-w-[var(--max-width-ch)] py-12 mx-auto",
+      base: "max-w-[var(--max-width-ch) + 10ch] py-12 mx-auto",
     },
 
     avatar: {

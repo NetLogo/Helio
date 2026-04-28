@@ -96,9 +96,9 @@ export function parseModelPath(path: string): { modelId: string; modelSlug: stri
 }
 
 export function appendWindowProtocol(url: string): string {
-  const hasProtocol = /^https?:\/\//i.test(url);
+  const hasScheme = url.startsWith("http://") || url.startsWith("https://");
   const currentProtocol = import.meta.dev ? "http:" : "https:";
-  return hasProtocol ? url : `${currentProtocol}//${url}`;
+  return hasScheme ? url : `${currentProtocol}//${url}`;
 }
 
 export function formatCountdown(seconds: number): string {
@@ -130,3 +130,10 @@ export const getModelVisibilityDisplayInfo = (
       return { label: capitalize(visibility), icon: "i-lucide-lock-open" };
   }
 };
+
+export const numberFormatter = new Intl.NumberFormat("en-US", {
+  notation: "compact",
+  compactDisplay: "short",
+  localeMatcher: "best fit",
+  maximumFractionDigits: 1,
+});

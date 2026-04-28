@@ -1,40 +1,42 @@
-interface ModelListRow {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  latestVersionNumber: number | null;
-  parentModelId: string | null;
-  parentVersionNumber: number | null;
-  visibility: string;
-  isEndorsed: boolean;
-  title?: string;
-  description?: string | null;
-  previewImageUri?: string | null;
-}
+import type { ModelCard } from "~/composables/useModelCard";
 
 interface ModelsListBody {
   count: number;
   limit: number;
   page: number;
-  data: ModelListRow[];
+  data: Array<{ id: string }>;
 }
+
+type ModelSortBy = "recent" | "views" | "downloads" | "runs" | "likes";
+
+const SORT_BY_VALUES: ReadonlyArray<ModelSortBy> = [
+  "recent",
+  "views",
+  "downloads",
+  "runs",
+  "likes",
+];
 
 interface ModelsFilters {
   keyword: string;
   tag: string | null;
   isEndorsed: boolean | null;
+  sortBy: ModelSortBy | null;
 }
 
 const PAGE_LIMIT = 20;
 
 function readFilters(query: Record<string, string | string[] | undefined>): ModelsFilters {
-  const first = (v: string | string[] | undefined) =>
-    Array.isArray(v) ? v[0] ?? "" : v ?? "";
+  const first = (v: string | string[] | undefined) => (Array.isArray(v) ? (v[0] ?? "") : (v ?? ""));
   const endorsedRaw = first(query.endorsed);
+  const sortByRaw = first(query.sortBy);
   return {
     keyword: first(query.keyword),
     tag: first(query.tag) || null,
     isEndorsed: endorsedRaw === "true" ? true : endorsedRaw === "false" ? false : null,
+    sortBy: (SORT_BY_VALUES as ReadonlyArray<string>).includes(sortByRaw)
+      ? (sortByRaw as ModelSortBy)
+      : null,
   };
 }
 
@@ -46,7 +48,7 @@ export default function useModels() {
   const filters = computed(() => readFilters(route.query as Record<string, string>));
 
   const { data, pending, error, refresh } = useAsyncData<{
-    rows: ModelListRow[];
+    rows: ModelCard[];
     totalCount: number;
   } | null>(
     "models-list",
@@ -58,30 +60,23 @@ export default function useModels() {
       if (filters.value.keyword) query.keyword = filters.value.keyword;
       if (filters.value.tag) query.tag = filters.value.tag;
       if (filters.value.isEndorsed !== null) query.isEndorsed = filters.value.isEndorsed;
+      if (filters.value.sortBy) query.sortBy = filters.value.sortBy;
 
       const res = await GET("/api/v1/models", { params: { query } });
       if (res.error || !res.data) return null;
 
       const body = res.data as unknown as ModelsListBody;
 
-      const rows: ModelListRow[] = await Promise.all(
-        body.data.map(async (model) => {
-          if (!model.latestVersionNumber) return model;
-          const { data: versions } = await GET("/api/v1/models/{id}/versions", {
-            params: { path: { id: model.id }, query: { limit: 1, page: 0 } },
-          });
-          const versionsData = versions as unknown as {
-            data?: Array<{ title: string; description: string | null }>;
-          } | undefined;
-          const latest = versionsData?.data?.[0];
-          return {
-            ...model,
-            title: latest?.title,
-            description: latest?.description,
-            previewImageUri: getPreviewImageURI(model.id, model.latestVersionNumber),
-          };
-        }),
-      );
+      const rows = (
+        await Promise.all(
+          body.data.map(async (m) => {
+            const { data: card } = await GET("/api/v1/models/{id}/card", {
+              params: { path: { id: m.id } },
+            });
+            return (card as ModelCard | undefined) ?? null;
+          }),
+        )
+      ).filter((c): c is ModelCard => c !== null);
 
       return { rows, totalCount: body.count };
     },
@@ -99,6 +94,9 @@ export default function useModels() {
     if (key === "isEndorsed") {
       if (value === null) delete next.endorsed;
       else next.endorsed = String(value);
+    } else if (key === "sortBy") {
+      if (value === null || value === "recent") delete next.sortBy;
+      else next.sortBy = String(value);
     } else if (value === null || value === "") {
       delete next[key];
     } else {
@@ -130,5 +128,3 @@ export default function useModels() {
     resetFilters,
   };
 }
-
-export type { ModelListRow };

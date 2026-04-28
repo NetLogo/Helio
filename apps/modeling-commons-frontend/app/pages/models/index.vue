@@ -47,7 +47,7 @@
       </div>
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-        <ModelCard v-for="model in rows" :key="model.id" :model="model" />
+        <ModelCard v-for="card in rows" :key="card.model.id" :card="card" />
       </div>
 
       <div v-if="hasMore && !pending" class="flex justify-center pt-4">

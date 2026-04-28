@@ -5,6 +5,7 @@ export const authRoutes = Object.freeze({
   resetPassword: "/reset-password",
   verifyEmail: "/verify-email",
   passkey: "/passkey",
+  onboarding: "/onboarding",
 });
 
 function normalizeNextPath(next: unknown) {
