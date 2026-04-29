@@ -3,11 +3,13 @@ import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
 import type { FastifyInstance } from 'fastify';
 import {
   modelIdParamsSchema,
+  modelLegacyIdParamsSchema,
   modelPaginatedResponseSchema,
   modelResponseDtoSchema,
   modelSearchQuerySchema,
   updateModelRequestDtoSchema,
   type ModelIdParams,
+  type ModelLegacyIdParams,
   type ModelSearchQuery,
   type UpdateModelRequestDto,
 } from '#src/modules/model/dtos/model.dto.ts';
@@ -139,6 +141,20 @@ export default async function modelRoutes(fastify: FastifyInstance) {
         ...result,
         data: result.data.map((e) => modelMapper.toResponse(e)),
       };
+    },
+  );
+
+  fastify.get<{ Params: ModelLegacyIdParams }>(
+    '/v1/legacy/models/:legacyId/resolve',
+    {
+      schema: {
+        params: modelLegacyIdParamsSchema,
+        tags: ['Model', 'Legacy'],
+      },
+    },
+    async (request, reply) => {
+      const id = await modelService.resolveLegacyId(request.params.legacyId);
+      return reply.status(200).send({ id });
     },
   );
 }

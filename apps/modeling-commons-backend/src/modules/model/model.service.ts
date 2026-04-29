@@ -41,5 +41,13 @@ export default function makeModelService({
       if (!model) throw new ModelNotFoundError(modelId);
       return model;
     },
+
+    async resolveLegacyId(legacyId: number): Promise<string> {
+      const id = await modelRepository.resolveLegacyId(legacyId);
+      if (!id) {
+        throw new ModelNotFoundError(`Model with legacy ID ${legacyId} not found`);
+      }
+      return id;
+    },
   };
 }

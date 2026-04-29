@@ -102,6 +102,7 @@ type TabKey = "discussion" | "files" | "versions" | "family";
 
 const activeTab = ref<TabKey>("discussion");
 
+const user = useUser();
 const modelId = computed(() => props.card?.model.id ?? "");
 const { data: family, execute: loadFamily, status: familyStatus } = useModelFamilyCard(modelId);
 const {
@@ -206,6 +207,10 @@ onMounted(() => {
 
 async function handleToggleLike() {
   if (!modelId.value || likeBusy.value) return;
+  if (!user.value.isLoggedIn) {
+    toast.add({ title: "You must be logged in to like a model", color: "warning" });
+    return;
+  }
   likeBusy.value = true;
   const wasLiked = stats.likedByMe;
   stats.likedByMe = !wasLiked;

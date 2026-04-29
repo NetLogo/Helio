@@ -31,7 +31,18 @@ export default function makePreviewImageService({
         },
       };
       const models = await db.modelVersion.findMany({
-        where: { previewImage: null },
+        where: {
+          previewImage: null,
+          modelId: {
+            in: [
+              '15faff10-27a5-4c23-afc8-9b2fa375d5e5',
+              'cb6cf93b-3833-4333-b3cd-5d94e271d078',
+              'ee2b2b13-038a-43b4-9bad-32f306995793',
+              '7ac94495-3b0c-40d3-9823-bf1694f83e1d',
+              'fbfd7138-929f-44d1-8064-60540d4f1760',
+            ],
+          },
+        },
         distinct: ['modelId'],
         orderBy: [{ createdAt: 'desc' }, { modelId: 'desc' }, { versionNumber: 'desc' }],
       });

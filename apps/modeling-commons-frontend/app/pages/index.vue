@@ -1,31 +1,38 @@
 <template>
   <div>
-    <UPageHero :title="meta.name">
-      <template #title>
-        <component :is="meta.logo" class="max-w-md lg:max-w-2xl mx-auto" />
-      </template>
+    <UPageHero
+      class="flex items-center h-200"
+      title="Discover, share, and learn about complex systems together"
+      :ui="{
+        header: 'flex flex-col items-center gap-6',
+        title: 'text-4xl sm:text-5xl text-royal-blue-lighter max-w-5xl leading-tight px-5',
+      }"
+    >
+      <NuxtImg
+        src="/hero.gif"
+        class="w-full h-full absolute inset-0 object-cover lg:p-10 lg:rounded-[3rem] overflow-hidden z-[-1] brightness-50"
+        :placeholder="[60, 40]"
+      />
       <template #description>
-        <p
-          v-for="(paragraph, index) in meta.description.split('\n\n')"
-          :key="index"
-          class="text-md"
-        >
-          {{ paragraph }}
+        <p class="font-heading text-md text-white">
+          With more than 1,000 models, contributed by modelers from around the world, you're bound
+          to learn something new.
         </p>
       </template>
       <template #body>
-        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center">
+        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center px-5">
           <SearchBar
             class="max-w-md md:max-w-3xl"
+            variant="none"
             @keydown.enter="
               (e: KeyboardEvent) =>
                 navigateTo(`/models?keyword=${(e.target as HTMLInputElement).value}`)
             "
           />
 
-          <span class="text-md text-muted"> OR </span>
+          <span class="text-md text-royal-blue-lighter"> OR </span>
 
-          <UButton variant="outline" icon="i-lucide-shuffle"> Random </UButton>
+          <UButton variant="solid" color="secondary" icon="i-lucide-shuffle"> Random </UButton>
         </div>
       </template>
     </UPageHero>
@@ -50,13 +57,12 @@
         <UButton variant="outline" class="mt-4" @click="refresh()"> Try again </UButton>
       </div>
 
-      <template v-else-if="data">
+      <div v-else-if="data" class="flex flex-col gap-25">
         <template v-for="(section, idx) in visibleSections" :key="section.key">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <section
               class="space-y-6"
               :class="{
-                'mt-12': idx > 0,
                 'col-span-3': idx === 1,
                 'col-span-4': idx !== 1,
               }"
@@ -84,7 +90,7 @@
                 <ModelCard v-for="card in section.cards" :key="card.model.id" :card="card" />
               </div>
             </section>
-            <section v-if="idx === 1" class="space-y-6 h-full col-span-1 pt-12 mb-20">
+            <section v-if="idx === 1" class="space-y-6 h-full col-span-1 mb-20">
               <div>
                 <h5 class="tracking-tight">Trending Tags</h5>
                 <p class="text-sm text-muted mt-1">(in the past 2 weeks)</p>
@@ -112,7 +118,7 @@
           <h2 class="text-lg font-semibold text-toned">No models yet</h2>
           <p class="text-dimmed mt-1">Be the first to share a simulation with the community.</p>
         </section>
-      </template>
+      </div>
     </UContainer>
   </div>
 </template>

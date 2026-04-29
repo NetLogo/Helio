@@ -3,7 +3,7 @@
     <span
       v-for="tag in tags"
       :key="tag.id"
-      class="inline-flex items-center rounded px-2.5 py-1 text-xs font-medium"
+      class="inline-flex items-center rounded px-2.5 py-1 text-xs font-medium max-w-sm whitespace-nowrap overflow-hidden text-ellipsis"
       :class="getTagColorClass(tag.name)"
     >
       {{ sentenceCase(tag.name) }}

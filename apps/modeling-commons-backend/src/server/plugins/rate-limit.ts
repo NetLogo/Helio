@@ -6,7 +6,7 @@ import fp from 'fastify-plugin';
 
 async function rateLimitPlugin(fastify: FastifyInstance) {
   await fastify.register(RateLimit, {
-    max: (request) => (request.user ? 500 : 120),
+    max: (request) => (request.user ? 2500 : 1200),
     timeWindow: '10 seconds',
     keyGenerator: (request) => request.user?.id ?? getClientIp(request),
     errorResponseBuilder: (_, context) => {

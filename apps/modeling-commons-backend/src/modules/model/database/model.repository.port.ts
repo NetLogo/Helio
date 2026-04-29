@@ -23,4 +23,5 @@ export interface ModelRepository extends RepositoryPort<Model> {
     id: string,
     data: { visibility?: ModelVisibility; isEndorsed?: boolean },
   ): Promise<void>;
+  resolveLegacyId(legacyId: number): Promise<string | undefined>;
 }

@@ -23,14 +23,17 @@
           class="flex items-start gap-3 text-sm text-toned"
         >
           <UIcon :name="item.icon" class="text-primary text-lg shrink-0 mt-0.5" />
-          <span><strong class="text-highlighted font-medium">{{ item.title }}.</strong> {{ item.body }}</span>
+          <span
+            ><strong class="text-highlighted font-medium">{{ item.title }}.</strong>
+            {{ item.body }}</span
+          >
         </li>
       </ul>
     </section>
 
     <section class="grid gap-3">
       <h2 class="m-0 text-base font-medium text-highlighted">What you can do here</h2>
-      <div class="grid gap-3 sm:grid-cols-3">
+      <div class="grid gap-3 sm:grid-cols-2">
         <UCard
           v-for="action in actions"
           :key="action.title"
@@ -49,13 +52,13 @@
         class="w-full justify-center"
         size="lg"
         :loading="isFinishing"
+        variant="solid"
         @click="finish"
       >
         Get started
       </UButton>
       <UButton
         class="w-full justify-center"
-        color="neutral"
         variant="ghost"
         :disabled="isFinishing"
         @click="finish"
@@ -120,6 +123,11 @@ const actions = [
     icon: "i-lucide-git-fork",
     title: "Fork & remix",
     body: "Start from someone else's model and make it your own.",
+  },
+  {
+    icon: "i-lucide-users",
+    title: "Collaborate",
+    body: "Work with others to build models and share feedback.",
   },
 ];
 

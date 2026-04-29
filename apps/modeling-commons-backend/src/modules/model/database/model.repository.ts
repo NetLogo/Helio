@@ -116,9 +116,7 @@ export default function modelRepository({
         ];
       }
 
-      const interactionKind = filters.sortBy
-        ? interactionKindBySortKey[filters.sortBy]
-        : undefined;
+      const interactionKind = filters.sortBy ? interactionKindBySortKey[filters.sortBy] : undefined;
 
       if (interactionKind) {
         const [count, grouped] = await Promise.all([
@@ -133,9 +131,10 @@ export default function modelRepository({
           }),
         ]);
         const orderedIds = grouped.map((g) => g.modelId);
-        const records = orderedIds.length === 0
-          ? []
-          : await db.model.findMany({ where: { ...where, id: { in: orderedIds } } });
+        const records =
+          orderedIds.length === 0
+            ? []
+            : await db.model.findMany({ where: { ...where, id: { in: orderedIds } } });
         const byId = new Map(records.map((r: ModelRecord) => [r.id, r]));
         const sorted = orderedIds
           .map((id) => byId.get(id))
@@ -181,10 +180,7 @@ export default function modelRepository({
       });
     },
 
-    async findChildren(
-      modelId: string,
-      params: PaginatedQueryParams,
-    ): Promise<Paginated<Model>> {
+    async findChildren(modelId: string, params: PaginatedQueryParams): Promise<Paginated<Model>> {
       const where = { parentModelId: modelId, deletedAt: null };
       const [count, records] = await Promise.all([
         db.model.count({ where }),
@@ -201,6 +197,14 @@ export default function modelRepository({
         page: params.page,
         data: records.map((r: unknown) => modelMapper.toDomain(r as ModelRecord)),
       };
+    },
+
+    async resolveLegacyId(legacyId: number): Promise<string | undefined> {
+      const result = await db.model.findUnique({
+        where: { legacyId },
+        select: { id: true },
+      });
+      return result?.id;
     },
   };
 }

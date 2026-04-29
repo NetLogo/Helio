@@ -26,6 +26,10 @@ export const modelIdParamsSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
 });
 
+export const modelLegacyIdParamsSchema = Type.Object({
+  legacyId: Type.Integer({ minimum: 1 }),
+});
+
 export const modelVersionParamsSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   version: Type.Integer({ minimum: 1 }),
@@ -75,6 +79,7 @@ export const modelPaginatedResponseSchema = Type.Intersect([
 ]);
 
 export type ModelIdParams = Static<typeof modelIdParamsSchema>;
+export type ModelLegacyIdParams = Static<typeof modelLegacyIdParamsSchema>;
 export type ModelVersionParams = Static<typeof modelVersionParamsSchema>;
 export type ModelSearchQuery = Static<typeof modelSearchQuerySchema>;
 export type CreateModelRequestDto = Static<typeof createModelRequestDtoSchema>;

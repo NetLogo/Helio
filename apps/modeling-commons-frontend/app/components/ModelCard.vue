@@ -2,29 +2,27 @@
   <UBlogPost
     :to="createModelPath(card.model.id, title)"
     :title="title"
-    :description="description"
     :badge="badges[0]"
     :authors="authors"
     :date="formatRelativeDate(card.model.createdAt)"
     :ui="{
-      root: 'rounded',
+      root: 'rounded group/card',
       header: 'h-50',
     }"
   >
     <template #header>
-      <ModelCardPreviewImage :src="imageSrc" :alt="title" />
+      <ModelCardPreviewImage
+        :src="imageSrc"
+        :alt="title"
+        class="group-hover/card:scale-110 transition-transform"
+      />
     </template>
     <template #title>
       <h4
-        class="text-md font-semibold text-highlighted leading-tight max-w-full overflow-hidden text-ellipsis transition-colors group-hover:text-primary-700"
+        class="text-md font-semibold text-highlighted line-clamp-2 leading-tight max-w-full overflow-hidden text-ellipsis transition-colors group-hover/card:text-royal-blue"
       >
         {{ title }}
       </h4>
-    </template>
-    <template #description>
-      <p class="text-sm text-muted line-clamp-6 h-[6lh] leading-relaxed">
-        {{ description }}
-      </p>
     </template>
     <template #footer>
       <div class="flex items-center gap-3 text-sm text-toned">
@@ -54,9 +52,9 @@ const props = defineProps<{
 }>();
 
 const title = computed(() => props.card.latestVersion?.title || "Untitled Model");
-const description = computed(
-  () => props.card.latestVersion?.description || "No description provided.",
-);
+// const description = computed(
+//   () => props.card.latestVersion?.description || "No description provided.",
+// );
 const imageSrc = computed(() =>
   props.card.previewImageUrl ? appendWindowProtocol(props.card.previewImageUrl) : undefined,
 );
@@ -72,7 +70,7 @@ const badges = computed<BadgeProps[]>(() => {
   result.push({
     icon: getVisibilityIcon(props.card.model.visibility),
     variant: "solid",
-    color: "primary",
+    color: "secondary",
   });
   return result;
 });

@@ -51,7 +51,7 @@ export default function useModels() {
     rows: ModelCard[];
     totalCount: number;
   } | null>(
-    "models-list",
+    `models-${page.value}-${JSON.stringify(filters.value)}`,
     async () => {
       const query: QueryParams<"GET", "/api/v1/models"> = {
         limit: PAGE_LIMIT,
@@ -83,24 +83,38 @@ export default function useModels() {
     { watch: [filters, page] },
   );
 
-  const rows = computed(() => data.value?.rows ?? []);
+  const rows = ref(data.value?.rows ?? []);
+
+  onMounted(() => {
+    watch(data, (newData) => {
+      if (page.value === 0) {
+        rows.value = newData?.rows ?? [];
+      } else if (newData?.rows) {
+        rows.value = [...rows.value, ...newData.rows];
+      }
+    });
+  });
+
   const totalCount = computed(() => data.value?.totalCount ?? 0);
   const hasMore = computed(() => rows.value.length < totalCount.value);
   const isEmpty = computed(() => !pending.value && rows.value.length === 0);
+  const instanceKey = computed(() => JSON.stringify(filters.value));
 
   async function setFilter<K extends keyof ModelsFilters>(key: K, value: ModelsFilters[K]) {
     page.value = 0;
     const next = { ...route.query };
-    if (key === "isEndorsed") {
-      if (value === null) delete next.endorsed;
-      else next.endorsed = String(value);
-    } else if (key === "sortBy") {
-      if (value === null || value === "recent") delete next.sortBy;
-      else next.sortBy = String(value);
-    } else if (value === null || value === "") {
-      delete next[key];
-    } else {
-      next[key] = String(value);
+    switch (key) {
+      case "isEndorsed":
+        if (value === null) delete next.endorsed;
+        else next.endorsed = String(value);
+        break;
+      case "sortBy":
+        if (value === null || value === "recent") delete next.sortBy;
+        else next.sortBy = String(value);
+        break;
+      default:
+        if (value === null || value === "") delete next[key];
+        else next[key] = String(value);
     }
     await navigateTo({ query: next });
   }
@@ -125,6 +139,7 @@ export default function useModels() {
     refresh,
     setFilter,
     nextPage,
+    instanceKey,
     resetFilters,
   };
 }

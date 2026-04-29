@@ -5,7 +5,7 @@ import type { FastifyReply, FastifyRequest, preHandlerHookHandler } from 'fastif
 export function resolveModel(level: PermissionLevel): preHandlerHookHandler {
   return async (request: FastifyRequest, _reply: FastifyReply) => {
     const { id } = request.params as { id: string };
-    const { prisma } = request.server.diContainer.cradle;
+    const { db } = request.server.diContainer.cradle;
     const { permissionService } = request.server.diContainer.cradle as {
       permissionService: {
         check(
@@ -17,7 +17,7 @@ export function resolveModel(level: PermissionLevel): preHandlerHookHandler {
     };
 
     // Use findUnique to bypass soft-delete middleware
-    const model = await prisma.model.findUnique({ where: { id } });
+    const model = await db.model.findUnique({ where: { id } });
     if (!model) {
       throw new NotFoundException('Model not found');
     }
@@ -33,7 +33,9 @@ export function resolveModel(level: PermissionLevel): preHandlerHookHandler {
     );
 
     if (!allowed) {
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException(
+        `Access denied for model ${id} with permission level ${level} for user ${request.user?.id ?? 'unauthenticated user'}`,
+      );
     }
 
     request.model = model;

@@ -432,6 +432,8 @@ export interface paths {
                     limit?: number;
                     /** @description Page number */
                     page?: number;
+                    /** @description Sort order for model search results */
+                    sortBy?: "recent" | "views" | "downloads" | "runs" | "likes";
                     tag?: string;
                     authorId?: string;
                     parentModelId?: string;
@@ -521,6 +523,8 @@ export interface paths {
                     limit?: number;
                     /** @description Page number */
                     page?: number;
+                    /** @description Sort order for model search results */
+                    sortBy?: "recent" | "views" | "downloads" | "runs" | "likes";
                     tag?: string;
                     authorId?: string;
                     parentModelId?: string;
@@ -587,6 +591,41 @@ export interface paths {
                             })[];
                         };
                     };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/legacy/models/{legacyId}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    legacyId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
             };
         };

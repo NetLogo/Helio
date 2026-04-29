@@ -82,9 +82,11 @@ export default defineAppConfig({
             {
               slots: {
                 root: "w-full",
+                base: "bg-white",
               },
               variants: {
                 variant: {
+                  none: "bg-white",
                   outline: "bg-neutral-darkest/5 focus:bg-neutral-light/5",
                 },
                 size: {
