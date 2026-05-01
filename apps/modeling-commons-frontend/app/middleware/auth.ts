@@ -1,6 +1,4 @@
-import { authRoutes } from "~/utils/auth";
-
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   const user = useUser();
   if (!user.value.isLoggedIn) {
     return navigateTo({

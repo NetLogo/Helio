@@ -5,7 +5,7 @@
     description="Use your device biometrics or PIN instead of typing a password."
   >
     <template #header>
-      <UBadge color="neutral" variant="subtle" size="sm">
+      <UBadge color="secondary" variant="subtle" size="md">
         {{ passkeyCountLabel }}
       </UBadge>
     </template>

@@ -10,7 +10,7 @@ export default function usePasskeys(options: { withList?: boolean } = {}) {
   const { isPasskeySupported, isPasskeySupportResolved } = usePasskeySupport();
   const listQuery = options.withList ? auth.client.useListPasskeys() : null;
 
-  const passkeys = computed<Passkey[]>(() => listQuery?.value.data ?? []);
+  const passkeys = computed<Passkey[]>(() => [...(listQuery?.value.data ?? [])]);
   const isPending = computed(() => listQuery?.value.isPending ?? false);
   const isRefetching = computed(() => listQuery?.value.isRefetching ?? false);
   const hasPasskeys = computed(() => passkeys.value.length > 0);

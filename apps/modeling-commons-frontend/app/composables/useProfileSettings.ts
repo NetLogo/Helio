@@ -41,7 +41,9 @@ const userKindOptions: Array<RadioGroupItem> = [
   },
 ];
 
-function hasPrivateProfileFields(value: UserProfile | null | undefined): value is PrivateUserProfile {
+function hasPrivateProfileFields(
+  value: UserProfile | null | undefined,
+): value is PrivateUserProfile {
   return Boolean(
     value &&
       "email" in value &&
@@ -70,7 +72,9 @@ export default function useProfileSettings() {
   const isSaving = ref(false);
 
   const loggedInUser = computed(() => (user.value.isLoggedIn ? user.value : null));
-  const privateProfile = computed(() => (hasPrivateProfileFields(profile.value) ? profile.value : null));
+  const privateProfile = computed(() =>
+    hasPrivateProfileFields(profile.value) ? profile.value : null,
+  );
   const userId = computed(() => loggedInUser.value?.id ?? null);
 
   const displayName = computed(

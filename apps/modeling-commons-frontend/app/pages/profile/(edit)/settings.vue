@@ -154,34 +154,6 @@
           <p class="m-0 font-medium text-highlighted">{{ formatDate(profile.createdAt) }}</p>
         </article>
       </div>
-
-      <div class="grid gap-6 col-span-6">
-        <ProfileSettingsPasskeysCard />
-
-        <ProfileSettingsPasswordCard />
-
-        <ProfileSettingsCard
-          eyebrow="Roadmap"
-          title="What’s next?"
-          description="This page currently saves visibility and profile type. Richer editing can plug into the same structure without a redesign."
-        >
-          <ul class="grid list-none gap-3 p-0">
-            <li class="flex gap-3 rounded-md bg-neutral-darkest/5 p-4 text-sm text-muted">
-              <UIcon name="i-lucide-image" class="mt-0.5 shrink-0 text-primary" />
-              Avatar uploads can be slotted into the account summary section once the backend flow
-              exists.
-            </li>
-            <li class="flex gap-3 rounded-md bg-neutral-darkest/5 p-4 text-sm text-muted">
-              <UIcon name="i-lucide-pen-square" class="mt-0.5 shrink-0 text-primary" />
-              Display name and profile bio editing can sit beside the current visibility controls.
-            </li>
-            <li class="flex gap-3 rounded-md bg-neutral-darkest/5 p-4 text-sm text-muted">
-              <UIcon name="i-lucide-shield-plus" class="mt-0.5 shrink-0 text-primary" />
-              Additional account recovery and device controls can expand the security column.
-            </li>
-          </ul>
-        </ProfileSettingsCard>
-      </div>
     </section>
   </div>
 </template>
@@ -201,7 +173,6 @@ useSeoMeta({
 });
 
 const route = useRoute();
-const router = useRouter();
 const toast = useToast();
 const {
   profile,
@@ -231,7 +202,7 @@ onMounted(() => {
 
   const nextQuery = { ...route.query };
   delete nextQuery.password;
-  void router.replace({ query: nextQuery });
+  void navigateTo({ query: nextQuery });
 });
 
 async function saveSettings() {

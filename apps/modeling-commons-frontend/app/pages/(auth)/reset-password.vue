@@ -202,7 +202,7 @@ async function requestResetLink() {
   requestedEmail.value = parsed.data.email;
   requestSucceeded.value = true;
 
-  await router.replace({
+  await navigateTo({
     path: authRoutes.resetPassword,
     query: { email: parsed.data.email },
   });
@@ -214,7 +214,7 @@ async function resetPassword() {
   }
 
   if (!token.value) {
-    await router.replace({ path: authRoutes.resetPassword, query: { error: "INVALID_TOKEN" } });
+    await navigateTo({ path: authRoutes.resetPassword, query: { error: "INVALID_TOKEN" } });
     return;
   }
 
@@ -239,7 +239,7 @@ async function resetPassword() {
   isResetting.value = false;
 
   if (error?.code === "INVALID_TOKEN") {
-    await router.replace({ path: authRoutes.resetPassword, query: { error: "INVALID_TOKEN" } });
+    await navigateTo({ path: authRoutes.resetPassword, query: { error: "INVALID_TOKEN" } });
     return;
   }
 
@@ -273,7 +273,7 @@ async function returnToRequestForm() {
   resetError.value = null;
   password.value = "";
   confirmPassword.value = "";
-  await router.replace({
+  await navigateTo({
     path: authRoutes.resetPassword,
     query: email.value ? { email: email.value } : {},
   });

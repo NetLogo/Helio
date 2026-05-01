@@ -1,12 +1,12 @@
 import env from '#src/config/env.ts';
+import { passkey } from '@better-auth/passkey';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { openAPI, admin, captcha } from 'better-auth/plugins';
-import { passkey } from '@better-auth/passkey';
+import { admin, openAPI } from 'better-auth/plugins';
 
-import { prisma } from './prisma.ts';
 import rules from '#src/config/rules.ts';
 import transporter, { mailDomain } from './mail.ts';
+import { prisma } from './prisma.ts';
 
 export const auth = betterAuth({
   appName: env.product.name,

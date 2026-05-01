@@ -14,7 +14,7 @@ export default defineNuxtPlugin({
   name: "auth",
   enforce: "pre",
   async setup(nuxtApp) {
-    const headers = import.meta.server ? useRequestHeaders(["cookie"]) : undefined;
+    const headers = useRequestHeaders(["cookie"]);
 
     const plugins = [
       adminClient(),
@@ -66,6 +66,7 @@ export default defineNuxtPlugin({
         credentials: "include",
         headers,
       },
+
       // The passkey client type inference is broken, which cascades to
       // the client, breaking type checking. This is a workaround to ensure
       // *most* type safety is preserved.
@@ -73,29 +74,31 @@ export default defineNuxtPlugin({
       plugins: [...plugins, passkeyClient()] as typeof plugins,
     });
 
-    const reactiveSession = await nuxtApp.runWithContext(() => authClient.useSession());
-    const session = ref({ ...reactiveSession.value });
-    watch(
-      reactiveSession,
-      (next) => {
-        session.value = { ...next };
-      },
-      { deep: true },
-    );
+    // We have to do this dance because better-auth doesn't allow us to
+    // provide a custom fetch implementation at the plugin level, which means
+    // we can't ensure the auth plugin's fetch calls include the necessary
+    // headers for our application.
+    // -- Omar Ibrahim, May 01 26
+    const useFetchHeaders = new Proxy(useFetch, {
+      apply(target, thisArg, argArray) {
+        const [input, options] = argArray as Parameters<typeof useFetch>;
 
-    if (import.meta.server) {
-      const { data } = await authClient.getSession({
-        fetchOptions: { headers },
-      });
-      session.value = { ...session.value, data, isPending: false };
-      nuxtApp.payload.authSession = data;
-    } else if (nuxtApp.payload.authSession !== undefined) {
-      session.value = {
-        ...session.value,
-        data: nuxtApp.payload.authSession as typeof session.value.data,
-        isPending: false,
-      };
-    }
+        const mergedOptions = {
+          ...options,
+          headers: {
+            ...(options?.headers ?? {}),
+            ...headers,
+          },
+          credentials: "include",
+        };
+
+        return Reflect.apply(target, thisArg, [input, mergedOptions]);
+      },
+    });
+
+    const session = await nuxtApp.runWithContext(() => authClient.useSession(useFetchHeaders));
+
+    console.log("Auth session initialized:", session.data.value);
 
     return {
       provide: {

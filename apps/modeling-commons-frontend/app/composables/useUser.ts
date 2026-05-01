@@ -17,12 +17,12 @@ function useUser(): Readonly<ComputedRef<AuthenticatedUser>> {
   const session = auth.session;
 
   const user = computed(() =>
-    session.value?.data?.user
+    session.data.value?.user
       ? ({
-          ...session.value.data.user,
-          session: session.value.data.session,
+          ...session.data.value.user,
+          session: session.data.value.session,
           isLoggedIn: true,
-          user: session.value.data.user,
+          user: session.data.value.user,
         } as LoggedInUser)
       : ({
           session: null,

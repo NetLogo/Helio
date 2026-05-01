@@ -102,6 +102,7 @@ interface TestData {
 }
 
 const { GET } = useApi();
+const auth = useNuxtApp().$auth;
 const config = useRuntimeConfig();
 const apiBase = config.public.apiBase;
 
