@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type FileUploader from "./FileUploader.vue";
+const FileUploader = resolveComponent("FileUploader");
 
 const fileUploader = useTemplateRef<InstanceType<typeof FileUploader>>("fileUploader");
 defineExpose({

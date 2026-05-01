@@ -160,7 +160,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
         {
           label: "Profile",
           icon: "i-lucide-user",
-          href: "/profile/settings",
+          href: "/profile",
         },
         {
           label: "Models",
@@ -178,6 +178,11 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           label: "Settings",
           icon: "i-lucide-settings",
           href: "/profile/settings",
+        },
+        {
+          label: "Login & Security",
+          icon: "i-lucide-key-round",
+          href: "/profile/security",
         },
       ],
       [

@@ -1,6 +1,6 @@
-import { ref, type Ref } from "vue";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ref, type Ref } from "vue";
 import usePasskeys from "~/composables/usePasskeys";
 
 type ListValue = {

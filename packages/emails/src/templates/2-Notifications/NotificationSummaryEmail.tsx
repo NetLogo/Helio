@@ -48,7 +48,7 @@ NotificationSummaryEmail.PreviewProps = {
     'New comment on your post.',
     'Your subscription renews in 3 days.',
   ],
-  unsubscribeUrl: 'https://acme.com/unsubscribe?token=abc',
+  unsubscribeUrl: 'https://modelingcommons.org/unsubscribe?token=abc',
 } satisfies NotificationSummaryEmailProps;
 
 export default NotificationSummaryEmail;

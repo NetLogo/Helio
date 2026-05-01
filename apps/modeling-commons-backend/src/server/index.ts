@@ -7,6 +7,7 @@ import { TypeBoxValidatorCompiler, type TypeBoxTypeProvider } from '@fastify/typ
 import UnderPressure from '@fastify/under-pressure';
 import type { FastifyInstance } from 'fastify';
 import path from 'node:path';
+import adminjs from './context/adminjs.ts';
 
 export default async function createServer(fastify: FastifyInstance): Promise<FastifyInstance> {
   // Set sensible default security headers
@@ -43,6 +44,12 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
     maxAge: 86400,
+  });
+
+  // AdminJS must be registered in its own context to avoid conflicts with
+  // FastifyMultipart, which AdminJS tries to register internally. See
+  await fastify.register(async function adminJsContext(server) {
+    server.register(adminjs);
   });
 
   // Auto-load plugins

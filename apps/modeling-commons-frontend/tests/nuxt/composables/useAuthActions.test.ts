@@ -1,10 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import useAuthActions from "~/composables/useAuthActions";
-import {
-  getEmailVerificationCallbackUrl,
-  getResetPasswordRedirectUrl,
-} from "~/utils/auth";
+import { getEmailVerificationCallbackUrl, getResetPasswordRedirectUrl } from "~/utils/auth";
 import { buildAuthMock } from "~~/tests/helpers/mockUser";
 
 const { authMock } = vi.hoisted(() => ({

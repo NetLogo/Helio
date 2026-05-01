@@ -132,6 +132,11 @@ exports.Prisma.UserScalarFieldEnum = {
   userKind: 'userKind',
   isProfilePublic: 'isProfilePublic',
   deletedAt: 'deletedAt',
+  bio: 'bio',
+  country: 'country',
+  socialLinks: 'socialLinks',
+  dob: 'dob',
+  affiliation: 'affiliation',
   role: 'role',
   banned: 'banned',
   banReason: 'banReason',
@@ -324,15 +329,15 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
-};
-
 exports.Prisma.JsonNullValueFilter = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
 exports.SystemRole = exports.$Enums.SystemRole = {
   admin: 'admin',

@@ -47,6 +47,7 @@ export default function useAuthActions() {
       name,
       password,
       userKind,
+      isProfilePublic: true,
       callbackURL: getEmailVerificationCallbackUrl(appUrl, next),
     });
   }
@@ -72,6 +73,32 @@ export default function useAuthActions() {
     });
   }
 
+  function changePassword({
+    currentPassword,
+    newPassword,
+  }: {
+    currentPassword: string;
+    newPassword: string;
+  }) {
+    return auth.client.changePassword({
+      currentPassword,
+      newPassword,
+    });
+  }
+
+  function changeEmail(newEmail: string) {
+    return auth.client.changeEmail({
+      newEmail,
+      callbackURL: getEmailVerificationCallbackUrl(appUrl),
+    });
+  }
+
+  function updateUserAccount(userFields: Parameters<typeof auth.client.updateUser>[0]) {
+    return auth.client.updateUser({
+      ...userFields,
+    });
+  }
+
   function signOut() {
     return auth.client.signOut();
   }
@@ -82,6 +109,9 @@ export default function useAuthActions() {
     sendVerificationEmail,
     requestPasswordReset,
     resetPassword,
+    changePassword,
+    updateUserAccount,
+    changeEmail,
     signOut,
   };
 }

@@ -63,18 +63,16 @@ describe("useModelDraft.patch (debounced)", () => {
 describe("useModelDraft.uploadPrimaryFile / uploadAttachment", () => {
   it("POSTs FormData with role=primary and returns a StagedFile", async () => {
     const fetchMock = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
-    fetchMock
-      .mockResolvedValueOnce(jsonResponse({ id: "draft-1" }))
-      .mockResolvedValueOnce(
-        jsonResponse({
-          id: "file-1",
-          role: "primary",
-          s3Key: "key",
-          filename: "a.nlogo",
-          sizeBytes: 42,
-          mimeType: "application/x-netlogo",
-        }),
-      );
+    fetchMock.mockResolvedValueOnce(jsonResponse({ id: "draft-1" })).mockResolvedValueOnce(
+      jsonResponse({
+        id: "file-1",
+        role: "primary",
+        s3Key: "key",
+        filename: "a.nlogo",
+        sizeBytes: 42,
+        mimeType: "application/x-netlogo",
+      }),
+    );
 
     const draft = useModelDraft();
     const file = new File(["x"], "a.nlogo", { type: "application/x-netlogo" });
@@ -100,18 +98,16 @@ describe("useModelDraft.uploadPrimaryFile / uploadAttachment", () => {
 
   it("uploadAttachment POSTs with role=attachment", async () => {
     const fetchMock = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
-    fetchMock
-      .mockResolvedValueOnce(jsonResponse({ id: "draft-1" }))
-      .mockResolvedValueOnce(
-        jsonResponse({
-          id: "file-2",
-          role: "attachment",
-          s3Key: "k",
-          filename: "extras.csv",
-          sizeBytes: 10,
-          mimeType: "text/csv",
-        }),
-      );
+    fetchMock.mockResolvedValueOnce(jsonResponse({ id: "draft-1" })).mockResolvedValueOnce(
+      jsonResponse({
+        id: "file-2",
+        role: "attachment",
+        s3Key: "k",
+        filename: "extras.csv",
+        sizeBytes: 10,
+        mimeType: "text/csv",
+      }),
+    );
 
     const draft = useModelDraft();
     const file = new File(["y"], "extras.csv", { type: "text/csv" });
@@ -150,9 +146,7 @@ describe("useModelDraft.removeFile", () => {
 describe("useModelDraft.publish", () => {
   it("POSTs and returns { id: response.modelId }", async () => {
     const fetchMock = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
-    fetchMock.mockResolvedValueOnce(
-      jsonResponse({ modelId: "model-77", versionNumber: 1 }),
-    );
+    fetchMock.mockResolvedValueOnce(jsonResponse({ modelId: "model-77", versionNumber: 1 }));
 
     const draft = useModelDraft("draft-1");
     const result = await draft.publish();

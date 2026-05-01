@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import type { AttachedFile } from "./model-detail/types";
+import type { AttachedFile } from "../model-detail/types";
 
 const props = defineProps<{ card: ModelCard }>();
 

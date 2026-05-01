@@ -54,6 +54,59 @@ export const logInFields = [
   },
 ];
 
+export const changePasswordFields = [
+  {
+    name: "currentPassword",
+    label: "Current Password",
+    type: "password" as const,
+    placeholder: "Enter your current password",
+    required: true,
+  },
+  {
+    name: "newPassword",
+    label: "New Password",
+    type: "password" as const,
+    placeholder: "Enter a new password",
+    required: true,
+  },
+  {
+    name: "confirmNewPassword",
+    label: "Confirm New Password",
+    type: "password" as const,
+    placeholder: "Confirm your new password",
+    required: true,
+  },
+];
+
+export const changePasswordValidator = z
+  .object({
+    currentPassword: miniPasswordValidator,
+    newPassword: passwordValidator,
+    confirmNewPassword: z.string("Please confirm your new password"),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "New passwords do not match",
+    path: ["confirmNewPassword"],
+  })
+  .refine((data) => data.newPassword !== data.currentPassword, {
+    message: "New password cannot be the same as current password",
+    path: ["newPassword"],
+  });
+
+export const changeEmailFields = [
+  {
+    name: "newEmail",
+    type: "text" as const,
+    label: "New Email",
+    placeholder: "Enter your new email",
+    required: true,
+  },
+];
+
+export const changeEmailValidator = z.object({
+  newEmail: emailValidator,
+});
+
 export const signUpValidator = z
   .object({
     name: nameValidator,

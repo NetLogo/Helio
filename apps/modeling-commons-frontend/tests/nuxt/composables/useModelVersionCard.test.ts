@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import useModelVersionCard from "~/composables/useModelVersionCard";
-import { makeApiClientMock, apiResult } from "~~/tests/helpers/mockApi";
+import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState } = vi.hoisted(() => ({
   apiState: { current: null as ReturnType<typeof makeApiClientMock> | null },

@@ -13,9 +13,7 @@ export default function usePasskeyPrompt() {
   });
 
   const isReady = computed(() => isClientReady.value && !isPending.value && !isRefetching.value);
-  const shouldSkipPrompt = computed(
-    () => isReady.value && (dismissed.value || hasPasskeys.value),
-  );
+  const shouldSkipPrompt = computed(() => isReady.value && (dismissed.value || hasPasskeys.value));
 
   function canAccessDismissalStorage() {
     return Boolean(typeof window !== "undefined" && dismissalKey.value);
@@ -24,7 +22,6 @@ export default function usePasskeyPrompt() {
   function syncDismissalState() {
     if (!canAccessDismissalStorage()) {
       dismissed.value = false;
-      isClientReady.value = true;
       return;
     }
 

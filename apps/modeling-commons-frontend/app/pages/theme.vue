@@ -1,11 +1,5 @@
 <template>
   <UContainer>
-    <!-- <div class="max-w-4xl p-10 mx-auto"><NlogoxDropZone /></div>
-    <div class="max-w-4xl p-10 mx-auto"><ImageDropZone /></div>
-    <div class="max-w-2xl max-h-2xl aspect-square p-10 mx-auto">
-      <ImageDropZone initial-preview-url="https://picsum.photos/200" class="aspect-square" />
-    </div> -->
-
     <section id="buttons" class="flex gap-15 flex-col">
       <h2>Buttons</h2>
       <div class="flex flex-col gap-10">

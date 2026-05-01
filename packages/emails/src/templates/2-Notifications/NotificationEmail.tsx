@@ -36,7 +36,7 @@ NotificationEmail.PreviewProps = {
   branding: PREVIEW_BRANDING,
   userName: 'Jane',
   notificationContent: 'Your weekly report is ready to view.',
-  unsubscribeUrl: 'https://acme.com/unsubscribe?token=abc',
+  unsubscribeUrl: 'https://modelingcommons.org/unsubscribe?token=abc',
 } satisfies NotificationEmailProps;
 
 export default NotificationEmail;

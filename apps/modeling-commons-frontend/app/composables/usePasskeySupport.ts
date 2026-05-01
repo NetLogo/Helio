@@ -20,7 +20,7 @@ export default function usePasskeySupport() {
   });
 
   return {
-    isPasskeySupported: computed(() => resolved.value && supported.value),
+    isPasskeySupported: computed(() => (resolved.value ? supported.value : true)),
     isPasskeySupportResolved: computed(() => resolved.value),
   };
 }

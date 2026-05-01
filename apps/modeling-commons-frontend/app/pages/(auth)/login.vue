@@ -59,8 +59,8 @@
         <span class="text-muted">
           By signing in, you agree to our
           <ULink to="/terms-of-service" class="font-medium text-coral-dark underline">
-            Terms of Service
-          </ULink>.
+            Terms of Service </ULink
+          >.
         </span>
       </template>
     </UAuthForm>
@@ -70,8 +70,8 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type * as z from "zod";
+import { logInFields, logInValidator } from "~/assets/auth";
 import { authRoutes, getPasskeyPromptUrl, getSafeNextPath } from "~/utils/auth";
-import { logInFields, logInValidator } from "./shared";
 
 definePageMeta({
   layout: "auth",

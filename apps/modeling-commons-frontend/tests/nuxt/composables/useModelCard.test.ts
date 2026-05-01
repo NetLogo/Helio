@@ -1,9 +1,9 @@
-import { ref, nextTick } from "vue";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { nextTick, ref } from "vue";
 import useModelCard from "~/composables/useModelCard";
-import { makeApiClientMock, apiResult } from "~~/tests/helpers/mockApi";
 import { makeModelCard } from "~~/tests/helpers/fixtures";
+import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState } = vi.hoisted(() => ({
   apiState: { current: null as ReturnType<typeof makeApiClientMock> | null },
@@ -22,16 +22,15 @@ describe("useModelCard", () => {
 
     const { data } = await useModelCard("card-A");
 
-    expect(apiState.current!.GET).toHaveBeenCalledWith(
-      "/api/v1/models/{id}/card",
-      { params: { path: { id: "card-A" } } },
-    );
+    expect(apiState.current!.GET).toHaveBeenCalledWith("/api/v1/models/{id}/card", {
+      params: { path: { id: "card-A" } },
+    });
     expect((data.value as { id: string } | null)?.id).toBe("card-A");
   });
 
   it("refetches when the id ref changes", async () => {
-    apiState.current!.GET
-      .mockResolvedValueOnce(apiResult.ok(makeModelCard({ id: "card-B" })))
+    apiState
+      .current!.GET.mockResolvedValueOnce(apiResult.ok(makeModelCard({ id: "card-B" })))
       .mockResolvedValueOnce(apiResult.ok(makeModelCard({ id: "card-C" })));
 
     const id = ref("card-B");

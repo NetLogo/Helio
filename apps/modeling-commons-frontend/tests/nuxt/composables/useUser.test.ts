@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import useUser, { isLoggedIn } from "~/composables/useUser";
-import { buildAuthMock } from "~~/tests/helpers/mockUser";
 import { makeUser } from "~~/tests/helpers/fixtures";
+import { buildAuthMock } from "~~/tests/helpers/mockUser";
 
 const { authMock } = vi.hoisted(() => {
   return { authMock: { current: null as ReturnType<typeof buildAuthMock> | null } };

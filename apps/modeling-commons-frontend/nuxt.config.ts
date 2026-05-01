@@ -81,16 +81,6 @@ export default defineNuxtConfig({
       // -- Omar Ibrahim, Apr 20 26
       baseURL: "/_images",
     },
-    presets: {
-      thumbnail: {
-        modifiers: {
-          format: "webp",
-          width: 263,
-          height: 160,
-          fit: "cover",
-        },
-      },
-    },
   },
 
   components: [
@@ -109,11 +99,11 @@ export default defineNuxtConfig({
     },
   },
 
+  linkChecker: { enabled: false },
+
   nitro: {
     static: false,
     serveStatic: true,
-    prerender: {
-      failOnError: false,
-    },
+    prerender: false,
   },
 });

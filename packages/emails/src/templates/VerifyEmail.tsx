@@ -43,7 +43,7 @@ export function VerifyEmail({ branding, userName, verificationLink }: VerifyEmai
 VerifyEmail.PreviewProps = {
   branding: PREVIEW_BRANDING,
   userName: 'Jane',
-  verificationLink: 'https://acme.com/verify?token=abc123',
+  verificationLink: 'https://modelingcommons.org/verify?token=abc123',
 } satisfies VerifyEmailProps;
 
 export default VerifyEmail;

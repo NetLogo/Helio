@@ -57,7 +57,7 @@
         />
       </UFormField>
 
-      <UButton type="submit" class="w-full justify-center" size="lg" :loading="isRequesting">
+      <UButton type="submit" class="w-full justify-center" :loading="isRequesting" variant="solid">
         Send reset link
       </UButton>
     </form>
@@ -89,12 +89,7 @@
     </form>
 
     <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-      <UButton
-        class="justify-center sm:flex-1"
-        color="neutral"
-        variant="outline"
-        :to="returnLink"
-      >
+      <UButton class="justify-center sm:flex-1" color="neutral" variant="outline" :to="returnLink">
         {{ user.isLoggedIn ? "Back to settings" : "Back to login" }}
       </UButton>
       <UButton
@@ -120,8 +115,8 @@
 </template>
 
 <script setup lang="ts">
+import { emailOnlyValidator, resetPasswordValidator } from "~/assets/auth";
 import { authRoutes } from "~/utils/auth";
-import { emailOnlyValidator, resetPasswordValidator } from "./shared";
 
 definePageMeta({
   layout: "auth",
@@ -160,7 +155,10 @@ const requestSucceeded = ref(false);
 const requestedEmail = ref("");
 const requestError = ref<string | null>(null);
 const resetError = ref<string | null>(null);
-const returnLink = computed(() => (user.value.isLoggedIn ? "/profile/settings" : authRoutes.login));
+const { links } = useSearchParamsNavigation();
+const returnLink = computed(() =>
+  user.value.isLoggedIn ? links.value.back.href : authRoutes.login,
+);
 const successDescription = computed(() => {
   if (!requestedEmail.value) {
     return "If that email exists in our system, you'll receive a reset link shortly.";

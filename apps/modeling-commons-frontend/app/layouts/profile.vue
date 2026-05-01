@@ -73,20 +73,20 @@ const initials = computed(
 
 const navItems = computed<NavigationMenuItem[][]>(() => [
   [
-    { label: "Models", type: "label" },
-    { label: "Published", icon: "i-lucide-globe", to: "/profile/models" },
-    { label: "Drafts", icon: "i-lucide-file-edit", to: "/profile/drafts" },
-    { label: "Saved", icon: "i-lucide-heart", to: "/profile/saved" },
-  ],
-  [
     { label: "Account", type: "label" },
-    { label: "Profile Settings", icon: "i-lucide-user-cog", to: "/profile/settings" },
+    { label: "Public Profile", icon: "i-lucide-user-cog", to: "/profile/settings" },
     { label: "Login & Security", icon: "i-lucide-key-round", to: "/profile/security" },
     {
       label: "Notifications & Preferences",
       icon: "i-lucide-sliders-horizontal",
       to: "/profile/preferences",
     },
+  ],
+  [
+    { label: "Models", type: "label" },
+    { label: "Published", icon: "i-lucide-globe", to: "/profile/models" },
+    { label: "Drafts", icon: "i-lucide-file-edit", to: "/profile/drafts" },
+    { label: "Saved", icon: "i-lucide-heart", to: "/profile/saved" },
   ],
   [
     { label: "Support", type: "label" },

@@ -1,16 +1,17 @@
 import env from '#src/config/env.ts';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { openAPI, admin } from 'better-auth/plugins';
+import { openAPI, admin, captcha } from 'better-auth/plugins';
 import { passkey } from '@better-auth/passkey';
 
 import { prisma } from './prisma.ts';
 import rules from '#src/config/rules.ts';
+import transporter, { mailDomain } from './mail.ts';
 
 export const auth = betterAuth({
   appName: env.product.name,
   baseURL: env.auth.url,
-  basePath: '/auth',
+  basePath: '/api/auth',
   secret: env.auth.secret,
   trustedOrigins: env.cors.allowedOrigins,
 
@@ -18,6 +19,7 @@ export const auth = betterAuth({
     additionalFields: {
       systemRole: {
         type: 'string',
+        input: false,
       },
       userKind: {
         type: 'string',
@@ -28,6 +30,39 @@ export const auth = betterAuth({
       onboardedAt: {
         type: 'date',
         required: false,
+        input: false,
+      },
+      bio: {
+        type: 'string',
+        required: false,
+      },
+      country: {
+        type: 'string',
+        required: false,
+      },
+      socialLinks: {
+        type: 'json',
+        required: false,
+      },
+      dob: {
+        type: 'date',
+        required: false,
+      },
+      affiliation: {
+        type: 'string',
+        required: false,
+      },
+    },
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
+        const email = await mailDomain().createAccountEmailChangeRequestEmail(
+          user.email,
+          user.name,
+          newEmail,
+          url,
+        );
+        void transporter.sendMail(email);
       },
     },
     deleteUser: {
@@ -44,12 +79,19 @@ export const auth = betterAuth({
     requireEmailVerification: true,
     maxPasswordLength: rules.auth.password.length.max,
     minPasswordLength: rules.auth.password.length.min,
+    sendResetPassword: async ({ user, url }) => {
+      const email = await mailDomain().createPasswordResetEmail(user.email, user.name, url);
+      void transporter.sendMail(email);
+    },
+    resetPasswordTokenExpiresIn: 3600, // 1 hour
   },
   emailVerification: {
-    sendVerificationEmail: async ({ user, url, token }) => {
-      void console.log(
-        `Send verification email to ${user.email} with url: ${url} and token: ${token}`,
-      );
+    sendOnSignUp: true,
+    expiresIn: 60 * 60 * 24, // 24 hours
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      const email = await mailDomain().createVerificationEmail(user.email, user.name, url);
+      void transporter.sendMail(email);
     },
   },
 
@@ -57,6 +99,11 @@ export const auth = betterAuth({
     enabled: env.isProduction || env.isStaging,
     ...rules.limits.auth,
   },
+
+  logger: {
+    level: env.isProduction ? 'warn' : 'debug',
+  },
+
   advanced: {
     ipAddress: {
       ipAddressHeaders: env.server.ipAddressHeaders,

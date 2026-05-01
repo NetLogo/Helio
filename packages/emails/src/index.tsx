@@ -2,6 +2,8 @@ import { render } from '@react-email/render';
 import * as React from 'react';
 import AccountBannedEmail from './templates/1-Account/AccountBanned.js';
 import AccountDeletedByAdminEmail from './templates/1-Account/AccountDeletedByAdmin.js';
+import AccountEmailChangeRequest from './templates/1-Account/AccountEmailChangeRequest.js';
+import AccountEmailChanged from './templates/1-Account/AccountEmailChanged.js';
 import AccountInactiveEmail from './templates/1-Account/AccountInactive.js';
 import AccountDeletedEmail from './templates/1-Account/AcctionDeleted.js';
 import NotificationEmail from './templates/2-Notifications/NotificationEmail.js';
@@ -128,6 +130,35 @@ export function createRenderer({ branding }: CreateRendererOptions) {
       );
       return {
         subject: `Your ${branding.productName} account is inactive`,
+        html,
+        text,
+      };
+    },
+
+    async renderAccountEmailChangeRequestEmail(args: {
+      userName: string;
+      newEmail: string;
+      approveLink: string;
+    }): Promise<RenderedEmail> {
+      const { html, text } = await renderBoth(
+        <AccountEmailChangeRequest branding={branding} {...args} />,
+      );
+      return {
+        subject: `Request to change email for your ${branding.productName} account`,
+        html,
+        text,
+      };
+    },
+
+    async renderAccountEmailChangedEmail(args: {
+      userName: string;
+      newEmail: string;
+    }): Promise<RenderedEmail> {
+      const { html, text } = await renderBoth(
+        <AccountEmailChanged branding={branding} {...args} />,
+      );
+      return {
+        subject: `Your ${branding.productName} account email has been changed`,
         html,
         text,
       };

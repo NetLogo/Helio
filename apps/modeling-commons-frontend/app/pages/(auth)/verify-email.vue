@@ -44,8 +44,8 @@
 </template>
 
 <script setup lang="ts">
+import { emailOnlyValidator } from "~/assets/auth";
 import { authRoutes, getSafeNextPath } from "~/utils/auth";
-import { emailOnlyValidator } from "./shared";
 
 definePageMeta({
   layout: "auth",

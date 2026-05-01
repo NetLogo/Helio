@@ -9,7 +9,7 @@ import {
   resetPasswordValidator,
   signUpValidator,
   userKindValidator,
-} from "./shared";
+} from "~/assets/auth";
 
 describe("nameValidator", () => {
   it("rejects an empty string with 'Must be at least 2 characters'", () => {

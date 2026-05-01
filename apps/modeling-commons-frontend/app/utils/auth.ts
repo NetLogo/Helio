@@ -53,4 +53,3 @@ export function getPasskeyPromptUrl(next?: unknown) {
   const safeNext = getSafeNextPath(next);
   return `${authRoutes.passkey}?next=${encodeURIComponent(safeNext)}`;
 }
-

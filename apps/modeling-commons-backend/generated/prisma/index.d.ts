@@ -2732,6 +2732,10 @@ export namespace Prisma {
     userKind: $Enums.UserKind | null
     isProfilePublic: boolean | null
     deletedAt: Date | null
+    bio: string | null
+    country: string | null
+    dob: Date | null
+    affiliation: string | null
     role: string | null
     banned: boolean | null
     banReason: string | null
@@ -2752,6 +2756,10 @@ export namespace Prisma {
     userKind: $Enums.UserKind | null
     isProfilePublic: boolean | null
     deletedAt: Date | null
+    bio: string | null
+    country: string | null
+    dob: Date | null
+    affiliation: string | null
     role: string | null
     banned: boolean | null
     banReason: string | null
@@ -2772,6 +2780,11 @@ export namespace Prisma {
     userKind: number
     isProfilePublic: number
     deletedAt: number
+    bio: number
+    country: number
+    socialLinks: number
+    dob: number
+    affiliation: number
     role: number
     banned: number
     banReason: number
@@ -2802,6 +2815,10 @@ export namespace Prisma {
     userKind?: true
     isProfilePublic?: true
     deletedAt?: true
+    bio?: true
+    country?: true
+    dob?: true
+    affiliation?: true
     role?: true
     banned?: true
     banReason?: true
@@ -2822,6 +2839,10 @@ export namespace Prisma {
     userKind?: true
     isProfilePublic?: true
     deletedAt?: true
+    bio?: true
+    country?: true
+    dob?: true
+    affiliation?: true
     role?: true
     banned?: true
     banReason?: true
@@ -2842,6 +2863,11 @@ export namespace Prisma {
     userKind?: true
     isProfilePublic?: true
     deletedAt?: true
+    bio?: true
+    country?: true
+    socialLinks?: true
+    dob?: true
+    affiliation?: true
     role?: true
     banned?: true
     banReason?: true
@@ -2949,6 +2975,11 @@ export namespace Prisma {
     userKind: $Enums.UserKind
     isProfilePublic: boolean
     deletedAt: Date | null
+    bio: string | null
+    country: string | null
+    socialLinks: JsonValue | null
+    dob: Date | null
+    affiliation: string | null
     role: string | null
     banned: boolean | null
     banReason: string | null
@@ -2988,6 +3019,11 @@ export namespace Prisma {
     userKind?: boolean
     isProfilePublic?: boolean
     deletedAt?: boolean
+    bio?: boolean
+    country?: boolean
+    socialLinks?: boolean
+    dob?: boolean
+    affiliation?: boolean
     role?: boolean
     banned?: boolean
     banReason?: boolean
@@ -3019,6 +3055,11 @@ export namespace Prisma {
     userKind?: boolean
     isProfilePublic?: boolean
     deletedAt?: boolean
+    bio?: boolean
+    country?: boolean
+    socialLinks?: boolean
+    dob?: boolean
+    affiliation?: boolean
     role?: boolean
     banned?: boolean
     banReason?: boolean
@@ -3039,6 +3080,11 @@ export namespace Prisma {
     userKind?: boolean
     isProfilePublic?: boolean
     deletedAt?: boolean
+    bio?: boolean
+    country?: boolean
+    socialLinks?: boolean
+    dob?: boolean
+    affiliation?: boolean
     role?: boolean
     banned?: boolean
     banReason?: boolean
@@ -3059,6 +3105,11 @@ export namespace Prisma {
     userKind?: boolean
     isProfilePublic?: boolean
     deletedAt?: boolean
+    bio?: boolean
+    country?: boolean
+    socialLinks?: boolean
+    dob?: boolean
+    affiliation?: boolean
     role?: boolean
     banned?: boolean
     banReason?: boolean
@@ -3067,7 +3118,7 @@ export namespace Prisma {
     legacyId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "systemRole" | "userKind" | "isProfilePublic" | "deletedAt" | "role" | "banned" | "banReason" | "banExpires" | "onboardedAt" | "legacyId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "systemRole" | "userKind" | "isProfilePublic" | "deletedAt" | "bio" | "country" | "socialLinks" | "dob" | "affiliation" | "role" | "banned" | "banReason" | "banExpires" | "onboardedAt" | "legacyId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -3110,6 +3161,11 @@ export namespace Prisma {
       userKind: $Enums.UserKind
       isProfilePublic: boolean
       deletedAt: Date | null
+      bio: string | null
+      country: string | null
+      socialLinks: Prisma.JsonValue | null
+      dob: Date | null
+      affiliation: string | null
       role: string | null
       banned: boolean | null
       banReason: string | null
@@ -3560,6 +3616,11 @@ export namespace Prisma {
     readonly userKind: FieldRef<"User", 'UserKind'>
     readonly isProfilePublic: FieldRef<"User", 'Boolean'>
     readonly deletedAt: FieldRef<"User", 'DateTime'>
+    readonly bio: FieldRef<"User", 'String'>
+    readonly country: FieldRef<"User", 'String'>
+    readonly socialLinks: FieldRef<"User", 'Json'>
+    readonly dob: FieldRef<"User", 'DateTime'>
+    readonly affiliation: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
     readonly banned: FieldRef<"User", 'Boolean'>
     readonly banReason: FieldRef<"User", 'String'>
@@ -22614,6 +22675,11 @@ export namespace Prisma {
     userKind: 'userKind',
     isProfilePublic: 'isProfilePublic',
     deletedAt: 'deletedAt',
+    bio: 'bio',
+    country: 'country',
+    socialLinks: 'socialLinks',
+    dob: 'dob',
+    affiliation: 'affiliation',
     role: 'role',
     banned: 'banned',
     banReason: 'banReason',
@@ -22869,14 +22935,6 @@ export namespace Prisma {
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
   export const JsonNullValueFilter: {
     DbNull: typeof DbNull,
     JsonNull: typeof JsonNull,
@@ -22884,6 +22942,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -22951,6 +23017,20 @@ export namespace Prisma {
    * Reference to a field of type 'UserKind[]'
    */
   export type ListEnumUserKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserKind[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -23039,20 +23119,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -23084,6 +23150,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFilter<"User"> | $Enums.UserKind
     isProfilePublic?: BoolFilter<"User"> | boolean
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    bio?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    socialLinks?: JsonNullableFilter<"User">
+    dob?: DateTimeNullableFilter<"User"> | Date | string | null
+    affiliation?: StringNullableFilter<"User"> | string | null
     role?: StringNullableFilter<"User"> | string | null
     banned?: BoolNullableFilter<"User"> | boolean | null
     banReason?: StringNullableFilter<"User"> | string | null
@@ -23114,6 +23185,11 @@ export namespace Prisma {
     userKind?: SortOrder
     isProfilePublic?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    bio?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    socialLinks?: SortOrderInput | SortOrder
+    dob?: SortOrderInput | SortOrder
+    affiliation?: SortOrderInput | SortOrder
     role?: SortOrderInput | SortOrder
     banned?: SortOrderInput | SortOrder
     banReason?: SortOrderInput | SortOrder
@@ -23148,6 +23224,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFilter<"User"> | $Enums.UserKind
     isProfilePublic?: BoolFilter<"User"> | boolean
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    bio?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    socialLinks?: JsonNullableFilter<"User">
+    dob?: DateTimeNullableFilter<"User"> | Date | string | null
+    affiliation?: StringNullableFilter<"User"> | string | null
     role?: StringNullableFilter<"User"> | string | null
     banned?: BoolNullableFilter<"User"> | boolean | null
     banReason?: StringNullableFilter<"User"> | string | null
@@ -23177,6 +23258,11 @@ export namespace Prisma {
     userKind?: SortOrder
     isProfilePublic?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    bio?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    socialLinks?: SortOrderInput | SortOrder
+    dob?: SortOrderInput | SortOrder
+    affiliation?: SortOrderInput | SortOrder
     role?: SortOrderInput | SortOrder
     banned?: SortOrderInput | SortOrder
     banReason?: SortOrderInput | SortOrder
@@ -23205,6 +23291,11 @@ export namespace Prisma {
     userKind?: EnumUserKindWithAggregatesFilter<"User"> | $Enums.UserKind
     isProfilePublic?: BoolWithAggregatesFilter<"User"> | boolean
     deletedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    bio?: StringNullableWithAggregatesFilter<"User"> | string | null
+    country?: StringNullableWithAggregatesFilter<"User"> | string | null
+    socialLinks?: JsonNullableWithAggregatesFilter<"User">
+    dob?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    affiliation?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: StringNullableWithAggregatesFilter<"User"> | string | null
     banned?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
     banReason?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -24380,6 +24471,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -24410,6 +24506,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -24440,6 +24541,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24470,6 +24576,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24500,6 +24611,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -24520,6 +24636,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24540,6 +24661,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25796,6 +25922,29 @@ export namespace Prisma {
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type BoolNullableFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
@@ -25930,6 +26079,11 @@ export namespace Prisma {
     userKind?: SortOrder
     isProfilePublic?: SortOrder
     deletedAt?: SortOrder
+    bio?: SortOrder
+    country?: SortOrder
+    socialLinks?: SortOrder
+    dob?: SortOrder
+    affiliation?: SortOrder
     role?: SortOrder
     banned?: SortOrder
     banReason?: SortOrder
@@ -25954,6 +26108,10 @@ export namespace Prisma {
     userKind?: SortOrder
     isProfilePublic?: SortOrder
     deletedAt?: SortOrder
+    bio?: SortOrder
+    country?: SortOrder
+    dob?: SortOrder
+    affiliation?: SortOrder
     role?: SortOrder
     banned?: SortOrder
     banReason?: SortOrder
@@ -25974,6 +26132,10 @@ export namespace Prisma {
     userKind?: SortOrder
     isProfilePublic?: SortOrder
     deletedAt?: SortOrder
+    bio?: SortOrder
+    country?: SortOrder
+    dob?: SortOrder
+    affiliation?: SortOrder
     role?: SortOrder
     banned?: SortOrder
     banReason?: SortOrder
@@ -26076,6 +26238,32 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -26766,29 +26954,6 @@ export namespace Prisma {
     notIn?: $Enums.ModelInteractionKind[] | ListEnumModelInteractionKindFieldRefInput<$PrismaModel>
     not?: NestedEnumModelInteractionKindFilter<$PrismaModel> | $Enums.ModelInteractionKind
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type ModelInteractionCountOrderByAggregateInput = {
     id?: SortOrder
@@ -26849,32 +27014,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumModelInteractionKindFilter<$PrismaModel>
     _max?: NestedEnumModelInteractionKindFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -28594,6 +28733,29 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
@@ -28740,29 +28902,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumModelInteractionKindFilter<$PrismaModel>
     _max?: NestedEnumModelInteractionKindFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -29397,6 +29536,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -29426,6 +29570,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -29471,6 +29620,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29500,6 +29654,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29529,6 +29688,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -29558,6 +29722,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -29603,6 +29772,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29632,6 +29806,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29661,6 +29840,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -29690,6 +29874,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -29735,6 +29924,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29764,6 +29958,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29793,6 +29992,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -29822,6 +30026,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -29867,6 +30076,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29896,6 +30110,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31463,6 +31682,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -31492,6 +31716,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -31587,6 +31816,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31616,6 +31850,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31689,6 +31928,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -31718,6 +31962,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -31813,6 +32062,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31842,6 +32096,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31915,6 +32174,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -31944,6 +32208,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -32039,6 +32308,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32068,6 +32342,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32141,6 +32420,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -32170,6 +32454,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -32265,6 +32554,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32294,6 +32588,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32323,6 +32622,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -32352,6 +32656,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -32441,6 +32750,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32470,6 +32784,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32549,6 +32868,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -32578,6 +32902,11 @@ export namespace Prisma {
     userKind?: $Enums.UserKind
     isProfilePublic?: boolean
     deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
     role?: string | null
     banned?: boolean | null
     banReason?: string | null
@@ -32623,6 +32952,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32652,6 +32986,11 @@ export namespace Prisma {
     userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
     isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
     role?: NullableStringFieldUpdateOperationsInput | string | null
     banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     banReason?: NullableStringFieldUpdateOperationsInput | string | null

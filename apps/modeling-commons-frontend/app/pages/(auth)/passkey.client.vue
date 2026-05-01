@@ -62,7 +62,6 @@ useSeoMeta({
   description: "Add a passkey to sign in faster on this device.",
 });
 
-const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const { isPasskeySupported, isPasskeySupportResolved, addPasskey: registerPasskey } = usePasskeys();
@@ -72,7 +71,7 @@ const nextPath = computed(() => getSafeNextPath(route.query.next));
 const isLoading = computed(() => !isReady.value);
 
 async function continueToNext() {
-  await router.replace(nextPath.value);
+  await navigateTo(nextPath.value || "/models", { replace: true });
 }
 
 watch(

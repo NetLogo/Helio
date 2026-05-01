@@ -63,6 +63,13 @@ model User {
   isProfilePublic Boolean    @default(false)
   deletedAt       DateTime?
 
+  // User profile fields
+  bio         String?
+  country     String?
+  socialLinks Json? // e.g. [{ platform: 'twitter', url: '...' }]
+  dob         DateTime? @db.Date
+  affiliation String?
+
   // Better Auth relations
   accounts      Account[]
   sessions      Session[]

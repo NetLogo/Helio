@@ -15,13 +15,19 @@ function getRenderer(): EmailRenderer {
   return _renderer;
 }
 
+export type MailContent = {
+  subject: string;
+  html: string;
+  text: string;
+};
+
 export default function mailDomain() {
   const sender = `${env.product.name} <${env.smtp.senderAddress}>`;
   const renderer = getRenderer();
 
   const wrap =
     (to: string) =>
-    async <T extends { subject: string; html: string; text: string }>(rendered: Promise<T>) => {
+    async <T extends MailContent>(rendered: Promise<T>) => {
       const { subject, html, text } = await rendered;
       return { from: sender, to, subject, html, text };
     };
@@ -53,6 +59,21 @@ export default function mailDomain() {
 
     createAccountInactiveEmail(userEmail: string, userName: string, inactivityPeriod: string) {
       return wrap(userEmail)(renderer.renderAccountInactiveEmail({ userName, inactivityPeriod }));
+    },
+
+    createAccountEmailChangeRequestEmail(
+      userEmail: string,
+      userName: string,
+      newEmail: string,
+      approveLink: string,
+    ) {
+      return wrap(userEmail)(
+        renderer.renderAccountEmailChangeRequestEmail({ userName, newEmail, approveLink }),
+      );
+    },
+
+    createAccountEmailChangedEmail(userEmail: string, userName: string, newEmail: string) {
+      return wrap(userEmail)(renderer.renderAccountEmailChangedEmail({ userName, newEmail }));
     },
 
     createNotificationEmail(

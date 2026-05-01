@@ -121,8 +121,9 @@ const {
   renamePasskey,
   revokePasskey,
 } = usePasskeys({ withList: true });
+const { deviceName } = useDeviceName();
 
-const newPasskeyName = ref("This device");
+const newPasskeyName = computed(() => deviceName.value);
 const draftNames = ref<Record<string, string>>({});
 const isAddingPasskey = ref(false);
 const renamingId = ref<string | null>(null);

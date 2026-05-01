@@ -47,7 +47,7 @@ export function PasswordResetEmail({
 PasswordResetEmail.PreviewProps = {
   branding: PREVIEW_BRANDING,
   userName: 'Jane',
-  resetLink: 'https://acme.com/reset?token=abc123',
+  resetLink: 'https://modelingcommons.org/reset?token=abc123',
 } satisfies PasswordResetEmailProps;
 
 export default PasswordResetEmail;

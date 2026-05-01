@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type * as z from "zod";
+import { signUpFields, signUpValidator } from "~/assets/auth";
 import { authRoutes, getSafeNextPath } from "~/utils/auth";
-import { signUpFields, signUpValidator } from "./shared";
 
 definePageMeta({
   layout: "auth",

@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import ModelVersionsTab from "./ModelVersionsTab.vue";
+import { describe, expect, it } from "vitest";
 import type { ModelVersion } from "~/composables/useModelVersions";
+import ModelVersionsTab from "./ModelVersionsTab.vue";
 
 function makeVersion(overrides: Partial<ModelVersion> = {}): ModelVersion {
   return {
@@ -47,10 +47,7 @@ describe("ModelVersionsTab", () => {
   });
 
   it("disables the Compare Selected button until two versions are selected", async () => {
-    const versions = [
-      makeVersion({ versionNumber: 1 }),
-      makeVersion({ versionNumber: 2 }),
-    ];
+    const versions = [makeVersion({ versionNumber: 1 }), makeVersion({ versionNumber: 2 })];
     const wrapper = await mountSuspended(ModelVersionsTab, {
       props: { modelId: "model-1", versions, pending: false },
     });
@@ -66,10 +63,7 @@ describe("ModelVersionsTab", () => {
   });
 
   it("emits compare with the two selected version numbers", async () => {
-    const versions = [
-      makeVersion({ versionNumber: 1 }),
-      makeVersion({ versionNumber: 2 }),
-    ];
+    const versions = [makeVersion({ versionNumber: 1 }), makeVersion({ versionNumber: 2 })];
     const wrapper = await mountSuspended(ModelVersionsTab, {
       props: { modelId: "model-1", versions, pending: false },
     });

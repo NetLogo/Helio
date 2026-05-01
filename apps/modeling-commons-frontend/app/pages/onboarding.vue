@@ -82,7 +82,6 @@ useSeoMeta({
   description: "A quick intro to the community before you dive in.",
 });
 
-const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const { completeOnboarding } = useOnboarding();
@@ -136,7 +135,7 @@ async function finish() {
   isFinishing.value = true;
   try {
     await completeOnboarding();
-    await router.replace(nextPath.value);
+    navigateTo(nextPath.value);
   } catch (error) {
     isFinishing.value = false;
     toast.add({
