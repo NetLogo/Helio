@@ -28,12 +28,10 @@
       </UButton>
     </div>
 
-    <section v-else class="grid items-start gap-6 mt-1">
-      <div class="grid gap-6 col-span-4">
-        <ProfileSecurityEmails :current-email="displayEmail" :email-verified="emailVerified" />
-        <ProfileSecurityPassword />
-        <ProfileSettingsPasskeysCard />
-      </div>
+    <section v-else class="grid items-start space-y-10 my-5">
+      <ProfileSecurityEmails :current-email="displayEmail" :email-verified="emailVerified" />
+      <ProfileSecurityPassword />
+      <ProfileSettingsPasskeysCard />
     </section>
   </div>
 </template>

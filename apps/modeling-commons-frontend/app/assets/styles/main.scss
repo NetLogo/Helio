@@ -32,6 +32,10 @@
     }
   }
 
+  * {
+    scroll-margin-top: calc(4rem + var(--ui-header-height));
+  }
+
   :not(.docs) h1,
   :not(.docs) h2,
   :not(.docs) h3,

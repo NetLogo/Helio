@@ -35,6 +35,7 @@ export type UpdateUserProfileProps = {
   isProfilePublic?: boolean;
   systemRole?: SystemRole;
   onboardedAt?: Date | null;
+  image?: string | null;
 };
 
 export type UserSearchFilters = {

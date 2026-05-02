@@ -4,6 +4,9 @@
     description="Change your account email address. You will need to verify the new email before changes take effect."
   >
     <div class="flex flex-col gap-3">
+      <p class="text-sm">
+        You are currently using <strong>{{ currentEmail }}</strong>
+      </p>
       <UAuthForm
         v-if="formVisible"
         :fields="changeEmailFields"
@@ -22,11 +25,6 @@
         Change email address
       </UButton>
     </div>
-    <USeparator>
-      <p class="text-sm">
-        You are currently using <strong>{{ currentEmail }}</strong>
-      </p>
-    </USeparator>
   </ProfileSettingsCard>
 </template>
 

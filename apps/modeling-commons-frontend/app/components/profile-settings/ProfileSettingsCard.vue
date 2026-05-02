@@ -2,16 +2,18 @@
   <UCard
     :variant="variant"
     :ui="{
-      root: 'rounded-xl border-0 ring-1 ring-neutral-darkest/8 bg-background',
-      body: 'p-6 sm:p-8',
+      root: 'ring-0',
+      body: 'p-1 sm:p-1',
     }"
   >
-    <section class="grid gap-6">
+    <section :id="id" class="grid gap-6">
       <header v-if="title || description || $slots.header" class="grid gap-3">
         <div class="grid gap-3">
           <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div class="grid gap-1.5">
-              <h2 v-if="title" class="m-0 text-xl font-medium text-highlighted">{{ title }}</h2>
+              <h6 v-if="title" class="m-0 font-medium text-highlighted">
+                <a :href="'#' + id">{{ title }}</a>
+              </h6>
               <p v-if="description" class="m-0 text-sm text-muted">{{ description }}</p>
             </div>
             <slot name="header" />
@@ -26,7 +28,9 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(
+import slugify from "slugify";
+
+const props = withDefaults(
   defineProps<{
     title?: string;
     description?: string;
@@ -38,4 +42,6 @@ withDefaults(
     variant: "outline",
   },
 );
+
+const id = computed(() => slugify(props.title ?? "", { lower: true, strict: true }));
 </script>
