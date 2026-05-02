@@ -78,7 +78,7 @@
           </h3>
 
           <div
-            class="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl border border-slate-300 bg-slate-100"
+            class="relative mb-4 aspect-square overflow-hidden rounded-2xl border border-slate-300 bg-slate-100"
           >
             <video
               v-if="model.previewType === 'video'"
@@ -241,8 +241,7 @@ const page = {
     models: [
       {
         title: "Sugarscape Microworld",
-        description:
-          "TODO: add description",
+        description: "TODO: add description",
         link: "/models/sample-html/Sugarscape Microworld.html",
         previewType: "video",
         preview: "/models/preview/sugarscape.mov",
