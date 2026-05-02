@@ -240,36 +240,44 @@ const page = {
     description: "Explore some of the models created with NetTango Web.",
     models: [
       {
-        title: "Rollypollies",
+        title: "Sugarscape Microworld",
+        description:
+          "TODO: add description",
+        link: "/models/sample-html/Sugarscape Microworld.html",
+        previewType: "video",
+        preview: "/models/preview/sugarscape.mov",
+      },
+      {
+        title: "Rollypollies Model",
         description:
           "Make your own computational model of roly-polies. You will use a computational tool called NetTango to code animal behavior using blocks.",
-        link: "https://ct-stem.northwestern.edu/curriculum/preview/1530/page/4/",
+        link: "#",
         previewType: "video",
-        preview: "/models/rollypolies.mov",
+        preview: "/models/preview/rollypolies.mov",
       },
       {
         title: "Ants Model",
         description:
           "A colony of ants forages for food. Though each ant follows a set of simple rules, the colony as a whole acts in a sophisticated way.",
-        link: "https://ccl.northwestern.edu/nettangoweb/tutorial/",
+        link: "/models/sample-html/Ants.html",
         previewType: "video",
-        preview: "/models/ants.mov",
+        preview: "/models/preview/ants.mov",
       },
       {
         title: "Spaceship Model",
         description:
           "A model where you can program a spaceship to navigate through space using NetTango Web blocks, demonstrating more advanced programming concepts.",
-        link: "https://ct-stem.s3.amazonaws.com/uploads/jzkelter/2023/02/27/page%202%20spaceship%20programming%20with%20maze_2023-02-27-21-41-44-521974.html",
+        link: "#",
         previewType: "image",
-        preview: "/models/spaceship.png",
+        preview: "/models/preview/spaceship.png",
       },
       {
-        title: "Wolves and Sheep",
+        title: "Wolves Sheep Model",
         description:
           "A simple predator-prey model where you can experiment with the behavior of wolves and sheep using blocks.",
-        link: "https://www.netlogoweb.org/launch#http://ccl.northwestern.edu/netlogo/models/models/Sample%20Models/Biology/Wolf%20Sheep%20Predation.nlogox",
+        link: "/models/sample-html/Wolf Sheep Predation.html",
         previewType: "video",
-        preview: "/models/wolfsheep.mov",
+        preview: "/models/preview/wolfsheep.mov",
       },
     ],
   },
