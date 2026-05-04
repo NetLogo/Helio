@@ -19,6 +19,7 @@
           :text="initials"
           size="3xl"
           class="size-full rounded-full bg-neutral-darkest/5 text-2xl"
+          :class="{ 'opacity-50': pending }"
           :ui="{ root: 'size-full', image: 'size-full object-cover' }"
         />
 

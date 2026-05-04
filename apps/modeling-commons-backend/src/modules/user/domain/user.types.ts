@@ -1,34 +1,16 @@
-export const SystemRole = {
-  admin: 'admin',
-  moderator: 'moderator',
-  user: 'user',
-} as const;
-export type SystemRole = (typeof SystemRole)[keyof typeof SystemRole];
+import type { SystemRole, UserKind, UserRecord } from '../database/user.record.ts';
 
-export const UserKind = {
-  student: 'student',
-  teacher: 'teacher',
-  researcher: 'researcher',
-  other: 'other',
-} as const;
-export type UserKind = (typeof UserKind)[keyof typeof UserKind];
-
-export type UserEntity = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  emailVerified: boolean;
-  image: string | null;
-  systemRole: SystemRole;
-  userKind: UserKind;
-  isProfilePublic: boolean;
+export type UserEntity = UserRecord & {
   onboardedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
 };
 
-export type UserPublicView = Pick<UserEntity, 'id' | 'name' | 'isProfilePublic' | 'createdAt' | 'updatedAt'>;
+export type UserPublicView = Pick<
+  UserEntity,
+  'id' | 'name' | 'isProfilePublic' | 'image' | 'createdAt' | 'updatedAt'
+>;
 
 export type UpdateUserProfileProps = {
   userKind?: UserKind;

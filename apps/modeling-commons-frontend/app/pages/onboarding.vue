@@ -143,6 +143,9 @@ async function finish() {
       description: "Please try again in a moment.",
       color: "error",
     });
+    if (import.meta.dev) {
+      console.error("Error completing onboarding:", error);
+    }
     void error;
   }
 }

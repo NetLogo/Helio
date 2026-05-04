@@ -1,8 +1,8 @@
+import env from '#src/config/env.ts';
+import rules from '#src/config/rules.ts';
 import multipart from '@fastify/multipart';
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import rules from '#src/config/rules.ts';
-import env from '#src/config/env.ts';
 
 async function multipartPlugin(fastify: FastifyInstance) {
   await fastify.register(multipart, {

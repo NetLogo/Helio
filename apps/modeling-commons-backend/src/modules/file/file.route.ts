@@ -1,19 +1,17 @@
+import rules from '#src/config/rules.ts';
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
+import type { MultipartFile } from '@fastify/multipart';
 import type { FastifyInstance } from 'fastify';
 import { Type } from 'typebox';
+import { FileUploadError } from './domain/file.errors.ts';
 
-const ALLOWED_AVATAR_MIME_TYPES = new Set([
-  'image/png',
-  'image/jpeg',
-  'image/gif',
-  'image/webp',
-]);
-const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
+const ALLOWED_AVATAR_MIME_TYPES = new Set(rules.avatar.allowedMimeTypes);
+const MAX_AVATAR_BYTES = rules.avatar.maxFileSize;
 
 export default async function fileRoutes(fastify: FastifyInstance) {
   const { fileService } = fastify.diContainer.cradle;
 
-  fastify.post(
+  fastify.post<{ Body: { file: MultipartFile } }>(
     '/v1/uploads/avatar',
     {
       schema: {
@@ -25,16 +23,25 @@ export default async function fileRoutes(fastify: FastifyInstance) {
         description:
           'Upload an avatar image (multipart/form-data, field "file"). Returns the public URL of the uploaded file.',
       },
+      config: {
+        rateLimit: {
+          // Would a user really need more than 5 avatar
+          // uploads per minute? I don't believe so.
+          // Verdict: sensible limit.
+          // -Omar Ibrahim, May 04 26
+          ...rules.limits.fileUploadRoute.strict,
+        },
+      },
       preHandler: [requireAuth],
     },
     async (request, reply) => {
       const data = await request.file();
       if (!data) {
-        return reply.code(400).send({ message: 'File upload required' });
+        throw new FileUploadError('No file provided in "file" field');
       }
 
       if (!ALLOWED_AVATAR_MIME_TYPES.has(data.mimetype)) {
-        return reply.code(400).send({ message: 'Unsupported image type' });
+        throw new FileUploadError(`Unsupported file type: ${data.mimetype}`);
       }
 
       const buffer = await data.toBuffer();
@@ -43,7 +50,9 @@ export default async function fileRoutes(fastify: FastifyInstance) {
       buffer.fill(0);
 
       if (ownBuffer.length > MAX_AVATAR_BYTES) {
-        return reply.code(400).send({ message: 'Avatar must be 2 MB or smaller' });
+        throw new FileUploadError(
+          `Avatar must be ${MAX_AVATAR_BYTES / (1024 * 1024)} MB or smaller`,
+        );
       }
 
       const key = await fileService.upload({

@@ -14,6 +14,8 @@ services:
     env_file:
       - path: ./.env
         required: true
+    environment:
+      - PGDATA=/var/lib/postgresql/18/docker
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 5s

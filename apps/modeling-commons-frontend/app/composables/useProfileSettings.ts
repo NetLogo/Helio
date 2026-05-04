@@ -1,60 +1,17 @@
-import type { RadioGroupItem } from "@nuxt/ui";
-import type { UserProfile } from "./useProfile";
+import { userKindOptions, type UserKind } from "~/assets/auth";
+import type { SocialMediaLink } from "~/components/utility-components/SocialLink.vue";
 
-type EditableUserKind = "student" | "teacher" | "researcher" | "other";
-type PrivateUserProfile = UserProfile & {
-  email: string | null;
-  emailVerified: boolean;
-  image: string | null;
-  systemRole: string;
-  userKind: string;
-};
-type SaveProfileSettingsResult = {
-  data: ResponseSuccessData<"PATCH", "/api/v1/users/{id}"> | null;
-  error: ResponseErrorData<"PATCH", "/api/v1/users/{id}"> | null;
+type SaveResult = {
+  data: { ok: true } | null;
+  error: { message?: string } | null;
 };
 
-const userKindOptions: Array<RadioGroupItem> = [
-  {
-    label: "Student",
-    value: "student",
-    icon: "i-lucide-graduation-cap",
-    description: "Learning through models, coursework, or independent study.",
-  },
-  {
-    label: "Teacher",
-    value: "teacher",
-    icon: "i-lucide-school",
-    description: "Using models in lessons, workshops, or curriculum design.",
-  },
-  {
-    label: "Researcher",
-    value: "researcher",
-    icon: "i-lucide-flask-conical",
-    description: "Building or studying models for analysis, experiments, or publications.",
-  },
-  {
-    label: "Other",
-    value: "other",
-    icon: "i-lucide-user-round",
-    description: "A role that does not fit neatly into the categories above.",
-  },
-];
+type UploadAvatarResult = {
+  data: { image: string } | null;
+  error: { message?: string } | null;
+};
 
-function hasPrivateProfileFields(
-  value: UserProfile | null | undefined,
-): value is PrivateUserProfile {
-  return Boolean(
-    value &&
-      "email" in value &&
-      "emailVerified" in value &&
-      "image" in value &&
-      "systemRole" in value &&
-      "userKind" in value,
-  );
-}
-
-function normalizeUserKind(value: string | undefined | null): EditableUserKind {
+function normalizeUserKind(value: string | undefined | null): NonNullable<UserKind> {
   if (value === "student" || value === "teacher" || value === "researcher" || value === "other") {
     return value;
   }
@@ -62,115 +19,170 @@ function normalizeUserKind(value: string | undefined | null): EditableUserKind {
   return "other";
 }
 
-export default function useProfileSettings() {
-  const api = useApi();
-  const user = useUser();
-  const { profile, refresh, status } = useProfile();
+function toDate(value: unknown): Date | null {
+  if (!value) return null;
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  if (typeof value === "string" || typeof value === "number") {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+  return null;
+}
 
-  const isProfilePublic = ref(false);
-  const userKind = ref<EditableUserKind>("other");
+function sameDay(a: Date | null, b: Date | null): boolean {
+  if (!a && !b) return true;
+  if (!a || !b) return false;
+  return a.getTime() === b.getTime();
+}
+
+function sameSocialLinks(a: Array<SocialMediaLink>, b: Array<SocialMediaLink>): boolean {
+  if (a.length !== b.length) return false;
+  return a.every((item, index) => {
+    const other = b[index];
+    return Boolean(other && other.type === item.type && other.rawValue === item.rawValue);
+  });
+}
+
+export default function useProfileSettings() {
+  const auth = useNuxtApp().$auth;
+  const { POST } = useApi();
+  const { profile, refresh } = useProfile();
   const isSaving = ref(false);
 
-  const loggedInUser = computed(() => (user.value.isLoggedIn ? user.value : null));
-  const privateProfile = computed(() =>
-    hasPrivateProfileFields(profile.value) ? profile.value : null,
+  const nameField = useTrackedField(() => profile.value?.name ?? "");
+  const bioField = useTrackedField(() => profile.value?.bio ?? "");
+  const dobField = useTrackedField(() => toDate(profile.value?.dob), sameDay);
+  const socialLinksField = useTrackedField(
+    () => (Array.isArray(profile.value?.socialLinks) ? profile.value?.socialLinks : []),
+    sameSocialLinks,
   );
-  const userId = computed(() => loggedInUser.value?.id ?? null);
+  const countryField = useTrackedField(() => profile.value?.country ?? null);
+  const affiliationField = useTrackedField(() => profile.value?.affiliation ?? "");
+  const isProfilePublicField = useTrackedField(() => profile.value?.isProfilePublic ?? false);
+  const userKindField = useTrackedField(() => normalizeUserKind(profile.value?.userKind));
+  const fields = {
+    name: nameField,
+    bio: bioField,
+    country: countryField,
+    affiliation: affiliationField,
+    dob: dobField,
+    socialLinks: socialLinksField,
+    isProfilePublic: isProfilePublicField,
+    userKind: userKindField,
+  };
+  const isDirty = computed(() => Object.values(fields).some((f) => f.isDirty.value));
+  const resetProfileSettings = () => Object.values(fields).forEach((f) => f.reset());
 
-  const displayName = computed(
-    () => profile.value?.name || loggedInUser.value?.name || "Modeling Commons member",
-  );
-  const displayEmail = computed(
-    () => privateProfile.value?.email || loggedInUser.value?.email || "No email available",
-  );
-  const displayImage = computed(
-    () => privateProfile.value?.image || loggedInUser.value?.image || undefined,
-  );
-  const emailVerified = computed(
-    () => privateProfile.value?.emailVerified ?? loggedInUser.value?.emailVerified ?? false,
-  );
-  const systemRoleLabel = computed(() => sentenceCase(privateProfile.value?.systemRole ?? "user"));
-  const persistedUserKind = computed(() => normalizeUserKind(privateProfile.value?.userKind));
+  const isAvatarUploading = ref(false);
 
-  const isDirty = computed(() => {
-    if (!profile.value) {
-      return false;
-    }
+  const userId = computed(() => profile.value?.id ?? null);
 
-    return (
-      isProfilePublic.value !== profile.value.isProfilePublic ||
-      userKind.value !== persistedUserKind.value
-    );
-  });
+  const displayName = computed<string>(() => nameField.data.value || "Modeling Commons Member");
+  const displayEmail = computed(() => profile.value?.email || "No email available");
+  const displayImage = computed(() => profile.value?.image || undefined);
+  const emailVerified = computed(() => profile.value?.emailVerified ?? false);
+  const systemRoleLabel = computed(() => sentenceCase(profile.value?.systemRole ?? "user"));
 
-  watch(
-    profile,
-    (currentProfile) => {
-      if (!currentProfile) {
-        return;
-      }
+  const hasCustomAvatar = computed(() => Boolean(displayImage.value));
 
-      isProfilePublic.value = currentProfile.isProfilePublic;
-      userKind.value = normalizeUserKind(
-        hasPrivateProfileFields(currentProfile) ? currentProfile.userKind : null,
-      );
-    },
-    { immediate: true },
-  );
-
-  function resetProfileSettings() {
-    if (!profile.value) {
-      return;
-    }
-
-    isProfilePublic.value = profile.value.isProfilePublic;
-    userKind.value = persistedUserKind.value;
-  }
-
-  async function saveProfileSettings(): Promise<SaveProfileSettingsResult> {
+  async function saveProfileSettings(): Promise<SaveResult> {
     if (!userId.value || !profile.value || !isDirty.value || isSaving.value) {
       return { data: null, error: null };
     }
 
     isSaving.value = true;
 
-    const response = await api.PATCH("/api/v1/users/{id}", {
-      params: { path: { id: userId.value } },
-      body: {
-        isProfilePublic: isProfilePublic.value,
-        userKind: userKind.value,
+    const authPayload = Object.entries(fields).reduce(
+      (payload, [key, field]) => {
+        if (field.isDirty.value) {
+          payload[key as keyof typeof fields] = field.data.value;
+        }
+        return payload;
       },
-    });
+      {} as Record<string, unknown>,
+    );
 
-    isSaving.value = false;
-
-    if (!response.error) {
+    try {
+      await auth.client.updateUser(authPayload);
       await refresh();
+      return { data: { ok: true }, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: { message: (error as Error).message || "Failed to save profile" },
+      };
+    } finally {
+      isSaving.value = false;
     }
+  }
 
-    return {
-      data: response.data ?? null,
-      error: response.error ?? null,
-    };
+  async function uploadAvatar(file: File): Promise<UploadAvatarResult> {
+    isAvatarUploading.value = true;
+    try {
+      const form = new FormData();
+      form.append("file", file);
+
+      const { error, response, data } = await POST("/api/v1/uploads/avatar", {
+        // @ts-expect-error - FormData doesn't type well with openAPI
+        // -Omar Ibrahim, May 04 26
+        body: form as unknown,
+      });
+      if (error || !response.ok) {
+        return {
+          data: null,
+          error: { message: error || "Failed to upload avatar" },
+        };
+      }
+
+      const { url } = data;
+      const updateRes = await auth.client.updateUser({ image: url });
+      if (updateRes.error) {
+        return { data: null, error: updateRes.error };
+      }
+
+      await refresh();
+      return { data: { image: url }, error: null };
+    } finally {
+      isAvatarUploading.value = false;
+    }
+  }
+
+  async function removeAvatar(): Promise<SaveResult> {
+    const res = await auth.client.updateUser({ image: null });
+    if (res.error) {
+      return { data: null, error: res.error };
+    }
+    await refresh();
+    return { data: { ok: true }, error: null };
   }
 
   return {
     profile,
     refresh,
-    status,
     displayName,
     displayEmail,
     displayImage,
     emailVerified,
     systemRoleLabel,
-    isProfilePublic,
-    userKind,
+
     userKindOptions,
+
+    name: nameField.data,
+    bio: bioField.data,
+    country: countryField.data,
+    dob: dobField.data,
+    affiliation: affiliationField.data,
+    socialLinks: socialLinksField.data,
+    isProfilePublic: isProfilePublicField.data,
+    userKind: userKindField.data,
+
+    isAvatarUploading,
+    hasCustomAvatar,
     isDirty,
     isSaving,
     resetProfileSettings,
     saveProfileSettings,
+    uploadAvatar,
+    removeAvatar,
   };
 }
-
-export type { EditableUserKind };

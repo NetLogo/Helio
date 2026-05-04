@@ -1,4 +1,5 @@
-import type { Session, User } from "better-auth";
+import type { Session } from "better-auth";
+import type { User } from "~/plugins/auth";
 
 type LoggedOutUser = {
   session: null;

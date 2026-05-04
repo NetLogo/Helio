@@ -1,4 +1,4 @@
-import { SystemRole } from '#src/modules/user/domain/user.types.ts';
+import { SystemRole } from '#src/modules/user/database/user.record.ts';
 import type { UserEntity, UserPublicView } from '#src/modules/user/domain/user.types.ts';
 import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
 
@@ -26,6 +26,7 @@ export default function userDomain() {
         id: user.id,
         name: user.name,
         isProfilePublic: user.isProfilePublic,
+        image: user.image,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       };

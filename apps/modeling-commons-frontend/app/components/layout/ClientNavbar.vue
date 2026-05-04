@@ -47,7 +47,7 @@
         >
           <UAvatar
             :name="user.name"
-            :image="user.image"
+            :src="user.image ?? undefined"
             :alt="user.name"
             size="sm"
             class="rounded-full bg-neutral-lighter"

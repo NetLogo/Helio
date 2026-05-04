@@ -49,7 +49,14 @@ const addLink = () => {
 <template>
   <section>
     <UFieldGroup class="w-full">
-      <USelectMenu v-model="model" class="min-w-50" :items="items" />
+      <USelectMenu
+        v-model="model"
+        class="min-w-50"
+        :items="items"
+        :ui="{
+          item: 'p-2 my-1',
+        }"
+      />
       <UInput
         v-model="currentInput"
         :placeholder="model?.placeholder"

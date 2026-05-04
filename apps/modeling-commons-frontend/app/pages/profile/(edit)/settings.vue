@@ -1,20 +1,6 @@
 <template>
   <div class="grid gap-8">
-    <div
-      v-if="status === 'pending'"
-      class="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.85fr)]"
-    >
-      <div class="grid gap-6">
-        <div class="min-h-80 animate-pulse rounded-xl bg-neutral-darkest/5" />
-        <div class="min-h-80 animate-pulse rounded-xl bg-neutral-darkest/5" />
-      </div>
-      <div class="grid gap-6">
-        <div class="min-h-64 animate-pulse rounded-xl bg-neutral-darkest/5" />
-        <div class="min-h-64 animate-pulse rounded-xl bg-neutral-darkest/5" />
-      </div>
-    </div>
-
-    <div v-else-if="!profile" class="grid gap-4">
+    <div v-if="!profile" class="grid gap-4">
       <UAlert
         title="We couldn't load your profile"
         description="Refresh the page and try again. If the problem persists, sign out and sign back in."
@@ -32,7 +18,7 @@
       <section class="space-y-10 col-span-4">
         <UForm>
           <UFormField label="Name">
-            <UInput :value="displayName" size="md" />
+            <UInput v-model="name" size="md" />
             <span class="text-xs text-muted"
               >Your name appears on your profile, model pages, and across the app.</span
             >
@@ -48,47 +34,51 @@
               </div>
 
               <USelectMenu
-                :model-value="{ label: 'Public', value: true }"
+                :model-value="visibilityItem"
                 title="Visible to other users"
                 color="primary"
-                :items="[
-                  { label: 'Public', value: true },
-                  { label: 'Private', value: false },
-                ]"
-                @update:model-value="$emit('update:isProfilePublic', Boolean($event))"
+                :items="visibilityItems"
+                @update:model-value="onVisibilityChange"
               />
             </section>
           </UFormField>
 
           <UFormField label="Bio">
-            <UTextarea size="md" />
+            <UTextarea v-model="bio" size="md" />
             <span class="text-xs text-muted"
               >A short description about you. This appears on your profile and author details.</span
             >
           </UFormField>
 
           <UFormField label="Date of Birth">
-            <UInputDate size="md" />
+            <UInputDate v-model="dob" size="md" />
           </UFormField>
 
           <UFormField label="Country">
             <USelectMenu
+              v-model="country"
               class="w-full"
-              leading-icon="flag-us-4x3"
-              :items="countries.map((c) => ({ ...c, icon: `flag:${c.value.toLowerCase()}-4x3` }))"
+              leading-icon="i-lucide-earth"
+              placeholder="Select your country"
+              value-key="value"
+              :items="
+                countries.map((c) => ({
+                  ...c,
+                  icon: c.icon ?? `flag:${c.value.toLowerCase()}-4x3`,
+                }))
+              "
             />
           </UFormField>
 
           <UFormField label="Affiliation">
-            <UInput :value="displayEmail" size="md" />
+            <UInput v-model="affiliation" size="md" placeholder="e.g. Northwestern University" />
             <span class="text-xs text-muted"
               >An affiliated organization like a university, company, or non-profit.</span
             >
           </UFormField>
 
-          <!-- Social Links -->
           <UFormField label="Social Links">
-            <SocialLinksInput v-model="links" one-per-kind />
+            <SocialLinksInput v-model="socialLinks" one-per-kind />
           </UFormField>
 
           <section class="grid gap-5">
@@ -102,11 +92,10 @@
             </div>
 
             <URadioGroup
-              :model-value="userKind"
+              v-model="userKind"
               variant="card"
               :items="userKindOptions"
               color="primary"
-              @update:model-value="$emit('update:userKind', $event as EditableUserKind)"
             />
           </section>
 
@@ -122,15 +111,16 @@
                 color="neutral"
                 variant="outline"
                 :disabled="!isDirty || isSaving"
-                @click="$emit('reset')"
+                @click="resetProfileSettings"
               >
                 Reset
               </UButton>
               <UButton
                 color="primary"
+                variant="solid"
                 :loading="isSaving"
                 :disabled="!isDirty"
-                @click="$emit('save')"
+                @click="saveSettings"
               >
                 Save changes
               </UButton>
@@ -145,6 +135,7 @@
           :alt="displayName"
           :pending="isAvatarUploading"
           :can-remove="hasCustomAvatar"
+          :optimistic="false"
           @select="onAvatarSelected"
           @remove="onAvatarRemoved"
         />
@@ -161,7 +152,6 @@
 <script setup lang="ts">
 import countries from "~/assets/countries";
 
-const links = ref([]);
 definePageMeta({
   middleware: "auth",
   layout: "profile",
@@ -177,16 +167,37 @@ const toast = useToast();
 const {
   profile,
   refresh,
-  status,
   displayName,
-  displayEmail,
   displayImage,
+  isProfilePublic,
   userKind,
   userKindOptions,
+  name,
+  bio,
+  country,
+  dob,
+  affiliation,
+  socialLinks,
+  isAvatarUploading,
+  hasCustomAvatar,
   isDirty,
   isSaving,
+  resetProfileSettings,
   saveProfileSettings,
+  uploadAvatar,
+  removeAvatar,
 } = useProfileSettings();
+
+const visibilityItems = [
+  { label: "Public", value: true },
+  { label: "Private", value: false },
+];
+const visibilityItem = computed(
+  () => visibilityItems.find((item) => item.value === isProfilePublic.value) ?? visibilityItems[1],
+);
+function onVisibilityChange(next: { label: string; value: boolean }) {
+  isProfilePublic.value = Boolean(next.value);
+}
 
 onMounted(() => {
   if (route.query.password !== "1") {
@@ -211,7 +222,7 @@ async function saveSettings() {
   if (response.error) {
     toast.add({
       title: "Couldn't save profile settings",
-      description: (response.error as { message?: string }).message ?? "Please try again.",
+      description: response.error.message ?? "Please try again.",
       icon: "i-lucide-circle-alert",
       color: "error",
     });
@@ -220,7 +231,47 @@ async function saveSettings() {
 
   toast.add({
     title: "Profile updated",
-    description: "Your visibility and profile type have been saved.",
+    description: "Your details have been saved.",
+    icon: "i-lucide-badge-check",
+    color: "success",
+  });
+}
+
+async function onAvatarSelected(file: File) {
+  const response = await uploadAvatar(file);
+  if (response.error) {
+    toast.add({
+      title: "Couldn't update avatar",
+      description: response.error.message ?? "Please try again.",
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+    return;
+  }
+
+  toast.add({
+    title: "Avatar updated",
+    description: "Your new profile picture is live.",
+    icon: "i-lucide-badge-check",
+    color: "success",
+  });
+}
+
+async function onAvatarRemoved() {
+  const response = await removeAvatar();
+  if (response.error) {
+    toast.add({
+      title: "Couldn't remove avatar",
+      description: response.error.message ?? "Please try again.",
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+    return;
+  }
+
+  toast.add({
+    title: "Avatar removed",
+    description: "Your profile picture has been cleared.",
     icon: "i-lucide-badge-check",
     color: "success",
   });

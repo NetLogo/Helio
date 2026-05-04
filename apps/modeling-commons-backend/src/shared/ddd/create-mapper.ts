@@ -13,7 +13,7 @@ export type ResponseFormat<T> = T extends Date
 export function applyGlobalResponseFormat<T>(dto: T): ResponseFormat<T> {
   // Date → ISO, etc..
   // Keep the list small and documented.
-  // -- Omar Ibrahim, Apr 16 26
+  // -Omar Ibrahim, Apr 16 26
   if (dto === null || typeof dto !== 'object') return dto as ResponseFormat<T>;
   if (dto instanceof Date) return dto.toISOString() as ResponseFormat<T>;
   const out: { [key: string]: unknown } = { ...(dto as object) };
@@ -52,7 +52,7 @@ function createMapperHelper<Entity, Record, RawResponse>(
 
 // Read requests can be satisfied with the identity function
 // if a custom domain shape is not required.
-// -- Omar Ibrahim, Apr 16 26
+// -Omar Ibrahim, Apr 16 26
 export function createReadOnlyMapper<Record, RawResponse>(input: {
   toResponse: (record: Record) => RawResponse;
 }): Mapper<Record, Record, ResponseFormat<RawResponse>> {

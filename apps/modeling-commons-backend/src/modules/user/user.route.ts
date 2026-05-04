@@ -1,7 +1,6 @@
-import { Type } from 'typebox';
-import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import type { UserSearchFilters } from '#src/modules/user/domain/user.types.ts';
-import type { FastifyInstance } from 'fastify';
+import { userPaginatedResponseSchema } from '#src/modules/user/dtos/user.paginated.response.dto.ts';
+import { userResponseDtoSchema } from '#src/modules/user/dtos/user.response.dto.ts';
 import {
   updateUserRequestDtoSchema,
   userIdParamsSchema,
@@ -10,9 +9,8 @@ import {
   type UserIdParams,
   type UserSearchQuery,
 } from '#src/modules/user/user.schemas.ts';
-import { userResponseDtoSchema } from '#src/modules/user/dtos/user.response.dto.ts';
-import { userPublicResponseDtoSchema } from '#src/modules/user/dtos/user.public.response.dto.ts';
-import { userPaginatedResponseSchema } from '#src/modules/user/dtos/user.paginated.response.dto.ts';
+import { requireAuth } from '#src/shared/hooks/require-auth.ts';
+import type { FastifyInstance } from 'fastify';
 
 export default async function userRoutes(fastify: FastifyInstance) {
   const { userService, userMapper } = fastify.diContainer.cradle;
@@ -69,9 +67,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
     {
       schema: {
         params: userIdParamsSchema,
-        response: {
-          200: Type.Union([userResponseDtoSchema, userPublicResponseDtoSchema]),
-        },
+        response: { 200: userResponseDtoSchema },
         tags: ['User'],
       },
     },

@@ -78,7 +78,7 @@ export default defineNuxtConfig({
     format: ["avif", "webp", "jpeg"],
     ipx: {
       // Avoid exposing name of internal binary
-      // -- Omar Ibrahim, Apr 20 26
+      // -Omar Ibrahim, Apr 20 26
       baseURL: "/_images",
     },
   },

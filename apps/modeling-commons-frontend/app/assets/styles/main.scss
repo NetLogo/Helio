@@ -18,7 +18,7 @@
   // Reset some critical values for @nuxt/ui to behave
   // as expected. data-slot="root" is the root element of a
   // a @nuxt/ui component.
-  // -- Omar Ibrahim, Apr 16 26
+  // -Omar Ibrahim, Apr 16 26
   [data-slot="root"] {
     & p {
       margin-bottom: 0;

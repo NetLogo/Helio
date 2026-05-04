@@ -39,7 +39,7 @@ export function createStorageKey(filename: string, path: string): string {
 
   // Remove leading/trailing slashes from the path to prevent
   // issues with key construction
-  // -- Omar Ibrahim, Apr 17 26
+  // -Omar Ibrahim, Apr 17 26
   const normalizedPath = path.replace(/^\/+|\/+$/g, '');
 
   const timepath = `${year}/${month}/${day}`;

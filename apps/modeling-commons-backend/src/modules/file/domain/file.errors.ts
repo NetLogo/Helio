@@ -6,6 +6,12 @@ export class FileNotFoundError extends NotFoundException {
   }
 }
 
+export class FileUploadError extends Error {
+  constructor(message: string) {
+    super(`File upload failed: ${message}`);
+  }
+}
+
 export class FileValidationError extends ArgumentInvalidException {
   constructor(key: string, reason: string) {
     super(`File with key ${key} is invalid: ${reason}`);

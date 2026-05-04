@@ -80,6 +80,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/uploads/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Upload an avatar image (multipart/form-data, field "file"). Returns the public URL of the uploaded file. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            url: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/models/{id}": {
         parameters: {
             query?: never;
@@ -2476,7 +2514,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": (({
+                        "application/json": ({
                             /**
                              * Format: uuid
                              * @description Entity's id
@@ -2496,39 +2534,51 @@ export interface paths {
                             updatedAt: string;
                         }) & {
                             name: string | null;
-                            email: string | null;
-                            /** @description Indicates whether the user has verified their email address */
-                            emailVerified: boolean;
+                            isProfilePublic: boolean;
                             image: string | null;
+                            email?: string | null;
+                            /** @description Indicates whether the user has verified their email address */
+                            emailVerified?: boolean;
                             /** @description admin | moderator | user */
-                            systemRole: string;
+                            systemRole?: string;
                             /** @description student | teacher | researcher | other */
-                            userKind: string;
-                            isProfilePublic: boolean;
+                            userKind?: string;
+                            /**
+                             * @description A short biography of the user
+                             * @example Modeler and educator based in New York.
+                             */
+                            bio?: string;
+                            /**
+                             * @description The user’s country of residence, if they choose to provide it
+                             * @example US
+                             */
+                            country?: string;
+                            socialLinks?: {
+                                /**
+                                 * @description The raw URL provided by the user for a social link
+                                 * @example https://twitter.com/johndoe
+                                 */
+                                rawValue: string;
+                                /**
+                                 * @description The type of social link, if it can be inferred from the URL
+                                 * @example twitter
+                                 * @example linkedin
+                                 * @example github
+                                 * @example facebook
+                                 * @example instagram
+                                 * @example other
+                                 */
+                                type: string;
+                            }[];
+                            dob?: string | null;
+                            /**
+                             * @description The user’s affiliation, if they choose to provide it
+                             * @example NetLogo Team, Center for Connected Learning and Computer-Based Modeling, Northwestern University
+                             */
+                            affiliation?: string;
                             /** @description Timestamp when the user completed onboarding, null if not yet onboarded */
-                            onboardedAt: string | null;
-                        }) | (({
-                            /**
-                             * Format: uuid
-                             * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
-                             */
-                            id: string;
-                        } & {
-                            /**
-                             * @description Entity creation date
-                             * @example 2020-11-24T17:43:15.970Z
-                             */
-                            createdAt: string;
-                            /**
-                             * @description Entity last update date
-                             * @example 2020-11-24T17:43:15.970Z
-                             */
-                            updatedAt: string;
-                        }) & {
-                            name: string | null;
-                            isProfilePublic: boolean;
-                        });
+                            onboardedAt?: string | null;
+                        };
                     };
                 };
             };
@@ -2659,17 +2709,50 @@ export interface paths {
                                 updatedAt: string;
                             }) & {
                                 name: string | null;
-                                email: string | null;
-                                /** @description Indicates whether the user has verified their email address */
-                                emailVerified: boolean;
-                                image: string | null;
-                                /** @description admin | moderator | user */
-                                systemRole: string;
-                                /** @description student | teacher | researcher | other */
-                                userKind: string;
                                 isProfilePublic: boolean;
+                                image: string | null;
+                                email?: string | null;
+                                /** @description Indicates whether the user has verified their email address */
+                                emailVerified?: boolean;
+                                /** @description admin | moderator | user */
+                                systemRole?: string;
+                                /** @description student | teacher | researcher | other */
+                                userKind?: string;
+                                /**
+                                 * @description A short biography of the user
+                                 * @example Modeler and educator based in New York.
+                                 */
+                                bio?: string;
+                                /**
+                                 * @description The user’s country of residence, if they choose to provide it
+                                 * @example US
+                                 */
+                                country?: string;
+                                socialLinks?: {
+                                    /**
+                                     * @description The raw URL provided by the user for a social link
+                                     * @example https://twitter.com/johndoe
+                                     */
+                                    rawValue: string;
+                                    /**
+                                     * @description The type of social link, if it can be inferred from the URL
+                                     * @example twitter
+                                     * @example linkedin
+                                     * @example github
+                                     * @example facebook
+                                     * @example instagram
+                                     * @example other
+                                     */
+                                    type: string;
+                                }[];
+                                dob?: string | null;
+                                /**
+                                 * @description The user’s affiliation, if they choose to provide it
+                                 * @example NetLogo Team, Center for Connected Learning and Computer-Based Modeling, Northwestern University
+                                 */
+                                affiliation?: string;
                                 /** @description Timestamp when the user completed onboarding, null if not yet onboarded */
-                                onboardedAt: string | null;
+                                onboardedAt?: string | null;
                             })[];
                         };
                     };

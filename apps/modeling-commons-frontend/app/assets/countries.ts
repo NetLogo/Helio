@@ -1,5 +1,5 @@
 export default [
-  { label: "Global Citizen", value: "GLOBAL_CITIZEN" },
+  { label: "Global Citizen", value: "GLOBAL_CITIZEN", icon: "i-lucide-globe" },
   { label: "Afghanistan", value: "AF" },
   { label: "Aland Islands", value: "AX" },
   { label: "Albania", value: "AL" },
@@ -246,4 +246,4 @@ export default [
   { label: "Yemen", value: "YE" },
   { label: "Zambia", value: "ZM" },
   { label: "Zimbabwe", value: "ZW" },
-] as Array<{ label: string; value: string }>;
+] as Array<{ label: string; value: string; icon?: string }>;

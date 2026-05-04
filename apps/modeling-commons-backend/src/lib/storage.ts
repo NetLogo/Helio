@@ -1,5 +1,12 @@
 import env from '#src/config/env.ts';
-import { S3Client, type Bucket, CreateBucketCommand, ListBucketsCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  type Bucket,
+  CreateBucketCommand,
+  ListBucketsCommand,
+  PutBucketPolicyCommand,
+} from '@aws-sdk/client-s3';
+import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
 
 class StorageConfigurationError extends Error {
   constructor(message: string) {
@@ -45,6 +52,26 @@ if (!maybeBucket) {
 }
 
 const bucket: Bucket = maybeBucket;
+
+const publicReadPolicy = {
+  Version: '2012-10-17',
+  Statement: [
+    {
+      Sid: 'AllowAnonymousReadOnPublicPrefix',
+      Effect: 'Allow',
+      Principal: { AWS: ['*'] },
+      Action: ['s3:GetObject'],
+      Resource: [`arn:aws:s3:::${env.storage.bucket}/${PUBLIC_PREFIX}/*`],
+    },
+  ],
+};
+
+await storage.send(
+  new PutBucketPolicyCommand({
+    Bucket: env.storage.bucket,
+    Policy: JSON.stringify(publicReadPolicy),
+  }),
+);
 
 export default storage;
 export { bucket, getDockerStorageClient };

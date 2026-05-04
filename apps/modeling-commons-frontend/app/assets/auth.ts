@@ -1,4 +1,4 @@
-import type { AuthFormField } from "#ui/types";
+import type { AuthFormField, RadioGroupItem } from "#ui/types";
 import * as z from "zod";
 
 export const nameValidator = z
@@ -16,7 +16,36 @@ export const passwordValidator = miniPasswordValidator
   .regex(/[0-9]/, "Must contain at least one number")
   .regex(/[@$!%*?&]/, "Must contain at least one special character (@$!%*?&)")
   .regex(/^\S*$/, "Cannot contain spaces");
+
+export const userKindOptions = [
+  {
+    label: "Student",
+    value: "student",
+    icon: "i-lucide-graduation-cap",
+    description: "Learning through models, coursework, or independent study.",
+  },
+  {
+    label: "Teacher",
+    value: "teacher",
+    icon: "i-lucide-school",
+    description: "Using models in lessons, workshops, or curriculum design.",
+  },
+  {
+    label: "Researcher",
+    value: "researcher",
+    icon: "i-lucide-flask-conical",
+    description: "Building or studying models for analysis, experiments, or publications.",
+  },
+  {
+    label: "Other",
+    value: "other",
+    icon: "i-lucide-user-round",
+    description: "A role that does not fit neatly into the categories above.",
+  },
+] satisfies Array<RadioGroupItem>;
+
 export const userKindValidator = z.enum(["student", "teacher", "researcher", "other"]).optional();
+export type UserKind = z.infer<typeof userKindValidator>;
 
 export const logInValidator = z.object({
   email: emailValidator,
@@ -166,11 +195,10 @@ export const signUpFields: Array<AuthFormField> = [
     label: "I am a ...",
     type: "select" as const,
     placeholder: "Student, Teacher, Researcher, or Other",
-    items: [
-      { label: "Student", value: "student", icon: "i-lucide-graduation-cap" },
-      { label: "Teacher", value: "teacher", icon: "i-lucide-school" },
-      { label: "Researcher", value: "researcher", icon: "i-lucide-text" },
-      { label: "Other", value: "other", icon: "i-lucide-user" },
-    ],
+    items: userKindOptions.map((option) => ({
+      label: option.label,
+      value: option.value,
+      icon: option.icon,
+    })),
   },
 ];

@@ -1,37 +1,15 @@
+import type { UserRecord } from './database/user.record.ts';
 import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
-import type { UserEntity, UserPublicView, SystemRole, UserKind } from '#src/modules/user/domain/user.types.ts';
+import type { UserEntity, UserPublicView } from '#src/modules/user/domain/user.types.ts';
 import type { UserResponseDto } from '#src/modules/user/dtos/user.response.dto.ts';
-import type { UserPublicResponseDto } from '#src/modules/user/dtos/user.public.response.dto.ts';
-
-export type UserRecord = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  emailVerified: boolean;
-  image: string | null;
-  systemRole: SystemRole;
-  userKind: UserKind;
-  isProfilePublic: boolean;
-  onboardedAt: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
-};
 
 export default function userMapper(): Mapper<UserEntity, UserRecord, UserResponseDto> & {
-  toPublicResponse: (view: UserPublicView) => UserPublicResponseDto;
+  toPublicResponse: (view: UserPublicView) => UserResponseDto;
 } {
   return {
     toDomain(record: UserRecord): UserEntity {
       return {
-        id: record.id,
-        name: record.name,
-        email: record.email,
-        emailVerified: record.emailVerified,
-        image: record.image,
-        systemRole: record.systemRole,
-        userKind: record.userKind,
-        isProfilePublic: record.isProfilePublic,
+        ...record,
         onboardedAt: record.onboardedAt ? new Date(record.onboardedAt) : null,
         createdAt: new Date(record.createdAt),
         updatedAt: new Date(record.updatedAt),
@@ -49,6 +27,10 @@ export default function userMapper(): Mapper<UserEntity, UserRecord, UserRespons
         systemRole: entity.systemRole,
         userKind: entity.userKind,
         isProfilePublic: entity.isProfilePublic,
+        dob: entity.dob ? entity.dob.toISOString().split('T')[0] : null, // Format as YYYY-MM-DD
+        affiliation: entity.affiliation ?? undefined,
+        bio: entity.bio ?? undefined,
+        country: entity.country ?? undefined,
         onboardedAt: entity.onboardedAt ? entity.onboardedAt.toISOString() : null,
         createdAt: entity.createdAt.toISOString(),
         updatedAt: entity.updatedAt.toISOString(),
@@ -57,26 +39,16 @@ export default function userMapper(): Mapper<UserEntity, UserRecord, UserRespons
 
     toPersistence(entity: UserEntity): UserRecord {
       return {
-        id: entity.id,
-        name: entity.name,
-        email: entity.email,
-        emailVerified: entity.emailVerified,
-        image: entity.image,
-        systemRole: entity.systemRole,
-        userKind: entity.userKind,
-        isProfilePublic: entity.isProfilePublic,
-        onboardedAt: entity.onboardedAt,
-        createdAt: entity.createdAt,
-        updatedAt: entity.updatedAt,
-        deletedAt: entity.deletedAt,
+        ...entity,
       };
     },
 
-    toPublicResponse(view: UserPublicView): UserPublicResponseDto {
+    toPublicResponse(view: UserPublicView): UserResponseDto {
       return {
         id: view.id,
         name: view.name,
         isProfilePublic: view.isProfilePublic,
+        image: view.image,
         createdAt: view.createdAt.toISOString(),
         updatedAt: view.updatedAt.toISOString(),
       };

@@ -5,10 +5,10 @@ import type {
   UserPublicView,
   UserSearchFilters,
 } from '#src/modules/user/domain/user.types.ts';
-import { SystemRole } from '#src/modules/user/domain/user.types.ts';
-import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import type { Paginated } from '#src/shared/db/repository.port.ts';
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
+import { ForbiddenException } from '#src/shared/exceptions/index.ts';
+import { SystemRole } from './database/user.record.ts';
 
 export type FindByIdResult =
   | { canViewFullProfile: true; user: UserEntity }
