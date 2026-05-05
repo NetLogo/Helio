@@ -39,8 +39,8 @@ export const userResponseDtoSchema = Type.Intersect([
       Type.Array(
         Type.Object({
           rawValue: Type.String({
-            description: 'The raw URL provided by the user for a social link',
-            examples: ['https://twitter.com/johndoe'],
+            description: 'The raw handle or URL of the social link as entered by the user',
+            examples: ['johndoe'],
             maxLength: 2048,
           }),
           type: Type.String({

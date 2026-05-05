@@ -3,35 +3,43 @@
     <ClientNavbar />
 
     <PageBoundary>
-      <UContainer class="flex py-5 max-w-[130ch] gap-8">
-        <div class="flex flex-col gap-6 px-4 py-6 min-w-80">
-          <div
-            class="flex items-center gap-3 px-1 py-1 group-data-[collapsible=icon]:justify-center"
-          >
-            <UAvatar
-              :src="displayImage || undefined"
-              :alt="displayName"
-              size="md"
-              :ui="{ fallback: 'font-semibold' }"
-            >
-              {{ initials }}
-            </UAvatar>
-            <div class="min-w-0 group-data-[collapsible=icon]:hidden">
-              <p class="truncate text-sm font-semibold mb-0">{{ displayName }}</p>
-              <p class="truncate text-xs text-muted">{{ displayEmail }}</p>
-            </div>
-          </div>
+      <UContainer class="flex py-5 lg:max-w-[130ch] gap-3 lg:gap-8 relative">
+        <div
+          class="flex flex-col gap-6 px-2 py-1 lg:px-4 lg:py-6 lg:min-w-80 sticky lg:static top-(--ui-header-height) self-start"
+        >
+          <UserAvatar
+            :src="displayImage"
+            :name="displayName"
+            :email="displayEmail"
+            :alt="displayName"
+            size="md"
+            container="hidden lg:block"
+            :ui="{ fallback: 'font-semibold' }"
+            variant="headline"
+          />
 
           <UNavigationMenu
             :items="navItems"
             orientation="vertical"
             :collapsed="!sidebarOpen"
-            class="data-[orientation=vertical]:w-full lg:flex-1 overflow-auto"
+            class="hidden lg:block data-[orientation=vertical]:w-full flex-1 overflow-auto"
+            :ui="{
+              separator: 'my-2',
+            }"
+          />
+          <UNavigationMenu
+            :items="navItems"
+            orientation="vertical"
+            :collapsed="sidebarOpen"
+            class="lg:hidden grow-0 w-fit overflow-auto"
+            :ui="{
+              link: 'p-3 m-1 w-fit',
+            }"
           />
         </div>
 
         <div class="flex flex-col gap-2 flex-1">
-          <header class="sticky top-0 z-10 flex h-14 items-center gap-2 mt-10">
+          <header class="sticky top-0 z-10 flex h-14 items-center gap-2 lg:mt-10">
             <h5 class="mb-0">{{ activeTitle }}</h5>
           </header>
           <USeparator />
@@ -61,16 +69,6 @@ const { displayName, displayEmail, displayImage } = useProfileSettings();
 
 const sidebarOpen = ref(true);
 
-const initials = computed(
-  () =>
-    displayName.value
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase() ?? "")
-      .join("") || "U",
-);
-
 const navItems = computed<NavigationMenuItem[][]>(() => [
   [
     { label: "Account", type: "label" },
@@ -92,6 +90,18 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
     { label: "Support", type: "label" },
     { label: "Help Center", icon: "i-lucide-help-circle", to: "/profile/support" },
   ],
+  [
+    { label: "Legal & Policies", type: "label" },
+    { label: "Privacy Policy", icon: "i-lucide-eye-closed", to: "/privacy", target: "_blank" },
+    {
+      label: "Terms of Service",
+      icon: "i-lucide-handshake",
+      to: "/terms-of-service",
+      target: "_blank",
+    },
+    { label: "Cookie Policy", icon: "i-lucide-cookie", to: "/cookies", target: "_blank" },
+  ],
+  [{ label: "Go to My Profile", icon: "i-lucide-user", to: "/profile", target: "_blank" }],
 ]);
 
 const route = useRoute();

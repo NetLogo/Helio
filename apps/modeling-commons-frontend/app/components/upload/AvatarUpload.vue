@@ -6,25 +6,24 @@
         type="button"
         class="group relative block size-40 overflow-hidden rounded-full ring-1 ring-neutral-darkest/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         :class="{
-          'cursor-pointer': pending,
-          'cursor-not-allowed': !pending,
+          'cursor-pointer': !pending,
+          'cursor-not-allowed': pending,
         }"
         :disabled="pending"
         :aria-label="alt ? `Change avatar for ${alt}` : 'Change avatar'"
         @click="openFilePicker"
       >
-        <UAvatar
+        <UserAvatar
           :src="imageSrc"
           :alt="alt"
           :text="initials"
-          size="3xl"
+          :pending="pending"
           class="size-full rounded-full bg-neutral-darkest/5 text-2xl"
-          :class="{ 'opacity-50': pending }"
-          :ui="{ root: 'size-full', image: 'size-full object-cover' }"
+          variant="compact"
         />
 
         <span
-          v-if="isUploading"
+          v-if="pending"
           class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/55 text-white"
         >
           <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin" />
@@ -134,7 +133,7 @@ const menuItems = computed<Array<Array<DropdownMenuItem>>>(() => {
 });
 
 function openFilePicker() {
-  if (props.isUploading) return;
+  if (props.pending) return;
   fileInput.value?.click();
 }
 

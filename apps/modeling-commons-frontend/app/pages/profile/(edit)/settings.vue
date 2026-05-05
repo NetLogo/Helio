@@ -15,7 +15,7 @@
     </div>
 
     <section v-else class="grid items-start gap-6 lg:grid-cols-6 mt-1">
-      <section class="space-y-10 col-span-4">
+      <section class="space-y-10 lg:col-span-4">
         <UForm>
           <UFormField label="Name">
             <UInput v-model="name" size="md" />
@@ -129,7 +129,7 @@
         </UForm>
       </section>
 
-      <div class="col-span-2 space-y-5">
+      <div class="-order-1 lg:order-2 lg:col-span-2 space-y-5">
         <AvatarUpload
           :src="displayImage"
           :alt="displayName"
@@ -144,6 +144,7 @@
           <p class="m-0 text-xs uppercase tracking-widest text-muted">Member since</p>
           <p class="m-0 font-medium text-highlighted">{{ formatDate(profile.createdAt) }}</p>
         </article>
+        <USeparator class="lg:hidden" />
       </div>
     </section>
   </div>

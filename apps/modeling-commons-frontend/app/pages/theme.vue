@@ -205,6 +205,31 @@
         />
       </div>
     </section>
+
+    <section class="flex gap-15 flex-col mt-10">
+      <h3>Avatar</h3>
+      <UserAvatar
+        src="https://i.pravatar.cc/150"
+        alt="John Doe"
+        initials="JD"
+        email="johndoe@email.com"
+        variant="default"
+      />
+      <UserAvatar
+        src="https://i.pravatar.cc/150"
+        alt="John Doe"
+        initials="JD"
+        email="johndoe@email.com"
+        variant="headline"
+      />
+      <UserAvatar
+        src="https://i.pravatar.cc/150"
+        alt="John Doe"
+        initials="JD"
+        email="johndoe@email.com"
+        variant="compact"
+      />
+    </section>
   </UContainer>
 </template>
 

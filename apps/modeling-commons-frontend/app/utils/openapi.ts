@@ -1,5 +1,5 @@
 import type { ErrorStatus, HttpMethod, OkStatus } from "openapi-typescript-helpers";
-import type { paths } from "~~/shared/types/api";
+import type { components, paths } from "~~/shared/types/api";
 
 export type QueryParams<
   M extends Uppercase<HttpMethod>,
@@ -57,3 +57,5 @@ export type ResponseErrorData<
   P extends keyof paths,
   ContentType extends string = `${string}/json`,
 > = ResponseData<M, P, ContentType, ErrorStatus>;
+
+export type ApiError = components["schemas"]["def-0"];

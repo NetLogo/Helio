@@ -67,6 +67,26 @@ async function errorHandlerPlugin(fastify: FastifyInstance) {
 
   // Add the ExceptionResponse schema to the fastify instance
   fastify.addSchema(apiErrorResponseSchema);
+
+  // Add global error schema
+  fastify.addHook('onRoute', (routeOptions) => {
+    // Initialize schema and response objects if they don't exist
+    routeOptions.schema = routeOptions.schema || {};
+    routeOptions.schema.response = routeOptions.schema.response || {};
+
+    // @ts-expect-error - Not typed
+    const errorRef = { $ref: `${apiErrorResponseSchema.$id}#` };
+
+    // Automatically add error definitions if not already explicitly defined
+    const defaultErrors = [400, 401, 403, 404, 500];
+
+    defaultErrors.forEach((code) => {
+      routeOptions.schema ??= {};
+      routeOptions.schema.response ??= {};
+      // @ts-expect-error - Not typed
+      routeOptions.schema!.response[code] ??= errorRef;
+    });
+  });
 }
 
 // Export the plugin

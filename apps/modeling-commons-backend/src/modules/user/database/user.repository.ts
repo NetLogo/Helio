@@ -1,14 +1,9 @@
 import type { UserRepository } from '#src/modules/user/database/user.repository.port.ts';
-import type {
-  UserEntity,
-  UserSearchFilters,
-  UserKind,
-  SystemRole,
-} from '#src/modules/user/domain/user.types.ts';
-import type { UserRecord } from '#src/modules/user/user.mapper.ts';
+import type { UserEntity, UserSearchFilters } from '#src/modules/user/domain/user.types.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
+import type { SystemRole, UserKind, UserRecord } from './user.record.ts';
 
 export default function userRepository({
   db,

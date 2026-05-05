@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UFieldGroup } from "#components";
+import { UButton, UFieldGroup } from "#components";
 import { socialMediaLinksKinds } from "./SocialLink.vue";
 
 const props = defineProps<{
@@ -51,7 +51,7 @@ const addLink = () => {
     <UFieldGroup class="w-full">
       <USelectMenu
         v-model="model"
-        class="min-w-50"
+        class="min-w-30 md:min-w-50"
         :items="items"
         :ui="{
           item: 'p-2 my-1',
@@ -73,9 +73,22 @@ const addLink = () => {
         square
         icon="i-lucide-plus"
         size="sm"
+        class="hidden lg:inline-flex"
         @click="addLink()"
       />
     </UFieldGroup>
+    <UButton
+      color="neutral"
+      variant="solid"
+      square
+      trailing-icon="i-lucide-plus"
+      size="xs"
+      class="lg:hidden mt-2"
+      block
+      @click="addLink()"
+    >
+      Add Link
+    </UButton>
     <span v-if="error" class="text-xs text-error mt-1">{{ error }}</span>
     <div class="">
       <div

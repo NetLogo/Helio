@@ -9,6 +9,7 @@ import {
   type UserIdParams,
   type UserSearchQuery,
 } from '#src/modules/user/user.schemas.ts';
+import { UnexpectedBehaviorException } from '#src/shared/exceptions/exceptions.ts';
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
 import type { FastifyInstance } from 'fastify';
 
@@ -77,11 +78,34 @@ export default async function userRoutes(fastify: FastifyInstance) {
         request.user?.id ?? null,
         request.user?.systemRole ?? null,
       );
-
+      console.log(result);
       if (result.canViewFullProfile) {
         return userMapper.toResponse(result.user);
       }
       return userMapper.toPublicResponse(result.user);
+    },
+  );
+
+  fastify.get(
+    '/v1/users/whoami',
+    {
+      schema: {
+        response: { 200: userResponseDtoSchema },
+        tags: ['User'],
+        description: 'Get the currently authenticated user.',
+      },
+      preHandler: [requireAuth],
+    },
+    async (request) => {
+      const user = request.user!;
+      const result = await userService.findById(user.id, user.id, user.systemRole);
+      if (result.canViewFullProfile) {
+        return userMapper.toResponse(result.user);
+      } else {
+        throw new UnexpectedBehaviorException(
+          'Authenticated user should always be able to view their full profile',
+        );
+      }
     },
   );
 

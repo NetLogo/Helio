@@ -55,6 +55,7 @@ export default function useProfileSettings() {
   const socialLinksField = useTrackedField(
     () => (Array.isArray(profile.value?.socialLinks) ? profile.value?.socialLinks : []),
     sameSocialLinks,
+    (arr) => [...arr],
   );
   const countryField = useTrackedField(() => profile.value?.country ?? null);
   const affiliationField = useTrackedField(() => profile.value?.affiliation ?? "");
@@ -102,6 +103,8 @@ export default function useProfileSettings() {
       {} as Record<string, unknown>,
     );
 
+    console.info("Saving profile with payload:", authPayload);
+
     try {
       await auth.client.updateUser(authPayload);
       await refresh();
@@ -122,15 +125,15 @@ export default function useProfileSettings() {
       const form = new FormData();
       form.append("file", file);
 
-      const { error, response, data } = await POST("/api/v1/uploads/avatar", {
+      const { error, data } = await POST("/api/v1/uploads/avatar", {
         // @ts-expect-error - FormData doesn't type well with openAPI
         // -Omar Ibrahim, May 04 26
         body: form as unknown,
       });
-      if (error || !response.ok) {
+      if (error) {
         return {
           data: null,
-          error: { message: error || "Failed to upload avatar" },
+          error: { message: error?.message || "Failed to upload avatar" },
         };
       }
 

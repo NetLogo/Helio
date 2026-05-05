@@ -35,30 +35,35 @@
       <NuxtLink v-if="user.isLoggedIn" to="/models/upload" title="Upload a Model">
         <UButton variant="outline" size="xs" square icon="i-lucide-upload" />
       </NuxtLink>
-      <UDropdownMenu
-        v-if="user.isLoggedIn"
-        v-slot="{ open }"
-        :items="userDropdownItems"
-        :content="{ align: 'end' }"
-      >
-        <div
-          class="group hover:cursor-pointer flex gap-2 items-center p-1 hover:bg-neutral-lighter/30 rounded-full"
-          :class="{ 'bg-neutral-lighter/30': open }"
-        >
-          <UAvatar
+      <UDropdownMenu v-if="user.isLoggedIn" :items="userDropdownItems" :content="{ align: 'end' }">
+        <template #user-info>
+          <UserAvatar
             :name="user.name"
-            :src="user.image ?? undefined"
+            :src="user.image"
             :alt="user.name"
-            size="sm"
-            class="rounded-full bg-neutral-lighter"
+            :email="user.email"
+            variant="headline"
           />
-          <span class="text-sm text-muted hidden sm:block">{{ user.name }}</span>
-          <UIcon
-            name="i-lucide-chevron-down"
-            class="text-muted group-hover:text-toned transition-transform"
-            :class="{ 'rotate-180': open }"
-          />
-        </div>
+        </template>
+        <template #default="{ open }">
+          <div
+            class="group hover:cursor-pointer flex gap-2 items-center p-1 hover:bg-neutral-lighter/30 rounded-full"
+            :class="{ 'bg-neutral-lighter/30': open }"
+          >
+            <UserAvatar
+              :name="user.name"
+              :src="user.image"
+              :alt="user.name"
+              size="sm"
+              class="rounded-full bg-neutral-lighter"
+            />
+            <UIcon
+              name="i-lucide-chevron-down"
+              class="text-muted group-hover:text-toned transition-transform"
+              :class="{ 'rotate-180': open }"
+            />
+          </div>
+        </template>
       </UDropdownMenu>
       <div v-else class="flex gap-5">
         <UButton variant="link" size="sm" to="/login"> Log In </UButton>
@@ -145,15 +150,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
     return [
       [
         {
-          label: user.value.name,
-          avatar: {
-            src: user.value.image ?? undefined,
-            lazy: true,
-            alt: user.value.name,
-            size: "md",
-          },
-          description: user.value.email ?? undefined,
-          type: "label",
+          slot: "user-info",
         },
       ],
       [
@@ -196,7 +193,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           },
         },
       ],
-    ];
+    ] satisfies DropdownMenuItem[];
   }
   return [];
 });

@@ -103,3 +103,19 @@ export class LimitExceededException extends ExceptionBase {
 
   readonly statusCode = 400;
 }
+
+/**
+ * Used to indicate that an unexpected behavior occurred (e.g., in a third-party provider or an internal process)
+ *
+ * @class UnexpectedBehaviorException
+ * @extends {ExceptionBase}
+ */
+export class UnexpectedBehaviorException extends ExceptionBase {
+  static readonly message = 'Unexpected behavior';
+  readonly error = ExceptionError.INTERNAL_SERVER_ERROR;
+  constructor(message: string = UnexpectedBehaviorException.message, cause?: Error) {
+    super(message, cause);
+  }
+
+  readonly statusCode = 500;
+}

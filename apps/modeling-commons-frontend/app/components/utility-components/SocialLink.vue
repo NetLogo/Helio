@@ -1,10 +1,17 @@
 <template>
-  <div class="inline-flex gap-2 items-center">
-    <UIcon :name="model?.icon || 'i-lucide-link-2'" size="md" class="shrink-0 text-muted" />
-    <a :href="sanitizeUrl(url)" target="_blank" class="text-sm text-highlighted underline">
+  <a
+    :href="sanitizeUrl(url)"
+    target="_blank"
+    class="inline-flex gap-2 items-center underline group/social"
+  >
+    <UIcon
+      :name="model?.icon || 'i-lucide-link-2'"
+      class="shrink-0 text-muted group-hover/social:text-royal-blue"
+    />
+    <span v-if="variant !== 'compact'">
       {{ display }}
-    </a>
-  </div>
+    </span>
+  </a>
 </template>
 
 <script lang="ts">
@@ -16,7 +23,7 @@ const socialMediaLinksKinds = [
     value: "website",
     label: "Personal website",
     placeholder: "https://www.mywebsite.com",
-    icon: "i-lucide-link-2",
+    icon: "iconoir:www",
     schema: z
       .url("Invalid URL. Make sure to include https:// at the beginning of your URL")
       .optional(),
@@ -38,11 +45,11 @@ const socialMediaLinksKinds = [
     value: "x",
     label: "X",
     placeholder: "@handle",
-    icon: "logos:x",
+    icon: "prime:twitter",
     schema: z
       .string()
       .regex(/^@?[a-zA-Z0-9_]+$/, "Invalid X handle.")
-      .min(4, "X handles must be at least 4 characters long")
+      .min(3, "X handles must be at least 3 characters long")
       .max(16, "X handles cannot be longer than 16 characters")
       .optional(),
     toUrl: (input: string) => `https://x.com/${input.replace(/^@/, "")}`,
@@ -52,7 +59,7 @@ const socialMediaLinksKinds = [
     value: "github",
     label: "GitHub",
     placeholder: "GitHub Username",
-    icon: "logos:github-icon",
+    icon: "mdi:github",
     schema: z
       .string()
       .regex(/^@?[a-zA-Z0-9-]+$/, "Invalid GitHub username.")
@@ -67,7 +74,7 @@ const socialMediaLinksKinds = [
     value: "linkedin",
     label: "LinkedIn",
     placeholder: "LinkedIn Profile URL",
-    icon: "logos:linkedin-icon",
+    icon: "mdi:linkedin",
     schema: z
       .url()
       .regex(/^https?:\/\/(www\.)?linkedin\.com\/.*$/, "Invalid LinkedIn URL.")
@@ -79,7 +86,7 @@ const socialMediaLinksKinds = [
     value: "google-scholar",
     label: "Google Scholar",
     placeholder: "Google Scholar Profile URL",
-    icon: "i-lucide-file-text",
+    icon: "academicons:google-scholar",
     schema: z
       .url()
       .regex(
@@ -101,7 +108,16 @@ export { socialMediaLinksKinds };
 </script>
 
 <script lang="ts" setup>
-const props = defineProps<SocialMediaLink>();
+const props = withDefaults(
+  defineProps<
+    SocialMediaLink & {
+      variant?: "default" | "compact";
+    }
+  >(),
+  {
+    variant: "default",
+  },
+);
 const model = computed(() => socialMediaLinksKinds.find((i) => i.value === props.type));
 const url = computed(() => model.value?.toUrl(props.rawValue) ?? props.rawValue);
 const display = computed(() => model.value?.toDisplay(props.rawValue) ?? props.rawValue);
