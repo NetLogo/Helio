@@ -5,6 +5,7 @@ type AuthUserKind = "student" | "teacher" | "researcher" | "other";
 interface SignInWithEmailInput {
   email: string;
   password: string;
+  rememberMe?: boolean;
   next?: unknown;
 }
 
@@ -37,6 +38,7 @@ export default function useAuthActions() {
   function signInWithEmail({ next, ...input }: SignInWithEmailInput) {
     return auth.client.signIn.email({
       ...input,
+
       callbackURL: getEmailVerificationCallbackUrl(appUrl, next),
     });
   }

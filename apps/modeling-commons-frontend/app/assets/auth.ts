@@ -50,6 +50,7 @@ export type UserKind = z.infer<typeof userKindValidator>;
 export const logInValidator = z.object({
   email: emailValidator,
   password: miniPasswordValidator,
+  rememberMe: z.boolean().default(false),
 });
 
 export const emailOnlyValidator = z.object({
@@ -80,6 +81,12 @@ export const logInFields = [
     type: "password" as const,
     placeholder: "Enter your password",
     required: true,
+  },
+  {
+    name: "rememberMe",
+    label: "Remember Me",
+    type: "checkbox" as const,
+    required: false,
   },
 ];
 

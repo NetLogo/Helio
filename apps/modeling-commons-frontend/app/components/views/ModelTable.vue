@@ -68,12 +68,12 @@
     </template>
 
     <template #empty>
-      <div class="flex flex-col items-center justify-center py-20 mx-auto">
-        <UIcon name="i-lucide-inbox" class="size-14 text-dimmed mx-auto mb-4" />
-        <h2 class="text-lg font-semibold text-toned">No models found</h2>
-        <p class="text-dimmed mt-1">Try adjusting your search or filters.</p>
-        <UButton variant="outline" class="mt-4" @click="emit('resetFilters')"> Clear filters </UButton>
-      </div>
+        <div class="flex flex-col items-center justify-center py-20 mx-auto">
+          <UIcon name="i-lucide-inbox" class="size-14 text-dimmed mx-auto mb-4" />
+          <h2 class="text-lg font-semibold text-toned">No models found</h2>
+          <p class="text-dimmed mt-1">Try adjusting your search or filters.</p>
+          <UButton variant="outline" class="mt-4" @click="emit('resetFilters')"> Clear filters </UButton>
+        </div>
     </template>
   </UTable>
 </template>

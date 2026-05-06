@@ -18,13 +18,27 @@ export default defineNuxtConfig({
       adminDashboardUrl: process.env.ADMIN_DASHBOARD_URL as string,
       storageBaseUrl: process.env.NUXT_STORAGE_BASE_URL as string,
     },
+    turnstile: {
+      secretKey: process.env.CAPTCHA_SECRET_KEY as string,
+    },
   },
 
   // prettier-ignore
   modules: [
     "@nuxt/image",
     "@nuxt/test-utils/module",
+    "nuxt-security",
+    "@nuxtjs/turnstile",
   ],
+
+  security: {
+    enabled: process.env.NODE_ENV === "production",
+  },
+
+  turnstile: {
+    enabled: process.env.CAPTCHA_SITE_KEY,
+    siteKey: process.env.CAPTCHA_SITE_KEY as string,
+  },
 
   gtag: {
     id: process.env.NUXT_PUBLIC_GA_TRACKING_ID || "",
@@ -54,6 +68,12 @@ export default defineNuxtConfig({
         name: "model-version",
         path: "/models/:id/versions/:versionNumber",
         file: "~/pages/models/[id].vue",
+      });
+
+      pages.push({
+        name: "user-slug",
+        path: "/users/:slug/:id",
+        file: "~/pages/users/[id]/index.vue",
       });
     },
   },
@@ -97,6 +117,10 @@ export default defineNuxtConfig({
     tsConfig: {
       include: ["../tests/**/*"],
     },
+  },
+
+  csurf: {
+    https: process.env.NODE_ENV === "production",
   },
 
   linkChecker: { enabled: false },

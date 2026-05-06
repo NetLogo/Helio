@@ -1,5 +1,5 @@
+import { ObjectFunctor } from "@repo/utils/std/objects";
 import slugify from "slugify";
-
 export function formatRelativeDate(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);
@@ -81,19 +81,40 @@ export function sentenceCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-export function createModelPath(modelId: string, modelTitle: string): string {
-  const slug = slugify(modelTitle, { lower: true, strict: true });
+export function createSlugPath(prefixPath: string, id: string, name: string): string {
+  const slug = slugify(name, { lower: true, strict: true });
   const truncatedSlug = slug.length > 50 ? slug.substring(0, 50) : slug;
-  return `/models/${truncatedSlug}/${modelId}`;
+  return `/${prefixPath}/${truncatedSlug}/${id}`;
 }
 
-export function parseModelPath(path: string): { modelId: string; modelSlug: string } | null {
-  const parts = path.split("/");
-  if (parts.length < 4 || parts[1] !== "models") return null;
-  const modelId = parts[parts.length - 1]!;
-  const modelSlug = parts.slice(2, parts.length - 1).join("/");
-  return { modelId, modelSlug };
+export function parseSlugPath(
+  path: string,
+  prefixPath: string,
+): { id: string; slug: string } | null {
+  const noPrefixPath = path.startsWith(prefixPath) ? path.substring(prefixPath.length) : path;
+  if (!noPrefixPath.startsWith("/")) return null;
+  const parts = noPrefixPath.split("/");
+  if (parts.length < 3) return null;
+  const id = parts[parts.length - 1]!;
+  const slug = parts.slice(2, parts.length - 1).join("/");
+  return { id, slug };
 }
+
+export const createModelPath = (modelId: string, modelTitle: string): string =>
+  createSlugPath("models", modelId, modelTitle);
+export const parseModelPath = (path: string): { modelId: string; modelSlug: string } | null =>
+  new ObjectFunctor(parseSlugPath(path, "models") ?? {})
+    .mapKeys((key) => {
+      switch (key) {
+        case "id":
+          return "modelId";
+        case "slug":
+          return "modelSlug";
+        default:
+          return key;
+      }
+    })
+    .get() as { modelId: string; modelSlug: string } | null;
 
 export function appendWindowProtocol(url: string): string {
   const hasScheme = url.startsWith("http://") || url.startsWith("https://");

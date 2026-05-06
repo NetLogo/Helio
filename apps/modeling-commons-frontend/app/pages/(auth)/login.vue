@@ -167,10 +167,12 @@ async function continueWithPasskey() {
 }
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
-  const { email, password } = payload.data;
+  const { email, password, rememberMe } = payload.data;
+
   const { error } = await signInWithEmail({
     email,
     password,
+    rememberMe,
     next: route.query.next,
   });
 
