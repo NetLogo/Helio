@@ -63,3 +63,15 @@ export function surround<T>(arr: Array<T>, eq: (a: T) => boolean): Array<T> {
 export function isValidIndex(array: Array<unknown>, index: number): boolean {
   return index >= 0 && index < array.length;
 }
+
+export function unique<T>(array: Array<T>, keyFn: (item: T) => string | number | symbol): Array<T> {
+  const seen = new Set();
+  return array.filter((item) => {
+    const key = keyFn(item);
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
