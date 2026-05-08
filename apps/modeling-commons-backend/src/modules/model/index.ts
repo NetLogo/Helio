@@ -13,6 +13,9 @@ declare global {
     searchModelsQuery: ReturnType<
       typeof import('#src/modules/model/queries/search-models.query.ts').default
     >;
+    searchModelsCardQuery: ReturnType<
+      typeof import('#src/modules/model/queries/search-models-card.query.ts').default
+    >;
     getModelChildrenQuery: ReturnType<
       typeof import('#src/modules/model/queries/get-model-children.query.ts').default
     >;

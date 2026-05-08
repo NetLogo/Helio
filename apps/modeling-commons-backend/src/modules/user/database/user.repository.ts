@@ -4,6 +4,7 @@ import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 import type { SystemRole, UserKind, UserRecord } from './user.record.ts';
+import type { Prisma } from '#prisma/index';
 
 export default function userRepository({
   db,
@@ -51,10 +52,7 @@ export default function userRepository({
       params: PaginatedQueryParams,
       publicOnly: boolean,
     ): Promise<Paginated<UserEntity>> {
-      const where: Pick<UserSearchFilters, 'userKind' | 'systemRole'> & {
-        deletedAt: null;
-        isProfilePublic?: boolean;
-      } = { deletedAt: null };
+      const where: Prisma.UserWhereInput = { deletedAt: null };
 
       if (publicOnly) {
         where.isProfilePublic = true;
@@ -62,6 +60,9 @@ export default function userRepository({
 
       if (filters.userKind) where.userKind = filters.userKind;
       if (filters.systemRole) where.systemRole = filters.systemRole;
+      if (filters.keyword) {
+        where.name = { contains: filters.keyword, mode: 'insensitive' };
+      }
 
       const [count, records] = await Promise.all([
         db.user.count({ where }),

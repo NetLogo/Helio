@@ -1,20 +1,19 @@
-import type { Model } from '#prisma/index';
-import type { ModelCardRecord } from '#src/modules/model/database/model.card.record.ts';
-import { modelCardArgs } from '#src/modules/model/database/model.card.record.ts';
+import type { Model, ModelInteractionKind, Prisma } from '#prisma/index';
+import {
+  modelCardArgs,
+  type ModelCardRecord,
+} from '#src/modules/model/database/model.card.record.ts';
 import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
-import type { ModelRecord } from '#src/modules/model/database/model.record.ts';
-import type { ModelSearchFilters, ModelSortBy } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
-import { ModelInteractionKind } from '#src/modules/model-interaction/domain/model-interaction.types.ts';
-import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
+import {
+  paginate,
+  type Paginated,
+  type PaginatedQueryParams,
+} from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
-
-const interactionKindBySortKey: Partial<Record<ModelSortBy, ModelInteractionKind>> = {
-  views: ModelInteractionKind.view,
-  runs: ModelInteractionKind.run,
-  downloads: ModelInteractionKind.download,
-};
+import { buildModelOrderBy, buildModelWhere, interactionKindBySortKey } from './model.search.ts';
 
 export default function modelRepository({
   db,
@@ -22,7 +21,7 @@ export default function modelRepository({
   repositoryBase,
 }: Dependencies): ModelRepository {
   const tableName = 'model';
-  const base = repositoryBase<Model, ModelRecord>({
+  const base = repositoryBase<Model, Model>({
     tableName,
     mapper: modelMapper,
   });
@@ -32,7 +31,7 @@ export default function modelRepository({
 
     async findByIdIncludeDeleted(id: string): Promise<Model | undefined> {
       const record = await db.model.findUnique({ where: { id } });
-      return record ? modelMapper.toDomain(record as unknown as ModelRecord) : undefined;
+      return record ? modelMapper.toDomain(record) : undefined;
     },
 
     async setLatestVersion(
@@ -69,108 +68,81 @@ export default function modelRepository({
       await client.model.update({ where: { id }, data });
     },
 
-    async search(
+    /**
+     * @description
+     * Invariants:
+     *  - should always return public models
+     *  - should only return private/unlisted models
+     *    if user is the author or has explicit permission
+     *  - should only return private/unlisted models if `publicOnly` is not true
+     *    (defaults to true)
+     *  - should never return deleted models
+     */
+    async search<T>(
       filters: ModelSearchFilters,
       params: PaginatedQueryParams,
       userId: string | null,
-    ): Promise<Paginated<Model>> {
-      const where: Record<string, unknown> = { deletedAt: null };
-
-      if (userId) {
-        where['AND'] = [
-          {
-            OR: [
-              { visibility: 'public' },
-              {
-                visibility: 'private',
-                OR: [
-                  { authors: { some: { userId } } },
-                  { permissions: { some: { granteeUserId: userId } } },
-                ],
-              },
-            ],
-          },
-        ];
-      } else {
-        where['visibility'] = 'public';
-      }
-
-      if (filters.parentModelId) where['parentModelId'] = filters.parentModelId;
-      if (filters.isEndorsed !== undefined) where['isEndorsed'] = filters.isEndorsed;
-      if (filters.authorId) where['authors'] = { some: { userId: filters.authorId } };
-      if (filters.tag) {
-        where['versions'] = {
-          some: {
-            tags: {
-              some: { tag: { name: { equals: filters.tag, mode: 'insensitive' } } },
-            },
-          },
-        };
-      }
-      if (filters.keyword) {
-        where['OR'] = [
-          { versions: { some: { title: { contains: filters.keyword, mode: 'insensitive' } } } },
-          {
-            versions: { some: { description: { contains: filters.keyword, mode: 'insensitive' } } },
-          },
-        ];
-      }
+      options: {
+        include?: Prisma.ModelInclude;
+        map: (record: never) => T;
+      },
+    ): Promise<Paginated<T>> {
+      const where = buildModelWhere(filters, userId);
+      const { include, map } = options;
 
       const interactionKind = filters.sortBy ? interactionKindBySortKey[filters.sortBy] : undefined;
 
       if (interactionKind) {
-        const [count, grouped] = await Promise.all([
-          db.model.count({ where }),
-          db.modelInteraction.groupBy({
-            by: ['modelId'],
-            where: { kind: interactionKind, model: where },
-            _count: { _all: true },
-            orderBy: { _count: { id: 'desc' } },
-            skip: params.offset,
-            take: params.limit,
-          }),
-        ]);
-        const orderedIds = grouped.map((g) => g.modelId);
-        const records =
-          orderedIds.length === 0
-            ? []
-            : await db.model.findMany({ where: { ...where, id: { in: orderedIds } } });
-        const byId = new Map(records.map((r: ModelRecord) => [r.id, r]));
-        const sorted = orderedIds
-          .map((id) => byId.get(id))
-          .filter((r): r is ModelRecord => r !== undefined);
-
-        return {
-          count,
-          limit: params.limit,
-          page: params.page,
-          data: sorted.map((r) => modelMapper.toDomain(r)),
-        };
+        const { count, sorted } = await this.fetchByInteraction(where, params, interactionKind, {
+          include,
+        });
+        return paginate((sorted as Array<never>).map(map), params, count);
       }
 
-      const orderBy =
-        filters.sortBy === 'likes'
-          ? { likes: { _count: 'desc' as const } }
-          : params.orderBy
-            ? { [params.orderBy.field]: params.orderBy.param }
-            : { createdAt: 'desc' as const };
+      const orderBy = buildModelOrderBy(filters, params);
 
       const [count, records] = await Promise.all([
         db.model.count({ where }),
-        db.model.findMany({
-          where,
-          orderBy,
+        db.model.findMany({ where, orderBy, include, skip: params.offset, take: params.limit }),
+      ]);
+
+      return paginate((records as Array<never>).map(map), params, count);
+    },
+
+    async fetchByInteraction<I extends Prisma.ModelInclude>(
+      where: Prisma.ModelWhereInput,
+      params: PaginatedQueryParams,
+      interactionKind: ModelInteractionKind,
+      options: { include?: I },
+    ): Promise<{ count: number; sorted: Array<Prisma.ModelGetPayload<{ include: I }>> }> {
+      const [count, grouped] = await Promise.all([
+        db.model.count({ where }),
+        db.modelInteraction.groupBy({
+          by: ['modelId'],
+          where: { kind: interactionKind, model: where },
+          _count: { _all: true },
+          orderBy: { _count: { id: 'desc' } },
           skip: params.offset,
           take: params.limit,
         }),
       ]);
 
-      return {
-        count,
-        limit: params.limit,
-        page: params.page,
-        data: records.map((r: unknown) => modelMapper.toDomain(r as ModelRecord)),
-      };
+      const orderedIds = grouped.map((g) => g.modelId);
+      if (orderedIds.length === 0) return { count, sorted: [] };
+
+      const records = (await db.model.findMany({
+        where: { ...where, id: { in: orderedIds } },
+        include: options.include,
+      })) as Array<Prisma.ModelGetPayload<{ include: I }> & { id: string }>;
+
+      const byId = new Map(records.map((r) => [r.id, r] as const));
+      const sorted = orderedIds
+        .map((id) => byId.get(id))
+        .filter(
+          (r): r is Prisma.ModelGetPayload<{ include: I }> & { id: string } => r !== undefined,
+        );
+
+      return { count, sorted };
     },
 
     async findCard(modelId: string): Promise<ModelCardRecord | null> {
@@ -191,12 +163,11 @@ export default function modelRepository({
           take: params.limit,
         }),
       ]);
-      return {
+      return paginate(
+        records.map((r) => modelMapper.toDomain(r)),
+        params,
         count,
-        limit: params.limit,
-        page: params.page,
-        data: records.map((r: unknown) => modelMapper.toDomain(r as ModelRecord)),
-      };
+      );
     },
 
     async resolveLegacyId(legacyId: number): Promise<string | undefined> {

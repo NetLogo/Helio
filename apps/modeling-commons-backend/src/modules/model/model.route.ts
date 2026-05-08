@@ -13,7 +13,10 @@ import {
   type ModelSearchQuery,
   type UpdateModelRequestDto,
 } from '#src/modules/model/dtos/model.dto.ts';
-import { modelCardResponseDtoSchema } from '#src/modules/model/dtos/model.card.dto.ts';
+import {
+  modelCardPaginatedResponseSchema,
+  modelCardResponseDtoSchema,
+} from '#src/modules/model/dtos/model.card.dto.ts';
 import { modelFamilyCardResponseDtoSchema } from '#src/modules/model/dtos/model.family-card.dto.ts';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
@@ -22,6 +25,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     modelService,
     modelMapper,
     searchModelsQuery,
+    searchModelsCardQuery,
     getModelChildrenQuery,
     getModelCardQuery,
     getModelFamilyCardQuery,
@@ -119,6 +123,31 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       return res.status(200).send({
         ...result,
         data: result.data.map((e) => modelMapper.toResponse(e)),
+      });
+    },
+  });
+
+  fastify.withTypeProvider<TypeBoxTypeProvider>().route({
+    method: 'GET',
+    url: '/v1/models/card',
+    schema: {
+      querystring: modelSearchQuerySchema,
+      response: { 200: modelCardPaginatedResponseSchema },
+      tags: ['Model', 'Search'],
+    },
+    handler: async (req, res) => {
+      const { limit, page, ...filters } = req.query;
+      const result = await searchModelsCardQuery.execute(
+        filters,
+        { limit, page },
+        req.user?.id ?? null,
+      );
+      const cards = await Promise.all(
+        result.data.map((e) => getModelCardQuery.toResponse(e, req.user?.id ?? null)),
+      );
+      return res.status(200).send({
+        ...result,
+        data: cards,
       });
     },
   });

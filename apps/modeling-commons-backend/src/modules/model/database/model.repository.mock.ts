@@ -13,9 +13,11 @@ export function mockModelRepository(): { [K in keyof ModelRepository]: ReturnTyp
     setLatestVersion: vi.fn(),
     softDelete: vi.fn(),
     search: vi.fn(),
+    fetchByInteraction: vi.fn(),
     findChildren: vi.fn(),
     findCard: vi.fn(),
     insertTx: vi.fn(),
     updateFields: vi.fn(),
+    resolveLegacyId: vi.fn(),
   };
 }

@@ -29,9 +29,7 @@ export const updateUserRequestDtoSchema = Type.Object({
   systemRole: Type.Optional(
     Type.Union([...Object.values(SystemRoleDto).map((role) => Type.Literal(role))]),
   ),
-  onboardedAt: Type.Optional(
-    Type.Union([Type.String({ format: 'date-time' }), Type.Null()]),
-  ),
+  onboardedAt: Type.Optional(Type.Union([Type.String({ format: 'date-time' }), Type.Null()])),
 });
 export type UpdateUserRequestDto = Static<typeof updateUserRequestDtoSchema>;
 
@@ -46,6 +44,13 @@ export const userSearchQuerySchema = Type.Intersect([
     systemRole: Type.Optional(
       Type.Enum(SystemRoleDto, {
         description: Object.values(SystemRoleDto).join(' | '),
+      }),
+    ),
+    keyword: Type.Optional(
+      Type.String({
+        description: 'Search keyword to match against user name or email',
+        minLength: 1,
+        maxLength: 255,
       }),
     ),
   }),

@@ -175,6 +175,7 @@ model Model {
   parentVersionNumber Int?
   visibility          ModelVisibility @default(public)
   isEndorsed          Boolean         @default(false)
+  isLibraryModel      Boolean         @default(false)
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   deletedAt           DateTime?
@@ -223,7 +224,6 @@ model ModelVersion {
   @@id([modelId, versionNumber])
   @@index([modelId])
 }
-
 
 model ModelVersionFile {
   id            String @id @default(uuid())

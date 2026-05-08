@@ -14,9 +14,11 @@ export default function modelDomain() {
         parentVersionNumber: props.parentVersionNumber ?? null,
         visibility: props.visibility ?? 'public',
         isEndorsed: false,
+        isLibraryModel: false,
         createdAt: now,
         updatedAt: now,
         deletedAt: null,
+        legacyId: null,
       };
     },
 

@@ -21,4 +21,5 @@ export interface ModelVersionRepository {
     params: PaginatedQueryParams,
   ): Promise<Paginated<ModelVersionEntity>>;
   getNextVersionNumber(ctx: TransactionContext, modelId: string): Promise<number>;
+  findNetlogoVersionsByPrefix(prefix: string): Promise<string[]>;
 }

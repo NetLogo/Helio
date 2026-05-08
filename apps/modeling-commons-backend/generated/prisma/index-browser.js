@@ -205,6 +205,7 @@ exports.Prisma.ModelScalarFieldEnum = {
   parentVersionNumber: 'parentVersionNumber',
   visibility: 'visibility',
   isEndorsed: 'isEndorsed',
+  isLibraryModel: 'isLibraryModel',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'

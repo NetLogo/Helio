@@ -11,11 +11,11 @@ export const modelCardArgs = {
     },
     authors: {
       include: {
-        user: { select: { id: true, name: true, image: true } },
+        user: { select: { id: true, name: true, image: true, role: true } },
       },
     },
     _count: {
-      select: { versions: true, childModels: true },
+      select: { versions: true, childModels: true, likes: true },
     },
   },
 } satisfies Prisma.ModelDefaultArgs;

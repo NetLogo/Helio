@@ -8,8 +8,7 @@
     <section class="space-y-6">
       <ModelHeader
         :title="card.latestVersion?.title || 'Untitled Model'"
-        :authors="authors"
-        :primary-author="primaryAuthor"
+        :authors="card.authors"
         :created-at="card.model.createdAt"
         :netlogo-version="card.latestVersion?.netlogoVersion"
         :download-url="downloadUrl"
@@ -126,7 +125,8 @@ const attachedFiles = computed<AttachedFile[]>(() => {
       title: file.filename,
       description: "",
       type: file.contentType,
-      authorName: primaryAuthor.value?.name ?? "",
+      // @todo: get real file uploader name
+      authorName: "Model Author",
       updatedAt: new Date(file.createdAt).toLocaleDateString(),
       isPending: false,
     };
@@ -139,15 +139,6 @@ const tabs = computed(() => [
   { key: "versions" as const, label: `Versions (${props.card?.counts.versions ?? 0})` },
   { key: "family" as const, label: "Family" },
 ]);
-
-const authors = computed(() =>
-  (props.card?.authors ?? []).map((a) => ({
-    name: a.userName ?? "Unknown",
-    image: a.userImage ?? undefined,
-  })),
-);
-
-const primaryAuthor = computed(() => authors.value[0]);
 
 const downloadUrl = computed(() => {
   if (!props.card?.latestVersion) return null;

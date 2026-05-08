@@ -4,6 +4,7 @@ import { paginatedResponseBaseSchema } from '#src/shared/api/paginated.response.
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 import { sortQueryRequestDtoSchema } from '#src/shared/api/sort-query.request.dto.ts';
 import { visibilitySchema } from '#src/modules/model/shared/enums.ts';
+import { dateRangeQueryRequestDtoSchema } from '#src/shared/api/date-range-query.request.dto.ts';
 
 export const createModelRequestDtoSchema = Type.Object({
   title: Type.String({
@@ -46,15 +47,31 @@ export const modelSortBySchema = Type.Union(
   { $id: 'ModelSortBy', description: 'Sort order for model search results' },
 );
 
+export const modelCardVariantSchema = Type.Object({
+  variant: Type.Optional(
+    Type.Union([Type.Literal('card'), Type.Literal('default')], {
+      description: 'Variant of the model to return',
+      default: 'default',
+    }),
+  ),
+});
+export type ModelCardVariant = Static<typeof modelCardVariantSchema>['variant'];
+
 export const modelSearchQuerySchema = Type.Intersect([
   paginatedQueryRequestDtoSchema,
+  dateRangeQueryRequestDtoSchema,
   sortQueryRequestDtoSchema(modelSortBySchema),
   Type.Object({
-    tag: Type.Optional(Type.String()),
+    tags: Type.Optional(
+      Type.Array(Type.String(), { description: 'Filter models by tag', default: [] }),
+    ),
     authorId: Type.Optional(Type.String({ format: 'uuid' })),
     parentModelId: Type.Optional(Type.String({ format: 'uuid' })),
     isEndorsed: Type.Optional(Type.Boolean()),
+    isLibraryModel: Type.Optional(Type.Boolean()),
     keyword: Type.Optional(Type.String()),
+    netlogoVersion: Type.Optional(Type.String()),
+    publicOnly: Type.Optional(Type.Boolean({ default: true })),
   }),
 ]);
 
@@ -68,6 +85,7 @@ export const modelResponseDtoSchema = Type.Intersect([
     parentVersionNumber: Type.Union([Type.Integer(), Type.Null()]),
     visibility: visibilitySchema,
     isEndorsed: Type.Boolean(),
+    isLibraryModel: Type.Boolean(),
   }),
 ]);
 
@@ -89,3 +107,4 @@ export type ModelResponseDto = Static<typeof modelResponseDtoSchema>;
 export type CreateModelProps = CreateModelRequestDto;
 export type UpdateModelProps = UpdateModelRequestDto;
 export type ModelSearchFilters = Omit<ModelSearchQuery, 'limit' | 'page'>;
+export type ModelVariant = Static<typeof modelCardVariantSchema>;

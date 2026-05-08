@@ -90,5 +90,21 @@ export default function modelVersionRepository({
       });
       return (latest?.versionNumber ?? 0) + 1;
     },
+
+    async findNetlogoVersionsByPrefix(prefix: string): Promise<string[]> {
+      return db.modelVersion
+        .findMany({
+          where: {
+            netlogoVersion:
+              prefix.length > 0 ? { startsWith: prefix, mode: 'insensitive' } : undefined,
+          },
+          distinct: ['netlogoVersion'],
+          select: { netlogoVersion: true },
+          orderBy: { netlogoVersion: 'desc' },
+        })
+        .then((records) =>
+          records.map((r) => r.netlogoVersion).filter((v): v is string => v !== null),
+        );
+    },
   };
 }

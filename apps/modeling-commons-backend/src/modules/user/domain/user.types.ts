@@ -23,4 +23,5 @@ export type UpdateUserProfileProps = {
 export type UserSearchFilters = {
   userKind?: UserKind;
   systemRole?: SystemRole;
+  keyword?: string;
 };

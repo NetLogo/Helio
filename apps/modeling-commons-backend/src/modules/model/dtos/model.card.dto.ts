@@ -3,6 +3,7 @@ import { modelResponseDtoSchema } from '#src/modules/model/dtos/model.dto.ts';
 import { modelVersionResponseDtoSchema } from '#src/modules/model-version/dtos/model-version.response.dto.ts';
 import { modelAuthorResponseDtoSchema } from '#src/modules/model-author/dtos/model-author.response.dto.ts';
 import { tagResponseDtoSchema } from '#src/modules/tag/dtos/tag.response.dto.ts';
+import { paginatedResponseBaseSchema } from '#src/shared/api/paginated.response.base.ts';
 
 export const modelCardAuthorSchema = Type.Intersect([
   modelAuthorResponseDtoSchema,
@@ -53,5 +54,12 @@ export const modelCardResponseDtoSchema = Type.Object({
   }),
   stats: modelCardStatsSchema,
 });
+
+export const modelCardPaginatedResponseSchema = Type.Intersect([
+  paginatedResponseBaseSchema,
+  Type.Object({
+    data: Type.Array(modelCardResponseDtoSchema),
+  }),
+]);
 
 export type ModelCardResponseDto = Static<typeof modelCardResponseDtoSchema>;

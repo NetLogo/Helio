@@ -44,13 +44,15 @@
 
     <template #authors-cell="{ row }">
       <div class="flex gap-2 flex-wrap w-40">
-        <span
-          v-for="(author, index) in getAuthors(row.original)"
-          :key="index"
-          class="text-sm text-toned underline whitespace-break-spaces"
-        >
-          {{ author.name }}<span v-if="index < getAuthors(row.original).length - 1">, </span>
-        </span>
+        <p v-for="(author, index) in getAuthors(row.original)" :key="index" class="text-sm whitespace-break-spaces mb-0">
+          <NuxtLink
+            class="text-muted hover:text-royal-blue-dark"
+            :to="author.to"
+          >
+            {{ author.name }}
+          </NuxtLink>
+          <span v-if="index < getAuthors(row.original).length - 1" class="text-muted">, </span>
+        </p>
       </div>
     </template>
 
@@ -82,6 +84,7 @@
 import type { UserProps } from "#ui/types";
 import { useInfiniteScroll } from "@vueuse/core";
 import type { ModelCard } from "~/composables/useModelCard";
+import { getAuthorUrl } from '../ModelAuthors.vue';
 
 const props = defineProps<{
   models: Array<ModelCard>;
@@ -104,6 +107,7 @@ const getAuthors = (card: ModelCard): UserProps[] =>
   card.authors.map((a) => ({
     name: a.userName ?? undefined,
     avatar: { alt: a.userName ?? undefined },
+    to: getAuthorUrl(a),
   }));
 
 const getTags = (card: ModelCard) => card.tagsOnLatestVersion;

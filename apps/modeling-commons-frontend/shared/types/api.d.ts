@@ -257,6 +257,7 @@ export interface paths {
                             /** @enum {unknown} */
                             visibility: "public" | "private" | "unlisted";
                             isEndorsed: boolean;
+                            isLibraryModel: boolean;
                         };
                     };
                 };
@@ -487,6 +488,7 @@ export interface paths {
                                 /** @enum {unknown} */
                                 visibility: "public" | "private" | "unlisted";
                                 isEndorsed: boolean;
+                                isLibraryModel: boolean;
                             };
                             latestVersion: ({
                                 /** Format: uuid */
@@ -534,10 +536,17 @@ export interface paths {
                                  */
                                 name: string;
                                 /**
+                                 * @description Formatted tag name for display purposes
+                                 * @example Climate
+                                 */
+                                displayName: string;
+                                /**
                                  * @description Tag creation date
                                  * @example 2020-11-24T17:43:15.970Z
                                  */
                                 createdAt: string;
+                                /** @description Legacy numeric ID */
+                                legacyId?: number;
                             }[];
                             previewImageUrl: string | null;
                             counts: {
@@ -771,13 +780,29 @@ export interface paths {
                     limit?: number;
                     /** @description Page number */
                     page?: number;
+                    /**
+                     * @description Start date for filtering records (inclusive)
+                     * @example 2024-01-01
+                     */
+                    fromDate?: string;
+                    /**
+                     * @description End date for filtering records (inclusive)
+                     * @example 2024-12-31
+                     */
+                    toDate?: string;
                     /** @description Sort order for model search results */
                     sortBy?: "recent" | "views" | "downloads" | "runs" | "likes";
-                    tag?: string;
+                    /** @description Sort order, either ascending (asc) or descending (desc) */
+                    order?: "asc" | "desc";
+                    /** @description Filter models by tag */
+                    tags?: string[];
                     authorId?: string;
                     parentModelId?: string;
                     isEndorsed?: boolean;
+                    isLibraryModel?: boolean;
                     keyword?: string;
+                    netlogoVersion?: string;
+                    publicOnly?: boolean;
                 };
                 header?: never;
                 path?: never;
@@ -834,7 +859,234 @@ export interface paths {
                                 /** @enum {unknown} */
                                 visibility: "public" | "private" | "unlisted";
                                 isEndorsed: boolean;
+                                isLibraryModel: boolean;
                             })[];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/card": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Specifies a limit of returned records */
+                    limit?: number;
+                    /** @description Page number */
+                    page?: number;
+                    /**
+                     * @description Start date for filtering records (inclusive)
+                     * @example 2024-01-01
+                     */
+                    fromDate?: string;
+                    /**
+                     * @description End date for filtering records (inclusive)
+                     * @example 2024-12-31
+                     */
+                    toDate?: string;
+                    /** @description Sort order for model search results */
+                    sortBy?: "recent" | "views" | "downloads" | "runs" | "likes";
+                    /** @description Sort order, either ascending (asc) or descending (desc) */
+                    order?: "asc" | "desc";
+                    /** @description Filter models by tag */
+                    tags?: string[];
+                    authorId?: string;
+                    parentModelId?: string;
+                    isEndorsed?: boolean;
+                    isLibraryModel?: boolean;
+                    keyword?: string;
+                    netlogoVersion?: string;
+                    publicOnly?: boolean;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Total number of items
+                             * @example 5
+                             */
+                            count: number;
+                            /**
+                             * @description Number of items per page
+                             * @example 10
+                             */
+                            limit: number;
+                            /**
+                             * @description Page number
+                             * @example 0
+                             */
+                            page: number;
+                            data: unknown[];
+                        } & {
+                            data: {
+                                model: ({
+                                    /**
+                                     * Format: uuid
+                                     * @description Entity's id
+                                     * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                     */
+                                    id: string;
+                                } & {
+                                    /**
+                                     * @description Entity creation date
+                                     * @example 2020-11-24T17:43:15.970Z
+                                     */
+                                    createdAt: string;
+                                    /**
+                                     * @description Entity last update date
+                                     * @example 2020-11-24T17:43:15.970Z
+                                     */
+                                    updatedAt: string;
+                                }) & {
+                                    latestVersionNumber: number | null;
+                                    parentModelId: string | null;
+                                    parentVersionNumber: number | null;
+                                    /** @enum {unknown} */
+                                    visibility: "public" | "private" | "unlisted";
+                                    isEndorsed: boolean;
+                                    isLibraryModel: boolean;
+                                };
+                                latestVersion: ({
+                                    /** Format: uuid */
+                                    modelId: string;
+                                    /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
+                                    versionNumber: number;
+                                    title: string;
+                                    description: string | null;
+                                    netlogoFileKey: string | null;
+                                    netlogoVersion: string | null;
+                                    infoTab: string | null;
+                                    /** Format: date-time */
+                                    createdAt: string;
+                                    isFinalized: boolean;
+                                } & {
+                                    netlogoFileDownloadUrl: string | null;
+                                    previewImageUrl: string | null;
+                                }) | null;
+                                authors: ({
+                                    /** Format: uuid */
+                                    modelId: string;
+                                    /** Format: uuid */
+                                    userId: string;
+                                    /** @description owner | contributor */
+                                    role: string;
+                                    /**
+                                     * @description Author assignment date
+                                     * @example 2020-11-24T17:43:15.970Z
+                                     */
+                                    createdAt: string;
+                                } & {
+                                    userName: string | null;
+                                    userImage: string | null;
+                                })[];
+                                tagsOnLatestVersion: {
+                                    /**
+                                     * Format: uuid
+                                     * @description Tag id
+                                     * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                     */
+                                    id: string;
+                                    /**
+                                     * @description Tag name
+                                     * @example climate
+                                     */
+                                    name: string;
+                                    /**
+                                     * @description Formatted tag name for display purposes
+                                     * @example Climate
+                                     */
+                                    displayName: string;
+                                    /**
+                                     * @description Tag creation date
+                                     * @example 2020-11-24T17:43:15.970Z
+                                     */
+                                    createdAt: string;
+                                    /** @description Legacy numeric ID */
+                                    legacyId?: number;
+                                }[];
+                                previewImageUrl: string | null;
+                                counts: {
+                                    versions: number;
+                                    children: number;
+                                };
+                                stats: {
+                                    likes: number;
+                                    views: number;
+                                    runs: number;
+                                    downloads: number;
+                                    shares: number;
+                                    likedByMe: boolean;
+                                };
+                            }[];
                         };
                     };
                 };
@@ -907,13 +1159,29 @@ export interface paths {
                     limit?: number;
                     /** @description Page number */
                     page?: number;
+                    /**
+                     * @description Start date for filtering records (inclusive)
+                     * @example 2024-01-01
+                     */
+                    fromDate?: string;
+                    /**
+                     * @description End date for filtering records (inclusive)
+                     * @example 2024-12-31
+                     */
+                    toDate?: string;
                     /** @description Sort order for model search results */
                     sortBy?: "recent" | "views" | "downloads" | "runs" | "likes";
-                    tag?: string;
+                    /** @description Sort order, either ascending (asc) or descending (desc) */
+                    order?: "asc" | "desc";
+                    /** @description Filter models by tag */
+                    tags?: string[];
                     authorId?: string;
                     parentModelId?: string;
                     isEndorsed?: boolean;
+                    isLibraryModel?: boolean;
                     keyword?: string;
+                    netlogoVersion?: string;
+                    publicOnly?: boolean;
                 };
                 header?: never;
                 path: {
@@ -972,6 +1240,7 @@ export interface paths {
                                 /** @enum {unknown} */
                                 visibility: "public" | "private" | "unlisted";
                                 isEndorsed: boolean;
+                                isLibraryModel: boolean;
                             })[];
                         };
                     };
@@ -3834,6 +4103,7 @@ export interface paths {
                                 /** @enum {unknown} */
                                 visibility: "public" | "private" | "unlisted";
                                 isEndorsed: boolean;
+                                isLibraryModel: boolean;
                             };
                             tags: {
                                 /**
@@ -3848,10 +4118,17 @@ export interface paths {
                                  */
                                 name: string;
                                 /**
+                                 * @description Formatted tag name for display purposes
+                                 * @example Climate
+                                 */
+                                displayName: string;
+                                /**
                                  * @description Tag creation date
                                  * @example 2020-11-24T17:43:15.970Z
                                  */
                                 createdAt: string;
+                                /** @description Legacy numeric ID */
+                                legacyId?: number;
                             }[];
                             netlogoFileDownloadUrl: string;
                             previewImageUrl: string | null;
@@ -4206,11 +4483,101 @@ export interface paths {
                              */
                             name: string;
                             /**
+                             * @description Formatted tag name for display purposes
+                             * @example Climate
+                             */
+                            displayName: string;
+                            /**
                              * @description Tag creation date
                              * @example 2020-11-24T17:43:15.970Z
                              */
                             createdAt: string;
+                            /** @description Legacy numeric ID */
+                            legacyId?: number;
                         }[];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/netlogo-versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Version prefix to search for */
+                    prefix?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string[];
                     };
                 };
                 /** @description Default Response */
@@ -4399,10 +4766,17 @@ export interface paths {
                                  */
                                 name: string;
                                 /**
+                                 * @description Formatted tag name for display purposes
+                                 * @example Climate
+                                 */
+                                displayName: string;
+                                /**
                                  * @description Tag creation date
                                  * @example 2020-11-24T17:43:15.970Z
                                  */
                                 createdAt: string;
+                                /** @description Legacy numeric ID */
+                                legacyId?: number;
                             }[];
                         };
                     };
@@ -4500,10 +4874,17 @@ export interface paths {
                              */
                             name: string;
                             /**
+                             * @description Formatted tag name for display purposes
+                             * @example Climate
+                             */
+                            displayName: string;
+                            /**
                              * @description Tag creation date
                              * @example 2020-11-24T17:43:15.970Z
                              */
                             createdAt: string;
+                            /** @description Legacy numeric ID */
+                            legacyId?: number;
                         };
                     };
                 };
@@ -4626,8 +5007,8 @@ export interface paths {
                             country?: string;
                             socialLinks?: {
                                 /**
-                                 * @description The raw URL provided by the user for a social link
-                                 * @example https://twitter.com/johndoe
+                                 * @description The raw handle or URL of the social link as entered by the user
+                                 * @example johndoe
                                  */
                                 rawValue: string;
                                 /**
@@ -4895,8 +5276,8 @@ export interface paths {
                             country?: string;
                             socialLinks?: {
                                 /**
-                                 * @description The raw URL provided by the user for a social link
-                                 * @example https://twitter.com/johndoe
+                                 * @description The raw handle or URL of the social link as entered by the user
+                                 * @example johndoe
                                  */
                                 rawValue: string;
                                 /**
@@ -4994,6 +5375,8 @@ export interface paths {
                     userKind?: "student" | "teacher" | "researcher" | "other";
                     /** @description admin | moderator | user */
                     systemRole?: "admin" | "moderator" | "user";
+                    /** @description Search keyword to match against user name or email */
+                    keyword?: string;
                 };
                 header?: never;
                 path?: never;
@@ -5065,8 +5448,8 @@ export interface paths {
                                 country?: string;
                                 socialLinks?: {
                                     /**
-                                     * @description The raw URL provided by the user for a social link
-                                     * @example https://twitter.com/johndoe
+                                     * @description The raw handle or URL of the social link as entered by the user
+                                     * @example johndoe
                                      */
                                     rawValue: string;
                                     /**

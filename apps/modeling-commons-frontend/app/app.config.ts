@@ -115,7 +115,6 @@ export default defineAppConfig({
         variant: {
           card: {
             root: "rounded-md bg-neutral-darkest/5 [&_p:first-of-type]:mb-0",
-            base: "rounded-md",
           },
         },
       },
@@ -308,6 +307,19 @@ export default defineAppConfig({
             item: "px-3 py-2 rounded-sm",
           },
         },
+      },
+    },
+
+    slideover: {
+      slots: {
+        content: "p-6",
+      },
+    },
+
+    accordion: {
+      slots: {
+        label: "text-md font-medium",
+        item: "border-0 mb-4",
       },
     },
   },

@@ -94,5 +94,9 @@ export default function makeModelVersionService({
 
       return { buffer: version.previewImage, contentType: 'image/png' };
     },
+
+    async findNetlogoVersionsByPrefix(prefix: string): Promise<string[]> {
+      return await modelVersionRepository.findNetlogoVersionsByPrefix(prefix);
+    },
   };
 }

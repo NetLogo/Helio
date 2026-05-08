@@ -8,14 +8,7 @@
     >
       {{ sentenceCase(tag.name) }}
     </span>
-    <button
-      v-if="editable"
-      class="inline-flex items-center gap-1 rounded px-2.5 py-1 text-xs font-medium border border-dashed border-default text-muted hover:border-accented hover:text-toned transition-colors"
-      @click="$emit('add')"
-    >
-      <UIcon name="i-lucide-plus" class="size-3" />
-      Add Tag
-    </button>
+    <AddTagButton v-if="editable" @add="$emit('add')" />
   </div>
 </template>
 
@@ -23,7 +16,8 @@
 import { getTagColorClass } from "~/utils/formatters";
 
 defineProps<{
-  tags: { id: string; name: string }[];
+  tags: Array<Tag>;
+
   editable?: boolean;
 }>();
 

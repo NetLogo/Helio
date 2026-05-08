@@ -32,7 +32,6 @@ describe('userResponseDtoSchema (response serialization invariant)', () => {
   it('preserves every private field when serializing a full profile', () => {
     const serialized = JSON.parse(stringify(fullProfile));
     expect(serialized).toMatchObject({
-      email: fullProfile.email,
       emailVerified: fullProfile.emailVerified,
       systemRole: fullProfile.systemRole,
       userKind: fullProfile.userKind,

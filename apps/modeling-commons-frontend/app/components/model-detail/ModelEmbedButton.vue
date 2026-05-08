@@ -76,10 +76,12 @@
 </template>
 
 <script lang="ts" setup>
+import type { Author } from "../ModelAuthors.vue";
+
 const props = defineProps<{
   title: string;
   downloadUrl?: string | null;
-  authors: { name: string; image?: string }[];
+  authors: Array<Author>;
   relativeDate: string;
   netlogoVersion?: string | null;
   modelGroup?: string | null;

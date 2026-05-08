@@ -1,4 +1,4 @@
-export default async function useApiPagination<T>(
+export default function useApiPagination<T>(
   key: MaybeRefOrGetter<string>,
   fetchPage: (page: number) => Promise<{
     data: Array<T>;
@@ -8,7 +8,7 @@ export default async function useApiPagination<T>(
   }>,
   initialPage = 1,
 ) {
-  const page = ref(initialPage);
+  const page = useState(`${toValue(key)}-pagination-page`, () => initialPage);
   const data = ref<Array<T>>([]) as Ref<Array<T>>;
   const count = ref<number>();
   const limit = ref<number>();
@@ -25,7 +25,7 @@ export default async function useApiPagination<T>(
     error,
     pending,
     refresh,
-  } = await useAsyncData(
+  } = useAsyncData(
     () => `${toValue(key)}-page-${page.value}`,
     () => fetchPage(page.value),
     { watch: [page, () => toValue(key)] },

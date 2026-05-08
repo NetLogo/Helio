@@ -1,5 +1,6 @@
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
 import type { ModelCardResponseDto } from '#src/modules/model/dtos/model.card.dto.ts';
+import type { ModelCardRecord } from '../database/model.card.record.ts';
 import { getModelPreviewImageUrl } from '../shared/urls.ts';
 
 export default function makeGetModelCardQuery({
@@ -13,10 +14,24 @@ export default function makeGetModelCardQuery({
   modelLikeRepository,
 }: Dependencies) {
   return {
-    async execute(modelId: string, viewerUserId: string | null = null): Promise<ModelCardResponseDto> {
+    async execute(
+      modelId: string,
+      viewerUserId: string | null = null,
+    ): Promise<ModelCardResponseDto> {
       const card = await modelRepository.findCard(modelId);
       if (!card) throw new ModelNotFoundError(modelId);
 
+      return await this.toResponse(card, viewerUserId);
+    },
+
+    toDomain(card: ModelCardRecord): ModelCardRecord {
+      return card;
+    },
+
+    async toResponse(
+      card: ModelCardRecord,
+      viewerUserId: string | null,
+    ): Promise<ModelCardResponseDto> {
       const { versions, authors, _count, ...model } = card;
       const [latestWithTags] = versions;
       const latestTags = latestWithTags?.tags ?? [];
@@ -25,14 +40,13 @@ export default function makeGetModelCardQuery({
         ? await fileService.getUrl(latestWithTags.netlogoFileKey)
         : null;
       const previewImageUrl = latestWithTags?.previewImage
-        ? getModelPreviewImageUrl(modelId, latestWithTags.versionNumber)
+        ? getModelPreviewImageUrl(model.id, latestWithTags.versionNumber)
         : null;
 
-      const [interactionCounts, likes, likedByMe] = await Promise.all([
-        modelInteractionRepository.countsByKindForModel(modelId),
-        modelLikeRepository.countByModel(modelId),
+      const [interactionCounts, likedByMe] = await Promise.all([
+        modelInteractionRepository.countsByKindForModel(model.id),
         viewerUserId
-          ? modelLikeRepository.existsFor(modelId, viewerUserId)
+          ? modelLikeRepository.existsFor(model.id, viewerUserId)
           : Promise.resolve(false),
       ]);
 
@@ -57,7 +71,7 @@ export default function makeGetModelCardQuery({
           children: _count.childModels,
         },
         stats: {
-          likes,
+          likes: _count.likes,
           views: interactionCounts.view,
           runs: interactionCounts.run,
           downloads: interactionCounts.download,

@@ -132,7 +132,7 @@ interface SectionConfig {
   key: string;
   title: string;
   subtitle: string;
-  query: QueryParams<"GET", "/api/v1/models">;
+  query: QueryParams<"GET", "/api/v1/models/card">;
   viewAllTo: string;
 }
 
@@ -184,23 +184,20 @@ const sectionConfigs: SectionConfig[] = [
 ];
 
 const api = useApi();
-const { data, error, status, refresh } = await useAsyncData("home-models", async () => {
-  const responses = await Promise.all(
-    sectionConfigs.map((s) => api.GET("/api/v1/models", { params: { query: s.query } })),
-  );
+const { data, error, status, refresh } = await useAsyncData<Record<string, ModelCard[]>>(
+  "home-models",
+  async () => {
+    const responses = await Promise.all(
+      sectionConfigs.map((s) => api.GET("/api/v1/models/card", { params: { query: s.query } })),
+    );
 
-  const idLists = responses.map((res) => {
-    const d = res.data as { data: Array<{ id: string }> } | undefined;
-    return (d?.data ?? []).map((m) => m.id);
-  });
-
-  const cardLists = await Promise.all(idLists.map((ids) => fetchCards(api, ids)));
-
-  return Object.fromEntries(sectionConfigs.map((s, i) => [s.key, cardLists[i]])) as Record<
-    string,
-    ModelCard[]
-  >;
-});
+    return Object.fromEntries(
+      sectionConfigs
+        .map((s, i) => [s.key, (responses[i]?.data?.data ?? []) as ModelCard[]] as const)
+        .filter(([, cards]) => cards.length > 0),
+    );
+  },
+);
 
 const visibleSections = computed(() =>
   sectionConfigs

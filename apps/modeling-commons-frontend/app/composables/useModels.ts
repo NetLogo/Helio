@@ -1,84 +1,69 @@
+import { type QueryKey, type QueryRecord, readQueryParams } from "@repo/utils/lib/http/query";
+import * as z from "zod";
 import type { ModelCard } from "~/composables/useModelCard";
 
-interface ModelsListBody {
-  count: number;
-  limit: number;
-  page: number;
-  data: Array<{ id: string }>;
-}
-
-type ModelSortBy = "recent" | "views" | "downloads" | "runs" | "likes";
-
-const SORT_BY_VALUES: ReadonlyArray<ModelSortBy> = [
+type ModelQuery = QueryParams<"GET", "/api/v1/models/card">;
+type ModelsFilters = Omit<ModelQuery, "limit" | "page">;
+type ModelSortBy = NonNullable<ModelsFilters["sortBy"]>;
+const SORT_BY_VALUES: Readonly<Array<ModelSortBy>> = [
   "recent",
   "views",
   "downloads",
   "runs",
   "likes",
 ];
-
-interface ModelsFilters {
-  keyword: string;
-  tag: string | null;
-  isEndorsed: boolean | null;
-  sortBy: ModelSortBy | null;
-}
-
 const PAGE_LIMIT = 20;
 
-function readFilters(query: Record<string, string | string[] | undefined>): ModelsFilters {
-  const first = (v: string | string[] | undefined) => (Array.isArray(v) ? (v[0] ?? "") : (v ?? ""));
-  const endorsedRaw = first(query.endorsed);
-  const sortByRaw = first(query.sortBy);
-  return {
-    keyword: first(query.keyword),
-    tag: first(query.tag) || null,
-    isEndorsed: endorsedRaw === "true" ? true : endorsedRaw === "false" ? false : null,
-    sortBy: (SORT_BY_VALUES as ReadonlyArray<string>).includes(sortByRaw)
-      ? (sortByRaw as ModelSortBy)
-      : null,
-  };
-}
+const queryFilters = [
+  { key: "keyword", type: "string", defaultValue: "" },
+  { key: "tags", type: "array", contentType: { key: "tag", type: "string" } },
+  { key: "isEndorsed", type: "boolean" },
+  { key: "isLibraryModel", type: "boolean" },
+  { key: "sortBy", type: "string" },
+  { key: "order", type: "string", defaultValue: "desc" },
+  { key: "fromDate", type: "string" },
+  { key: "toDate", type: "string" },
+  { key: "authorId", type: "string" },
+  { key: "parentModelId", type: "string" },
+  { key: "publicOnly", type: "boolean" },
+  { key: "netlogoVersion", type: "string" },
+] as const satisfies Array<QueryKey>;
+
+const querySchema = z.object({
+  limit: z.number(),
+  page: z.number(),
+  keyword: z.string().default(""),
+  tags: z.array(z.string()).default([]),
+  sortBy: z.enum(SORT_BY_VALUES).optional(),
+  isEndorsed: z.boolean().optional(),
+  isLibraryModel: z.boolean().optional(),
+  fromDate: z.iso.date().optional(),
+  toDate: z.iso.date().optional(),
+  netlogoVersion: z.string().optional(),
+});
 
 export default function useModels() {
   const { GET } = useApi();
   const route = useRoute();
   const page = useState("models-page", () => 0);
 
-  const filters = computed(() => readFilters(route.query as Record<string, string>));
+  const filters = computed(() => readQueryParams(route.query as QueryRecord, queryFilters));
+  const key = computed(() => `models-${page.value}-${JSON.stringify(filters.value)}`);
 
   const { data, pending, error, refresh } = useAsyncData<{
     rows: ModelCard[];
     totalCount: number;
   } | null>(
-    `models-${page.value}-${JSON.stringify(filters.value)}`,
+    key,
     async () => {
-      const query: QueryParams<"GET", "/api/v1/models"> = {
+      const query: QueryParams<"GET", "/api/v1/models/card"> = {
         limit: PAGE_LIMIT,
         page: page.value,
       };
-      if (filters.value.keyword) query.keyword = filters.value.keyword;
-      if (filters.value.tag) query.tag = filters.value.tag;
-      if (filters.value.isEndorsed !== null) query.isEndorsed = filters.value.isEndorsed;
-      if (filters.value.sortBy) query.sortBy = filters.value.sortBy;
-
-      const res = await GET("/api/v1/models", { params: { query } });
-      if (res.error || !res.data) return null;
-
-      const body = res.data as unknown as ModelsListBody;
-
-      const rows = (
-        await Promise.all(
-          body.data.map(async (m) => {
-            const { data: card } = await GET("/api/v1/models/{id}/card", {
-              params: { path: { id: m.id } },
-            });
-            return (card as ModelCard | undefined) ?? null;
-          }),
-        )
-      ).filter((c): c is ModelCard => c !== null);
-
-      return { rows, totalCount: body.count };
+      const params = querySchema.parse({ ...filters.value, ...query });
+      const res = await GET("/api/v1/models/card", { params: { query: params } });
+      const parsed = handleApiError(res.data, res.error, "fetching model query result");
+      return { rows: parsed.data, totalCount: parsed.count };
     },
     { watch: [filters, page] },
   );
@@ -104,16 +89,12 @@ export default function useModels() {
     page.value = 0;
     const next = { ...route.query };
     switch (key) {
-      case "isEndorsed":
-        if (value === null) delete next.endorsed;
-        else next.endorsed = String(value);
-        break;
       case "sortBy":
         if (value === null || value === "recent") delete next.sortBy;
         else next.sortBy = String(value);
         break;
       default:
-        if (value === null || value === "") delete next[key];
+        if (value === null || value === undefined || value === "") delete next[key];
         else next[key] = String(value);
     }
     await navigateTo({ query: next });

@@ -30,40 +30,8 @@
     </div>
 
     <div class="flex items-center gap-2 text-sm text-muted flex-wrap">
-      <div v-if="authors.length > 0" class="flex items-center gap-2">
-        <UAvatarGroup :max="3">
-          <UAvatar
-            v-for="(author, index) in authors"
-            :key="index"
-            :name="author.name"
-            :src="author.image"
-            size="sm"
-            :alt="author.name"
-          />
-        </UAvatarGroup>
-        <NuxtLink class="font-medium text-royal-blue">
-          {{ primaryAuthor?.name }}
-        </NuxtLink>
-        <UTooltip>
-          <span v-if="authors.length > 1"
-            >and {{ authors.length - 1 }}
-            {{ pluralize(authors.length - 1, "other", "others") }}</span
-          >
-          <template #content>
-            <div class="space-y-1">
-              <NuxtLink
-                v-for="(author, index) in authors"
-                :key="index"
-                class="flex items-center gap-2"
-              >
-                <UAvatar :name="author.name" :src="author.image" size="xs" :alt="author.name" />
-                <span>{{ author.name }}</span>
-              </NuxtLink>
-            </div>
-          </template>
-        </UTooltip>
-      </div>
-      <Middot v-if="primaryAuthor" />
+      <ModelAuthors v-if="authors.length > 0" :authors="authors" />
+      <Middot v-if="authors.length > 0" />
       <span>{{ relativeDate }}</span>
       <Middot v-if="modelVisibility" />
       <span class="flex items-center gap-1">
@@ -71,11 +39,11 @@
         {{ visibility.label }}
       </span>
       <template v-if="netlogoVersion">
-        <Middot v-if="primaryAuthor" />
+        <Middot v-if="authors.length > 0" />
         <span>Written in {{ netlogoVersion }}</span>
       </template>
       <template v-if="modelGroup">
-        <Middot v-if="primaryAuthor" />
+        <Middot v-if="authors.length > 0" />
         <span>
           Model Group:
           <NuxtLink class="font-medium text-primary-700 hover:underline">{{ modelGroup }}</NuxtLink>
@@ -87,15 +55,11 @@
 
 <script setup lang="ts">
 import { formatRelativeDate } from "~/utils/formatters";
+import type { Author } from "../ModelAuthors.vue";
 
-type Author = {
-  name: string;
-  image?: string;
-};
 const props = defineProps<{
   title: string;
   authors: Array<Author>;
-  primaryAuthor?: Author;
   createdAt: string;
   netlogoVersion?: string | null;
   modelGroup?: string | null;
