@@ -1,6 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import useUser, { isLoggedIn } from "~/composables/useUser";
+import useUser, { isLoggedIn } from "~/composables/user/useUser";
 import { makeUser } from "~~/tests/helpers/fixtures";
 import { buildAuthMock } from "~~/tests/helpers/mockUser";
 

@@ -1,6 +1,6 @@
 import { type QueryKey, type QueryRecord, readQueryParams } from "@repo/utils/lib/http/query";
 import * as z from "zod";
-import type { ModelCard } from "~/composables/useModelCard";
+import type { ModelCard } from "~/composables/model/useModelCard";
 
 export type ModelQuery = QueryParams<"GET", "/api/v1/models/card">;
 export type ModelsFilters = Omit<ModelQuery, "limit" | "page">;

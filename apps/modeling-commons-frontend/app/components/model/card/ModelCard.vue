@@ -8,7 +8,10 @@
     :ui="{
       root: 'rounded group/card',
       header: 'h-50',
+      title:
+        'text-md font-semibold text-highlighted line-clamp-2 leading-tight max-w-full overflow-hidden text-ellipsis transition-colors group-hover/card:text-royal-blue',
     }"
+    :orientation="orientation"
   >
     <template #header>
       <ModelCardPreviewImage
@@ -16,13 +19,6 @@
         :alt="title"
         class="group-hover/card:scale-110 transition-transform"
       />
-    </template>
-    <template #title>
-      <h4
-        class="text-md font-semibold text-highlighted line-clamp-2 leading-tight max-w-full overflow-hidden text-ellipsis transition-colors group-hover/card:text-royal-blue"
-      >
-        {{ title }}
-      </h4>
     </template>
     <template #footer>
       <div class="flex items-center gap-3 text-sm text-toned">
@@ -45,10 +41,11 @@
 
 <script setup lang="ts">
 import type { BadgeProps, UserProps } from "#ui/types";
-import type { ModelCard } from "~/composables/useModelCard";
+import type { ModelCard } from "~/composables/model/useModelCard";
 
 const props = defineProps<{
   card: ModelCard;
+  orientation?: "horizontal" | "vertical";
 }>();
 
 const title = computed(() => props.card.latestVersion?.title || "Untitled Model");

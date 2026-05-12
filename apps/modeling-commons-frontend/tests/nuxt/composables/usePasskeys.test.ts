@@ -1,7 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref, type Ref } from "vue";
-import usePasskeys from "~/composables/usePasskeys";
+import usePasskeys from "~/composables/auth/usePasskeys";
 
 type ListValue = {
   data: Array<{ id: string; name: string }>;

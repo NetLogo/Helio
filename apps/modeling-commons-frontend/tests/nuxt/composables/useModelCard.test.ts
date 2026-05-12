@@ -1,7 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, ref } from "vue";
-import useModelCard from "~/composables/useModelCard";
+import useModelCard from "~/composables/model/useModelCard";
 import { makeModelCard } from "~~/tests/helpers/fixtures";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 

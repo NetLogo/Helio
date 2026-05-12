@@ -1,6 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import useModels from "~/composables/useModels";
+import useModels from "~/composables/model/useModels";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState, routeState, navigateToMock } = vi.hoisted(() => ({

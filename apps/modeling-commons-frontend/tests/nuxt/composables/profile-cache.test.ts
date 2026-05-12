@@ -1,8 +1,8 @@
 import { computed, nextTick } from "vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import useProfile from "~/composables/useProfile";
-import useProfileSettings from "~/composables/useProfileSettings";
+import useProfile from "~/composables/user/useProfile";
+import useProfileSettings from "~/composables/user/useProfileSettings";
 import { makeApiClientMock, apiResult } from "~~/tests/helpers/mockApi";
 
 const { apiState, userState } = vi.hoisted(() => ({

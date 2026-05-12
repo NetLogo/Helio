@@ -103,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelDraftDto } from "~/composables/useModelDraft";
+import type { ModelDraftDto } from "~/composables/model/useModelDraft";
 
 definePageMeta({
   layout: "profile",

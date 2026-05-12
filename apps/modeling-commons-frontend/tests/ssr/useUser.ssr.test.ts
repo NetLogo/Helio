@@ -26,7 +26,7 @@ describe("useUser SSR/browser parity", () => {
     });
     stubAutoImports(sessionRef);
 
-    const mod = await import("~/composables/useUser");
+    const mod = await import("~/composables/user/useUser");
     const result = mod.default().value;
 
     expect(result.isLoggedIn).toBe(true);
@@ -39,7 +39,7 @@ describe("useUser SSR/browser parity", () => {
     const sessionRef = ref<{ data: null } | null>({ data: null });
     stubAutoImports(sessionRef);
 
-    const mod = await import("~/composables/useUser");
+    const mod = await import("~/composables/user/useUser");
     const result = mod.default().value;
 
     expect(result.isLoggedIn).toBe(false);
@@ -52,7 +52,7 @@ describe("useUser SSR/browser parity", () => {
     const sessionRef = ref(null);
     stubAutoImports(sessionRef);
 
-    const mod = await import("~/composables/useUser");
+    const mod = await import("~/composables/user/useUser");
     const result = mod.default().value;
 
     expect(result.isLoggedIn).toBe(false);
@@ -69,7 +69,7 @@ describe("useUser SSR/browser parity", () => {
     });
     stubAutoImports(sessionRef);
 
-    const mod = await import("~/composables/useUser");
+    const mod = await import("~/composables/user/useUser");
     const userA = mod.default().value;
     const userB = mod.default().value;
 

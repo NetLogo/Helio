@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import useModelDraft from "~/composables/useModelDraft";
+import useModelDraft from "~/composables/model/useModelDraft";
 
 let apiBase: string;
 

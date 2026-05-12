@@ -1,6 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import useModelFamilyCard from "~/composables/useModelFamilyCard";
+import useModelFamilyCard from "~/composables/model/useModelFamilyCard";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState } = vi.hoisted(() => ({

@@ -1,5 +1,5 @@
 import { toUserSelectMenuItem, type UserSelectMenuItem } from "~/components/user/UserSelectMenu.vue";
-import type { ApiUser } from "~/composables/useUsers";
+import type { ApiUser } from "~/composables/user/useUsers";
 
 export function useUserFilter(
   filters: Ref<{ authorId?: string }>,

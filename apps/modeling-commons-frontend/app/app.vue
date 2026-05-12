@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { useWebsite } from "./composables/useWebsite";
+import { useWebsite } from "~/composables/shared/useWebsite";
 
 const meta = useWebsite();
 

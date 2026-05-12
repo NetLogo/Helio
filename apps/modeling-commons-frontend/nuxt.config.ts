@@ -50,6 +50,11 @@ export default defineNuxtConfig({
     },
   },
 
+  imports: {
+    autoImport: true,
+    dirs: ["composables/**"],
+  },
+
   hooks: {
     "pages:extend"(pages) {
       pages.push({

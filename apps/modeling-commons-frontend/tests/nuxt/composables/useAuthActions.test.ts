@@ -1,6 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import useAuthActions from "~/composables/useAuthActions";
+import useAuthActions from "~/composables/auth/useAuthActions";
 import { getEmailVerificationCallbackUrl, getResetPasswordRedirectUrl } from "~/utils/auth";
 import { buildAuthMock } from "~~/tests/helpers/mockUser";
 

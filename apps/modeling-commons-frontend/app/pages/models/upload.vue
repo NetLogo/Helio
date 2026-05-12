@@ -121,8 +121,8 @@ import type PeerReviewCard from "~/components/upload/PeerReviewCard.vue";
 import SetPermissionsCard from "~/components/upload/SetPermissionsCard.vue";
 import type { UploadFormInput } from "~/forms/upload";
 import { AddDetailsCardSchema } from "~/forms/upload";
-import type { ModelCard } from "~/composables/useModelCard";
-import type { Visibility } from "~/composables/useModelDraft";
+import type { ModelCard } from "~/composables/model/useModelCard";
+import type { Visibility } from "~/composables/model/useModelDraft";
 
 definePageMeta({
   layout: "default",

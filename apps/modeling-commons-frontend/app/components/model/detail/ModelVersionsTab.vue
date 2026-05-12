@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelVersion } from "~/composables/useModelVersions";
+import type { ModelVersion } from "~/composables/model/useModelVersions";
 import { formatRelativeDate } from "~/utils/formatters";
 
 defineProps<{

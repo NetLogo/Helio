@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import useModelInteractions from "~/composables/useModelInteractions";
+import useModelInteractions from "~/composables/model/useModelInteractions";
 
 let apiBase: string;
 

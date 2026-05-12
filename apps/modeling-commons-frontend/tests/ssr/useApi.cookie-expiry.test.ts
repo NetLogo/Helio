@@ -15,7 +15,7 @@ describe("useApi cookie/session edge cases", () => {
   it("does not throw when cookie header is an empty string and skips the cookie header", async () => {
     vi.stubGlobal("useRequestHeaders", () => ({ cookie: "" }));
 
-    const { useApi } = await import("~/composables/useApi");
+    const { useApi } = await import("~/composables/api/useApi");
 
     expect(() => useApi()).not.toThrow();
   });
@@ -23,7 +23,7 @@ describe("useApi cookie/session edge cases", () => {
   it("does not throw when cookie header is missing entirely", async () => {
     vi.stubGlobal("useRequestHeaders", () => ({}));
 
-    const { useApi } = await import("~/composables/useApi");
+    const { useApi } = await import("~/composables/api/useApi");
 
     expect(() => useApi()).not.toThrow();
   });
@@ -35,7 +35,7 @@ describe("useApi cookie/session edge cases", () => {
         : {},
     );
 
-    const { useApi } = await import("~/composables/useApi");
+    const { useApi } = await import("~/composables/api/useApi");
 
     expect(() => useApi()).not.toThrow();
     const client = useApi();

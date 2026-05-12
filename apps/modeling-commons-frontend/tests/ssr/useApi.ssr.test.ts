@@ -16,7 +16,7 @@ afterEach(() => {
 
 describe("useApi (SSR path)", () => {
   it("returns a client with GET/POST/PATCH/DELETE/PUT methods", async () => {
-    const { useApi } = await import("~/composables/useApi");
+    const { useApi } = await import("~/composables/api/useApi");
     const client = useApi();
 
     expect(typeof client.GET).toBe("function");
@@ -27,7 +27,7 @@ describe("useApi (SSR path)", () => {
   });
 
   it("creates a fresh client per call (no shared server state)", async () => {
-    const { useApi } = await import("~/composables/useApi");
+    const { useApi } = await import("~/composables/api/useApi");
     const a = useApi();
     const b = useApi();
 
@@ -40,7 +40,7 @@ describe("useApi (SSR path)", () => {
     );
     vi.stubGlobal("useRequestHeaders", headersSpy);
 
-    const { useApi } = await import("~/composables/useApi");
+    const { useApi } = await import("~/composables/api/useApi");
     const client = useApi();
 
     expect(headersSpy).toHaveBeenCalledWith(["cookie"]);
@@ -50,7 +50,7 @@ describe("useApi (SSR path)", () => {
   it("still constructs when useRequestHeaders returns no cookie", async () => {
     vi.stubGlobal("useRequestHeaders", () => ({}));
 
-    const { useApi } = await import("~/composables/useApi");
+    const { useApi } = await import("~/composables/api/useApi");
 
     expect(() => useApi()).not.toThrow();
     const client = useApi();
@@ -58,7 +58,7 @@ describe("useApi (SSR path)", () => {
   });
 
   it("initApi is a no-op on the server; subsequent useApi() still uses the SSR per-call path", async () => {
-    const mod = await import("~/composables/useApi");
+    const mod = await import("~/composables/api/useApi");
 
     mod.initApi("http://should-not-be-used.test");
 

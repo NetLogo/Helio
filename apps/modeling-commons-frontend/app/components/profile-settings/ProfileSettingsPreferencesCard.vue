@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import type { RadioGroupItem } from "@nuxt/ui";
-import type { EditableUserKind } from "~/composables/useProfileSettings";
+import type { EditableUserKind } from "~/composables/user/useProfileSettings";
 
 defineProps<{
   isProfilePublic: boolean;

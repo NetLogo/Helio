@@ -141,7 +141,7 @@
       </div>
 
       <div v-else class="flex flex-col gap-8 relative">
-        <!-- <ModelCards
+        <ModelCards
           :key="instanceKey"
           :cards="rows"
           :models="rows"
@@ -153,9 +153,9 @@
           }"
           @reset-filters="resetFilters()"
           @on-load-more="nextPage()"
-        /> -->
+        />
 
-        <ModelTable
+        <!-- <ModelTable
           v-if="!pending && rows.length"
           :key="instanceKey"
           :rows="rows"
@@ -168,7 +168,7 @@
           }"
           @reset-filters="resetFilters()"
           @on-load-more="nextPage()"
-        />
+        /> -->
       </div>
 
       <p v-if="totalCount > 0" class="mx-auto text-center text-xs text-dimmed">

@@ -1,7 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { computed } from "vue";
-import usePasskeyPrompt from "~/composables/usePasskeyPrompt";
+import usePasskeyPrompt from "~/composables/auth/usePasskeyPrompt";
 
 const { userState, hasPasskeysRef, isPendingRef, isRefetchingRef } = vi.hoisted(() => ({
   userState: {

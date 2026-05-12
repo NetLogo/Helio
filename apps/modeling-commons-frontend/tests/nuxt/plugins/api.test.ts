@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import apiPlugin from "~/plugins/api";
-import { useApi } from "~/composables/useApi";
+import { useApi } from "~/composables/api/useApi";
 
 describe("api plugin", () => {
   it("initializes the browser client using runtime config apiBase", async () => {

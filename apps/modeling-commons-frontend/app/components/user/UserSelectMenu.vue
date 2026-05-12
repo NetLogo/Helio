@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { useInfiniteScroll } from "@vueuse/core";
-import type { ApiUser } from "~/composables/useUsers";
+import type { ApiUser } from "~/composables/user/useUsers";
 export const toUserSelectMenuItem = (user: ApiUser) => ({
   label: user.name ?? "Unknown User",
   value: user.id,

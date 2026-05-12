@@ -1,6 +1,6 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, expect, it } from "vitest";
-import type { ModelVersion } from "~/composables/useModelVersions";
+import type { ModelVersion } from "~/composables/model/useModelVersions";
 import ModelVersionsTab from "./ModelVersionsTab.vue";
 
 function makeVersion(overrides: Partial<ModelVersion> = {}): ModelVersion {

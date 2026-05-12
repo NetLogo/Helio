@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { useWebsite } from "~/composables/useWebsite";
+import { useWebsite } from "~/composables/shared/useWebsite";
 
 mockNuxtImport("useRuntimeConfig", (original) => {
   return ((...args: Parameters<typeof useRuntimeConfig>) => {

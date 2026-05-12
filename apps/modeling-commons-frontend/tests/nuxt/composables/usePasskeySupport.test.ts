@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import usePasskeySupport from "~/composables/usePasskeySupport";
+import usePasskeySupport from "~/composables/auth/usePasskeySupport";
 
 afterEach(() => {
   vi.unstubAllGlobals();
