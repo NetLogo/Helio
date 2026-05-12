@@ -6,7 +6,7 @@
 //   container. They have no `role="tab"`. We locate them by visible text.
 //   Adding `role="tab"` plus an aria-controls/data-testid would make this
 //   journey more robust.
-// - The like button in `ModelStats.vue` is a UButton with text "Like" /
+// - The like button in `ModelBottomBar.vue` (via `ModelLike.vue`) is a UButton with text "Like" /
 //   "Liked". Locating it by accessible name works today.
 // - This test signs up a fresh user and tries to like — but liking requires a
 //   verified, signed-in user, so the like persistence assertion is left as

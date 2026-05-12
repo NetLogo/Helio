@@ -28,6 +28,7 @@ export interface ModelRepository extends RepositoryPort<Model> {
     interactionKind: ModelInteractionKind,
     options: {
       include?: I;
+      order: 'asc' | 'desc';
     },
   ): Promise<{ count: number; sorted: Prisma.ModelGetPayload<{ include: I }>[] }>;
   findChildren(modelId: string, params: PaginatedQueryParams): Promise<Paginated<Model>>;

@@ -33,26 +33,14 @@
                           : setFilter('order', 'asc')
                       "
                     >
-                      <UIcon
-                        :name="
-                          filters.order === 'asc'
-                            ? 'i-lucide-arrow-up-narrow-wide'
-                            : 'i-lucide-arrow-down-narrow-wide'
-                        "
-                        class="size-4"
-                      />
+                      <UIcon :name="modelOrderIcons[filters.order ?? 'desc']" class="size-4" />
                     </UButton>
                   </div>
                   <URadioGroup
                     v-model="filters.sortBy"
                     variant="card"
                     default-value="recent"
-                    :items="[
-                      { label: 'Date Published', value: 'recent' },
-                      { label: 'Likes', value: 'likes' },
-                      { label: 'Views', value: 'views' },
-                      { label: 'Downloads', value: 'downloads' },
-                    ]"
+                    :items="modelSortByOptions"
                     @update:model-value="setModelSortBy"
                   />
                 </div>
@@ -133,43 +121,23 @@
         </div>
       </div>
 
-      <div v-if="error" class="text-center py-16">
-        <UIcon name="i-lucide-wifi-off" class="size-14 text-dimmed mx-auto mb-4" />
-        <h2 class="text-lg font-semibold text-toned">Something went wrong</h2>
-        <p class="text-muted mt-1">{{ error.message }}</p>
-        <UButton variant="outline" class="mt-4" @click="refresh()"> Try again </UButton>
-      </div>
+      <ModelCardsOrientationSelect v-model="orientation" class="justify-end" />
 
-      <div v-else class="flex flex-col gap-8 relative">
-        <ModelCards
-          :key="instanceKey"
-          :cards="rows"
-          :models="rows"
-          :loading="pending"
-          :can-load-more="hasMore"
-          orientation="horizontal"
-          :class="{
-            'pointer-events-none opacity-50': pending,
-          }"
-          @reset-filters="resetFilters()"
-          @on-load-more="nextPage()"
-        />
-
-        <!-- <ModelTable
-          v-if="!pending && rows.length"
-          :key="instanceKey"
-          :rows="rows"
-          :models="rows"
-          :loading="pending"
-          :can-load-more="hasMore"
-          orientation="horizontal"
-          :class="{
-            'pointer-events-none opacity-50': pending,
-          }"
-          @reset-filters="resetFilters()"
-          @on-load-more="nextPage()"
-        /> -->
-      </div>
+      <ModelCards
+        :key="instanceKey"
+        :cards="rows"
+        :models="rows"
+        :loading="pending"
+        :can-load-more="hasMore"
+        :orientation="orientation"
+        :class="{
+          'pointer-events-none opacity-50': pending,
+        }"
+        :error="error"
+        @reset-filters="resetFilters()"
+        @on-load-more="nextPage()"
+        @retry="refresh"
+      />
 
       <p v-if="totalCount > 0" class="mx-auto text-center text-xs text-dimmed">
         Showing {{ rows.length }} of {{ totalCount }} models
@@ -179,12 +147,17 @@
 </template>
 
 <script setup lang="ts">
-useSeoMeta({
-  title: "Explore Models",
-  description: "Browse and discover agent-based simulations shared by the NetLogo community.",
-  ogTitle: "Explore Models",
-  ogDescription: "Browse and discover agent-based simulations shared by the NetLogo community.",
-});
+import {
+  modelKeywordDebounceMs,
+  modelOrderIcons,
+  modelsIndexSeoMeta,
+  modelSortByOptions,
+  modelTypeFilterOptions,
+} from "~/forms/models";
+
+useSeoMeta(modelsIndexSeoMeta);
+
+const orientation = ref<"horizontal" | "vertical">("horizontal");
 
 const {
   rows,
@@ -209,20 +182,14 @@ const setModelSortBy = (value: string) => {
   setFilter("sortBy", value as ModelSortBy);
 };
 
-const modelTypeButtons = computed(() => [
-  {
-    key: "isLibraryModel",
-    label: "NetLogo Library",
-    onClick: () => setFilter("isLibraryModel", filters.value.isLibraryModel ? undefined : true),
-    active: filters.value.isLibraryModel,
-  },
-  {
-    key: "isEndorsed",
-    label: "Endorsed by NetLogo",
-    onClick: () => setFilter("isEndorsed", filters.value.isEndorsed ? undefined : true),
-    active: filters.value.isEndorsed,
-  },
-]);
+const modelTypeButtons = computed(() =>
+  modelTypeFilterOptions.map(({ key, label }) => ({
+    key,
+    label,
+    onClick: () => setFilter(key, filters.value[key] ? undefined : true),
+    active: filters.value[key],
+  })),
+);
 
 const indicator = useLoadingIndicator();
 watch(pending, (isLoading) => {
@@ -235,6 +202,6 @@ function onKeywordChange(value: string | number) {
   clearTimeout(keywordTimeout);
   keywordTimeout = setTimeout(() => {
     void setFilter("keyword", String(value));
-  }, 300);
+  }, modelKeywordDebounceMs);
 }
 </script>

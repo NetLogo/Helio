@@ -39,7 +39,7 @@
       @run="handleRun"
     />
 
-    <ModelStats
+    <ModelBottomBar
       :likes="stats.likes"
       :downloads="stats.downloads"
       :views="stats.views"

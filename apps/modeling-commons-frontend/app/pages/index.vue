@@ -120,11 +120,12 @@
           </div>
         </template>
 
-        <section v-if="visibleSections.length === 0" class="text-center py-16">
-          <UIcon name="i-lucide-package-open" class="size-14 text-dimmed mx-auto mb-4" />
-          <h2 class="text-lg font-semibold text-toned">No models yet</h2>
-          <p class="text-dimmed mt-1">Be the first to share a simulation with the community.</p>
-        </section>
+        <Empty
+          v-if="visibleSections.length === 0"
+          icon="i-lucide-package-open"
+          title="No models yet"
+          description="Be the first to share a simulation with the community."
+        />
       </div>
     </UContainer>
   </div>

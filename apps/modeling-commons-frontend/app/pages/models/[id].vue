@@ -22,13 +22,7 @@
         </div>
       </div>
 
-      <div v-else-if="error" class="rounded-xl border border-error-200 bg-error-50 p-8 text-center">
-        <UIcon name="i-lucide-alert-circle" class="size-10 text-error-400 mx-auto mb-3" />
-        <p class="text-error-700 font-medium">{{ error.message || "Model not found" }}</p>
-        <UButton variant="outline" color="error" class="mt-4" @click="refresh()">
-          Try again
-        </UButton>
-      </div>
+      <ModelError v-else-if="error" :title="error.message || undefined" @retry="refresh()" />
 
       <template v-else-if="displayCard">
         <UAlert

@@ -322,5 +322,27 @@ export default defineAppConfig({
         item: "border-0 mb-4",
       },
     },
+
+    blogPost: {
+      slots: {
+        root: "rounded group/card",
+        title:
+          "text-h4 line-clamp-2 leading-tight max-w-full overflow-hidden text-ellipsis transition-colors group-hover/card:text-royal-blue",
+      },
+      variants: {
+        orientation: {
+          vertical: {
+            header: "h-50",
+          },
+          horizontal: {
+            root: "lg:grid-cols-3",
+            body: "lg:col-span-2 h-full",
+            header: "lg:h-60",
+            authors: "pt-2 mt-0",
+            description: "mb-auto",
+          },
+        },
+      },
+    },
   },
 });

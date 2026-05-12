@@ -5,12 +5,7 @@
     :badge="badges[0]"
     :authors="authors"
     :date="formatRelativeDate(card.model.createdAt)"
-    :ui="{
-      root: 'rounded group/card',
-      header: 'h-50',
-      title:
-        'text-md font-semibold text-highlighted line-clamp-2 leading-tight max-w-full overflow-hidden text-ellipsis transition-colors group-hover/card:text-royal-blue',
-    }"
+    :ui="{}"
     :orientation="orientation"
   >
     <template #header>
@@ -20,21 +15,17 @@
         class="group-hover/card:scale-110 transition-transform"
       />
     </template>
-    <template #footer>
-      <div class="flex items-center gap-3 text-sm text-toned">
-        <div class="flex items-center gap-1.5">
-          <UIcon name="i-lucide-download" class="size-4" />
-          <span class="font-medium">{{ numberFormatter.format(card.stats.downloads) }}</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <UIcon name="i-lucide-eye" class="size-4" />
-          <span class="font-medium">{{ numberFormatter.format(card.stats.views) }}</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <UIcon name="i-lucide-play" class="size-4" />
-          <span class="font-medium">{{ numberFormatter.format(card.stats.runs) }}</span>
-        </div>
+    <template v-if="orientation === 'horizontal'" #description>
+      <div class="flex flex-col gap-5 h-full my-2">
+        <TagList :tags="card.tagsOnLatestVersion" />
       </div>
+    </template>
+    <template v-if="orientation === 'vertical'" #footer>
+      <ModelStats
+        :downloads="card.stats.downloads"
+        :views="card.stats.views"
+        :runs="card.stats.runs"
+      />
     </template>
   </UBlogPost>
 </template>
@@ -43,10 +34,15 @@
 import type { BadgeProps, UserProps } from "#ui/types";
 import type { ModelCard } from "~/composables/model/useModelCard";
 
-const props = defineProps<{
-  card: ModelCard;
-  orientation?: "horizontal" | "vertical";
-}>();
+const props = withDefaults(
+  defineProps<{
+    card: ModelCard;
+    orientation?: "horizontal" | "vertical";
+  }>(),
+  {
+    orientation: "vertical",
+  },
+);
 
 const title = computed(() => props.card.latestVersion?.title || "Untitled Model");
 // const description = computed(
@@ -75,7 +71,8 @@ const badges = computed<BadgeProps[]>(() => {
 const authors = computed<UserProps[]>(() =>
   props.card.authors.map((a) => ({
     name: a.userName ?? undefined,
-    avatar: { alt: a.userName ?? undefined },
+    avatar: { alt: a.userName ?? undefined, src: a.userImage ?? undefined },
+    to: createSlugPath("users", a.userId, a.userName ?? "anonymous"),
   })),
 );
 </script>

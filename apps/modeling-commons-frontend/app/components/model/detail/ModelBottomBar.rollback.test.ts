@@ -1,4 +1,4 @@
-// Per Phase 2b's finding: ModelStats.vue itself only emits `toggleLike` — the
+// Per Phase 2b's finding: ModelBottomBar.vue itself only emits `toggleLike` — the
 // network call + optimistic state live on the parent ModelDetail.vue. Mounting
 // ModelDetail directly drags in a long tail of heavy children (ModelHeader,
 // NetlogoWebEmbed, all four tab panels, useModelCard/useModelVersions/etc.),
@@ -7,12 +7,12 @@
 //   - on rejection, restore the original state and surface a toast
 //   - guard re-entry while a request is in flight
 // If the day comes that ModelDetail mounts cleanly under test, this can be
-// converted to mount ModelDetail and click the real ModelStats Like button.
+// converted to mount ModelDetail and click the real ModelBottomBar Like button.
 
 import { reactive, ref, defineComponent, h } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
-import ModelStats from "./ModelStats.vue";
+import ModelBottomBar from "./ModelBottomBar.vue";
 
 type Stats = { likes: number; likedByMe: boolean };
 
@@ -23,7 +23,7 @@ function createHarness(opts: {
   initial?: Partial<Stats>;
 }) {
   return defineComponent({
-    components: { ModelStats },
+    components: { ModelBottomBar },
     setup() {
       const stats = reactive<Stats>({
         likes: opts.initial?.likes ?? 5,
@@ -52,7 +52,7 @@ function createHarness(opts: {
       return { stats, busy, handleToggleLike };
     },
     render() {
-      return h(ModelStats, {
+      return h(ModelBottomBar, {
         likes: this.stats.likes,
         downloads: 0,
         views: 0,

@@ -176,12 +176,12 @@
 }
 
 .layout-leave-active {
-  position: absolute;
+  opacity: 0;
 }
 .layout-enter-from,
 .layout-leave-to {
   opacity: 0;
-  height: 0;
+  transform: translateX(30px);
 }
 
 .border-dashed-stylized {

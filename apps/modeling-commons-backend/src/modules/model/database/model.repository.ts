@@ -95,6 +95,7 @@ export default function modelRepository({
       if (interactionKind) {
         const { count, sorted } = await this.fetchByInteraction(where, params, interactionKind, {
           include,
+          order: filters.order ?? params.orderBy ?? 'desc',
         });
         return paginate((sorted as Array<never>).map(map), params, count);
       }
@@ -113,7 +114,7 @@ export default function modelRepository({
       where: Prisma.ModelWhereInput,
       params: PaginatedQueryParams,
       interactionKind: ModelInteractionKind,
-      options: { include?: I },
+      options: { include?: I; order: 'asc' | 'desc' },
     ): Promise<{ count: number; sorted: Array<Prisma.ModelGetPayload<{ include: I }>> }> {
       const [count, grouped] = await Promise.all([
         db.model.count({ where }),
@@ -121,7 +122,7 @@ export default function modelRepository({
           by: ['modelId'],
           where: { kind: interactionKind, model: where },
           _count: { _all: true },
-          orderBy: { _count: { id: params.orderBy?.param || 'desc' } },
+          orderBy: { _count: { id: options.order } },
           skip: params.offset,
           take: params.limit,
         }),

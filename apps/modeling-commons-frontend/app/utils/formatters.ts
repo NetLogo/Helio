@@ -70,7 +70,7 @@ export function getPreviewImageURI(modelId: string, versionNumber: number): stri
 
 export function pluralize(count: number, singular: string, plural?: string): string {
   if (count === 1) return `${singular}`;
-  return `${count} ${plural || singular + "s"}`;
+  return `${numberFormatter.format(count)} ${plural || singular + "s"}`;
 }
 
 export function capitalize(str: string): string {

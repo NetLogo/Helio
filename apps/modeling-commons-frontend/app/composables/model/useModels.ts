@@ -1,57 +1,23 @@
-import { type QueryKey, type QueryRecord, readQueryParams } from "@repo/utils/lib/http/query";
-import * as z from "zod";
+import { type QueryRecord, readQueryParams } from "@repo/utils/lib/http/query";
 import type { ModelCard } from "~/composables/model/useModelCard";
+import {
+  modelsPageLimit,
+  modelsQueryFilters,
+  modelsQuerySchema,
+  type ModelDateRangeKey,
+  type ModelsFilters,
+  type ModelsQuery,
+  type ModelSortBy,
+} from "~/forms/models";
 
-export type ModelQuery = QueryParams<"GET", "/api/v1/models/card">;
-export type ModelsFilters = Omit<ModelQuery, "limit" | "page">;
-export type ModelSortBy = NonNullable<ModelsFilters["sortBy"]>;
-const SORT_BY_VALUES: Readonly<Array<ModelSortBy>> = [
-  "recent",
-  "views",
-  "downloads",
-  "runs",
-  "likes",
-];
-const PAGE_LIMIT = 20;
-
-const queryFilters = [
-  { key: "keyword", type: "string", defaultValue: "" },
-  { key: "tags", type: "array", contentType: { key: "tag", type: "string" } },
-  { key: "isEndorsed", type: "boolean" },
-  { key: "isLibraryModel", type: "boolean" },
-  { key: "sortBy", type: "string" },
-  { key: "order", type: "string", defaultValue: "desc" },
-  { key: "fromDate", type: "string" },
-  { key: "toDate", type: "string" },
-  { key: "authorId", type: "string" },
-  { key: "parentModelId", type: "string" },
-  { key: "publicOnly", type: "boolean" },
-  { key: "netlogoVersion", type: "string" },
-] as const satisfies Array<QueryKey>;
-
-const querySchema = z.object({
-  limit: z.number(),
-  page: z.number(),
-  keyword: z.string().default(""),
-  tags: z.array(z.string()).default([]),
-  sortBy: z.enum(SORT_BY_VALUES).optional(),
-  order: z.enum(["asc", "desc"]).default("desc"),
-  authorId: z.string().optional(),
-  parentModelId: z.string().optional(),
-  publicOnly: z.boolean().optional(),
-  isEndorsed: z.boolean().optional(),
-  isLibraryModel: z.boolean().optional(),
-  fromDate: z.iso.date().optional(),
-  toDate: z.iso.date().optional(),
-  netlogoVersion: z.string().optional(),
-});
+export type { ModelDateRangeKey, ModelsFilters, ModelsQuery, ModelSortBy };
 
 export default function useModels() {
   const { GET } = useApi();
   const route = useRoute();
   const page = useState("models-page", () => 0);
 
-  const filters = computed(() => readQueryParams(route.query as QueryRecord, queryFilters));
+  const filters = computed(() => readQueryParams(route.query as QueryRecord, modelsQueryFilters));
   const key = computed(() => `models-${page.value}-${JSON.stringify(filters.value)}`);
 
   const { data, pending, error, refresh } = useAsyncData<{
@@ -60,11 +26,11 @@ export default function useModels() {
   } | null>(
     key,
     async () => {
-      const query: QueryParams<"GET", "/api/v1/models/card"> = {
-        limit: PAGE_LIMIT,
+      const query: ModelsQuery = {
+        limit: modelsPageLimit,
         page: page.value,
       };
-      const params = querySchema.parse({ ...filters.value, ...query });
+      const params = modelsQuerySchema.parse({ ...filters.value, ...query });
       const res = await GET("/api/v1/models/card", { params: { query: params } });
       const parsed = handleApiError(res.data, res.error, "fetching model query result");
       return { rows: parsed.data, totalCount: parsed.count };
@@ -85,7 +51,7 @@ export default function useModels() {
   });
 
   const totalCount = computed(() => data.value?.totalCount ?? 0);
-  const totalPages = computed(() => Math.ceil(totalCount.value / PAGE_LIMIT));
+  const totalPages = computed(() => Math.ceil(totalCount.value / modelsPageLimit));
   const hasMore = computed(
     () => rows.value.length < totalCount.value && page.value < totalPages.value - 1,
   );
@@ -116,10 +82,7 @@ export default function useModels() {
     await navigateTo({ query: next });
   }
 
-  async function setDateRange(
-    stringOrDate: string | Date | number | null,
-    key: "fromDate" | "toDate",
-  ) {
+  async function setDateRange(stringOrDate: string | Date | number | null, key: ModelDateRangeKey) {
     const next = { ...route.query };
     if (!stringOrDate) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete

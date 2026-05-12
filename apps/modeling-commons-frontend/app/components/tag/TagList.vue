@@ -1,24 +1,38 @@
 <template>
   <div class="flex flex-wrap gap-2.5">
-    <span
-      v-for="tag in tags"
-      :key="tag.id"
-      class="inline-flex items-center rounded px-2.5 py-1 text-xs font-medium max-w-sm whitespace-nowrap overflow-hidden text-ellipsis"
-      :class="getTagColorClass(tag.name)"
-    >
-      {{ sentenceCase(tag.name) }}
-    </span>
+    <TagChip
+      v-for="tag in shownTags"
+      :id="tag.id"
+      :key="tag.id ?? tag.name"
+      :name="tag.name"
+      :display-name="tag.displayName"
+    />
+    <TagChip
+      v-if="extraTagCount > 0 && props.showExtraTagCount"
+      :name="`+${extraTagCount} more`"
+      class="bg-muted text-muted-foreground"
+    />
     <AddTagButton v-if="editable" @add="$emit('add')" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { getTagColorClass } from "~/utils/formatters";
+const props = withDefaults(
+  defineProps<{
+    tags: Array<{ id?: string; name: string; displayName?: string }>;
+    editable?: boolean;
+    maxShownTags?: number;
+    showExtraTagCount?: boolean;
+  }>(),
+  {
+    editable: false,
+    maxShownTags: 5,
+    showExtraTagCount: true,
+  },
+);
 
-defineProps<{
-  tags: Array<Partial<Tag> & { name: string }>;
-  editable?: boolean;
-}>();
+const shownTags = computed(() => props.tags.slice(0, props.maxShownTags));
+const extraTagCount = computed(() => props.tags.length - shownTags.value.length);
 
 defineEmits<{
   add: [];
