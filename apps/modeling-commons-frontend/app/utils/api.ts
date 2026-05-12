@@ -53,3 +53,17 @@ export async function fetchNetlogoVersionsByPrefix(prefix?: string): Promise<str
   const parsed = handleApiError(data, error, "fetching NetLogo versions");
   return parsed as string[];
 }
+
+export async function getRandomModelId(
+  api: ReturnType<typeof useApi>,
+): Promise<ResponseSuccessData<"GET", "/api/v1/models/random"> | null> {
+  const { GET } = api;
+  try {
+    const { data, error } = await GET("/api/v1/models/random");
+    const parsed = handleApiError(data, error, "fetching random model ID");
+    return parsed;
+  } catch (e) {
+    console.error("Error fetching random model ID", e);
+    return null;
+  }
+}

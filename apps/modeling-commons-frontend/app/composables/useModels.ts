@@ -2,9 +2,9 @@ import { type QueryKey, type QueryRecord, readQueryParams } from "@repo/utils/li
 import * as z from "zod";
 import type { ModelCard } from "~/composables/useModelCard";
 
-type ModelQuery = QueryParams<"GET", "/api/v1/models/card">;
-type ModelsFilters = Omit<ModelQuery, "limit" | "page">;
-type ModelSortBy = NonNullable<ModelsFilters["sortBy"]>;
+export type ModelQuery = QueryParams<"GET", "/api/v1/models/card">;
+export type ModelsFilters = Omit<ModelQuery, "limit" | "page">;
+export type ModelSortBy = NonNullable<ModelsFilters["sortBy"]>;
 const SORT_BY_VALUES: Readonly<Array<ModelSortBy>> = [
   "recent",
   "views",
@@ -35,6 +35,10 @@ const querySchema = z.object({
   keyword: z.string().default(""),
   tags: z.array(z.string()).default([]),
   sortBy: z.enum(SORT_BY_VALUES).optional(),
+  order: z.enum(["asc", "desc"]).default("desc"),
+  authorId: z.string().optional(),
+  parentModelId: z.string().optional(),
+  publicOnly: z.boolean().optional(),
   isEndorsed: z.boolean().optional(),
   isLibraryModel: z.boolean().optional(),
   fromDate: z.iso.date().optional(),
@@ -81,22 +85,62 @@ export default function useModels() {
   });
 
   const totalCount = computed(() => data.value?.totalCount ?? 0);
-  const hasMore = computed(() => rows.value.length < totalCount.value);
+  const totalPages = computed(() => Math.ceil(totalCount.value / PAGE_LIMIT));
+  const hasMore = computed(
+    () => rows.value.length < totalCount.value && page.value < totalPages.value - 1,
+  );
   const isEmpty = computed(() => !pending.value && rows.value.length === 0);
   const instanceKey = computed(() => JSON.stringify(filters.value));
 
   async function setFilter<K extends keyof ModelsFilters>(key: K, value: ModelsFilters[K]) {
     page.value = 0;
     const next = { ...route.query };
+
     switch (key) {
       case "sortBy":
-        if (value === null || value === "recent") delete next.sortBy;
+        if (value === null) delete next.sortBy;
         else next.sortBy = String(value);
         break;
+      case "tags":
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          next.tag = [];
+        } else next.tag = Array.isArray(value) ? [...value] : [String(value)];
+        break;
       default:
-        if (value === null || value === undefined || value === "") delete next[key];
-        else next[key] = String(value);
+        if (value === null || value === undefined || value === "") {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+          delete next[key];
+        } else next[key] = String(value);
     }
+
+    await navigateTo({ query: next });
+  }
+
+  async function setDateRange(
+    stringOrDate: string | Date | number | null,
+    key: "fromDate" | "toDate",
+  ) {
+    const next = { ...route.query };
+    if (!stringOrDate) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete next[key];
+    } else {
+      const date =
+        typeof stringOrDate === "string" || typeof stringOrDate === "number"
+          ? new Date(stringOrDate)
+          : stringOrDate;
+      if (isNaN(date.getTime())) {
+        console.warn(`Invalid date provided for ${key}:`, stringOrDate);
+        return;
+      }
+
+      const dateText = date.toISOString().split("T")[0];
+      if (next[key] === dateText) return;
+      if (dateText) {
+        next[key] = dateText;
+      }
+    }
+    page.value = 0;
     await navigateTo({ query: next });
   }
 
@@ -119,6 +163,7 @@ export default function useModels() {
     isEmpty,
     refresh,
     setFilter,
+    setDateRange,
     nextPage,
     instanceKey,
     resetFilters,

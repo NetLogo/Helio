@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "#ui/types";
 import type * as z from "zod";
-import { changePasswordFields, changePasswordValidator } from "~/assets/auth";
+import { changePasswordFields, changePasswordValidator } from "~/forms/auth";
 
 const toast = useToast();
 const { changePassword } = useAuthActions();

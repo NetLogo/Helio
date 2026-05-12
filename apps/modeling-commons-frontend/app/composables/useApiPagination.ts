@@ -1,11 +1,16 @@
+import type { AsyncDataOptions } from "#app/composables/asyncData";
+
+export type PaginatedResponse<T> = {
+  data: Array<T>;
+  page: number;
+  count: number;
+  limit: number;
+};
+
 export default function useApiPagination<T>(
   key: MaybeRefOrGetter<string>,
-  fetchPage: (page: number) => Promise<{
-    data: Array<T>;
-    page: number;
-    count: number;
-    limit: number;
-  }>,
+  fetchPage: (page: number) => Promise<PaginatedResponse<T>>,
+  asyncDataOptions: Partial<AsyncDataOptions<PaginatedResponse<T>>> = {},
   initialPage = 1,
 ) {
   const page = useState(`${toValue(key)}-pagination-page`, () => initialPage);
@@ -13,6 +18,7 @@ export default function useApiPagination<T>(
   const count = ref<number>();
   const limit = ref<number>();
   const initialized = ref(false);
+  const isKeyStale = ref(false);
 
   const numberOfPages = computed(() =>
     count.value !== undefined && limit.value !== undefined
@@ -28,7 +34,7 @@ export default function useApiPagination<T>(
   } = useAsyncData(
     () => `${toValue(key)}-page-${page.value}`,
     () => fetchPage(page.value),
-    { watch: [page, () => toValue(key)] },
+    { watch: [page, () => toValue(key)], ...asyncDataOptions },
   );
 
   function reset() {
@@ -39,12 +45,23 @@ export default function useApiPagination<T>(
     page.value = initialPage;
   }
 
-  watch(() => toValue(key), reset);
+  function _setStaleKey() {
+    isKeyStale.value = true;
+  }
+
+  function _clearStaleKey() {
+    if (!isKeyStale.value) return;
+    reset();
+    isKeyStale.value = false;
+  }
+
+  watch(() => toValue(key), _setStaleKey);
 
   watch(
     fetchedPage,
     (next) => {
       if (!next) return;
+      _clearStaleKey();
       data.value = [...data.value, ...next.data];
       count.value = next.count;
       limit.value = next.limit;

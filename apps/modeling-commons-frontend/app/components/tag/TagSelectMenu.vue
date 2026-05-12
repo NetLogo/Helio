@@ -25,11 +25,11 @@
 
 <script lang="ts">
 import { useInfiniteScroll } from "@vueuse/core";
-export type TagItem = { label: string; value: string } & Tag;
-export const toTagSelectMenuItem = (tag: Tag): TagItem => ({
+export type TagItem = { label: string; value: string; name: string } & Partial<Tag>;
+export const toTagSelectMenuItem = (tag: Partial<Tag> & { name: string }): TagItem => ({
   ...tag,
   label: tag.displayName ?? tag.name,
-  value: tag.id,
+  value: tag.name,
 });
 </script>
 

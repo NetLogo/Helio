@@ -1,5 +1,5 @@
-import { userKindOptions, type UserKind } from "~/assets/auth";
-import type { SocialMediaLink } from "~/components/utility-components/SocialLink.vue";
+import { userKindOptions, type UserKind } from "~/forms/auth";
+import type { SocialMediaLink } from "~/components/shared/SocialLink.vue";
 
 type SaveResult = {
   data: { ok: true } | null;

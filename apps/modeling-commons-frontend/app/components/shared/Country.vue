@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import countries from "~/assets/countries";
+import countries from "~/data/countries";
 
 const props = withDefaults(
   defineProps<{

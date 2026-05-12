@@ -70,7 +70,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type * as z from "zod";
-import { logInFields, logInValidator } from "~/assets/auth";
+import { logInFields, logInValidator } from "~/forms/auth";
 import { authRoutes, getPasskeyPromptUrl, getSafeNextPath } from "~/utils/auth";
 
 definePageMeta({

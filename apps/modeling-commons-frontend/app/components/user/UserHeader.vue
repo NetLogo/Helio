@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { SocialMediaLink } from "../utility-components/SocialLink.vue";
+import type { SocialMediaLink } from "~/components/shared/SocialLink.vue";
 
 withDefaults(
   defineProps<{

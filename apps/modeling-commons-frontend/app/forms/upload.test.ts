@@ -12,7 +12,7 @@ import {
   netlogoFileSchema,
   peerReviewKindOptions,
   permissionOptions,
-} from "./form";
+} from "./upload";
 
 function makeFile(name: string, size = 100, type = "text/plain"): File {
   const blob = new Blob([new Uint8Array(size)], { type });

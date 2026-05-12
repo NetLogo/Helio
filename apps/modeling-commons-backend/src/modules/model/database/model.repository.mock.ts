@@ -19,5 +19,6 @@ export function mockModelRepository(): { [K in keyof ModelRepository]: ReturnTyp
     insertTx: vi.fn(),
     updateFields: vi.fn(),
     resolveLegacyId: vi.fn(),
+    findRandomPublic: vi.fn(),
   };
 }

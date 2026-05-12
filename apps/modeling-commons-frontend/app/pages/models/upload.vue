@@ -119,8 +119,8 @@ import type { StepperItem } from "#ui/types";
 import type AddDetailsCard from "~/components/upload/AddDetailsCard.vue";
 import type PeerReviewCard from "~/components/upload/PeerReviewCard.vue";
 import SetPermissionsCard from "~/components/upload/SetPermissionsCard.vue";
-import type { UploadFormInput } from "~/components/upload/form";
-import { AddDetailsCardSchema } from "~/components/upload/form";
+import type { UploadFormInput } from "~/forms/upload";
+import { AddDetailsCardSchema } from "~/forms/upload";
 import type { ModelCard } from "~/composables/useModelCard";
 import type { Visibility } from "~/composables/useModelDraft";
 

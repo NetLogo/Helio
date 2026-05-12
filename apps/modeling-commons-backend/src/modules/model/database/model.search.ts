@@ -68,13 +68,14 @@ export function buildModelOrderBy(
   filters: ModelSearchFilters,
   params: PaginatedQueryParams,
 ): Prisma.ModelOrderByWithRelationInput {
+  const order = filters.order || params.orderBy?.param || 'desc';
   if (filters.sortBy === 'likes') {
-    return { likes: { _count: 'desc' } };
+    return { likes: { _count: order } };
   }
   if (params.orderBy) {
-    return { [params.orderBy.field]: params.orderBy.param };
+    return { [params.orderBy.field]: order };
   }
-  return { createdAt: 'desc' };
+  return { createdAt: order };
 }
 
 export const interactionKindBySortKey: Partial<Record<ModelSortBy, ModelInteractionKind>> = {

@@ -52,8 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import type { UploadFormInput } from "./form";
-import { peerReviewKindOptions } from "./form";
+import type { UploadFormInput } from "~/forms/upload";
+import { peerReviewKindOptions } from "~/forms/upload";
 
 const state = defineModel<UploadFormInput>({ required: true });
 </script>

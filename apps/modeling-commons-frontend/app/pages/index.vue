@@ -32,7 +32,14 @@
 
           <span class="text-md text-royal-blue-lighter"> OR </span>
 
-          <UButton variant="solid" color="secondary" icon="i-lucide-shuffle"> Random </UButton>
+          <UButton
+            variant="solid"
+            color="secondary"
+            icon="i-lucide-shuffle"
+            @click="navigateToRandomModel()"
+          >
+            Random
+          </UButton>
         </div>
       </template>
     </UPageHero>

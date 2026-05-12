@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { maxNetlogoFileSize } from "./form";
+import { maxNetlogoFileSize } from "~/forms/upload";
 
 const model = defineModel<File | null>();
 

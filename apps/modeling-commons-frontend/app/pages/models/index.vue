@@ -10,7 +10,8 @@
               @update:model-value="onKeywordChange"
             />
           </div>
-          <USlideover :ui="{ content: 'space-y-2 lg:min-w-120' }">
+
+          <USlideover ref="slideover" :ui="{ content: 'space-y-2 lg:min-w-120' }">
             <UButton icon="i-lucide-sliders-horizontal" size="sm"> Filter and Sort </UButton>
 
             <template #content>
@@ -21,18 +22,38 @@
 
               <div class="space-y-8 mt-2 border-0">
                 <div class="flex flex-col gap-3">
-                  <span class="text-start wrap-break-word text-md font-medium py-1">Sort by</span>
+                  <div class="flex items-center gap-2 justify-between">
+                    <span class="text-start wrap-break-word text-md font-medium py-1">Sort by</span>
+                    <UButton
+                      variant="soft"
+                      size="xs"
+                      @click="
+                        filters.order === 'asc'
+                          ? setFilter('order', 'desc')
+                          : setFilter('order', 'asc')
+                      "
+                    >
+                      <UIcon
+                        :name="
+                          filters.order === 'asc'
+                            ? 'i-lucide-arrow-up-narrow-wide'
+                            : 'i-lucide-arrow-down-narrow-wide'
+                        "
+                        class="size-4"
+                      />
+                    </UButton>
+                  </div>
                   <URadioGroup
                     v-model="filters.sortBy"
                     variant="card"
                     default-value="recent"
                     :items="[
                       { label: 'Date Published', value: 'recent' },
-                      { label: 'Oldest', value: 'oldest' },
                       { label: 'Likes', value: 'likes' },
                       { label: 'Views', value: 'views' },
                       { label: 'Downloads', value: 'downloads' },
                     ]"
+                    @update:model-value="setModelSortBy"
                   />
                 </div>
 
@@ -42,14 +63,12 @@
                   >
                   <div class="flex gap-4 flex-wrap">
                     <UButton
-                      v-for="{ key, label } in [
-                        { key: 'isLibraryModel', label: 'NetLogo Library' },
-                        { key: 'isEndorsed', label: 'Endorsed by NetLogo' },
-                      ]"
+                      v-for="{ key, label, onClick, active } in modelTypeButtons"
                       :key="key"
-                      variant="subtle"
+                      :variant="active ? 'solid' : 'outline'"
                       color="neutral"
                       size="xs"
+                      @click="onClick"
                       >{{ label }}</UButton
                     >
                   </div>
@@ -62,47 +81,53 @@
                   <div>
                     <div class="flex gap-6 w-full">
                       <UFormField label="From" class="w-full">
-                        <UInput type="date" label="From" />
+                        <UInput
+                          type="date"
+                          label="From"
+                          :value="filters.fromDate"
+                          @update:model-value="(v) => setDateRange(v as string, 'fromDate')"
+                        />
                       </UFormField>
                       <UFormField label="To" class="w-full">
-                        <UInput type="date" label="To" />
+                        <UInput
+                          type="date"
+                          label="To"
+                          :value="filters.toDate"
+                          @update:model-value="(v) => setDateRange(v as string, 'toDate')"
+                        />
                       </UFormField>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <UButton variant="solid" color="primary" class="mt-auto" block @click="refresh()">
-                See Results
-              </UButton>
             </template>
           </USlideover>
         </div>
 
         <div class="flex gap-3">
           <UserSelectMenu
-            v-model="selectedUser"
-            v-model:search-term="usersQuery"
-            :users
-            :load-next-page="usersLoadNextPage"
-            :can-load-more="usersCanLoadMore"
-            :loading="usersPending"
+            v-model="author.selected"
+            v-model:search-term="author.searchTerm"
+            :users="author.users"
+            :load-next-page="author.loadNextPage"
+            :can-load-more="author.canLoadMore"
+            :loading="author.pending"
             class="flex-1 lg:min-w-80"
           />
           <TagSelectMenu
-            v-model="selectedTags"
-            v-model:search-term="tagsQuery"
-            :tags="tags"
-            :load-next-page="tagsLoadNextPage"
-            :can-load-more="tagsCanLoadMore"
-            :loading="tagsPending"
+            v-model="tags.selected"
+            v-model:search-term="tags.searchTerm"
+            :tags="tags.tags"
+            :load-next-page="tags.loadNextPage"
+            :can-load-more="tags.canLoadMore"
+            :loading="tags.pending"
             class="flex-1 lg:min-w-80"
           />
           <NetLogoVersionSelectMenu
-            v-model="selectedNetLogoVersion"
-            v-model:search-term="netLogoVersionsQuery"
-            :versions="netLogoVersions ?? []"
-            :loading="netLogoVersionsPending"
+            v-model="version.selected"
+            v-model:search-term="version.searchTerm"
+            :versions="version.versions"
+            :loading="version.pending"
             class="flex-1 lg:min-w-60"
           />
         </div>
@@ -116,15 +141,31 @@
       </div>
 
       <div v-else class="flex flex-col gap-8 relative">
-        <ModelTable
-          :ref="table"
+        <!-- <ModelCards
           :key="instanceKey"
+          :cards="rows"
           :models="rows"
           :loading="pending"
+          :can-load-more="hasMore"
+          orientation="horizontal"
           :class="{
             'pointer-events-none opacity-50': pending,
           }"
+          @reset-filters="resetFilters()"
+          @on-load-more="nextPage()"
+        /> -->
+
+        <ModelTable
+          v-if="!pending && rows.length"
+          :key="instanceKey"
+          :rows="rows"
+          :models="rows"
+          :loading="pending"
           :can-load-more="hasMore"
+          orientation="horizontal"
+          :class="{
+            'pointer-events-none opacity-50': pending,
+          }"
           @reset-filters="resetFilters()"
           @on-load-more="nextPage()"
         />
@@ -138,21 +179,12 @@
 </template>
 
 <script setup lang="ts">
-import {
-  toNetLogoVersionItem,
-  type NetLogoVersionItem,
-} from "~/components/NetLogoVersionSelectMenu.vue";
-import { toTagSelectMenuItem, type TagItem } from "~/components/TagSelectMenu.vue";
-import { toUserSelectMenuItem, type UserSelectMenuItem } from "~/components/UserSelectMenu.vue";
-
 useSeoMeta({
   title: "Explore Models",
   description: "Browse and discover agent-based simulations shared by the NetLogo community.",
   ogTitle: "Explore Models",
   ogDescription: "Browse and discover agent-based simulations shared by the NetLogo community.",
 });
-
-const table = ref();
 
 const {
   rows,
@@ -164,83 +196,33 @@ const {
   instanceKey,
   refresh,
   setFilter,
+  setDateRange,
   nextPage,
   resetFilters,
 } = useModels();
 
-const {
-  query: usersQuery,
-  users,
-  loadNextPage: usersLoadNextPage,
-  canLoadMore: usersCanLoadMore,
-  pending: usersPending,
-} = useUsers();
-const selectedUser = ref<UserSelectMenuItem>();
+const author = reactive(useUserFilter(filters, setFilter));
+const tags = reactive(useTagsFilter(filters, setFilter));
+const version = reactive(useNetlogoVersionsFilter(filters, setFilter));
 
-watch(
-  () => filters.value.authorId,
-  async (authorId) => {
-    if (authorId) {
-      const user = await fetchUserById(useApi(), authorId);
-      selectedUser.value = toUserSelectMenuItem(user as ApiUser);
-    } else {
-      selectedUser.value = undefined;
-    }
+const setModelSortBy = (value: string) => {
+  setFilter("sortBy", value as ModelSortBy);
+};
+
+const modelTypeButtons = computed(() => [
+  {
+    key: "isLibraryModel",
+    label: "NetLogo Library",
+    onClick: () => setFilter("isLibraryModel", filters.value.isLibraryModel ? undefined : true),
+    active: filters.value.isLibraryModel,
   },
-  { immediate: true },
-);
-
-watch(selectedUser, (user) => {
-  setFilter("authorId", user?.value as string);
-});
-
-const {
-  prefix: tagsQuery,
-  tags,
-  loadNextPage: tagsLoadNextPage,
-  canLoadMore: tagsCanLoadMore,
-  pending: tagsPending,
-} = useTags();
-const selectedTags = ref<Array<TagItem>>([]);
-
-const {
-  prefix: netLogoVersionsQuery,
-  versions: netLogoVersions,
-  pending: netLogoVersionsPending,
-} = useNetLogoVersions();
-const selectedNetLogoVersion = ref<NetLogoVersionItem>();
-
-watch(
-  () => filters.value.netlogoVersion,
-  (version) => {
-    selectedNetLogoVersion.value = version ? toNetLogoVersionItem(version) : undefined;
+  {
+    key: "isEndorsed",
+    label: "Endorsed by NetLogo",
+    onClick: () => setFilter("isEndorsed", filters.value.isEndorsed ? undefined : true),
+    active: filters.value.isEndorsed,
   },
-  { immediate: true },
-);
-
-watch(selectedNetLogoVersion, (item) => {
-  setFilter("netlogoVersion", item?.value);
-});
-
-watch(
-  () => filters.value.tags,
-  async (tags) => {
-    if (tags) {
-      const tagList = await Promise.all(
-        tags.map(async (tagName) => {
-          const tag = await fetchTagByIdOrName(useApi(), tagName);
-          return toTagSelectMenuItem(
-            tag ?? { displayName: tagName, name: tagName, value: tagName },
-          );
-        }),
-      );
-      selectedTags.value = tagList;
-    } else {
-      selectedTags.value = [];
-    }
-  },
-  { immediate: true },
-);
+]);
 
 const indicator = useLoadingIndicator();
 watch(pending, (isLoading) => {

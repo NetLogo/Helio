@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import SetPermissionsCard from "./SetPermissionsCard.vue";
-import type { UploadFormInput } from "./form";
+import type { UploadFormInput } from "~/forms/upload";
 
 function makeState(overrides: Partial<UploadFormInput> = {}): UploadFormInput {
   return {

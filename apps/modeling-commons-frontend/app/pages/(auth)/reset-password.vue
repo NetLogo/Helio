@@ -115,7 +115,7 @@
 </template>
 
 <script setup lang="ts">
-import { emailOnlyValidator, resetPasswordValidator } from "~/assets/auth";
+import { emailOnlyValidator, resetPasswordValidator } from "~/forms/auth";
 import { authRoutes } from "~/utils/auth";
 
 definePageMeta({

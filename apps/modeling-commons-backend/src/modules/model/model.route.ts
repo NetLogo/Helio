@@ -13,6 +13,8 @@ import {
   type ModelSearchQuery,
   type UpdateModelRequestDto,
 } from '#src/modules/model/dtos/model.dto.ts';
+import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
+import { Type } from 'typebox';
 import {
   modelCardPaginatedResponseSchema,
   modelCardResponseDtoSchema,
@@ -56,6 +58,21 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       await modelService.softDelete(request.params.id, request.user!.id);
       return reply.code(204).send();
+    },
+  );
+
+  fastify.get(
+    '/v1/models/random',
+    {
+      schema: {
+        response: {
+          200: Type.Intersect([idDtoSchema, Type.Object({ title: Type.String() })]),
+        },
+        tags: ['Model'],
+      },
+    },
+    async () => {
+      return modelService.findRandomPublic();
     },
   );
 

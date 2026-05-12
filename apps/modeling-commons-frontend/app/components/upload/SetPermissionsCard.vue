@@ -26,8 +26,8 @@
 </template>
 
 <script setup lang="ts">
-import type { UploadFormInput } from "./form";
-import { permissionOptions } from "./form";
+import type { UploadFormInput } from "~/forms/upload";
+import { permissionOptions } from "~/forms/upload";
 
 const state = defineModel<UploadFormInput>({ required: true });
 </script>

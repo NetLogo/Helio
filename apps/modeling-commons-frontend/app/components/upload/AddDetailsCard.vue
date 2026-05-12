@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { modelUsecases, type UploadFormInput } from "./form";
+import { modelUsecases, type UploadFormInput } from "~/forms/upload";
 
 const state = defineModel<UploadFormInput>({ required: true });
 const props = defineProps<{

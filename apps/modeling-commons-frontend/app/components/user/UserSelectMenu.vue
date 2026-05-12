@@ -34,7 +34,11 @@ import type { ApiUser } from "~/composables/useUsers";
 export const toUserSelectMenuItem = (user: ApiUser) => ({
   label: user.name ?? "Unknown User",
   value: user.id,
-  avatar: { name: user.name ?? undefined, src: user.image ?? undefined },
+  avatar: {
+    name: user.name ?? undefined,
+    src: user.image ?? undefined,
+    alt: user.name ?? "User Avatar",
+  },
 });
 </script>
 

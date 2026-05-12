@@ -151,7 +151,7 @@
 </template>
 
 <script setup lang="ts">
-import countries from "~/assets/countries";
+import countries from "~/data/countries";
 
 definePageMeta({
   middleware: "auth",

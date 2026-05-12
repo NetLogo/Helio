@@ -16,8 +16,7 @@
 import { getTagColorClass } from "~/utils/formatters";
 
 defineProps<{
-  tags: Array<Tag>;
-
+  tags: Array<Partial<Tag> & { name: string }>;
   editable?: boolean;
 }>();
 

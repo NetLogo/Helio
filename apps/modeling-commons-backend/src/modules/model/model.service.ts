@@ -49,5 +49,11 @@ export default function makeModelService({
       }
       return id;
     },
+
+    async findRandomPublic(): Promise<{ id: string; title: string }> {
+      const result = await modelRepository.findRandomPublic();
+      if (!result) throw new ModelNotFoundError('No public model available');
+      return result;
+    },
   };
 }

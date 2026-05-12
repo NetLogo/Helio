@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { makeFileSchema } from "./FileUploader.vue";
+import { makeFileSchema } from "~/components/upload/FileUploader.vue";
 
 const maxNetlogoFileSize = 10 * 1024 * 1024; // 10 MB
 const netlogoFileSchema = makeFileSchema({

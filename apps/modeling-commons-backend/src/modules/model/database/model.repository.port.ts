@@ -39,4 +39,5 @@ export interface ModelRepository extends RepositoryPort<Model> {
     data: { visibility?: ModelVisibility; isEndorsed?: boolean },
   ): Promise<void>;
   resolveLegacyId(legacyId: number): Promise<string | undefined>;
+  findRandomPublic(): Promise<{ id: string; title: string } | undefined>;
 }

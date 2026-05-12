@@ -98,6 +98,7 @@ function readArrayQueryParam<Q extends UnitQueryKey>(
 type ArrayQueryKey<Q extends UnitQueryKey = UnitQueryKey> = {
   key: string; // final result key (e.g. tags)
   type: "array";
+  defaultValue?: Array<NonNullable<ResolveValue<Q>>> | undefined;
   contentType: Q; // defines how to parse individual items and where to read them from the query (e.g. key=tag, type=string)
 };
 
@@ -123,19 +124,24 @@ type QueryValues<T extends ReadonlyArray<QueryKey>> = {
   [K in T[number]["key"]]: ResolveValue<Extract<T[number], { key: K }>>;
 };
 
+function readQueryParam<T extends QueryKey>(query: QueryRecord, key: T): ResolveValue<T> {
+  switch (key.type) {
+    case "string":
+    case "boolean":
+    case "number":
+      return resolveUnit(readFirstQueryParam(query, key.key), key) as ResolveValue<T>;
+    case "array":
+      return readArrayQueryParam(query, key.key, key.contentType) as ResolveValue<T>;
+  }
+}
+
 function readQueryParams<const T extends ReadonlyArray<QueryKey>>(
   query: QueryRecord,
   keys: T,
 ): QueryValues<T> {
   const result: Record<string, string | number | boolean | undefined | Array<any>> = {};
   for (const entry of keys) {
-    switch (entry.type) {
-      case "array":
-        result[entry.key] = readArrayQueryParam(query, entry.key, entry.contentType);
-        break;
-      default:
-        result[entry.key] = resolveUnit(readFirstQueryParam(query, entry.key), entry);
-    }
+    result[entry.key] = readQueryParam(query, entry);
   }
   return result as QueryValues<T>;
 }
@@ -145,9 +151,11 @@ export {
   readBooleanQueryParam,
   readFirstQueryParam,
   readNumberQueryParam,
+  readQueryParam,
   readQueryParams,
 };
 
+export type QueryValueFromKey<K extends QueryKey> = ResolveValue<K>;
 export type {
   ArrayQueryKey,
   BooleanQueryKey,

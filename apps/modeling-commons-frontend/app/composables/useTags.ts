@@ -1,7 +1,10 @@
 export type Tag = ResponseSuccessData<"GET", "/api/v1/tags">["data"][number];
 export default function useTags() {
   const { GET } = useApi();
-  const prefix = ref("");
+  const prefix = useSearchQuery("tags-search", {
+    debounce: { ms: 300, maxWait: 1000 },
+    transform: (q) => (q.trim().length === 0 ? undefined : q.trim()),
+  });
   const key = computed(() => `tags-${prefix.value}`);
 
   const {

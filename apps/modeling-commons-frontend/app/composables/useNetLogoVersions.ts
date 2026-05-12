@@ -1,4 +1,4 @@
-export default function useNetLogoVersions() {
+export default function useNetlogoVersions() {
   const prefix = ref("");
   const key = computed(() => `netlogo-versions-${prefix.value}`);
 

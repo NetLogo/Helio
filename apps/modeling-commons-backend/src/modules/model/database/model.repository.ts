@@ -1,4 +1,4 @@
-import type { Model, ModelInteractionKind, Prisma } from '#prisma/index';
+import { type Model, type ModelInteractionKind, type Prisma } from '#prisma/index';
 import {
   modelCardArgs,
   type ModelCardRecord,
@@ -6,13 +6,13 @@ import {
 import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
+import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 import {
   paginate,
   type Paginated,
   type PaginatedQueryParams,
 } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
-import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 import { buildModelOrderBy, buildModelWhere, interactionKindBySortKey } from './model.search.ts';
 
 export default function modelRepository({
@@ -121,7 +121,7 @@ export default function modelRepository({
           by: ['modelId'],
           where: { kind: interactionKind, model: where },
           _count: { _all: true },
-          orderBy: { _count: { id: 'desc' } },
+          orderBy: { _count: { id: params.orderBy?.param || 'desc' } },
           skip: params.offset,
           take: params.limit,
         }),
@@ -176,6 +176,24 @@ export default function modelRepository({
         select: { id: true },
       });
       return result?.id;
+    },
+
+    async findRandomPublic(): Promise<{ id: string; title: string } | undefined> {
+      const where = {
+        visibility: 'public',
+        deletedAt: null,
+        latestVersionNumber: { not: null },
+      } as const;
+      const count = await db.model.count({ where });
+      if (count === 0) return undefined;
+      const skip = Math.floor(Math.random() * count);
+      const result = await db.model.findFirst({
+        where,
+        skip,
+        select: { id: true, latestVersion: { select: { title: true } } },
+      });
+      if (!result?.latestVersion) return undefined;
+      return { id: result.id, title: result.latestVersion.title };
     },
   };
 }

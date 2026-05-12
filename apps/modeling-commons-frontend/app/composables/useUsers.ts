@@ -2,7 +2,7 @@ export default function useUsers() {
   const key = computed(() => `users-${query.value}`);
   const { GET } = useApi();
 
-  const query = ref("");
+  const query = useSearchQuery("userId");
 
   const {
     data: users,
@@ -11,18 +11,26 @@ export default function useUsers() {
     loadNextPage,
     canLoadMore,
     count,
-  } = useApiPagination(key, async (page: number) => {
-    const { data, error } = await GET("/api/v1/users", {
-      params: { query: { limit: 20, offset: (page - 1) * 20, keyword: query.value } },
-    });
+  } = useApiPagination(
+    key,
+    async (page: number) => {
+      const { data, error } = await GET("/api/v1/users", {
+        params: { query: { limit: 20, offset: (page - 1) * 20, keyword: _getKeywordValue() } },
+      });
 
-    const parsed = handleApiError(data, error, "fetching users");
+      const parsed = handleApiError(data, error, "fetching users");
 
-    return parsed;
-  });
+      return parsed;
+    },
+    { lazy: true },
+  );
 
   function reset() {
     query.value = "";
+  }
+
+  function _getKeywordValue() {
+    return query.value.length > 0 ? query.value : undefined;
   }
 
   return {
