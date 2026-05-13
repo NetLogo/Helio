@@ -159,14 +159,14 @@ const sectionConfigs: SectionConfig[] = [
     title: "Featured Models",
     subtitle: "Community-endorsed simulations",
     query: { limit: 6, isEndorsed: true },
-    viewAllTo: "/models?endorsed=true",
+    viewAllTo: "/featured-models",
   },
   {
     key: "recent",
     title: "Recent Models",
     subtitle: "Latest uploads from the community",
     query: { limit: 8 },
-    viewAllTo: "/models",
+    viewAllTo: "/new-models",
   },
   {
     key: "most-viewed",

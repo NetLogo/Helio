@@ -15,7 +15,7 @@ interface UseModelsOptions {
 
 export default function useModels({ filters }: UseModelsOptions) {
   const { GET } = useApi();
-  const page = useState("models-page", () => 0);
+  const page = ref(0);
 
   const key = computed(() => `models-${page.value}-${JSON.stringify(filters.value)}`);
 

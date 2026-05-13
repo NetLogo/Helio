@@ -12,7 +12,13 @@
           </div>
 
           <USlideover ref="slideover" :ui="{ content: 'space-y-2 lg:min-w-120' }">
-            <UButton icon="i-lucide-sliders-horizontal" size="sm"> Filter and Sort </UButton>
+            <UButton
+              icon="i-lucide-sliders-horizontal"
+              size="sm"
+              :class="{ pulse: highlightFlags.slideover }"
+            >
+              Filter and Sort
+            </UButton>
 
             <template #content>
               <div class="flex justify-between items-center border-0">
@@ -101,6 +107,7 @@
             :can-load-more="author.canLoadMore"
             :loading="author.pending"
             class="flex-1 lg:min-w-80"
+            :class="{ pulse: highlightFlags.author }"
           />
           <TagSelectMenu
             v-model="tags.selected"
@@ -110,6 +117,7 @@
             :can-load-more="tags.canLoadMore"
             :loading="tags.pending"
             class="flex-1 lg:min-w-80"
+            :class="{ pulse: highlightFlags.tags }"
           />
           <NetLogoVersionSelectMenu
             v-model="version.selected"
@@ -117,6 +125,7 @@
             :versions="version.versions"
             :loading="version.pending"
             class="flex-1 lg:min-w-60"
+            :class="{ pulse: highlightFlags.version }"
           />
         </div>
       </div>
@@ -174,6 +183,21 @@ const {
   resetFilters,
 } = useModelsSearchController();
 
+const route = useRoute();
+const highlightFlags = ref({
+  author: Boolean(route.query.authorId),
+  tags: Boolean(route.query.tag),
+  version: Boolean(route.query.netlogoVersion),
+  keyword: Boolean(route.query.keyword),
+  slideover: Boolean(
+    route.query.sortBy ||
+      route.query.order ||
+      route.query.modelType ||
+      route.query.fromDate ||
+      route.query.toDate,
+  ),
+});
+
 const author = reactive(useUserFilter(filters, setFilter));
 const tags = reactive(useTagsFilter(filters, setFilter));
 const version = reactive(useNetlogoVersionsFilter(filters, setFilter));
@@ -205,3 +229,35 @@ function onKeywordChange(value: string | number) {
   }, modelKeywordDebounceMs);
 }
 </script>
+
+<style>
+.pulse {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    animation: pulse 1.5s;
+    animation-iteration-count: 2;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--color-coral);
+  }
+
+  70% {
+    box-shadow: 0 0 0 5px rgba(222, 84, 72, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(222, 84, 72, 0);
+  }
+}
+</style>

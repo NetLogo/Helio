@@ -7,6 +7,7 @@
     :items="userMenuItems"
     icon="i-lucide-hash"
     virtualize
+    loading-icon="i-lucide-loader"
     multiple
   >
     <template #empty>
@@ -18,7 +19,7 @@
       />
     </template>
     <template #item-label="{ item }">
-      <TagList :tags="[item]" />
+      <TagChip v-bind="item" :linkable="false" />
     </template>
   </USelectMenu>
 </template>

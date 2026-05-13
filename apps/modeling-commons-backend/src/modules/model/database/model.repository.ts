@@ -95,7 +95,7 @@ export default function modelRepository({
       if (interactionKind) {
         const { count, sorted } = await this.fetchByInteraction(where, params, interactionKind, {
           include,
-          order: filters.order ?? params.orderBy ?? 'desc',
+          order: filters.order ?? params.orderBy.param ?? 'desc',
         });
         return paginate((sorted as Array<never>).map(map), params, count);
       }

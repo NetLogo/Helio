@@ -26,6 +26,7 @@
             :href="child.href"
             :active="child.active"
             :icon="child.icon"
+            :subtitle="child.subtitle"
           />
         </template>
       </NavbarItem>
@@ -230,12 +231,11 @@ const navbarLinks = ref<Array<NavbarLink>>([
   {
     title: "Models",
     href: "/models",
-    columns: 2,
+    columns: 1,
     children: [
       { title: "All Models", href: "/models", icon: "i-lucide-box" },
-      { title: "My Models", href: "/profile/models", icon: "i-lucide-user" },
       { title: "Featured Models", href: "/featured-models", icon: "i-lucide-star" },
-      { title: "New Models", href: "/new-models", icon: "i-lucide-plus" },
+      { title: "New Models", href: "/new-models", icon: "i-lucide-circle-plus" },
       { title: "Models by Tag", href: "/models/tags", icon: "i-lucide-tag" },
     ],
   },

@@ -17,4 +17,8 @@ const dateRangeQueryArgs = (
   return conditions.length > 0 ? { AND: conditions } : {};
 };
 
+export type DateRangeQueryParams = {
+  fromDate?: string;
+  toDate?: string;
+};
 export default dateRangeQueryArgs;

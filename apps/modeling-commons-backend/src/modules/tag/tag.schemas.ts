@@ -1,5 +1,6 @@
 import { Type, type Static } from 'typebox';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
+import { dateRangeQueryRequestDtoSchema } from '#src/shared/api/date-range-query.request.dto.ts';
 
 export const tagSearchQuerySchema = Type.Intersect([
   paginatedQueryRequestDtoSchema,
@@ -14,6 +15,12 @@ export const tagSearchQuerySchema = Type.Intersect([
   }),
 ]);
 export type TagSearchQuery = Static<typeof tagSearchQuerySchema>;
+
+export const popularTagsQuerySchema = Type.Intersect([
+  paginatedQueryRequestDtoSchema,
+  dateRangeQueryRequestDtoSchema,
+]);
+export type PopularTagsQuery = Static<typeof popularTagsQuerySchema>;
 
 export const tagIdOrNameParamsSchema = Type.Object({
   idOrName: Type.String({

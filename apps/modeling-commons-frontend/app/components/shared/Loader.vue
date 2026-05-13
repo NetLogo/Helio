@@ -1,6 +1,11 @@
 <template>
   <div class="loader mx-auto py-2">
-    <div v-for="i in 6" :key="i" class="arrow" :style="{ animationDelay: `${(i - 1) * (1 / 6)}s` }">
+    <div
+      v-for="i in 6"
+      :key="i"
+      class="arrow"
+      :style="{ animationDelay: `${(i - 1) * (1 / 6) - 0.1}s` }"
+    >
       <TurtleSvg />
     </div>
   </div>

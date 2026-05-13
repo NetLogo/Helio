@@ -235,6 +235,17 @@
       <h3>Theme</h3>
       <Loader />
       <FallbackThumbnail />
+      <SparkleButtonWrapper>
+        <UButton
+          variant="outline"
+          color="primary"
+          size="md"
+          square
+          icon="i-lucide-moon"
+          class="w-fit"
+          >Night</UButton
+        >
+      </SparkleButtonWrapper>
     </section>
   </UContainer>
 </template>

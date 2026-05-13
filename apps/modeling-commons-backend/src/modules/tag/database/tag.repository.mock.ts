@@ -12,5 +12,6 @@ export function mockTagRepository(): { [K in keyof TagRepository]: ReturnType<ty
     findByNameInsensitive: vi.fn(),
     findByPrefix: vi.fn(),
     upsertByName: vi.fn(),
+    findPopularWithCounts: vi.fn(),
   };
 }

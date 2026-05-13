@@ -17,10 +17,9 @@
       :orientation="orientation"
     />
 
-    <ModelCardSkeleton v-for="i in 8" v-else-if="loading" :key="i" :orientation="orientation" />
     <ModelsEmpty v-else-if="!loading && !cards.length" class="col-span-full" />
 
-    <Loader v-if="loading && cards.length" />
+    <Loader v-if="loading" />
   </div>
 </template>
 <script setup lang="ts">
