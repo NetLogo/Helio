@@ -18,13 +18,17 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { createSlugPath, getTagColorClass, sentenceCase } from "~/utils/formatters";
+import { createTagPath, getTagColorClass, sentenceCase } from "~/utils/formatters";
 
-const props = defineProps<{
-  id?: string;
-  name: string;
-  displayName?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    id?: string;
+    name: string;
+    displayName?: string;
+    linkable?: boolean;
+  }>(),
+  { linkable: true },
+);
 
 const label = computed(() =>
   props.displayName && props.displayName.length > 0
@@ -32,5 +36,5 @@ const label = computed(() =>
     : sentenceCase(props.name),
 );
 
-const href = computed(() => (props.id ? createSlugPath("tags", props.id, props.name) : null));
+const href = computed(() => (props.linkable && props.name ? createTagPath(props.name) : null));
 </script>

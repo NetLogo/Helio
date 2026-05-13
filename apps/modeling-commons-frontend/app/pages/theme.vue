@@ -230,6 +230,12 @@
         variant="compact"
       />
     </section>
+
+    <section class="flex gap-15 flex-col mt-10">
+      <h3>Theme</h3>
+      <Loader />
+      <FallbackThumbnail />
+    </section>
   </UContainer>
 </template>
 

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice">
+<rect width="1200" height="630" fill="#1e1e1e"/>
+<defs><pattern id="dg" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="14" cy="14" r="1.2" fill="#333"/></pattern></defs>
+<rect width="1200" height="630" fill="url(#dg)"/>
+<text x="232.8" y="333" fill="#5599dd" font-size="68" font-family="JetBrains Mono,Consolas,monospace" font-weight="700">show</text><text x="436.8" y="333" fill="#cc8844" font-size="68" font-family="JetBrains Mono,Consolas,monospace">&quot;No Preview&quot;</text>
+</svg>

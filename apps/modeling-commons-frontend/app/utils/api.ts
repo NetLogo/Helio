@@ -45,6 +45,24 @@ export async function fetchTagByIdOrName(
   }
 }
 
+export async function fetchModelsByTag(
+  api: ReturnType<typeof useApi>,
+  tag: string,
+  page: number,
+  limit = 20,
+): Promise<PaginatedResponse<ModelCard>> {
+  const { data, error } = await api.GET("/api/v1/models/card", {
+    params: { query: { tags: [tag], limit, page: page - 1 } },
+  });
+  const parsed = handleApiError(data, error, "fetching models by tag");
+  return {
+    data: parsed.data as ModelCard[],
+    count: parsed.count,
+    limit: parsed.limit,
+    page: parsed.page,
+  };
+}
+
 export async function fetchNetlogoVersionsByPrefix(prefix?: string): Promise<string[]> {
   const { GET } = useApi();
   const { data, error } = await GET("/api/v1/netlogo-versions", {

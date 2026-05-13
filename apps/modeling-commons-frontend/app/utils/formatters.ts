@@ -102,6 +102,8 @@ export function parseSlugPath(
 
 export const createModelPath = (modelId: string, modelTitle: string): string =>
   createSlugPath("models", modelId, modelTitle);
+
+export const createTagPath = (name: string): string => `/tags/${encodeURIComponent(name)}`;
 export const parseModelPath = (path: string): { modelId: string; modelSlug: string } | null =>
   new ObjectFunctor(parseSlugPath(path, "models") ?? {})
     .mapKeys((key) => {

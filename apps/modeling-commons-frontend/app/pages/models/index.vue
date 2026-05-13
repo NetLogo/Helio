@@ -172,7 +172,7 @@ const {
   setDateRange,
   nextPage,
   resetFilters,
-} = useModels();
+} = useModelsSearchController();
 
 const author = reactive(useUserFilter(filters, setFilter));
 const tags = reactive(useTagsFilter(filters, setFilter));

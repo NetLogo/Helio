@@ -10,6 +10,7 @@
     <TagChip
       v-if="extraTagCount > 0 && props.showExtraTagCount"
       :name="`+${extraTagCount} more`"
+      :linkable="false"
       class="bg-muted text-muted-foreground"
     />
     <AddTagButton v-if="editable" @add="$emit('add')" />
