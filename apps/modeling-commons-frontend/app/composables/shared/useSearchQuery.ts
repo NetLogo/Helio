@@ -7,7 +7,7 @@ export default function useSearchQuery(queryKey: string, options: SearchQueryOpt
     transform = (q) => q,
   } = options;
 
-  const rawQuery = useState<string | undefined>(queryKey, () => transform(defaultValue));
+  const rawQuery = ref<string | undefined>(transform(defaultValue));
   const debouncedQuery = refDebounced(rawQuery, ms, { maxWait });
 
   const query = computed({

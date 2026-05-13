@@ -1,7 +1,7 @@
 <template>
-  <NuxtLink :to="createTagPath(name)" class="group/user block w-fit">
+  <NuxtLink :to="href" class="group/user block w-fit">
     <UUser
-      :name="name"
+      :name="label"
       :description="description"
       size="3xl"
       :avatar="{
@@ -28,8 +28,14 @@
 <script setup lang="ts">
 import { createTagPath } from "~/utils/formatters";
 
-defineProps<{
+const props = defineProps<{
   name: string;
+  displayName?: string;
   description: string;
 }>();
+
+const label = computed(() =>
+  props.displayName && props.displayName.length > 0 ? props.displayName : sentenceCase(props.name),
+);
+const href = computed(() => (props.name ? createTagPath(props.name) : undefined));
 </script>

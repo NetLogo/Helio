@@ -494,7 +494,6 @@ async function main() {
       netlogoFileKey: seedNlogoxFiles.ants.key,
       netlogoVersion: '6.3.0',
       infoTab: '## WHAT IS IT?\n\nThis model demonstrates emergent path-finding behavior.',
-      previewImage: seedNlogoxFiles.ants.previewImage.blob,
     },
     {
       modelId: ids.virusNetwork,

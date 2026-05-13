@@ -67,3 +67,29 @@ export async function getRandomModelId(
     return null;
   }
 }
+export async function getPopularTagsSummary(
+  api: ReturnType<typeof useApi>,
+  params?: {
+    date?: ApiDateRangeParams;
+    pagination?: ApiPaginationParams;
+  },
+): Promise<ResponseSuccessData<"GET", "/api/v1/tags/popular"> | null> {
+  const { GET } = api;
+  try {
+    const { data, error } = await GET("/api/v1/tags/popular", {
+      params: {
+        query: {
+          fromDate: createApiDateString(params?.date?.fromDate),
+          toDate: createApiDateString(params?.date?.toDate),
+          page: params?.pagination?.page,
+          limit: params?.pagination?.limit,
+        },
+      },
+    });
+    const parsed = handleApiError(data, error, "fetching popular tags summary");
+    return parsed;
+  } catch (e) {
+    console.error("Error fetching popular tags summary", e);
+    return null;
+  }
+}

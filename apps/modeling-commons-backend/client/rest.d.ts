@@ -4925,6 +4925,148 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/tags/popular": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Specifies a limit of returned records */
+                    limit?: number;
+                    /** @description Page number */
+                    page?: number;
+                    /**
+                     * @description Start date for filtering records (inclusive)
+                     * @example 2024-01-01
+                     */
+                    fromDate?: string;
+                    /**
+                     * @description End date for filtering records (inclusive)
+                     * @example 2024-12-31
+                     */
+                    toDate?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Total number of items
+                             * @example 5
+                             */
+                            count: number;
+                            /**
+                             * @description Number of items per page
+                             * @example 10
+                             */
+                            limit: number;
+                            /**
+                             * @description Page number
+                             * @example 0
+                             */
+                            page: number;
+                            data: unknown[];
+                        } & {
+                            data: {
+                                tag: {
+                                    /**
+                                     * Format: uuid
+                                     * @description Tag id
+                                     * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                     */
+                                    id: string;
+                                    /**
+                                     * @description Tag name
+                                     * @example climate
+                                     */
+                                    name: string;
+                                    /**
+                                     * @description Formatted tag name for display purposes
+                                     * @example Climate
+                                     */
+                                    displayName: string;
+                                    /**
+                                     * @description Tag creation date
+                                     * @example 2020-11-24T17:43:15.970Z
+                                     */
+                                    createdAt: string;
+                                    /** @description Legacy numeric ID */
+                                    legacyId?: number;
+                                };
+                                /** @description Number of model versions tagged with this tag */
+                                modelCount: number;
+                            }[];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tags/{idOrName}": {
         parameters: {
             query?: never;

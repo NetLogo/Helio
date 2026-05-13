@@ -97,23 +97,30 @@
                 <ModelCard v-for="card in section.cards" :key="card.model.id" :card="card" />
               </div>
             </section>
+            <!-- @extract -->
             <section v-if="idx === 1" class="space-y-6 h-full col-span-1 mb-20">
               <div>
                 <h5 class="tracking-tight">Trending Tags</h5>
                 <p class="text-sm text-muted mt-1">(in the past 2 weeks)</p>
               </div>
               <UCard variant="soft">
-                <div class="flex flex-col gap-8 h-full">
-                  <TagCard name="Camouflage" description="tagged 21 times" />
-                  <TagCard name="Research" description="tagged 12 times" />
-                  <TagCard name="Ecology" description="tagged 14 times" />
-                  <TagCard name="GIS" description="tagged 7 times" />
-                  <TagCard name="Code Example" description="tagged 3 times" />
-                  <TagCard name="Work-in-progress" description="tagged 1 time" />
+                <div v-if="tagsSummary?.data" class="flex flex-col gap-8 h-full">
+                  <TagCard
+                    v-for="data in tagsSummary?.data"
+                    :key="data.tag.id"
+                    :name="data.tag.displayName"
+                    :description="`tagged ${data.modelCount} times`"
+                  />
 
                   <UButton variant="link" size="sm" class="w-full mt-4" to="/tags">
-                    See all 52 tags
+                    See all tags
                   </UButton>
+                </div>
+                <div v-else-if="tagsStatus === 'pending'" class="flex flex-col gap-8 h-full">
+                  <TagCardSkeleton v-for="i in 6" :key="i" />
+                </div>
+                <div v-else-if="tagsError" class="text-center py-8">
+                  <Error :error="tagsError" title="Something went wrong" />
                 </div>
               </UCard>
             </section>
@@ -206,6 +213,18 @@ const { data, error, status, refresh } = await useAsyncData<Record<string, Model
     );
   },
 );
+
+const TWO_WEEKS_MS = 1000 * 60 * 60 * 24 * 14;
+const {
+  data: tagsSummary,
+  error: tagsError,
+  status: tagsStatus,
+} = await useAsyncData("home-tags-summary", () => {
+  return getPopularTagsSummary(api, {
+    pagination: { limit: 6 },
+    date: { fromDate: new Date(Date.now() - TWO_WEEKS_MS) }, // past 2 weeks
+  });
+});
 
 const visibleSections = computed(() =>
   sectionConfigs

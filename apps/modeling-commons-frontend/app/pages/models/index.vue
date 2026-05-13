@@ -15,7 +15,7 @@
             <UButton
               icon="i-lucide-sliders-horizontal"
               size="sm"
-              :class="{ pulse: highlightFlags.slideover }"
+              :class="{ 'pulse-shadow': highlightFlags.slideover }"
             >
               Filter and Sort
             </UButton>
@@ -107,7 +107,7 @@
             :can-load-more="author.canLoadMore"
             :loading="author.pending"
             class="flex-1 lg:min-w-80"
-            :class="{ pulse: highlightFlags.author }"
+            :class="{ 'pulse-shadow': highlightFlags.author }"
           />
           <TagSelectMenu
             v-model="tags.selected"
@@ -117,7 +117,7 @@
             :can-load-more="tags.canLoadMore"
             :loading="tags.pending"
             class="flex-1 lg:min-w-80"
-            :class="{ pulse: highlightFlags.tags }"
+            :class="{ 'pulse-shadow': highlightFlags.tags }"
           />
           <NetLogoVersionSelectMenu
             v-model="version.selected"
@@ -125,7 +125,7 @@
             :versions="version.versions"
             :loading="version.pending"
             class="flex-1 lg:min-w-60"
-            :class="{ pulse: highlightFlags.version }"
+            :class="{ 'pulse-shadow': highlightFlags.version }"
           />
         </div>
       </div>
@@ -231,7 +231,7 @@ function onKeywordChange(value: string | number) {
 </script>
 
 <style>
-.pulse {
+.pulse-shadow {
   position: relative;
 
   &::after {
@@ -242,12 +242,12 @@ function onKeywordChange(value: string | number) {
     right: 0;
     bottom: 0;
     border-radius: inherit;
-    animation: pulse 1.5s;
+    animation: pulse-shadow 1.5s;
     animation-iteration-count: 2;
   }
 }
 
-@keyframes pulse {
+@keyframes pulse-shadow {
   0% {
     box-shadow: 0 0 0 0 var(--color-coral);
   }
