@@ -26,6 +26,7 @@ export default function fileDomain() {
       contentType: string;
       access?: FileAccess;
       pathPrefix?: string;
+      userId?: string;
     }): FileEntity {
       if (props.buffer.length > MAX_FILE_SIZE) {
         throw new FileTooLargeError(props.buffer.length, MAX_FILE_SIZE);
@@ -52,6 +53,7 @@ export default function fileDomain() {
         blob: props.buffer,
         metadata: {
           filename: sanitizeFilename(props.filename),
+          userId: props.userId,
           createdAt: new Date().toISOString(),
         },
         access,

@@ -2,7 +2,7 @@
   <Navbar
     id="main-navbar"
     ref="navbar"
-    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none!"
+    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none! max-w-500 mx-auto"
     :brand="brand"
     brand-href="/"
     :brand-attrs="brandAttrs"

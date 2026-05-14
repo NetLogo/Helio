@@ -70,7 +70,7 @@
   --color-info-hover: var(--color-royal-blue-dark);
   --color-info-active: var(--color-royal-blue-darker);
 
-  --color-warning: oklch(0.7528 0.1167 97.9);
+  --color-warning: oklch(0.7826 0.1621 79.41);
   --color-warning-hover: colormix(in srgb, var(--color-warning) 80%, black);
   --color-warning-active: colormix(in srgb, var(--color-warning) 60%, black);
 

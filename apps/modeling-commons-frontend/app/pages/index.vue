@@ -10,7 +10,7 @@
     >
       <NuxtImg
         src="/hero.gif"
-        class="w-full h-full absolute inset-0 object-cover lg:p-10 lg:rounded-[3rem] overflow-hidden z-[-1] brightness-50"
+        class="max-w-500 mx-auto w-full h-full absolute inset-0 object-cover lg:p-10 lg:rounded-[3rem] overflow-hidden z-[-1] brightness-50"
         :placeholder="[60, 40]"
       />
       <template #description>

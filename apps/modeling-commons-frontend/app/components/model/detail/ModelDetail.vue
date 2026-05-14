@@ -14,7 +14,6 @@
         :download-url="downloadUrl"
         :model-visibility="card.model.visibility"
         :preview-image-url="previewImageUrl"
-        @embed="handleEmbed"
         @download="handleDownload"
       />
 
@@ -25,7 +24,7 @@
       <TagList
         v-if="card.tagsOnLatestVersion.length > 0"
         :tags="card.tagsOnLatestVersion"
-        editable
+        :editable="false"
         @add="handleAddTag"
       />
     </section>
@@ -199,7 +198,7 @@ onMounted(() => {
 async function handleToggleLike() {
   if (!modelId.value || likeBusy.value) return;
   if (!user.value.isLoggedIn) {
-    toast.add({ title: "You must be logged in to like a model", color: "warning" });
+    showRequiresLoginToast("like a model");
     return;
   }
   likeBusy.value = true;
@@ -237,7 +236,6 @@ async function handleShare() {
   }
 }
 
-function handleEmbed() {}
 function handleAddTag() {}
 function handleCompare() {}
 

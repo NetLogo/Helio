@@ -25,6 +25,7 @@ export type FileAccess = 'public-read' | 'private';
 
 export const fileMetadata = Type.Object({
   filename: Type.String(),
+  userId: Type.Optional(Type.String({ format: 'uuid' })),
   createdAt: Type.String({
     format: 'date-time',
     description: 'ISO string of the file creation date',
@@ -48,6 +49,7 @@ export function parseMetadata(key: string, raw: unknown): FileMetadata {
     [K in keyof FileMetadata]: unknown;
   } = {
     filename: rawRecord['filename'],
+    userId: rawRecord['userid'],
     createdAt: rawRecord['createdat'],
     deletedAt: rawRecord['deletedat'],
   };

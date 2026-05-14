@@ -33,6 +33,7 @@ export default function makeFileService({ fileDomain, storage, bucket }: Depende
       contentType: string;
       access?: FileAccess;
       pathPrefix?: string;
+      userId?: string;
     }): Promise<string> {
       const file = fileDomain.createFile(params);
       await storage.send(

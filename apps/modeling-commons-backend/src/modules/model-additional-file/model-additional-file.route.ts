@@ -35,6 +35,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
       contentType: info.contentType,
       sizeBytes: Number(info.sizeBytes),
       createdAt: entity.createdAt.toISOString(),
+      userId: info.metadata.userId,
       downloadUrl,
     };
   }
