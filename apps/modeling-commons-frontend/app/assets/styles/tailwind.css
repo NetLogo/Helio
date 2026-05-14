@@ -8,3 +8,27 @@
 @import "tw-animate-css";
 @source "../../../../../packages/vue-ui/src";
 @source "../../../content/**/*.md";
+
+  [data-show-from] { display: none; }
+[data-show-below] { display: var(--show-display, flex); }
+
+@media (min-width: 640px) {
+  [data-show-from="sm"] { display: var(--show-display, flex); }
+  [data-show-below="sm"] { display: none; }
+}
+@media (min-width: 768px) {
+  [data-show-from="md"] { display: var(--show-display, flex); }
+  [data-show-below="md"] { display: none; }
+}
+@media (min-width: 1024px) {
+  [data-show-from="lg"] { display: var(--show-display, flex); }
+  [data-show-below="lg"] { display: none; }
+}
+@media (min-width: 1280px) {
+  [data-show-from="xl"] { display: var(--show-display, flex); }
+  [data-show-below="xl"] { display: none; }
+}
+@media (min-width: 1536px) {
+  [data-show-from="2xl"] { display: var(--show-display, flex); }
+  [data-show-below="2xl"] { display: none; }
+}

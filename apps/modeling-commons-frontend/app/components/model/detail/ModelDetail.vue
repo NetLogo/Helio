@@ -6,15 +6,29 @@
     }"
   >
     <section class="space-y-6">
+      <ModelEmbedDialog
+        v-model="embedDialogOpen"
+        :title="title"
+        :download-url="downloadUrl"
+        :embed-url="embedUrl"
+        :authors="card.authors"
+        :relative-date="relativeDate"
+        :netlogo-version="netlogoVersion"
+        :model-visibility="modelVisibility"
+        :preview-image-url="previewImageUrl"
+      />
+
       <ModelHeader
-        :title="card.latestVersion?.title || 'Untitled Model'"
+        :title="title"
         :authors="card.authors"
         :created-at="card.model.createdAt"
-        :netlogo-version="card.latestVersion?.netlogoVersion"
+        :netlogo-version="netlogoVersion"
         :download-url="downloadUrl"
-        :model-visibility="card.model.visibility"
+        :model-visibility="modelVisibility"
         :preview-image-url="previewImageUrl"
         @download="handleDownload"
+        @embed="handleEmbed"
+        @fork="handleFork"
       />
 
       <article v-if="card.latestVersion?.description" class="docs prose prose-sm max-w-none">
@@ -34,7 +48,7 @@
       class="flex-1"
       :model-url="downloadUrl ?? ''"
       :preview-image-url="previewImageUrl"
-      :model-title="card.latestVersion.title ?? 'NetLogo Model'"
+      :model-title="title"
       @run="handleRun"
     />
 
@@ -47,7 +61,6 @@
       :busy="likeBusy"
       @toggle-like="handleToggleLike"
       @share="handleShare"
-      @compare="handleCompare"
     />
 
     <section class="rounded-xl border border-default overflow-hidden">
@@ -114,6 +127,13 @@ const {
   status: filesStatus,
 } = useModelAdditionalFiles(modelId, { immediate: false });
 
+const title = computed(() => props.card.latestVersion?.title || "Untitled Model");
+const netlogoVersion = computed(() => props.card.latestVersion?.netlogoVersion ?? null);
+const modelVisibility = computed(() => props.card.model.visibility);
+const relativeDate = computed(() => formatRelativeDate(props.card.model.createdAt));
+
+const embedDialogOpen = ref(false);
+
 const fileDownloadUrls = new Map<string, string>();
 const attachedFiles = computed<AttachedFile[]>(() => {
   fileDownloadUrls.clear();
@@ -140,12 +160,16 @@ const tabs = computed(() => [
 ]);
 
 const downloadUrl = computed(() => {
-  if (!props.card?.latestVersion) return null;
+  if (!props.card?.latestVersion) return undefined;
   return props.card.latestVersion.netlogoFileDownloadUrl;
+});
+const embedUrl = computed(() => {
+  if (!downloadUrl.value) return undefined;
+  return getNetlogoWebEmbedUrl(downloadUrl.value, title.value);
 });
 
 const previewImageUrl = computed(() => {
-  if (!props.card?.previewImageUrl) return null;
+  if (!props.card?.previewImageUrl) return undefined;
   return appendWindowProtocol(props.card.previewImageUrl);
 });
 
@@ -239,10 +263,18 @@ async function handleShare() {
 function handleAddTag() {}
 function handleCompare() {}
 
+function handleEmbed() {
+  embedDialogOpen.value = true;
+}
+
 function handleDownload() {
   if (!modelId.value) return;
   stats.downloads += 1;
   void interactions.recordDownload(modelId.value);
+}
+
+function handleFork() {
+  // @to-do
 }
 
 function handleRun() {

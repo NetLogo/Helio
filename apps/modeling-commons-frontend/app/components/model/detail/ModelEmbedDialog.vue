@@ -1,6 +1,5 @@
 <template>
-  <UModal scrollable :title="`Embed ${title}`">
-    <UButton icon="i-lucide-code" size="sm"> Embed </UButton>
+  <UModal v-model:open="open" scrollable :title="`Embed ${title}`">
     <template #body>
       <UAlert
         v-if="isPrivateModel"
@@ -84,10 +83,13 @@ const props = defineProps<{
   authors: Array<Author>;
   relativeDate: string;
   netlogoVersion?: string | null;
+  modelGroup?: string | null;
   modelVisibility?: string;
   embedUrl?: string;
   previewImageUrl?: string | null;
 }>();
+
+const open = defineModel({ required: true, type: Boolean });
 
 const tabs = [
   {

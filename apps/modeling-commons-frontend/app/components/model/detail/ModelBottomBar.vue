@@ -5,7 +5,6 @@
     <div class="flex items-center gap-3">
       <ModelLike :active="likedByMe" :busy="busy" @toggle="$emit('toggleLike')" />
       <UButton variant="outline" size="sm" icon="i-lucide-share-2" square @click="$emit('share')" />
-      <UButton variant="outline" size="sm" icon="i-lucide-copy" square @click="$emit('compare')" />
     </div>
   </section>
 </template>
@@ -23,6 +22,5 @@ defineProps<{
 defineEmits<{
   toggleLike: [];
   share: [];
-  compare: [];
 }>();
 </script>

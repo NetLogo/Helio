@@ -1,7 +1,7 @@
 <template>
   <UCard
     :ui="{
-      body: 'relative rounded-xl overflow-hidden h-200 shrink-0',
+      body: 'relative rounded-xl overflow-hidden aspect-square  shrink-0',
     }"
     variant="subtle"
   >
@@ -23,23 +23,30 @@
         v-else
         class="w-full h-full bg-neutral-lightest rounded mb-4 absolute inset-0"
       />
+
       <div :class="actionButtonClass">
-        <Icon name="i-lucide-circle-play" class="size-18 mx-auto" />
-        <span class="font-semibold text-md text-highlighted">Click to run model</span>
+        <Icon name="material-symbols:play-circle-outline" class="size-18 mx-auto" />
+        <span class="font-bold text-md">Click to run model</span>
       </div>
     </div>
-    <div v-else-if="state === NLWEmbedState.Error" class="space-y-6 text-center">
-      <Icon name="i-lucide-x-circle" class="size-12 text-error-400 mx-auto mb-3" />
-      <span class="font-semibold text-md text-error-400">Failed to load model</span>
-    </div>
-    <div v-else-if="state === NLWEmbedState.Running">
-      <iframe
-        :src="nlwUrl"
-        class="w-full h-185 border-0 rounded overflow-auto bg-white"
-        @load="state = NLWEmbedState.Running"
-        @error="state = NLWEmbedState.Error"
-      />
-    </div>
+
+    <Error
+      v-else-if="state === NLWEmbedState.Error"
+      class="p-6 aspect-square"
+      title="Failed to load model"
+    >
+      <UButton variant="outline" color="error" @click="state = NLWEmbedState.Running">
+        Try Again
+      </UButton>
+    </Error>
+
+    <iframe
+      v-else-if="state === NLWEmbedState.Running"
+      :src="nlwUrl"
+      class="w-full h-full border-0 rounded overflow-auto bg-white"
+      @load="state = NLWEmbedState.Running"
+      @error="state = NLWEmbedState.Error"
+    />
   </UCard>
 </template>
 
@@ -71,7 +78,7 @@ export type NLWEmbedState = (typeof NLWEmbedState)[keyof typeof NLWEmbedState];
 
 const actionButtonClass = [
   "flex flex-col items-center justify-center gap-4 z-10",
-  "w-full h-full",
-  "opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-lightest/50",
+  "w-full h-full text-royal-blue-light",
+  "opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-lightest/80",
 ];
 </script>

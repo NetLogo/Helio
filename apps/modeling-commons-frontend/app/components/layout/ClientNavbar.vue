@@ -67,7 +67,7 @@
         </template>
       </UDropdownMenu>
       <div v-else class="flex gap-5">
-        <UButton variant="link" size="sm" to="/login"> Log In </UButton>
+        <UButton v-show-from:lg variant="link" size="sm" to="/login"> Log In </UButton>
         <UButton variant="solid" size="sm" to="/signup"> Sign Up </UButton>
       </div>
     </NavbarActionsContainer>
@@ -203,11 +203,7 @@ const isMobileScreen = ref(false);
 const navbarRef = useTemplateRef<InstanceType<typeof _Navbar>>("navbar");
 
 const brand = computed(() => WebsiteLogo);
-const brandAttrs = computed(() =>
-  isMobileScreen.value
-    ? { style: { width: "10rem" } }
-    : { width: "15rem", style: { width: "15rem", marginLeft: "0" }, class: "[&>svg]:w-full!" },
-);
+const brandAttrs = computed(() => ({ class: "w-40 lg:w-48 lg:ml-0 lg:[&>svg]:w-full!" }));
 
 const handleMediaQueryChange = (): void => {
   if (import.meta.client) {
