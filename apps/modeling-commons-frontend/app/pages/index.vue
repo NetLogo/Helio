@@ -75,6 +75,7 @@
               }"
             >
               <div class="flex items-center justify-between">
+                <!-- @replace -->
                 <div>
                   <h5 class="tracking-tight">{{ section.title }}</h5>
                   <p class="text-sm text-muted mt-1">{{ section.subtitle }}</p>
@@ -87,6 +88,7 @@
                   View all
                 </UButton>
               </div>
+              <!-- @replace -->
               <div
                 class="grid grid-cols-1 sm:grid-cols-2 gap-8"
                 :class="{

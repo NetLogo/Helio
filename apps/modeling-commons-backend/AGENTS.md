@@ -5,6 +5,8 @@ RESTful API backend: Fastify + TypeScript, Prisma/PostgreSQL, better-auth, admin
 - Follow the module layout and dependency rules strictly. Check with `yarn run deps:validate`.
 - Write unit tests for domain logic and services. Write integration tests for features.
 - If something breaks, capture it in a test first, then fix the code. No untested hotfixes.
+- Make use of subagents to separate concerns.
+- After big features, ask user for feedback then run `claude-md-management:revise-claude-md ` to update this doc with any new conventions or patterns that emerged during implementation.
 
 ## Module layout (`src/modules/<module>/`)
 
@@ -14,7 +16,7 @@ Every module follows the same skeleton - mirror it when adding a new one:
 - `database/` - always three files: `<module>.repository.ts` (Prisma impl), `.repository.port.ts` (interface), `.repository.mock.ts` (for tests). Record shapes live here too (`<module>.record.ts`).
 - `dtos/` - Typebox request/response schemas + inferred types. Paginated responses have their own `*.paginated.response.dto.ts`.
 - `queries/` - read-side CQRS-like handlers for complex queries (`get-*.query.ts`, `list-*.query.ts`).
-- `patches/` - write-side CQRS-like handlers for complex mutations (`fork-*.patch.ts`, `publish-*.patch.ts`).
+- `patches/` - write-side CQRS-like handlers for complex mutations (`fork-*.patch.ts`, `publish-*.patch.ts`). Don't pre-create; start in `<module>.service.ts` and unfold into `patches/` when the service grows too dense.
 - `<module>.service.ts` - write-side commands; orchestrates domain + repository + events.
 - `<module>.route.ts` - Fastify routes; pulls deps from `fastify.diContainer.cradle` and calls service methods.
 - `<module>.mapper.ts` - record ↔ domain ↔ response.
@@ -27,6 +29,7 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 - Always go through `transactionManager.run(async (ctx) => { ... })`.
 - Use `repository.insertTx(ctx, entity)` / `updateFields(ctx, ...)` / `softDelete(ctx, ...)` inside the txn.
 - Emit domain audit via `eventRepository.insert(ctx, { type, actorId, resourceType, resourceId, payload })` in the same txn. Event types are dotted (`model.created`, `model.deleted`).
+- For child aggregates (e.g. comments on a model), set `resourceType` to the *parent* (`model`), not the child. Per-resource audit queries surface child activity that way.
 - Soft delete, don't hard delete: models/users carry `deletedAt`. Call `modelDomain.assertNotDeleted(entity)` before mutating.
 
 ## Routes
@@ -55,6 +58,13 @@ Use path aliases, never relative `../../`:
 
 - Write self-explanatory code. No decorative comments.
 - A comment earns its place only when the *why* isn't in the code (non-obvious constraint, workaround, surprising invariant).
+
+## Email
+
+- Send: `mailService.sendMail(content)` from `src/modules/mail/mail.service.ts`.
+- Build content: `mailDomain.create*Email(...)` factories in `src/modules/mail/domain/mail.domain.ts`. New MVP notifications can reuse `createNotificationEmail`; dedicated templates are polish.
+- Templates: React Email components at `packages/emails/src/templates/` (`@repo/emails`).
+- Fire emails *after* `transactionManager.run` commits, with `Promise.allSettled` + logger on failure. Never block a write on SMTP, never let an email failure roll back the txn.
 
 ## Dev servers
 

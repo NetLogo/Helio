@@ -1,26 +1,7 @@
 <template>
   <UContainer>
     <div class="space-y-4">
-      <UButton
-        variant="ghost"
-        icon="i-lucide-arrow-left"
-        to="/models"
-        size="sm"
-        class="-ml-2 text-muted"
-      >
-        Back to models
-      </UButton>
-
-      <div v-if="status === 'pending'" class="space-y-6 animate-pulse">
-        <div class="h-8 w-2/3 bg-accented rounded" />
-        <div class="h-4 w-1/3 bg-accented rounded" />
-        <div class="h-64 bg-muted rounded-xl" />
-        <div class="space-y-2">
-          <div class="h-4 bg-accented rounded w-full" />
-          <div class="h-4 bg-accented rounded w-5/6" />
-          <div class="h-4 bg-accented rounded w-4/6" />
-        </div>
-      </div>
+      <ModelDetailSkeleton v-if="status === 'pending'" />
 
       <ModelError v-else-if="error" :title="error.message || undefined" @retry="refresh()" />
 
@@ -53,6 +34,7 @@ import type { ModelCard } from "~/composables/model/useModelCard";
 
 const route = useRoute();
 const modelId = computed(() => route.params.id as string);
+const t = ref(false); // for testing reactivity of nested components, can be removed later
 
 // Routes mapping to this page (see nuxt.config.ts):
 // /models/:id

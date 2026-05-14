@@ -11,6 +11,7 @@
             />
           </div>
 
+          <!-- @extract -->
           <USlideover ref="slideover" :ui="{ content: 'space-y-2 lg:min-w-120' }">
             <UButton
               icon="i-lucide-sliders-horizontal"
@@ -30,6 +31,7 @@
                 <div class="flex flex-col gap-3">
                   <div class="flex items-center gap-2 justify-between">
                     <span class="text-start wrap-break-word text-md font-medium py-1">Sort by</span>
+                    <!-- @extract -->
                     <UButton
                       variant="soft"
                       size="xs"
@@ -56,6 +58,7 @@
                     >Types of Models</span
                   >
                   <div class="flex gap-4 flex-wrap">
+                    <!-- @extract -->
                     <UButton
                       v-for="{ key, label, onClick, active } in modelTypeButtons"
                       :key="key"
@@ -184,6 +187,7 @@ const {
 } = useModelsSearchController();
 
 const route = useRoute();
+// @extract
 const highlightFlags = ref({
   author: Boolean(route.query.authorId),
   tags: Boolean(route.query.tag),

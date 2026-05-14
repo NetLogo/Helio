@@ -5,6 +5,8 @@ Nuxt 3 frontend for Modeling Commons. TypeScript, Vue 3 `<script setup>`, Nuxt U
 - No relative `../../` imports across `app/`. Use `~/…` (app) and `~~/…` (repo root, e.g. `~~/shared/types/api`).
 - Don't start the dev server.
 - Avoid decorative comments. Write self-explanatory code; comment only when the *why* isn't obvious.
+- Make use of subagents to separate concerns.
+- After big features, ask user for feedback then run `claude-md-management:revise-claude-md ` to update this doc with any new conventions or patterns that emerged during implementation.
 
 ## Layout (`app/`)
 
@@ -13,6 +15,8 @@ Nuxt 3 frontend for Modeling Commons. TypeScript, Vue 3 `<script setup>`, Nuxt U
 - `composables/` — auto-imported. One concern per file, default-export a function named `useX`.
 - `plugins/` — Nuxt plugins. `api.ts` initializes the openapi-fetch client.
 - `layouts/`, `middleware/`, `stores/`, `utils/`, `assets/` — standard Nuxt conventions.
+- `forms/` — Types, validators, Zod schema, labels, and helper functions for forms. Not auto-imported.
+- `data/` — static JSON or other data files. Not auto-imported.
 - `shared/types/api.d.ts` — **generated** from the backend OpenAPI spec (see below). Never edit by hand.
 
 ## API client
@@ -29,6 +33,13 @@ Nuxt 3 frontend for Modeling Commons. TypeScript, Vue 3 `<script setup>`, Nuxt U
 - Read endpoints: wrap in a `useAsyncData` composable with a stable key, e.g. `useModelCard(modelId)`. Watch refs in the input so navigation refetches.
 - Derive response types from the client: `type X = ResponseSuccessData<"GET", "/api/v1/...">` — `ResponseSuccessData` is a global helper.
 - Mutations: plain `async` functions on a composable, call via `await` from event handlers. Don't use `useAsyncData` for writes.
+
+## URL-synced filters (useModels pattern)
+
+Adding a new filter to a search page (e.g. `pages/models/index.vue`) requires three coordinated edits:
+1. Register the key in the composable's `queryFilters` array (drives `readQueryParams`).
+2. Add the field to the zod `querySchema` so it survives `.parse(...)` before the API call.
+3. In the page, two watchers: `filters.value.X` → selected ref (`immediate: true` to hydrate from URL), and selected ref → `setFilter("X", value)`.
 
 ## UI conventions
 

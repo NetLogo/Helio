@@ -19,6 +19,10 @@
         crossorigin="use-credentials"
         :placeholder="[20, 20]"
       />
+      <FallbackThumbnail
+        v-else
+        class="w-full h-full bg-neutral-lightest rounded mb-4 absolute inset-0"
+      />
       <div :class="actionButtonClass">
         <Icon name="i-lucide-circle-play" class="size-18 mx-auto" />
         <span class="font-semibold text-md text-highlighted">Click to run model</span>
