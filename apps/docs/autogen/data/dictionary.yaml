@@ -7253,17 +7253,18 @@ entries:
       description: |+
         Changes the size of the patch grid.
 
-        If the given patch grid coordinates are different than the ones
-         in use, all turtles and links die, and the existing patch grid is
-         discarded and new patches created. Otherwise, existing turtles
-         and links will live if the grid coordinates are unchanged.
+        If any coordinate is fractional, it will be rounded to
+         the nearest integer towards zero (4.5 becomes 4, 10.9 becomes 10, -2.9 becomes -2).
+
+        If the new patch grid coordinates are different than the ones
+         in use, all turtles and links die, the existing patch grid is
+         discarded, new patches created, and the tick counter is cleared.
+         However, if the grid coordinates are the same, the world state
+         will remain unchanged.
 
         Retaining references to old patches or patch sets is inadvisable
          and may subsequently cause runtime errors or other unexpected
          behavior.
-
-        If any coordinate is fractional, it will be rounded to
-         the nearest integer towards zero (4.5 becomes 4, 10.9 becomes 10, -2.9 becomes -2).
 
         See also [[set-patch-size|set-patch-size]].
 
