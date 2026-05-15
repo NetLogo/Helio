@@ -3,7 +3,12 @@
     <div class="space-y-4">
       <ModelDetailSkeleton v-if="status === 'pending'" />
 
-      <ModelError v-else-if="error" :title="error.message || undefined" @retry="refresh()" />
+      <ModelError
+        v-else-if="error"
+        :title="error.message || undefined"
+        class="py-50"
+        @retry="refresh()"
+      />
 
       <template v-else-if="displayCard">
         <UAlert

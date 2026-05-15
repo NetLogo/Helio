@@ -107,7 +107,7 @@ function getVariantProps(variant: AvatarVariant) {
     case "headline":
       return {
         avatar: {
-          size: "lg" as Size,
+          size: "sm" as Size,
           ui: {
             fallback: "font-semibold",
           },

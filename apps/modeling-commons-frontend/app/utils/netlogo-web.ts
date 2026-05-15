@@ -7,21 +7,35 @@ export function getNetlogoWebEmbedUrl(modelUrl: string, title: string = "NetLogo
   return url.toString();
 }
 
-export function getNetlogoWebIframeCode(modelUrl: string, title: string = "NetLogo Model") {
-  const embedUrl = getNetlogoWebEmbedUrl(modelUrl, title);
+export type ModelEmbedTarget = {
+  modelId: string;
+  slug?: string | null;
+  appUrl: string;
+};
+
+export function getModelEmbedUrl({ modelId, slug, appUrl }: ModelEmbedTarget) {
+  const path = slug ? `/models/${slug}/${modelId}/embed` : `/models/${modelId}/embed`;
+  return new URL(path, appUrl).toString();
+}
+
+export function getModelEmbedIframeCode(
+  target: ModelEmbedTarget,
+  title: string = "NetLogo Model",
+) {
+  const embedUrl = getModelEmbedUrl(target);
   return `<iframe src="${embedUrl}" title="${title}" style="width: 100%; min-height: 600px;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="no-referrer" allowfullscreen></iframe>`;
 }
 
-export function getNetlogoWebMarkdownPreviewCode(
-  modelUrl: string,
+export function getModelEmbedMarkdownCode(
+  target: ModelEmbedTarget,
   title: string = "NetLogo Model",
   previewImageUrl?: string | null,
 ) {
-  const embedUrl = getNetlogoWebEmbedUrl(modelUrl, title);
-  const iframeCode = getNetlogoWebIframeCode(modelUrl, title);
+  const embedUrl = getModelEmbedUrl(target);
+  const iframeCode = getModelEmbedIframeCode(target, title);
 
   const iframePart = [
-    "<!-- or via NetLogo Web Iframe Code (uncomment to embed) -->",
+    "<!-- or via iframe embed code (uncomment to embed) -->",
     `<!-- ${iframeCode} -->`,
   ].join("\n");
 

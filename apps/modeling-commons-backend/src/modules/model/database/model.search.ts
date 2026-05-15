@@ -30,7 +30,15 @@ export function buildModelWhere(
   if (filters.isEndorsed !== undefined) conditions.push({ isEndorsed: filters.isEndorsed });
   if (filters.isLibraryModel !== undefined)
     conditions.push({ isLibraryModel: filters.isLibraryModel });
-  if (filters.authorId) conditions.push({ authors: { some: { userId: filters.authorId } } });
+  if (filters.authorId)
+    conditions.push({
+      authors: {
+        some: {
+          userId: filters.authorId,
+          role: filters.authorRoles ? { in: filters.authorRoles } : undefined,
+        },
+      },
+    });
 
   if (filters.tags && filters.tags.length > 0) {
     conditions.push({

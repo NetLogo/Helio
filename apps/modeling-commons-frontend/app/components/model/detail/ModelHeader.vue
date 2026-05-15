@@ -32,7 +32,7 @@
           Download
         </UButton>
         <UDropdownMenu :content="{ align: 'end' }" :items="modelActionsDropdownItems">
-          <UButton icon="i-lucide-ellipsis-vertical" square />
+          <UButton icon="i-lucide-ellipsis-vertical" square size="sm" />
         </UDropdownMenu>
       </div>
     </div>
@@ -81,6 +81,7 @@ const emit = defineEmits<{
   embed: [];
   download: [];
   fork: [];
+  edit: [];
 }>();
 
 const relativeDate = computed(() => formatRelativeDate(props.createdAt));
@@ -88,6 +89,10 @@ const visibility = getModelVisibilityDisplayInfo(props.modelVisibility || "");
 
 const modelActionsDropdownItems = ref([
   { type: "label", label: "Actions" },
+  {
+    ...modelActions.edit,
+    onClick: () => emit(modelActions.edit.action),
+  },
   {
     ...modelActions.embed,
     onClick: () => emit(modelActions.embed.action),

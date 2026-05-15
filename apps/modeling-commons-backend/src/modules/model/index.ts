@@ -1,12 +1,10 @@
-import type { Model } from '#prisma/index';
-import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
-import type { ModelResponseDto } from '#src/modules/model/dtos/model.dto.ts';
 import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 import type modelDomain from '#src/modules/model/domain/model.domain.ts';
+import type { ModelMapper } from '#src/modules/model/model.mapper.ts';
 
 declare global {
   export interface Dependencies {
-    modelMapper: Mapper<Model, Model, ModelResponseDto>;
+    modelMapper: ModelMapper;
     modelRepository: ModelRepository;
     modelDomain: ReturnType<typeof modelDomain>;
     modelService: ReturnType<typeof import('#src/modules/model/model.service.ts').default>;

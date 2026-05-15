@@ -24,15 +24,25 @@ const {
   canLoadMore,
   count,
 } = await useApiPagination(`models-by-user-${id}`, async (page) => {
-  const { data, error } = await api.GET("/api/v1/models", {
-    params: { query: { authorId: id, limit: 20, offset: (page - 1) * 20 } },
+  const { data, error } = await api.GET("/api/v1/models/card", {
+    // By default, the query endpoint returns search-like results with
+    // only public models. Setting `publicOnly=false` allows us to fetch
+    // all models by the user (assuming the requester has the necessary permissions).
+    // --Omar Ibrahim, May 14 26
+    params: {
+      query: {
+        authorId: id,
+        limit: 20,
+        offset: (page - 1) * 20,
+        publicOnly: false,
+      },
+    },
   });
 
   const safeData = handleApiError(data, error, "fetching models");
 
-  const cardList = await Promise.all(safeData.data.map((m) => fetchCards(api, [m.id])));
   return {
-    data: cardList.flat() as ModelCard[],
+    data: safeData.data,
     count: safeData.count,
     limit: safeData.limit,
     page: safeData.page,
@@ -42,6 +52,8 @@ const {
 if (error.value) {
   showError(error.value);
 }
+
+const orientation = ref<"horizontal" | "vertical">("horizontal");
 </script>
 
 <template>
@@ -69,16 +81,19 @@ if (error.value) {
 
         <div v-if="pending">Loading models...</div>
         <UError v-else-if="modelsError" :error="modelsError" />
-        <div v-else class="space-y-5">
-          <ModelTable
-            :models="data!"
+        <div v-else class="space-y-6">
+          <ModelCardsOrientationSelect v-model="orientation" class="justify-end" />
+
+          <ModelCards
+            :cards="data"
             :loading="pending"
             :can-load-more="canLoadMore"
-            :class="{
-              'pointer-events-none opacity-50': pending,
-            }"
+            :orientation="orientation"
+            :class="{ 'pointer-events-none opacity-50': pending }"
+            :error="error ?? undefined"
             @on-load-more="loadNextPage()"
           />
+
           <p class="w-full mx-auto text-center text-xs text-muted">
             Showing {{ data?.length }} of {{ count }}
           </p>

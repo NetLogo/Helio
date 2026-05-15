@@ -5,6 +5,7 @@ import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.
 import { sortQueryRequestDtoSchema } from '#src/shared/api/sort-query.request.dto.ts';
 import { visibilitySchema } from '#src/modules/model/shared/enums.ts';
 import { dateRangeQueryRequestDtoSchema } from '#src/shared/api/date-range-query.request.dto.ts';
+import type { ModelActionMap } from '#src/shared/permissions/model-access.actions.ts';
 
 export const createModelRequestDtoSchema = Type.Object({
   title: Type.String({
@@ -66,6 +67,7 @@ export const modelSearchQuerySchema = Type.Intersect([
       Type.Array(Type.String(), { description: 'Filter models by tag', default: [] }),
     ),
     authorId: Type.Optional(Type.String({ format: 'uuid' })),
+    authorRoles: Type.Optional(Type.Array(Type.Enum(['owner', 'contributor']))),
     parentModelId: Type.Optional(Type.String({ format: 'uuid' })),
     isEndorsed: Type.Optional(Type.Boolean()),
     isLibraryModel: Type.Optional(Type.Boolean()),
@@ -77,7 +79,7 @@ export const modelSearchQuerySchema = Type.Intersect([
 
 export type ModelSortBy = Static<typeof modelSortBySchema>;
 
-export const modelResponseDtoSchema = Type.Intersect([
+export const modelListItemResponseDtoSchema = Type.Intersect([
   baseResponseDtoSchema,
   Type.Object({
     latestVersionNumber: Type.Union([Type.Integer(), Type.Null()]),
@@ -89,10 +91,42 @@ export const modelResponseDtoSchema = Type.Intersect([
   }),
 ]);
 
+export const modelPermissionsDtoSchema = Type.Object({
+  canView: Type.Boolean(),
+  canFork: Type.Boolean(),
+  canComment: Type.Boolean(),
+  canReport: Type.Boolean(),
+  canLike: Type.Boolean(),
+  canEdit: Type.Boolean(),
+  canPublishVersion: Type.Boolean(),
+  canEditDraft: Type.Boolean(),
+  canRevertVersion: Type.Boolean(),
+  canManageAuthors: Type.Boolean(),
+  canChangePermissions: Type.Boolean(),
+  canTransferOwnership: Type.Boolean(),
+  canDelete: Type.Boolean(),
+});
+
+type _AssertSameKeys =
+  Static<typeof modelPermissionsDtoSchema> extends ModelActionMap
+    ? ModelActionMap extends Static<typeof modelPermissionsDtoSchema>
+      ? true
+      : never
+    : never;
+const _assertActionMapKeysMatch: _AssertSameKeys = true;
+void _assertActionMapKeysMatch;
+
+export const modelResponseDtoSchema = Type.Intersect([
+  modelListItemResponseDtoSchema,
+  Type.Object({
+    permissions: modelPermissionsDtoSchema,
+  }),
+]);
+
 export const modelPaginatedResponseSchema = Type.Intersect([
   paginatedResponseBaseSchema,
   Type.Object({
-    data: Type.Array(modelResponseDtoSchema),
+    data: Type.Array(modelListItemResponseDtoSchema),
   }),
 ]);
 
@@ -102,6 +136,8 @@ export type ModelVersionParams = Static<typeof modelVersionParamsSchema>;
 export type ModelSearchQuery = Static<typeof modelSearchQuerySchema>;
 export type CreateModelRequestDto = Static<typeof createModelRequestDtoSchema>;
 export type UpdateModelRequestDto = Static<typeof updateModelRequestDtoSchema>;
+export type ModelListItemResponseDto = Static<typeof modelListItemResponseDtoSchema>;
+export type ModelPermissionsDto = Static<typeof modelPermissionsDtoSchema>;
 export type ModelResponseDto = Static<typeof modelResponseDtoSchema>;
 
 export type CreateModelProps = CreateModelRequestDto;

@@ -1,5 +1,5 @@
 import { Type, type Static } from 'typebox';
-import { modelResponseDtoSchema } from '#src/modules/model/dtos/model.dto.ts';
+import { modelListItemResponseDtoSchema } from '#src/modules/model/dtos/model.dto.ts';
 import { modelVersionResponseDtoSchema } from '#src/modules/model-version/dtos/model-version.response.dto.ts';
 import { modelAuthorResponseDtoSchema } from '#src/modules/model-author/dtos/model-author.response.dto.ts';
 import { tagResponseDtoSchema } from '#src/modules/tag/dtos/tag.response.dto.ts';
@@ -43,7 +43,7 @@ export const modelCardStatsSchema = Type.Object({
 });
 
 export const modelCardResponseDtoSchema = Type.Object({
-  model: modelResponseDtoSchema,
+  model: modelListItemResponseDtoSchema,
   latestVersion: Type.Union([modelCardVersionExtendedResponseDtoSchema, Type.Null()]),
   authors: Type.Array(modelCardAuthorSchema),
   tagsOnLatestVersion: Type.Array(tagResponseDtoSchema),

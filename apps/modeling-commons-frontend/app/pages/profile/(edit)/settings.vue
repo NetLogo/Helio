@@ -1,17 +1,12 @@
 <template>
   <div class="grid gap-8">
     <div v-if="!profile" class="grid gap-4">
-      <UAlert
+      <Error
         title="We couldn't load your profile"
-        description="Refresh the page and try again. If the problem persists, sign out and sign back in."
-        icon="i-lucide-circle-alert"
-        color="error"
-        variant="subtle"
-        :closable="false"
-      />
-      <UButton class="justify-center" color="neutral" variant="outline" @click="refresh()">
-        Try again
-      </UButton>
+        message="Refresh the page and try again. If the problem persists, sign out and sign back in."
+      >
+        <UButton variant="outline" @click="refresh()">Try again</UButton>
+      </Error>
     </div>
 
     <section v-else class="grid items-start gap-6 lg:grid-cols-6 mt-1">

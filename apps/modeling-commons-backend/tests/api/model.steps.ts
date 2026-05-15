@@ -1,4 +1,5 @@
-import { Given, When } from '@cucumber/cucumber';
+import assert from 'node:assert';
+import { Given, Then, When } from '@cucumber/cucumber';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import { type TestUser } from '../support/auth-helper.ts';
 
@@ -179,6 +180,34 @@ When('I delete the model {string}', async function (this: ICustomWorld, title: s
     headers: { cookie: user.cookie },
   });
 });
+
+When(
+  'an anonymous viewer gets the model {string}',
+  async function (this: ICustomWorld, title: string) {
+    const modelId = getModels(this.context).get(title)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models/${modelId}`,
+    });
+  },
+);
+
+Then(
+  'the response permissions action {string} should be {word}',
+  function (this: ICustomWorld, actionKey: string, expected: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    assert.ok(
+      body.permissions && typeof body.permissions === 'object',
+      'Expected response body to include a permissions object',
+    );
+    const expectedBool = expected === 'true';
+    assert.strictEqual(
+      body.permissions[actionKey],
+      expectedBool,
+      `Expected permissions.${actionKey} to be ${expectedBool}, got ${body.permissions[actionKey]}`,
+    );
+  },
+);
 
 When(
   'I fork the model {string} with title {string}',

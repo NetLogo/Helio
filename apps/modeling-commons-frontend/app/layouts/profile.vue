@@ -13,7 +13,7 @@
             :email="displayEmail"
             :alt="displayName"
             size="md"
-            container="hidden lg:block"
+            container="hidden lg:flex"
             :ui="{ fallback: 'font-semibold' }"
             variant="headline"
           />

@@ -12,7 +12,7 @@
       </div>
 
       <div v-else class="flex justify-between gap-10 relative">
-        <UCard class="ring-0 border-0 md:px-5 md:py-3 flex-1 shrink-0">
+        <UCard class="ring-0 border-0 md:px-5 md:py-3 flex-1 h-fit shrink-0">
           <UForm :state="formState">
             <UStepper
               v-model="stepIndex"
@@ -40,9 +40,9 @@
               <template #permissions>
                 <SetPermissionsCard v-model="formState" />
               </template>
-              <template #peer-review>
+              <!-- <template #peer-review>
                 <PeerReviewCard v-model="formState" />
-              </template>
+              </template> -->
             </UStepper>
 
             <div class="flex gap-4 items-start justify-between w-full">
@@ -91,7 +91,7 @@
           </UForm>
         </UCard>
         <div
-          class="hidden md:flex flex-col flex-0 gap-5 sticky top-[calc(1.5rem+var(--ui-header-height))] self-start"
+          class="hidden md:flex flex-col flex-0 gap-5 sticky top-[calc(1.5rem+var(--ui-header-height))] self-start min-w-60"
         >
           <div class="flex flex-col gap-5">
             <h6>Netlogo File <span class="text-coral">*</span></h6>
@@ -117,12 +117,12 @@
 <script setup lang="ts">
 import type { StepperItem } from "#ui/types";
 import type AddDetailsCard from "~/components/upload/AddDetailsCard.vue";
-import type PeerReviewCard from "~/components/upload/PeerReviewCard.vue";
 import SetPermissionsCard from "~/components/upload/SetPermissionsCard.vue";
-import type { UploadFormInput } from "~/forms/upload";
-import { AddDetailsCardSchema } from "~/forms/upload";
 import type { ModelCard } from "~/composables/model/useModelCard";
 import type { Visibility } from "~/composables/model/useModelDraft";
+import { getModelPreviewCard } from "~/forms/models";
+import type { UploadFormInput } from "~/forms/upload";
+import { AddDetailsCardSchema } from "~/forms/upload";
 
 definePageMeta({
   layout: "default",
@@ -176,52 +176,16 @@ const previewImageUrl = computed(() =>
 
 const currentUser = useUser();
 
-const previewCard = computed<ModelCard>(() => {
-  const now = new Date().toISOString();
-  const file = formState.value.nlogoxFile;
-  const me = currentUser.value;
-  return {
-    model: {
-      id: "",
-      createdAt: now,
-      updatedAt: now,
-      latestVersionNumber: 1,
-      parentModelId: null,
-      parentVersionNumber: null,
-      visibility: (formState.value.permission ?? "private") as "public" | "private" | "unlisted",
-      isEndorsed: false,
-    },
-    latestVersion: {
-      modelId: "",
-      versionNumber: 1,
-      title: formState.value.title || file?.name || "Untitled Model",
-      description: formState.value.description || null,
-      netlogoFileKey: null,
-      netlogoVersion: null,
-      infoTab: null,
-      createdAt: now,
-      isFinalized: false,
-      netlogoFileDownloadUrl: null,
-      previewImageUrl: previewImageUrl.value,
-    },
-    authors: me.isLoggedIn
-      ? [
-          {
-            modelId: "",
-            userId: me.user.id,
-            role: "owner",
-            createdAt: now,
-            userName: me.user.name ?? null,
-            userImage: me.user.image ?? null,
-          },
-        ]
-      : [],
-    tagsOnLatestVersion: [],
+const previewCard = computed<ModelCard>(() =>
+  getModelPreviewCard({
+    file: formState.value.nlogoxFile,
+    permission: formState.value.permission,
+    title: formState.value.title,
+    description: formState.value.description,
     previewImageUrl: previewImageUrl.value,
-    counts: { versions: 0, children: 0 },
-    stats: { likes: 0, views: 0, runs: 0, downloads: 0, shares: 0, likedByMe: false },
-  };
-});
+    me: currentUser.value,
+  }),
+);
 
 const modelFiles = ref<File[]>([]);
 const additionalFiles = ref<File[]>([]);
@@ -240,12 +204,7 @@ onMounted(async () => {
   try {
     await load(initialDraftId);
   } catch {
-    toast.add({
-      title: "Draft not found",
-      description: "We could not load that draft. Starting fresh.",
-      icon: "i-lucide-circle-alert",
-      color: "error",
-    });
+    showNotFoundToast("Draft", "We could not load that draft. Starting fresh.");
   }
 });
 
@@ -276,12 +235,10 @@ watch(
         description: formState.value.description,
       });
     } catch (err) {
-      toast.add({
-        title: "Upload failed",
-        description: err instanceof Error ? err.message : "Could not stage the model file.",
-        icon: "i-lucide-circle-alert",
-        color: "error",
-      });
+      showActionFailedToast(
+        "Upload failed",
+        err instanceof Error ? err.message : "Could not stage the model file.",
+      );
     }
   },
 );
@@ -318,12 +275,10 @@ async function syncAttachments(files: File[] | undefined, prev: File[] | undefin
       const staged = await uploadAttachment(file);
       stagedAttachments.value.push({ fileId: staged.fileId, filename: staged.filename });
     } catch (err) {
-      toast.add({
-        title: "Upload failed",
-        description: err instanceof Error ? err.message : `Failed to upload ${file.name}.`,
-        icon: "i-lucide-circle-alert",
-        color: "error",
-      });
+      showActionFailedToast(
+        "Upload failed",
+        err instanceof Error ? err.message : `Failed to upload ${file.name}.`,
+      );
     }
   }
   const removed = previous.filter((f) => !current.includes(f));
@@ -360,11 +315,11 @@ const stepperItems = [
     icon: "i-lucide-lock",
     title: "Set Permissions",
   },
-  {
-    slot: "peer-review",
-    icon: "i-lucide-users",
-    title: "Ask for Peer Review",
-  },
+  // {
+  //   slot: "peer-review",
+  //   icon: "i-lucide-users",
+  //   title: "Ask for Peer Review",
+  // },
 ] satisfies Array<StepperItem>;
 
 function goToStep(index: number) {
@@ -388,21 +343,11 @@ function collectTagNames(form: UploadFormInput): string[] {
 async function onPublish(visibility: Visibility) {
   if (publishing.value) return;
   if (!stagedPrimary.value) {
-    toast.add({
-      title: "Missing model file",
-      description: "Upload a .nlogox before publishing.",
-      icon: "i-lucide-circle-alert",
-      color: "error",
-    });
+    showActionFailedToast("Missing model file", "Upload a .nlogox before publishing.");
     return;
   }
   if (!formState.value.title.trim()) {
-    toast.add({
-      title: "Missing title",
-      description: "Add a title before publishing.",
-      icon: "i-lucide-circle-alert",
-      color: "error",
-    });
+    showActionFailedToast("Missing title", "Add a title before publishing.");
     return;
   }
 

@@ -119,7 +119,8 @@ export const parseModelPath = (path: string): { modelId: string; modelSlug: stri
     .get() as { modelId: string; modelSlug: string } | null;
 
 export function appendWindowProtocol(url: string): string {
-  const hasScheme = url.startsWith("http://") || url.startsWith("https://");
+  const hasScheme =
+    url.startsWith("http://") || url.startsWith("https://") || url.startsWith("blob:");
   const currentProtocol = import.meta.dev ? "http:" : "https:";
   return hasScheme ? url : `${currentProtocol}//${url}`;
 }

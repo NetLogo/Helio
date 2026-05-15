@@ -7,24 +7,23 @@
         class="mb-4"
         icon="i-lucide-lock"
         title="Private Model"
-        description="This model is private. The embed code will not work for users who do not have access to
-          the model."
+          description="This model is private. The embed will show a locked state to viewers who aren't signed
+          in or who don't have access."
       >
       </UAlert>
       <UTabs :items="tabs" color="secondary">
         <template #url>
           <div class="space-y-3">
-            <p class="text-sm">Copy the URL to the model</p>
+            <p class="text-sm">Copy the URL to share a live preview of the model</p>
             <UFieldGroup class="w-full">
-              <UInput :value="embedUrl" readonly class="flex-1" />
-              <CopyButton :text="embedUrl" />
+              <UInput :value="embedPageUrl" readonly class="flex-1" />
+              <CopyButton :text="embedPageUrl" />
             </UFieldGroup>
 
             <USeparator />
 
             <p class="text-sm text-muted text-pretty">
-              This URL can be used to link users to a live preview of the model "{{ title }}" using
-              NetLogo Web.
+              This URL opens a hosted preview of "{{ title }}" on Modeling Commons.
             </p>
           </div>
         </template>
@@ -43,8 +42,8 @@
             <USeparator />
 
             <p class="text-sm text-muted text-pretty">
-              This HTML code can be used to embed a live preview of the model "{{ title }}" using
-              NetLogo Web on any webpage that supports iframes.
+              This HTML code embeds "{{ title }}" on any page that supports iframes. Viewers will
+              see the model's thumbnail and click to run it.
             </p>
           </div>
         </template>
@@ -63,9 +62,8 @@
             <USeparator />
 
             <p class="text-sm text-muted text-pretty">
-              This Markdown code can be used to embed a linked preview image of the model "{{
-                title
-              }}" in any Markdown document.
+              This Markdown code embeds a linked preview image of "{{ title }}" in any Markdown
+              document.
             </p>
           </div>
         </template>
@@ -78,45 +76,38 @@
 import type { Author } from "../ModelAuthors.vue";
 
 const props = defineProps<{
+  modelId: string;
+  slug?: string | null;
   title: string;
-  downloadUrl?: string | null;
   authors: Array<Author>;
   relativeDate: string;
   netlogoVersion?: string | null;
   modelGroup?: string | null;
   modelVisibility?: string;
-  embedUrl?: string;
   previewImageUrl?: string | null;
 }>();
 
 const open = defineModel({ required: true, type: Boolean });
 
+const appUrl = useRuntimeConfig().public.appUrl as string;
+
 const tabs = [
-  {
-    label: "URL",
-    icon: "i-lucide-link-2",
-    slot: "url",
-  },
-  {
-    label: "HTML",
-    slot: "html",
-    icon: "i-lucide-code",
-  },
-  {
-    label: "Markdown",
-    slot: "markdown",
-    icon: "i-lucide-file-text",
-  },
+  { label: "URL", icon: "i-lucide-link-2", slot: "url" },
+  { label: "HTML", slot: "html", icon: "i-lucide-code" },
+  { label: "Markdown", slot: "markdown", icon: "i-lucide-file-text" },
 ];
 
 const isPrivateModel = computed(() => props.modelVisibility === "private");
 
-const iframeCode = computed(() => getNetlogoWebIframeCode(props.downloadUrl ?? "", props.title));
+const target = computed(() => ({
+  modelId: props.modelId,
+  slug: props.slug ?? null,
+  appUrl,
+}));
+
+const embedPageUrl = computed(() => getModelEmbedUrl(target.value));
+const iframeCode = computed(() => getModelEmbedIframeCode(target.value, props.title));
 const markdownCode = computed(() =>
-  getNetlogoWebMarkdownPreviewCode(
-    props.downloadUrl ?? "",
-    props.title,
-    props.previewImageUrl ?? "",
-  ),
+  getModelEmbedMarkdownCode(target.value, props.title, props.previewImageUrl ?? null),
 );
 </script>

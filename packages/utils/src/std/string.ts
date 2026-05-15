@@ -18,10 +18,41 @@ export function escapeHTML(s: string): string {
     .replace(/'/g, "&#39;");
 }
 
-export function toSentenceCase(s: string): string {
+export const EnglishPreservedKeywords = [
+  "a",
+  "an",
+  "the",
+  "and",
+  "but",
+  "or",
+  "nor",
+  "for",
+  "yet",
+  "so",
+  "at",
+  "around",
+  "by",
+  "after",
+  "along",
+  "from",
+  "of",
+  "on",
+  "to",
+  "with",
+];
+
+export function toSentenceCase(
+  s: string,
+  { preservedKeywords }: { preservedKeywords?: Array<string> } = {},
+): string {
   if (s.length === 0) return s;
   return s
     .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => {
+      if (Boolean(preservedKeywords?.includes(word))) {
+        return word;
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
     .join(" ");
 }

@@ -88,7 +88,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     },
     async (request) => {
       const entity = await modelService.findById(request.params.id);
-      return modelMapper.toResponse(entity);
+      return modelMapper.toResponse(entity, request.modelAccess);
     },
   );
 
@@ -139,7 +139,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       );
       return res.status(200).send({
         ...result,
-        data: result.data.map((e) => modelMapper.toResponse(e)),
+        data: result.data.map((e) => modelMapper.toListItem(e)),
       });
     },
   });
@@ -185,7 +185,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       const result = await getModelChildrenQuery.execute(request.params.id, { limit, page });
       return {
         ...result,
-        data: result.data.map((e) => modelMapper.toResponse(e)),
+        data: result.data.map((e) => modelMapper.toListItem(e)),
       };
     },
   );

@@ -8,6 +8,8 @@ export class TagNotFoundError extends NotFoundException {
 
 export class InvalidTagNameError extends ArgumentInvalidException {
   constructor(name: string) {
-    super(`Invalid tag name '${name}': must be 1-100 characters, alphanumeric, hyphens, or spaces`);
+    super(
+      `Invalid tag name '${name}': must be 1-100 characters, alphanumeric, colon, hyphens, or spaces`,
+    );
   }
 }

@@ -2,7 +2,7 @@
   <Navbar
     id="main-navbar"
     ref="navbar"
-    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none! max-w-500 mx-auto"
+    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none! max-w-500 mx-auto flex-1 w-full"
     :brand="brand"
     brand-href="/"
     :brand-attrs="brandAttrs"
@@ -67,8 +67,8 @@
         </template>
       </UDropdownMenu>
       <div v-else class="flex gap-5">
-        <UButton v-show-from:lg variant="link" size="sm" to="/login"> Log In </UButton>
-        <UButton variant="solid" size="sm" to="/signup"> Sign Up </UButton>
+        <UButton v-show-from:lg variant="link" size="xs" to="/login"> Log In </UButton>
+        <UButton variant="solid" size="xs" to="/signup"> Sign Up </UButton>
       </div>
     </NavbarActionsContainer>
   </Navbar>

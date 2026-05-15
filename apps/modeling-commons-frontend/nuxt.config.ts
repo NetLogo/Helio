@@ -60,19 +60,19 @@ export default defineNuxtConfig({
       pages.push({
         name: "model-slug",
         path: "/models/:slug/:id",
-        file: "~/pages/models/[id].vue",
+        file: "~/pages/models/[id]/index.vue",
       });
 
       pages.push({
         name: "model-slug-version",
         path: "/models/:slug/:id/versions/:versionNumber",
-        file: "~/pages/models/[id].vue",
+        file: "~/pages/models/[id]/index.vue",
       });
 
       pages.push({
         name: "model-version",
         path: "/models/:id/versions/:versionNumber",
-        file: "~/pages/models/[id].vue",
+        file: "~/pages/models/[id]/index.vue",
       });
 
       pages.push({
@@ -80,6 +80,25 @@ export default defineNuxtConfig({
         path: "/users/:slug/:id",
         file: "~/pages/users/[id]/index.vue",
       });
+
+      pages.push({
+        name: "model-embed-slug",
+        path: "/models/:slug/:id/embed",
+        file: "~/pages/models/[id]/embed.vue",
+      });
+    },
+  },
+
+  routeRules: {
+    "/models/**/embed": {
+      security: {
+        headers: {
+          xFrameOptions: false,
+          contentSecurityPolicy: {
+            "frame-ancestors": ["*"],
+          },
+        },
+      },
     },
   },
 

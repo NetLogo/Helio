@@ -1,6 +1,6 @@
 <template>
   <Error :message="message" :title="title">
-    <UButton variant="outline" color="error" @click="$emit('retry')"> Try again </UButton>
+    <UButton variant="outline" @click="$emit('retry')"> Try again </UButton>
   </Error>
 </template>
 

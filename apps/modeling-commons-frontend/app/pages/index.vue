@@ -57,12 +57,13 @@
         </section>
       </div>
 
-      <div v-else-if="error" class="text-center py-16">
-        <UIcon name="i-lucide-wifi-off" class="size-14 text-dimmed mx-auto mb-4" />
-        <h2 class="text-toned">Unable to load models</h2>
-        <p class="text-muted mt-1">We couldn't reach the server. Please try again.</p>
-        <UButton variant="outline" class="mt-4" @click="refresh()"> Try again </UButton>
-      </div>
+      <Error
+        v-else-if="error"
+        title="Unable to load models"
+        message="Something went wrong while fetching models. Please refresh the page or try again later."
+      >
+        <UButton variant="outline" @click="refresh()"> Try again </UButton>
+      </Error>
 
       <div v-else-if="data" class="flex flex-col gap-25">
         <template v-for="(section, idx) in visibleSections" :key="section.key">

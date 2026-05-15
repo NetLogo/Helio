@@ -10,6 +10,7 @@
   >
     <template #header>
       <ModelCardPreviewImage
+        :key="imageSrc"
         :src="imageSrc"
         :alt="title"
         class="group-hover/card:scale-110 transition-transform"
@@ -45,9 +46,7 @@ const props = withDefaults(
 );
 
 const title = computed(() => props.card.latestVersion?.title || "Untitled Model");
-// const description = computed(
-//   () => props.card.latestVersion?.description || "No description provided.",
-// );
+
 const imageSrc = computed(() =>
   props.card.previewImageUrl ? appendWindowProtocol(props.card.previewImageUrl) : undefined,
 );

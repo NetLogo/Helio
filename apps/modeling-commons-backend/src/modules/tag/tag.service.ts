@@ -38,11 +38,11 @@ export default function makeTagService({ tagRepository, tagDomain }: Dependencie
     },
 
     async upsertByName(name: string): Promise<TagEntity> {
-      const validatedName = tagDomain.validateName(name);
+      const validatedName = tagDomain.getPersistenceName(name);
       const existing = await tagRepository.findByNameInsensitive(validatedName);
       if (existing) return existing;
 
-      const entity = tagDomain.createTag({ name: validatedName });
+      const entity = tagDomain.createTag({ name: validatedName, displayName: name });
       return tagRepository.upsertByName(entity);
     },
   };

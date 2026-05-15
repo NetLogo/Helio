@@ -9,6 +9,12 @@
     virtualize
     loading-icon="i-lucide-loader"
     multiple
+    @update:model-value="
+      emit(
+        'update:selectedStrings',
+        selected.map((t) => t.name),
+      )
+    "
   >
     <template #empty>
       <UEmpty
@@ -26,6 +32,7 @@
 
 <script lang="ts">
 import { useInfiniteScroll } from "@vueuse/core";
+import { areTagsEqual } from "~/forms/tags";
 export type TagItem = { label: string; value: string; name: string } & Partial<Tag>;
 export const toTagSelectMenuItem = (tag: Partial<Tag> & { name: string }): TagItem => ({
   ...tag,
@@ -40,14 +47,8 @@ const props = defineProps<{
   loading: boolean;
   loadNextPage: () => void;
   canLoadMore: boolean;
+  canCreateNewTags?: boolean;
 }>();
-
-const userMenuItems = computed<TagItem[]>(() => {
-  if (!searchTerm.value && selected.value.length > 0) {
-    return selected.value;
-  }
-  return props.tags.map(toTagSelectMenuItem);
-});
 
 const selected = defineModel<Array<TagItem>>({
   type: Array as () => Array<TagItem>,
@@ -55,6 +56,31 @@ const selected = defineModel<Array<TagItem>>({
 });
 const searchTerm = defineModel<string>("search-term", { type: String, default: "" });
 const selectMenu = useTemplateRef("selectMenu");
+
+const emit = defineEmits<{
+  "update:selectedStrings": [Array<string>];
+}>();
+
+const userMenuItems = computed<TagItem[]>(() => {
+  const items: Array<TagItem> = [];
+  if (!searchTerm.value && selected.value.length > 0) {
+    items.push(...selected.value);
+  } else {
+    items.push(...props.tags.map(toTagSelectMenuItem));
+  }
+  if (
+    props.canCreateNewTags &&
+    searchTerm.value &&
+    !props.tags.some((t) => areTagsEqual(t, { name: searchTerm.value }))
+  ) {
+    items.unshift({
+      name: searchTerm.value,
+      label: `Create "${searchTerm.value}"`,
+      value: searchTerm.value,
+    });
+  }
+  return items;
+});
 
 onMounted(() => {
   useInfiniteScroll(

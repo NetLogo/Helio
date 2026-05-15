@@ -1,9 +1,10 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from "vitest";
 import {
+  getModelEmbedIframeCode,
+  getModelEmbedMarkdownCode,
+  getModelEmbedUrl,
   getNetlogoWebEmbedUrl,
-  getNetlogoWebIframeCode,
-  getNetlogoWebMarkdownPreviewCode,
   NLWHost,
   readInfoTabFromNlogox,
 } from "./netlogo-web";
@@ -23,39 +24,59 @@ describe("getNetlogoWebEmbedUrl", () => {
   });
 });
 
-describe("getNetlogoWebIframeCode", () => {
-  it("renders an iframe with correct attributes and src matching the embed URL", () => {
-    const modelUrl = "http://files.test/model.nlogo";
-    const title = "Cool Model";
-    const code = getNetlogoWebIframeCode(modelUrl, title);
-    expect(code).toContain(`<iframe`);
-    expect(code).toContain(`src="${getNetlogoWebEmbedUrl(modelUrl, title)}"`);
-    expect(code).toContain(`title="${title}"`);
-    expect(code).toContain(`allowfullscreen`);
+describe("getModelEmbedUrl", () => {
+  const appUrl = "https://modelingcommons.example";
+
+  it("builds a /models/:id/embed URL when no slug is provided", () => {
+    const result = getModelEmbedUrl({ modelId: "abc123", appUrl });
+    expect(result).toBe(`${appUrl}/models/abc123/embed`);
+  });
+
+  it("inserts the slug into the path when provided", () => {
+    const result = getModelEmbedUrl({ modelId: "abc123", slug: "wolf-sheep", appUrl });
+    expect(result).toBe(`${appUrl}/models/wolf-sheep/abc123/embed`);
+  });
+
+  it("treats null/empty slugs as absent", () => {
+    expect(getModelEmbedUrl({ modelId: "x", slug: null, appUrl })).toBe(`${appUrl}/models/x/embed`);
+    expect(getModelEmbedUrl({ modelId: "x", slug: "", appUrl })).toBe(`${appUrl}/models/x/embed`);
   });
 });
 
-describe("getNetlogoWebMarkdownPreviewCode", () => {
-  const modelUrl = "http://files.test/model.nlogo";
+describe("getModelEmbedIframeCode", () => {
+  const appUrl = "https://modelingcommons.example";
+
+  it("renders an iframe with src pointing at the proxy URL", () => {
+    const code = getModelEmbedIframeCode({ modelId: "abc", appUrl }, "Cool Model");
+    expect(code).toContain(`<iframe`);
+    expect(code).toContain(`src="${getModelEmbedUrl({ modelId: "abc", appUrl })}"`);
+    expect(code).toContain(`title="Cool Model"`);
+    expect(code).toContain("allowfullscreen");
+  });
+});
+
+describe("getModelEmbedMarkdownCode", () => {
+  const appUrl = "https://modelingcommons.example";
+  const target = { modelId: "abc", appUrl };
 
   it("uses an image link when a preview image is provided", () => {
-    const md = getNetlogoWebMarkdownPreviewCode(modelUrl, "Title", "http://img.test/p.png");
+    const md = getModelEmbedMarkdownCode(target, "Title", "http://img.test/p.png");
     expect(md).toContain(`[![Title](http://img.test/p.png)](`);
-    expect(md).toContain(getNetlogoWebEmbedUrl(modelUrl, "Title"));
+    expect(md).toContain(getModelEmbedUrl(target));
   });
 
   it("uses a plain text link when no preview image is provided", () => {
-    const md = getNetlogoWebMarkdownPreviewCode(modelUrl, "Title");
+    const md = getModelEmbedMarkdownCode(target, "Title");
     expect(md).toContain(`[Title](`);
     expect(md).not.toContain("![Title]");
-    expect(md).toContain(getNetlogoWebEmbedUrl(modelUrl, "Title"));
+    expect(md).toContain(getModelEmbedUrl(target));
   });
 
   it("includes both markdown link and HTML iframe comment", () => {
-    const md = getNetlogoWebMarkdownPreviewCode(modelUrl, "Title", "http://img.test/p.png");
+    const md = getModelEmbedMarkdownCode(target, "Title", "http://img.test/p.png");
     expect(md).toContain("[![Title](http://img.test/p.png)](");
     expect(md).toContain("<iframe");
-    expect(md).toContain("<!-- or via NetLogo Web Iframe Code (uncomment to embed) -->");
+    expect(md).toContain("<!-- or via iframe embed code (uncomment to embed) -->");
   });
 });
 

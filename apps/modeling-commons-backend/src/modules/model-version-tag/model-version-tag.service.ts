@@ -18,8 +18,17 @@ export default function makeModelVersionTagService({
 
       const tag = await tagService.upsertByName(tagName);
 
-      const alreadyApplied = await modelVersionTagRepository.exists(currentVersion.modelId, currentVersion.versionNumber, tag.id);
-      if (alreadyApplied) throw new TagAlreadyAppliedError(currentVersion.modelId, currentVersion.versionNumber, tag.id);
+      const alreadyApplied = await modelVersionTagRepository.exists(
+        currentVersion.modelId,
+        currentVersion.versionNumber,
+        tag.id,
+      );
+      if (alreadyApplied)
+        throw new TagAlreadyAppliedError(
+          currentVersion.modelId,
+          currentVersion.versionNumber,
+          tag.id,
+        );
 
       const entity = modelVersionTagDomain.createModelVersionTag({
         modelId: currentVersion.modelId,
@@ -46,7 +55,12 @@ export default function makeModelVersionTagService({
       modelVersionTagDomain.assertNotFinalized(currentVersion);
 
       await transactionManager.run(async (ctx) => {
-        await modelVersionTagRepository.deleteTx(ctx, currentVersion.modelId, currentVersion.versionNumber, tagId);
+        await modelVersionTagRepository.deleteTx(
+          ctx,
+          currentVersion.modelId,
+          currentVersion.versionNumber,
+          tagId,
+        );
         await eventRepository.insert(ctx, {
           type: 'model_version_tag.removed',
           actorId: userId,

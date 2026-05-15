@@ -44,10 +44,13 @@ export default function makeModelDraftService({
   modelDomain,
   modelVersionRepository,
   modelVersionDomain,
+  modelVersionTagDomain,
+  modelVersionTagRepository,
   modelAuthorRepository,
   modelAuthorDomain,
   modelAdditionalFileRepository,
   modelAdditionalFileDomain,
+  tagService,
   eventRepository,
   storage,
   bucket,
@@ -63,17 +66,9 @@ export default function makeModelDraftService({
     return upcast(draft.data, draft.schemaVersion);
   }
 
-  async function persistData(
-    draft: ModelDraftEntity,
-    next: DraftData,
-  ): Promise<void> {
+  async function persistData(draft: ModelDraftEntity, next: DraftData): Promise<void> {
     await transactionManager.run(async (ctx) => {
-      await modelDraftRepository.updateDataTx(
-        ctx,
-        draft.id,
-        LATEST_DRAFT_SCHEMA_VERSION,
-        next,
-      );
+      await modelDraftRepository.updateDataTx(ctx, draft.id, LATEST_DRAFT_SCHEMA_VERSION, next);
     });
   }
 
@@ -112,9 +107,7 @@ export default function makeModelDraftService({
           ContinuationToken: continuationToken,
         }),
       );
-      const keys = (listed.Contents ?? [])
-        .map((o) => o.Key)
-        .filter((k): k is string => Boolean(k));
+      const keys = (listed.Contents ?? []).map((o) => o.Key).filter((k): k is string => Boolean(k));
       if (keys.length > 0) {
         await storage.send(
           new DeleteObjectsCommand({
@@ -147,11 +140,7 @@ export default function makeModelDraftService({
       return requireOwnedDraft(draftId, userId);
     },
 
-    async patch(
-      draftId: string,
-      userId: string,
-      input: PatchDraftRequestDto,
-    ): Promise<void> {
+    async patch(draftId: string, userId: string, input: PatchDraftRequestDto): Promise<void> {
       const draft = await requireOwnedDraft(draftId, userId);
       const data = currentData(draft);
 
@@ -243,9 +232,7 @@ export default function makeModelDraftService({
       const draft = await requireOwnedDraft(draftId, userId);
       const data = assertPublishable(currentData(draft));
 
-      const existingModel = draft.modelId
-        ? await modelRepository.findOneById(draft.modelId)
-        : null;
+      const existingModel = draft.modelId ? await modelRepository.findOneById(draft.modelId) : null;
       if (draft.modelId && !existingModel) throw new ModelDraftNotFoundError(draftId);
       if (existingModel) modelDomain.assertNotDeleted(existingModel);
 
@@ -277,6 +264,12 @@ export default function makeModelDraftService({
         })),
       );
 
+      const tags = await Promise.all(
+        (data.tags ?? []).map(async (tagName) => {
+          return tagService.upsertByName(tagName);
+        }),
+      );
+
       const result = await transactionManager.run(async (ctx) => {
         if (!existingModel) {
           await modelRepository.insertTx(ctx, model);
@@ -305,9 +298,21 @@ export default function makeModelDraftService({
           description: data.description,
           netlogoFileKey,
         });
-        version.finalizedAt = new Date();
 
         await modelVersionRepository.insertTx(ctx, version);
+
+        await Promise.all(
+          tags
+            .map((tag) =>
+              modelVersionTagDomain.createModelVersionTag({
+                modelId: model.id,
+                versionNumber,
+                tagId: tag.id,
+              }),
+            )
+            .map((entity) => modelVersionTagRepository.insertTx(ctx, entity)),
+        );
+
         await modelRepository.setLatestVersion(ctx, model.id, versionNumber);
 
         for (const att of attachmentCopies) {
@@ -348,9 +353,7 @@ export default function makeModelDraftService({
 
     async purgeStale(cutoff: Date): Promise<number> {
       const deleted = await modelDraftRepository.deleteStaleBefore(cutoff);
-      await Promise.allSettled(
-        deleted.map((d) => deleteStagingPrefix(d.userId, d.id)),
-      );
+      await Promise.allSettled(deleted.map((d) => deleteStagingPrefix(d.userId, d.id)));
       return deleted.length;
     },
   };

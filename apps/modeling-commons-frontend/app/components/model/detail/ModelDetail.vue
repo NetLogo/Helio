@@ -8,9 +8,9 @@
     <section class="space-y-6">
       <ModelEmbedDialog
         v-model="embedDialogOpen"
+        :model-id="card.model.id"
+        :slug="modelSlug"
         :title="title"
-        :download-url="downloadUrl"
-        :embed-url="embedUrl"
         :authors="card.authors"
         :relative-date="relativeDate"
         :netlogo-version="netlogoVersion"
@@ -43,14 +43,21 @@
       />
     </section>
 
-    <NetlogoWebEmbed
-      v-if="card.latestVersion"
-      class="flex-1"
-      :model-url="downloadUrl ?? ''"
-      :preview-image-url="previewImageUrl"
-      :model-title="title"
-      @run="handleRun"
-    />
+    <UCard
+      :ui="{
+        body: 'relative rounded-xl overflow-hidden aspect-square shrink-0',
+      }"
+      variant="subtle"
+    >
+      <NetlogoWebEmbed
+        v-if="card.latestVersion"
+        class="flex-1"
+        :model-url="downloadUrl ?? ''"
+        :preview-image-url="previewImageUrl"
+        :model-title="title"
+        @run="handleRun"
+      />
+    </UCard>
 
     <ModelBottomBar
       :likes="stats.likes"
@@ -163,9 +170,9 @@ const downloadUrl = computed(() => {
   if (!props.card?.latestVersion) return undefined;
   return props.card.latestVersion.netlogoFileDownloadUrl;
 });
-const embedUrl = computed(() => {
-  if (!downloadUrl.value) return undefined;
-  return getNetlogoWebEmbedUrl(downloadUrl.value, title.value);
+const modelSlug = computed(() => {
+  const path = createModelPath(props.card.model.id, title.value);
+  return parseModelPath(path)?.modelSlug ?? null;
 });
 
 const previewImageUrl = computed(() => {

@@ -232,7 +232,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": ({
+                        "application/json": (({
                             /**
                              * Format: uuid
                              * @description Entity's id
@@ -258,6 +258,22 @@ export interface paths {
                             visibility: "public" | "private" | "unlisted";
                             isEndorsed: boolean;
                             isLibraryModel: boolean;
+                        }) & {
+                            permissions: {
+                                canView: boolean;
+                                canFork: boolean;
+                                canComment: boolean;
+                                canReport: boolean;
+                                canLike: boolean;
+                                canEdit: boolean;
+                                canPublishVersion: boolean;
+                                canEditDraft: boolean;
+                                canRevertVersion: boolean;
+                                canManageAuthors: boolean;
+                                canChangePermissions: boolean;
+                                canTransferOwnership: boolean;
+                                canDelete: boolean;
+                            };
                         };
                     };
                 };
@@ -601,8 +617,8 @@ export interface paths {
                                 modelId: string;
                                 /** Format: uuid */
                                 userId: string;
-                                /** @description owner | contributor */
-                                role: string;
+                                /** @enum {unknown} */
+                                role: "owner" | "contributor";
                                 /**
                                  * @description Author assignment date
                                  * @example 2020-11-24T17:43:15.970Z
@@ -886,6 +902,7 @@ export interface paths {
                     /** @description Filter models by tag */
                     tags?: string[];
                     authorId?: string;
+                    authorRoles?: ("owner" | "contributor")[];
                     parentModelId?: string;
                     isEndorsed?: boolean;
                     isLibraryModel?: boolean;
@@ -1039,6 +1056,7 @@ export interface paths {
                     /** @description Filter models by tag */
                     tags?: string[];
                     authorId?: string;
+                    authorRoles?: ("owner" | "contributor")[];
                     parentModelId?: string;
                     isEndorsed?: boolean;
                     isLibraryModel?: boolean;
@@ -1126,8 +1144,8 @@ export interface paths {
                                     modelId: string;
                                     /** Format: uuid */
                                     userId: string;
-                                    /** @description owner | contributor */
-                                    role: string;
+                                    /** @enum {unknown} */
+                                    role: "owner" | "contributor";
                                     /**
                                      * @description Author assignment date
                                      * @example 2020-11-24T17:43:15.970Z
@@ -1265,6 +1283,7 @@ export interface paths {
                     /** @description Filter models by tag */
                     tags?: string[];
                     authorId?: string;
+                    authorRoles?: ("owner" | "contributor")[];
                     parentModelId?: string;
                     isEndorsed?: boolean;
                     isLibraryModel?: boolean;
@@ -1498,6 +1517,8 @@ export interface paths {
                         } & {
                             /** Format: uuid */
                             modelId: string;
+                            /** Format: uuid */
+                            userId?: string;
                             taggedVersionNumber: number;
                             fileKey: string;
                             filename: string;
@@ -1585,6 +1606,8 @@ export interface paths {
                         } & {
                             /** Format: uuid */
                             modelId: string;
+                            /** Format: uuid */
+                            userId?: string;
                             taggedVersionNumber: number;
                             fileKey: string;
                             filename: string;
@@ -1752,8 +1775,8 @@ export interface paths {
                             modelId: string;
                             /** Format: uuid */
                             userId: string;
-                            /** @description owner | contributor */
-                            role: string;
+                            /** @enum {unknown} */
+                            role: "owner" | "contributor";
                             /**
                              * @description Author assignment date
                              * @example 2020-11-24T17:43:15.970Z
@@ -1842,8 +1865,8 @@ export interface paths {
                             modelId: string;
                             /** Format: uuid */
                             userId: string;
-                            /** @description owner | contributor */
-                            role: string;
+                            /** @enum {unknown} */
+                            role: "owner" | "contributor";
                             /**
                              * @description Author assignment date
                              * @example 2020-11-24T17:43:15.970Z
@@ -2114,8 +2137,8 @@ export interface paths {
                                 modelId: string;
                                 /** Format: uuid */
                                 userId: string;
-                                /** @description owner | contributor */
-                                role: string;
+                                /** @enum {unknown} */
+                                role: "owner" | "contributor";
                                 /**
                                  * @description Author assignment date
                                  * @example 2020-11-24T17:43:15.970Z

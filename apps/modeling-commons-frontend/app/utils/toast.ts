@@ -8,3 +8,27 @@ export function showRequiresLoginToast(what: string = "perform this action") {
     icon: "i-lucide-key-round",
   });
 }
+
+export function showNotFoundToast(what: string = "item", sayMore?: string) {
+  const toast = useToast();
+
+  toast.add({
+    title: `${sentenceCase(what)} Not Found`,
+    description: sayMore ?? `The ${what} you are looking for could not be found.`,
+    color: "error",
+    icon: "i-lucide-alert-circle",
+  });
+}
+
+export function showActionFailedToast(action: string, what: string, sayMore?: string) {
+  const toast = useToast();
+
+  toast.add({
+    title: `${sentenceCase(action)} ${what} Failed`,
+    description:
+      sayMore ??
+      `We were unable to ${action.toLowerCase()} the ${what.toLowerCase()}. Please try again.`,
+    color: "error",
+    icon: "i-lucide-x-circle",
+  });
+}

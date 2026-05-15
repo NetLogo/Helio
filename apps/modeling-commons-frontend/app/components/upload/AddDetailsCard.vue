@@ -10,17 +10,25 @@
 
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-3">
-          <label class="font-sans text-base font-medium leading-normal text-text">
-            Model Preview Image <span class="text-coral">*</span>
-          </label>
+          <div class="flex flex-col">
+            <UFormField name="previewImage" label="Model Preview Image" />
+
+            <p
+              class="text-sm text-muted max-w-120"
+              v-text="`A thumbnail will be auto-generated after upload if you don't upload one.`"
+            />
+          </div>
+
           <div class="flex items-center gap-10">
-            <div class="aspect-square w-46 h-46 flex">
-              <ImageUploader
-                ref="imageUploader"
-                v-model="state.imageFile"
-                :initial-preview-url="previewUrl || undefined"
-                class="aspect-square"
-              />
+            <div class="flex flex-col gap-2">
+              <div class="aspect-square w-46 h-46 flex">
+                <ImageUploader
+                  ref="imageUploader"
+                  v-model="state.imageFile"
+                  :initial-preview-url="previewUrl || undefined"
+                  class="aspect-square"
+                />
+              </div>
             </div>
             <div class="flex flex-col gap-2">
               <UButton
@@ -28,9 +36,20 @@
                 color="neutral"
                 size="md"
                 icon="i-lucide-image-up"
+                class="w-fit"
                 @click="imageUploader?.openFilePicker()"
               >
                 Change
+              </UButton>
+              <UButton
+                variant="outline"
+                color="neutral"
+                size="md"
+                icon="i-lucide-fullscreen"
+                class="w-fit"
+                @click="imageUploader?.openFilePicker()"
+              >
+                Generate from Model
               </UButton>
             </div>
           </div>
@@ -55,7 +74,15 @@
         </UFormField>
 
         <UFormField name="tags" label="Tags">
-          <UInputTags v-model="state.tags" placeholder="e.g. Biology" size="lg" class="w-full" />
+          <TagSelectMenu
+            :tags="tags.tags"
+            :loading="tags.pending"
+            :load-next-page="tags.loadNextPage"
+            :can-load-more="tags.canLoadMore"
+            class="w-full mt-2"
+            can-create-new-tags
+            @update:selected-strings="(tags: Array<string>) => (state.tags = tags)"
+          />
         </UFormField>
 
         <UFormField name="usecases" label="Best Usecases">
@@ -74,6 +101,8 @@ const props = defineProps<{
   initialPreviewUrl?: string | null;
 }>();
 const imageUploader = useTemplateRef("imageUploader");
+
+const tags = reactive(useTags());
 
 const previewUrl = ref<string | null>(props.initialPreviewUrl || null);
 </script>
