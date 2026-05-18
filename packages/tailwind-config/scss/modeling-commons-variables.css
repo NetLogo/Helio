@@ -98,6 +98,7 @@
   /* Nuxt UI (ports) */
   --primary: var(--color-primary);
   --secondary: var(--color-brand-accent);
+  --accent: var(--color-brand-accent);
   --ui-bg: var(--color-background);
   --ui-border: var(--color-border);
   --ui-text: var(--color-text);
