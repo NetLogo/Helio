@@ -58,7 +58,11 @@ export function resolveFile(options: ResolveFileOptions = {}): preHandlerHookHan
 
     const detected = await fileTypeFromBuffer(buffer);
 
-    if (detected && detected.mime !== data.mimetype) {
+    if (
+      detected &&
+      detected.mime !== data.mimetype &&
+      !rules.mime.mismatchAllowedDeclaredTypes.includes(data.mimetype)
+    ) {
       gc(buffer);
       throw new FileValidationError(
         data.filename,
