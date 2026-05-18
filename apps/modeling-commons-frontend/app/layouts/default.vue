@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ConnectionBanner />
     <ClientNavbar />
     <PageBoundary>
       <UMain class="min-h-[80vh]">
