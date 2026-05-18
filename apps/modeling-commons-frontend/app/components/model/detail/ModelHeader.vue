@@ -16,13 +16,13 @@
         />
       </div>
       <div class="flex items-center gap-3 shrink-0">
-        <UButton v-show-from:lg icon="i-lucide-code" size="sm" @click="$emit('embed')">
+        <UButton data-show-from="lg" icon="i-lucide-code" size="sm" @click="$emit('embed')">
           Embed
         </UButton>
 
         <UButton
           v-if="downloadUrl"
-          v-show-from:lg
+          data-show-from="lg"
           icon="i-lucide-download"
           :to="downloadUrl"
           external

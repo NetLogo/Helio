@@ -67,7 +67,7 @@
         </template>
       </UDropdownMenu>
       <div v-else class="flex gap-5">
-        <UButton v-show-from:lg variant="link" size="xs" to="/login"> Log In </UButton>
+        <UButton data-show-from="lg" variant="link" size="xs" to="/login"> Log In </UButton>
         <UButton variant="solid" size="xs" to="/signup"> Sign Up </UButton>
       </div>
     </NavbarActionsContainer>

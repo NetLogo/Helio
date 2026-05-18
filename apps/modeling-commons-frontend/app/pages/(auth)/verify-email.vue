@@ -35,11 +35,11 @@
       >
         {{ resendButtonLabel }}
       </UButton>
-    </form>
-
-    <UButton class="w-full justify-center" size="sm" variant="solid" :to="signUpLink">
+    <UButton class="w-full justify-center" size="xs" variant="ghost"  :to="signUpLink">
       Use a different email
     </UButton>
+    </form>
+
   </div>
 </template>
 

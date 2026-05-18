@@ -1,3 +1,16 @@
+<template>
+  <div
+    class="relative isolate shrink-0 cursor-default overflow-hidden rounded-[14px] border border-black/15 bg-white transition-[transform,border-color,box-shadow] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-(--hover-scale,1.02) hover:border-royal-blue-dark"
+    :class="
+      !props.noShimmer &&
+      `before:pointer-events-none before:absolute before:-top-[80%] before:-left-[60%] before:-z-10 before:h-[200%] before:w-[40%] before:rotate-25 before:bg-[linear-gradient(105deg,transparent_40%,rgba(100,100,100,0.02)_45%,rgba(100,100,100,0.04)_50%,rgba(100,100,100,0.02)_55%,transparent_60%)] before:animate-[mcard-shimmer_6s_ease-in-out_infinite] before:content-['']`
+    "
+    :style="{ width: props.width, '--hover-scale': props.hoverScale }"
+  >
+    <slot />
+  </div>
+</template>
+
 <script setup lang="ts">
 export interface MarqueeCardProps {
   /** CSS width */
@@ -15,67 +28,7 @@ const props = withDefaults(defineProps<MarqueeCardProps>(), {
 });
 </script>
 
-<template>
-  <div
-    :class="['mcard', { 'mcard--no-shimmer': props.noShimmer }]"
-    :style="{ width: props.width, '--hover-scale': props.hoverScale }"
-  >
-    <slot />
-  </div>
-</template>
-
-<style scoped>
-.mcard {
-  border-radius: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-
-  background: white;
-  position: relative;
-  overflow: hidden;
-  transition:
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s,
-    box-shadow 0.4s;
-  cursor: default;
-  flex-shrink: 0;
-}
-
-/* Idle shimmer */
-.mcard::before {
-  content: "";
-  position: absolute;
-  top: -80%;
-  left: -60%;
-  width: 40%;
-  height: 200%;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(100, 100, 100, 0.02) 45%,
-    rgba(100, 100, 100, 0.04) 50%,
-    rgba(100, 100, 100, 0.02) 55%,
-    transparent 60%
-  );
-  transform: rotate(25deg);
-  animation: mcard-shimmer 6s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 1;
-}
-.mcard--no-shimmer::before {
-  display: none;
-}
-
-.mcard:hover {
-  transform: scale(var(--hover-scale, 1.02));
-  border-color: var(--color-royal-blue-dark);
-}
-
-/* Keep slot content above shimmer */
-.mcard > :deep(*) {
-  position: relative;
-  z-index: 2;
-}
-
+<style>
 @keyframes mcard-shimmer {
   0%,
   100% {

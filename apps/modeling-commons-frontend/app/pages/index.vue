@@ -1,34 +1,5 @@
 <template>
   <div>
-    <!-- <div
-      class="flex flex-col w-full justify-center p-5 gap-4 py-10 px-61 min-h-100 bg-royal-blue-light/10"
-    >
-      <span class="text-sm text-royal-blue font-bold uppercase">The Modeling Commons</span>
-      <h5 class="text-4xl sm:text-5xl max-w-4xl leading-tight tracking-tight">
-        Discover, share, and learn about
-        <span class="text-royal-blue">complex systems</span> together
-      </h5>
-      <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center w-full">
-        <SearchBar
-          class="max-w-md md:max-w-3xl"
-          @keydown.enter="
-            (e: KeyboardEvent) =>
-              navigateTo(`/models?keyword=${(e.target as HTMLInputElement).value}`)
-          "
-        />
-
-        <span class="text-md text-royal-blue"> OR </span>
-
-        <UButton
-          variant="solid"
-          color="secondary"
-          icon="i-lucide-shuffle"
-          @click="navigateToRandomModel()"
-        >
-          Random
-        </UButton>
-      </div>
-    </div> -->
     <div
       class="flex flex-col lg:flex-row gap-10 px-10 py-10 bg-linear-to-t from-white via-coral-lighter/10 to-royal-blue/15"
     >
@@ -80,50 +51,6 @@
         </MarqueeColumn>
       </MarqueeGallery>
     </div>
-
-    <!-- <UPageHero
-      class="flex items-center h-200"
-      title="Discover, share, and learn about complex systems together"
-      :ui="{
-        header: 'flex flex-col items-center gap-6',
-        title: 'text-4xl sm:text-5xl text-royal-blue-lighter max-w-5xl leading-tight px-5',
-      }"
-    >
-      <NuxtImg
-        src="/hero.gif"
-        class="max-w-500 mx-auto w-full h-full absolute inset-0 object-cover lg:p-10 lg:rounded-[3rem] overflow-hidden z-[-1] brightness-50"
-        :placeholder="[60, 40]"
-      />
-      <template #description>
-        <p class="font-heading text-md text-white">
-          With more than 1,000 models, contributed by modelers from around the world, you're bound
-          to learn something new.
-        </p>
-      </template>
-      <template #body>
-        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center px-5">
-          <SearchBar
-            class="max-w-md md:max-w-3xl"
-            variant="none"
-            @keydown.enter="
-              (e: KeyboardEvent) =>
-                navigateTo(`/models?keyword=${(e.target as HTMLInputElement).value}`)
-            "
-          />
-
-          <span class="text-md text-royal-blue-lighter"> OR </span>
-
-          <UButton
-            variant="solid"
-            color="secondary"
-            icon="i-lucide-shuffle"
-            @click="navigateToRandomModel()"
-          >
-            Random
-          </UButton>
-        </div>
-      </template>
-    </UPageHero> -->
 
     <UContainer>
       <div v-if="status === 'pending'" class="space-y-12">

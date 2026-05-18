@@ -10,7 +10,7 @@
       <p class="m-0 text-sm text-muted leading-relaxed">
         We believe everyone should be able to build and use models, without barriers. Modeling
         Commons is a space to share ideas, learn from one another, and collaborate on what's
-        possible — together.
+        possible, together.
       </p>
     </section>
 
