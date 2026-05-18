@@ -15,7 +15,11 @@ defineShortcuts({
 </script>
 
 <template>
-  <UInput ref="input" placeholder="Search models by keyword..." icon="i-lucide-search">
+  <UInput
+    ref="input"
+    placeholder="Discover 1,000+ models across subjects..."
+    icon="i-lucide-search"
+  >
     <template #trailing>
       <UKbd value="meta" />
       <UKbd value="K" />

@@ -9,7 +9,7 @@
       }"
       :ui="{
         root: 'hover:cursor-pointer w-fit',
-        name: 'text-md group-hover/user:underline',
+        name: 'text-md group-hover/user:text-royal-blue font-medium',
         description: 'text-sm text-muted',
       }"
     >

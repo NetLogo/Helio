@@ -67,13 +67,15 @@ export async function getRandomModelId(
     return null;
   }
 }
+
+export type TagsSummary = ResponseSuccessData<"GET", "/api/v1/tags/popular">;
 export async function getPopularTagsSummary(
   api: ReturnType<typeof useApi>,
   params?: {
     date?: ApiDateRangeParams;
     pagination?: ApiPaginationParams;
   },
-): Promise<ResponseSuccessData<"GET", "/api/v1/tags/popular"> | null> {
+): Promise<TagsSummary | undefined> {
   const { GET } = api;
   try {
     const { data, error } = await GET("/api/v1/tags/popular", {
@@ -87,9 +89,9 @@ export async function getPopularTagsSummary(
       },
     });
     const parsed = handleApiError(data, error, "fetching popular tags summary");
-    return parsed;
+    return parsed as TagsSummary;
   } catch (e) {
     console.error("Error fetching popular tags summary", e);
-    return null;
+    return undefined;
   }
 }

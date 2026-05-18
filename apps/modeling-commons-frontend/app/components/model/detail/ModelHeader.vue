@@ -75,6 +75,7 @@ const props = defineProps<{
   downloadUrl?: string | null;
   modelVisibility?: string;
   previewImageUrl?: string | null;
+  permissions: UserModelPermissions;
 }>();
 
 const emit = defineEmits<{
@@ -92,6 +93,7 @@ const modelActionsDropdownItems = ref([
   {
     ...modelActions.edit,
     onClick: () => emit(modelActions.edit.action),
+    disabled: !props.permissions.canEdit,
   },
   {
     ...modelActions.embed,
@@ -107,6 +109,7 @@ const modelActionsDropdownItems = ref([
   {
     ...modelActions.fork,
     onClick: () => emit(modelActions.fork.action),
+    disabled: !props.permissions.canFork,
   },
 ] satisfies Array<DropdownMenuItem>);
 </script>

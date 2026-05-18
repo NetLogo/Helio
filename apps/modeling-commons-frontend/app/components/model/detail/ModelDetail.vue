@@ -26,6 +26,7 @@
         :download-url="downloadUrl"
         :model-visibility="modelVisibility"
         :preview-image-url="previewImageUrl"
+        :permissions="permissions"
         @download="handleDownload"
         @embed="handleEmbed"
         @fork="handleFork"
@@ -38,7 +39,7 @@
       <TagList
         v-if="card.tagsOnLatestVersion.length > 0"
         :tags="card.tagsOnLatestVersion"
-        :editable="false"
+        :editable="permissions.canEdit"
         @add="handleAddTag"
       />
     </section>
@@ -114,7 +115,7 @@
 <script setup lang="ts">
 import type { AttachedFile } from "./types";
 
-const props = defineProps<{ card: ModelCard }>();
+const props = defineProps<{ card: ModelCard; permissions: UserModelPermissions }>();
 
 type TabKey = "discussion" | "files" | "versions" | "family";
 

@@ -232,7 +232,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": (({
+                        "application/json": ({
                             /**
                              * Format: uuid
                              * @description Entity's id
@@ -258,22 +258,6 @@ export interface paths {
                             visibility: "public" | "private" | "unlisted";
                             isEndorsed: boolean;
                             isLibraryModel: boolean;
-                        }) & {
-                            permissions: {
-                                canView: boolean;
-                                canFork: boolean;
-                                canComment: boolean;
-                                canReport: boolean;
-                                canLike: boolean;
-                                canEdit: boolean;
-                                canPublishVersion: boolean;
-                                canEditDraft: boolean;
-                                canRevertVersion: boolean;
-                                canManageAuthors: boolean;
-                                canChangePermissions: boolean;
-                                canTransferOwnership: boolean;
-                                canDelete: boolean;
-                            };
                         };
                     };
                 };
@@ -485,6 +469,102 @@ export interface paths {
                             id: string;
                         } & {
                             title: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/models/{id}/me/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            canView: boolean;
+                            canFork: boolean;
+                            canComment: boolean;
+                            canReport: boolean;
+                            canLike: boolean;
+                            canEdit: boolean;
+                            canPublishVersion: boolean;
+                            canEditDraft: boolean;
+                            canRevertVersion: boolean;
+                            canManageAuthors: boolean;
+                            canChangePermissions: boolean;
+                            canTransferOwnership: boolean;
+                            canDelete: boolean;
                         };
                     };
                 };

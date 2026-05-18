@@ -166,31 +166,31 @@ async function continueWithPasskey() {
   await router.push(nextPath.value);
 }
 
-async function onSubmit(payload: FormSubmitEvent<Schema>) {
+async function onSubmit(payload?: FormSubmitEvent<Schema>): Promise<void> {
+  if (!payload) return;
   const { email, password, rememberMe } = payload.data;
 
-  const { error } = await signInWithEmail({
-    email,
-    password,
-    rememberMe,
-    next: route.query.next,
-  });
-
-  if (error?.code === "EMAIL_NOT_VERIFIED") {
-    await router.push({
-      path: authRoutes.verifyEmail,
-      query: hasNextPath.value ? { email, next: nextPath.value } : { email },
+  try {
+    const { error } = await signInWithEmail({
+      email,
+      password,
+      rememberMe,
+      next: route.query.next,
     });
-    return;
-  }
+    if (error?.code === "EMAIL_NOT_VERIFIED") {
+      await router.push({
+        path: authRoutes.verifyEmail,
+        query: hasNextPath.value ? { email, next: nextPath.value } : { email },
+      });
+      return;
+    }
 
-  if (error) {
-    toast.add({
-      title: "Login failed",
-      description: error.message ?? "We couldn't sign you in.",
-      icon: "i-lucide-x-circle",
-      color: "error",
-    });
+    if (error) {
+      showActionFailedToast("Login", undefined, error.message);
+      return;
+    }
+  } catch (error) {
+    showActionFailedToast("Login", undefined, (error as Error).message);
     return;
   }
 

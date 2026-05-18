@@ -1,6 +1,87 @@
 <template>
   <div>
-    <UPageHero
+    <!-- <div
+      class="flex flex-col w-full justify-center p-5 gap-4 py-10 px-61 min-h-100 bg-royal-blue-light/10"
+    >
+      <span class="text-sm text-royal-blue font-bold uppercase">The Modeling Commons</span>
+      <h5 class="text-4xl sm:text-5xl max-w-4xl leading-tight tracking-tight">
+        Discover, share, and learn about
+        <span class="text-royal-blue">complex systems</span> together
+      </h5>
+      <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center w-full">
+        <SearchBar
+          class="max-w-md md:max-w-3xl"
+          @keydown.enter="
+            (e: KeyboardEvent) =>
+              navigateTo(`/models?keyword=${(e.target as HTMLInputElement).value}`)
+          "
+        />
+
+        <span class="text-md text-royal-blue"> OR </span>
+
+        <UButton
+          variant="solid"
+          color="secondary"
+          icon="i-lucide-shuffle"
+          @click="navigateToRandomModel()"
+        >
+          Random
+        </UButton>
+      </div>
+    </div> -->
+    <div
+      class="flex flex-col lg:flex-row gap-10 px-10 py-10 bg-linear-to-t from-white via-coral-lighter/10 to-royal-blue/15"
+    >
+      <div class="flex flex-col w-full justify-center p-5 gap-4">
+        <span class="text-sm text-royal-blue font-bold uppercase">The Modeling Commons</span>
+        <h5 class="text-4xl sm:text-5xl max-w-4xl leading-tight tracking-tight">
+          Discover, share, and learn about
+          <span class="text-royal-blue">complex systems</span> together
+        </h5>
+        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center w-full">
+          <SearchBar
+            class="max-w-md md:max-w-3xl"
+            @keydown.enter="
+              (e: KeyboardEvent) =>
+                navigateTo(`/models?keyword=${(e.target as HTMLInputElement).value}`)
+            "
+          />
+
+          <span class="text-md text-royal-blue"> OR </span>
+
+          <UButton
+            variant="solid"
+            color="secondary"
+            icon="i-lucide-shuffle"
+            @click="navigateToRandomModel()"
+          >
+            Random
+          </UButton>
+        </div>
+      </div>
+      <MarqueeGallery class="lg:w-5xl" height="80dvh" column-gap="12px">
+        <MarqueeColumn
+          v-for="(col, ci) in marqueeColumns"
+          :key="ci"
+          :direction="ci % 2 === 0 ? 'up' : 'down'"
+          :speed="40 + ci * 10"
+          width="300px"
+          gap="12px"
+        >
+          <MarqueeCard
+            v-for="item in col"
+            :key="item.kind === 'model' ? item.card.model.id : item.tag.id"
+            width="290px"
+            no-shimmer
+          >
+            <ModelCard v-if="item.kind === 'model'" :card="item.card" />
+            <TagCard v-else v-bind="item.tag" :description="item.description" class="p-3" />
+          </MarqueeCard>
+        </MarqueeColumn>
+      </MarqueeGallery>
+    </div>
+
+    <!-- <UPageHero
       class="flex items-center h-200"
       title="Discover, share, and learn about complex systems together"
       :ui="{
@@ -42,7 +123,7 @@
           </UButton>
         </div>
       </template>
-    </UPageHero>
+    </UPageHero> -->
 
     <UContainer>
       <div v-if="status === 'pending'" class="space-y-12">
@@ -234,4 +315,37 @@ const visibleSections = computed(() =>
     .map((s) => ({ ...s, cards: data.value?.[s.key] ?? [] }))
     .filter((s) => s.cards.length > 0),
 );
+
+const MARQUEE_COLS = 3;
+
+const marqueeColumns = computed(() => {
+  // Flatten all section cards with their section metadata
+  const allCards = visibleSections.value.flatMap((section) =>
+    section.cards.map((card) => ({ card, sectionTitle: section.title, kind: "model" as const })),
+  );
+
+  const tagsCards = tagsSummary.value?.data.map((tagData: TagsSummary["data"][number]) => ({
+    kind: "tag" as const,
+    tag: tagData.tag,
+    description: `tagged ${tagData.modelCount} times`,
+  }));
+
+  // Round-robin distribute across columns
+  const cols: Array<
+    Array<
+      | { card: ModelCard; sectionTitle: string; kind: "model" }
+      | { kind: "tag"; tag: TagsSummary["data"][number]["tag"]; description: string }
+    >
+  > = Array.from({ length: MARQUEE_COLS }, () => []);
+
+  const mixedCards = (tagsCards ? [...allCards, ...tagsCards] : allCards).sort(
+    () => Math.random() - 0.5,
+  ); // Shuffle to mix tags and models
+
+  mixedCards.forEach((item, i) => {
+    cols[i % MARQUEE_COLS]!.push(item);
+  });
+
+  return cols;
+});
 </script>

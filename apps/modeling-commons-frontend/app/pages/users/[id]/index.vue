@@ -24,15 +24,14 @@ const {
   cards: ModelCard[];
   count: number;
 }>(`models-by-user-${id}`, async () => {
-  const { data, error } = await api.GET("/api/v1/models", {
-    params: { query: { authorId: id, limit: 4 } },
+  const { data, error } = await api.GET("/api/v1/models/card", {
+    params: { query: { authorId: id, limit: 4, publicOnly: false } },
   });
 
   const safeData = handleApiError(data, error, "fetching models");
 
-  const cardList = await Promise.all(safeData.data.map((m) => fetchCards(api, [m.id])));
   return {
-    cards: cardList.flat() as ModelCard[],
+    cards: safeData.data,
     count: safeData.count,
   };
 });

@@ -28,7 +28,7 @@
           ]"
         />
 
-        <ModelDetail :card="displayCard" />
+        <ModelDetail :card="displayCard" :permissions="permissions" />
       </template>
     </div>
   </UContainer>
@@ -39,7 +39,6 @@ import type { ModelCard } from "~/composables/model/useModelCard";
 
 const route = useRoute();
 const modelId = computed(() => route.params.id as string);
-const t = ref(false); // for testing reactivity of nested components, can be removed later
 
 // Routes mapping to this page (see nuxt.config.ts):
 // /models/:id
@@ -56,6 +55,8 @@ const { data: versionCard } = useModelVersionCard(
   modelId,
   computed(() => modelVersionNumber.value ?? 0),
 );
+
+const { data: permissions } = useModelPermissions(modelId);
 
 const displayCard = computed<ModelCard | null>(() => {
   if (!card.value) return null;

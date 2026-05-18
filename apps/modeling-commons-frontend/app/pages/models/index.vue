@@ -44,6 +44,7 @@
                       <UIcon :name="modelOrderIcons[filters.order ?? 'desc']" class="size-4" />
                     </UButton>
                   </div>
+                  <!-- @vue-expect-error -- readonly vs mutable types -->
                   <URadioGroup
                     v-model="filters.sortBy"
                     variant="card"

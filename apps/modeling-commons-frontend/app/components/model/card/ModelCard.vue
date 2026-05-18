@@ -7,14 +7,10 @@
     :date="formatRelativeDate(card.model.createdAt)"
     :ui="{}"
     :orientation="orientation"
+    class="hover:scale-102 transition-transform duration-300"
   >
     <template #header>
-      <ModelCardPreviewImage
-        :key="imageSrc"
-        :src="imageSrc"
-        :alt="title"
-        class="group-hover/card:scale-110 transition-transform"
-      />
+      <ModelCardPreviewImage :key="imageSrc" :src="imageSrc" :alt="title" />
     </template>
     <template v-if="orientation === 'horizontal'" #description>
       <div class="flex flex-col gap-5 h-full my-2">
