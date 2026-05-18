@@ -39,7 +39,7 @@
 
     <div class="flex flex-col lg:flex-row lg:items-center gap-2 text-sm text-muted flex-wrap">
       <ModelAuthors v-if="authors.length > 0" :authors="authors" />
-      <Middot v-if="authors.length > 0" v-show-from:lg />
+      <Middot v-if="authors.length > 0" data-show-from="lg" />
       <div class="flex gap-2">
         <span>{{ relativeDate }}</span>
         <template v-if="netlogoVersion">
