@@ -17,7 +17,7 @@ export async function di(fastify: FastifyInstance): Promise<void> {
     [
       path.join(
         import.meta.dirname,
-        '../../modules/**/*.{repository,mapper,service,domain,query}.{js,ts}',
+        '../../modules/**/*.{repository,mapper,service,domain,query,storage}.{js,ts}',
       ),
     ],
     {

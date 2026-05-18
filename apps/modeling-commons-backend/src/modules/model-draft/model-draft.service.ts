@@ -1,12 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import {
-  CopyObjectCommand,
-  DeleteObjectCommand,
-  DeleteObjectsCommand,
-  ListObjectsV2Command,
-  PutObjectCommand,
-} from '#src/shared/storage/index.ts';
-import {
   ModelDraftFileNotFoundError,
   ModelDraftNotFoundError,
 } from '#src/modules/model-draft/domain/model-draft.errors.ts';
@@ -24,27 +17,23 @@ import {
   LATEST_DRAFT_SCHEMA_VERSION,
   upcast,
   type DraftData,
+  type DraftDataV1,
   type DraftFileV1,
+  type DraftPrimaryFileV1,
 } from '#src/modules/model-draft/schemas/index.ts';
-import { sanitizeFilename } from '#src/shared/storage/utils.ts';
 import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
 import { UnauthorizedException } from '#src/shared/exceptions/exceptions.ts';
-
-function stagingPrefix(userId: string, draftId: string): string {
-  return `staging/${userId}/${draftId}/`;
-}
-
-function stagingKey(userId: string, draftId: string, filename: string): string {
-  return `${stagingPrefix(userId, draftId)}${randomUUID()}-${sanitizeFilename(filename)}`;
-}
+import { CopyObjectCommand, HeadObjectCommand } from '#src/shared/storage/index.ts';
+import { sanitizeFilename } from '#src/shared/storage/utils.ts';
 
 export default function makeModelDraftService({
   transactionManager,
   modelDraftRepository,
   modelDraftDomain,
+  modelDraftStorage,
   modelRepository,
   modelDomain,
   modelVersionRepository,
@@ -56,6 +45,7 @@ export default function makeModelDraftService({
   modelAdditionalFileRepository,
   modelAdditionalFileDomain,
   tagService,
+  tagRepository,
   eventRepository,
   storage,
   bucket,
@@ -82,52 +72,110 @@ export default function makeModelDraftService({
     });
   }
 
-  async function copyStagedToPermanent(params: {
-    stagingKey: string;
-    modelId: string;
+  function stagingKey(userId: string, draftId: string, filename: string): string {
+    return `staging/${userId}/${draftId}/${randomUUID()}-${sanitizeFilename(filename)}`;
+  }
+
+  function filenameFromKey(key: string): string {
+    const last = key.split('/').pop() ?? key;
+    // S3 keys we emit are `${uuid}-${sanitizedFilename}`. Slice past the 36-char uuid + '-'.
+    return last.length > 37 ? last.slice(37) : last;
+  }
+
+  async function copyToStaging(params: {
+    sourceKey: string;
+    userId: string;
+    draftId: string;
     filename: string;
-    contentType: string;
-    pathPrefix: string;
-  }): Promise<string> {
-    const destKey = `${params.pathPrefix}/${params.modelId}/${randomUUID()}-${sanitizeFilename(params.filename)}`;
+  }): Promise<{ s3Key: string; sizeBytes: number; mimeType: string }> {
+    const destKey = stagingKey(params.userId, params.draftId, params.filename);
     await storage.send(
       new CopyObjectCommand({
         Bucket: bucket.Name,
         Key: destKey,
-        CopySource: `${bucket.Name}/${params.stagingKey}`,
-        ContentType: params.contentType,
-        MetadataDirective: 'REPLACE',
-        Metadata: {
-          filename: sanitizeFilename(params.filename),
-          createdat: new Date().toISOString(),
-        },
+        CopySource: `${bucket.Name}/${params.sourceKey}`,
       }),
     );
-    return destKey;
+    const head = await storage.send(
+      new HeadObjectCommand({ Bucket: bucket.Name, Key: destKey }),
+    );
+    return {
+      s3Key: destKey,
+      sizeBytes: head.ContentLength ?? 0,
+      mimeType: head.ContentType ?? 'application/octet-stream',
+    };
   }
 
-  async function deleteStagingPrefix(userId: string, draftId: string): Promise<void> {
-    const prefix = stagingPrefix(userId, draftId);
-    let continuationToken: string | undefined;
-    do {
-      const listed = await storage.send(
-        new ListObjectsV2Command({
-          Bucket: bucket.Name,
-          Prefix: prefix,
-          ContinuationToken: continuationToken,
-        }),
-      );
-      const keys = (listed.Contents ?? []).map((o) => o.Key).filter((k): k is string => Boolean(k));
-      if (keys.length > 0) {
-        await storage.send(
-          new DeleteObjectsCommand({
-            Bucket: bucket.Name,
-            Delete: { Objects: keys.map((Key) => ({ Key })) },
-          }),
-        );
-      }
-      continuationToken = listed.IsTruncated ? listed.NextContinuationToken : undefined;
-    } while (continuationToken);
+  async function seedDraftDataFromModel(
+    userId: string,
+    draftId: string,
+    modelId: string,
+  ): Promise<DraftDataV1> {
+    const model = await modelRepository.findOneById(modelId);
+    if (!model) throw new ModelNotFoundError(modelId);
+    modelDomain.assertNotDeleted(model);
+
+    if (model.latestVersionNumber == null) return emptyDraftData();
+
+    const version = await modelVersionRepository.findByModelAndVersion(
+      modelId,
+      model.latestVersionNumber,
+    );
+    if (!version) return emptyDraftData();
+
+    const [versionTags, additionalFiles] = await Promise.all([
+      modelVersionTagRepository.findByVersion(modelId, version.versionNumber),
+      modelAdditionalFileRepository.findByModel(modelId, version.versionNumber),
+    ]);
+
+    const tagEntities = await Promise.all(
+      versionTags.map((vt) => tagRepository.findOneById(vt.tagId)),
+    );
+    const tags = tagEntities
+      .filter((t): t is NonNullable<typeof t> => Boolean(t))
+      .map((t) => t.name);
+
+    const primaryFilename = filenameFromKey(version.netlogoFileKey);
+    const primaryCopy = await copyToStaging({
+      sourceKey: version.netlogoFileKey,
+      userId,
+      draftId,
+      filename: primaryFilename,
+    });
+    const primaryFile: DraftPrimaryFileV1 = {
+      s3Key: primaryCopy.s3Key,
+      filename: primaryFilename,
+      sizeBytes: primaryCopy.sizeBytes,
+      mimeType: primaryCopy.mimeType,
+    };
+
+    const attachments: DraftFileV1[] = await Promise.all(
+      additionalFiles.map(async (att) => {
+        const filename = filenameFromKey(att.fileKey);
+        const copy = await copyToStaging({
+          sourceKey: att.fileKey,
+          userId,
+          draftId,
+          filename,
+        });
+        return {
+          id: randomUUID(),
+          s3Key: copy.s3Key,
+          filename,
+          sizeBytes: copy.sizeBytes,
+          mimeType: copy.mimeType,
+        };
+      }),
+    );
+
+    return {
+      title: version.title,
+      description: version.description ?? undefined,
+      visibility: model.visibility,
+      tags: tags.length > 0 ? tags : undefined,
+      primaryFile,
+      attachments: attachments.length > 0 ? attachments : undefined,
+    };
   }
 
   return {
@@ -140,6 +188,10 @@ export default function makeModelDraftService({
         schemaVersion: LATEST_DRAFT_SCHEMA_VERSION,
         data: emptyDraftData(),
       });
+
+      if (input.modelId) {
+        entity.data = await seedDraftDataFromModel(userId, entity.id, input.modelId);
+      }
 
       await transactionManager.run(async (ctx) => {
         await modelDraftRepository.insertTx(ctx, entity);
@@ -165,20 +217,13 @@ export default function makeModelDraftService({
       role: DraftFileRole,
       file: { buffer: Buffer<ArrayBuffer>; filename: string; contentType: string },
     ): Promise<DraftFileUploadResponseDto> {
-      const key = stagingKey(draft.userId, draft.id, file.filename);
-
-      await storage.send(
-        new PutObjectCommand({
-          Bucket: bucket.Name,
-          Key: key,
-          Body: file.buffer,
-          ContentType: file.contentType,
-          Metadata: {
-            filename: sanitizeFilename(file.filename),
-            createdat: new Date().toISOString(),
-          },
-        }),
-      );
+      const key = await modelDraftStorage.putStaged({
+        userId: draft.userId,
+        draftId: draft.id,
+        buffer: file.buffer,
+        filename: file.filename,
+        contentType: file.contentType,
+      });
 
       const data = currentData(draft);
       const meta = {
@@ -191,9 +236,7 @@ export default function makeModelDraftService({
       const next: DraftData = { ...data };
       if (role === 'primary') {
         if (data.primaryFile) {
-          await storage
-            .send(new DeleteObjectCommand({ Bucket: bucket.Name, Key: data.primaryFile.s3Key }))
-            .catch(() => undefined);
+          await modelDraftStorage.deleteObject(data.primaryFile.s3Key).catch(() => undefined);
         }
         next.primaryFile = meta;
         await persistData(draft, next);
@@ -226,9 +269,7 @@ export default function makeModelDraftService({
 
       await persistData(draft, next);
       if (s3Key) {
-        await storage
-          .send(new DeleteObjectCommand({ Bucket: bucket.Name, Key: s3Key }))
-          .catch(() => undefined);
+        await modelDraftStorage.deleteObject(s3Key).catch(() => undefined);
       }
     },
 
@@ -248,7 +289,7 @@ export default function makeModelDraftService({
           visibility: data.visibility,
         });
 
-      const netlogoFileKey = await copyStagedToPermanent({
+      const netlogoFileKey = await modelDraftStorage.copyStagedToPermanent({
         stagingKey: data.primaryFile.s3Key,
         modelId: model.id,
         filename: data.primaryFile.filename,
@@ -259,7 +300,7 @@ export default function makeModelDraftService({
       const attachmentCopies = await Promise.all(
         (data.attachments ?? []).map(async (att) => ({
           ...att,
-          copiedKey: await copyStagedToPermanent({
+          copiedKey: await modelDraftStorage.copyStagedToPermanent({
             stagingKey: att.s3Key,
             modelId: model.id,
             filename: att.filename,
@@ -344,7 +385,7 @@ export default function makeModelDraftService({
         return { modelId: model.id, versionNumber };
       });
 
-      await deleteStagingPrefix(userId, draftId).catch(() => undefined);
+      await modelDraftStorage.deleteStagingPrefix(userId, draftId).catch(() => undefined);
       return result;
     },
 
@@ -352,12 +393,14 @@ export default function makeModelDraftService({
       await transactionManager.run(async (ctx) => {
         await modelDraftRepository.hardDeleteTx(ctx, draft.id);
       });
-      await deleteStagingPrefix(draft.userId, draft.id).catch(() => undefined);
+      await modelDraftStorage.deleteStagingPrefix(draft.userId, draft.id).catch(() => undefined);
     },
 
     async purgeStale(cutoff: Date): Promise<number> {
       const deleted = await modelDraftRepository.deleteStaleBefore(cutoff);
-      await Promise.allSettled(deleted.map((d) => deleteStagingPrefix(d.userId, d.id)));
+      await Promise.allSettled(
+        deleted.map((d) => modelDraftStorage.deleteStagingPrefix(d.userId, d.id)),
+      );
       return deleted.length;
     },
   };

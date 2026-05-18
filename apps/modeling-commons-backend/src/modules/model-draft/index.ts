@@ -10,6 +10,9 @@ declare global {
     modelDraftMapper: Mapper<ModelDraftEntity, ModelDraftRecord, ModelDraftResponseDto>;
     modelDraftRepository: ModelDraftRepository;
     modelDraftDomain: ReturnType<typeof modelDraftDomain>;
+    modelDraftStorage: ReturnType<
+      typeof import('#src/modules/model-draft/model-draft.storage.ts').default
+    >;
     modelDraftService: ReturnType<
       typeof import('#src/modules/model-draft/model-draft.service.ts').default
     >;
