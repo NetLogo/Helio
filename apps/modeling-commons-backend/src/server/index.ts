@@ -77,7 +77,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
     healthCheckInterval: 5000,
     exposeStatusRoute: {
       routeOpts: { logLevel: 'silent' },
-      url: '/health',
+      url: '/api/health',
     },
   });
 

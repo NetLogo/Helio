@@ -5,6 +5,7 @@ import {
   modelIdParamsSchema,
   modelLegacyIdParamsSchema,
   modelPaginatedResponseSchema,
+  modelPermissionsDtoSchema,
   modelResponseDtoSchema,
   modelSearchQuerySchema,
   updateModelRequestDtoSchema,
@@ -13,6 +14,7 @@ import {
   type ModelSearchQuery,
   type UpdateModelRequestDto,
 } from '#src/modules/model/dtos/model.dto.ts';
+import { resolveActions } from '#src/shared/permissions/model-access.actions.ts';
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
 import { Type } from 'typebox';
 import {
@@ -88,7 +90,22 @@ export default async function modelRoutes(fastify: FastifyInstance) {
     },
     async (request) => {
       const entity = await modelService.findById(request.params.id);
-      return modelMapper.toResponse(entity, request.modelAccess);
+      return modelMapper.toResponse(entity);
+    },
+  );
+
+  fastify.get<{ Params: ModelIdParams }>(
+    '/v1/models/:id/me/permissions',
+    {
+      schema: {
+        params: modelIdParamsSchema,
+        response: { 200: modelPermissionsDtoSchema },
+        tags: ['Model'],
+      },
+      preHandler: [resolveModel('read')],
+    },
+    async (request) => {
+      return resolveActions(request.modelAccess);
     },
   );
 
@@ -139,7 +156,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       );
       return res.status(200).send({
         ...result,
-        data: result.data.map((e) => modelMapper.toListItem(e)),
+        data: result.data.map((e) => modelMapper.toResponse(e)),
       });
     },
   });
@@ -185,7 +202,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       const result = await getModelChildrenQuery.execute(request.params.id, { limit, page });
       return {
         ...result,
-        data: result.data.map((e) => modelMapper.toListItem(e)),
+        data: result.data.map((e) => modelMapper.toResponse(e)),
       };
     },
   );

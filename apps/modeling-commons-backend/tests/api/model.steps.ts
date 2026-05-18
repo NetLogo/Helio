@@ -182,12 +182,25 @@ When('I delete the model {string}', async function (this: ICustomWorld, title: s
 });
 
 When(
-  'an anonymous viewer gets the model {string}',
+  '{string} gets permissions for model {string}',
+  async function (this: ICustomWorld, userName: string, title: string) {
+    const user = getUsers(this.context).get(userName)!;
+    const modelId = getModels(this.context).get(title)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models/${modelId}/me/permissions`,
+      headers: { cookie: user.cookie },
+    });
+  },
+);
+
+When(
+  'an anonymous viewer gets permissions for model {string}',
   async function (this: ICustomWorld, title: string) {
     const modelId = getModels(this.context).get(title)!;
     this.context.latestResponse = await this.server.inject({
       method: 'GET',
-      url: `/api/v1/models/${modelId}`,
+      url: `/api/v1/models/${modelId}/me/permissions`,
     });
   },
 );
@@ -196,15 +209,11 @@ Then(
   'the response permissions action {string} should be {word}',
   function (this: ICustomWorld, actionKey: string, expected: string) {
     const body = JSON.parse(this.context.latestResponse!.body);
-    assert.ok(
-      body.permissions && typeof body.permissions === 'object',
-      'Expected response body to include a permissions object',
-    );
     const expectedBool = expected === 'true';
     assert.strictEqual(
-      body.permissions[actionKey],
+      body[actionKey],
       expectedBool,
-      `Expected permissions.${actionKey} to be ${expectedBool}, got ${body.permissions[actionKey]}`,
+      `Expected ${actionKey} to be ${expectedBool}, got ${body[actionKey]}`,
     );
   },
 );

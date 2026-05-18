@@ -28,7 +28,7 @@ export default function makeGetVersionCardQuery({
 
       return {
         version: modelVersionMapper.toResponse(version),
-        model: modelMapper.toListItem(model),
+        model: modelMapper.toResponse(model),
         tags: tags.map(({ tag }) => tagMapper.toResponse(tag)),
         netlogoFileDownloadUrl,
         previewImageUrl,

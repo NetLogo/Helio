@@ -23,11 +23,7 @@ export default function modelRepository({
   const tableName = 'model';
   const base = repositoryBase<Model, Model>({
     tableName,
-    mapper: {
-      toDomain: modelMapper.toDomain,
-      toPersistence: modelMapper.toPersistence,
-      toResponse: modelMapper.toListItem,
-    },
+    mapper: modelMapper,
   });
 
   return {

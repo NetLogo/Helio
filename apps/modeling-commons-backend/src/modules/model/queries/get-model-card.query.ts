@@ -51,7 +51,7 @@ export default function makeGetModelCardQuery({
       ]);
 
       return {
-        model: modelMapper.toListItem(model),
+        model: modelMapper.toResponse(model),
         latestVersion: latestWithTags
           ? {
               ...modelVersionMapper.toResponse(latestWithTags),

@@ -86,31 +86,31 @@ Feature: Model Management
     Then the response status should be 200
     And the response body property "data" should have length 1
 
-  Scenario: Model detail includes a permissions action map for anonymous viewer on public model
+  Scenario: Permissions action map for anonymous viewer on public model
     Given an authenticated user "owner"
     And a public model "Open Model" created by "owner"
-    When an anonymous viewer gets the model "Open Model"
+    When an anonymous viewer gets permissions for model "Open Model"
     Then the response status should be 200
     And the response permissions action "canView" should be true
     And the response permissions action "canFork" should be false
     And the response permissions action "canEdit" should be false
     And the response permissions action "canDelete" should be false
 
-  Scenario: Model detail permissions action map for the owner
+  Scenario: Permissions action map for the owner
     Given an authenticated user "owner"
     And a public model "Owned Model" created by "owner"
-    When "owner" gets the model "Owned Model"
+    When "owner" gets permissions for model "Owned Model"
     Then the response status should be 200
     And the response permissions action "canView" should be true
     And the response permissions action "canEdit" should be true
     And the response permissions action "canManageAuthors" should be true
     And the response permissions action "canDelete" should be true
 
-  Scenario: Model detail permissions action map for a non-author authenticated viewer on public model
+  Scenario: Permissions action map for a non-author authenticated viewer on public model
     Given an authenticated user "owner"
     And a public model "Visible Model" created by "owner"
     And an authenticated user "stranger"
-    When "stranger" gets the model "Visible Model"
+    When "stranger" gets permissions for model "Visible Model"
     Then the response status should be 200
     And the response permissions action "canView" should be true
     And the response permissions action "canFork" should be true

@@ -79,7 +79,7 @@ export const modelSearchQuerySchema = Type.Intersect([
 
 export type ModelSortBy = Static<typeof modelSortBySchema>;
 
-export const modelListItemResponseDtoSchema = Type.Intersect([
+export const modelResponseDtoSchema = Type.Intersect([
   baseResponseDtoSchema,
   Type.Object({
     latestVersionNumber: Type.Union([Type.Integer(), Type.Null()]),
@@ -116,17 +116,10 @@ type _AssertSameKeys =
 const _assertActionMapKeysMatch: _AssertSameKeys = true;
 void _assertActionMapKeysMatch;
 
-export const modelResponseDtoSchema = Type.Intersect([
-  modelListItemResponseDtoSchema,
-  Type.Object({
-    permissions: modelPermissionsDtoSchema,
-  }),
-]);
-
 export const modelPaginatedResponseSchema = Type.Intersect([
   paginatedResponseBaseSchema,
   Type.Object({
-    data: Type.Array(modelListItemResponseDtoSchema),
+    data: Type.Array(modelResponseDtoSchema),
   }),
 ]);
 
@@ -136,7 +129,6 @@ export type ModelVersionParams = Static<typeof modelVersionParamsSchema>;
 export type ModelSearchQuery = Static<typeof modelSearchQuerySchema>;
 export type CreateModelRequestDto = Static<typeof createModelRequestDtoSchema>;
 export type UpdateModelRequestDto = Static<typeof updateModelRequestDtoSchema>;
-export type ModelListItemResponseDto = Static<typeof modelListItemResponseDtoSchema>;
 export type ModelPermissionsDto = Static<typeof modelPermissionsDtoSchema>;
 export type ModelResponseDto = Static<typeof modelResponseDtoSchema>;
 
