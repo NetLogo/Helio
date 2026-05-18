@@ -18,21 +18,37 @@
 
 <script setup lang="ts">
 import type { ButtonProps } from "#ui/types";
-withDefaults(
+
+const props = withDefaults(
   defineProps<{
     icon?: string;
     title?: string;
     message?: string;
     action?: ButtonProps;
+    reloadOnRecovery?: boolean;
   }>(),
   {
     icon: "i-lucide-wifi-off",
     title: "Something went wrong",
     message: "We couldn't complete your request. Please try again.",
-    action: {
-      label: "Try again",
-      onclick: () => window.location.reload(),
-    },
+    action: () => reloadMe,
+    reloadOnRecovery: true,
   },
 );
+
+const { isOffline } = useConnectionHealth();
+const hasBeenOffline = ref(false);
+watch(isOffline, (offline) => {
+  if (props.reloadOnRecovery && hasBeenOffline.value && !offline) {
+    window.location.reload();
+  }
+  hasBeenOffline.value ||= offline;
+});
+</script>
+
+<script lang="ts">
+const reloadMe: ButtonProps = {
+  label: "Try again",
+  onClick: () => window.location.reload(),
+};
 </script>
