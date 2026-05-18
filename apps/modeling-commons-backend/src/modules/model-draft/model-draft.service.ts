@@ -27,6 +27,11 @@ import {
   type DraftFileV1,
 } from '#src/modules/model-draft/schemas/index.ts';
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
+import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
+import { UserNotFoundError } from '../user/domain/user.errors.ts';
+import { ModelNotFoundError } from '../model/domain/model.errors.ts';
+import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
+import { UnauthorizedException } from '#src/shared/exceptions/exceptions.ts';
 
 function stagingPrefix(userId: string, draftId: string): string {
   return `staging/${userId}/${draftId}/`;
@@ -54,12 +59,17 @@ export default function makeModelDraftService({
   eventRepository,
   storage,
   bucket,
+  db,
 }: Dependencies) {
-  async function requireOwnedDraft(draftId: string, userId: string): Promise<ModelDraftEntity> {
-    const draft = await modelDraftRepository.findById(draftId);
-    if (!draft) throw new ModelDraftNotFoundError(draftId);
-    modelDraftDomain.assertOwnedBy(draft, userId);
-    return draft;
+  async function requireWritableModel(userId: string, modelId?: string | null) {
+    if (!modelId) return; // No associated model, so no need to check permissions
+
+    const ctx = await loadModelAccessContext(db, userId, modelId);
+    if (!ctx.viewer) throw new UserNotFoundError(userId);
+    if (!ctx.model) throw new ModelNotFoundError(modelId);
+    if (!canWrite(ctx))
+      throw new UnauthorizedException('User does not have write access to the associated model');
+    return;
   }
 
   function currentData(draft: ModelDraftEntity): DraftData {
@@ -122,6 +132,8 @@ export default function makeModelDraftService({
 
   return {
     async create(userId: string, input: CreateDraftRequestDto): Promise<{ id: string }> {
+      await requireWritableModel(userId, input.modelId);
+
       const entity = modelDraftDomain.createDraft({
         userId,
         modelId: input.modelId ?? null,
@@ -136,12 +148,7 @@ export default function makeModelDraftService({
       return { id: entity.id };
     },
 
-    async get(draftId: string, userId: string): Promise<ModelDraftEntity> {
-      return requireOwnedDraft(draftId, userId);
-    },
-
-    async patch(draftId: string, userId: string, input: PatchDraftRequestDto): Promise<void> {
-      const draft = await requireOwnedDraft(draftId, userId);
+    async patch(draft: ModelDraftEntity, input: PatchDraftRequestDto): Promise<void> {
       const data = currentData(draft);
 
       const next: DraftData = { ...data };
@@ -154,13 +161,11 @@ export default function makeModelDraftService({
     },
 
     async addFile(
-      draftId: string,
-      userId: string,
+      draft: ModelDraftEntity,
       role: DraftFileRole,
       file: { buffer: Buffer<ArrayBuffer>; filename: string; contentType: string },
     ): Promise<DraftFileUploadResponseDto> {
-      const draft = await requireOwnedDraft(draftId, userId);
-      const key = stagingKey(userId, draftId, file.filename);
+      const key = stagingKey(draft.userId, draft.id, file.filename);
 
       await storage.send(
         new PutObjectCommand({
@@ -201,8 +206,7 @@ export default function makeModelDraftService({
       return { id: attachment.id, role, ...meta };
     },
 
-    async removeFile(draftId: string, userId: string, fileId: string): Promise<void> {
-      const draft = await requireOwnedDraft(draftId, userId);
+    async removeFile(draft: ModelDraftEntity, fileId: string): Promise<void> {
       const data = currentData(draft);
 
       const next: DraftData = { ...data };
@@ -228,8 +232,9 @@ export default function makeModelDraftService({
       }
     },
 
-    async publish(draftId: string, userId: string): Promise<PublishDraftResponseDto> {
-      const draft = await requireOwnedDraft(draftId, userId);
+    async publish(draft: ModelDraftEntity): Promise<PublishDraftResponseDto> {
+      const userId = draft.userId;
+      const draftId = draft.id;
       const data = assertPublishable(currentData(draft));
 
       const existingModel = draft.modelId ? await modelRepository.findOneById(draft.modelId) : null;
@@ -343,12 +348,11 @@ export default function makeModelDraftService({
       return result;
     },
 
-    async abandon(draftId: string, userId: string): Promise<void> {
-      const draft = await requireOwnedDraft(draftId, userId);
+    async abandon(draft: ModelDraftEntity): Promise<void> {
       await transactionManager.run(async (ctx) => {
         await modelDraftRepository.hardDeleteTx(ctx, draft.id);
       });
-      await deleteStagingPrefix(userId, draftId).catch(() => undefined);
+      await deleteStagingPrefix(draft.userId, draft.id).catch(() => undefined);
     },
 
     async purgeStale(cutoff: Date): Promise<number> {

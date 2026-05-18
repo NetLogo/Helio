@@ -4,6 +4,7 @@ import { prisma } from '#src/lib/prisma.ts';
 import { UnauthorizedException } from '#src/shared/exceptions/index.ts';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
+import env from '#src/config/env.ts';
 
 const SystemRole = {
   admin: 'admin',
@@ -79,6 +80,10 @@ class AuthService {
     }
     return session;
   }
+
+  async revokeUserSessions(userId: string) {
+    await auth.api.revokeUserSessions(userId);
+  }
 }
 
 async function authPlugin(fastify: FastifyInstance) {
@@ -125,14 +130,17 @@ async function authPlugin(fastify: FastifyInstance) {
     request.session = session?.session ?? null;
   });
 
-  // fastify.addHook('preHandler', async (request) => {
-  //   if (request.url.startsWith('/admin')) {
-  //     const session = await authService.requireSession(request);
-  //     if (session.user.systemRole !== SystemRole.admin) {
-  //       throw new UnauthorizedException('Admin access required');
-  //     }
-  //   }
-  // });
+  fastify.addHook('preHandler', async (request) => {
+    if (
+      env.isProduction &&
+      (request.url.startsWith('/admin') || request.url.startsWith('/api-docs'))
+    ) {
+      const session = await authService.requireSession(request);
+      if (session.user.systemRole !== SystemRole.admin) {
+        throw new UnauthorizedException('Admin access required');
+      }
+    }
+  });
 }
 
 export default fp(authPlugin, {

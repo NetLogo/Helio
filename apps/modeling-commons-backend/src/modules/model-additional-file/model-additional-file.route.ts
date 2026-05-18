@@ -1,5 +1,7 @@
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
+import { resolveFile } from '#src/shared/hooks/resolve-file.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
+import { resolveModelResource } from '#src/shared/hooks/resolve-model-resource.ts';
 import type { FastifyInstance } from 'fastify';
 import {
   additionalFileParamsSchema,
@@ -40,6 +42,14 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
     };
   }
 
+  function resolveModelAdditionalFileIntegrity() {
+    return resolveModelResource({
+      resourceName: 'Additional file',
+      paramName: 'fileId',
+      load: (id, cradle) => cradle.modelAdditionalFileRepository.findOneById(id),
+    });
+  }
+
   fastify.post<{ Params: ModelIdParams }>(
     '/v1/models/:id/additional-files',
     {
@@ -51,25 +61,17 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
         description:
           'Upload an additional file for a model. The file is sent as multipart/form-data with the file field named "file".',
       },
-      preHandler: [requireAuth, resolveModel('write')],
+      preHandler: [requireAuth, resolveModel('write'), resolveFile()],
     },
     async (request, reply) => {
-      const data = await request.file();
-      if (!data) {
-        return reply.code(400).send({ message: 'File upload required' });
-      }
-
-      const buffer = await data.toBuffer();
-      const ownBuffer = Buffer.alloc(buffer.length);
-      buffer.copy(ownBuffer);
-      buffer.fill(0);
+      const { buffer, filename, mimetype } = request.uploadedFile;
 
       const entity = await modelAdditionalFileService.add(
         request.params.id,
         request.user!.id,
-        ownBuffer,
-        data.filename,
-        data.mimetype,
+        buffer as Buffer<ArrayBuffer>,
+        filename,
+        mimetype,
       );
 
       return reply.code(201).send(await toResponse(entity));
@@ -83,7 +85,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
         params: additionalFileParamsSchema,
         tags: ['Model', 'File'],
       },
-      preHandler: [requireAuth, resolveModel('admin')],
+      preHandler: [requireAuth, resolveModel('admin'), resolveModelAdditionalFileIntegrity()],
     },
     async (request, reply) => {
       await modelAdditionalFileService.remove(request.params.fileId, request.user!.id);

@@ -29,7 +29,7 @@ export default function makeFileService({ fileDomain, storage, bucket }: Depende
   return {
     async upload(params: {
       filename: string;
-      buffer: Buffer<ArrayBuffer>;
+      buffer: Buffer;
       contentType: string;
       access?: FileAccess;
       pathPrefix?: string;

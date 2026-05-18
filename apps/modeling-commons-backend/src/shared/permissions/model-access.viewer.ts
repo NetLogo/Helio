@@ -1,5 +1,5 @@
 import type { ExtendedPrismaClient } from '#src/lib/prisma.ts';
-import type { SystemRole, ViewerContext } from './model-access.types.ts';
+import type { PolicyContext, SystemRole, ViewerContext } from './model-access.types.ts';
 
 export async function loadViewer(
   db: ExtendedPrismaClient,
@@ -20,4 +20,33 @@ export async function loadViewer(
     banned: user.banned === true,
     deletedAt: user.deletedAt,
   };
+}
+
+export async function loadModelAccessContext(
+  db: ExtendedPrismaClient,
+  userId: string | null,
+  modelId: string,
+): Promise<PolicyContext> {
+  const viewer = await loadViewer(db, userId);
+
+  const sentinelOrUserId = userId === null ? '__never__' : userId;
+  const model = await db.model.findUnique({
+    where: { id: modelId },
+    select: {
+      id: true,
+      visibility: true,
+      deletedAt: true,
+      authors: { where: { userId: sentinelOrUserId }, select: { role: true } },
+      permissions: {
+        where: { granteeUserId: sentinelOrUserId },
+        select: { permissionLevel: true },
+      },
+    },
+  });
+
+  if (!model) throw new Error('Model not found');
+  const ownerRole = model.authors.length > 0 ? model.authors[0]!.role : null;
+  const grantLevel = model.permissions.length > 0 ? model.permissions[0]!.permissionLevel : null;
+
+  return { viewer, model, ownerRole, grantLevel };
 }

@@ -47,6 +47,10 @@ export const modelDraftPaginatedResponseSchema = Type.Intersect([
   }),
 ]);
 
+export const draftFileUploadFieldsSchema = Type.Object({
+  role: draftFileRoleSchema,
+});
+
 export const draftFileUploadResponseSchema = Type.Object({
   id: Type.Optional(Type.String({ format: 'uuid' })),
   role: draftFileRoleSchema,
@@ -67,5 +71,6 @@ export type DraftIdParams = Static<typeof draftIdParamsSchema>;
 export type DraftFileParams = Static<typeof draftFileParamsSchema>;
 export type DraftFileRole = Static<typeof draftFileRoleSchema>;
 export type ModelDraftResponseDto = Static<typeof modelDraftResponseDtoSchema>;
+export type DraftFileUploadFieldsDto = Static<typeof draftFileUploadFieldsSchema>;
 export type DraftFileUploadResponseDto = Static<typeof draftFileUploadResponseSchema>;
 export type PublishDraftResponseDto = Static<typeof publishDraftResponseSchema>;

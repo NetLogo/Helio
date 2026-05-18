@@ -12,7 +12,6 @@ async function multipartPlugin(fastify: FastifyInstance) {
     },
     logLevel: env.log.level,
     throwFileSizeLimit: true,
-    // attachFieldsToBody: true, // Attach non-file fields to request.body
   });
 }
 

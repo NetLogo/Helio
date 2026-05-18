@@ -1,38 +1,25 @@
 import {
-  DENIED_CONTENT_TYPES,
-  MAX_FILE_SIZE,
   PUBLIC_PREFIX,
   type FileAccess,
   type FileEntity,
 } from '#src/modules/file/domain/file.types.ts';
-import {
-  FileTooLargeError,
-  FileTypeNotAllowedError,
-} from '#src/modules/file/domain/file.errors.ts';
+import { FileTooLargeError } from '#src/modules/file/domain/file.errors.ts';
 import { createStorageKey, sanitizeFilename } from '#src/shared/storage/utils.ts';
+import rules from '#src/config/rules.ts';
 
 export default function fileDomain() {
-  function checkContentType(contentType: string): boolean {
-    if (DENIED_CONTENT_TYPES.includes(contentType as (typeof DENIED_CONTENT_TYPES)[number])) {
-      return false;
-    }
-    return true;
-  }
-
   return {
     createFile(props: {
-      buffer: Buffer<ArrayBuffer>;
+      buffer: Buffer;
       filename: string;
       contentType: string;
       access?: FileAccess;
       pathPrefix?: string;
       userId?: string;
     }): FileEntity {
-      if (props.buffer.length > MAX_FILE_SIZE) {
-        throw new FileTooLargeError(props.buffer.length, MAX_FILE_SIZE);
-      }
-      if (!checkContentType(props.contentType)) {
-        throw new FileTypeNotAllowedError(props.contentType);
+      const maxSize = rules.limits.fileUpload.size.max;
+      if (maxSize && props.buffer.length > maxSize) {
+        throw new FileTooLargeError(props.buffer.length, maxSize);
       }
 
       const access: FileAccess = props.access ?? 'private';

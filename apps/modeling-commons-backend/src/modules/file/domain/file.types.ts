@@ -2,23 +2,6 @@ import Schema from 'typebox/schema';
 import Type, { type Static } from 'typebox';
 import { FileNotFoundError } from './file.errors.ts';
 
-export const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB
-
-export const DENIED_CONTENT_TYPES = [
-  'application/x-msdownload',
-  'application/x-sh',
-  'application/x-csh',
-  'application/x-executable',
-  'application/x-dosexec',
-  'application/x-msdos-program',
-  'application/x-msi',
-  'application/x-apple-diskimage',
-  'application/x-bat',
-  'application/x-compressed-executable',
-  'application/x-debian-package',
-  'application/x-dosexec',
-] as const;
-
 export const PUBLIC_PREFIX = 'files/public';
 
 export type FileAccess = 'public-read' | 'private';
@@ -65,7 +48,7 @@ export type FileEntity = {
   key: string;
   contentType: string;
   sizeBytes: bigint;
-  blob: Buffer<ArrayBuffer>;
+  blob: Buffer;
   metadata: FileMetadata;
   access: FileAccess;
 };

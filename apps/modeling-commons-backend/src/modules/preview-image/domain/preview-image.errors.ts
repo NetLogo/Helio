@@ -8,3 +8,15 @@ export class ModelPreviewServiceError extends ProviderErrorException {
     );
   }
 }
+
+export class ModelPreviewTimeoutError extends ModelPreviewServiceError {
+  constructor(modelId: string, versionNumber: number) {
+    super(modelId, versionNumber, new Error(`Preview image generation timed out after 30 seconds`));
+  }
+}
+
+export class ModelPreviewTooLargeError extends ModelPreviewServiceError {
+  constructor(modelId: string, versionNumber: number) {
+    super(modelId, versionNumber, new Error(`Preview image exceeded size limit of 10MB`));
+  }
+}

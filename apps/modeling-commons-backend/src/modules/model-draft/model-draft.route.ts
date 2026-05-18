@@ -1,10 +1,13 @@
 import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
+import { resolveFile } from '#src/shared/hooks/resolve-file.ts';
+import { resolveModelDraft } from '#src/shared/hooks/resolve-model-draft.ts';
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 import {
   createDraftRequestDtoSchema,
   draftFileParamsSchema,
+  draftFileUploadFieldsSchema,
   draftFileUploadResponseSchema,
   draftIdParamsSchema,
   modelDraftPaginatedResponseSchema,
@@ -13,11 +16,10 @@ import {
   publishDraftResponseSchema,
   type CreateDraftRequestDto,
   type DraftFileParams,
+  type DraftFileUploadFieldsDto,
   type DraftIdParams,
   type PatchDraftRequestDto,
 } from '#src/modules/model-draft/dtos/model-draft.dto.ts';
-import type { DraftFileRole } from '#src/modules/model-draft/dtos/model-draft.dto.ts';
-import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
 
 export default async function modelDraftRoutes(fastify: FastifyInstance) {
   const { modelDraftService, modelDraftMapper } = fastify.diContainer.cradle;
@@ -70,11 +72,10 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
         response: { 200: modelDraftResponseDtoSchema },
         tags: ['ModelDraft'],
       },
-      preHandler: [requireAuth],
+      preHandler: [requireAuth, resolveModelDraft()],
     },
     async (request) => {
-      const entity = await modelDraftService.get(request.params.id, request.user!.id);
-      return modelDraftMapper.toResponse(entity);
+      return modelDraftMapper.toResponse(request.modelDraft);
     },
   );
 
@@ -86,10 +87,10 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
         body: patchDraftRequestDtoSchema,
         tags: ['ModelDraft'],
       },
-      preHandler: [requireAuth],
+      preHandler: [requireAuth, resolveModelDraft()],
     },
     async (request, reply) => {
-      await modelDraftService.patch(request.params.id, request.user!.id, request.body);
+      await modelDraftService.patch(request.modelDraft, request.body);
       return reply.code(204).send();
     },
   );
@@ -105,37 +106,21 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
         description:
           'Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "attachment").',
       },
-      preHandler: [requireAuth],
+      preHandler: [
+        requireAuth,
+        resolveModelDraft(),
+        resolveFile({ fieldsSchema: draftFileUploadFieldsSchema }),
+      ],
     },
     async (request, reply) => {
-      const data = await request.file();
-      if (!data) throw new ArgumentInvalidException('File upload required');
+      const { buffer, filename, mimetype } = request.uploadedFile;
+      const { role } = request.uploadedFile.values as DraftFileUploadFieldsDto;
 
-      const readField = (key: string): string | undefined => {
-        const field = data.fields[key];
-        if (field && typeof field === 'object' && 'value' in field) {
-          const value = (field as { value: unknown }).value;
-          return typeof value === 'string' ? value : undefined;
-        }
-        return undefined;
-      };
-
-      const role = readField('role');
-      if (role !== 'primary' && role !== 'attachment') {
-        throw new ArgumentInvalidException('role must be "primary" or "attachment"');
-      }
-
-      const buf = await data.toBuffer();
-      const owned = Buffer.alloc(buf.length) as Buffer<ArrayBuffer>;
-      buf.copy(owned);
-      buf.fill(0);
-
-      const result = await modelDraftService.addFile(
-        request.params.id,
-        request.user!.id,
-        role as DraftFileRole,
-        { buffer: owned, filename: data.filename, contentType: data.mimetype },
-      );
+      const result = await modelDraftService.addFile(request.modelDraft, role, {
+        buffer: buffer as Buffer<ArrayBuffer>,
+        filename,
+        contentType: mimetype,
+      });
       return reply.code(201).send(result);
     },
   );
@@ -144,14 +129,10 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
     '/v1/model-drafts/:id/files/:fileId',
     {
       schema: { params: draftFileParamsSchema, tags: ['ModelDraft'] },
-      preHandler: [requireAuth],
+      preHandler: [requireAuth, resolveModelDraft()],
     },
     async (request, reply) => {
-      await modelDraftService.removeFile(
-        request.params.id,
-        request.user!.id,
-        request.params.fileId,
-      );
+      await modelDraftService.removeFile(request.modelDraft, request.params.fileId);
       return reply.code(204).send();
     },
   );
@@ -164,10 +145,10 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
         response: { 201: publishDraftResponseSchema },
         tags: ['ModelDraft'],
       },
-      preHandler: [requireAuth],
+      preHandler: [requireAuth, resolveModelDraft()],
     },
     async (request, reply) => {
-      const result = await modelDraftService.publish(request.params.id, request.user!.id);
+      const result = await modelDraftService.publish(request.modelDraft);
       return reply.code(201).send(result);
     },
   );
@@ -176,10 +157,10 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
     '/v1/model-drafts/:id',
     {
       schema: { params: draftIdParamsSchema, tags: ['ModelDraft'] },
-      preHandler: [requireAuth],
+      preHandler: [requireAuth, resolveModelDraft()],
     },
     async (request, reply) => {
-      await modelDraftService.abandon(request.params.id, request.user!.id);
+      await modelDraftService.abandon(request.modelDraft);
       return reply.code(204).send();
     },
   );

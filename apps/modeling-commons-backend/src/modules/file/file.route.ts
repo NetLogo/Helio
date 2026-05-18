@@ -1,17 +1,16 @@
 import rules from '#src/config/rules.ts';
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
-import type { MultipartFile } from '@fastify/multipart';
+import { resolveFile } from '#src/shared/hooks/resolve-file.ts';
 import type { FastifyInstance } from 'fastify';
 import { Type } from 'typebox';
-import { FileUploadError } from './domain/file.errors.ts';
+import { FileTooLargeError } from './domain/file.errors.ts';
 
-const ALLOWED_AVATAR_MIME_TYPES = new Set(rules.avatar.allowedMimeTypes);
 const MAX_AVATAR_BYTES = rules.avatar.maxFileSize;
 
 export default async function fileRoutes(fastify: FastifyInstance) {
   const { fileService } = fastify.diContainer.cradle;
 
-  fastify.post<{ Body: { file: MultipartFile } }>(
+  fastify.post(
     '/v1/uploads/avatar',
     {
       schema: {
@@ -32,33 +31,25 @@ export default async function fileRoutes(fastify: FastifyInstance) {
           ...rules.limits.fileUploadRoute.strict,
         },
       },
-      preHandler: [requireAuth],
+      preHandler: [
+        requireAuth,
+        resolveFile({
+          allowedMimeTypes: rules.avatar.allowedMimeTypes,
+          requireDetectedType: true,
+        }),
+      ],
     },
     async (request, reply) => {
-      const data = await request.file();
-      if (!data) {
-        throw new FileUploadError('No file provided in "file" field');
-      }
+      const { filename, mimetype, buffer } = request.uploadedFile;
 
-      if (!ALLOWED_AVATAR_MIME_TYPES.has(data.mimetype)) {
-        throw new FileUploadError(`Unsupported file type: ${data.mimetype}`);
-      }
-
-      const buffer = await data.toBuffer();
-      const ownBuffer = Buffer.alloc(buffer.length);
-      buffer.copy(ownBuffer);
-      buffer.fill(0);
-
-      if (ownBuffer.length > MAX_AVATAR_BYTES) {
-        throw new FileUploadError(
-          `Avatar must be ${MAX_AVATAR_BYTES / (1024 * 1024)} MB or smaller`,
-        );
+      if (buffer.length > MAX_AVATAR_BYTES) {
+        throw new FileTooLargeError(buffer.length, MAX_AVATAR_BYTES);
       }
 
       const key = await fileService.upload({
-        filename: data.filename,
-        buffer: ownBuffer,
-        contentType: data.mimetype,
+        filename,
+        buffer,
+        contentType: mimetype,
         access: 'public-read',
         pathPrefix: `avatars/${request.user!.id}`,
       });

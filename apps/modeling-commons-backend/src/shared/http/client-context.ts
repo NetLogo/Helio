@@ -20,7 +20,7 @@ export function getClientIp(req: FastifyRequest): string {
     .map((v) => (Array.isArray(v) ? v[0] : v))
     .find(Boolean);
 
-  return fromHeaders?.split(',')[0].trim() ?? req.ip;
+  return fromHeaders?.split(',')[0]?.trim() ?? req.ip;
 }
 
 function dailySalt(): string {
@@ -29,7 +29,11 @@ function dailySalt(): string {
 }
 
 export function hashIp(ip: string): string {
-  return crypto.createHash('sha256').update(ip + dailySalt()).digest('hex').slice(0, 32);
+  return crypto
+    .createHash('sha256')
+    .update(ip + dailySalt())
+    .digest('hex')
+    .slice(0, 32);
 }
 
 export function generateUniqueId(): string {

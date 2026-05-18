@@ -5,6 +5,7 @@ import {
   createVersionRequestDtoSchema,
   updateCurrentVersionRequestDtoSchema,
   versionParamsSchema,
+  type CreateVersionRequestDto,
   type UpdateCurrentVersionRequestDto,
   type VersionParams,
 } from '#src/modules/model-version/model-version.schemas.ts';
@@ -14,7 +15,7 @@ import { modelVersionPaginatedResponseSchema } from '#src/modules/model-version/
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 import { Type } from 'typebox';
 import { modelIdParamsSchema, type ModelIdParams } from '#src/modules/model/dtos/model.dto.ts';
-import { NoFileUploadedError } from './domain/model-version.errors.ts';
+import { resolveFile } from '#src/shared/hooks/resolve-file.ts';
 
 export default async function modelVersionRoutes(fastify: FastifyInstance) {
   const {
@@ -36,34 +37,20 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
         description:
           'Create a new model version. Send as multipart/form-data with a required "file" field (the .nlogox) plus optional "title" and "description" text fields.',
       },
-      preHandler: [requireAuth, resolveModel('write')],
+      preHandler: [
+        requireAuth,
+        resolveModel('write'),
+        resolveFile({ fieldsSchema: createVersionRequestDtoSchema }),
+      ],
     },
     async (request, reply) => {
-      const data = await request.file();
-      if (!data) {
-        throw new NoFileUploadedError();
-      }
-
-      const readField = (key: string): string | undefined => {
-        const field = data.fields[key];
-        if (field && typeof field === 'object' && 'value' in field) {
-          const value = (field as { value: unknown }).value;
-          return typeof value === 'string' ? value : undefined;
-        }
-        return undefined;
-      };
-      const title = readField('title');
-      const description = readField('description');
-
-      const buffer = await data.toBuffer();
-      const ownBuffer = Buffer.alloc(buffer.length) as Buffer<ArrayBuffer>;
-      buffer.copy(ownBuffer);
-      buffer.fill(0);
+      const { buffer, filename, mimetype } = request.uploadedFile;
+      const { title, description } = request.uploadedFile.values as CreateVersionRequestDto;
 
       const versionNumber = await modelVersionService.create(
         request.params.id,
         request.user!.id,
-        { buffer: ownBuffer, filename: data.filename, contentType: data.mimetype },
+        { buffer: buffer as Buffer<ArrayBuffer>, filename, contentType: mimetype },
         { title, description },
       );
       return reply.code(201).send({ versionNumber });
@@ -156,6 +143,7 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
       );
       reply.header('Content-Type', contentType);
       reply.header('Cross-Origin-Resource-Policy', 'cross-origin');
+      reply.header('X-Content-Type-Options', 'nosniff');
       return buffer;
     },
   );

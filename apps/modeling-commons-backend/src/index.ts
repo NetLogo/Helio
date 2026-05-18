@@ -23,6 +23,7 @@ async function init(): Promise<void> {
         keywords: ['example'],
       },
     },
+    trustProxy: env.trustProxy.maxHops,
   });
 
   // Graceful shutdown: close DB connection when the server shuts down

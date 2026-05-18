@@ -6,6 +6,11 @@ import fp from 'fastify-plugin';
 import { auth } from '#src/lib/auth.ts';
 
 async function swaggerGeneratorPlugin(fastify: FastifyInstance) {
+  if (env.isProduction) {
+    fastify.log.warn('Swagger documentation is disabled in production');
+    return;
+  }
+
   await fastify.register(Swagger, {
     openapi: {
       openapi: '3.1.0',

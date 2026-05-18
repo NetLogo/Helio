@@ -39,7 +39,7 @@ const schema = Type.Object({
   HOST: Type.String({ default: 'localhost' }),
   PORT: Type.Number({ default: 3000 }),
   ALLOWED_ORIGINS: Type.Optional(Type.String()), // comma-separated list of allowed CORS origins
-  BETTER_AUTH_SECRET: Type.String(),
+  BETTER_AUTH_SECRET: Type.String({ minLength: 32 }),
   BETTER_AUTH_URL: Type.String(),
   PRODUCT_NAME: Type.String({ default: 'Modeling Commons' }),
   PRODUCT_DESCRIPTION: Type.String({
@@ -77,6 +77,7 @@ const schema = Type.Object({
   ),
   CAPTCHA_SITE_KEY: Type.Optional(Type.String()),
   CAPTCHA_SECRET_KEY: Type.Optional(Type.String()),
+  TRUST_PROXY_MAX_HOPS: Type.Optional(Type.Number({ default: 0 })),
 });
 
 const env = envSchema<Static<typeof schema>>({
@@ -133,6 +134,9 @@ export default {
   },
   cors: {
     allowedOrigins: envVariableToList(env.ALLOWED_ORIGINS),
+  },
+  trustProxy: {
+    maxHops: env.TRUST_PROXY_MAX_HOPS,
   },
   auth: {
     secret: env.BETTER_AUTH_SECRET,

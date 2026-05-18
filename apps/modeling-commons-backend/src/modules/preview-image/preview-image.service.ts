@@ -2,7 +2,11 @@ import env from '#src/config/env.ts';
 import { getDockerStorageClient } from '#src/lib/storage.ts';
 import type { StorageClient } from '#src/shared/storage/index.ts';
 import { VersionNotFoundError } from '../model-version/domain/model-version.errors.ts';
-import { ModelPreviewServiceError } from './domain/preview-image.errors.ts';
+import {
+  ModelPreviewServiceError,
+  ModelPreviewTimeoutError,
+  ModelPreviewTooLargeError,
+} from './domain/preview-image.errors.ts';
 
 type Report = {
   total: number;
@@ -81,7 +85,7 @@ export default function makePreviewImageService({
     async generatePreviewImageFromModelVersion(
       modelId: string,
       versionNumber: number,
-    ): Promise<{ buffer: ArrayBuffer; contentType: string }> {
+    ): Promise<{ buffer: ArrayBuffer; contentType: string; contentSize: number }> {
       const modelVersion = await getVersionQuery.execute(modelId, versionNumber);
       if (!modelVersion) throw new VersionNotFoundError(modelId, versionNumber);
 
@@ -104,26 +108,48 @@ export default function makePreviewImageService({
         `Requesting preview image from service for model ${modelId} version ${versionNumber}. URL: ${serviceUrl.toString()}`,
       );
 
+      const abort = new AbortController();
+
+      const timeout = setTimeout(() => {
+        abort.abort();
+      }, 30_000); // 30 seconds
+
       const image = await fetch(serviceUrl.toString(), {
         method: 'GET',
         headers: {
           accept: 'image/png',
         },
+        signal: abort.signal,
       });
+
+      clearTimeout(timeout);
 
       if (!image.ok) {
         throw new ModelPreviewServiceError(
           modelId,
           versionNumber,
-          new Error(
-            `Preview image service responded with status ${image.status}: ${await image.text()}`,
-          ),
+          new ModelPreviewTimeoutError(modelId, versionNumber),
         );
       }
 
+      const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+      const contentLength = Number(image.headers.get('Content-Length'));
+      if (contentLength && contentLength > MAX_IMAGE_SIZE) {
+        // Drain the body so the connection can be reused, then reject
+        // --Omar Ibrahim, May 18 26
+        await image.body?.cancel();
+        throw new ModelPreviewTooLargeError(modelId, versionNumber);
+      }
+
+      const buffer = await image.arrayBuffer();
+      if (buffer.byteLength > MAX_IMAGE_SIZE) {
+        throw new ModelPreviewTooLargeError(modelId, versionNumber);
+      }
+
       return {
-        buffer: await image.arrayBuffer(),
+        buffer,
         contentType: image.headers.get('Content-Type') || 'image/png',
+        contentSize: buffer.byteLength,
       };
     },
   };

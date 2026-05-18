@@ -59,6 +59,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       // TODO: Integrate with BetterAuth. This wouldn't work on its own.
       await userService.softDelete(request.params.id, request.user!.id, request.user!.systemRole);
+      await fastify.authService.revokeUserSessions(request.params.id);
       return reply.code(204).send();
     },
   );

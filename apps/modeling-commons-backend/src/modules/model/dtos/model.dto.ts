@@ -21,7 +21,6 @@ export const createModelRequestDtoSchema = Type.Object({
 
 export const updateModelRequestDtoSchema = Type.Object({
   visibility: Type.Optional(visibilitySchema),
-  isEndorsed: Type.Optional(Type.Boolean()),
 });
 
 export const modelIdParamsSchema = Type.Object({
