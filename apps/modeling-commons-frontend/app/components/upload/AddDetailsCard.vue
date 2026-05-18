@@ -47,7 +47,6 @@
                 size="md"
                 icon="i-lucide-fullscreen"
                 class="w-fit"
-                @click="imageUploader?.openFilePicker()"
               >
                 Generate from Model
               </UButton>
@@ -75,13 +74,13 @@
 
         <UFormField name="tags" label="Tags">
           <TagSelectMenu
+            v-model="selectedTags"
             :tags="tags.tags"
             :loading="tags.pending"
             :load-next-page="tags.loadNextPage"
             :can-load-more="tags.canLoadMore"
             class="w-full mt-2"
             can-create-new-tags
-            @update:selected-strings="(tags: Array<string>) => (state.tags = tags)"
           />
         </UFormField>
 
@@ -94,6 +93,7 @@
 </template>
 
 <script setup lang="ts">
+import { toTagSelectMenuItem, type TagItem } from "~/components/tag/TagSelectMenu.vue";
 import { modelUsecases, type UploadFormInput } from "~/forms/upload";
 
 const state = defineModel<UploadFormInput>({ required: true });
@@ -105,4 +105,29 @@ const imageUploader = useTemplateRef("imageUploader");
 const tags = reactive(useTags());
 
 const previewUrl = ref<string | null>(props.initialPreviewUrl || null);
+
+const selectedTags = ref<TagItem[]>([]);
+
+watch(
+  () => state.value.tags,
+  (next) => {
+    const nextNames = next ?? [];
+    const currentNames = selectedTags.value.map((t) => t.value);
+    if (
+      currentNames.length === nextNames.length &&
+      currentNames.every((n, i) => n === nextNames[i])
+    ) {
+      return;
+    }
+    selectedTags.value = nextNames.map((name) => {
+      const known = tags.tags?.find((t) => t.name === name);
+      return toTagSelectMenuItem(known ?? { name });
+    });
+  },
+  { immediate: true },
+);
+
+watch(selectedTags, (items) => {
+  state.value.tags = items.map((t) => t.value);
+});
 </script>

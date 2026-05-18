@@ -9,6 +9,7 @@ export interface StagedFile {
   filename: string;
   sizeBytes: number;
   mimeType: string;
+  s3Key: string;
   status: "uploading" | "uploaded" | "failed";
   error?: string;
 }
@@ -77,13 +78,14 @@ export default function useModelDraft(initialDraftId?: string) {
     return parsed.id;
   }
 
-  async function load(id: string): Promise<void> {
+  async function load(id: string): Promise<ModelDraftDto> {
     const { data, error } = await GET("/api/v1/model-drafts/{id}", {
       params: { path: { id } },
     });
     const parsed = handleApiError(data, error, "loading draft");
     draftId.value = parsed.id;
     draft.value = parsed;
+    return parsed;
   }
 
   const patch = debounceWithFlush(async (fields: DraftFormFields) => {
@@ -116,6 +118,7 @@ export default function useModelDraft(initialDraftId?: string) {
       filename: parsed.filename,
       sizeBytes: parsed.sizeBytes,
       mimeType: parsed.mimeType,
+      s3Key: parsed.s3Key,
       status: "uploaded",
     };
   }

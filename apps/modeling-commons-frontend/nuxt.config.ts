@@ -86,6 +86,12 @@ export default defineNuxtConfig({
         path: "/models/:slug/:id/embed",
         file: "~/pages/models/[id]/embed.vue",
       });
+
+      pages.push({
+        name: "model-edit-slug",
+        path: "/models/:slug/:id/edit",
+        file: "~/pages/models/[id]/edit.vue",
+      });
     },
   },
 
@@ -99,6 +105,14 @@ export default defineNuxtConfig({
           },
         },
       },
+    },
+
+    "/models/**/edit": {
+      ssr: false,
+    },
+
+    "/models/upload": {
+      ssr: false,
     },
   },
 

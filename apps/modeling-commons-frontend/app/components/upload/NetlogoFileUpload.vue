@@ -1,5 +1,6 @@
 <template>
   <FileUploader
+    ref="fileUploader"
     v-model="model"
     label="Drag and drop a NetLogo model here"
     accept=".nlogox"
@@ -14,4 +15,10 @@ import { maxNetlogoFileSize } from "~/forms/upload";
 const model = defineModel<File | null>();
 
 const formattedMaxFileSize = formatBytes(maxNetlogoFileSize);
+
+const fileUploader = useTemplateRef("fileUploader");
+
+defineExpose({
+  openFilePicker: () => fileUploader.value?.openFilePicker(),
+});
 </script>

@@ -1,5 +1,6 @@
 import * as z from "zod";
-import { makeFileSchema } from "~/components/upload/FileUploader.vue";
+import type { DraftData } from "~/composables/model/useModelDraft";
+import { makeFileSchema } from "~/utils/file-schema";
 
 const maxNetlogoFileSize = 10 * 1024 * 1024; // 10 MB
 const netlogoFileSchema = makeFileSchema({
@@ -92,14 +93,84 @@ const UploadFormSchema = z
   .extend(PeerReviewCardSchema.shape);
 
 type UploadForm = z.infer<typeof UploadFormSchema>;
-type UploadFormInput = Omit<z.input<typeof UploadFormSchema>, "nlogoxFile"> & {
-  nlogoxFile: File | null;
-};
+type UploadFormInput = Omit<z.input<typeof UploadFormSchema>, "nlogoxFile">;
+
+type PrimaryFileMeta = NonNullable<DraftData["primaryFile"]> & { fileId?: string };
+type StagedAttachmentMeta = NonNullable<DraftData["attachments"]>[number];
+
+const emptyUploadFormState = (): UploadFormInput => ({
+  imageFile: null,
+  title: "",
+  description: "",
+  tags: [],
+  usecases: [],
+  subjects: [],
+  permission: "private",
+  groupId: null,
+  collaboratorEmails: [],
+  askForCollaborators: false,
+  askForPeerReview: false,
+  peerReviewKinds: [],
+});
+
+function collectTagNames(form: UploadFormInput): string[] {
+  return [
+    ...(form.tags ?? []).map((t) => t.trim()).filter(Boolean),
+    ...(form.subjects ?? []).map((s) => s.trim()).filter(Boolean),
+    ...(form.usecases ?? []).map((u) => `usecase:${u}`),
+  ];
+}
+
+const USECASE_TAG_PREFIX = "usecase:";
+
+function partitionDraftTags(
+  tags: string[] | undefined,
+): Pick<UploadFormInput, "tags" | "subjects" | "usecases"> {
+  const usecaseValues = new Set(modelUsecases.map((option) => option.value));
+  const usecases: string[] = [];
+  const passthrough: string[] = [];
+  for (const raw of tags ?? []) {
+    if (raw.startsWith(USECASE_TAG_PREFIX)) {
+      const value = raw.slice(USECASE_TAG_PREFIX.length);
+      if (usecaseValues.has(value)) {
+        usecases.push(value);
+        continue;
+      }
+    }
+    passthrough.push(raw);
+  }
+  return { tags: passthrough, subjects: [], usecases };
+}
+
+function draftToFormState(draft: DraftData): {
+  formState: UploadFormInput;
+  primaryFile: PrimaryFileMeta | null;
+  attachments: StagedAttachmentMeta[];
+} {
+  const base = emptyUploadFormState();
+  const partitioned = partitionDraftTags(draft.tags);
+  return {
+    formState: {
+      ...base,
+      title: draft.title ?? "",
+      description: draft.description ?? "",
+      permission: draft.visibility ?? base.permission,
+      tags: partitioned.tags,
+      subjects: partitioned.subjects,
+      usecases: partitioned.usecases,
+    },
+    primaryFile: draft.primaryFile ? { ...draft.primaryFile } : null,
+    attachments: [...(draft.attachments ?? [])],
+  };
+}
 
 export {
   AddDetailsCardSchema,
   additionalFilesSchema,
   collaboratorOptions,
+  collectTagNames,
+  draftToFormState,
+  emptyUploadFormState,
   maxNetlogoFileSize,
   modelFilesSchema,
   modelUsecases,
@@ -110,4 +181,12 @@ export {
   SetPermissionsCardSchema,
   UploadFormSchema,
 };
-export type { AddDetailsCard, PeerReviewCard, SetPermissionsCard, UploadForm, UploadFormInput };
+export type {
+  AddDetailsCard,
+  PeerReviewCard,
+  PrimaryFileMeta,
+  SetPermissionsCard,
+  StagedAttachmentMeta,
+  UploadForm,
+  UploadFormInput,
+};

@@ -30,6 +30,7 @@
         @download="handleDownload"
         @embed="handleEmbed"
         @fork="handleFork"
+        @edit="handleEdit"
       />
 
       <article v-if="card.latestVersion?.description" class="docs prose prose-sm max-w-none">
@@ -283,6 +284,14 @@ function handleDownload() {
 
 function handleFork() {
   // @to-do
+}
+
+function handleEdit() {
+  if (!modelId.value) return;
+  const path = modelSlug.value
+    ? `/models/${modelSlug.value}/${modelId.value}/edit`
+    : `/models/${modelId.value}/edit`;
+  void navigateTo(path);
 }
 
 function handleRun() {

@@ -5,7 +5,6 @@ import type { UploadFormInput } from "~/forms/upload";
 
 function makeState(overrides: Partial<UploadFormInput> = {}): UploadFormInput {
   return {
-    nlogoxFile: null,
     imageFile: null,
     title: "",
     description: "",

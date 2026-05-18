@@ -418,3 +418,7 @@ describe("UploadFormSchema", () => {
     expect(result.success).toBe(true);
   });
 });
+
+// Helpers `emptyUploadFormState`, `collectTagNames`, and `draftToFormState`
+// are exercised in `tests/nuxt/forms/upload-helpers.test.ts` — the unit project
+// cannot transform the Vue SFC that `forms/upload.ts` transitively imports.

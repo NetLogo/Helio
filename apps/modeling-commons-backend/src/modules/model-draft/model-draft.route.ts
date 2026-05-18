@@ -164,5 +164,4 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
       return reply.code(204).send();
     },
   );
-
 }
