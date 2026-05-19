@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import {
   ModelDraftFileNotFoundError,
   ModelDraftInvalidPayloadError,
@@ -24,13 +23,14 @@ import {
   type DraftPreviewImageV1,
   type DraftPrimaryFileV1,
 } from '#src/modules/model-draft/schemas/index.ts';
-import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
-import { UserNotFoundError } from '../user/domain/user.errors.ts';
-import { ModelNotFoundError } from '../model/domain/model.errors.ts';
-import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
 import { UnauthorizedException } from '#src/shared/exceptions/exceptions.ts';
+import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
+import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
 import { CopyObjectCommand, HeadObjectCommand } from '#src/shared/storage/index.ts';
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
+import { randomUUID } from 'node:crypto';
+import { ModelNotFoundError } from '../model/domain/model.errors.ts';
+import { UserNotFoundError } from '../user/domain/user.errors.ts';
 
 export default function makeModelDraftService({
   transactionManager,
@@ -427,7 +427,7 @@ export default function makeModelDraftService({
         }
 
         const previousVersion = existingModel
-          ? await modelVersionRepository.findLatestByModel(model.id)
+          ? await modelVersionRepository.findLatestByModel(model.id, ctx)
           : null;
         if (previousVersion) {
           await modelVersionRepository.finalize(

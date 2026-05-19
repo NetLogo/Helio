@@ -8,7 +8,10 @@ export interface ModelVersionRepository {
     modelId: string,
     versionNumber: number,
   ): Promise<ModelVersionEntity | undefined>;
-  findLatestByModel(modelId: string): Promise<ModelVersionEntity | undefined>;
+  findLatestByModel(
+    modelId: string,
+    ctx?: TransactionContext,
+  ): Promise<ModelVersionEntity | undefined>;
   finalize(ctx: TransactionContext, modelId: string, versionNumber: number): Promise<void>;
   updateFields(
     ctx: TransactionContext,

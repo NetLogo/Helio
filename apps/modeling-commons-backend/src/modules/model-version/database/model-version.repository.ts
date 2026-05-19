@@ -28,8 +28,12 @@ export default function modelVersionRepository({
         : undefined;
     },
 
-    async findLatestByModel(modelId: string): Promise<ModelVersionEntity | undefined> {
-      const record = await db.modelVersion.findFirst({
+    async findLatestByModel(
+      modelId: string,
+      ctx?: TransactionContext,
+    ): Promise<ModelVersionEntity | undefined> {
+      const client = ctx ? resolveTransaction(ctx) : db;
+      const record = await client.modelVersion.findFirst({
         where: { modelId },
         orderBy: { versionNumber: 'desc' },
       });
