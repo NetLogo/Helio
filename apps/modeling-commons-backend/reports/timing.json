@@ -1,0 +1,1599 @@
+{
+  "generatedAt": "2026-05-19T03:34:01.857Z",
+  "totalRequests": 864,
+  "totalElapsedMs": 186581.99477148056,
+  "routes": [
+    {
+      "method": "POST",
+      "template": "/api/v1/model-drafts/:id/publish",
+      "count": 95,
+      "min": 2.9822921752929688,
+      "p50": 1635.3825421333313,
+      "p95": 2030.111958026886,
+      "p99": 2268.823417186737,
+      "max": 2268.823417186737,
+      "mean": 1681.2937942956623,
+      "total": 159722.91045808792,
+      "statusCodes": {
+        "201": 94,
+        "409": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/auth/sign-up/email",
+      "count": 155,
+      "min": 2.8095412254333496,
+      "p50": 77.63629198074341,
+      "p95": 106.71641683578491,
+      "p99": 121.42587518692017,
+      "max": 121.43879127502441,
+      "mean": 80.9681483637902,
+      "total": 12550.062996387482,
+      "statusCodes": {
+        "200": 154,
+        "400": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/auth/sign-in/email",
+      "count": 153,
+      "min": 60.41333293914795,
+      "p50": 70.07516574859619,
+      "p95": 75.18883419036865,
+      "p99": 78.91129112243652,
+      "max": 123.77616691589355,
+      "mean": 70.75797111847821,
+      "total": 10825.969581127167,
+      "statusCodes": {
+        "200": 152,
+        "401": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/model-drafts/:id/files",
+      "count": 92,
+      "min": 7.945000171661377,
+      "p50": 9.380208969116211,
+      "p95": 15.53583288192749,
+      "p99": 22.54670763015747,
+      "max": 22.54670763015747,
+      "mean": 10.362792134284973,
+      "total": 953.3768763542175,
+      "statusCodes": {
+        "201": 92
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/model-drafts",
+      "count": 104,
+      "min": 0.5057921409606934,
+      "p50": 5.066833972930908,
+      "p95": 6.675374984741211,
+      "p99": 23.981624603271484,
+      "max": 24.280832767486572,
+      "mean": 5.643895369309646,
+      "total": 586.9651184082031,
+      "statusCodes": {
+        "201": 101,
+        "401": 3
+      }
+    },
+    {
+      "method": "PATCH",
+      "template": "/api/v1/model-drafts/:id",
+      "count": 97,
+      "min": 2.7678751945495605,
+      "p50": 3.6187920570373535,
+      "p95": 4.634332656860352,
+      "p99": 6.002291679382324,
+      "max": 6.002291679382324,
+      "mean": 3.70626929863212,
+      "total": 359.5081219673157,
+      "statusCodes": {
+        "204": 97
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/versions",
+      "count": 14,
+      "min": 5.889541149139404,
+      "p50": 17.178208351135254,
+      "p95": 26.96387481689453,
+      "p99": 26.96387481689453,
+      "max": 26.96387481689453,
+      "mean": 18.066240889685496,
+      "total": 252.92737245559692,
+      "statusCodes": {
+        "201": 13,
+        "403": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/additional-files",
+      "count": 11,
+      "min": 0.9862499237060547,
+      "p50": 22.57908296585083,
+      "p95": 34.27891683578491,
+      "p99": 34.27891683578491,
+      "max": 34.27891683578491,
+      "mean": 21.43640544197776,
+      "total": 235.80045986175537,
+      "statusCodes": {
+        "201": 9,
+        "401": 1,
+        "403": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/permissions",
+      "count": 12,
+      "min": 5.227499961853027,
+      "p50": 11.59679126739502,
+      "p95": 25.544291973114014,
+      "p99": 25.544291973114014,
+      "max": 25.544291973114014,
+      "mean": 12.150152603785196,
+      "total": 145.80183124542236,
+      "statusCodes": {
+        "201": 10,
+        "403": 1,
+        "409": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/tags",
+      "count": 9,
+      "min": 6.075167179107666,
+      "p50": 12.107082843780518,
+      "p95": 20.062000274658203,
+      "p99": 20.062000274658203,
+      "max": 20.062000274658203,
+      "mean": 12.073856512705484,
+      "total": 108.66470861434937,
+      "statusCodes": {
+        "201": 7,
+        "403": 1,
+        "409": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/authors",
+      "count": 8,
+      "min": 5.618041038513184,
+      "p50": 10.695666313171387,
+      "p95": 15.86758279800415,
+      "p99": 15.86758279800415,
+      "max": 15.86758279800415,
+      "mean": 10.159749567508698,
+      "total": 81.27799654006958,
+      "statusCodes": {
+        "201": 6,
+        "403": 1,
+        "409": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/like",
+      "count": 7,
+      "min": 0.9815421104431152,
+      "p50": 10.980957984924316,
+      "p95": 17.74658441543579,
+      "p99": 17.74658441543579,
+      "max": 17.74658441543579,
+      "mean": 9.92995834350586,
+      "total": 69.50970840454102,
+      "statusCodes": {
+        "204": 5,
+        "401": 1,
+        "403": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models",
+      "count": 9,
+      "min": 3.858790874481201,
+      "p50": 7.021624565124512,
+      "p95": 10.568459033966064,
+      "p99": 10.568459033966064,
+      "max": 10.568459033966064,
+      "mean": 7.140231450398763,
+      "total": 64.26208305358887,
+      "statusCodes": {
+        "200": 9
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/likes",
+      "count": 4,
+      "min": 3.9115829467773438,
+      "p50": 9.274415969848633,
+      "p95": 26.248040676116943,
+      "p99": 26.248040676116943,
+      "max": 26.248040676116943,
+      "mean": 10.950968146324158,
+      "total": 43.80387258529663,
+      "statusCodes": {
+        "200": 4
+      }
+    },
+    {
+      "method": "PATCH",
+      "template": "/api/v1/users/:id",
+      "count": 7,
+      "min": 0.517333984375,
+      "p50": 6.070458889007568,
+      "p95": 8.524707794189453,
+      "p99": 8.524707794189453,
+      "max": 8.524707794189453,
+      "mean": 5.479791709354946,
+      "total": 38.35854196548462,
+      "statusCodes": {
+        "204": 4,
+        "401": 1,
+        "403": 2
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/additional-files",
+      "count": 4,
+      "min": 5.579916000366211,
+      "p50": 10.591042041778564,
+      "p95": 11.109209060668945,
+      "p99": 11.109209060668945,
+      "max": 11.109209060668945,
+      "mean": 9.05747938156128,
+      "total": 36.22991752624512,
+      "statusCodes": {
+        "200": 3,
+        "403": 1
+      }
+    },
+    {
+      "method": "PATCH",
+      "template": "/api/v1/models/:id/versions/current",
+      "count": 3,
+      "min": 5.575292110443115,
+      "p50": 7.460208415985107,
+      "p95": 21.540082931518555,
+      "p99": 21.540082931518555,
+      "max": 21.540082931518555,
+      "mean": 11.52519448598226,
+      "total": 34.57558345794678,
+      "statusCodes": {
+        "204": 2,
+        "403": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/admin/events",
+      "count": 5,
+      "min": 0.6323328018188477,
+      "p50": 6.265915870666504,
+      "p95": 17.61608362197876,
+      "p99": 17.61608362197876,
+      "max": 17.61608362197876,
+      "mean": 6.892916679382324,
+      "total": 34.46458339691162,
+      "statusCodes": {
+        "200": 3,
+        "401": 1,
+        "403": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/interactions",
+      "count": 3,
+      "min": 9.625,
+      "p50": 11.520334243774414,
+      "p95": 12.116374969482422,
+      "p99": 12.116374969482422,
+      "max": 12.116374969482422,
+      "mean": 11.087236404418945,
+      "total": 33.261709213256836,
+      "statusCodes": {
+        "200": 3
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id",
+      "count": 4,
+      "min": 3.1917080879211426,
+      "p50": 7.839416027069092,
+      "p95": 8.657374858856201,
+      "p99": 8.657374858856201,
+      "max": 8.657374858856201,
+      "mean": 6.740208029747009,
+      "total": 26.960832118988037,
+      "statusCodes": {
+        "200": 2,
+        "403": 2
+      }
+    },
+    {
+      "method": "PATCH",
+      "template": "/api/v1/models/:id",
+      "count": 3,
+      "min": 6.796375274658203,
+      "p50": 7.355375289916992,
+      "p95": 11.722541809082031,
+      "p99": 11.722541809082031,
+      "max": 11.722541809082031,
+      "mean": 8.624764124552408,
+      "total": 25.874292373657227,
+      "statusCodes": {
+        "204": 2,
+        "403": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/versions",
+      "count": 3,
+      "min": 5.56254243850708,
+      "p50": 7.451124668121338,
+      "p95": 11.531291007995605,
+      "p99": 11.531291007995605,
+      "max": 11.531291007995605,
+      "mean": 8.181652704874674,
+      "total": 24.544958114624023,
+      "statusCodes": {
+        "200": 2,
+        "403": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/users/:id",
+      "count": 5,
+      "min": 2.5132088661193848,
+      "p50": 3.786083221435547,
+      "p95": 6.474791049957275,
+      "p99": 6.474791049957275,
+      "max": 6.474791049957275,
+      "mean": 4.140725040435791,
+      "total": 20.703625202178955,
+      "statusCodes": {
+        "200": 5
+      }
+    },
+    {
+      "method": "DELETE",
+      "template": "/api/v1/models/:id/additional-files/:id",
+      "count": 4,
+      "min": 0.42350006103515625,
+      "p50": 5.971624851226807,
+      "p95": 8.328207969665527,
+      "p99": 8.328207969665527,
+      "max": 8.328207969665527,
+      "mean": 5.133385181427002,
+      "total": 20.533540725708008,
+      "statusCodes": {
+        "204": 1,
+        "401": 1,
+        "403": 1,
+        "404": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/views",
+      "count": 2,
+      "min": 7.757791996002197,
+      "p50": 9.763291835784912,
+      "p95": 9.763291835784912,
+      "p99": 9.763291835784912,
+      "max": 9.763291835784912,
+      "mean": 8.760541915893555,
+      "total": 17.52108383178711,
+      "statusCodes": {
+        "204": 1,
+        "403": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/me/permissions",
+      "count": 3,
+      "min": 1.4029579162597656,
+      "p50": 6.2764997482299805,
+      "p95": 9.043790817260742,
+      "p99": 9.043790817260742,
+      "max": 9.043790817260742,
+      "mean": 5.574416160583496,
+      "total": 16.72324848175049,
+      "statusCodes": {
+        "200": 3
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/uploads/avatar",
+      "count": 4,
+      "min": 0.5082921981811523,
+      "p50": 3.6124587059020996,
+      "p95": 8.667541027069092,
+      "p99": 8.667541027069092,
+      "max": 8.667541027069092,
+      "mean": 3.9809584617614746,
+      "total": 15.923833847045898,
+      "statusCodes": {
+        "201": 1,
+        "400": 2,
+        "401": 1
+      }
+    },
+    {
+      "method": "DELETE",
+      "template": "/api/v1/users/:id",
+      "count": 2,
+      "min": 6.8394999504089355,
+      "p50": 8.87370777130127,
+      "p95": 8.87370777130127,
+      "p99": 8.87370777130127,
+      "max": 8.87370777130127,
+      "mean": 7.8566038608551025,
+      "total": 15.713207721710205,
+      "statusCodes": {
+        "204": 2
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/authors/transfer",
+      "count": 2,
+      "min": 7.49704122543335,
+      "p50": 7.917042255401611,
+      "p95": 7.917042255401611,
+      "p99": 7.917042255401611,
+      "max": 7.917042255401611,
+      "mean": 7.7070417404174805,
+      "total": 15.414083480834961,
+      "statusCodes": {
+        "204": 1,
+        "404": 1
+      }
+    },
+    {
+      "method": "DELETE",
+      "template": "/api/v1/models/:id/authors/:id",
+      "count": 2,
+      "min": 7.036125183105469,
+      "p50": 7.514500141143799,
+      "p95": 7.514500141143799,
+      "p99": 7.514500141143799,
+      "max": 7.514500141143799,
+      "mean": 7.275312662124634,
+      "total": 14.550625324249268,
+      "statusCodes": {
+        "204": 1,
+        "403": 1
+      }
+    },
+    {
+      "method": "DELETE",
+      "template": "/api/v1/models/:id/permissions/:id",
+      "count": 2,
+      "min": 6.4347920417785645,
+      "p50": 6.962291240692139,
+      "p95": 6.962291240692139,
+      "p99": 6.962291240692139,
+      "max": 6.962291240692139,
+      "mean": 6.698541641235352,
+      "total": 13.397083282470703,
+      "statusCodes": {
+        "204": 2
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/runs",
+      "count": 1,
+      "min": 13.335041999816895,
+      "p50": 13.335041999816895,
+      "p95": 13.335041999816895,
+      "p99": 13.335041999816895,
+      "max": 13.335041999816895,
+      "mean": 13.335041999816895,
+      "total": 13.335041999816895,
+      "statusCodes": {
+        "204": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/authors",
+      "count": 2,
+      "min": 5.060916900634766,
+      "p50": 7.900959014892578,
+      "p95": 7.900959014892578,
+      "p99": 7.900959014892578,
+      "max": 7.900959014892578,
+      "mean": 6.480937957763672,
+      "total": 12.961875915527344,
+      "statusCodes": {
+        "200": 2
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/model-drafts/:id",
+      "count": 2,
+      "min": 5.083209037780762,
+      "p50": 7.312957763671875,
+      "p95": 7.312957763671875,
+      "p99": 7.312957763671875,
+      "max": 7.312957763671875,
+      "mean": 6.198083400726318,
+      "total": 12.396166801452637,
+      "statusCodes": {
+        "200": 1,
+        "403": 1
+      }
+    },
+    {
+      "method": "DELETE",
+      "template": "/api/v1/models/:id",
+      "count": 1,
+      "min": 11.511125087738037,
+      "p50": 11.511125087738037,
+      "p95": 11.511125087738037,
+      "p99": 11.511125087738037,
+      "max": 11.511125087738037,
+      "mean": 11.511125087738037,
+      "total": 11.511125087738037,
+      "statusCodes": {
+        "204": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/admin",
+      "count": 1,
+      "min": 11.469208240509033,
+      "p50": 11.469208240509033,
+      "p95": 11.469208240509033,
+      "p99": 11.469208240509033,
+      "max": 11.469208240509033,
+      "mean": 11.469208240509033,
+      "total": 11.469208240509033,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/models/:id/downloads",
+      "count": 1,
+      "min": 11.087207794189453,
+      "p50": 11.087207794189453,
+      "p95": 11.087207794189453,
+      "p99": 11.087207794189453,
+      "max": 11.087207794189453,
+      "mean": 11.087207794189453,
+      "total": 11.087207794189453,
+      "statusCodes": {
+        "204": 1
+      }
+    },
+    {
+      "method": "DELETE",
+      "template": "/api/v1/models/:id/like",
+      "count": 1,
+      "min": 9.822458267211914,
+      "p50": 9.822458267211914,
+      "p95": 9.822458267211914,
+      "p99": 9.822458267211914,
+      "max": 9.822458267211914,
+      "mean": 9.822458267211914,
+      "total": 9.822458267211914,
+      "statusCodes": {
+        "204": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/netlogo-versions",
+      "count": 4,
+      "min": 1.068709373474121,
+      "p50": 2.7335000038146973,
+      "p95": 3.715541362762451,
+      "p99": 3.715541362762451,
+      "max": 3.715541362762451,
+      "mean": 2.386479377746582,
+      "total": 9.545917510986328,
+      "statusCodes": {
+        "200": 3,
+        "400": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/model-drafts",
+      "count": 1,
+      "min": 9.332916736602783,
+      "p50": 9.332916736602783,
+      "p95": 9.332916736602783,
+      "p99": 9.332916736602783,
+      "max": 9.332916736602783,
+      "mean": 9.332916736602783,
+      "total": 9.332916736602783,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/versions/:id",
+      "count": 1,
+      "min": 9.031291961669922,
+      "p50": 9.031291961669922,
+      "p95": 9.031291961669922,
+      "p99": 9.031291961669922,
+      "max": 9.031291961669922,
+      "mean": 9.031291961669922,
+      "total": 9.031291961669922,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/tags",
+      "count": 3,
+      "min": 1.402334213256836,
+      "p50": 2.69545841217041,
+      "p95": 4.699875354766846,
+      "p99": 4.699875354766846,
+      "max": 4.699875354766846,
+      "mean": 2.9325559933980307,
+      "total": 8.797667980194092,
+      "statusCodes": {
+        "200": 3
+      }
+    },
+    {
+      "method": "DELETE",
+      "template": "/api/v1/model-drafts/:id",
+      "count": 1,
+      "min": 6.179542064666748,
+      "p50": 6.179542064666748,
+      "p95": 6.179542064666748,
+      "p99": 6.179542064666748,
+      "max": 6.179542064666748,
+      "mean": 6.179542064666748,
+      "total": 6.179542064666748,
+      "statusCodes": {
+        "204": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/permissions",
+      "count": 1,
+      "min": 6.064167022705078,
+      "p50": 6.064167022705078,
+      "p95": 6.064167022705078,
+      "p99": 6.064167022705078,
+      "max": 6.064167022705078,
+      "mean": 6.064167022705078,
+      "total": 6.064167022705078,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "DELETE",
+      "template": "/api/v1/models/:id/tags/:id",
+      "count": 1,
+      "min": 6.040957927703857,
+      "p50": 6.040957927703857,
+      "p95": 6.040957927703857,
+      "p99": 6.040957927703857,
+      "max": 6.040957927703857,
+      "mean": 6.040957927703857,
+      "total": 6.040957927703857,
+      "statusCodes": {
+        "204": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/random",
+      "count": 1,
+      "min": 5.4513750076293945,
+      "p50": 5.4513750076293945,
+      "p95": 5.4513750076293945,
+      "p99": 5.4513750076293945,
+      "max": 5.4513750076293945,
+      "mean": 5.4513750076293945,
+      "total": 5.4513750076293945,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/users",
+      "count": 1,
+      "min": 5.356040954589844,
+      "p50": 5.356040954589844,
+      "p95": 5.356040954589844,
+      "p99": 5.356040954589844,
+      "max": 5.356040954589844,
+      "mean": 5.356040954589844,
+      "total": 5.356040954589844,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/models/:id/versions/:id/tags",
+      "count": 1,
+      "min": 4.492416858673096,
+      "p50": 4.492416858673096,
+      "p95": 4.492416858673096,
+      "p99": 4.492416858673096,
+      "max": 4.492416858673096,
+      "mean": 4.492416858673096,
+      "total": 4.492416858673096,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/tags/popular",
+      "count": 1,
+      "min": 4.472332954406738,
+      "p50": 4.472332954406738,
+      "p95": 4.472332954406738,
+      "p99": 4.472332954406738,
+      "max": 4.472332954406738,
+      "mean": 4.472332954406738,
+      "total": 4.472332954406738,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/legacy/models/:id/resolve",
+      "count": 2,
+      "min": 0.4376668930053711,
+      "p50": 3.339041233062744,
+      "p95": 3.339041233062744,
+      "p99": 3.339041233062744,
+      "max": 3.339041233062744,
+      "mean": 1.8883540630340576,
+      "total": 3.7767081260681152,
+      "statusCodes": {
+        "400": 1,
+        "404": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/users/:id/models",
+      "count": 1,
+      "min": 3.4219589233398438,
+      "p50": 3.4219589233398438,
+      "p95": 3.4219589233398438,
+      "p99": 3.4219589233398438,
+      "max": 3.4219589233398438,
+      "mean": 3.4219589233398438,
+      "total": 3.4219589233398438,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api-docs/auth/openapi.json",
+      "count": 1,
+      "min": 2.980374813079834,
+      "p50": 2.980374813079834,
+      "p95": 2.980374813079834,
+      "p99": 2.980374813079834,
+      "max": 2.980374813079834,
+      "mean": 2.980374813079834,
+      "total": 2.980374813079834,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/admin/resources/User",
+      "count": 1,
+      "min": 2.860374927520752,
+      "p50": 2.860374927520752,
+      "p95": 2.860374927520752,
+      "p99": 2.860374927520752,
+      "max": 2.860374927520752,
+      "mean": 2.860374927520752,
+      "total": 2.860374927520752,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/tags/nonexistent-tag-xyz",
+      "count": 1,
+      "min": 2.1876254081726074,
+      "p50": 2.1876254081726074,
+      "p95": 2.1876254081726074,
+      "p99": 2.1876254081726074,
+      "max": 2.1876254081726074,
+      "mean": 2.1876254081726074,
+      "total": 2.1876254081726074,
+      "statusCodes": {
+        "404": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/users/whoami",
+      "count": 1,
+      "min": 1.286208152770996,
+      "p50": 1.286208152770996,
+      "p95": 1.286208152770996,
+      "p99": 1.286208152770996,
+      "max": 1.286208152770996,
+      "mean": 1.286208152770996,
+      "total": 1.286208152770996,
+      "statusCodes": {
+        "401": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/tags/physics",
+      "count": 1,
+      "min": 1.0517921447753906,
+      "p50": 1.0517921447753906,
+      "p95": 1.0517921447753906,
+      "p99": 1.0517921447753906,
+      "max": 1.0517921447753906,
+      "mean": 1.0517921447753906,
+      "total": 1.0517921447753906,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/dev/fill-in",
+      "count": 1,
+      "min": 0.5665831565856934,
+      "p50": 0.5665831565856934,
+      "p95": 0.5665831565856934,
+      "p99": 0.5665831565856934,
+      "max": 0.5665831565856934,
+      "mean": 0.5665831565856934,
+      "total": 0.5665831565856934,
+      "statusCodes": {
+        "404": 1
+      }
+    },
+    {
+      "method": "GET",
+      "template": "/api/v1/test",
+      "count": 1,
+      "min": 0.4786248207092285,
+      "p50": 0.4786248207092285,
+      "p95": 0.4786248207092285,
+      "p99": 0.4786248207092285,
+      "max": 0.4786248207092285,
+      "mean": 0.4786248207092285,
+      "total": 0.4786248207092285,
+      "statusCodes": {
+        "200": 1
+      }
+    },
+    {
+      "method": "POST",
+      "template": "/api/v1/dev/fill-in",
+      "count": 1,
+      "min": 0.44487476348876953,
+      "p50": 0.44487476348876953,
+      "p95": 0.44487476348876953,
+      "p99": 0.44487476348876953,
+      "max": 0.44487476348876953,
+      "mean": 0.44487476348876953,
+      "total": 0.44487476348876953,
+      "statusCodes": {
+        "404": 1
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "Sign up with valid credentials",
+      "status": "PASSED",
+      "durationMs": 145.162708
+    },
+    {
+      "name": "Sign up with weak password",
+      "status": "PASSED",
+      "durationMs": 98.984166
+    },
+    {
+      "name": "Sign in with valid credentials",
+      "status": "PASSED",
+      "durationMs": 82.695708
+    },
+    {
+      "name": "Sign in with wrong password",
+      "status": "PASSED",
+      "durationMs": 88.305749
+    },
+    {
+      "name": "Admin can list events",
+      "status": "PASSED",
+      "durationMs": 86.510749
+    },
+    {
+      "name": "Admin can filter events by type",
+      "status": "PASSED",
+      "durationMs": 85.607917
+    },
+    {
+      "name": "Regular user cannot access admin events",
+      "status": "PASSED",
+      "durationMs": 87.320208
+    },
+    {
+      "name": "Unauthenticated user cannot access admin events",
+      "status": "PASSED",
+      "durationMs": 100.209166
+    },
+    {
+      "name": "Admin can filter events by resourceType",
+      "status": "PASSED",
+      "durationMs": 88.006207
+    },
+    {
+      "name": "Uploading an avatar requires authentication",
+      "status": "PASSED",
+      "durationMs": 79.6525
+    },
+    {
+      "name": "Authenticated user uploads a PNG avatar",
+      "status": "PASSED",
+      "durationMs": 78.706249
+    },
+    {
+      "name": "Upload rejects a disallowed mime type",
+      "status": "PASSED",
+      "durationMs": 83.132791
+    },
+    {
+      "name": "Test endpoint returns success",
+      "status": "PASSED",
+      "durationMs": 85.807416
+    },
+    {
+      "name": "Listing additional files for a model is publicly accessible on a public model",
+      "status": "PASSED",
+      "durationMs": 81.342375
+    },
+    {
+      "name": "Uploading an additional file requires authentication",
+      "status": "PASSED",
+      "durationMs": 75.567417
+    },
+    {
+      "name": "A non-author cannot upload additional files",
+      "status": "PASSED",
+      "durationMs": 79.229792
+    },
+    {
+      "name": "Owner uploads an additional file",
+      "status": "PASSED",
+      "durationMs": 79.811666
+    },
+    {
+      "name": "Uploaded file appears in the listing",
+      "status": "PASSED",
+      "durationMs": 71.794
+    },
+    {
+      "name": "Filter listing by tagged version number",
+      "status": "PASSED",
+      "durationMs": 72.308375
+    },
+    {
+      "name": "Cannot access additional files on a private model owned by someone else",
+      "status": "PASSED",
+      "durationMs": 61.616624
+    },
+    {
+      "name": "Owner can delete an additional file",
+      "status": "PASSED",
+      "durationMs": 67.199166
+    },
+    {
+      "name": "Anonymous viewer cannot delete an additional file",
+      "status": "PASSED",
+      "durationMs": 71.769458
+    },
+    {
+      "name": "Non-author cannot delete an additional file",
+      "status": "PASSED",
+      "durationMs": 75.39504
+    },
+    {
+      "name": "List authors of a model",
+      "status": "PASSED",
+      "durationMs": 84.965082
+    },
+    {
+      "name": "Add a contributor to a model",
+      "status": "PASSED",
+      "durationMs": 75.157542
+    },
+    {
+      "name": "Contributor appears in the author list",
+      "status": "PASSED",
+      "durationMs": 77.418833
+    },
+    {
+      "name": "Remove a contributor from a model",
+      "status": "PASSED",
+      "durationMs": 89.542
+    },
+    {
+      "name": "Cannot remove the owner",
+      "status": "PASSED",
+      "durationMs": 91.975665
+    },
+    {
+      "name": "Transfer ownership to a contributor",
+      "status": "PASSED",
+      "durationMs": 72.377667
+    },
+    {
+      "name": "Cannot transfer ownership to a non-author",
+      "status": "PASSED",
+      "durationMs": 81.555249
+    },
+    {
+      "name": "Non-owner cannot add contributors",
+      "status": "PASSED",
+      "durationMs": 74.974708
+    },
+    {
+      "name": "List models by user",
+      "status": "PASSED",
+      "durationMs": 82.718915
+    },
+    {
+      "name": "Cannot add the same contributor twice",
+      "status": "PASSED",
+      "durationMs": 87.156041
+    },
+    {
+      "name": "Create an empty draft",
+      "status": "PASSED",
+      "durationMs": 80.625416
+    },
+    {
+      "name": "Drafts require authentication",
+      "status": "PASSED",
+      "durationMs": 81.754084
+    },
+    {
+      "name": "Patch a draft with metadata",
+      "status": "PASSED",
+      "durationMs": 74.983791
+    },
+    {
+      "name": "Read back a draft after patching it",
+      "status": "PASSED",
+      "durationMs": 76.700125
+    },
+    {
+      "name": "List drafts for the current user",
+      "status": "PASSED",
+      "durationMs": 90.657415
+    },
+    {
+      "name": "Another user cannot read my draft",
+      "status": "PASSED",
+      "durationMs": 79.272125
+    },
+    {
+      "name": "Abandon a draft",
+      "status": "PASSED",
+      "durationMs": 90.206624
+    },
+    {
+      "name": "Cannot publish a draft without a primary file",
+      "status": "PASSED",
+      "durationMs": 80.031583
+    },
+    {
+      "name": "Publishing a complete draft creates a model",
+      "status": "PASSED",
+      "durationMs": 80.468625
+    },
+    {
+      "name": "Publishing a draft seeded from an existing model creates a new version",
+      "status": "PASSED",
+      "durationMs": 81.941749
+    },
+    {
+      "name": "A user cannot start a draft targeting another user's model",
+      "status": "PASSED",
+      "durationMs": 77.788375
+    },
+    {
+      "name": "Anonymous user records a view",
+      "status": "PASSED",
+      "durationMs": 79.844167
+    },
+    {
+      "name": "Recording a run increments the run count",
+      "status": "PASSED",
+      "durationMs": 77.915709
+    },
+    {
+      "name": "Recording a download increments the download count",
+      "status": "PASSED",
+      "durationMs": 87.619041
+    },
+    {
+      "name": "Interactions summary returns the full shape",
+      "status": "PASSED",
+      "durationMs": 77.099625
+    },
+    {
+      "name": "Cannot record an interaction on a private model owned by someone else",
+      "status": "PASSED",
+      "durationMs": 90.057832
+    },
+    {
+      "name": "Anonymous viewer sees zero likes",
+      "status": "PASSED",
+      "durationMs": 82.102958
+    },
+    {
+      "name": "An authenticated user likes a model",
+      "status": "PASSED",
+      "durationMs": 100.973082
+    },
+    {
+      "name": "Liking a model is reflected in the summary",
+      "status": "PASSED",
+      "durationMs": 80.522083
+    },
+    {
+      "name": "Liking the same model twice does not double-count",
+      "status": "PASSED",
+      "durationMs": 81.412584
+    },
+    {
+      "name": "Unliking a model removes the like",
+      "status": "PASSED",
+      "durationMs": 83.291375
+    },
+    {
+      "name": "Liking requires authentication",
+      "status": "PASSED",
+      "durationMs": 95.382665
+    },
+    {
+      "name": "Cannot like a private model owned by someone else",
+      "status": "PASSED",
+      "durationMs": 90.016333
+    },
+    {
+      "name": "Grant read permission to another user",
+      "status": "PASSED",
+      "durationMs": 82.465125
+    },
+    {
+      "name": "User with read permission can access a private model",
+      "status": "PASSED",
+      "durationMs": 84.512709
+    },
+    {
+      "name": "User with write permission can update a model",
+      "status": "PASSED",
+      "durationMs": 89.671417
+    },
+    {
+      "name": "User with read permission cannot update a model",
+      "status": "PASSED",
+      "durationMs": 80.693832
+    },
+    {
+      "name": "List permissions on a model",
+      "status": "PASSED",
+      "durationMs": 105.341499
+    },
+    {
+      "name": "Revoke permission",
+      "status": "PASSED",
+      "durationMs": 83.483417
+    },
+    {
+      "name": "Revoked user can no longer access a private model",
+      "status": "PASSED",
+      "durationMs": 72.902165
+    },
+    {
+      "name": "Non-admin cannot grant permissions",
+      "status": "PASSED",
+      "durationMs": 83.237708
+    },
+    {
+      "name": "Cannot grant duplicate permission",
+      "status": "PASSED",
+      "durationMs": 78.569749
+    },
+    {
+      "name": "Grant admin permission allows managing permissions",
+      "status": "PASSED",
+      "durationMs": 79.756
+    },
+    {
+      "name": "Add a tag to a model's current version",
+      "status": "PASSED",
+      "durationMs": 88.768332
+    },
+    {
+      "name": "Add multiple tags to a model",
+      "status": "PASSED",
+      "durationMs": 82.647
+    },
+    {
+      "name": "Cannot add the same tag twice",
+      "status": "PASSED",
+      "durationMs": 88.459
+    },
+    {
+      "name": "Remove a tag from a model",
+      "status": "PASSED",
+      "durationMs": 84.230165
+    },
+    {
+      "name": "List tags for a specific version",
+      "status": "PASSED",
+      "durationMs": 78.825249
+    },
+    {
+      "name": "Tagging requires write permission",
+      "status": "PASSED",
+      "durationMs": 76.660499
+    },
+    {
+      "name": "Adding a tag creates the tag if it does not exist",
+      "status": "PASSED",
+      "durationMs": 90.98329
+    },
+    {
+      "name": "Create a version for a model",
+      "status": "PASSED",
+      "durationMs": 78.921707
+    },
+    {
+      "name": "Create a second version finalizes the first",
+      "status": "SKIPPED",
+      "durationMs": 0.032208
+    },
+    {
+      "name": "List versions of a model after creating an additional version",
+      "status": "PASSED",
+      "durationMs": 90.272834
+    },
+    {
+      "name": "List versions returns multiple versions in order",
+      "status": "SKIPPED",
+      "durationMs": 0.00629
+    },
+    {
+      "name": "Get a specific version by number",
+      "status": "PASSED",
+      "durationMs": 85.061542
+    },
+    {
+      "name": "Update the current version title",
+      "status": "PASSED",
+      "durationMs": 77.590084
+    },
+    {
+      "name": "Update the current version description",
+      "status": "PASSED",
+      "durationMs": 78.833333
+    },
+    {
+      "name": "Creating a version requires write permission",
+      "status": "PASSED",
+      "durationMs": 105.846874
+    },
+    {
+      "name": "Listing versions requires read access",
+      "status": "PASSED",
+      "durationMs": 77.860334
+    },
+    {
+      "name": "Updating a version requires write access",
+      "status": "PASSED",
+      "durationMs": 79.789916
+    },
+    {
+      "name": "A freshly-published model lists its initial version",
+      "status": "PASSED",
+      "durationMs": 81.701416
+    },
+    {
+      "name": "Create a model",
+      "status": "PASSED",
+      "durationMs": 71.707416
+    },
+    {
+      "name": "Create a model requires authentication",
+      "status": "PASSED",
+      "durationMs": 85.955583
+    },
+    {
+      "name": "Get a public model",
+      "status": "PASSED",
+      "durationMs": 65.833249
+    },
+    {
+      "name": "List public models",
+      "status": "PASSED",
+      "durationMs": 78.947125
+    },
+    {
+      "name": "Update a model's visibility",
+      "status": "PASSED",
+      "durationMs": 74.731207
+    },
+    {
+      "name": "Delete a model",
+      "status": "PASSED",
+      "durationMs": 84.003375
+    },
+    {
+      "name": "Cannot access a private model without permission",
+      "status": "PASSED",
+      "durationMs": 76.024042
+    },
+    {
+      "name": "Search models by keyword",
+      "status": "PASSED",
+      "durationMs": 82.451084
+    },
+    {
+      "name": "Create a forked model",
+      "status": "PASSED",
+      "durationMs": 73.2035
+    },
+    {
+      "name": "Unlisted models do not appear in search results",
+      "status": "PASSED",
+      "durationMs": 91.243666
+    },
+    {
+      "name": "Private models do not appear in search for non-owners",
+      "status": "PASSED",
+      "durationMs": 70.305624
+    },
+    {
+      "name": "Private models appear in search for the owner when publicOnly=false",
+      "status": "PASSED",
+      "durationMs": 80.05254
+    },
+    {
+      "name": "Permissions action map for anonymous viewer on public model",
+      "status": "PASSED",
+      "durationMs": 74.707708
+    },
+    {
+      "name": "Permissions action map for the owner",
+      "status": "PASSED",
+      "durationMs": 76.761832
+    },
+    {
+      "name": "Permissions action map for a non-author authenticated viewer on public model",
+      "status": "PASSED",
+      "durationMs": 77.571915
+    },
+    {
+      "name": "Resolving an unknown legacy model id returns 404",
+      "status": "PASSED",
+      "durationMs": 82.786166
+    },
+    {
+      "name": "Resolving a legacy id with an invalid value is rejected",
+      "status": "PASSED",
+      "durationMs": 70.600666
+    },
+    {
+      "name": "Random public model returns id and title when public models exist",
+      "status": "PASSED",
+      "durationMs": 71.176624
+    },
+    {
+      "name": "Search by authorId returns only models authored by that user",
+      "status": "PASSED",
+      "durationMs": 83.485083
+    },
+    {
+      "name": "Search by keyword matches version title",
+      "status": "PASSED",
+      "durationMs": 73.600416
+    },
+    {
+      "name": "Search supports sortBy=recent with order=asc",
+      "status": "PASSED",
+      "durationMs": 75.145292
+    },
+    {
+      "name": "Search by future fromDate returns no models",
+      "status": "PASSED",
+      "durationMs": 72.637249
+    },
+    {
+      "name": "Anonymous access returns an array",
+      "status": "PASSED",
+      "durationMs": 71.485291
+    },
+    {
+      "name": "Filtering by prefix returns an array",
+      "status": "PASSED",
+      "durationMs": 68.499125
+    },
+    {
+      "name": "Empty prefix is accepted",
+      "status": "PASSED",
+      "durationMs": 68.673874
+    },
+    {
+      "name": "Excessively long prefix is rejected",
+      "status": "PASSED",
+      "durationMs": 70.180791
+    },
+    {
+      "name": "AdminJS root path is wired through Fastify",
+      "status": "PASSED",
+      "durationMs": 69.693041
+    },
+    {
+      "name": "AdminJS panel is reachable without authentication in non-production",
+      "status": "PASSED",
+      "durationMs": 70.938458
+    },
+    {
+      "name": "The unauthenticated /v1/dev/fill-in route is gone",
+      "status": "PASSED",
+      "durationMs": 69.251957
+    },
+    {
+      "name": "A regular user cannot self-elevate systemRole via PATCH /v1/users/:id",
+      "status": "PASSED",
+      "durationMs": 72.524334
+    },
+    {
+      "name": "Soft-deleting a user invalidates their existing session cookie",
+      "status": "PASSED",
+      "durationMs": 87.670542
+    },
+    {
+      "name": "Swagger docs are reachable without auth in non-production",
+      "status": "PASSED",
+      "durationMs": 82.285249
+    },
+    {
+      "name": "Avatar upload rejects MIME spoofing (svg body sent as image/png)",
+      "status": "PASSED",
+      "durationMs": 72.289791
+    },
+    {
+      "name": "Additional-file upload still accepts script-like MIME types",
+      "status": "PASSED",
+      "durationMs": 79.639708
+    },
+    {
+      "name": "Additional-file upload still accepts script-like MIME types",
+      "status": "PASSED",
+      "durationMs": 73.989957
+    },
+    {
+      "name": "Deleting an additional file from a different model returns 404",
+      "status": "PASSED",
+      "durationMs": 87.218625
+    },
+    {
+      "name": "List tags returns paginated results",
+      "status": "PASSED",
+      "durationMs": 118.639957
+    },
+    {
+      "name": "Search tags by prefix",
+      "status": "PASSED",
+      "durationMs": 86.521666
+    },
+    {
+      "name": "Get a tag by name",
+      "status": "PASSED",
+      "durationMs": 74.269041
+    },
+    {
+      "name": "Get a non-existent tag returns 404",
+      "status": "PASSED",
+      "durationMs": 76.936874
+    },
+    {
+      "name": "List popular tags returns a paginated payload",
+      "status": "PASSED",
+      "durationMs": 73.86454
+    },
+    {
+      "name": "List users returns paginated results",
+      "status": "PASSED",
+      "durationMs": 75.624582
+    },
+    {
+      "name": "Get user by ID",
+      "status": "PASSED",
+      "durationMs": 79.210374
+    },
+    {
+      "name": "Update own profile",
+      "status": "PASSED",
+      "durationMs": 76.309166
+    },
+    {
+      "name": "Update profile requires authentication",
+      "status": "PASSED",
+      "durationMs": 80.782875
+    },
+    {
+      "name": "Delete own account",
+      "status": "PASSED",
+      "durationMs": 71.642833
+    },
+    {
+      "name": "Cannot update another user's profile",
+      "status": "PASSED",
+      "durationMs": 81.163582
+    },
+    {
+      "name": "Private profile returns only public fields to other users",
+      "status": "PASSED",
+      "durationMs": 88.65979
+    },
+    {
+      "name": "Private profile returns full fields to the owner",
+      "status": "PASSED",
+      "durationMs": 89.897457
+    },
+    {
+      "name": "Public profile returns full fields to other users",
+      "status": "PASSED",
+      "durationMs": 81.146166
+    }
+  ]
+}

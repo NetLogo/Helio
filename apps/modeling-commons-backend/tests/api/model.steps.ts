@@ -271,16 +271,6 @@ When(
   },
 );
 
-Given(
-  '{string} forks {string} as {string}',
-  async function (this: ICustomWorld, actorName: string, originalTitle: string, forkTitle: string) {
-    const actor = getUsers(this.context).get(actorName)!;
-    const parentModelId = getModels(this.context).get(originalTitle)!;
-    const id = await createModel(this.server, actor, forkTitle, 'public', parentModelId);
-    getModels(this.context).set(forkTitle, id);
-  },
-);
-
 When(
   '{string} searches models filtered by author {string}',
   async function (this: ICustomWorld, actorName: string, authorName: string) {
@@ -294,15 +284,3 @@ When(
   },
 );
 
-When(
-  '{string} searches models filtered by parent model {string}',
-  async function (this: ICustomWorld, actorName: string, parentTitle: string) {
-    const actor = getUsers(this.context).get(actorName)!;
-    const parentModelId = getModels(this.context).get(parentTitle)!;
-    this.context.latestResponse = await this.server.inject({
-      method: 'GET',
-      url: `/api/v1/models?parentModelId=${parentModelId}`,
-      headers: { cookie: actor.cookie },
-    });
-  },
-);

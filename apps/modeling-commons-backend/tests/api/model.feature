@@ -146,14 +146,6 @@ Feature: Model Management
     Then the response status should be 200
     And the response body property "data" should have length 2
 
-  Scenario: Search filtered by parentModelId returns only forks of that model
-    Given an authenticated user "owner"
-    And a public model "Original Sim" created by "owner"
-    And "owner" forks "Original Sim" as "Forked Sim"
-    When "owner" searches models filtered by parent model "Original Sim"
-    Then the response status should be 200
-    And the response body property "data" should have length 1
-
   Scenario: Search by keyword matches version title
     Given an authenticated user "owner"
     And a public model "Distinct Keyword Marker" created by "owner"

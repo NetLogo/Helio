@@ -198,3 +198,17 @@ Then(
     assert.strictEqual(body.data?.title, expected);
   },
 );
+
+When(
+  '{string} creates a draft targeting the model {string}',
+  async function (this: ICustomWorld, actorName: string, modelTitle: string) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'POST',
+      url: '/api/v1/model-drafts',
+      payload: { modelId },
+      headers: { cookie: actor.cookie, 'content-type': 'application/json' },
+    });
+  },
+);

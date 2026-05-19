@@ -85,6 +85,8 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
   await fastify.register(UnderPressure, {
     healthCheck: async () => true,
     healthCheckInterval: 5000,
+    maxEventLoopDelay: 1500,
+    maxEventLoopUtilization: 0.98,
     exposeStatusRoute: {
       routeOpts: { logLevel: 'silent' },
       url: '/api/health',

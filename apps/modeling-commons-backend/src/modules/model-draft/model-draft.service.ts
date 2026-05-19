@@ -1,7 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import {
   ModelDraftFileNotFoundError,
+  ModelDraftInvalidPayloadError,
   ModelDraftNotFoundError,
+  ModelDraftNotPublishableError,
 } from '#src/modules/model-draft/domain/model-draft.errors.ts';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
 import type {
@@ -360,7 +362,15 @@ export default function makeModelDraftService({
     async publish(draft: ModelDraftEntity): Promise<PublishDraftResponseDto> {
       const userId = draft.userId;
       const draftId = draft.id;
-      const data = assertPublishable(currentData(draft));
+      let data;
+      try {
+        data = assertPublishable(currentData(draft));
+      } catch (err) {
+        if (err instanceof ModelDraftInvalidPayloadError) {
+          throw new ModelDraftNotPublishableError(err.message);
+        }
+        throw err;
+      }
 
       const existingModel = draft.modelId ? await modelRepository.findOneById(draft.modelId) : null;
       if (draft.modelId && !existingModel) throw new ModelDraftNotFoundError(draftId);

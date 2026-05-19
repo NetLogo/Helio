@@ -79,3 +79,15 @@ Feature: Model Drafts
     Then the response status should be 201
     And the response body should have property "modelId"
     And the response body property "versionNumber" should equal "2"
+
+  # H-1: cross-user draft hijack. POST /v1/model-drafts with a victim's
+  # modelId must be refused at create time (requireWritableModel /
+  # resolveModelDraft).
+  @security
+  Scenario: A user cannot start a draft targeting another user's model
+    Given an authenticated user "victim"
+    And a public model "Victim Model" created by "victim"
+    And an authenticated user "attacker"
+    When "attacker" creates a draft targeting the model "Victim Model"
+    Then the response status should not be 201
+    And the response status should not be 200

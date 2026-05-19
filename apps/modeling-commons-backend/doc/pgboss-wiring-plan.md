@@ -86,6 +86,12 @@ Placing it before routes means a hard failure in worker startup prevents the HTT
 
 No DI-container registration needed: workers are started imperatively from the composition root, not resolved as services.
 
+## Event Processing
+The `event-processor` worker is the hook for async side-effects off the audit-event table. It runs a single queue, `event-processor`, which processes events in order of creation. The handler function is currently a no-op, but eventually will switch on `event.type` and trigger downstream effects (e.g. send notification email on `model.created`).
+
+## Testing
+Add spec testing for each worker. Add end-to-end test coverage for the event processor by inserting an unprocessed event into the `events` table and confirming the worker picks it up and updates `processedAt`.
+
 ## Verification
 
 1. `yarn run deps:validate` — confirm no module-boundary violations from the new `src/workers/index.ts` imports.
