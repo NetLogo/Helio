@@ -10,9 +10,39 @@ function getUsers(context: Record<string, unknown>): Map<string, TestUser> {
   return context['users'] as Map<string, TestUser>;
 }
 
-function getVersions(context: Record<string, unknown>): Map<string, string> {
-  if (!context['versions']) context['versions'] = new Map<string, string>();
-  return context['versions'] as Map<string, string>;
+function getVersions(context: Record<string, unknown>): Map<string, number> {
+  if (!context['versions']) context['versions'] = new Map<string, number>();
+  return context['versions'] as Map<string, number>;
+}
+
+function buildVersionMultipart(
+  title?: string,
+  description?: string,
+): { payload: Buffer; contentType: string } {
+  const boundary = `----CucumberBoundary${Date.now().toString(16)}`;
+  const parts: string[] = [
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="model.nlogox"\r\n` +
+      `Content-Type: text/plain\r\n\r\n` +
+      `; auto-generated test content\nto setup\nclear-all\nend\n\r\n`,
+  ];
+  if (title !== undefined) {
+    parts.push(
+      `--${boundary}\r\n` + `Content-Disposition: form-data; name="title"\r\n\r\n` + `${title}\r\n`,
+    );
+  }
+  if (description !== undefined) {
+    parts.push(
+      `--${boundary}\r\n` +
+        `Content-Disposition: form-data; name="description"\r\n\r\n` +
+        `${description}\r\n`,
+    );
+  }
+  parts.push(`--${boundary}--\r\n`);
+  return {
+    payload: Buffer.from(parts.join(''), 'utf-8'),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
 }
 
 Given(
@@ -20,17 +50,18 @@ Given(
   async function (this: ICustomWorld, versionKey: string, modelTitle: string, title: string) {
     const user = this.context['currentUser'] as TestUser;
     const modelId = getModels(this.context).get(modelTitle)!;
+    const { payload, contentType } = buildVersionMultipart(title);
     const res = await this.server.inject({
       method: 'POST',
       url: `/api/v1/models/${modelId}/versions`,
-      payload: { title },
-      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+      payload,
+      headers: { cookie: user.cookie, 'content-type': contentType },
     });
     if (res.statusCode !== 201) {
       throw new Error(`Failed to create version (${res.statusCode}): ${res.body}`);
     }
-    const id = JSON.parse(res.body).id;
-    getVersions(this.context).set(`${modelTitle}:${versionKey}`, id);
+    const versionNumber = JSON.parse(res.body).versionNumber;
+    getVersions(this.context).set(`${modelTitle}:${versionKey}`, versionNumber);
   },
 );
 
@@ -39,11 +70,12 @@ When(
   async function (this: ICustomWorld, modelTitle: string, title: string) {
     const user = this.context['currentUser'] as TestUser;
     const modelId = getModels(this.context).get(modelTitle)!;
+    const { payload, contentType } = buildVersionMultipart(title);
     this.context.latestResponse = await this.server.inject({
       method: 'POST',
       url: `/api/v1/models/${modelId}/versions`,
-      payload: { title },
-      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+      payload,
+      headers: { cookie: user.cookie, 'content-type': contentType },
     });
   },
 );
@@ -53,11 +85,12 @@ When(
   async function (this: ICustomWorld, actorName: string, modelTitle: string, title: string) {
     const actor = getUsers(this.context).get(actorName)!;
     const modelId = getModels(this.context).get(modelTitle)!;
+    const { payload, contentType } = buildVersionMultipart(title);
     this.context.latestResponse = await this.server.inject({
       method: 'POST',
       url: `/api/v1/models/${modelId}/versions`,
-      payload: { title },
-      headers: { cookie: actor.cookie, 'content-type': 'application/json' },
+      payload,
+      headers: { cookie: actor.cookie, 'content-type': contentType },
     });
   },
 );

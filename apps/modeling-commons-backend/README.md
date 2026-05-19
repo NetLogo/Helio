@@ -31,9 +31,12 @@ docker compose -f docker-compose.dev.yml --profile cache --profile lambda up
 |---------|-------------|----------|-------|-------------------------|
 | PostgreSQL | Relational Database | No | | No |
 | RustFS | Object Storage | No | | No |
+| Mailpit | Local SMTP catch-all + Web UI | No | SMTP on `:1025`, UI on http://localhost:8025 | No |
 | Redis | In-memory Cache | Yes | | No |
 | Galapagos | NetLogo Web Instance | Yes | Frontend .nlogox files runtime | Yes |
 | `netlogo-services` | NetLogo Desktop Lambda Functions | Yes | Used to generate thumbnails | Yes |
+
+Mail is captured locally by Mailpit — no Ethereal/remote SMTP account needed. `yarn run svc` boots it alongside the rest of the dev services.
 
 To authenticate Docker, use the following command
 ```bash

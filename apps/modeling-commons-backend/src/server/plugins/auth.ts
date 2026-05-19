@@ -82,7 +82,7 @@ class AuthService {
   }
 
   async revokeUserSessions(userId: string) {
-    await auth.api.revokeUserSessions(userId);
+    await prisma.session.deleteMany({ where: { userId } });
   }
 }
 

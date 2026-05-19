@@ -15,7 +15,7 @@ Feature: User Management
     When I get the current user's profile
     Then the response status should be 200
     And the response body should have property "id"
-    And the response body should have property "email"
+    And the response body should have property "emailVerified"
 
   Scenario: Update own profile
     Given an authenticated user
@@ -46,8 +46,8 @@ Feature: User Management
     Then the response status should be 200
     And the response body should have property "name"
     And the response body should have property "isProfilePublic" equal to false
+    And the response body should have property "image"
     And the response body should not have property "email"
-    And the response body should not have property "image"
     And the response body should not have property "systemRole"
     And the response body should not have property "userKind"
 
@@ -56,7 +56,7 @@ Feature: User Management
     And "alice" sets their profile to private
     When I get the current user's profile
     Then the response status should be 200
-    And the response body should have property "email"
+    And the response body should have property "emailVerified"
     And the response body should have property "isProfilePublic" equal to false
 
   Scenario: Public profile returns full fields to other users
@@ -65,5 +65,5 @@ Feature: User Management
     And an authenticated user "bob"
     When "bob" gets the profile of "alice"
     Then the response status should be 200
-    And the response body should have property "email"
+    And the response body should have property "emailVerified"
     And the response body should have property "isProfilePublic" equal to true

@@ -12,14 +12,17 @@ class FastifyMailerError extends Error {
 const defaults: SMTPTransport.Options = {
   from: `${env.product.name} <${env.smtp.senderAddress}>`,
 };
+const hasAuth = env.smtp.user.length > 0;
 const transport: SMTPTransport.Options | undefined = {
   host: env.smtp.host,
   port: env.smtp.port,
-  auth: {
-    user: env.smtp.user,
-    pass: env.smtp.password,
-  },
-  requireTLS: true,
+  secure: env.smtp.secure,
+  ...(hasAuth
+    ? {
+        auth: { user: env.smtp.user, pass: env.smtp.password },
+        requireTLS: true,
+      }
+    : { ignoreTLS: true }),
 };
 
 let transporter: Transporter;

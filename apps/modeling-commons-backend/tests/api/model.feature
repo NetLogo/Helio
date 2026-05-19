@@ -10,9 +10,9 @@ Feature: Model Management
     And the response body should have property "id"
 
   Scenario: Create a model requires authentication
-    When I send a POST request to "/api/v1/models" with JSON body:
+    When I send a POST request to "/api/v1/model-drafts" with JSON body:
       """
-      { "title": "Unauthorized Model" }
+      {}
       """
     Then the response status should be 401
 
@@ -79,10 +79,10 @@ Feature: Model Management
     Then the response status should be 200
     And the response body property "data" should have length 0
 
-  Scenario: Private models appear in search for the owner
+  Scenario: Private models appear in search for the owner when publicOnly=false
     Given an authenticated user "owner"
     And a private model "My Secret" created by "owner"
-    When "owner" sends a GET request to "/api/v1/models"
+    When "owner" sends a GET request to "/api/v1/models?publicOnly=false"
     Then the response status should be 200
     And the response body property "data" should have length 1
 

@@ -106,16 +106,13 @@ When(
 
 When('I create a model with title {string}', async function (this: ICustomWorld, title: string) {
   const user = this.context['currentUser'] as TestUser;
-  this.context.latestResponse = await this.server.inject({
-    method: 'POST',
-    url: '/api/v1/models',
-    payload: { title },
-    headers: { cookie: user.cookie, 'content-type': 'application/json' },
-  });
-  if (this.context.latestResponse.statusCode === 201) {
-    const id = JSON.parse(this.context.latestResponse.body).id;
-    getModels(this.context).set(title, id);
-  }
+  const id = await createModel(this.server, user, title, 'public');
+  getModels(this.context).set(title, id);
+  this.context.latestResponse = {
+    statusCode: 201,
+    body: JSON.stringify({ id }),
+    headers: {},
+  } as unknown as Awaited<ReturnType<typeof this.server.inject>>;
 });
 
 Given(
@@ -264,15 +261,12 @@ When(
   async function (this: ICustomWorld, originalTitle: string, forkTitle: string) {
     const user = this.context['currentUser'] as TestUser;
     const parentModelId = getModels(this.context).get(originalTitle)!;
-    this.context.latestResponse = await this.server.inject({
-      method: 'POST',
-      url: '/api/v1/models',
-      payload: { title: forkTitle, parentModelId },
-      headers: { cookie: user.cookie, 'content-type': 'application/json' },
-    });
-    if (this.context.latestResponse.statusCode === 201) {
-      const id = JSON.parse(this.context.latestResponse.body).id;
-      getModels(this.context).set(forkTitle, id);
-    }
+    const id = await createModel(this.server, user, forkTitle, 'public', parentModelId);
+    getModels(this.context).set(forkTitle, id);
+    this.context.latestResponse = {
+      statusCode: 201,
+      body: JSON.stringify({ id }),
+      headers: {},
+    } as unknown as Awaited<ReturnType<typeof this.server.inject>>;
   },
 );

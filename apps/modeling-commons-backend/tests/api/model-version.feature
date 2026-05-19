@@ -8,7 +8,7 @@ Feature: Model Versions
     And a public model "My Model" created by the current user
     When I create a version for "My Model" with title "Initial Version"
     Then the response status should be 201
-    And the response body should have property "id"
+    And the response body should have property "versionNumber"
 
   @pending
   Scenario: Create a second version finalizes the first
@@ -18,14 +18,14 @@ Feature: Model Versions
     When I create a version for "Evolving Model" with title "Second Draft"
     Then the response status should be 201
 
-  Scenario: List versions of a model with one version
+  Scenario: List versions of a model after creating an additional version
     Given an authenticated user
     And a public model "Versioned Model" created by the current user
-    And a version "v1" for "Versioned Model" with title "Release 1"
+    And a version "v2" for "Versioned Model" with title "Release 2"
     When I list versions of the model "Versioned Model"
     Then the response status should be 200
     And the response body should have property "data" as an array
-    And the response body property "data" should have length 1
+    And the response body property "data" should have length 2
 
   @pending
   Scenario: List versions returns multiple versions in order
@@ -40,8 +40,8 @@ Feature: Model Versions
   Scenario: Get a specific version by number
     Given an authenticated user
     And a public model "Specific Model" created by the current user
-    And a version "v1" for "Specific Model" with title "The Version"
-    When I get version 1 of the model "Specific Model"
+    And a version "v2" for "Specific Model" with title "The Version"
+    When I get version 2 of the model "Specific Model"
     Then the response status should be 200
     And the response body property "title" should equal "The Version"
 
@@ -81,10 +81,10 @@ Feature: Model Versions
     When "stranger" updates the current version of "Guarded Model" with title "Hacked"
     Then the response status should be 403
 
-  Scenario: List versions of a model with no versions returns empty
+  Scenario: A freshly-published model lists its initial version
     Given an authenticated user
-    And a public model "Empty Model" created by the current user
-    When I list versions of the model "Empty Model"
+    And a public model "Initial Model" created by the current user
+    When I list versions of the model "Initial Model"
     Then the response status should be 200
     And the response body should have property "data" as an array
-    And the response body property "data" should have length 0
+    And the response body property "data" should have length 1
