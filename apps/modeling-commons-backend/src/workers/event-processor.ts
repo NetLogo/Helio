@@ -4,6 +4,7 @@ import { PgBoss } from 'pg-boss';
 
 const QUEUE_NAME = 'process-events';
 const BATCH_SIZE = 50;
+const CRON_EXPRESSION = '*/1 * * * *';
 
 export async function startEventProcessor({
   connectionString,
@@ -30,6 +31,8 @@ export async function startEventProcessor({
     }
     logger.debug(`Processed ${events.length} events`);
   });
+
+  await boss.schedule(QUEUE_NAME, CRON_EXPRESSION);
 
   logger.info('Event processor started');
   return boss;

@@ -10,6 +10,7 @@ import UnderPressure from '@fastify/under-pressure';
 
 import env from '#src/config/env.ts';
 import { di } from '#src/server/di/index.ts';
+import { startWorkers } from '#src/workers/index.ts';
 import adminjs from './context/adminjs.ts';
 
 export default async function createServer(fastify: FastifyInstance): Promise<FastifyInstance> {
@@ -113,6 +114,8 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
 
   // Configure Dependency Injection
   await di(fastify);
+
+  await startWorkers(fastify);
 
   // Auto-load routes
   await fastify.register(AutoLoad, {
