@@ -14,19 +14,31 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
   await fastify.register(Helmet, {
     global: true,
     contentSecurityPolicy: {
-      directives: {
-        // General default source
-        defaultSrc: [`'self'`],
-        // Allow specific image sources (e.g., data URIs used by the Swagger validator)
-        imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
-        // Allow specific script sources, potentially including 'unsafe-inline' or nonces
-        scriptSrc: [`'self'`, `https:`, `'unsafe-inline'`],
-        // Allow specific style sources, including 'unsafe-inline' for some inline styles
-        styleSrc: [`'self'`, `'unsafe-inline'`],
-        // Allow WebAssembly to function (required by recent Scalar versions)
-        workerSrc: [`'self'`, `'unsafe-eval'`],
-        // Add other directives as needed
-      },
+      // There is no HTML content served by this backend,
+      // so we can be very strict with CSP. However, we expose
+      // API documentation for local development, which requires
+      // a looser policy.
+      // --Omar Ibrahim, May 18 26
+      directives: env.isDevelopment
+        ? {
+            scriptSrc: [`'self'`, `'unsafe-inline'`],
+            styleSrc: [`'self'`, `'unsafe-inline'`],
+            imgSrc: [`'self'`, 'data:'],
+            fontSrc: [`'self'`, 'data:'],
+            connectSrc: [`'self'`],
+          }
+        : {
+            defaultSrc: [`'none'`],
+            frameAncestors: [`'none'`],
+            baseUri: [`'none'`],
+            formAction: [`'none'`],
+            objectSrc: [`'none'`],
+            scriptSrc: [`'none'`],
+            styleSrc: [`'none'`],
+            imgSrc: [`'none'`],
+            fontSrc: [`'none'`],
+            connectSrc: [`'none'`],
+          },
     },
   });
 
@@ -41,7 +53,6 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
         return;
       }
 
-      const hostname = new URL(origin).hostname;
       if (env.isDevelopment || env.cors.allowedOrigins?.includes(origin)) {
         // Request from localhost or your production domain will pass
         cb(null, true);
