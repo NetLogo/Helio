@@ -23,7 +23,6 @@ const schema = Type.Object({
   POSTGRES_DB: Type.String(),
   REDIS_HOST: Type.String(),
   REDIS_PORT: Type.Number(),
-  REDIS_URL: Type.String(),
   RUSTFS_ENDPOINT: Type.String(),
   RUSTFS_DOCKER_ENDPOINT: Type.Optional(Type.String()),
   RUSTFS_CONSOLE_URL: Type.String(),
@@ -123,7 +122,7 @@ export default {
   cache: {
     host: env.REDIS_HOST,
     port: env.REDIS_PORT,
-    url: env.REDIS_URL,
+    url: `redis://${env.REDIS_HOST}:${env.REDIS_PORT}`,
   },
   storage: {
     endpoint: env.RUSTFS_ENDPOINT,
