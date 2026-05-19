@@ -25,3 +25,10 @@ Feature: Admin Events
   Scenario: Unauthenticated user cannot access admin events
     When I send a GET request to "/api/v1/admin/events"
     Then the response status should be 401
+
+  Scenario: Admin can filter events by resourceType
+    Given an authenticated admin user "admin"
+    And a public model "Resource Filter Model" created by "admin"
+    When "admin" lists admin events with resourceType "model"
+    Then the response status should be 200
+    And the response body should have property "data" as an array

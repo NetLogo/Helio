@@ -96,6 +96,58 @@ describe('buildModelWhere', () => {
         ],
       });
     });
+
+    it('adds netlogoVersion filter against versions.some.netlogoVersion', () => {
+      const where = buildModelWhere(
+        { netlogoVersion: '6.4.0' } as ModelSearchFilters,
+        null,
+      );
+      expect(where.AND).toContainEqual({
+        versions: { some: { netlogoVersion: '6.4.0' } },
+      });
+    });
+
+    it('adds a date-range AND clause when only fromDate is provided', () => {
+      const where = buildModelWhere(
+        { fromDate: '2024-01-01' } as ModelSearchFilters,
+        null,
+      );
+      const dateClause = (where.AND as object[]).find(
+        (c) => 'AND' in (c as object),
+      ) as { AND: object[] } | undefined;
+      expect(dateClause).toBeDefined();
+      expect(dateClause!.AND).toContainEqual({ createdAt: { gte: new Date('2024-01-01') } });
+    });
+
+    it('adds a date-range AND clause when only toDate is provided', () => {
+      const where = buildModelWhere(
+        { toDate: '2024-12-31' } as ModelSearchFilters,
+        null,
+      );
+      const dateClause = (where.AND as object[]).find(
+        (c) => 'AND' in (c as object),
+      ) as { AND: object[] } | undefined;
+      expect(dateClause).toBeDefined();
+      expect(dateClause!.AND).toContainEqual({ createdAt: { lte: new Date('2024-12-31') } });
+    });
+
+    it('combines fromDate and toDate into a single AND clause', () => {
+      const where = buildModelWhere(
+        { fromDate: '2024-01-01', toDate: '2024-12-31' } as ModelSearchFilters,
+        null,
+      );
+      const dateClause = (where.AND as object[]).find(
+        (c) => 'AND' in (c as object),
+      ) as { AND: object[] } | undefined;
+      expect(dateClause).toBeDefined();
+      expect(dateClause!.AND).toHaveLength(2);
+    });
+
+    it('omits date conditions when neither fromDate nor toDate is set', () => {
+      const where = buildModelWhere(emptyFilters, null);
+      expect(JSON.stringify(where)).not.toContain('gte');
+      expect(JSON.stringify(where)).not.toContain('lte');
+    });
   });
 
   it('combines all filters into a single AND', () => {

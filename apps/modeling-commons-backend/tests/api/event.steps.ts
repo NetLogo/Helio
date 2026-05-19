@@ -41,3 +41,15 @@ When(
     });
   },
 );
+
+When(
+  '{string} lists admin events with resourceType {string}',
+  async function (this: ICustomWorld, actorName: string, resourceType: string) {
+    const actor = getUsers(this.context).get(actorName)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/admin/events?resourceType=${encodeURIComponent(resourceType)}`,
+      headers: { cookie: actor.cookie },
+    });
+  },
+);

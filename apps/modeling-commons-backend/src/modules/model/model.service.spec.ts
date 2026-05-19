@@ -102,4 +102,37 @@ describe('modelService', () => {
       await expect(service.findById('missing')).rejects.toThrow(ModelNotFoundError);
     });
   });
+
+  describe('resolveLegacyId', () => {
+    it('returns the resolved model id when the legacy id is known', async () => {
+      modelRepository.resolveLegacyId.mockResolvedValue('model-1');
+
+      const id = await service.resolveLegacyId(123);
+
+      expect(id).toBe('model-1');
+      expect(modelRepository.resolveLegacyId).toHaveBeenCalledWith(123);
+    });
+
+    it('throws ModelNotFoundError when the legacy id is unknown', async () => {
+      modelRepository.resolveLegacyId.mockResolvedValue(undefined);
+
+      await expect(service.resolveLegacyId(999)).rejects.toThrow(ModelNotFoundError);
+    });
+  });
+
+  describe('findRandomPublic', () => {
+    it('returns the random public model when one exists', async () => {
+      modelRepository.findRandomPublic.mockResolvedValue({ id: 'model-1', title: 'Random' });
+
+      const result = await service.findRandomPublic();
+
+      expect(result).toEqual({ id: 'model-1', title: 'Random' });
+    });
+
+    it('throws ModelNotFoundError when no public model is available', async () => {
+      modelRepository.findRandomPublic.mockResolvedValue(undefined);
+
+      await expect(service.findRandomPublic()).rejects.toThrow(ModelNotFoundError);
+    });
+  });
 });

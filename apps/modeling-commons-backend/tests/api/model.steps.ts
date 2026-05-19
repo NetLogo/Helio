@@ -270,3 +270,39 @@ When(
     } as unknown as Awaited<ReturnType<typeof this.server.inject>>;
   },
 );
+
+Given(
+  '{string} forks {string} as {string}',
+  async function (this: ICustomWorld, actorName: string, originalTitle: string, forkTitle: string) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const parentModelId = getModels(this.context).get(originalTitle)!;
+    const id = await createModel(this.server, actor, forkTitle, 'public', parentModelId);
+    getModels(this.context).set(forkTitle, id);
+  },
+);
+
+When(
+  '{string} searches models filtered by author {string}',
+  async function (this: ICustomWorld, actorName: string, authorName: string) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const author = getUsers(this.context).get(authorName)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models?authorId=${author.id}`,
+      headers: { cookie: actor.cookie },
+    });
+  },
+);
+
+When(
+  '{string} searches models filtered by parent model {string}',
+  async function (this: ICustomWorld, actorName: string, parentTitle: string) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const parentModelId = getModels(this.context).get(parentTitle)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models?parentModelId=${parentModelId}`,
+      headers: { cookie: actor.cookie },
+    });
+  },
+);

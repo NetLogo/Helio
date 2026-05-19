@@ -118,3 +118,61 @@ Feature: Model Management
     And the response permissions action "canLike" should be true
     And the response permissions action "canEdit" should be false
     And the response permissions action "canDelete" should be false
+
+  @smoke
+  Scenario: Resolving an unknown legacy model id returns 404
+    When I send a GET request to "/api/v1/legacy/models/999999/resolve"
+    Then the response status should be 404
+
+  Scenario: Resolving a legacy id with an invalid value is rejected
+    When I send a GET request to "/api/v1/legacy/models/0/resolve"
+    Then the response status should be 400
+
+  Scenario: Random public model returns id and title when public models exist
+    Given an authenticated user "owner"
+    And a public model "Random Candidate" created by "owner"
+    When I send a GET request to "/api/v1/models/random"
+    Then the response status should be 200
+    And the response body should have property "id"
+    And the response body should have property "title"
+
+  Scenario: Search by authorId returns only models authored by that user
+    Given an authenticated user "alice"
+    And a public model "Alice One" created by "alice"
+    And a public model "Alice Two" created by "alice"
+    And an authenticated user "bob"
+    And a public model "Bob One" created by "bob"
+    When "alice" searches models filtered by author "alice"
+    Then the response status should be 200
+    And the response body property "data" should have length 2
+
+  Scenario: Search filtered by parentModelId returns only forks of that model
+    Given an authenticated user "owner"
+    And a public model "Original Sim" created by "owner"
+    And "owner" forks "Original Sim" as "Forked Sim"
+    When "owner" searches models filtered by parent model "Original Sim"
+    Then the response status should be 200
+    And the response body property "data" should have length 1
+
+  Scenario: Search by keyword matches version title
+    Given an authenticated user "owner"
+    And a public model "Distinct Keyword Marker" created by "owner"
+    And a public model "Other Model" created by "owner"
+    When "owner" sends a GET request to "/api/v1/models?keyword=Distinct"
+    Then the response status should be 200
+    And the response body property "data" should have length 1
+
+  Scenario: Search supports sortBy=recent with order=asc
+    Given an authenticated user "owner"
+    And a public model "First" created by "owner"
+    And a public model "Second" created by "owner"
+    When "owner" sends a GET request to "/api/v1/models?sortBy=recent&order=asc"
+    Then the response status should be 200
+    And the response body should have property "data" as an array
+
+  Scenario: Search by future fromDate returns no models
+    Given an authenticated user "owner"
+    And a public model "Past Model" created by "owner"
+    When "owner" sends a GET request to "/api/v1/models?fromDate=2999-01-01"
+    Then the response status should be 200
+    And the response body property "data" should have length 0

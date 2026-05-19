@@ -25,3 +25,10 @@ Feature: Tag Management
   Scenario: Get a non-existent tag returns 404
     When I send a GET request to "/api/v1/tags/nonexistent-tag-xyz"
     Then the response status should be 404
+
+  @smoke
+  Scenario: List popular tags returns a paginated payload
+    When I send a GET request to "/api/v1/tags/popular"
+    Then the response status should be 200
+    And the response body should have property "data" as an array
+    And the response body should have property "count"
