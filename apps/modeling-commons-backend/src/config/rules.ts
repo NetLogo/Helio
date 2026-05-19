@@ -8,6 +8,139 @@ const rules = {
     fileUpload: {
       size: { max: 15 * MEGABYTE } as MinMax,
       filesPerUpload: { max: 10 } as MinMax,
+      allowedContentTypes: [
+        'image/png',
+        'image/jpeg',
+        'image/webp',
+        'image/gif',
+        'image/svg+xml',
+        'application/octet-stream',
+        'application/pdf',
+        'text/plain',
+
+        // All documents
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/vnd.oasis.opendocument.text',
+        'application/vnd.oasis.opendocument.spreadsheet',
+        'application/vnd.oasis.opendocument.presentation',
+        'application/vnd.apple.pages',
+        'application/vnd.apple.numbers',
+        'application/vnd.apple.keynote',
+        'application/vnd.google-apps.document',
+        'application/vnd.google-apps.spreadsheet',
+        'application/vnd.google-apps.presentation',
+        'application/vnd.google-apps.drawing',
+
+        // All audio
+        'audio/mpeg',
+        'audio/wav',
+        'audio/ogg',
+        'audio/flac',
+        'audio/aac',
+        'audio/webm',
+        'audio/opus',
+
+        // All video
+        'video/mp4',
+        'video/webm',
+        'video/ogg',
+        'video/x-matroska',
+        'video/x-msvideo',
+        'video/x-flv',
+
+        // All code
+        'application/javascript',
+        'application/x-python-code',
+        'application/x-java',
+        'application/x-c++',
+        'application/x-csharp',
+        'application/x-ruby',
+        'application/x-php',
+        'application/x-go',
+        'application/x-swift',
+        'application/x-kotlin',
+
+        // All archives
+        'application/zip',
+        'application/x-tar',
+        'application/x-gzip',
+        'application/x-7z-compressed',
+        'application/x-rar-compressed',
+
+        // All fonts
+        'font/woff',
+        'font/woff2',
+        'application/font-woff',
+        'application/font-woff2',
+        'application/vnd.ms-fontobject',
+        'application/x-font-ttf',
+        'application/x-font-opentype',
+
+        // All datasets
+        'application/x-sql',
+        'application/x-csv',
+        'application/x-xml',
+        'application/json',
+        'application/x-yaml',
+        'application/x-parquet',
+        'application/x-avro',
+
+        // All 3D models
+        'model/gltf+json',
+        'model/gltf-binary',
+        'model/obj',
+        'model/stl',
+        'model/ply',
+        'model/3mf',
+        'model/x3d+xml',
+        'model/x3d+binary',
+
+        // All CAD files
+        'application/vnd.autodesk.autocad.dwg',
+        'application/vnd.autodesk.autocad.dxf',
+        'application/vnd.autodesk.autocad.dgn',
+        'application/vnd.autodesk.autocad.dwt',
+        'application/vnd.autodesk.autocad.dws',
+
+        // All GIS files
+        'application/vnd.esri.shapefile',
+        'application/vnd.esri.filegdb',
+        'application/vnd.esri.arcgis-rest',
+        'application/vnd.google-earth.kml+xml',
+        'application/vnd.google-earth.kmz',
+
+        // All eBooks
+        'application/epub+zip',
+        'application/x-mobipocket-ebook',
+        'application/x-azw',
+        'application/x-azw3',
+        'application/x-azw4',
+
+        // All vector graphics
+        'image/svg+xml',
+        'application/vnd.adobe.illustrator',
+        'application/x-illustrator',
+        'application/vnd.corel-draw',
+        'application/x-coreldraw',
+
+        // All disk images
+        'application/x-iso9660-image',
+        'application/x-apple-diskimage',
+        'application/x-virtualbox-vdi',
+        'application/x-virtualbox-vhd',
+        'application/x-virtualbox-vmdk',
+
+        // All email files
+        'application/vnd.ms-outlook',
+        'application/x-mbox',
+        'application/x-eml',
+        'application/x-msg',
+      ] as string[],
     },
     fileUploadRoute: {
       strict: {

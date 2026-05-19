@@ -1,6 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { createStorageKey, sanitizeFilename } from './utils.ts';
-import { afterEach, beforeEach } from 'node:test';
 
 describe('sanitizeFilename', () => {
   describe('preserves already-safe filenames', () => {

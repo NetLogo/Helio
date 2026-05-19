@@ -80,12 +80,12 @@ describe('userDomain', () => {
         id: user.id,
         name: user.name,
         isProfilePublic: user.isProfilePublic,
+        image: user.image,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       });
       expect(view).not.toHaveProperty('email');
       expect(view).not.toHaveProperty('emailVerified');
-      expect(view).not.toHaveProperty('image');
       expect(view).not.toHaveProperty('systemRole');
       expect(view).not.toHaveProperty('userKind');
     });

@@ -19,7 +19,6 @@ const transport: SMTPTransport.Options | undefined = {
     user: env.smtp.user,
     pass: env.smtp.password,
   },
-  secure: true,
   requireTLS: true,
 };
 

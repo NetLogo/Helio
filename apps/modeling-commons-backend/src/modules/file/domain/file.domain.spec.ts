@@ -4,7 +4,10 @@ import {
   FileTooLargeError,
   FileTypeNotAllowedError,
 } from '#src/modules/file/domain/file.errors.ts';
-import { MAX_FILE_SIZE, PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
+import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
+import rules from '#src/config/rules.ts';
+
+const MAX_FILE_SIZE = rules.limits.fileUpload.size.max ?? 0;
 
 const domain = fileDomain();
 

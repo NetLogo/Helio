@@ -77,7 +77,7 @@ describe('fileService', () => {
       storage.send.mockResolvedValue({
         ContentType: 'image/png',
         ContentLength: 42,
-        Metadata: { filename: 'a.png', createdAt: new Date().toISOString() },
+        Metadata: { filename: 'a.png', createdat: new Date().toISOString() },
       });
 
       const info = await service.getMetadata('files/public/2026/04/17/a-b.png');
@@ -91,8 +91,8 @@ describe('fileService', () => {
       storage.send.mockResolvedValue({
         Metadata: {
           filename: 'a.png',
-          createdAt: new Date().toISOString(),
-          deletedAt: new Date().toISOString(),
+          createdat: new Date().toISOString(),
+          deletedat: new Date().toISOString(),
         },
       });
 

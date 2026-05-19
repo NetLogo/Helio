@@ -3,7 +3,10 @@ import {
   type FileAccess,
   type FileEntity,
 } from '#src/modules/file/domain/file.types.ts';
-import { FileTooLargeError } from '#src/modules/file/domain/file.errors.ts';
+import {
+  FileTooLargeError,
+  FileTypeNotAllowedError,
+} from '#src/modules/file/domain/file.errors.ts';
 import { createStorageKey, sanitizeFilename } from '#src/shared/storage/utils.ts';
 import rules from '#src/config/rules.ts';
 
@@ -17,6 +20,15 @@ export default function fileDomain() {
       pathPrefix?: string;
       userId?: string;
     }): FileEntity {
+      const allowedContentTypes = rules.limits.fileUpload.allowedContentTypes;
+      if (
+        allowedContentTypes &&
+        allowedContentTypes.length > 0 &&
+        !allowedContentTypes.includes(props.contentType)
+      ) {
+        throw new FileTypeNotAllowedError(props.contentType);
+      }
+
       const maxSize = rules.limits.fileUpload.size.max;
       if (maxSize && props.buffer.length > maxSize) {
         throw new FileTooLargeError(props.buffer.length, maxSize);

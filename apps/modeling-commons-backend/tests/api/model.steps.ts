@@ -13,6 +13,24 @@ function getModels(context: Record<string, unknown>): Map<string, string> {
   return context['models'] as Map<string, string>;
 }
 
+function buildPrimaryFileMultipart(content: string): { payload: Buffer; contentType: string } {
+  const boundary = `----CucumberBoundary${Date.now().toString(16)}`;
+  const parts = [
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="model.nlogo"\r\n` +
+      `Content-Type: text/plain\r\n\r\n` +
+      `${content}\r\n`,
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="role"\r\n\r\n` +
+      `primary\r\n`,
+    `--${boundary}--\r\n`,
+  ];
+  return {
+    payload: Buffer.from(parts.join(''), 'utf-8'),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
+}
+
 async function createModel(
   server: import('fastify').FastifyInstance,
   user: TestUser,
@@ -20,31 +38,54 @@ async function createModel(
   visibility: string = 'public',
   parentModelId?: string,
 ): Promise<string> {
-  const payload: Record<string, unknown> = { title, visibility };
-  if (parentModelId) payload['parentModelId'] = parentModelId;
+  const draftBody: Record<string, unknown> = {};
+  if (parentModelId) draftBody['modelId'] = parentModelId;
 
-  const res = await server.inject({
+  const draftRes = await server.inject({
     method: 'POST',
-    url: '/api/v1/models',
-    payload,
+    url: '/api/v1/model-drafts',
+    payload: draftBody,
     headers: { cookie: user.cookie, 'content-type': 'application/json' },
   });
+  if (draftRes.statusCode !== 201) {
+    throw new Error(`Failed to create draft (${draftRes.statusCode}): ${draftRes.body}`);
+  }
+  const draftId = JSON.parse(draftRes.body).id;
 
-  if (res.statusCode !== 201) {
-    throw new Error(`Failed to create model (${res.statusCode}): ${res.body}`);
+  const patchRes = await server.inject({
+    method: 'PATCH',
+    url: `/api/v1/model-drafts/${draftId}`,
+    payload: { title, visibility },
+    headers: { cookie: user.cookie, 'content-type': 'application/json' },
+  });
+  if (patchRes.statusCode !== 204) {
+    throw new Error(`Failed to patch draft (${patchRes.statusCode}): ${patchRes.body}`);
   }
 
-  const modelId = JSON.parse(res.body).id;
+  if (!parentModelId) {
+    const { payload, contentType } = buildPrimaryFileMultipart(
+      `; ${title}\nto setup\nclear-all\nend\n`,
+    );
+    const uploadRes = await server.inject({
+      method: 'POST',
+      url: `/api/v1/model-drafts/${draftId}/files`,
+      payload,
+      headers: { cookie: user.cookie, 'content-type': contentType },
+    });
+    if (uploadRes.statusCode !== 201) {
+      throw new Error(`Failed to upload primary file (${uploadRes.statusCode}): ${uploadRes.body}`);
+    }
+  }
 
-  // The model service doesn't create a ModelAuthor record, so seed it manually
-  const { prisma } = server.diContainer.cradle as {
-    prisma: { modelAuthor: { create: Function } };
-  };
-  await prisma.modelAuthor.create({
-    data: { modelId, userId: user.id, role: 'owner' },
+  const publishRes = await server.inject({
+    method: 'POST',
+    url: `/api/v1/model-drafts/${draftId}/publish`,
+    headers: { cookie: user.cookie },
   });
-
-  return modelId;
+  if (publishRes.statusCode !== 201) {
+    throw new Error(`Failed to publish draft (${publishRes.statusCode}): ${publishRes.body}`);
+  }
+  return JSON.parse(publishRes.body).modelId;
 }
 
 When(

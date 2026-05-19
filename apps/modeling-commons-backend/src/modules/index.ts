@@ -10,6 +10,7 @@ import { asFunction, asValue, type Resolver } from 'awilix';
 import type { FastifyBaseLogger } from 'fastify';
 import type { Bucket, S3Client } from '@aws-sdk/client-s3';
 import storage, { bucket } from '#src/lib/storage.ts';
+import { makeFileDependencies } from '#src/modules/file/index.ts';
 
 type Resolvers<T> = {
   [K in keyof T]: Resolver<T[K]>;
@@ -44,5 +45,6 @@ export function makeDependencies({
     eventBus: asValue(eventBus),
     repositoryBase: asFunction(makeRepositoryBase),
     transactionManager: asFunction(makePrismaTransactionManager),
+    ...makeFileDependencies(),
   };
 }

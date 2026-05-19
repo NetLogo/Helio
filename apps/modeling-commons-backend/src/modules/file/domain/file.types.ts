@@ -26,15 +26,22 @@ export const fileMetadataSchema = Schema.Compile(fileMetadata);
 export function parseMetadata(key: string, raw: unknown): FileMetadata {
   const rawRecord: Record<string, unknown> = (raw as Record<string, unknown>) || {};
 
-  // S3 metadata keys are case-insensitive and normalized to lowercase.
+  // S3 metadata keys are case-insensitive and normalized to lowercase in
+  // production, but mocks/tests may pass camelCase. Build a case-insensitive
+  // index so either form works.
   // -Omar Ibrahim, Apr 23 26
+  const lowerIndex: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(rawRecord)) {
+    lowerIndex[k.toLowerCase()] = v;
+  }
+
   const normalized: {
     [K in keyof FileMetadata]: unknown;
   } = {
-    filename: rawRecord['filename'],
-    userId: rawRecord['userid'],
-    createdAt: rawRecord['createdat'],
-    deletedAt: rawRecord['deletedat'],
+    filename: lowerIndex['filename'],
+    userId: lowerIndex['userid'],
+    createdAt: lowerIndex['createdat'],
+    deletedAt: lowerIndex['deletedat'],
   };
 
   const parsed = fileMetadataSchema.Parse(normalized);

@@ -75,12 +75,12 @@ describe('buildModelWhere', () => {
     });
 
     it('adds tag filter with case-insensitive equality on version tag name', () => {
-      const where = buildModelWhere({ tag: 'Vision' } as ModelSearchFilters, null);
+      const where = buildModelWhere({ tags: ['Vision'] } as ModelSearchFilters, null);
       expect(where.AND).toContainEqual({
         versions: {
           some: {
             tags: {
-              some: { tag: { name: { equals: 'Vision', mode: 'insensitive' } } },
+              some: { tag: { name: { in: ['Vision'], mode: 'insensitive' } } },
             },
           },
         },
@@ -105,7 +105,7 @@ describe('buildModelWhere', () => {
         isEndorsed: true,
         isLibraryModel: true,
         authorId: 'a',
-        tag: 't',
+        tags: ['t'],
         keyword: 'k',
       } as ModelSearchFilters,
       'user-1',
@@ -118,12 +118,12 @@ describe('buildModelWhere', () => {
 describe('buildModelOrderBy', () => {
   const noParams: PaginatedQueryParams = {} as PaginatedQueryParams;
 
-  it('orders by likes count desc when sortBy is "likes" (overrides orderBy param)', () => {
+  it('orders by likes count using params.orderBy direction when sortBy is "likes"', () => {
     const result = buildModelOrderBy(
       { sortBy: 'likes' } as ModelSearchFilters,
       { orderBy: { field: 'createdAt', param: 'asc' } } as PaginatedQueryParams,
     );
-    expect(result).toEqual({ likes: { _count: 'desc' } });
+    expect(result).toEqual({ likes: { _count: 'asc' } });
   });
 
   it('uses params.orderBy when provided and sortBy is not "likes"', () => {

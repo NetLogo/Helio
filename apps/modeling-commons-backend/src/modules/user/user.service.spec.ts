@@ -136,6 +136,7 @@ describe('userService', () => {
         id: user.id,
         name: user.name,
         isProfilePublic: false,
+        image: user.image,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       });

@@ -1,4 +1,3 @@
-import env from '#src/config/env.ts';
 import { FileNotFoundError } from '#src/modules/file/domain/file.errors.ts';
 import {
   isPublicKey,
@@ -23,8 +22,13 @@ export type FileInfo = {
   access: FileAccess;
 };
 
-export default function makeFileService({ fileDomain, storage, bucket }: Dependencies) {
-  const publicBaseUrl = env.storage.publicBaseUrl.replace(/\/+$/, '');
+export default function makeFileService({
+  fileDomain,
+  storage,
+  bucket,
+  storagePublicBaseUrl,
+}: Dependencies) {
+  const publicBaseUrl = storagePublicBaseUrl.replace(/\/+$/, '');
 
   return {
     async upload(params: {
