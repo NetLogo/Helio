@@ -2,9 +2,27 @@ import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.
 import type { EventSearchFilters } from '#src/modules/event/domain/event.types.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
+export type KnownEvents =
+  | 'model.deleted'
+  | 'model.liked'
+  | 'model.unliked'
+  | 'model_additional_file.added'
+  | 'model_additional_file.deleted'
+  | 'model_author.added'
+  | 'model_author.ownership_transferred'
+  | 'model_author.removed'
+  | 'model_permission.granted'
+  | 'model_permission.revoked'
+  | 'model_version.created'
+  | 'model_version.updated'
+  | 'model_version_tag.added'
+  | 'model_version_tag.removed'
+  | 'user.deleted'
+  | 'user.updated';
+
 export type EventRecord = {
   id: string;
-  type: string;
+  type: string | KnownEvents;
   actorId: string;
   resourceType: string;
   resourceId: string;

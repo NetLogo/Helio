@@ -1,7 +1,6 @@
 import env from '#src/config/env.ts';
 import AdminJSFastify from '@adminjs/fastify';
 import { Adapter, Database, Resource } from '@adminjs/sql';
-import fastifyMultipart from '@fastify/multipart';
 import AdminJS from 'adminjs';
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
@@ -32,8 +31,25 @@ async function adminJsPlugin(fastify: FastifyInstance) {
         options: {
           navigation: defaultNavigation,
           titleProperty: 'email',
-          listProperties: ['email', 'name', 'systemRole', 'userKind', 'emailVerified', 'banned', 'createdAt'],
-          filterProperties: ['email', 'name', 'systemRole', 'userKind', 'emailVerified', 'banned', 'deletedAt', 'createdAt'],
+          listProperties: [
+            'email',
+            'name',
+            'systemRole',
+            'userKind',
+            'emailVerified',
+            'banned',
+            'createdAt',
+          ],
+          filterProperties: [
+            'email',
+            'name',
+            'systemRole',
+            'userKind',
+            'emailVerified',
+            'banned',
+            'deletedAt',
+            'createdAt',
+          ],
           sort: { sortBy: 'createdAt', direction: 'desc' },
         },
       },
@@ -99,8 +115,22 @@ async function adminJsPlugin(fastify: FastifyInstance) {
         options: {
           navigation: defaultNavigation,
           titleProperty: 'type',
-          listProperties: ['type', 'actorId', 'resourceType', 'resourceId', 'processedAt', 'createdAt'],
-          filterProperties: ['type', 'actorId', 'resourceType', 'resourceId', 'processedAt', 'createdAt'],
+          listProperties: [
+            'type',
+            'actorId',
+            'resourceType',
+            'resourceId',
+            'processedAt',
+            'createdAt',
+          ],
+          filterProperties: [
+            'type',
+            'actorId',
+            'resourceType',
+            'resourceId',
+            'processedAt',
+            'createdAt',
+          ],
           sort: { sortBy: 'createdAt', direction: 'desc' },
         },
       },
@@ -119,8 +149,23 @@ async function adminJsPlugin(fastify: FastifyInstance) {
         options: {
           navigation: modelNavigation,
           titleProperty: 'id',
-          listProperties: ['id', 'visibility', 'isEndorsed', 'isLibraryModel', 'latestVersionNumber', 'createdAt', 'deletedAt'],
-          filterProperties: ['visibility', 'isEndorsed', 'isLibraryModel', 'parentModelId', 'createdAt', 'deletedAt'],
+          listProperties: [
+            'id',
+            'visibility',
+            'isEndorsed',
+            'isLibraryModel',
+            'latestVersionNumber',
+            'createdAt',
+            'deletedAt',
+          ],
+          filterProperties: [
+            'visibility',
+            'isEndorsed',
+            'isLibraryModel',
+            'parentModelId',
+            'createdAt',
+            'deletedAt',
+          ],
           sort: { sortBy: 'createdAt', direction: 'desc' },
         },
       },
@@ -139,11 +184,27 @@ async function adminJsPlugin(fastify: FastifyInstance) {
         options: {
           navigation: modelNavigation,
           titleProperty: 'title',
-          listProperties: ['modelId', 'versionNumber', 'title', 'netlogoVersion', 'finalizedAt', 'createdAt'],
-          filterProperties: ['modelId', 'versionNumber', 'title', 'netlogoVersion', 'finalizedAt', 'createdAt'],
+          listProperties: [
+            'modelId',
+            'versionNumber',
+            'title',
+            'netlogoVersion',
+            'finalizedAt',
+            'createdAt',
+          ],
+          filterProperties: [
+            'modelId',
+            'versionNumber',
+            'title',
+            'netlogoVersion',
+            'finalizedAt',
+            'createdAt',
+          ],
           sort: { sortBy: 'createdAt', direction: 'desc' },
           properties: {
-            previewImageFileKey: { isVisible: { list: false, filter: false, show: true, edit: true } },
+            previewImageFileKey: {
+              isVisible: { list: false, filter: false, show: true, edit: true },
+            },
             infoTab: { isVisible: { list: false, filter: false, show: true, edit: true } },
             description: { isVisible: { list: false, filter: false, show: true, edit: true } },
           },
@@ -217,7 +278,14 @@ async function adminJsPlugin(fastify: FastifyInstance) {
           navigation: modelNavigation,
           titleProperty: 'id',
           listProperties: ['modelId', 'versionNumber', 'kind', 'userId', 'createdAt'],
-          filterProperties: ['modelId', 'versionNumber', 'kind', 'userId', 'sessionId', 'createdAt'],
+          filterProperties: [
+            'modelId',
+            'versionNumber',
+            'kind',
+            'userId',
+            'sessionId',
+            'createdAt',
+          ],
           sort: { sortBy: 'createdAt', direction: 'desc' },
           properties: {
             ipHash: { isVisible: false },
