@@ -6,19 +6,19 @@ import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export interface ModelAuthorRepository {
-  findByCompositeKey(modelId: string, userId: string): Promise<ModelAuthorEntity | undefined>;
-  findOwnerByModel(modelId: string): Promise<ModelAuthorEntity | undefined>;
-  findAllByModel(modelId: string): Promise<ModelAuthorEntity[]>;
-  findModelsByUser(
+  findByCompositeKey: (modelId: string, userId: string) => Promise<ModelAuthorEntity | undefined>;
+  findOwnerByModel: (modelId: string) => Promise<ModelAuthorEntity | undefined>;
+  findAllByModel: (modelId: string) => Promise<Array<ModelAuthorEntity>>;
+  findModelsByUser: (
     userId: string,
     params: PaginatedQueryParams,
-  ): Promise<Paginated<ModelAuthorEntity>>;
-  insertTx(ctx: TransactionContext, entity: ModelAuthorEntity): Promise<void>;
-  updateRoleTx(
+  ) => Promise<Paginated<ModelAuthorEntity>>;
+  insertTx: (ctx: TransactionContext, entity: ModelAuthorEntity) => Promise<void>;
+  updateRoleTx: (
     ctx: TransactionContext,
     modelId: string,
     userId: string,
     role: AuthorRole,
-  ): Promise<void>;
-  deleteTx(ctx: TransactionContext, modelId: string, userId: string): Promise<void>;
+  ) => Promise<void>;
+  deleteTx: (ctx: TransactionContext, modelId: string, userId: string) => Promise<void>;
 }

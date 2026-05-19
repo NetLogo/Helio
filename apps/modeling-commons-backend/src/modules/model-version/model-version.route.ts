@@ -49,6 +49,7 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
 
       const versionNumber = await modelVersionService.create(
         request.params.id,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
         { buffer: buffer as Buffer<ArrayBuffer>, filename, contentType: mimetype },
         { title, description },
@@ -68,6 +69,7 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth, resolveModel('write')],
     },
     async (request, reply) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await modelVersionService.updateCurrent(request.params.id, request.user!.id, request.body);
       return reply.code(204).send();
     },
@@ -123,5 +125,4 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
       return getVersionCardQuery.execute(request.params.id, request.params.version);
     },
   );
-
 }

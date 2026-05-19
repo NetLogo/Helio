@@ -68,7 +68,7 @@ export default function makeModelAdditionalFileService({
     async listByModel(
       modelId: string,
       taggedVersionNumber?: number,
-    ): Promise<ModelAdditionalFileEntity[]> {
+    ): Promise<Array<ModelAdditionalFileEntity>> {
       return modelAdditionalFileRepository.findByModel(modelId, taggedVersionNumber);
     },
   };

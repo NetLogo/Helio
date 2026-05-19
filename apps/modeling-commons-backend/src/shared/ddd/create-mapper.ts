@@ -43,7 +43,8 @@ function createMapperHelper<Entity, Record, RawResponse>(
         throw new NotImplementedException('toPersistence not implemented on this mapper');
       }),
     toResponse: input.toResponse
-      ? (e) => applyGlobalResponseFormat(input.toResponse!(e))
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (e) => applyGlobalResponseFormat(input.toResponse!(e))
       : () => {
           throw new NotImplementedException('toResponse not implemented on this mapper');
         },

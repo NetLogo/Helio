@@ -2,7 +2,7 @@ import type { ModelAdditionalFileEntity } from '#src/modules/model-additional-fi
 
 export default function makeListAdditionalFilesQuery({ modelAdditionalFileService }: Dependencies) {
   return {
-    async execute(modelId: string, taggedVersionNumber?: number): Promise<ModelAdditionalFileEntity[]> {
+    async execute(modelId: string, taggedVersionNumber?: number): Promise<Array<ModelAdditionalFileEntity>> {
       return modelAdditionalFileService.listByModel(modelId, taggedVersionNumber);
     },
   };

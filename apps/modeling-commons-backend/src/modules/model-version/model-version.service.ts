@@ -84,7 +84,7 @@ export default function makeModelVersionService({
       });
     },
 
-    async findNetlogoVersionsByPrefix(prefix: string): Promise<string[]> {
+    async findNetlogoVersionsByPrefix(prefix: string): Promise<Array<string>> {
       return await modelVersionRepository.findNetlogoVersionsByPrefix(prefix);
     },
   };

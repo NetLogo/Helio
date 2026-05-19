@@ -14,6 +14,7 @@ export default async function modelLikeRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth, resolveModel('read')],
     },
     async (request, reply) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await modelLikeService.like(request.params.id, request.user!.id);
       return reply.code(204).send();
     },
@@ -26,6 +27,7 @@ export default async function modelLikeRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth, resolveModel('read')],
     },
     async (request, reply) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await modelLikeService.unlike(request.params.id, request.user!.id);
       return reply.code(204).send();
     },

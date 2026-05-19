@@ -31,6 +31,7 @@ export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       const entity = await modelVersionTagService.add(
         request.params.id,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
         request.body.name,
       );
@@ -57,6 +58,7 @@ export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       await modelVersionTagService.remove(
         request.params.id,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
         request.params.tagId,
       );
@@ -79,7 +81,7 @@ export default async function modelVersionTagRoutes(fastify: FastifyInstance) {
         request.params.id,
         request.params.version,
       );
-      const tags = await Promise.all(entities.map((e) => tagService.findByIdOrName(e.tagId)));
+      const tags = await Promise.all(entities.map(async (e) => tagService.findByIdOrName(e.tagId)));
       return tags.map((tag) => ({
         id: tag.id,
         name: tag.name,

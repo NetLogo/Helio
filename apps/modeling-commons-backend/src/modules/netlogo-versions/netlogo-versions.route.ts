@@ -1,4 +1,4 @@
-import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { FastifyInstance } from 'fastify';
 import {
   NetlogoVersionsQuerySchema,

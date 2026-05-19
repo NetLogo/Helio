@@ -2,8 +2,8 @@ import type { ModelAdditionalFileEntity } from '#src/modules/model-additional-fi
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export interface ModelAdditionalFileRepository {
-  insertTx(ctx: TransactionContext, entity: ModelAdditionalFileEntity): Promise<void>;
-  deleteTx(ctx: TransactionContext, id: string): Promise<void>;
-  findOneById(id: string): Promise<ModelAdditionalFileEntity | undefined>;
-  findByModel(modelId: string, taggedVersionNumber?: number): Promise<ModelAdditionalFileEntity[]>;
+  insertTx: (ctx: TransactionContext, entity: ModelAdditionalFileEntity) => Promise<void>;
+  deleteTx: (ctx: TransactionContext, id: string) => Promise<void>;
+  findOneById: (id: string) => Promise<ModelAdditionalFileEntity | undefined>;
+  findByModel: (modelId: string, taggedVersionNumber?: number) => Promise<Array<ModelAdditionalFileEntity>>;
 }

@@ -6,7 +6,7 @@ export default function makeListTagsByVersionQuery({
   modelVersionRepository,
 }: Dependencies) {
   return {
-    async execute(modelId: string, versionNumber: number): Promise<ModelVersionTagEntity[]> {
+    async execute(modelId: string, versionNumber: number): Promise<Array<ModelVersionTagEntity>> {
       const version = await modelVersionRepository.findByModelAndVersion(modelId, versionNumber);
       if (!version) throw new VersionNotFoundError(modelId, versionNumber);
       return modelVersionTagService.listByVersion(version.modelId, version.versionNumber);

@@ -90,8 +90,8 @@ export default function makeGetModelFamilyCardQuery({ db }: Dependencies) {
       return {
         self: toSummary(self as SummaryRecord),
         parent: parent ? toSummary(parent as SummaryRecord) : null,
-        siblings: (siblings as SummaryRecord[]).map((s) => toSummary(s)),
-        children: (children as SummaryRecord[]).map((c) => toSummary(c, c.parentVersionNumber)),
+        siblings: (siblings as Array<SummaryRecord>).map((s) => toSummary(s)),
+        children: (children as Array<SummaryRecord>).map((c) => toSummary(c, c.parentVersionNumber)),
       };
     },
   };

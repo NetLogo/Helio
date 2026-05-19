@@ -4,7 +4,7 @@ import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
 import type { MultipartFields } from '@fastify/multipart';
 import { fileTypeFromBuffer } from 'file-type';
 import type { FastifyReply, FastifyRequest, preHandlerHookHandler } from 'fastify';
-import { type TSchema } from 'typebox';
+import type { TSchema } from 'typebox';
 import { Value } from 'typebox/value';
 
 export interface ResolvedFile {
@@ -18,7 +18,7 @@ export interface ResolvedFile {
 }
 
 export interface ResolveFileOptions {
-  allowedMimeTypes?: string[];
+  allowedMimeTypes?: Array<string>;
   requireDetectedType?: boolean;
   fieldsSchema?: TSchema;
 }

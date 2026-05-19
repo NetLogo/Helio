@@ -61,7 +61,7 @@ export default function makePermissionService({
       });
     },
 
-    async listByModel(modelId: string): Promise<ModelPermissionEntity[]> {
+    async listByModel(modelId: string): Promise<Array<ModelPermissionEntity>> {
       return permissionRepository.findAllByModel(modelId);
     },
 

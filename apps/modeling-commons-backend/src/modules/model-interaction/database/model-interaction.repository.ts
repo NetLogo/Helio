@@ -86,7 +86,7 @@ export default function modelInteractionRepository({
       return out;
     },
 
-    async countsForModels(modelIds: string[]): Promise<Record<string, InteractionCounts>> {
+    async countsForModels(modelIds: Array<string>): Promise<Record<string, InteractionCounts>> {
       const out: Record<string, InteractionCounts> = {};
       for (const id of modelIds) out[id] = emptyCounts();
       if (modelIds.length === 0) return out;

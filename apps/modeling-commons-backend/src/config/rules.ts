@@ -140,7 +140,7 @@ const rules = {
         'application/x-mbox',
         'application/x-eml',
         'application/x-msg',
-      ] as string[],
+      ] as Array<string>,
     },
     fileUploadRoute: {
       strict: {
@@ -209,7 +209,7 @@ const rules = {
           pattern: /[!@#$%^&*(),.?":{}|<>]/,
           description: 'at least one special character',
         },
-      ] as RegexRule[],
+      ] as Array<RegexRule>,
     },
   },
 };

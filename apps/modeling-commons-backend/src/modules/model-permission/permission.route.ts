@@ -32,6 +32,7 @@ export default async function permissionRoutes(fastify: FastifyInstance) {
         request.params.id,
         request.body.granteeUserId,
         request.body.permissionLevel as PermissionLevel,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
       );
       return reply.code(201).send(permissionMapper.toResponse(entity));
@@ -51,6 +52,7 @@ export default async function permissionRoutes(fastify: FastifyInstance) {
       await permissionService.revoke(
         request.params.id,
         request.params.granteeUserId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
       );
       return reply.code(204).send();

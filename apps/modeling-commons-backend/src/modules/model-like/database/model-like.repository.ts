@@ -40,7 +40,7 @@ export default function modelLikeRepository({ db }: Dependencies): ModelLikeRepo
       return row !== null;
     },
 
-    async countsForModels(modelIds: string[]): Promise<Record<string, number>> {
+    async countsForModels(modelIds: Array<string>): Promise<Record<string, number>> {
       if (modelIds.length === 0) return {};
       const rows = await db.modelLike.groupBy({
         by: ['modelId'],
@@ -53,7 +53,7 @@ export default function modelLikeRepository({ db }: Dependencies): ModelLikeRepo
       return out;
     },
 
-    async likedModelIdsForUser(userId: string, modelIds: string[]): Promise<Set<string>> {
+    async likedModelIdsForUser(userId: string, modelIds: Array<string>): Promise<Set<string>> {
       if (modelIds.length === 0) return new Set();
       const rows = await db.modelLike.findMany({
         where: { userId, modelId: { in: modelIds } },

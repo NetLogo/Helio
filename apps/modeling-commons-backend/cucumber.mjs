@@ -1,11 +1,13 @@
 // https://github.com/cucumber/cucumber-js/blob/main/docs/configuration.md
 // https://github.com/cucumber/cucumber-js/blob/main/docs/profiles.md
 
+// eslint-disable-next-line no-undef
 const usingPerfProfile = process.argv.some(
   (arg, idx, all) => arg === '--profile' && all[idx + 1] === 'perf',
 );
 
 if (usingPerfProfile) {
+  // eslint-disable-next-line no-undef
   process.env.CUCUMBER_TIMING = '1';
 }
 

@@ -43,9 +43,7 @@ function getDockerStorageClient() {
 
 const buckets = await storage.send(new ListBucketsCommand({}));
 let maybeBucket = buckets.Buckets?.find((b: Bucket) => b.Name === env.storage.bucket);
-if (!maybeBucket) {
-  maybeBucket = await storage.send(new CreateBucketCommand({ Bucket: env.storage.bucket }));
-}
+maybeBucket ??= await storage.send(new CreateBucketCommand({ Bucket: env.storage.bucket }));
 
 if (!maybeBucket) {
   throw new StorageConfigurationError(`Failed to access or create bucket: ${env.storage.bucket}`);

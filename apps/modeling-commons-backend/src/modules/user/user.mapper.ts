@@ -11,7 +11,7 @@ export default function userMapper(): Mapper<UserEntity, UserRecord, UserRespons
       let socialLinks: UserEntity['socialLinks'] = null;
       if (record.socialLinks) {
         try {
-          socialLinks = JSON.parse(record.socialLinks as string);
+          socialLinks = JSON.parse(record.socialLinks as string) as UserEntity['socialLinks'];
         } catch (error) {
           // If parsing fails, log the error and keep socialLinks as null
           console.error('Error parsing socialLinks for user', { userId: record.id, error });

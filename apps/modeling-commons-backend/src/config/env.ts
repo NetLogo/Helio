@@ -85,7 +85,7 @@ const env = envSchema<Static<typeof schema>>({
   schema,
 });
 
-const envVariableToList = (value: string | undefined, delim = ','): string[] => {
+const envVariableToList = (value: string | undefined, delim = ','): Array<string> => {
   if (!value) return [];
   return value.split(delim).map((v) => v.trim());
 };
@@ -112,7 +112,7 @@ export default {
   server: {
     host: env.HOST,
     port: env.PORT,
-    endpoint: env.NODE_ENV === NodeEnv.development ? `${env.HOST}:${env.PORT}` : `${env.HOST}`,
+    endpoint: env.NODE_ENV === NodeEnv.development ? `${env.HOST}:${env.PORT}` : env.HOST,
     ipAddressHeaders: envVariableToList(env.IP_ADDRESS_HEADERS),
     ipHashSalt: env.IP_HASH_SALT,
   },
@@ -156,7 +156,7 @@ export default {
     description: env.PRODUCT_DESCRIPTION,
     keywords: envVariableToList(env.PRODUCT_KEYWORDS),
     version: env.PRODUCT_VERSION,
-    displayName: env.PRODUCT_DISPLAY_NAME || env.PRODUCT_NAME,
+    displayName: env.PRODUCT_DISPLAY_NAME ?? env.PRODUCT_NAME,
     website: env.PRODUCT_WEBSITE,
     logoUrl: env.PRODUCT_LOGO_URL,
     brandColor: env.PRODUCT_BRAND_COLOR,

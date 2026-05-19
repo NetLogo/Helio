@@ -38,6 +38,7 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
       await modelAuthorService.addContributor(
         request.params.id,
         request.body.userId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
       );
       return reply.code(201).send();
@@ -54,6 +55,7 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth, resolveModel('admin')],
     },
     async (request, reply) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await modelAuthorService.remove(request.params.id, request.params.userId, request.user!.id);
       return reply.code(204).send();
     },
@@ -73,6 +75,7 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
       await modelAuthorService.transferOwnership(
         request.params.id,
         request.body.newOwnerId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
       );
       return reply.code(204).send();

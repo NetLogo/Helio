@@ -12,10 +12,10 @@ export interface PopularTag {
 }
 
 export interface TagRepository extends RepositoryPort<TagEntity> {
-  findByNameInsensitive(name: string): Promise<TagEntity | undefined>;
-  findByPrefix(prefix: string, params: PaginatedQueryParams): Promise<Paginated<TagEntity>>;
-  upsertByName(entity: TagEntity): Promise<TagEntity>;
-  findPopularWithCounts(
+  findByNameInsensitive: (name: string) => Promise<TagEntity | undefined>;
+  findByPrefix: (prefix: string, params: PaginatedQueryParams) => Promise<Paginated<TagEntity>>;
+  upsertByName: (entity: TagEntity) => Promise<TagEntity>;
+  findPopularWithCounts: (
     params: PaginatedQueryParams & DateRangeQueryParams,
-  ): Promise<Paginated<PopularTag>>;
+  ) => Promise<Paginated<PopularTag>>;
 }

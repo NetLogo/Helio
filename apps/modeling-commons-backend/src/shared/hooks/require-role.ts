@@ -8,7 +8,7 @@ const SystemRole = {
 } as const;
 type SystemRole = (typeof SystemRole)[keyof typeof SystemRole];
 
-export function requireRole(...roles: SystemRole[]): preHandlerHookHandler {
+export function requireRole(...roles: Array<SystemRole>): preHandlerHookHandler {
   return async (request: FastifyRequest, _reply: FastifyReply) => {
     const userRole = request.user?.systemRole;
     if (!userRole || !roles.includes(userRole as SystemRole)) {

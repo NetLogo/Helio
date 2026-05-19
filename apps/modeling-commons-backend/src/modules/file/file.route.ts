@@ -51,6 +51,7 @@ export default async function fileRoutes(fastify: FastifyInstance) {
         buffer,
         contentType: mimetype,
         access: 'public-read',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         pathPrefix: `avatars/${request.user!.id}`,
       });
 

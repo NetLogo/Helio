@@ -10,8 +10,8 @@ export default function tagMapper(): Mapper<Tag, Tag, TagResponseDto> {
     toResponse: (record) => ({
       id: record.id,
       name: record.name,
-      displayName: record.displayName || record.name,
-      legacyId: record.legacyId || undefined,
+      displayName: record.displayName ?? record.name,
+      legacyId: record.legacyId ?? undefined,
       createdAt: record.createdAt.toISOString(),
     }),
   });

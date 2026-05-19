@@ -29,7 +29,7 @@ export async function loadModelAccessContext(
 ): Promise<PolicyContext> {
   const viewer = await loadViewer(db, userId);
 
-  const sentinelOrUserId = userId === null ? '__never__' : userId;
+  const sentinelOrUserId = userId ?? '__never__';
   const model = await db.model.findUnique({
     where: { id: modelId },
     select: {
@@ -45,7 +45,9 @@ export async function loadModelAccessContext(
   });
 
   if (!model) throw new Error('Model not found');
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ownerRole = model.authors.length > 0 ? model.authors[0]!.role : null;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const grantLevel = model.permissions.length > 0 ? model.permissions[0]!.permissionLevel : null;
 
   return { viewer, model, ownerRole, grantLevel };

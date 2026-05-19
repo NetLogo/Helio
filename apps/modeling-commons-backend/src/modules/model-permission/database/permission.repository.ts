@@ -35,7 +35,7 @@ export default function permissionRepository({
         : undefined;
     },
 
-    async findAllByModel(modelId: string): Promise<ModelPermissionEntity[]> {
+    async findAllByModel(modelId: string): Promise<Array<ModelPermissionEntity>> {
       const records = await db.modelPermission.findMany({
         where: { modelId },
         orderBy: { createdAt: 'asc' },

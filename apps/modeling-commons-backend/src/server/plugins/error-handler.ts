@@ -71,8 +71,8 @@ async function errorHandlerPlugin(fastify: FastifyInstance) {
   // Add global error schema
   fastify.addHook('onRoute', (routeOptions) => {
     // Initialize schema and response objects if they don't exist
-    routeOptions.schema = routeOptions.schema || {};
-    routeOptions.schema.response = routeOptions.schema.response || {};
+    routeOptions.schema = routeOptions.schema ?? {};
+    routeOptions.schema.response = routeOptions.schema.response ?? {};
 
     // @ts-expect-error - Not typed
     const errorRef = { $ref: `${apiErrorResponseSchema.$id}#` };
@@ -84,7 +84,7 @@ async function errorHandlerPlugin(fastify: FastifyInstance) {
       routeOptions.schema ??= {};
       routeOptions.schema.response ??= {};
       // @ts-expect-error - Not typed
-      routeOptions.schema!.response[code] ??= errorRef;
+      routeOptions.schema.response[code] ??= errorRef;
     });
   });
 }

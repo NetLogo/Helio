@@ -28,7 +28,7 @@ export function resolveActions(ctx: PolicyContext): ModelActionMap {
   } as const;
 
   const out = {} as ModelActionMap;
-  for (const key of Object.keys(MODEL_ACTIONS) as ModelActionKey[]) {
+  for (const key of Object.keys(MODEL_ACTIONS) as Array<ModelActionKey>) {
     const { level, authRequired } = MODEL_ACTIONS[key];
     out[key] = (!authRequired || ctx.viewer !== null) && allow[level];
   }

@@ -58,6 +58,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth, resolveModel('admin')],
     },
     async (request, reply) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await modelService.softDelete(request.params.id, request.user!.id);
       return reply.code(204).send();
     },
@@ -177,7 +178,7 @@ export default async function modelRoutes(fastify: FastifyInstance) {
         req.user?.id ?? null,
       );
       const cards = await Promise.all(
-        result.data.map((e) => getModelCardQuery.toResponse(e, req.user?.id ?? null)),
+        result.data.map(async (e) => getModelCardQuery.toResponse(e, req.user?.id ?? null)),
       );
       return res.status(200).send({
         ...result,

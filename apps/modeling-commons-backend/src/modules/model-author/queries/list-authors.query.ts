@@ -2,7 +2,7 @@ import type { ModelAuthorEntity } from '#src/modules/model-author/domain/model-a
 
 export default function makeListAuthorsQuery({ modelAuthorRepository }: Dependencies) {
   return {
-    async execute(modelId: string): Promise<ModelAuthorEntity[]> {
+    async execute(modelId: string): Promise<Array<ModelAuthorEntity>> {
       return modelAuthorRepository.findAllByModel(modelId);
     },
   };

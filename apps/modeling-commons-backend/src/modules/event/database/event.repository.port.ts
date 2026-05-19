@@ -22,11 +22,11 @@ export type InsertEventParams = {
 };
 
 export interface EventRepositoryPort {
-  insert(ctx: TransactionContext, params: InsertEventParams): Promise<void>;
-  findUnprocessed(limit: number): Promise<EventRecord[]>;
-  markProcessed(id: string): Promise<void>;
-  search(
+  insert: (ctx: TransactionContext, params: InsertEventParams) => Promise<void>;
+  findUnprocessed: (limit: number) => Promise<Array<EventRecord>>;
+  markProcessed: (id: string) => Promise<void>;
+  search: (
     filters: EventSearchFilters,
     params: PaginatedQueryParams,
-  ): Promise<Paginated<EventRecord>>;
+  ) => Promise<Paginated<EventRecord>>;
 }

@@ -43,10 +43,12 @@ class AuthService {
       if (value) headers.append(key, Array.isArray(value) ? value.join(', ') : value);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const session = await auth.api.getSession({ headers });
     if (!session) return null;
 
     const dbUser = await prisma.user.findUnique({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       where: { id: session.user.id },
     });
     if (!dbUser) return null;
@@ -55,8 +57,11 @@ class AuthService {
 
     return {
       session: {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         id: session.session.id,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         userId: session.session.userId,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         expiresAt: session.session.expiresAt,
       },
       user: {
@@ -91,7 +96,7 @@ async function authPlugin(fastify: FastifyInstance) {
 
   fastify.decorate('authService', authService);
   fastify.decorateRequest('user', null);
-  fastify.decorateRequest('session', null);
+  fastify.decorateRequest('authSession', null);
 
   fastify.route({
     method: ['GET', 'POST'],
@@ -127,7 +132,7 @@ async function authPlugin(fastify: FastifyInstance) {
 
     const session = await authService.getSession(request);
     request.user = session?.user ?? null;
-    request.session = session?.session ?? null;
+    request.authSession = session?.session ?? null;
   });
 
   fastify.addHook('preHandler', async (request) => {
@@ -151,7 +156,7 @@ export default fp(authPlugin, {
 declare module 'fastify' {
   interface FastifyRequest {
     user: UserSession['user'] | null;
-    session: UserSession['session'] | null;
+    authSession: UserSession['session'] | null;
   }
   interface FastifyInstance {
     authService: AuthService;

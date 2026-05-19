@@ -41,6 +41,7 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth],
     },
     async (request, reply) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const result = await modelDraftService.create(request.user!.id, request.body);
       return reply.code(201).send({ id: result.id });
     },
@@ -60,6 +61,7 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
       const { limit = 20, page = 0 } = request.query;
       const offset = page * limit;
       const result = await fastify.diContainer.cradle.modelDraftRepository.listByUser(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
         { limit, page, offset, orderBy: { field: 'updatedAt', param: 'desc' } },
       );

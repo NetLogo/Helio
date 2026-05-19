@@ -1,6 +1,11 @@
 import { Type, type Static, type TSchema } from 'typebox';
 
-export function sortQueryRequestDtoSchema<T extends TSchema>(sortBy: T) {
+export function sortQueryRequestDtoSchema<T extends TSchema>(
+  sortBy: T,
+): Type.TObject<{
+  sortBy: '~optional' extends keyof T ? T : Type.TOptional<T>;
+  order: Type.TOptional<Type.TUnion<[Type.TLiteral<'asc'>, Type.TLiteral<'desc'>]>>;
+}> {
   return Type.Object({
     sortBy: Type.Optional(sortBy),
     order: Type.Optional(

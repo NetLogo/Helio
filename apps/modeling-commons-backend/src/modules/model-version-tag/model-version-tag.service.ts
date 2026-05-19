@@ -71,7 +71,7 @@ export default function makeModelVersionTagService({
       });
     },
 
-    async listByVersion(modelId: string, versionNumber: number): Promise<ModelVersionTagEntity[]> {
+    async listByVersion(modelId: string, versionNumber: number): Promise<Array<ModelVersionTagEntity>> {
       return modelVersionTagRepository.findByVersion(modelId, versionNumber);
     },
   };

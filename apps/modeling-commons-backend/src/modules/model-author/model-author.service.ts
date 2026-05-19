@@ -12,7 +12,7 @@ export default function makeModelAuthorService({
 }: Dependencies) {
   async function assertCallerIsOwner(modelId: string, callerId: string) {
     const caller = await modelAuthorRepository.findByCompositeKey(modelId, callerId);
-    if (!caller || caller.role !== 'owner') {
+    if (caller?.role !== 'owner') {
       throw new NotOwnerError();
     }
     return caller;

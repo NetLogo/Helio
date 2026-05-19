@@ -16,7 +16,7 @@ export type ClientContext = {
 
 export function getClientIp(req: FastifyRequest): string {
   const fromHeaders = env.server.ipAddressHeaders
-    .map((h) => req.headers[h] as string | string[] | undefined)
+    .map((h) => req.headers[h])
     .map((v) => (Array.isArray(v) ? v[0] : v))
     .find(Boolean);
 
@@ -68,10 +68,10 @@ export function setTrackingCookie(reply: FastifyReply, value: string): void {
 export function getClientContext(req: FastifyRequest): ClientContext {
   const ip = getClientIp(req);
   const ua = req.headers['user-agent'];
-  const ref = req.headers['referer'];
+  const ref = req.headers.referer;
   return {
     userId: req.user?.id ?? null,
-    sessionId: req.session?.id ?? null,
+    sessionId: req.authSession?.id ?? null,
     ipHash: ip ? hashIp(ip) : null,
     userAgent: typeof ua === 'string' ? ua.slice(0, 512) : null,
     referer: typeof ref === 'string' ? ref.slice(0, 512) : null,

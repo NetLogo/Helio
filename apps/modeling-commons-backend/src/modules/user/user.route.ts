@@ -32,7 +32,9 @@ export default async function userRoutes(fastify: FastifyInstance) {
       const { onboardedAt, ...rest } = request.body;
       await userService.updateProfile(
         request.params.id,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.systemRole,
         {
           ...rest,
@@ -58,6 +60,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
     },
     async (request, reply) => {
       // TODO: Integrate with BetterAuth. This wouldn't work on its own.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await userService.softDelete(request.params.id, request.user!.id, request.user!.systemRole);
       await fastify.authService.revokeUserSessions(request.params.id);
       return reply.code(204).send();
@@ -97,6 +100,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth],
     },
     async (request) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const user = request.user!;
       const result = await userService.findById(user.id, user.id, user.systemRole);
       if (result.canViewFullProfile) {

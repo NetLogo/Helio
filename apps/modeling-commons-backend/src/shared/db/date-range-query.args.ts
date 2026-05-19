@@ -1,11 +1,11 @@
-import { Prisma } from '#prisma/index';
+import type { Prisma } from '#prisma/index';
 
 const dateRangeQueryArgs = (
   fromDate: string | undefined,
   toDate: string | undefined,
   key = 'createdAt',
 ): Prisma.ModelWhereInput => {
-  const conditions: Prisma.ModelWhereInput[] = [];
+  const conditions: Array<Prisma.ModelWhereInput> = [];
 
   if (fromDate) {
     conditions.push({ [key]: { gte: new Date(fromDate) } });

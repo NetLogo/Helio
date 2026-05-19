@@ -27,7 +27,7 @@ export default function modelVersionTagRepository({
       });
     },
 
-    async findByVersion(modelId: string, versionNumber: number): Promise<ModelVersionTagEntity[]> {
+    async findByVersion(modelId: string, versionNumber: number): Promise<Array<ModelVersionTagEntity>> {
       const records = await db.modelVersionTag.findMany({
         where: { modelId, versionNumber },
         orderBy: { createdAt: 'desc' },

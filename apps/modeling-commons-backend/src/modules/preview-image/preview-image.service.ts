@@ -24,13 +24,15 @@ export default function makePreviewImageService({ fileService }: Dependencies) {
         env.isDevelopment && env.storage.dockerEndpoint ? getDockerStorageClient() : undefined;
 
       const modelUrl = await fileService.getUrl(netlogoFileKey, { client });
-      const modelFormat = netlogoFileKey.split('.').pop() || 'nlogox';
+      const modelFormat = netlogoFileKey.split('.').pop() ?? 'nlogox';
       const serviceUrl = new URL(`${env.netlogoServices.endpoint}/preview`);
       serviceUrl.searchParams.set('model_url', modelUrl);
       serviceUrl.searchParams.set('model_format', modelFormat);
 
       const abort = new AbortController();
-      const timeout = setTimeout(() => abort.abort(), 30_000);
+      const timeout = setTimeout(() => {
+        abort.abort();
+      }, 30_000);
 
       let image: Response;
       try {
@@ -68,7 +70,7 @@ export default function makePreviewImageService({ fileService }: Dependencies) {
 
       return {
         buffer,
-        contentType: image.headers.get('Content-Type') || 'image/png',
+        contentType: image.headers.get('Content-Type') ?? 'image/png',
         contentSize: buffer.byteLength,
       };
     },

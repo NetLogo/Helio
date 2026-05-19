@@ -19,11 +19,12 @@ function isSoftDeleteModel(model: string | undefined): model is SoftDeleteModel 
 
 export const softDeleteExtension = Prisma.defineExtension({
   query: {
-    $allOperations({ model, operation, args, query }) {
+    async $allOperations({ model, operation, args, query }) {
       if (
         !isSoftDeleteModel(model) ||
-        !(INTERCEPTED_OPERATIONS as readonly string[]).includes(operation)
+        !(INTERCEPTED_OPERATIONS as ReadonlyArray<string>).includes(operation)
       ) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return query(args);
       }
 
@@ -35,6 +36,7 @@ export const softDeleteExtension = Prisma.defineExtension({
         };
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return query(args);
     },
   },

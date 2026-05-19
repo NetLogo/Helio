@@ -33,35 +33,35 @@ export default function mailDomain() {
     };
 
   return {
-    createVerificationEmail(userEmail: string, userName: string, verificationLink: string) {
+    async createVerificationEmail(userEmail: string, userName: string, verificationLink: string) {
       return wrap(userEmail)(renderer.renderVerifyEmail({ userName, verificationLink }));
     },
 
-    createPasswordResetEmail(userEmail: string, userName: string, resetLink: string) {
+    async createPasswordResetEmail(userEmail: string, userName: string, resetLink: string) {
       return wrap(userEmail)(renderer.renderPasswordResetEmail({ userName, resetLink }));
     },
 
-    createWelcomeEmail(userEmail: string, userName: string) {
+    async createWelcomeEmail(userEmail: string, userName: string) {
       return wrap(userEmail)(renderer.renderWelcomeEmail({ userName }));
     },
 
-    createAccountDeletedEmail(userEmail: string, userName: string) {
+    async createAccountDeletedEmail(userEmail: string, userName: string) {
       return wrap(userEmail)(renderer.renderAccountDeletedEmail({ userName }));
     },
 
-    createAccountDeletedByAdminEmail(userEmail: string, userName: string) {
+    async createAccountDeletedByAdminEmail(userEmail: string, userName: string) {
       return wrap(userEmail)(renderer.renderAccountDeletedByAdminEmail({ userName }));
     },
 
-    createAccountBannedEmail(userEmail: string, userName: string) {
+    async createAccountBannedEmail(userEmail: string, userName: string) {
       return wrap(userEmail)(renderer.renderAccountBannedEmail({ userName }));
     },
 
-    createAccountInactiveEmail(userEmail: string, userName: string, inactivityPeriod: string) {
+    async createAccountInactiveEmail(userEmail: string, userName: string, inactivityPeriod: string) {
       return wrap(userEmail)(renderer.renderAccountInactiveEmail({ userName, inactivityPeriod }));
     },
 
-    createAccountEmailChangeRequestEmail(
+    async createAccountEmailChangeRequestEmail(
       userEmail: string,
       userName: string,
       newEmail: string,
@@ -72,11 +72,11 @@ export default function mailDomain() {
       );
     },
 
-    createAccountEmailChangedEmail(userEmail: string, userName: string, newEmail: string) {
+    async createAccountEmailChangedEmail(userEmail: string, userName: string, newEmail: string) {
       return wrap(userEmail)(renderer.renderAccountEmailChangedEmail({ userName, newEmail }));
     },
 
-    createNotificationEmail(
+    async createNotificationEmail(
       userEmail: string,
       userName: string,
       notificationContent: string,
@@ -87,7 +87,7 @@ export default function mailDomain() {
       );
     },
 
-    createNotificationSummaryEmail(
+    async createNotificationSummaryEmail(
       userEmail: string,
       userName: string,
       notifications: Array<string>,

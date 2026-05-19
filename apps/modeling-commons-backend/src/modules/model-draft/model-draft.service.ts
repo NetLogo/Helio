@@ -110,7 +110,7 @@ export default function makeModelDraftService({
         params.netlogoFileKey,
       );
       return await fileService.upload({
-        buffer: Buffer.from(new Uint8Array(buffer)) as Buffer<ArrayBuffer>,
+        buffer: Buffer.from(new Uint8Array(buffer)),
         filename: 'preview.png',
         contentType,
         access: 'public-read',
@@ -172,7 +172,7 @@ export default function makeModelDraftService({
     ]);
 
     const tagEntities = await Promise.all(
-      versionTags.map((vt) => tagRepository.findOneById(vt.tagId)),
+      versionTags.map(async (vt) => tagRepository.findOneById(vt.tagId)),
     );
     const tags = tagEntities
       .filter((t): t is NonNullable<typeof t> => Boolean(t))
@@ -192,7 +192,7 @@ export default function makeModelDraftService({
       mimeType: primaryCopy.mimeType,
     };
 
-    const attachments: DraftFileV1[] = await Promise.all(
+    const attachments: Array<DraftFileV1> = await Promise.all(
       additionalFiles.map(async (att) => {
         const filename = filenameFromKey(att.fileKey);
         const copy = await copyToStaging({
@@ -310,7 +310,7 @@ export default function makeModelDraftService({
       const { buffer } = await previewImageService.generatePreviewFromNetlogoFile(
         data.primaryFile.s3Key,
       );
-      const previewBuffer = Buffer.from(new Uint8Array(buffer)) as Buffer<ArrayBuffer>;
+      const previewBuffer = Buffer.from(new Uint8Array(buffer));
 
       const key = await modelDraftStorage.putStaged({
         userId: draft.userId,
@@ -458,7 +458,7 @@ export default function makeModelDraftService({
                 tagId: tag.id,
               }),
             )
-            .map((entity) => modelVersionTagRepository.insertTx(ctx, entity)),
+            .map(async (entity) => modelVersionTagRepository.insertTx(ctx, entity)),
         );
 
         await modelRepository.setLatestVersion(ctx, model.id, versionNumber);
@@ -501,7 +501,7 @@ export default function makeModelDraftService({
     async purgeStale(cutoff: Date): Promise<number> {
       const deleted = await modelDraftRepository.deleteStaleBefore(cutoff);
       await Promise.allSettled(
-        deleted.map((d) => modelDraftStorage.deleteStagingPrefix(d.userId, d.id)),
+        deleted.map(async (d) => modelDraftStorage.deleteStagingPrefix(d.userId, d.id)),
       );
       return deleted.length;
     },

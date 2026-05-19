@@ -1,4 +1,4 @@
-import { type Model, type ModelInteractionKind, type Prisma } from '#prisma/index';
+import type { Model, ModelInteractionKind, Prisma } from '#prisma/index';
 import {
   modelCardArgs,
   type ModelCardRecord,
@@ -93,11 +93,16 @@ export default function modelRepository({
       const interactionKind = filters.sortBy ? interactionKindBySortKey[filters.sortBy] : undefined;
 
       if (interactionKind) {
-        const { count, sorted } = await this.fetchByInteraction(where, params, interactionKind, {
-          include,
-          order: filters.order ?? params.orderBy.param ?? 'desc',
-        });
-        return paginate((sorted as Array<never>).map(map), params, count);
+        const { count: _count, sorted } = await this.fetchByInteraction(
+          where,
+          params,
+          interactionKind,
+          {
+            include,
+            order: filters.order ?? params.orderBy.param ?? 'desc',
+          },
+        );
+        return paginate((sorted as Array<never>).map(map), params, _count);
       }
 
       const orderBy = buildModelOrderBy(filters, params);

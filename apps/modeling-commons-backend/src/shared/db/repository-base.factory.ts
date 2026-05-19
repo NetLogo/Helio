@@ -9,19 +9,19 @@ type PrismaDelegate = {
     orderBy?: Record<string, string>;
     skip?: number;
     take?: number;
-  }) => Promise<unknown[]>;
+  }) => Promise<Array<unknown>>;
   count: (args?: Record<string, unknown>) => Promise<number>;
   update: (args: { where: { id: string }; data: unknown }) => Promise<unknown>;
   delete: (args: { where: { id: string } }) => Promise<unknown>;
 };
 
 export type RepositoryBase<Entity extends { id: string }> = {
-  insert(entity: Entity): Promise<void>;
-  findOneById(id: string): Promise<Entity | undefined>;
-  findAll(): Promise<Entity[]>;
-  findAllPaginated(params: PaginatedQueryParams): Promise<Paginated<Entity>>;
-  update(entity: Entity): Promise<Entity>;
-  delete(entityId: string): Promise<boolean>;
+  insert: (entity: Entity) => Promise<void>;
+  findOneById: (id: string) => Promise<Entity | undefined>;
+  findAll: () => Promise<Array<Entity>>;
+  findAllPaginated: (params: PaginatedQueryParams) => Promise<Paginated<Entity>>;
+  update: (entity: Entity) => Promise<Entity>;
+  delete: (entityId: string) => Promise<boolean>;
 };
 
 function handleDatabaseError(error: unknown, operation: string): never {
@@ -51,7 +51,8 @@ export default function makeRepositoryBase({
     tableName: string;
     mapper: Mapper<Entity, DbRecord>;
   }): RepositoryBase<Entity> {
-    const delegate = db[tableName] as PrismaDelegate;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const delegate = db[tableName]!;
 
     return {
       async insert(entity: Entity): Promise<void> {
@@ -68,7 +69,7 @@ export default function makeRepositoryBase({
         return record ? mapper.toDomain(record as DbRecord) : undefined;
       },
 
-      async findAll(): Promise<Entity[]> {
+      async findAll(): Promise<Array<Entity>> {
         const records = await delegate.findMany({});
         return records.map((r) => mapper.toDomain(r as DbRecord));
       },
@@ -92,6 +93,7 @@ export default function makeRepositoryBase({
         };
       },
 
+      // eslint-disable-next-line @typescript-eslint/consistent-return -- handleDatabaseError always throws
       async update(entity: Entity): Promise<Entity> {
         try {
           const data = mapper.toPersistence(entity);

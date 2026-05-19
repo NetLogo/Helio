@@ -76,7 +76,7 @@ export default function modelDraftRepository({
       await client.modelDraft.delete({ where: { id } });
     },
 
-    async deleteStaleBefore(cutoff: Date): Promise<ModelDraftEntity[]> {
+    async deleteStaleBefore(cutoff: Date): Promise<Array<ModelDraftEntity>> {
       const records = await db.modelDraft.findMany({ where: { updatedAt: { lt: cutoff } } });
       if (records.length === 0) return [];
       await db.modelDraft.deleteMany({

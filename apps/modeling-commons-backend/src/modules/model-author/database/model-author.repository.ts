@@ -34,7 +34,7 @@ export default function modelAuthorRepository({
         : undefined;
     },
 
-    async findAllByModel(modelId: string): Promise<ModelAuthorEntity[]> {
+    async findAllByModel(modelId: string): Promise<Array<ModelAuthorEntity>> {
       const records = await db.modelAuthor.findMany({
         where: { modelId },
         orderBy: { createdAt: 'asc' },

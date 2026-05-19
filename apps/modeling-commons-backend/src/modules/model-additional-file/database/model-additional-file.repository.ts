@@ -30,7 +30,7 @@ export default function modelAdditionalFileRepository({
     async findByModel(
       modelId: string,
       taggedVersionNumber?: number,
-    ): Promise<ModelAdditionalFileEntity[]> {
+    ): Promise<Array<ModelAdditionalFileEntity>> {
       const where: Record<string, unknown> = { modelId };
       if (taggedVersionNumber) {
         where['taggedVersionNumber'] = taggedVersionNumber;

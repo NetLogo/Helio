@@ -3,9 +3,9 @@ import { applyGlobalResponseFormat } from '#src/shared/ddd/create-mapper.ts';
 import type { ModelResponseDto } from './dtos/model.dto.ts';
 
 export type ModelMapper = {
-  toDomain(record: Model): Model;
-  toPersistence(entity: Model): Model;
-  toResponse(entity: Model): ModelResponseDto;
+  toDomain: (record: Model) => Model;
+  toPersistence: (entity: Model) => Model;
+  toResponse: (entity: Model) => ModelResponseDto;
 };
 
 export default function modelMapper(): ModelMapper {

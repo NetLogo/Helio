@@ -12,9 +12,9 @@ import type {
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export interface UserRepository extends RepositoryPort<UserEntity> {
-  findByIdIncludeDeleted(id: string): Promise<UserEntity | undefined>;
-  softDelete(ctx: TransactionContext, id: string): Promise<void>;
-  updateFields(
+  findByIdIncludeDeleted: (id: string) => Promise<UserEntity | undefined>;
+  softDelete: (ctx: TransactionContext, id: string) => Promise<void>;
+  updateFields: (
     ctx: TransactionContext,
     id: string,
     data: {
@@ -23,10 +23,10 @@ export interface UserRepository extends RepositoryPort<UserEntity> {
       systemRole?: SystemRole;
       onboardedAt?: Date | null;
     },
-  ): Promise<void>;
-  search(
+  ) => Promise<void>;
+  search: (
     filters: UserSearchFilters,
     params: PaginatedQueryParams,
     publicOnly: boolean,
-  ): Promise<Paginated<UserEntity>>;
+  ) => Promise<Paginated<UserEntity>>;
 }

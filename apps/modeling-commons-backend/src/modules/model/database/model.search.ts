@@ -7,7 +7,7 @@ export function buildModelWhere(
   filters: ModelSearchFilters,
   userId: string | null,
 ): Prisma.ModelWhereInput {
-  const conditions: Prisma.ModelWhereInput[] = [{ deletedAt: null }];
+  const conditions: Array<Prisma.ModelWhereInput> = [{ deletedAt: null }];
 
   if (userId && !filters.publicOnly) {
     conditions.push({
@@ -76,7 +76,7 @@ export function buildModelOrderBy(
   filters: ModelSearchFilters,
   params: PaginatedQueryParams,
 ): Prisma.ModelOrderByWithRelationInput {
-  const order = filters.order || params.orderBy?.param || 'desc';
+  const order = filters.order ?? params.orderBy?.param ?? 'desc';
   if (filters.sortBy === 'likes') {
     return { likes: { _count: order } };
   }

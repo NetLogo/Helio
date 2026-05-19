@@ -23,13 +23,13 @@ export default function eventRepository({ db }: Dependencies): EventRepositoryPo
       });
     },
 
-    async findUnprocessed(limit: number): Promise<EventRecord[]> {
+    async findUnprocessed(limit: number): Promise<Array<EventRecord>> {
       const records = await db.event.findMany({
         where: { processedAt: null },
         orderBy: { createdAt: 'asc' },
         take: limit,
       });
-      return records as unknown as EventRecord[];
+      return records as unknown as Array<EventRecord>;
     },
 
     async markProcessed(id: string): Promise<void> {
@@ -64,7 +64,7 @@ export default function eventRepository({ db }: Dependencies): EventRepositoryPo
         count,
         limit: params.limit,
         page: params.page,
-        data: records as unknown as EventRecord[],
+        data: records as unknown as Array<EventRecord>,
       };
     },
   };

@@ -12,7 +12,7 @@ export async function startModelDraftJanitor({
 }: {
   connectionString: string;
   modelDraftService: {
-    purgeStale(cutoff: Date): Promise<number>;
+    purgeStale: (cutoff: Date) => Promise<number>;
   };
   logger: FastifyBaseLogger;
 }): Promise<PgBoss> {

@@ -26,6 +26,6 @@ export interface RepositoryPort<Entity> {
   delete: (entityId: string) => Promise<boolean>;
 }
 
-export function paginate<T>(data: T[], params: PaginatedQueryParams, count: number): Paginated<T> {
+export function paginate<T>(data: Array<T>, params: PaginatedQueryParams, count: number): Paginated<T> {
   return { count, limit: params.limit, page: params.page, data };
 }

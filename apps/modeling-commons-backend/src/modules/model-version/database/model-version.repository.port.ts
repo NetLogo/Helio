@@ -3,26 +3,26 @@ import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export interface ModelVersionRepository {
-  insertTx(ctx: TransactionContext, entity: ModelVersionEntity): Promise<void>;
-  findByModelAndVersion(
+  insertTx: (ctx: TransactionContext, entity: ModelVersionEntity) => Promise<void>;
+  findByModelAndVersion: (
     modelId: string,
     versionNumber: number,
-  ): Promise<ModelVersionEntity | undefined>;
-  findLatestByModel(
+  ) => Promise<ModelVersionEntity | undefined>;
+  findLatestByModel: (
     modelId: string,
     ctx?: TransactionContext,
-  ): Promise<ModelVersionEntity | undefined>;
-  finalize(ctx: TransactionContext, modelId: string, versionNumber: number): Promise<void>;
-  updateFields(
+  ) => Promise<ModelVersionEntity | undefined>;
+  finalize: (ctx: TransactionContext, modelId: string, versionNumber: number) => Promise<void>;
+  updateFields: (
     ctx: TransactionContext,
     modelId: string,
     versionNumber: number,
     data: { title?: string; description?: string; previewImageFileKey?: string | null },
-  ): Promise<void>;
-  listByModel(
+  ) => Promise<void>;
+  listByModel: (
     modelId: string,
     params: PaginatedQueryParams,
-  ): Promise<Paginated<ModelVersionEntity>>;
-  getNextVersionNumber(ctx: TransactionContext, modelId: string): Promise<number>;
-  findNetlogoVersionsByPrefix(prefix: string): Promise<string[]>;
+  ) => Promise<Paginated<ModelVersionEntity>>;
+  getNextVersionNumber: (ctx: TransactionContext, modelId: string) => Promise<number>;
+  findNetlogoVersionsByPrefix: (prefix: string) => Promise<Array<string>>;
 }

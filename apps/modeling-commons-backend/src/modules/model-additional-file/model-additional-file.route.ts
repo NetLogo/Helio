@@ -45,7 +45,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
     return resolveModelResource({
       resourceName: 'Additional file',
       paramName: 'fileId',
-      load: (id, cradle) => cradle.modelAdditionalFileRepository.findOneById(id),
+      load: async (id, cradle) => cradle.modelAdditionalFileRepository.findOneById(id),
     });
   }
 
@@ -67,6 +67,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
 
       const entity = await modelAdditionalFileService.add(
         request.params.id,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         request.user!.id,
         buffer as Buffer<ArrayBuffer>,
         filename,
@@ -87,6 +88,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
       preHandler: [requireAuth, resolveModel('admin'), resolveModelAdditionalFileIntegrity()],
     },
     async (request, reply) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await modelAdditionalFileService.remove(request.params.fileId, request.user!.id);
       return reply.code(204).send();
     },

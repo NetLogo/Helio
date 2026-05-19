@@ -131,7 +131,8 @@ export const checkServicesHealth = async (log: FastifyBaseLogger): Promise<void>
   const failedChecks: Array<FailedCheck> = [];
   const failedOptionalChecks: Array<FailedCheck> = [];
   results.forEach((result, index) => {
-    const check = checks[index] as HealthCheck;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const check = checks[index]!;
     if (result.status === 'fulfilled') {
       log.info({ name: check.name ?? 'unknown' }, `${check.name} is healthy`);
       return;

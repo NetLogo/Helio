@@ -88,7 +88,7 @@ export default function makeFileService({
       if (!res.Body) throw new FileNotFoundError(key);
       const metadata = parseMetadata(key, res.Metadata);
       const bytes = await res.Body.transformToByteArray();
-      const blob = Buffer.from(bytes) as Buffer<ArrayBuffer>;
+      const blob = Buffer.from(bytes);
       return {
         blob,
         contentType: res.ContentType ?? 'application/octet-stream',
