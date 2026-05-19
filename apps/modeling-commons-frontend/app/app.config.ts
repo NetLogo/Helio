@@ -348,7 +348,7 @@ export default defineAppConfig({
     navigationMenu: {
       slots: {
         list: "gap-3",
-        linkLabel: "text-md font-medium",
+        linkLabel: "text-sm font-medium",
       },
     },
   },

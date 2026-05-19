@@ -19,14 +19,13 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
     fastify.diContainer.cradle;
 
   async function toResponse(entity: ModelAdditionalFileEntity) {
+    let info;
     try {
-      const info = await fileService.getMetadata(entity.fileKey);
-      fastify.log.warn(info, 'File metadata');
+      info = await fileService.getMetadata(entity.fileKey);
     } catch (error) {
       fastify.log.error({ err: error, fileKey: entity.fileKey }, 'Error fetching file metadata');
       throw error;
     }
-    const info = await fileService.getMetadata(entity.fileKey);
     const downloadUrl = await fileService.getUrl(entity.fileKey);
     return {
       id: entity.id,

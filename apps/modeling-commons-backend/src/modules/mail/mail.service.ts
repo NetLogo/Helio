@@ -6,9 +6,9 @@ export default function makeMailService({ logger }: Dependencies) {
     async sendMail(content: Mail) {
       transporter.sendMail(content, (error, info) => {
         if (error) {
-          logger.error({ name: 'Mail Service', message: 'Failed to send email', error, content });
+          logger.error({ name: 'Mail Service', message: 'Failed to send email', error, info });
         } else {
-          logger.info({ name: 'Mail Service', message: 'Email sent successfully', info, content });
+          logger.info({ name: 'Mail Service', message: 'Email sent successfully', info });
         }
       });
     },

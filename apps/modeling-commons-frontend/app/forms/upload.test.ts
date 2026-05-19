@@ -198,6 +198,14 @@ describe("AddDetailsCardSchema", () => {
       expect(result.success).toBe(true);
     });
 
+    it("accepts omitted (undefined) — imageFile is optional", () => {
+      const result = AddDetailsCardSchema.safeParse({
+        title: "Title",
+        description: "Description",
+      });
+      expect(result.success).toBe(true);
+    });
+
     it("accepts a valid image file", () => {
       const result = AddDetailsCardSchema.safeParse({
         imageFile: makeFile("preview.png", 1024, "image/png"),
@@ -348,6 +356,15 @@ describe("UploadFormSchema", () => {
     const result = UploadFormSchema.safeParse({
       nlogoxFile: makeFile("model.nlogox", 1024),
       imageFile: null,
+      title: "Title",
+      description: "Description",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a payload that omits imageFile entirely", () => {
+    const result = UploadFormSchema.safeParse({
+      nlogoxFile: makeFile("model.nlogox", 1024),
       title: "Title",
       description: "Description",
     });

@@ -19,6 +19,7 @@ import {
   type DraftData,
   type DraftDataV1,
   type DraftFileV1,
+  type DraftPreviewImageV1,
   type DraftPrimaryFileV1,
 } from '#src/modules/model-draft/schemas/index.ts';
 import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
@@ -44,12 +45,15 @@ export default function makeModelDraftService({
   modelAuthorDomain,
   modelAdditionalFileRepository,
   modelAdditionalFileDomain,
+  previewImageService,
+  fileService,
   tagService,
   tagRepository,
   eventRepository,
   storage,
   bucket,
   db,
+  logger,
 }: Dependencies) {
   async function requireWritableModel(userId: string, modelId?: string | null) {
     if (!modelId) return; // No associated model, so no need to check permissions
@@ -82,6 +86,45 @@ export default function makeModelDraftService({
     return last.length > 37 ? last.slice(37) : last;
   }
 
+  async function resolvePreviewImageFileKey(params: {
+    data: { previewImage?: DraftPreviewImageV1 };
+    modelId: string;
+    netlogoFileKey: string;
+    userId: string;
+  }): Promise<string | null> {
+    if (params.data.previewImage) {
+      return await modelDraftStorage.copyStagedToPermanent({
+        stagingKey: params.data.previewImage.s3Key,
+        modelId: params.modelId,
+        filename: params.data.previewImage.filename,
+        contentType: params.data.previewImage.mimeType,
+        pathPrefix: 'files/public/preview-images',
+        acl: 'public-read',
+      });
+    }
+
+    try {
+      const { buffer, contentType } = await previewImageService.generatePreviewFromNetlogoFile(
+        params.netlogoFileKey,
+      );
+      return await fileService.upload({
+        buffer: Buffer.from(new Uint8Array(buffer)) as Buffer<ArrayBuffer>,
+        filename: 'preview.png',
+        contentType,
+        access: 'public-read',
+        pathPrefix: `preview-images/${params.modelId}`,
+        userId: params.userId,
+      });
+    } catch (error) {
+      // A missing thumbnail must not block publish.
+      logger.warn(
+        { err: error, modelId: params.modelId, netlogoFileKey: params.netlogoFileKey },
+        'Failed to auto-generate preview image on publish',
+      );
+      return null;
+    }
+  }
+
   async function copyToStaging(params: {
     sourceKey: string;
     userId: string;
@@ -96,9 +139,7 @@ export default function makeModelDraftService({
         CopySource: `${bucket.Name}/${params.sourceKey}`,
       }),
     );
-    const head = await storage.send(
-      new HeadObjectCommand({ Bucket: bucket.Name, Key: destKey }),
-    );
+    const head = await storage.send(new HeadObjectCommand({ Bucket: bucket.Name, Key: destKey }));
     return {
       s3Key: destKey,
       sizeBytes: head.ContentLength ?? 0,
@@ -243,10 +284,53 @@ export default function makeModelDraftService({
         return { role, ...meta };
       }
 
+      if (role === 'preview') {
+        if (data.previewImage) {
+          await modelDraftStorage.deleteObject(data.previewImage.s3Key).catch(() => undefined);
+        }
+        next.previewImage = meta;
+        await persistData(draft, next);
+        return { role, ...meta };
+      }
+
       const attachment: DraftFileV1 = { id: randomUUID(), ...meta };
       next.attachments = [...(data.attachments ?? []), attachment];
       await persistData(draft, next);
       return { id: attachment.id, role, ...meta };
+    },
+
+    async generatePreviewImage(draft: ModelDraftEntity): Promise<DraftPreviewImageV1> {
+      const data = currentData(draft);
+      if (!data.primaryFile) {
+        throw new ModelDraftFileNotFoundError('primary');
+      }
+
+      const { buffer } = await previewImageService.generatePreviewFromNetlogoFile(
+        data.primaryFile.s3Key,
+      );
+      const previewBuffer = Buffer.from(new Uint8Array(buffer)) as Buffer<ArrayBuffer>;
+
+      const key = await modelDraftStorage.putStaged({
+        userId: draft.userId,
+        draftId: draft.id,
+        buffer: previewBuffer,
+        filename: 'preview.png',
+        contentType: 'image/png',
+      });
+
+      if (data.previewImage) {
+        await modelDraftStorage.deleteObject(data.previewImage.s3Key).catch(() => undefined);
+      }
+
+      const previewImage: DraftPreviewImageV1 = {
+        s3Key: key,
+        filename: 'preview.png',
+        sizeBytes: previewBuffer.length,
+        mimeType: 'image/png',
+      };
+
+      await persistData(draft, { ...data, previewImage });
+      return previewImage;
     },
 
     async removeFile(draft: ModelDraftEntity, fileId: string): Promise<void> {
@@ -310,6 +394,13 @@ export default function makeModelDraftService({
         })),
       );
 
+      const previewImageFileKey = await resolvePreviewImageFileKey({
+        data,
+        modelId: model.id,
+        netlogoFileKey,
+        userId,
+      });
+
       const tags = await Promise.all(
         (data.tags ?? []).map(async (tagName) => {
           return tagService.upsertByName(tagName);
@@ -343,6 +434,7 @@ export default function makeModelDraftService({
           title: data.title,
           description: data.description,
           netlogoFileKey,
+          previewImageFileKey,
         });
 
         await modelVersionRepository.insertTx(ctx, version);

@@ -78,6 +78,114 @@ describe("AddDetailsCard", () => {
     expect(wrapper.text()).toContain("Model Preview Image");
   });
 
+  it("renders the 'Generate preview' button", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: { modelValue: makeState() },
+    });
+    const button = wrapper.find('[data-testid="generate-preview-button"]');
+    expect(button.exists()).toBe(true);
+    expect(button.text()).toContain("Generate preview");
+  });
+
+  it("disables the 'Generate preview' button when no primary file is present", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: { modelValue: makeState(), hasPrimaryFile: false },
+    });
+    const button = wrapper.find('[data-testid="generate-preview-button"]');
+    expect(button.attributes("disabled")).toBeDefined();
+  });
+
+  it("enables the 'Generate preview' button when a primary file is present", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: {
+        modelValue: makeState(),
+        hasPrimaryFile: true,
+        generatingPreview: false,
+      },
+    });
+    const button = wrapper.find('[data-testid="generate-preview-button"]');
+    expect(button.attributes("disabled")).toBeUndefined();
+  });
+
+  it("disables the 'Generate preview' button while generating", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: {
+        modelValue: makeState(),
+        hasPrimaryFile: true,
+        generatingPreview: true,
+      },
+    });
+    const button = wrapper.find('[data-testid="generate-preview-button"]');
+    expect(button.attributes("disabled")).toBeDefined();
+  });
+
+  it("emits 'generate-preview' when the button is clicked", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: {
+        modelValue: makeState(),
+        hasPrimaryFile: true,
+      },
+    });
+    await wrapper.find('[data-testid="generate-preview-button"]').trigger("click");
+    expect(wrapper.emitted("generate-preview")).toBeTruthy();
+  });
+
+  it("renders the preview image uploader control", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: { modelValue: makeState() },
+    });
+    expect(wrapper.find('[data-testid="preview-image-uploader"]').exists()).toBe(true);
+  });
+
+  it("disables the preview image uploader while a preview is being generated", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: {
+        modelValue: makeState(),
+        hasPrimaryFile: true,
+        generatingPreview: true,
+      },
+    });
+    const fileInput = wrapper.find('input[type="file"]');
+    expect(fileInput.exists()).toBe(true);
+    expect(fileInput.attributes("disabled")).toBeDefined();
+  });
+
+  it("disables the preview image uploader while an upload is in flight", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: {
+        modelValue: makeState(),
+        uploadingPreview: true,
+      },
+    });
+    const fileInput = wrapper.find('input[type="file"]');
+    expect(fileInput.exists()).toBe(true);
+    expect(fileInput.attributes("disabled")).toBeDefined();
+  });
+
+  it("disables the 'Generate preview' button while a preview is uploading", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: {
+        modelValue: makeState(),
+        hasPrimaryFile: true,
+        uploadingPreview: true,
+      },
+    });
+    const button = wrapper.find('[data-testid="generate-preview-button"]');
+    expect(button.attributes("disabled")).toBeDefined();
+  });
+
+  it("renders the previewImageUrl when provided", async () => {
+    const wrapper = await mountSuspended(AddDetailsCard, {
+      props: {
+        modelValue: makeState(),
+        previewImageUrl: "https://example.com/preview.png",
+      },
+    });
+    const img = wrapper.find('img[alt="Model preview"]');
+    expect(img.exists()).toBe(true);
+    expect(img.attributes("src")).toBe("https://example.com/preview.png");
+  });
+
   it.todo(
     "validation copy ('Model title is required') is rendered by the parent UForm in upload.vue, not by AddDetailsCard itself",
   );

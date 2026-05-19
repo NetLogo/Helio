@@ -14,7 +14,7 @@ export interface ModelVersionRepository {
     ctx: TransactionContext,
     modelId: string,
     versionNumber: number,
-    data: { title?: string; description?: string; previewImage?: Uint8Array<ArrayBuffer> },
+    data: { title?: string; description?: string; previewImageFileKey?: string | null },
   ): Promise<void>;
   listByModel(
     modelId: string,

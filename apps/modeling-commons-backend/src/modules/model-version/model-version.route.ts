@@ -124,27 +124,4 @@ export default async function modelVersionRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.get<{ Params: VersionParams }>(
-    '/v1/models/:id/versions/:version/preview-image',
-    {
-      schema: {
-        params: versionParamsSchema,
-        response: {
-          200: Type.String({ format: 'binary' }),
-        },
-        tags: ['Model'],
-      },
-      preHandler: [resolveModel('read')],
-    },
-    async (request, reply) => {
-      const { buffer, contentType } = await modelVersionService.getPreviewImage(
-        request.params.id,
-        request.params.version,
-      );
-      reply.header('Content-Type', contentType);
-      reply.header('Cross-Origin-Resource-Policy', 'cross-origin');
-      reply.header('X-Content-Type-Options', 'nosniff');
-      return buffer;
-    },
-  );
 }

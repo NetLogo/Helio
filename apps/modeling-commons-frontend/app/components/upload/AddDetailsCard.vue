@@ -15,40 +15,60 @@
 
             <p
               class="text-sm text-muted max-w-120"
-              v-text="`A thumbnail will be auto-generated after upload if you don't upload one.`"
+              v-text="
+                `If you don't pick a preview image, one will be generated automatically when you publish.`
+              "
             />
           </div>
 
           <div class="flex items-center gap-10">
             <div class="flex flex-col gap-2">
-              <div class="aspect-square w-46 h-46 flex">
-                <ImageUploader
-                  ref="imageUploader"
-                  v-model="state.imageFile"
-                  :initial-preview-url="previewUrl || undefined"
-                  class="aspect-square"
+              <div
+                class="aspect-square w-46 h-46 flex items-center justify-center bg-neutral-lighter rounded-md overflow-hidden"
+              >
+                <img
+                  v-if="previewImageUrl"
+                  :src="previewImageUrl"
+                  alt="Model preview"
+                  class="w-full h-full object-cover"
                 />
+                <UIcon v-else name="i-lucide-image" class="size-10 text-muted" />
               </div>
             </div>
-            <div class="flex flex-col gap-2">
-              <UButton
-                variant="outline"
-                color="neutral"
-                size="md"
-                icon="i-lucide-image-up"
-                class="w-fit"
-                @click="imageUploader?.openFilePicker()"
-              >
-                Change
-              </UButton>
+            <div class="flex flex-col gap-3">
+              <UFormField name="imageFile">
+                <UButton
+                  variant="outline"
+                  color="neutral"
+                  size="md"
+                  icon="i-lucide-image-up"
+                  class="w-fit"
+                  :disabled="!hasPrimaryFile || generatingPreview || uploadingPreview"
+                  data-testid="upload-thumbnail-button"
+                  @click="$refs.imageFileInput?.openFilePicker()"
+                >
+                  Upload thumbnail
+                </UButton>
+                <ImageUploader
+                  ref="imageFileInput"
+                  v-model="state.imageFile"
+                  :disabled="generatingPreview || uploadingPreview"
+                  data-testid="preview-image-uploader"
+                  class="hidden"
+                />
+              </UFormField>
               <UButton
                 variant="outline"
                 color="neutral"
                 size="md"
                 icon="i-lucide-fullscreen"
                 class="w-fit"
+                :disabled="!hasPrimaryFile || generatingPreview || uploadingPreview"
+                :loading="generatingPreview"
+                data-testid="generate-preview-button"
+                @click="$emit('generate-preview')"
               >
-                Generate from Model
+                Generate preview
               </UButton>
             </div>
           </div>
@@ -97,14 +117,25 @@ import { toTagSelectMenuItem, type TagItem } from "~/components/tag/TagSelectMen
 import { modelUsecases, type UploadFormInput } from "~/forms/upload";
 
 const state = defineModel<UploadFormInput>({ required: true });
-const props = defineProps<{
-  initialPreviewUrl?: string | null;
-}>();
-const imageUploader = useTemplateRef("imageUploader");
+const props = withDefaults(
+  defineProps<{
+    previewImageUrl?: string | null;
+    hasPrimaryFile?: boolean;
+    generatingPreview?: boolean;
+    uploadingPreview?: boolean;
+  }>(),
+  {
+    previewImageUrl: null,
+    hasPrimaryFile: false,
+    generatingPreview: false,
+    uploadingPreview: false,
+  },
+);
+defineEmits<{ "generate-preview": [] }>();
 
 const tags = reactive(useTags());
 
-const previewUrl = ref<string | null>(props.initialPreviewUrl || null);
+const { previewImageUrl, hasPrimaryFile, generatingPreview, uploadingPreview } = toRefs(props);
 
 const selectedTags = ref<TagItem[]>([]);
 

@@ -90,6 +90,15 @@ const envVariableToList = (value: string | undefined, delim = ','): string[] => 
   return value.split(delim).map((v) => v.trim());
 };
 
+const allowedOrigins = envVariableToList(env.ALLOWED_ORIGINS);
+if (allowedOrigins.length === 0) {
+  throw new Error('ALLOWED_ORIGINS must be set to at least one origin');
+} else if (allowedOrigins.includes('*')) {
+  throw new Error('ALLOWED_ORIGINS cannot include wildcard *');
+} else if (allowedOrigins.length > 100) {
+  throw new Error('ALLOWED_ORIGINS cannot include more than 100 origins');
+}
+
 export default {
   nodeEnv: env.NODE_ENV,
   isDevelopment: env.NODE_ENV === NodeEnv.development,

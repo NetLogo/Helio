@@ -23,20 +23,10 @@ const transport: SMTPTransport.Options | undefined = {
   requireTLS: true,
 };
 
-if (!transport) {
-  throw new FastifyMailerError(
-    'You must provide a valid transport configuration object, connection url or a transport plugin instance',
-  );
-}
-
 let transporter: Transporter;
 
 try {
-  if (!defaults) {
-    transporter = createTransport(transport);
-  } else {
-    transporter = createTransport(transport, defaults);
-  }
+  transporter = createTransport(transport, defaults);
 } catch (error) {
   throw new FastifyMailerError(`Failed to create transporter: ${(error as Error).message}`);
 }

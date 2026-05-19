@@ -50,7 +50,7 @@ export default function modelVersionRepository({
       ctx: TransactionContext,
       modelId: string,
       versionNumber: number,
-      data: { title?: string; description?: string; previewImage?: Buffer<ArrayBuffer> },
+      data: { title?: string; description?: string; previewImageFileKey?: string | null },
     ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelVersion.update({

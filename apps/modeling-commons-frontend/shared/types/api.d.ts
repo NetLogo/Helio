@@ -2345,6 +2345,12 @@ export interface paths {
                                         sizeBytes: number;
                                         mimeType: string;
                                     };
+                                    previewImage?: {
+                                        s3Key: string;
+                                        filename: string;
+                                        sizeBytes: number;
+                                        mimeType: string;
+                                    };
                                     attachments?: {
                                         /** Format: uuid */
                                         id: string;
@@ -2531,6 +2537,12 @@ export interface paths {
                                 visibility?: "public" | "private" | "unlisted";
                                 tags?: string[];
                                 primaryFile?: {
+                                    s3Key: string;
+                                    filename: string;
+                                    sizeBytes: number;
+                                    mimeType: string;
+                                };
+                                previewImage?: {
                                     s3Key: string;
                                     filename: string;
                                     sizeBytes: number;
@@ -2891,6 +2903,93 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/model-drafts/{id}/preview-image/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            s3Key: string;
+                            filename: string;
+                            sizeBytes: number;
+                            mimeType: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+            };
+        };
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;

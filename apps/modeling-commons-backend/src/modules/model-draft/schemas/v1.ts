@@ -18,12 +18,20 @@ export const draftPrimaryFileV1Schema = Type.Object({
   mimeType: Type.String(),
 });
 
+export const draftPreviewImageV1Schema = Type.Object({
+  s3Key: Type.String(),
+  filename: Type.String(),
+  sizeBytes: Type.Integer({ minimum: 0 }),
+  mimeType: Type.String(),
+});
+
 export const draftDataV1Schema = Type.Object({
   title: Type.Optional(Type.String({ minLength: 1, maxLength: 255 })),
   description: Type.Optional(Type.String({ maxLength: 10000 })),
   visibility: Type.Optional(visibilitySchema),
   tags: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 64 }))),
   primaryFile: Type.Optional(draftPrimaryFileV1Schema),
+  previewImage: Type.Optional(draftPreviewImageV1Schema),
   attachments: Type.Optional(Type.Array(draftFileV1Schema)),
 });
 
@@ -33,10 +41,12 @@ export const strictDraftDataV1Schema = Type.Object({
   visibility: visibilitySchema,
   tags: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 64 }))),
   primaryFile: draftPrimaryFileV1Schema,
+  previewImage: Type.Optional(draftPreviewImageV1Schema),
   attachments: Type.Optional(Type.Array(draftFileV1Schema)),
 });
 
 export type DraftFileV1 = Static<typeof draftFileV1Schema>;
 export type DraftPrimaryFileV1 = Static<typeof draftPrimaryFileV1Schema>;
+export type DraftPreviewImageV1 = Static<typeof draftPreviewImageV1Schema>;
 export type DraftDataV1 = Static<typeof draftDataV1Schema>;
 export type StrictDraftDataV1 = Static<typeof strictDraftDataV1Schema>;

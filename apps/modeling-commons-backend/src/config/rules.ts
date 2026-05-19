@@ -6,7 +6,7 @@ const MINUTE_MS = 60 * 1000;
 const rules = {
   limits: {
     fileUpload: {
-      size: { max: 30 * MEGABYTE } as MinMax,
+      size: { max: 15 * MEGABYTE } as MinMax,
       filesPerUpload: { max: 10 } as MinMax,
     },
     fileUploadRoute: {
@@ -25,6 +25,9 @@ const rules = {
       max: 100,
       customRules: {
         '/get-session': false,
+        '/forget-password': { window: 60, max: 5 },
+        '/sign-in': { window: 60, max: 15 },
+        '/sign-up': { window: 60, max: 10 },
       },
     } as BetterAuthRateLimitOptions,
   },

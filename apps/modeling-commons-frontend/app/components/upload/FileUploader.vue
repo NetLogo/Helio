@@ -5,6 +5,7 @@
     icon="i-lucide-file-up"
     layout="list"
     :multiple="multiple"
+    :disabled="disabled"
   >
     <template v-if="includeBrowseButton" #actions="{ open }">
       <USeparator label="or" orientation="horizontal" class="my-4" />
@@ -25,10 +26,12 @@ withDefaults(
   defineProps<{
     includeBrowseButton?: boolean;
     multiple?: boolean;
+    disabled?: boolean;
   }>(),
   {
     includeBrowseButton: false,
     multiple: false,
+    disabled: false,
   },
 );
 

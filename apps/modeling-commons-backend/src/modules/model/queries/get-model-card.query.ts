@@ -1,7 +1,6 @@
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
 import type { ModelCardResponseDto } from '#src/modules/model/dtos/model.card.dto.ts';
 import type { ModelCardRecord } from '../database/model.card.record.ts';
-import { getModelPreviewImageUrl } from '../shared/urls.ts';
 
 export default function makeGetModelCardQuery({
   modelRepository,
@@ -39,8 +38,8 @@ export default function makeGetModelCardQuery({
       const netlogoFileDownloadUrl = latestWithTags
         ? await fileService.getUrl(latestWithTags.netlogoFileKey)
         : null;
-      const previewImageUrl = latestWithTags?.previewImage
-        ? getModelPreviewImageUrl(model.id, latestWithTags.versionNumber)
+      const previewImageUrl = latestWithTags?.previewImageFileKey
+        ? await fileService.getUrl(latestWithTags.previewImageFileKey)
         : null;
 
       const [interactionCounts, likedByMe] = await Promise.all([

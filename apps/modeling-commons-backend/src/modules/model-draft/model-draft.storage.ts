@@ -5,6 +5,7 @@ import {
   DeleteObjectsCommand,
   ListObjectsV2Command,
   PutObjectCommand,
+  type ObjectCannedACL,
 } from '#src/shared/storage/index.ts';
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
 
@@ -51,6 +52,7 @@ export default function makeModelDraftStorage({ storage, bucket }: Dependencies)
       filename: string;
       contentType: string;
       pathPrefix: string;
+      acl?: ObjectCannedACL;
     }): Promise<string> {
       const destKey = `${params.pathPrefix}/${params.modelId}/${randomUUID()}-${sanitizeFilename(params.filename)}`;
       await storage.send(
@@ -64,6 +66,7 @@ export default function makeModelDraftStorage({ storage, bucket }: Dependencies)
             filename: sanitizeFilename(params.filename),
             createdat: new Date().toISOString(),
           },
+          ACL: params.acl,
         }),
       );
       return destKey;

@@ -216,7 +216,7 @@ exports.Prisma.ModelVersionScalarFieldEnum = {
   versionNumber: 'versionNumber',
   title: 'title',
   description: 'description',
-  previewImage: 'previewImage',
+  previewImageFileKey: 'previewImageFileKey',
   netlogoFileKey: 'netlogoFileKey',
   netlogoVersion: 'netlogoVersion',
   infoTab: 'infoTab',

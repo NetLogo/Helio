@@ -12,9 +12,9 @@ export default function modelVersionMapper(): Mapper<
 > {
   return createReadOnlyMapper<
     ModelVersion,
-    Omit<ModelVersion, 'finalizedAt' | 'previewImage'> & { isFinalized: boolean }
+    Omit<ModelVersion, 'finalizedAt'> & { isFinalized: boolean }
   >({
-    toResponse: ({ finalizedAt, previewImage: _previewImage, ...rest }) => ({
+    toResponse: ({ finalizedAt, ...rest }) => ({
       ...rest,
       isFinalized: finalizedAt !== null,
     }),

@@ -1,7 +1,4 @@
-import {
-  VersionNotFoundError,
-  VersionPreviewImageNotFoundError,
-} from '#src/modules/model-version/domain/model-version.errors.ts';
+import { VersionNotFoundError } from '#src/modules/model-version/domain/model-version.errors.ts';
 import type {
   CreateVersionProps,
   UpdateCurrentVersionProps,
@@ -42,7 +39,7 @@ export default function makeModelVersionService({
           versionNumber,
           title: input.title ?? previous?.title ?? 'Untitled',
           description: input.description,
-          previewImage: input.previewImage,
+          previewImageFileKey: input.previewImageFileKey,
           netlogoFileKey,
         });
 
@@ -85,14 +82,6 @@ export default function makeModelVersionService({
           payload: { modelId },
         });
       });
-    },
-
-    async getPreviewImage(modelId: string, versionNumber: number) {
-      const version = await modelVersionRepository.findByModelAndVersion(modelId, versionNumber);
-      if (!version) throw new VersionNotFoundError(modelId, versionNumber);
-      if (!version.previewImage) throw new VersionPreviewImageNotFoundError(modelId, versionNumber);
-
-      return { buffer: version.previewImage, contentType: 'image/png' };
     },
 
     async findNetlogoVersionsByPrefix(prefix: string): Promise<string[]> {

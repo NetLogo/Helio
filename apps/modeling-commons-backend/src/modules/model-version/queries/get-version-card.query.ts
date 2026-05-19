@@ -1,6 +1,5 @@
 import { VersionNotFoundError } from '#src/modules/model-version/domain/model-version.errors.ts';
 import type { ModelVersionCardResponseDto } from '#src/modules/model-version/dtos/model-version.card.dto.ts';
-import { getModelPreviewImageUrl } from '#src/modules/model/shared/urls.ts';
 
 export default function makeGetVersionCardQuery({
   db,
@@ -22,8 +21,8 @@ export default function makeGetVersionCardQuery({
 
       const { model, tags, ...version } = record;
       const netlogoFileDownloadUrl = await fileService.getUrl(version.netlogoFileKey);
-      const previewImageUrl = version.previewImage
-        ? getModelPreviewImageUrl(modelId, versionNumber)
+      const previewImageUrl = version.previewImageFileKey
+        ? await fileService.getUrl(version.previewImageFileKey)
         : null;
 
       return {

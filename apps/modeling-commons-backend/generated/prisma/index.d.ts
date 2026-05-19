@@ -10350,7 +10350,7 @@ export namespace Prisma {
     versionNumber: number | null
     title: string | null
     description: string | null
-    previewImage: Bytes | null
+    previewImageFileKey: string | null
     netlogoFileKey: string | null
     netlogoVersion: string | null
     infoTab: string | null
@@ -10363,7 +10363,7 @@ export namespace Prisma {
     versionNumber: number | null
     title: string | null
     description: string | null
-    previewImage: Bytes | null
+    previewImageFileKey: string | null
     netlogoFileKey: string | null
     netlogoVersion: string | null
     infoTab: string | null
@@ -10376,7 +10376,7 @@ export namespace Prisma {
     versionNumber: number
     title: number
     description: number
-    previewImage: number
+    previewImageFileKey: number
     netlogoFileKey: number
     netlogoVersion: number
     infoTab: number
@@ -10399,7 +10399,7 @@ export namespace Prisma {
     versionNumber?: true
     title?: true
     description?: true
-    previewImage?: true
+    previewImageFileKey?: true
     netlogoFileKey?: true
     netlogoVersion?: true
     infoTab?: true
@@ -10412,7 +10412,7 @@ export namespace Prisma {
     versionNumber?: true
     title?: true
     description?: true
-    previewImage?: true
+    previewImageFileKey?: true
     netlogoFileKey?: true
     netlogoVersion?: true
     infoTab?: true
@@ -10425,7 +10425,7 @@ export namespace Prisma {
     versionNumber?: true
     title?: true
     description?: true
-    previewImage?: true
+    previewImageFileKey?: true
     netlogoFileKey?: true
     netlogoVersion?: true
     infoTab?: true
@@ -10525,7 +10525,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description: string | null
-    previewImage: Bytes | null
+    previewImageFileKey: string | null
     netlogoFileKey: string
     netlogoVersion: string | null
     infoTab: string | null
@@ -10557,7 +10557,7 @@ export namespace Prisma {
     versionNumber?: boolean
     title?: boolean
     description?: boolean
-    previewImage?: boolean
+    previewImageFileKey?: boolean
     netlogoFileKey?: boolean
     netlogoVersion?: boolean
     infoTab?: boolean
@@ -10577,7 +10577,7 @@ export namespace Prisma {
     versionNumber?: boolean
     title?: boolean
     description?: boolean
-    previewImage?: boolean
+    previewImageFileKey?: boolean
     netlogoFileKey?: boolean
     netlogoVersion?: boolean
     infoTab?: boolean
@@ -10591,7 +10591,7 @@ export namespace Prisma {
     versionNumber?: boolean
     title?: boolean
     description?: boolean
-    previewImage?: boolean
+    previewImageFileKey?: boolean
     netlogoFileKey?: boolean
     netlogoVersion?: boolean
     infoTab?: boolean
@@ -10605,7 +10605,7 @@ export namespace Prisma {
     versionNumber?: boolean
     title?: boolean
     description?: boolean
-    previewImage?: boolean
+    previewImageFileKey?: boolean
     netlogoFileKey?: boolean
     netlogoVersion?: boolean
     infoTab?: boolean
@@ -10613,7 +10613,7 @@ export namespace Prisma {
     finalizedAt?: boolean
   }
 
-  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImage" | "netlogoFileKey" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt", ExtArgs["result"]["modelVersion"]>
+  export type ModelVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "versionNumber" | "title" | "description" | "previewImageFileKey" | "netlogoFileKey" | "netlogoVersion" | "infoTab" | "createdAt" | "finalizedAt", ExtArgs["result"]["modelVersion"]>
   export type ModelVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     latestOfModel?: boolean | ModelVersion$latestOfModelArgs<ExtArgs>
@@ -10645,7 +10645,7 @@ export namespace Prisma {
       versionNumber: number
       title: string
       description: string | null
-      previewImage: Prisma.Bytes | null
+      previewImageFileKey: string | null
       netlogoFileKey: string
       netlogoVersion: string | null
       infoTab: string | null
@@ -11084,7 +11084,7 @@ export namespace Prisma {
     readonly versionNumber: FieldRef<"ModelVersion", 'Int'>
     readonly title: FieldRef<"ModelVersion", 'String'>
     readonly description: FieldRef<"ModelVersion", 'String'>
-    readonly previewImage: FieldRef<"ModelVersion", 'Bytes'>
+    readonly previewImageFileKey: FieldRef<"ModelVersion", 'String'>
     readonly netlogoFileKey: FieldRef<"ModelVersion", 'String'>
     readonly netlogoVersion: FieldRef<"ModelVersion", 'String'>
     readonly infoTab: FieldRef<"ModelVersion", 'String'>
@@ -22790,7 +22790,7 @@ export namespace Prisma {
     versionNumber: 'versionNumber',
     title: 'title',
     description: 'description',
-    previewImage: 'previewImage',
+    previewImageFileKey: 'previewImageFileKey',
     netlogoFileKey: 'netlogoFileKey',
     netlogoVersion: 'netlogoVersion',
     infoTab: 'infoTab',
@@ -23073,20 +23073,6 @@ export namespace Prisma {
    * Reference to a field of type 'ModelVisibility[]'
    */
   export type ListEnumModelVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModelVisibility[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Bytes'
-   */
-  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
-    
-
-
-  /**
-   * Reference to a field of type 'Bytes[]'
-   */
-  export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
     
 
 
@@ -23766,7 +23752,7 @@ export namespace Prisma {
     versionNumber?: IntFilter<"ModelVersion"> | number
     title?: StringFilter<"ModelVersion"> | string
     description?: StringNullableFilter<"ModelVersion"> | string | null
-    previewImage?: BytesNullableFilter<"ModelVersion"> | Bytes | null
+    previewImageFileKey?: StringNullableFilter<"ModelVersion"> | string | null
     netlogoFileKey?: StringFilter<"ModelVersion"> | string
     netlogoVersion?: StringNullableFilter<"ModelVersion"> | string | null
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
@@ -23785,7 +23771,7 @@ export namespace Prisma {
     versionNumber?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
-    previewImage?: SortOrderInput | SortOrder
+    previewImageFileKey?: SortOrderInput | SortOrder
     netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrderInput | SortOrder
     infoTab?: SortOrderInput | SortOrder
@@ -23808,7 +23794,7 @@ export namespace Prisma {
     versionNumber?: IntFilter<"ModelVersion"> | number
     title?: StringFilter<"ModelVersion"> | string
     description?: StringNullableFilter<"ModelVersion"> | string | null
-    previewImage?: BytesNullableFilter<"ModelVersion"> | Bytes | null
+    previewImageFileKey?: StringNullableFilter<"ModelVersion"> | string | null
     netlogoFileKey?: StringFilter<"ModelVersion"> | string
     netlogoVersion?: StringNullableFilter<"ModelVersion"> | string | null
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
@@ -23827,7 +23813,7 @@ export namespace Prisma {
     versionNumber?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
-    previewImage?: SortOrderInput | SortOrder
+    previewImageFileKey?: SortOrderInput | SortOrder
     netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrderInput | SortOrder
     infoTab?: SortOrderInput | SortOrder
@@ -23848,7 +23834,7 @@ export namespace Prisma {
     versionNumber?: IntWithAggregatesFilter<"ModelVersion"> | number
     title?: StringWithAggregatesFilter<"ModelVersion"> | string
     description?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
-    previewImage?: BytesNullableWithAggregatesFilter<"ModelVersion"> | Bytes | null
+    previewImageFileKey?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
     netlogoFileKey?: StringWithAggregatesFilter<"ModelVersion"> | string
     netlogoVersion?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
     infoTab?: StringNullableWithAggregatesFilter<"ModelVersion"> | string | null
@@ -25181,7 +25167,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -25200,7 +25186,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -25217,7 +25203,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25236,7 +25222,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25254,7 +25240,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -25266,7 +25252,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25279,7 +25265,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26633,13 +26619,6 @@ export namespace Prisma {
     _max?: NestedEnumModelVisibilityFilter<$PrismaModel>
   }
 
-  export type BytesNullableFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableFilter<$PrismaModel> | Bytes | null
-  }
-
   export type ModelScalarRelationFilter = {
     is?: ModelWhereInput
     isNot?: ModelWhereInput
@@ -26675,7 +26654,7 @@ export namespace Prisma {
     versionNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    previewImage?: SortOrder
+    previewImageFileKey?: SortOrder
     netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrder
     infoTab?: SortOrder
@@ -26692,7 +26671,7 @@ export namespace Prisma {
     versionNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    previewImage?: SortOrder
+    previewImageFileKey?: SortOrder
     netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrder
     infoTab?: SortOrder
@@ -26705,7 +26684,7 @@ export namespace Prisma {
     versionNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    previewImage?: SortOrder
+    previewImageFileKey?: SortOrder
     netlogoFileKey?: SortOrder
     netlogoVersion?: SortOrder
     infoTab?: SortOrder
@@ -26715,16 +26694,6 @@ export namespace Prisma {
 
   export type ModelVersionSumOrderByAggregateInput = {
     versionNumber?: SortOrder
-  }
-
-  export type BytesNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Bytes | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBytesNullableFilter<$PrismaModel>
-    _max?: NestedBytesNullableFilter<$PrismaModel>
   }
 
   export type ModelVersionScalarRelationFilter = {
@@ -28149,10 +28118,6 @@ export namespace Prisma {
     connect?: ModelAdditionalFileWhereUniqueInput | ModelAdditionalFileWhereUniqueInput[]
   }
 
-  export type NullableBytesFieldUpdateOperationsInput = {
-    set?: Bytes | null
-  }
-
   export type ModelUpdateOneRequiredWithoutVersionsNestedInput = {
     create?: XOR<ModelCreateWithoutVersionsInput, ModelUncheckedCreateWithoutVersionsInput>
     connectOrCreate?: ModelCreateOrConnectWithoutVersionsInput
@@ -28863,23 +28828,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumModelVisibilityFilter<$PrismaModel>
     _max?: NestedEnumModelVisibilityFilter<$PrismaModel>
-  }
-
-  export type NestedBytesNullableFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableFilter<$PrismaModel> | Bytes | null
-  }
-
-  export type NestedBytesNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Bytes | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBytesNullableFilter<$PrismaModel>
-    _max?: NestedBytesNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumAuthorRoleFilter<$PrismaModel = never> = {
@@ -30165,7 +30113,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -30183,7 +30131,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -30301,7 +30249,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -30319,7 +30267,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -30340,7 +30288,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -30357,7 +30305,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -30551,7 +30499,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30569,7 +30517,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30681,7 +30629,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30699,7 +30647,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30735,7 +30683,7 @@ export namespace Prisma {
     versionNumber?: IntFilter<"ModelVersion"> | number
     title?: StringFilter<"ModelVersion"> | string
     description?: StringNullableFilter<"ModelVersion"> | string | null
-    previewImage?: BytesNullableFilter<"ModelVersion"> | Bytes | null
+    previewImageFileKey?: StringNullableFilter<"ModelVersion"> | string | null
     netlogoFileKey?: StringFilter<"ModelVersion"> | string
     netlogoVersion?: StringNullableFilter<"ModelVersion"> | string | null
     infoTab?: StringNullableFilter<"ModelVersion"> | string | null
@@ -31245,7 +31193,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -31263,7 +31211,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -31295,7 +31243,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31313,7 +31261,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31329,7 +31277,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -31347,7 +31295,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -31400,7 +31348,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31418,7 +31366,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31507,7 +31455,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -31525,7 +31473,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -31609,7 +31557,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31627,7 +31575,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33491,7 +33439,7 @@ export namespace Prisma {
     versionNumber: number
     title: string
     description?: string | null
-    previewImage?: Bytes | null
+    previewImageFileKey?: string | null
     netlogoFileKey: string
     netlogoVersion?: string | null
     infoTab?: string | null
@@ -33605,7 +33553,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33622,7 +33570,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33639,7 +33587,7 @@ export namespace Prisma {
     versionNumber?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    previewImage?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    previewImageFileKey?: NullableStringFieldUpdateOperationsInput | string | null
     netlogoFileKey?: StringFieldUpdateOperationsInput | string
     netlogoVersion?: NullableStringFieldUpdateOperationsInput | string | null
     infoTab?: NullableStringFieldUpdateOperationsInput | string | null

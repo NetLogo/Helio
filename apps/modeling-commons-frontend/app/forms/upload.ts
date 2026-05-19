@@ -35,9 +35,11 @@ const modelUsecases = [
 
 const AddDetailsCardSchema = z.object({
   imageFile: makeFileSchema({
-    maxFileSize: sizeToBytes(5, "MB"),
+    maxFileSize: sizeToBytes(15, "MB"),
     acceptedFileTypes: imageFileFormats,
-  }).nullable(),
+  })
+    .nullable()
+    .optional(),
   title: z.string().min(1, "Model title is required"),
   description: z.string().min(1, "Description is required"),
   tags: z.array(z.string()).default([]),

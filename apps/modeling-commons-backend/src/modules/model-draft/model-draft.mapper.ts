@@ -15,6 +15,7 @@ export default function modelDraftMapper(): Mapper<
     Omit<ModelDraftEntity, 'data' | 'schemaVersion'> & {
       schemaVersion: number;
       data: ReturnType<typeof upcast>;
+      previewImageUrl: string | null;
     }
   >({
     toResponse: (entity) => ({
@@ -23,6 +24,7 @@ export default function modelDraftMapper(): Mapper<
       modelId: entity.modelId,
       schemaVersion: LATEST_DRAFT_SCHEMA_VERSION,
       data: upcast(entity.data, entity.schemaVersion),
+      previewImageUrl: null,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     }),

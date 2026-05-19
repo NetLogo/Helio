@@ -12,7 +12,7 @@ export const patchDraftRequestDtoSchema = Type.Partial(
     title: Type.String({ minLength: 1, maxLength: 255 }),
     description: Type.String({ maxLength: 10000 }),
     visibility: visibilitySchema,
-    tags: Type.Array(Type.String({ minLength: 1, maxLength: 64 })),
+    tags: Type.Array(Type.String({ minLength: 1, maxLength: 64 }), { maxItems: 100 }),
   }),
 );
 
@@ -28,6 +28,7 @@ export const draftFileParamsSchema = Type.Object({
 export const draftFileRoleSchema = Type.Union([
   Type.Literal('primary'),
   Type.Literal('attachment'),
+  Type.Literal('preview'),
 ]);
 
 export const modelDraftResponseDtoSchema = Type.Object({
@@ -36,6 +37,7 @@ export const modelDraftResponseDtoSchema = Type.Object({
   modelId: Type.Union([Type.String(), Type.Null()]),
   schemaVersion: Type.Integer(),
   data: draftDataV1Schema,
+  previewImageUrl: Type.Union([Type.String(), Type.Null()]),
   createdAt: Type.String({ format: 'date-time' }),
   updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -58,6 +60,15 @@ export const draftFileUploadResponseSchema = Type.Object({
   filename: Type.String(),
   sizeBytes: Type.Integer(),
   mimeType: Type.String(),
+  previewImageUrl: Type.Optional(Type.String()),
+});
+
+export const generatePreviewImageResponseSchema = Type.Object({
+  s3Key: Type.String(),
+  filename: Type.String(),
+  sizeBytes: Type.Integer({ minimum: 0 }),
+  mimeType: Type.String(),
+  previewImageUrl: Type.String(),
 });
 
 export const publishDraftResponseSchema = Type.Object({
@@ -74,3 +85,4 @@ export type ModelDraftResponseDto = Static<typeof modelDraftResponseDtoSchema>;
 export type DraftFileUploadFieldsDto = Static<typeof draftFileUploadFieldsSchema>;
 export type DraftFileUploadResponseDto = Static<typeof draftFileUploadResponseSchema>;
 export type PublishDraftResponseDto = Static<typeof publishDraftResponseSchema>;
+export type GeneratePreviewImageResponseDto = Static<typeof generatePreviewImageResponseSchema>;

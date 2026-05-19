@@ -15,7 +15,12 @@ export default function modelVersionTagRepository({
       await client.modelVersionTag.create({ data });
     },
 
-    async deleteTx(ctx: TransactionContext, modelId: string, versionNumber: number, tagId: string): Promise<void> {
+    async deleteTx(
+      ctx: TransactionContext,
+      modelId: string,
+      versionNumber: number,
+      tagId: string,
+    ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelVersionTag.delete({
         where: { modelId_versionNumber_tagId: { modelId, versionNumber, tagId } },

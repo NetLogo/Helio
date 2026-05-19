@@ -19,13 +19,18 @@ const { apiState, userState } = vi.hoisted(() => ({
 mockNuxtImport("useApi", () => () => apiState.current!.client);
 mockNuxtImport("useUser", () => () => computed(() => userState.current));
 
-function makeDraftDto(data: DraftData, id = "draft-1") {
+function makeDraftDto(
+  data: DraftData,
+  id = "draft-1",
+  previewImageUrl: string | null = null,
+) {
   return {
     id,
     userId: "user-1",
     modelId: null,
     schemaVersion: 1,
     data,
+    previewImageUrl,
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z",
   };
@@ -233,6 +238,138 @@ describe("useModelDraftForm", () => {
     it("throws when no model is seeded (upload mode)", async () => {
       const form = useModelDraftForm({});
       await expect(form.deleteModel()).rejects.toThrow(/No model to delete/);
+    });
+  });
+
+  describe("generatePreview", () => {
+    it("calls POST /v1/model-drafts/{id}/preview-image/generate and updates previewImageUrl on success", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          s3Key: "staging/u/d/preview.png",
+          filename: "preview.png",
+          sizeBytes: 1234,
+          mimeType: "image/png",
+          previewImageUrl: "https://signed.example/preview.png",
+        }),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+      await form.generatePreview();
+
+      expect(apiState.current!.POST).toHaveBeenCalledWith(
+        "/api/v1/model-drafts/{id}/preview-image/generate",
+        { params: { path: { id: "draft-1" } } },
+      );
+      expect(form.previewImageUrl.value).toBe("https://signed.example/preview.png");
+      expect(form.previewImage.value?.s3Key).toBe("staging/u/d/preview.png");
+      expect(form.generatingPreview.value).toBe(false);
+    });
+
+    it("does not call the API when no primary file is present", async () => {
+      apiState.current!.GET.mockResolvedValue(
+        apiResult.ok(makeDraftDto({ ...sampleDraftData, primaryFile: undefined })),
+      );
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      const postCallsBefore = apiState.current!.POST.mock.calls.length;
+      await form.generatePreview();
+      expect(apiState.current!.POST.mock.calls.length).toBe(postCallsBefore);
+    });
+
+    it("hydrates previewImageUrl from the server-provided top-level field", async () => {
+      apiState.current!.GET.mockResolvedValue(
+        apiResult.ok(makeDraftDto(sampleDraftData, "draft-1", "https://signed.example/p.png")),
+      );
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+      expect(form.previewImageUrl.value).toBe("https://signed.example/p.png");
+    });
+  });
+
+  describe("uploadPreviewImage", () => {
+    it("uploads a preview image and updates previewImage / previewImageUrl", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          role: "preview",
+          s3Key: "staging/u/d/preview.png",
+          filename: "preview.png",
+          sizeBytes: 2048,
+          mimeType: "image/png",
+          previewImageUrl: "https://signed.example/preview.png",
+        }),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      const file = new File([new Uint8Array(8)], "preview.png", { type: "image/png" });
+      await form.uploadPreviewImage(file);
+
+      expect(apiState.current!.POST).toHaveBeenCalledWith(
+        "/api/v1/model-drafts/{id}/files",
+        expect.objectContaining({ params: { path: { id: "draft-1" } } }),
+      );
+      expect(form.previewImageUrl.value).toBe("https://signed.example/preview.png");
+      expect(form.previewImage.value?.s3Key).toBe("staging/u/d/preview.png");
+      expect(form.previewImage.value?.mimeType).toBe("image/png");
+      expect(form.uploadingPreview.value).toBe(false);
+      expect(form.formState.value.imageFile).toBeNull();
+    });
+
+    it("toasts and clears imageFile when the upload fails", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.POST.mockResolvedValue(apiResult.err(500, "boom"));
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+      const previewBefore = form.previewImageUrl.value;
+
+      const file = new File([new Uint8Array(8)], "preview.png", { type: "image/png" });
+      await form.uploadPreviewImage(file);
+
+      expect(form.previewImageUrl.value).toBe(previewBefore);
+      expect(form.uploadingPreview.value).toBe(false);
+      expect(form.formState.value.imageFile).toBeNull();
+    });
+
+    it("no-ops when an upload is already in flight", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      let resolveUpload: ((value: unknown) => void) = () => {};
+      apiState.current!.POST.mockImplementation(
+        () =>
+          new Promise((res) => {
+            resolveUpload = res as (value: unknown) => void;
+          }),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      const file = new File([new Uint8Array(8)], "preview.png", { type: "image/png" });
+      const first = form.uploadPreviewImage(file);
+      // Let microtasks flush enough for the first call to reach the POST.
+      for (let i = 0; i < 5; i++) await nextTick();
+      expect(form.uploadingPreview.value).toBe(true);
+
+      const callsBefore = apiState.current!.POST.mock.calls.length;
+      await form.uploadPreviewImage(file);
+      expect(apiState.current!.POST.mock.calls.length).toBe(callsBefore);
+
+      resolveUpload(
+        apiResult.ok({
+          role: "preview",
+          s3Key: "k",
+          filename: "f",
+          sizeBytes: 1,
+          mimeType: "image/png",
+          previewImageUrl: "https://signed.example/p.png",
+        }),
+      );
+      await first;
     });
   });
 

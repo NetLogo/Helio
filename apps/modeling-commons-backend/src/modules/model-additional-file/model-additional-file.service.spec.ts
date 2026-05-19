@@ -15,7 +15,7 @@ function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionE
     versionNumber: 1,
     title: 'Test',
     description: null,
-    previewImage: null,
+    previewImageFileKey: null,
     netlogoFileKey: '2026/04/17/abcd-model.nlogox',
     netlogoVersion: null,
     infoTab: null,

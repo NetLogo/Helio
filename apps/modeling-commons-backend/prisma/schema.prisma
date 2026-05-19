@@ -204,8 +204,8 @@ model ModelVersion {
   versionNumber    Int
   title            String
   description      String?
-  previewImage     Bytes?
-  netlogoFileKey   String
+  previewImageFileKey String?
+  netlogoFileKey      String
   netlogoVersion   String?
   infoTab          String?
   createdAt        DateTime  @default(now())

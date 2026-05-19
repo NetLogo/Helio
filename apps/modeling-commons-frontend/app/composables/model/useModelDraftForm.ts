@@ -4,6 +4,8 @@ import { getModelPreviewCard } from "~/forms/models";
 import type { PrimaryFileMeta, StagedAttachmentMeta, UploadFormInput } from "~/forms/upload";
 import { collectTagNames, draftToFormState, emptyUploadFormState } from "~/forms/upload";
 
+type PreviewImageMeta = NonNullable<DraftData["previewImage"]>;
+
 export interface UseModelDraftFormOptions {
   initialDraftId?: string;
   seedModelId?: string;
@@ -20,7 +22,9 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     patch,
     uploadPrimaryFile,
     uploadAttachment,
+    uploadPreviewImage: uploadPreviewImageApi,
     removeFile,
+    generatePreview: generatePreviewApi,
     publish,
     abandon,
   } = useModelDraft(opts.initialDraftId);
@@ -36,13 +40,15 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
   const initialized = ref(false);
   const initializing = ref(false);
   const deletingModel = ref(false);
+  const generatingPreview = ref(false);
+  const uploadingPreview = ref(false);
 
   const originalData = ref<DraftData | null>(null);
+  const originalPreviewImageUrl = ref<string | null>(null);
   const hydratedAttachmentIds = ref<Set<string>>(new Set());
 
-  const previewImageUrl = computed(() =>
-    formState.value.imageFile ? URL.createObjectURL(formState.value.imageFile) : null,
-  );
+  const previewImage = ref<PreviewImageMeta | null>(null);
+  const previewImageUrl = ref<string | null>(null);
 
   const currentUser = useUser();
 
@@ -109,14 +115,20 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     return "Saved";
   });
 
-  function hydrateFromDraft(data: DraftData) {
+  function hydrateFromDraft(
+    data: DraftData,
+    serverPreviewImageUrl: string | null = null,
+  ) {
     hydrating.value = true;
     originalData.value = JSON.parse(JSON.stringify(data)) as DraftData;
+    originalPreviewImageUrl.value = serverPreviewImageUrl;
     const next = draftToFormState(data);
     formState.value = next.formState;
     primaryFile.value = next.primaryFile;
     stagedAttachments.value = next.attachments;
     hydratedAttachmentIds.value = new Set(next.attachments.map((a) => a.id));
+    previewImage.value = data.previewImage ? { ...data.previewImage } : null;
+    previewImageUrl.value = serverPreviewImageUrl;
     pickedFile.value = null;
     modelFiles.value = [];
     additionalFiles.value = [];
@@ -133,7 +145,10 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
       if (opts.initialDraftId) {
         try {
           const draft = await load(opts.initialDraftId);
-          await hydrateFromDraft(draft.data);
+          await hydrateFromDraft(
+            draft.data,
+            (draft as unknown as { previewImageUrl: string | null }).previewImageUrl ?? null,
+          );
         } catch {
           showNotFoundToast("Draft", "We could not load that draft. Starting fresh.");
         }
@@ -143,7 +158,10 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
         try {
           const id = await ensureDraft({ modelId: opts.seedModelId });
           const draft = await load(id);
-          await hydrateFromDraft(draft.data);
+          await hydrateFromDraft(
+            draft.data,
+            (draft as unknown as { previewImageUrl: string | null }).previewImageUrl ?? null,
+          );
         } catch (err) {
           showActionFailedToast(
             "Could not start edit",
@@ -290,6 +308,86 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     await abandon();
   }
 
+  async function generatePreview(): Promise<void> {
+    if (generatingPreview.value || uploadingPreview.value) return;
+    if (!primaryFile.value && !pickedFile.value) {
+      showActionFailedToast(
+        "No model file",
+        "Upload a .nlogox before generating a preview image.",
+      );
+      return;
+    }
+    generatingPreview.value = true;
+    try {
+      const result = await generatePreviewApi();
+      previewImage.value = {
+        s3Key: result.s3Key,
+        filename: result.filename,
+        sizeBytes: result.sizeBytes,
+        mimeType: result.mimeType,
+      };
+      previewImageUrl.value = result.previewImageUrl;
+      if (originalData.value) {
+        originalData.value = {
+          ...originalData.value,
+          previewImage: { ...previewImage.value },
+        };
+      }
+      originalPreviewImageUrl.value = result.previewImageUrl;
+    } catch (err) {
+      showActionFailedToast(
+        "Preview generation failed",
+        err instanceof Error
+          ? err.message
+          : "Could not generate a preview image. Try again or publish to auto-generate one.",
+      );
+    } finally {
+      generatingPreview.value = false;
+    }
+  }
+
+  async function uploadPreviewImage(file: File): Promise<void> {
+    if (uploadingPreview.value || generatingPreview.value) return;
+    uploadingPreview.value = true;
+    try {
+      await ensureDraft();
+      const result = await uploadPreviewImageApi(file);
+      previewImage.value = {
+        s3Key: result.s3Key,
+        filename: result.filename,
+        sizeBytes: result.sizeBytes,
+        mimeType: result.mimeType,
+      };
+      previewImageUrl.value = result.previewImageUrl;
+      if (originalData.value) {
+        originalData.value = {
+          ...originalData.value,
+          previewImage: { ...previewImage.value },
+        };
+      }
+      originalPreviewImageUrl.value = result.previewImageUrl;
+    } catch (err) {
+      showActionFailedToast(
+        "Preview upload failed",
+        err instanceof Error
+          ? err.message
+          : "Could not upload that preview image. Try a different file.",
+      );
+    } finally {
+      formState.value.imageFile = null;
+      uploadingPreview.value = false;
+    }
+  }
+
+  watch(
+    () => formState.value.imageFile,
+    (file) => {
+      if (hydrating.value) return;
+      if (!file) return;
+      void uploadPreviewImage(file);
+    },
+  );
+
   async function revert(): Promise<void> {
     if (!originalData.value) return;
     const sessionAddedIds = stagedAttachments.value
@@ -298,7 +396,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     for (const id of sessionAddedIds) {
       await removeFile(id).catch(() => null);
     }
-    await hydrateFromDraft(originalData.value);
+    await hydrateFromDraft(originalData.value, originalPreviewImageUrl.value);
     const restored = formState.value;
     await patch.flush();
     await patch({
@@ -344,8 +442,14 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     modelFilesAdded,
     isDirty,
     deletingModel,
+    generatingPreview,
+    uploadingPreview,
+    previewImage,
+    previewImageUrl,
     init,
     hydrateFromDraft,
+    generatePreview,
+    uploadPreviewImage,
     submit,
     discard,
     revert,

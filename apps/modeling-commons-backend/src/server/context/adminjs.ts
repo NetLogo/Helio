@@ -143,7 +143,7 @@ async function adminJsPlugin(fastify: FastifyInstance) {
           filterProperties: ['modelId', 'versionNumber', 'title', 'netlogoVersion', 'finalizedAt', 'createdAt'],
           sort: { sortBy: 'createdAt', direction: 'desc' },
           properties: {
-            previewImage: { isVisible: false },
+            previewImageFileKey: { isVisible: { list: false, filter: false, show: true, edit: true } },
             infoTab: { isVisible: { list: false, filter: false, show: true, edit: true } },
             description: { isVisible: { list: false, filter: false, show: true, edit: true } },
           },

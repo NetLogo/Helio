@@ -5,11 +5,11 @@ export type ModelVersionEntity = ModelVersion;
 export type CreateVersionProps = {
   title?: string;
   description?: string;
-  previewImage?: Uint8Array<ArrayBuffer>;
+  previewImageFileKey?: string | null;
 };
 
 export type UpdateCurrentVersionProps = {
   title?: string;
   description?: string;
-  previewImage?: Uint8Array<ArrayBuffer>;
+  previewImageFileKey?: string | null;
 };

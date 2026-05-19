@@ -66,6 +66,7 @@ useHead({
 });
 
 const { displayName, displayEmail, displayImage } = useProfileSettings();
+const user = useUser();
 
 const sidebarOpen = ref(true);
 
@@ -74,22 +75,21 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
     { label: "Account", type: "label" },
     { label: "Public Profile", icon: "i-lucide-user-cog", to: "/profile/settings" },
     { label: "Login & Security", icon: "i-lucide-key-round", to: "/profile/security" },
-    {
-      label: "Notifications & Preferences",
-      icon: "i-lucide-sliders-horizontal",
-      to: "/profile/preferences",
-    },
+    // {
+    //   label: "Notifications & Preferences",
+    //   icon: "i-lucide-sliders-horizontal",
+    //   to: "/profile/preferences",
+    // },
   ],
   [
     { label: "Models", type: "label" },
-    { label: "Published", icon: "i-lucide-globe", to: "/profile/models" },
-    { label: "Drafts", icon: "i-lucide-file-edit", to: "/profile/drafts" },
-    { label: "Saved", icon: "i-lucide-heart", to: "/profile/saved" },
+    { label: "Published", icon: "i-lucide-globe", to: `/users/${user.value.user!.id}/models` },
+    { label: "Drafts", icon: "i-lucide-file-text", to: `/profile/drafts` },
   ],
-  [
-    { label: "Support", type: "label" },
-    { label: "Help Center", icon: "i-lucide-help-circle", to: "/profile/support" },
-  ],
+  // [
+  //   { label: "Support", type: "label" },
+  //   { label: "Help Center", icon: "i-lucide-help-circle", to: "/profile/support" },
+  // ],
   [
     { label: "Legal & Policies", type: "label" },
     { label: "Privacy Policy", icon: "i-lucide-eye-closed", to: "/privacy", target: "_blank" },

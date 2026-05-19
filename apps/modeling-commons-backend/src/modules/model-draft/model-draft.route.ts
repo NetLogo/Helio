@@ -10,6 +10,7 @@ import {
   draftFileUploadFieldsSchema,
   draftFileUploadResponseSchema,
   draftIdParamsSchema,
+  generatePreviewImageResponseSchema,
   modelDraftPaginatedResponseSchema,
   modelDraftResponseDtoSchema,
   patchDraftRequestDtoSchema,
@@ -22,7 +23,12 @@ import {
 } from '#src/modules/model-draft/dtos/model-draft.dto.ts';
 
 export default async function modelDraftRoutes(fastify: FastifyInstance) {
-  const { modelDraftService, modelDraftMapper } = fastify.diContainer.cradle;
+  const { modelDraftService, modelDraftMapper, fileService } = fastify.diContainer.cradle;
+
+  async function resolvePreviewImageUrl(s3Key: string | undefined): Promise<string | null> {
+    if (!s3Key) return null;
+    return fileService.getUrl(s3Key);
+  }
 
   fastify.post<{ Body: CreateDraftRequestDto }>(
     '/v1/model-drafts',
@@ -59,7 +65,15 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
       );
       return {
         ...result,
-        data: result.data.map((e) => modelDraftMapper.toResponse(e)),
+        data: await Promise.all(
+          result.data.map(async (e) => {
+            const dto = modelDraftMapper.toResponse(e);
+            return {
+              ...dto,
+              previewImageUrl: await resolvePreviewImageUrl(dto.data.previewImage?.s3Key),
+            };
+          }),
+        ),
       };
     },
   );
@@ -75,7 +89,11 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth, resolveModelDraft()],
     },
     async (request) => {
-      return modelDraftMapper.toResponse(request.modelDraft);
+      const response = modelDraftMapper.toResponse(request.modelDraft);
+      return {
+        ...response,
+        previewImageUrl: await resolvePreviewImageUrl(response.data.previewImage?.s3Key),
+      };
     },
   );
 
@@ -104,7 +122,7 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
         tags: ['ModelDraft'],
         consumes: ['multipart/form-data'],
         description:
-          'Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "attachment").',
+          'Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "attachment" | "preview").',
       },
       preHandler: [
         requireAuth,
@@ -121,6 +139,10 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
         filename,
         contentType: mimetype,
       });
+      if (role === 'preview') {
+        const previewImageUrl = await fileService.getUrl(result.s3Key);
+        return reply.code(201).send({ ...result, previewImageUrl });
+      }
       return reply.code(201).send(result);
     },
   );
@@ -134,6 +156,25 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       await modelDraftService.removeFile(request.modelDraft, request.params.fileId);
       return reply.code(204).send();
+    },
+  );
+
+  fastify.post<{ Params: DraftIdParams }>(
+    '/v1/model-drafts/:id/preview-image/generate',
+    {
+      schema: {
+        params: draftIdParamsSchema,
+        response: { 201: generatePreviewImageResponseSchema },
+        tags: ['ModelDraft'],
+        description:
+          "Auto-generate a preview image from the draft's primary NetLogo file. Result is staged on the draft.",
+      },
+      preHandler: [requireAuth, resolveModelDraft()],
+    },
+    async (request, reply) => {
+      const result = await modelDraftService.generatePreviewImage(request.modelDraft);
+      const previewImageUrl = await fileService.getUrl(result.s3Key);
+      return reply.code(201).send({ ...result, previewImageUrl });
     },
   );
 

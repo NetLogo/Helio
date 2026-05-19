@@ -79,7 +79,6 @@ export default async function userRoutes(fastify: FastifyInstance) {
         request.user?.id ?? null,
         request.user?.systemRole ?? null,
       );
-      console.log(result);
       if (result.canViewFullProfile) {
         return userMapper.toResponse(result.user);
       }

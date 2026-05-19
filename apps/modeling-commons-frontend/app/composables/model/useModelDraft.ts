@@ -102,7 +102,10 @@ export default function useModelDraft(initialDraftId?: string) {
     }
   }, 500);
 
-  async function uploadFileRaw(role: "primary" | "attachment", file: File): Promise<StagedFile> {
+  async function uploadFileRaw(
+    role: "primary" | "attachment" | "preview",
+    file: File,
+  ): Promise<StagedFile & { previewImageUrl?: string }> {
     const id = await ensureDraft();
     const body = new FormData();
     body.append("role", role);
@@ -112,14 +115,22 @@ export default function useModelDraft(initialDraftId?: string) {
       body: body as never,
       bodySerializer: (b) => b as unknown as FormData,
     });
-    const parsed = handleApiError(data, error, "uploading file");
+    const parsed = handleApiError(data, error, "uploading file") as {
+      id?: string;
+      filename: string;
+      sizeBytes: number;
+      mimeType: string;
+      s3Key: string;
+      previewImageUrl?: string;
+    };
     return {
-      fileId: parsed.id ?? "primary",
+      fileId: parsed.id ?? role,
       filename: parsed.filename,
       sizeBytes: parsed.sizeBytes,
       mimeType: parsed.mimeType,
       s3Key: parsed.s3Key,
       status: "uploaded",
+      previewImageUrl: parsed.previewImageUrl,
     };
   }
 
@@ -131,6 +142,16 @@ export default function useModelDraft(initialDraftId?: string) {
     return uploadFileRaw("attachment", file);
   }
 
+  async function uploadPreviewImage(
+    file: File,
+  ): Promise<StagedFile & { previewImageUrl: string }> {
+    const staged = await uploadFileRaw("preview", file);
+    if (!staged.previewImageUrl) {
+      throw new Error("Server did not return a preview image URL");
+    }
+    return { ...staged, previewImageUrl: staged.previewImageUrl };
+  }
+
   async function removeFile(fileId: string): Promise<void> {
     const id = draftId.value;
     if (!id) return;
@@ -138,6 +159,28 @@ export default function useModelDraft(initialDraftId?: string) {
       params: { path: { id, fileId } },
     });
     handleApiError(data, error, "removing file");
+  }
+
+  async function generatePreview(): Promise<{
+    s3Key: string;
+    filename: string;
+    sizeBytes: number;
+    mimeType: string;
+    previewImageUrl: string;
+  }> {
+    const id = await ensureDraft();
+    const { data, error } = await POST(
+      "/api/v1/model-drafts/{id}/preview-image/generate",
+      { params: { path: { id } } },
+    );
+    const parsed = handleApiError(data, error, "generating preview image") as {
+      s3Key: string;
+      filename: string;
+      sizeBytes: number;
+      mimeType: string;
+      previewImageUrl: string;
+    };
+    return parsed;
   }
 
   async function publish(): Promise<{ id: string }> {
@@ -176,7 +219,9 @@ export default function useModelDraft(initialDraftId?: string) {
     patch,
     uploadPrimaryFile,
     uploadAttachment,
+    uploadPreviewImage,
     removeFile,
+    generatePreview,
     publish,
     abandon,
   };

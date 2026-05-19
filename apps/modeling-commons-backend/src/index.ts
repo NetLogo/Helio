@@ -4,6 +4,7 @@ import server from '#src/server/index.ts';
 import { prisma } from '#src/shared/db/prisma.client.ts';
 import Fastify from 'fastify';
 import { randomUUID } from 'node:crypto';
+import { validateUUIDv4 } from './shared/utils/validateUUIDv4.ts';
 
 async function init(): Promise<void> {
   const fastify = Fastify({
@@ -12,8 +13,13 @@ async function init(): Promise<void> {
       redact: ['headers.authorization'],
     },
     genReqId: (req) => {
-      // header best practice: don't use "x-" https://www.rfc-editor.org/info/rfc6648 and keep it lowercase
-      return (req.headers['request-id'] as string) ?? randomUUID();
+      // header best practice: don't use "x-"
+      // https://www.rfc-editor.org/info/rfc6648 and keep it lowercase
+      if (validateUUIDv4(req.headers['request-id'] as string)) {
+        return req.headers['request-id'] as string;
+      } else {
+        return randomUUID();
+      }
     },
     routerOptions: {
       ignoreDuplicateSlashes: true,

@@ -132,6 +132,8 @@ function readNlogox(
   blob: Buffer;
   contentType: string;
   previewImage: {
+    key: string;
+    filename: string;
     blob: Buffer;
     contentType: string;
   };
@@ -162,6 +164,8 @@ function readNlogox(
     blob: Buffer.from(content, 'utf-8'),
     contentType: 'application/xml',
     previewImage: {
+      key: `files/public/preview-images/seed/${previewImgName}`,
+      filename: previewImgName,
       blob: imageBlob,
       contentType: previewImageContentType,
     },
@@ -373,6 +377,28 @@ async function main() {
   }
   console.log(`  ✓ ${files.length} files`);
 
+  const previewImages = Array.from(
+    new Map(
+      Object.values(seedNlogoxFiles).map((f) => [f.previewImage.key, f.previewImage]),
+    ).values(),
+  );
+  for (const img of previewImages) {
+    await storage.send(
+      new PutObjectCommand({
+        Bucket: bucket.Name,
+        Key: img.key,
+        Body: img.blob,
+        ContentType: img.contentType,
+        ACL: 'public-read',
+        Metadata: {
+          filename: img.filename,
+          createdAt: new Date().toISOString(),
+        },
+      }),
+    );
+  }
+  console.log(`  ✓ ${previewImages.length} preview images`);
+
   // 6. Models (without latestVersionId — set after versions exist)
   const models = [
     { id: ids.wolfSheep, visibility: 'public' as const, isEndorsed: true },
@@ -419,7 +445,7 @@ async function main() {
       infoTab: seedNlogoxFiles.wolfSheepNlogox1.infoTab,
       createdAt: oneWeekAgo,
       finalizedAt: now,
-      previewImage: seedNlogoxFiles.wolfSheepNlogox1.previewImage.blob,
+      previewImageFileKey: seedNlogoxFiles.wolfSheepNlogox1.previewImage.key,
     },
     {
       modelId: ids.wolfSheep,
@@ -429,7 +455,7 @@ async function main() {
       netlogoFileKey: seedNlogoxFiles.wolfSheepNlogox2.key,
       netlogoVersion: '7.0.3',
       infoTab: seedNlogoxFiles.wolfSheepNlogox2.infoTab,
-      previewImage: seedNlogoxFiles.wolfSheepNlogox2.previewImage.blob,
+      previewImageFileKey: seedNlogoxFiles.wolfSheepNlogox2.previewImage.key,
     },
     {
       modelId: ids.wolfSheepFork,
@@ -439,7 +465,7 @@ async function main() {
       netlogoFileKey: seedNlogoxFiles.wolfSheepNlogoxFork.key,
       netlogoVersion: '7.0.0',
       infoTab: seedNlogoxFiles.wolfSheepNlogoxFork.infoTab,
-      previewImage: seedNlogoxFiles.wolfSheepNlogoxFork.previewImage.blob,
+      previewImageFileKey: seedNlogoxFiles.wolfSheepNlogoxFork.previewImage.key,
     },
     {
       modelId: ids.trafficBasic,
@@ -449,7 +475,7 @@ async function main() {
       netlogoFileKey: seedNlogoxFiles.trafficBasicNlogox.key,
       netlogoVersion: '6.4.0',
       infoTab: seedNlogoxFiles.trafficBasicNlogox.infoTab,
-      previewImage: seedNlogoxFiles.trafficBasicNlogox.previewImage.blob,
+      previewImageFileKey: seedNlogoxFiles.trafficBasicNlogox.previewImage.key,
     },
     {
       modelId: ids.trafficBasic,
@@ -460,7 +486,7 @@ async function main() {
       netlogoFileKey: seedNlogoxFiles.trafficGridNlogox.key,
       netlogoVersion: '7.0.0',
       infoTab: seedNlogoxFiles.trafficGridNlogox.infoTab,
-      previewImage: seedNlogoxFiles.trafficGridNlogox.previewImage.blob,
+      previewImageFileKey: seedNlogoxFiles.trafficGridNlogox.previewImage.key,
     },
     {
       modelId: ids.traffic2Lanes,
@@ -472,7 +498,7 @@ async function main() {
       netlogoFileKey: seedNlogoxFiles.traffic2LanesNlogox.key,
       netlogoVersion: '7.0.0',
       infoTab: seedNlogoxFiles.traffic2LanesNlogox.infoTab,
-      previewImage: seedNlogoxFiles.traffic2LanesNlogox.previewImage.blob,
+      previewImageFileKey: seedNlogoxFiles.traffic2LanesNlogox.previewImage.key,
     },
     {
       modelId: ids.fireSpread,
@@ -483,7 +509,7 @@ async function main() {
       netlogoFileKey: seedNlogoxFiles.fire.key,
       netlogoVersion: '6.4.0',
       infoTab: '## WHAT IS IT?\n\nThis model simulates fire spreading through a forest.',
-      previewImage: seedNlogoxFiles.fire.previewImage.blob,
+      previewImageFileKey: seedNlogoxFiles.fire.previewImage.key,
     },
     {
       modelId: ids.antForaging,
@@ -512,7 +538,6 @@ async function main() {
     await prisma.modelVersion.upsert({
       where: { modelId_versionNumber: { modelId: v.modelId, versionNumber: v.versionNumber } },
       update: {},
-      // @ts-expect-error -- Shared vs. Non-Shared Buffer
       create: v,
     });
   }

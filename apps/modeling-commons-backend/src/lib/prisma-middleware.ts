@@ -3,7 +3,15 @@ import { Prisma } from '#prisma/client';
 const SOFT_DELETE_MODELS = ['Model', 'User'] as const;
 type SoftDeleteModel = (typeof SOFT_DELETE_MODELS)[number];
 
-const INTERCEPTED_OPERATIONS = ['findMany', 'findFirst', 'findFirstOrThrow', 'count'] as const;
+const INTERCEPTED_OPERATIONS = [
+  'findMany',
+  'findFirst',
+  'findFirstOrThrow',
+  'count',
+  'aggregate',
+  'findUnique',
+  'findUniqueOrThrow',
+] as const;
 
 function isSoftDeleteModel(model: string | undefined): model is SoftDeleteModel {
   return SOFT_DELETE_MODELS.includes(model as SoftDeleteModel);

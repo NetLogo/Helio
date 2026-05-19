@@ -26,10 +26,10 @@
             :href="child.href"
             :active="child.active"
             :icon="child.icon"
-            :subtitle="child.subtitle"
           />
         </template>
       </NavbarItem>
+      <!-- <SearchBar class="w-xl" /> -->
     </NavbarLinksContainer>
 
     <NavbarActionsContainer class="gap-3! ml-0!">
@@ -159,16 +159,6 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           label: "Profile",
           icon: "i-lucide-user",
           href: "/profile",
-        },
-        {
-          label: "Models",
-          icon: "i-lucide-box",
-          href: "/profile/models",
-        },
-        {
-          label: "Saved Models",
-          icon: "i-lucide-heart",
-          href: "/profile/saved-models",
         },
       ],
       [

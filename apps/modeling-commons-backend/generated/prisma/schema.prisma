@@ -199,16 +199,16 @@ model Model {
 }
 
 model ModelVersion {
-  modelId        String
-  versionNumber  Int
-  title          String
-  description    String?
-  previewImage   Bytes?
-  netlogoFileKey String
-  netlogoVersion String?
-  infoTab        String?
-  createdAt      DateTime  @default(now())
-  finalizedAt    DateTime?
+  modelId             String
+  versionNumber       Int
+  title               String
+  description         String?
+  previewImageFileKey String?
+  netlogoFileKey      String
+  netlogoVersion      String?
+  infoTab             String?
+  createdAt           DateTime  @default(now())
+  finalizedAt         DateTime?
 
   model Model @relation("ModelVersions", fields: [modelId], references: [id], onDelete: Cascade)
 
