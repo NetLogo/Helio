@@ -23,6 +23,7 @@ export async function startModelDraftJanitor({
   });
 
   await boss.start();
+  await boss.createQueue(QUEUE_NAME);
 
   await boss.work(QUEUE_NAME, async () => {
     const cutoff = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000);

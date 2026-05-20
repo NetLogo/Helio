@@ -22,6 +22,7 @@ export async function startEventProcessor({
   });
 
   await boss.start();
+  await boss.createQueue(QUEUE_NAME);
 
   await boss.work(QUEUE_NAME, async () => {
     const events = await eventRepository.findUnprocessed(BATCH_SIZE);
