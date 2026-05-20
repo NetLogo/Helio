@@ -16,16 +16,14 @@
  *   DATABASE_URL=<targetDB> PRISMA_SEED_FILE=archive.ts yarn run db:seed
  */
 
-import { PrismaClient, Prisma } from '../generated/prisma/client.js';
-import pg from 'pg';
-import Cursor from 'pg-cursor';
-import { mkdir, writeFile, rm } from 'node:fs/promises';
-import { randomUUID } from 'node:crypto';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { createHash, randomUUID } from 'node:crypto';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { PrismaPg } from '@prisma/adapter-pg';
-import slugify from 'slugify';
-import { createHash } from 'node:crypto';
+import pg from 'pg';
+import Cursor from 'pg-cursor';
+import { Prisma, PrismaClient } from '../generated/prisma/client.js';
 
 const OLD_URL = 'postgresql://admin:test@127.0.0.1:5432/nlcommons_production';
 const NEW_URL = required('DATABASE_URL');
@@ -478,7 +476,6 @@ async function migrateNodes(
 
             // 5. Attachments — tagged to the LATEST version
             const attachments = await fetchAttachmentsForNode(node.id);
-            let previewBytes: Buffer | null = null;
 
             for (const a of attachments) {
               const fileUuid = randomUUID();
@@ -486,9 +483,20 @@ async function migrateNodes(
 
               if (a.content_type === 'preview') {
                 // Last preview wins (matches Rails behavior — latest upload).
-                previewBytes = a.contents;
                 const relKey = buildPreviewFileKey(modelUuid, dateForPath, fileUuid, a.filename);
                 await writeLocalFile(relKey, a.contents);
+
+                await tx.modelVersion.update({
+                  where: {
+                    modelId_versionNumber: {
+                      modelId: modelUuid,
+                      versionNumber: latestVersionNumber,
+                    },
+                  },
+                  data: { previewImageFileKey: relKey },
+                });
+                report.attachments.previews_attached =
+                  (report.attachments.previews_attached ?? 0) + 1;
                 continue;
               }
 
@@ -499,6 +507,8 @@ async function migrateNodes(
               const metadata = JSON.stringify({
                 contentType: a.content_type,
                 originalFilename: a.filename,
+                userId: a.person_id ? (userIdMap.get(a.person_id) ?? null) : null,
+                createdAt: a.created_at?.toISOString() ?? new Date().toISOString(),
               });
 
               await writeLocalFile(metadataRelKey, Buffer.from(metadata, 'utf8'));
@@ -513,18 +523,6 @@ async function migrateNodes(
                 },
               });
               report.attachments.migrated++;
-            }
-
-            if (previewBytes) {
-              await tx.modelVersion.update({
-                where: {
-                  modelId_versionNumber: { modelId: modelUuid, versionNumber: latestVersionNumber },
-                },
-                // @ts-expect-error -- ArrayBufferLike vs. ArrayBuffer mismatch
-                data: { previewImage: previewBytes },
-              });
-              report.attachments.previews_attached =
-                (report.attachments.previews_attached ?? 0) + 1;
             }
 
             // 6. Tags — attached to the LATEST version
