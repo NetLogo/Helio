@@ -17,7 +17,6 @@
     "init": "yarn run create:env && yarn run db:generate",
     "dev": "yarn run app & yarn run db",
     "app": "node --env-file=.env --import ./src/instrumentation.ts --watch src/index.ts | pino-pretty -clSt",
-    "app:prod": "node --env-file=.env --import ./src/instrumentation.ts ./src/index.ts",
     "svc": "docker-compose -f docker-compose.dev.yml up",
     "svc:full": "docker-compose -f docker-compose.dev.yml --profile optional up",
     "svc:down": "docker-compose -f docker-compose.dev.yml down",
@@ -48,9 +47,6 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@adminjs/fastify": "^4.2.0",
-    "@adminjs/prisma": "^5.0.4",
-    "@adminjs/sql": "^2.2.6",
     "@aws-sdk/client-s3": "^3.1031.0",
     "@aws-sdk/s3-request-presigner": "^3.1032.0",
     "@better-auth/passkey": "^1.5.6",
@@ -76,7 +72,6 @@
     "@repo/emails": "0.0.0",
     "@repo/modeling-commons-shared": "0.0.0",
     "@scalar/fastify-api-reference": "^1.49.7",
-    "adminjs": "^7.8.17",
     "ajv": "8.18.0",
     "ajv-formats": "3.0.1",
     "awilix": "13.0.3",

@@ -11,7 +11,6 @@ import UnderPressure from '@fastify/under-pressure';
 import env from '#src/config/env.ts';
 import { di } from '#src/server/di/index.ts';
 import { startWorkers } from '#src/workers/index.ts';
-import adminjs from './context/adminjs.ts';
 
 export default async function createServer(fastify: FastifyInstance): Promise<FastifyInstance> {
   // Set sensible default security headers
@@ -69,41 +68,6 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
     maxAge: 86400,
-  });
-
-  await fastify.register(Cookie, {
-    secret: env.cookie.secret,
-    parseOptions: {
-      secure: env.isProduction,
-      httpOnly: true,
-      sameSite: 'lax',
-    },
-  });
-
-  // CSRF-protection ensures that the backend only accepts requests from a real frontend
-  // that we control, and not from malicious actors or bots.
-  await fastify.register(Csrf, {
-    cookieKey: '_csrf',
-    cookieOpts: { signed: true, secure: env.isProduction },
-  });
-
-  fastify.addHook('onRequest', async (request, reply) => {
-    // Return CSRF cookie for frontend to read on initial request
-    if (request.cookies['_csrf'] === undefined) {
-      const token = await reply.generateCsrf();
-      reply.setCookie('_csrf', token, {
-        signed: true,
-        secure: env.isProduction,
-        httpOnly: true,
-        sameSite: 'lax',
-      });
-    }
-  });
-
-  // AdminJS must be registered in its own context to avoid conflicts with
-  // FastifyMultipart, which AdminJS tries to register internally. See
-  await fastify.register(async function adminJsContext(server) {
-    server.register(adminjs);
   });
 
   // Auto-load plugins

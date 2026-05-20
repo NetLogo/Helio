@@ -3,21 +3,6 @@ Feature: Security Regressions
   are caught by CI. Scenarios tagged @security-todo capture present-day
   (still-insecure) behaviour and must be tightened when the fix lands.
 
-  # C-1: AdminJS panel auth gate. The hook in src/server/plugins/auth.ts
-  # gates /admin behind admin auth only when env.isProduction. In test
-  # the gate is OFF, so the route is reachable. Once the gate becomes
-  # unconditional, the @security-todo scenario flips to require 401/403.
-  @security
-  Scenario: AdminJS root path is wired through Fastify
-    When an anonymous viewer sends a GET request to "/admin"
-    Then the response status should not be 404
-
-  @security @security-todo
-  Scenario: AdminJS panel is reachable without authentication in non-production
-    # @security-todo: should return 401 once the AdminJS gate is widened beyond production.
-    When an anonymous viewer sends a GET request to "/admin/resources/User"
-    Then the response status should be 200
-
   # C-2: /v1/dev/fill-in. The route was removed entirely. Asserting it
   # is no longer wired is a regression guard against re-introduction.
   @security

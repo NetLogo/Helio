@@ -91,3 +91,21 @@ Feature: Model Drafts
     When "attacker" creates a draft targeting the model "Victim Model"
     Then the response status should not be 201
     And the response status should not be 200
+
+  @pending
+  Scenario: Per user per model there is at most one draft
+    Given an authenticated user
+    And a public model "Single Draft Model" created by the current user
+    And a draft seeded from the model "Single Draft Model"
+    When I create a draft targeting the model "Single Draft Model"
+    Then the response status should not be 201
+
+  @pending
+  Scenario: Per user per model drafts are purged on publish
+    Given an authenticated user
+    And a public model "Purge On Publish Model" created by the current user
+    And a draft seeded from the model "Purge On Publish Model"
+    When I patch the draft with title "Purge On Publish v2" and visibility "public"
+    And I publish the draft
+    Then the response status should be 201
+    And no drafts targeting the model "Purge On Publish Model" remain for the current user
