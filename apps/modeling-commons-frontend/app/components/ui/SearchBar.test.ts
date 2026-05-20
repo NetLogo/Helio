@@ -13,7 +13,7 @@ describe("SearchBar", () => {
     const wrapper = await mountSuspended(SearchBar);
     const input = wrapper.find("input");
     expect(input.exists()).toBe(true);
-    expect(input.attributes("placeholder")).toBe("Search models by keyword...");
+    expect(input.attributes("placeholder")).toBe("Discover 1,000+ models across subjects...");
   });
 
   it("registers a meta+k shortcut", async () => {

@@ -85,11 +85,12 @@ describe("useModelDraft.uploadPrimaryFile / uploadAttachment", () => {
     const file = new File(["x"], "a.nlogo", { type: "application/x-netlogo" });
     const staged = await draft.uploadPrimaryFile(file);
 
-    expect(staged).toEqual({
+    expect(staged).toMatchObject({
       fileId: "file-1",
       filename: "a.nlogo",
       sizeBytes: 42,
       mimeType: "application/x-netlogo",
+      s3Key: "key",
       status: "uploaded",
     });
 

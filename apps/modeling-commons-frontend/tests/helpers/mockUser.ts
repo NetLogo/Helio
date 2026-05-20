@@ -7,16 +7,16 @@ type AuthOverrides = {
 };
 
 export function buildAuthMock({ loggedIn = true, user }: AuthOverrides = {}) {
-  const session = ref(makeAuthState(loggedIn));
+  const initial = makeAuthState(loggedIn);
+  const data = ref(initial.data);
 
   if (loggedIn && user) {
-    session.value = {
-      data: {
-        user: { ...makeUser(), ...user },
-        session: makeSession(),
-      },
+    data.value = {
+      user: { ...makeUser(), ...user },
+      session: makeSession(),
     };
   }
+  const session = { data };
 
   const client = {
     signIn: { email: vi.fn() },

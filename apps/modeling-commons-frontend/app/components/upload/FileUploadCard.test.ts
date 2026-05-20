@@ -73,7 +73,7 @@ describe("FileUploadCard", () => {
           lockExisting: true,
         },
       });
-      expect(wrapper.text()).toContain("cannot be removed in edit mode");
+      expect(wrapper.text()).toContain("cannot be removed");
     });
 
     it("omits the lock copy when lockExisting is false", async () => {
@@ -85,7 +85,7 @@ describe("FileUploadCard", () => {
           lockExisting: false,
         },
       });
-      expect(wrapper.text()).not.toContain("cannot be removed in edit mode");
+      expect(wrapper.text()).not.toContain("cannot be removed");
     });
 
     it("does not render the existing-files block when the prop is empty", async () => {

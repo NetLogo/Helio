@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { computed, ref } from "vue";
 
-function stubAutoImports(sessionRef: ReturnType<typeof ref>) {
+function stubAutoImports(dataRef: ReturnType<typeof ref>) {
   vi.stubGlobal("useNuxtApp", () => ({
-    $auth: { session: sessionRef },
+    $auth: { session: { data: dataRef } },
   }));
   vi.stubGlobal("computed", computed);
 }
@@ -18,13 +18,11 @@ afterEach(() => {
 
 describe("useUser SSR/browser parity", () => {
   it("returns logged-in shape when session has user data", async () => {
-    const sessionRef = ref({
-      data: {
-        user: { id: "u-1", name: "Ada" },
-        session: { id: "sess-1" },
-      },
+    const dataRef = ref({
+      user: { id: "u-1", name: "Ada" },
+      session: { id: "sess-1" },
     });
-    stubAutoImports(sessionRef);
+    stubAutoImports(dataRef);
 
     const mod = await import("~/composables/user/useUser");
     const result = mod.default().value;
@@ -36,8 +34,8 @@ describe("useUser SSR/browser parity", () => {
   });
 
   it("returns logged-out shape when session has no user data", async () => {
-    const sessionRef = ref<{ data: null } | null>({ data: null });
-    stubAutoImports(sessionRef);
+    const dataRef = ref(null);
+    stubAutoImports(dataRef);
 
     const mod = await import("~/composables/user/useUser");
     const result = mod.default().value;
@@ -48,9 +46,9 @@ describe("useUser SSR/browser parity", () => {
     expect(mod.isLoggedIn(result)).toBe(false);
   });
 
-  it("returns logged-out shape when session ref is null", async () => {
-    const sessionRef = ref(null);
-    stubAutoImports(sessionRef);
+  it("returns logged-out shape when session data is undefined", async () => {
+    const dataRef = ref(undefined);
+    stubAutoImports(dataRef);
 
     const mod = await import("~/composables/user/useUser");
     const result = mod.default().value;
@@ -61,13 +59,11 @@ describe("useUser SSR/browser parity", () => {
   });
 
   it("shape is stable across two computed reads (parity invariant for SSR vs client)", async () => {
-    const sessionRef = ref({
-      data: {
-        user: { id: "u-2", name: "Grace" },
-        session: { id: "sess-2" },
-      },
+    const dataRef = ref({
+      user: { id: "u-2", name: "Grace" },
+      session: { id: "sess-2" },
     });
-    stubAutoImports(sessionRef);
+    stubAutoImports(dataRef);
 
     const mod = await import("~/composables/user/useUser");
     const userA = mod.default().value;

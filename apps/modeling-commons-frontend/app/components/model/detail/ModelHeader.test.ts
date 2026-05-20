@@ -11,12 +11,17 @@ mockComponent("UTooltip", {
 const baseProps = {
   title: "Wolf Sheep Predation",
   authors: [
-    { name: "Ada Lovelace", image: undefined },
-    { name: "Grace Hopper", image: undefined },
+    { userId: "u1", userName: "Ada Lovelace", role: "owner" },
+    { userId: "u2", userName: "Grace Hopper", role: "contributor" },
   ],
-  primaryAuthor: { name: "Ada Lovelace" },
   createdAt: new Date("2026-04-01T00:00:00Z").toISOString(),
-  modelVisibility: "public",
+  modelVisibility: "private",
+  permissions: {
+    canEdit: false,
+    canFork: true,
+    canDelete: false,
+    canViewDrafts: false,
+  } as never,
 };
 
 describe("ModelHeader", () => {
@@ -35,9 +40,16 @@ describe("ModelHeader", () => {
     expect(wrapper.text()).toMatch(/and\s+1\s+other/);
   });
 
-  it("renders the visibility label", async () => {
+  it("renders a visibility badge when the model is not public", async () => {
     const wrapper = await mountSuspended(ModelHeader, { props: baseProps });
-    expect(wrapper.text()).toContain("public");
+    expect(wrapper.find('[title="private"]').exists()).toBe(true);
+  });
+
+  it("does not render a visibility badge when the model is public", async () => {
+    const wrapper = await mountSuspended(ModelHeader, {
+      props: { ...baseProps, modelVisibility: "public" },
+    });
+    expect(wrapper.find('[title="public"]').exists()).toBe(false);
   });
 
   it("shows the download button when a downloadUrl is provided and emits download on click", async () => {

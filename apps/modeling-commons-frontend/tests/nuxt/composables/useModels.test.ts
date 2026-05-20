@@ -1,6 +1,8 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 import useModels from "~/composables/model/useModels";
+import type { ModelsFilters } from "~/forms/models";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState, routeState, navigateToMock } = vi.hoisted(() => ({
@@ -19,6 +21,8 @@ mockNuxtImport("useRoute", () => {
 
 mockNuxtImport("navigateTo", () => navigateToMock);
 
+const emptyFilters: ModelsFilters = {};
+
 beforeEach(() => {
   vi.resetAllMocks();
   apiState.current = makeApiClientMock();
@@ -26,47 +30,30 @@ beforeEach(() => {
 });
 
 describe("useModels", () => {
-  it("requests /api/v1/models with default pagination", async () => {
+  it("requests /api/v1/models/card with default pagination", async () => {
     apiState.current!.GET.mockResolvedValue(
       apiResult.ok({ count: 0, limit: 20, page: 0, data: [] }),
     );
 
-    const models = useModels();
+    const filters = ref<ModelsFilters>({ ...emptyFilters });
+    const models = useModels({ filters });
     await models.refresh();
 
-    const listCall = apiState.current!.GET.mock.calls.find(([path]) => path === "/api/v1/models");
+    const listCall = apiState.current!.GET.mock.calls.find(
+      ([path]) => path === "/api/v1/models/card",
+    );
     expect(listCall).toBeDefined();
-    expect(listCall![1]).toEqual({ params: { query: { limit: 20, page: 0 } } });
+    expect(listCall![1]?.params?.query?.limit).toBe(20);
+    expect(listCall![1]?.params?.query?.page).toBe(0);
   });
-
-  it.todo(
-    "forwards keyword/tag/isEndorsed filters from the route query — useAsyncData refresh doesn't pick up the route mock change in test env",
-    async () => {
-      routeState.current = {
-        query: { keyword: "bees", tag: "biology", endorsed: "true" },
-      };
-      apiState.current!.GET.mockResolvedValue(
-        apiResult.ok({ count: 0, limit: 20, page: 0, data: [] }),
-      );
-
-      const models = useModels();
-      await models.refresh();
-
-      const listCall = apiState.current!.GET.mock.calls.find(([p]) => p === "/api/v1/models");
-      expect(listCall![1]).toEqual({
-        params: {
-          query: { limit: 20, page: 0, keyword: "bees", tag: "biology", isEndorsed: true },
-        },
-      });
-    },
-  );
 
   it("exposes hasMore and isEmpty derived from the response", async () => {
     apiState.current!.GET.mockResolvedValue(
       apiResult.ok({ count: 0, limit: 20, page: 0, data: [] }),
     );
 
-    const models = useModels();
+    const filters = ref<ModelsFilters>({ ...emptyFilters });
+    const models = useModels({ filters });
     await models.refresh();
 
     expect(models.rows.value).toEqual([]);

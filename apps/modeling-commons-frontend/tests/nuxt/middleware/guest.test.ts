@@ -22,9 +22,17 @@ beforeEach(() => {
 });
 
 describe("guest middleware", () => {
-  it("redirects authenticated users to /models", async () => {
+  it("redirects authenticated users to the fallback path when there is no next param", async () => {
     userState.current = { isLoggedIn: true };
     await (guestMiddleware as unknown as (to: unknown, from: unknown) => unknown)(fakeRoute(), fakeRoute());
+
+    expect(navigateToMock).toHaveBeenCalledWith("/");
+  });
+
+  it("honors the `next` query param when authenticated", async () => {
+    userState.current = { isLoggedIn: true };
+    const route = { ...fakeRoute(), query: { next: "/models" } };
+    await (guestMiddleware as unknown as (to: unknown, from: unknown) => unknown)(route as never, fakeRoute());
 
     expect(navigateToMock).toHaveBeenCalledWith("/models");
   });

@@ -34,6 +34,10 @@ mockNuxtImport("useToast", () => {
   return () => ({ add: toastAddMock });
 });
 
+mockNuxtImport("useDeviceName", () => {
+  return () => ({ deviceName: ref("This device") });
+});
+
 function makePasskey(overrides: Partial<Record<string, unknown>> = {}) {
   return {
     id: "pk-1",

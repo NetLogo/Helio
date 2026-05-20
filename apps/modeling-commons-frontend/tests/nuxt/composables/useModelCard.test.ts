@@ -25,7 +25,7 @@ describe("useModelCard", () => {
     expect(apiState.current!.GET).toHaveBeenCalledWith("/api/v1/models/{id}/card", {
       params: { path: { id: "card-A" } },
     });
-    expect((data.value as { id: string } | null)?.id).toBe("card-A");
+    expect((data.value as { model: { id: string } } | null)?.model.id).toBe("card-A");
   });
 
   it("refetches when the id ref changes", async () => {

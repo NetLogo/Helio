@@ -1,8 +1,19 @@
-import { computed, nextTick } from "vue";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { computed, nextTick } from "vue";
 import useProfileSettings from "~/composables/user/useProfileSettings";
-import { makeApiClientMock, apiResult } from "~~/tests/helpers/mockApi";
+import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
+
+const profileUser = {
+  id: "user-1",
+  name: "Ada",
+  email: "ada@example.com",
+  emailVerified: true,
+  image: null,
+  systemRole: "user",
+  userKind: "student",
+  isProfilePublic: false,
+};
 
 const { apiState, userState } = vi.hoisted(() => ({
   apiState: { current: null as ReturnType<typeof makeApiClientMock> | null },
@@ -14,7 +25,16 @@ const { apiState, userState } = vi.hoisted(() => ({
       email: "ada@example.com",
       emailVerified: true,
       image: null,
-      user: { id: "user-1" },
+      user: {
+        id: "user-1",
+        name: "Ada",
+        email: "ada@example.com",
+        emailVerified: true,
+        image: null,
+        systemRole: "user",
+        userKind: "student",
+        isProfilePublic: false,
+      },
     } as { isLoggedIn: boolean; [k: string]: unknown },
   },
 }));
@@ -55,35 +75,38 @@ describe("useProfileSettings", () => {
     expect(settings.isDirty.value).toBe(false);
   });
 
-  it.todo("isDirty flips when isProfilePublic toggles — useAsyncData watcher ordering in test env doesn't seed local refs from profile before the assertion", async () => {
-    const settings = useProfileSettings();
-    await settings.refresh();
-    await nextTick();
+  it.todo(
+    "isDirty flips when isProfilePublic toggles — useAsyncData watcher ordering in test env doesn't seed local refs from profile before the assertion",
+    async () => {
+      const settings = useProfileSettings();
+      await settings.refresh();
+      await nextTick();
 
-    settings.isProfilePublic.value = true;
-    expect(settings.isDirty.value).toBe(true);
-  });
+      settings.isProfilePublic.value = true;
+      expect(settings.isDirty.value).toBe(true);
+    },
+  );
 
-  it.todo("saveProfileSettings PATCHes /api/v1/users/{id} — short-circuits because profile.value is null in test env (same root cause as isDirty test)", async () => {
-    apiState.current!.PATCH.mockResolvedValue(apiResult.ok({ id: "user-1" }));
+  it.todo(
+    "saveProfileSettings PATCHes /api/v1/users/{id} — short-circuits because profile.value is null in test env (same root cause as isDirty test)",
+    async () => {
+      apiState.current!.PATCH.mockResolvedValue(apiResult.ok({ id: "user-1" }));
 
-    const settings = useProfileSettings();
-    await settings.refresh();
-    await nextTick();
-    settings.isProfilePublic.value = true;
-    settings.userKind.value = "teacher";
+      const settings = useProfileSettings();
+      await settings.refresh();
+      await nextTick();
+      settings.isProfilePublic.value = true;
+      settings.userKind.value = "teacher";
 
-    const result = await settings.saveProfileSettings();
+      const result = await settings.saveProfileSettings();
 
-    expect(apiState.current!.PATCH).toHaveBeenCalledWith(
-      "/api/v1/users/{id}",
-      {
+      expect(apiState.current!.PATCH).toHaveBeenCalledWith("/api/v1/users/{id}", {
         params: { path: { id: "user-1" } },
         body: { isProfilePublic: true, userKind: "teacher" },
-      },
-    );
-    expect(result.error).toBeNull();
-  });
+      });
+      expect(result.error).toBeNull();
+    },
+  );
 
   it("saveProfileSettings short-circuits when nothing is dirty", async () => {
     const settings = useProfileSettings();

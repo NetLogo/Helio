@@ -1,4 +1,3 @@
-import { ObjectFunctor } from "@repo/utils/std/objects";
 import slugify from "slugify";
 export function formatRelativeDate(dateStr: string): string {
   const now = new Date();
@@ -91,12 +90,13 @@ export function parseSlugPath(
   path: string,
   prefixPath: string,
 ): { id: string; slug: string } | null {
-  const noPrefixPath = path.startsWith(prefixPath) ? path.substring(prefixPath.length) : path;
-  if (!noPrefixPath.startsWith("/")) return null;
-  const parts = noPrefixPath.split("/");
-  if (parts.length < 3) return null;
+  const prefix = `/${prefixPath}/`;
+  if (!path.startsWith(prefix)) return null;
+  const rest = path.substring(prefix.length);
+  const parts = rest.split("/").filter(Boolean);
+  if (parts.length < 2) return null;
   const id = parts[parts.length - 1]!;
-  const slug = parts.slice(2, parts.length - 1).join("/");
+  const slug = parts.slice(0, -1).join("/");
   return { id, slug };
 }
 
@@ -104,19 +104,11 @@ export const createModelPath = (modelId: string, modelTitle: string): string =>
   createSlugPath("models", modelId, modelTitle);
 
 export const createTagPath = (name: string): string => `/tags/${encodeURIComponent(name)}`;
-export const parseModelPath = (path: string): { modelId: string; modelSlug: string } | null =>
-  new ObjectFunctor(parseSlugPath(path, "models") ?? {})
-    .mapKeys((key) => {
-      switch (key) {
-        case "id":
-          return "modelId";
-        case "slug":
-          return "modelSlug";
-        default:
-          return key;
-      }
-    })
-    .get() as { modelId: string; modelSlug: string } | null;
+export const parseModelPath = (path: string): { modelId: string; modelSlug: string } | null => {
+  const parsed = parseSlugPath(path, "models");
+  if (!parsed) return null;
+  return { modelId: parsed.id, modelSlug: parsed.slug };
+};
 
 export function appendWindowProtocol(url: string): string {
   const hasScheme =

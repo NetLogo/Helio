@@ -215,9 +215,9 @@ describe("AddDetailsCardSchema", () => {
       expect(result.success).toBe(true);
     });
 
-    it("rejects an oversized image (>5 MB)", () => {
+    it("rejects an oversized image (>15 MB)", () => {
       const result = AddDetailsCardSchema.safeParse({
-        imageFile: makeFile("preview.png", 5 * 1024 * 1024 + 1, "image/png"),
+        imageFile: makeFile("preview.png", 15 * 1024 * 1024 + 1, "image/png"),
         title: "Title",
         description: "Description",
       });

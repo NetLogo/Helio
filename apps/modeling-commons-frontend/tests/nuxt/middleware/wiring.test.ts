@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 const root = resolve(process.cwd(), "app");
 
 const authProtectedPages = [
-  "pages/profile/settings.vue",
+  "pages/profile/(edit)/settings.vue",
   "pages/profile/drafts/index.vue",
   "pages/models/upload.vue",
 ];

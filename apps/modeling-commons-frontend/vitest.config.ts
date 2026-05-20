@@ -14,6 +14,16 @@ export default defineConfig({
   test: {
     projects: [
       {
+        resolve: {
+          alias: [
+            { find: "~~", replacement: fileURLToPath(new URL(".", import.meta.url)) },
+            { find: "~", replacement: fileURLToPath(new URL("./app", import.meta.url)) },
+            {
+              find: /^@repo\/utils\/(.*)$/,
+              replacement: fileURLToPath(new URL("../../packages/utils/dist/$1.js", import.meta.url)),
+            },
+          ],
+        },
         test: {
           name: "unit",
           include: ["app/**/*.{test,spec}.ts", "!app/components/**/*"],

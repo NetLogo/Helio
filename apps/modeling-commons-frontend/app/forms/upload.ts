@@ -1,5 +1,7 @@
 import * as z from "zod";
 import type { DraftData } from "~/composables/model/useModelDraft";
+import { deniedFileTypes, imageFileFormats } from "~/utils/constants";
+import { sizeToBytes } from "~/utils/converters";
 import { makeFileSchema } from "~/utils/file-schema";
 
 const maxNetlogoFileSize = 10 * 1024 * 1024; // 10 MB

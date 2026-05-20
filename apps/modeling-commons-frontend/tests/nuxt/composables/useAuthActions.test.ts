@@ -64,6 +64,7 @@ describe("useAuthActions", () => {
       name: "Ada",
       password: "pw",
       userKind: "student",
+      isProfilePublic: true,
       callbackURL: getEmailVerificationCallbackUrl(APP_URL, "/welcome"),
     });
   });

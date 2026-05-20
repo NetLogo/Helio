@@ -28,6 +28,7 @@ vi.mock("@better-auth/passkey/client", () => ({
 
 vi.mock("better-auth/client/plugins", () => ({
   adminClient: vi.fn(() => ({})),
+  inferAdditionalFields: vi.fn(() => ({})),
 }));
 
 describe("auth plugin", () => {
