@@ -6,7 +6,7 @@ This guide has three parts:
 - [**How It Works**](#how-it-works): Walks you through how to use the tool and highlights
   its most commonly used features.
 - [**Advanced Usage**](#advanced-usage): How to use BehaviorSpace from the command
-  line, or from your own Java code.
+  line, from your own Java code, or on an HPC.
 
 A number of new features were introduced in NetLogo 6.4:
 
@@ -969,6 +969,10 @@ Note the use of `-Dfile.encoding=UTF-8`. This forces all file I/O to use UTF-8
 encoding. Doing so ensures that NetLogo can load all models consistently, and
 that file-* primitives work consistently on all platforms, including models
 containing Unicode characters.
+
+### Cluster Computing (HPCs)
+
+BehaviorSpace experiments are often run on large-scale computing clusters.  More on that topic can be found [here](/hpc).
 
 ### Controlling API
 
