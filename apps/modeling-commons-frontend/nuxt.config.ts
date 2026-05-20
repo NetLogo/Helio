@@ -114,6 +114,12 @@ export default defineNuxtConfig({
     "/models/upload": {
       ssr: false,
     },
+
+    "/privacy": { prerender: true },
+    "/terms-of-service": { prerender: true },
+    "/cookies": { prerender: true },
+    "/about": { prerender: true },
+    "/donate": { prerender: true },
   },
 
   vite: {
