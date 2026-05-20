@@ -1,14 +1,14 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import makeModelService from '#src/modules/model/model.service.ts';
+import type { Model } from '#prisma/index';
+import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
+import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import modelDomain from '#src/modules/model/domain/model.domain.ts';
 import {
-  ModelNotFoundError,
   ModelAlreadyDeletedError,
+  ModelNotFoundError,
 } from '#src/modules/model/domain/model.errors.ts';
+import makeModelService from '#src/modules/model/model.service.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
-import type { Model } from '#prisma/index';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 function makeModel(overrides: Partial<Model> = {}): Model {
   return {
@@ -21,6 +21,8 @@ function makeModel(overrides: Partial<Model> = {}): Model {
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
+    legacyId: null,
+    isLibraryModel: false,
     ...overrides,
   };
 }

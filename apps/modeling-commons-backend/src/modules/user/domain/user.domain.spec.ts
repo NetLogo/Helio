@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
 import userDomain from '#src/modules/user/domain/user.domain.ts';
 import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
+import { describe, expect, it } from 'vitest';
 
 const domain = userDomain();
 
 function makeUser(overrides: Partial<UserEntity> = {}): UserEntity {
   return {
     id: 'user-1',
-    name: 'Test',
+    name: 'Test User',
     email: 'test@example.com',
     emailVerified: true,
     image: null,
@@ -18,6 +18,16 @@ function makeUser(overrides: Partial<UserEntity> = {}): UserEntity {
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
+    banned: null,
+    banReason: null,
+    banExpires: null,
+    bio: null,
+    country: null,
+    socialLinks: null,
+    dob: null,
+    affiliation: null,
+    role: null,
+    legacyId: null,
     ...overrides,
   };
 }

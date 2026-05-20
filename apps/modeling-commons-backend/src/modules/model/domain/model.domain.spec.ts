@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
 import type { Model } from '#prisma/index';
 import modelDomain from '#src/modules/model/domain/model.domain.ts';
 import { ModelAlreadyDeletedError } from '#src/modules/model/domain/model.errors.ts';
+import { describe, expect, it } from 'vitest';
 
 const domain = modelDomain();
 
@@ -16,6 +16,8 @@ function makeModel(overrides: Partial<Model> = {}): Model {
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
+    legacyId: null,
+    isLibraryModel: false,
     ...overrides,
   };
 }

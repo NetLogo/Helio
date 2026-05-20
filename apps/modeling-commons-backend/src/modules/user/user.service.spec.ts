@@ -1,12 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import makeUserService from '#src/modules/user/user.service.ts';
+import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
+import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
 import userDomain from '#src/modules/user/domain/user.domain.ts';
 import { UserNotFoundError } from '#src/modules/user/domain/user.errors.ts';
+import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
+import makeUserService from '#src/modules/user/user.service.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
-import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 function makeUser(overrides: Partial<UserEntity> = {}): UserEntity {
   return {
@@ -22,6 +22,16 @@ function makeUser(overrides: Partial<UserEntity> = {}): UserEntity {
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
+    banned: null,
+    banReason: null,
+    banExpires: null,
+    bio: null,
+    country: null,
+    socialLinks: null,
+    dob: null,
+    affiliation: null,
+    role: null,
+    legacyId: null,
     ...overrides,
   };
 }

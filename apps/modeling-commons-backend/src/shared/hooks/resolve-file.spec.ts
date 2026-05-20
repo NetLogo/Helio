@@ -1,12 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Type } from 'typebox';
-import { resolveFile, type ResolvedFile } from '#src/shared/hooks/resolve-file.ts';
-import {
-  FileUploadError,
-  FileValidationError,
-} from '#src/modules/file/domain/file.errors.ts';
+import { FileUploadError, FileValidationError } from '#src/modules/file/domain/file.errors.ts';
 import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
+import { resolveFile, type ResolvedFile } from '#src/shared/hooks/resolve-file.ts';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { Type } from 'typebox';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const fileTypeMock = vi.hoisted(() => ({ fileTypeFromBuffer: vi.fn() }));
 vi.mock('file-type', () => fileTypeMock);
@@ -47,6 +44,7 @@ describe('resolveFile', () => {
 
   it('throws FileUploadError when no file is provided', async () => {
     const hook = resolveFile();
+    // @ts-expect-error - no need for done callback
     await expect(hook(makeRequest({ file: null }), reply)).rejects.toThrow(FileUploadError);
   });
 
@@ -62,11 +60,15 @@ describe('resolveFile', () => {
         truncated: true,
       },
     });
+    // @ts-expect-error - no need for done callback
     await expect(hook(request, reply)).rejects.toThrow(FileUploadError);
   });
 
   it('rejects when the detected mime does not match the declared mime', async () => {
-    fileTypeMock.fileTypeFromBuffer.mockResolvedValue({ mime: 'application/x-msdownload', ext: 'exe' });
+    fileTypeMock.fileTypeFromBuffer.mockResolvedValue({
+      mime: 'application/x-msdownload',
+      ext: 'exe',
+    });
     const hook = resolveFile();
     const request = makeRequest({
       file: {
@@ -76,11 +78,15 @@ describe('resolveFile', () => {
         buffer: Buffer.from('xx'),
       },
     });
+    // @ts-expect-error - no need for done callback
     await expect(hook(request, reply)).rejects.toThrow(FileValidationError);
   });
 
   it('rejects when the detected type is in the denied list', async () => {
-    fileTypeMock.fileTypeFromBuffer.mockResolvedValue({ mime: 'application/x-msdownload', ext: 'exe' });
+    fileTypeMock.fileTypeFromBuffer.mockResolvedValue({
+      mime: 'application/x-msdownload',
+      ext: 'exe',
+    });
     const hook = resolveFile();
     const request = makeRequest({
       file: {
@@ -90,6 +96,7 @@ describe('resolveFile', () => {
         buffer: Buffer.from('xx'),
       },
     });
+    // @ts-expect-error - no need for done callback
     await expect(hook(request, reply)).rejects.toThrow(FileValidationError);
   });
 
@@ -104,6 +111,7 @@ describe('resolveFile', () => {
         buffer: Buffer.from('xx'),
       },
     });
+    // @ts-expect-error - no need for done callback
     await expect(hook(request, reply)).rejects.toThrow(FileValidationError);
   });
 
@@ -118,6 +126,7 @@ describe('resolveFile', () => {
         buffer: Buffer.from('xx'),
       },
     });
+    // @ts-expect-error - no need for done callback
     await expect(hook(request, reply)).rejects.toThrow(FileValidationError);
   });
 
@@ -133,6 +142,7 @@ describe('resolveFile', () => {
       },
     });
 
+    // @ts-expect-error - no need for done callback
     await hook(request, reply);
 
     const uploaded = (request as unknown as { uploadedFile: ResolvedFile }).uploadedFile;
@@ -154,6 +164,7 @@ describe('resolveFile', () => {
       },
     });
 
+    // @ts-expect-error - no need for done callback
     await hook(request, reply);
 
     const uploaded = (request as unknown as { uploadedFile: ResolvedFile }).uploadedFile;
@@ -163,7 +174,9 @@ describe('resolveFile', () => {
 
   it('parses and validates text fields against a Typebox schema', async () => {
     fileTypeMock.fileTypeFromBuffer.mockResolvedValue({ mime: 'image/png', ext: 'png' });
-    const schema = Type.Object({ role: Type.Union([Type.Literal('primary'), Type.Literal('attachment')]) });
+    const schema = Type.Object({
+      role: Type.Union([Type.Literal('primary'), Type.Literal('attachment')]),
+    });
     const hook = resolveFile({ fieldsSchema: schema });
     const request = makeRequest({
       file: {
@@ -175,6 +188,7 @@ describe('resolveFile', () => {
       },
     });
 
+    // @ts-expect-error - no need for done callback
     await hook(request, reply);
 
     const uploaded = (request as unknown as { uploadedFile: ResolvedFile }).uploadedFile;
@@ -195,6 +209,7 @@ describe('resolveFile', () => {
       },
     });
 
+    // @ts-expect-error - no need for done callback
     await expect(hook(request, reply)).rejects.toThrow(ArgumentInvalidException);
   });
 });

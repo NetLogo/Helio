@@ -1,13 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { resolveModelDraft } from '#src/shared/hooks/resolve-model-draft.ts';
+import { mockModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.mock.ts';
 import {
   ModelDraftAccessDeniedError,
   ModelDraftNotFoundError,
 } from '#src/modules/model-draft/domain/model-draft.errors.ts';
-import { ForbiddenException, UnauthorizedException } from '#src/shared/exceptions/index.ts';
-import { mockModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.mock.ts';
-import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
+import { ForbiddenException, UnauthorizedException } from '#src/shared/exceptions/index.ts';
+import { resolveModelDraft } from '#src/shared/hooks/resolve-model-draft.ts';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const reply = {} as FastifyReply;
 
@@ -35,7 +35,12 @@ function buildRequest(opts: {
     authors: { role: string }[];
     permissions: { permissionLevel: string }[];
   } | null;
-  viewer?: { id: string; systemRole: 'admin' | 'moderator' | 'user'; banned: boolean; deletedAt: Date | null } | null;
+  viewer?: {
+    id: string;
+    systemRole: 'admin' | 'moderator' | 'user';
+    banned: boolean;
+    deletedAt: Date | null;
+  } | null;
 }): { request: FastifyRequest; draftRepo: ReturnType<typeof mockModelDraftRepository> } {
   const draftRepo = opts.draftRepo ?? mockModelDraftRepository();
   const db = {
@@ -59,6 +64,7 @@ describe('resolveModelDraft', () => {
 
   it('throws UnauthorizedException when no user is on the request', async () => {
     const { request } = buildRequest({ draftId: 'd1' });
+    // @ts-expect-error - no need for done callback
     await expect(resolveModelDraft()(request, reply)).rejects.toThrow(UnauthorizedException);
   });
 
@@ -67,6 +73,7 @@ describe('resolveModelDraft', () => {
     draftRepo.findById.mockResolvedValue(undefined);
     const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
 
+    // @ts-expect-error - no need for done callback
     await expect(resolveModelDraft()(request, reply)).rejects.toThrow(ModelDraftNotFoundError);
   });
 
@@ -75,6 +82,7 @@ describe('resolveModelDraft', () => {
     draftRepo.findById.mockResolvedValue(makeDraft({ userId: 'other' }));
     const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
 
+    // @ts-expect-error - no need for done callback
     await expect(resolveModelDraft()(request, reply)).rejects.toThrow(ModelDraftAccessDeniedError);
   });
 
@@ -84,6 +92,7 @@ describe('resolveModelDraft', () => {
     draftRepo.findById.mockResolvedValue(draft);
     const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
 
+    // @ts-expect-error - no need for done callback
     await resolveModelDraft()(request, reply);
 
     expect((request as unknown as { modelDraft: ModelDraftEntity }).modelDraft).toBe(draft);
@@ -100,6 +109,7 @@ describe('resolveModelDraft', () => {
       viewer: { id: 'u1', systemRole: 'user', banned: false, deletedAt: null },
     });
 
+    // @ts-expect-error - no need for done callback
     await expect(resolveModelDraft()(request, reply)).rejects.toThrow(/model not found/i);
   });
 
@@ -120,6 +130,7 @@ describe('resolveModelDraft', () => {
       viewer: { id: 'u1', systemRole: 'user', banned: false, deletedAt: null },
     });
 
+    // @ts-expect-error - no need for done callback
     await expect(resolveModelDraft()(request, reply)).rejects.toThrow(ForbiddenException);
   });
 
@@ -141,6 +152,7 @@ describe('resolveModelDraft', () => {
       viewer: { id: 'u1', systemRole: 'user', banned: false, deletedAt: null },
     });
 
+    // @ts-expect-error - no need for done callback
     await resolveModelDraft()(request, reply);
 
     expect((request as unknown as { modelDraft: ModelDraftEntity }).modelDraft).toBe(draft);

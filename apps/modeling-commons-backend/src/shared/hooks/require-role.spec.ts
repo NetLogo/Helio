@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { requireRole } from '#src/shared/hooks/require-role.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
+import { requireRole } from '#src/shared/hooks/require-role.ts';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { describe, expect, it } from 'vitest';
 
 const reply = {} as FastifyReply;
 
@@ -12,27 +12,32 @@ function reqWithRole(role: string | undefined): FastifyRequest {
 describe('requireRole', () => {
   it('allows a user whose role matches one of the allowed roles', async () => {
     const hook = requireRole('admin');
+    // @ts-expect-error - no need for done callback
     await expect(hook(reqWithRole('admin'), reply)).resolves.toBeUndefined();
   });
 
   it('allows any of multiple roles', async () => {
     const hook = requireRole('admin', 'moderator');
+    // @ts-expect-error - no need for done callback
     await expect(hook(reqWithRole('moderator'), reply)).resolves.toBeUndefined();
   });
 
   it('rejects a user whose role is not in the allowed set', async () => {
     const hook = requireRole('admin');
+    // @ts-expect-error - no need for done callback
     await expect(hook(reqWithRole('user'), reply)).rejects.toThrow(ForbiddenException);
   });
 
   it('rejects when no user is attached to the request', async () => {
     const hook = requireRole('admin');
+    // @ts-expect-error - no need for done callback
     await expect(hook(reqWithRole(undefined), reply)).rejects.toThrow(ForbiddenException);
   });
 
   it('rejects when the user has no systemRole', async () => {
     const hook = requireRole('admin');
     const request = { user: {} } as unknown as FastifyRequest;
+    // @ts-expect-error - no need for done callback
     await expect(hook(request, reply)).rejects.toThrow(ForbiddenException);
   });
 });

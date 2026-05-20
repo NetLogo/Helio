@@ -7,8 +7,8 @@ import {
   type InteractionCounts,
   type ModelInteractionEntity,
 } from '#src/modules/model-interaction/domain/model-interaction.types.ts';
-import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
+import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 function emptyCounts(): InteractionCounts {
   return {
@@ -68,10 +68,7 @@ export default function modelInteractionRepository({
       return row !== null;
     },
 
-    async countByModelAndKind(
-      modelId: string,
-      kind: ModelInteractionKind,
-    ): Promise<number> {
+    async countByModelAndKind(modelId: string, kind: ModelInteractionKind): Promise<number> {
       return db.modelInteraction.count({ where: { modelId, kind } });
     },
 
@@ -97,6 +94,8 @@ export default function modelInteractionRepository({
         _count: { _all: true },
       });
       for (const r of rows) {
+        out[r.modelId] ??= emptyCounts();
+        // @ts-expect-error - For some reason, it believes the object is undefined.
         out[r.modelId][r.kind as ModelInteractionKind] = r._count._all;
       }
       return out;
