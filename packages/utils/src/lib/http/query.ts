@@ -1,5 +1,6 @@
 type QueryRecord = Record<string, string | Array<string> | null | undefined>;
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 function readFirstQueryParam<T extends string = string>(
   query: QueryRecord,
   key: string,
@@ -56,6 +57,7 @@ function _convertToNumber(
   return isNaN(num) ? defaultValue : num;
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-return
 function resolveUnit(
   value: string | null | undefined,
   type: UnitQueryKey,
@@ -92,7 +94,8 @@ function readArrayQueryParam<Q extends UnitQueryKey>(
   } else if (Array.isArray(value)) {
     result = value.map((v) => resolveUnit(v, contentType) as NonNullable<ResolveValue<Q>>);
   }
-  return result.filter((v) => v !== undefined && v !== null) as Array<NonNullable<ResolveValue<Q>>>;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  return result.filter((v) => v !== undefined && v !== null);
 }
 
 type ArrayQueryKey<Q extends UnitQueryKey = UnitQueryKey> = {
@@ -124,6 +127,7 @@ type QueryValues<T extends ReadonlyArray<QueryKey>> = {
   [K in T[number]["key"]]: ResolveValue<Extract<T[number], { key: K }>>;
 };
 
+// eslint-disable-next-line @typescript-eslint/consistent-return
 function readQueryParam<T extends QueryKey>(query: QueryRecord, key: T): ResolveValue<T> {
   switch (key.type) {
     case "string":
@@ -139,7 +143,10 @@ function readQueryParams<const T extends ReadonlyArray<QueryKey>>(
   query: QueryRecord,
   keys: T,
 ): QueryValues<T> {
-  const result: Record<string, string | number | boolean | undefined | Array<any>> = {};
+  const result: Record<
+    string,
+    string | number | boolean | undefined | Array<string | number | boolean | undefined>
+  > = {};
   for (const entry of keys) {
     result[entry.key] = readQueryParam(query, entry);
   }

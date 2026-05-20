@@ -1,6 +1,8 @@
-type Tree<T extends Record<PropertyKey, unknown>, RK extends keyof any> = Array<Node<T, RK>>;
-type Node<T extends Record<PropertyKey, unknown>, RK extends keyof any> = T & {
-  [K in RK]?: Array<Node<T, RK>>;
+type RK = string | number | symbol;
+
+type Tree<T extends Record<PropertyKey, unknown>> = Array<Node<T>>;
+type Node<T extends Record<PropertyKey, unknown>> = T & {
+  [K in RK]?: Array<Node<T>>;
 };
 
 enum WalkOptions {
@@ -9,36 +11,38 @@ enum WalkOptions {
   CONTINUE = "continue",
 }
 
-type WalkCallback<T extends Record<PropertyKey, unknown>, RK extends keyof any> = (
-  node: Node<T, RK>,
+type WalkCallback<T extends Record<PropertyKey, unknown>> = (
+  node: Node<T>,
   index: number,
-  parent: Tree<T, RK> | Node<T, RK> | null,
+  parent: Tree<T> | Node<T> | null,
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 ) => void | WalkOptions | Promise<void | WalkOptions>;
 
-function hasChildren<T extends Record<PropertyKey, unknown>, RK extends keyof any>(
-  node: Node<T, RK>,
+function hasChildren<T extends Record<PropertyKey, unknown>>(
+  node: Node<T>,
   recursionKey: RK,
 ): boolean {
-  return Array.isArray(node[recursionKey]) && node[recursionKey]!.length > 0;
+  return Array.isArray(node[recursionKey]) && node[recursionKey].length > 0;
 }
 
-function getChildren<T extends Record<PropertyKey, unknown>, RK extends keyof any>(
-  node: Node<T, RK>,
+function getChildren<T extends Record<PropertyKey, unknown>>(
+  node: Node<T>,
   recursionKey: RK,
-): Array<Node<T, RK>> {
-  return (node[recursionKey] as Array<Node<T, RK>>) || [];
+): Array<Node<T>> {
+  return node[recursionKey] ?? [];
 }
 
-async function walk<T extends Record<PropertyKey, unknown>, RK extends keyof any>(
-  tree: Tree<T, RK>,
-  callback: WalkCallback<T, RK>,
+async function walk<T extends Record<PropertyKey, unknown>>(
+  tree: Tree<T>,
+  callback: WalkCallback<T>,
   recursionKey: RK,
 ): Promise<boolean> {
   const visit = async (
-    node: Node<T, RK>,
+    node: Node<T>,
     index: number,
-    parent: Tree<T, RK> | Node<T, RK> | null,
-  ): Promise<WalkOptions | void> => {
+    parent: Tree<T> | Node<T> | null,
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+  ): Promise<WalkOptions | undefined | void> => {
     const res = await callback(node, index, parent);
     if (res === WalkOptions.EXIT) {
       return WalkOptions.EXIT;
@@ -47,7 +51,8 @@ async function walk<T extends Record<PropertyKey, unknown>, RK extends keyof any
     if (res !== WalkOptions.SKIP && hasChildren(node, recursionKey)) {
       const children = getChildren(node, recursionKey);
       for (let i = 0; i < children.length; i++) {
-        const child = children[i] as Node<T, RK>;
+        const child = children[i];
+        if (!child) continue;
         const r = await visit(child, i, node);
         if (r === WalkOptions.EXIT) {
           return WalkOptions.EXIT;
@@ -59,7 +64,8 @@ async function walk<T extends Record<PropertyKey, unknown>, RK extends keyof any
   };
 
   for (let i = 0; i < tree.length; i++) {
-    const node = tree[i] as Node<T, RK>;
+    const node = tree[i];
+    if (!node) continue;
     const r = await visit(node, i, tree);
     if (r === WalkOptions.EXIT) return false;
   }
