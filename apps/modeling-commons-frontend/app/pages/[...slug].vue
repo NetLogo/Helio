@@ -1,5 +1,5 @@
 <template>
-  <UMain>
+  <UMain v-if="page">
     <UPageHero
       v-if="page && page.has_hero"
       :title="page.title"

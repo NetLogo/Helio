@@ -100,7 +100,6 @@ export default defineNuxtPlugin({
 
     const session = await nuxtApp.runWithContext(() => authClient.useSession(useFetchHeaders));
     const refresh = () => authClient.updateSession({ fetchOptions: { headers } });
-    const typed = authClient as typeof authClient & ExtendWithPlugin<typeof passkeyClient>;
 
     return {
       provide: {
@@ -139,8 +138,10 @@ type InferResolvedHooks<O extends BetterAuthClientOptions> = O extends {
 }
   ? UnionToIntersection<
       Plugin extends BetterAuthClientPlugin
-        ? Plugin["getAtoms"] extends (fetch: any) => infer Atoms
-          ? Atoms extends Record<string, any>
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          Plugin["getAtoms"] extends (fetch: any) => infer Atoms
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            Atoms extends Record<string, any>
             ? {
                 [key in keyof Atoms as IsSignal<key> extends true
                   ? never
@@ -148,12 +149,17 @@ type InferResolvedHooks<O extends BetterAuthClientOptions> = O extends {
                     ? `use${Capitalize<key>}`
                     : never]: () => DeepReadonly<Ref<ReturnType<Atoms[key]["get"]>>>;
               }
-            : {}
-          : {}
-        : {}
+            : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+              {}
+          : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+            {}
+        : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+          {}
     >
-  : {};
+  : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    {};
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ExtendWithPlugin<O extends (...args: any[]) => BetterAuthClientPlugin> = InferResolvedHooks<{
   plugins: [ReturnType<O>];
 }> &

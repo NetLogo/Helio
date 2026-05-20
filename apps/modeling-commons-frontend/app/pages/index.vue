@@ -117,10 +117,10 @@
               <UCard variant="soft">
                 <div v-if="tagsSummary?.data" class="flex flex-col gap-8 h-full">
                   <TagCard
-                    v-for="data in tagsSummary?.data"
-                    :key="data.tag.id"
-                    :name="data.tag.displayName"
-                    :description="`tagged ${data.modelCount} times`"
+                    v-for="$data in tagsSummary?.data"
+                    :key="$data.tag.id"
+                    :name="$data.tag.displayName"
+                    :description="`tagged ${$data.modelCount} times`"
                   />
 
                   <UButton variant="link" size="sm" class="w-full mt-4" to="/tags">

@@ -18,6 +18,7 @@ withDefaults(
   }>(),
   {
     icon: "i-lucide-inbox",
+    description: undefined
   },
 );
 </script>

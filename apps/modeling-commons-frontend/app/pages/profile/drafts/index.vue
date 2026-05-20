@@ -28,7 +28,7 @@
           accessorKey: 'data.title',
           header: 'Model',
           id: 'title',
-           meta: {
+          meta: {
             class: {
               td: 'max-w-20 md:max-w-50 truncate',
             },
@@ -79,19 +79,19 @@
         </div>
       </template>
       <template #title-cell="{ row }">
-          <div class="flex gap-5 items-center cursor-pointer relative">
-            <div class="h-12 w-12 shrink-0 overflow-hidden rounded">
-              <ModelCardPreviewImage
-                :src="row.original.previewImageUrl"
-                :alt="`Preview of ${row.original.data.title || 'Untitled model'}`"
-              />
-            </div>
-            <span
-              class="max-w-100 text-[1rem] font-semibold text-black line-clamp-2 leading-tight overflow-hidden text-ellipsis transition-colors whitespace-break-spaces"
-            >
-              {{ row.original.data.title || "Untitled Model" }}
-            </span>
+        <div class="flex gap-5 items-center cursor-pointer relative">
+          <div class="h-12 w-12 shrink-0 overflow-hidden rounded">
+            <ModelCardPreviewImage
+              :src="row.original.previewImageUrl"
+              :alt="`Preview of ${row.original.data.title || 'Untitled model'}`"
+            />
           </div>
+          <span
+            class="max-w-100 text-[1rem] font-semibold text-black line-clamp-2 leading-tight overflow-hidden text-ellipsis transition-colors whitespace-break-spaces"
+          >
+            {{ row.original.data.title || "Untitled Model" }}
+          </span>
+        </div>
       </template>
 
       <template #actions-cell="{ row }">
@@ -156,8 +156,6 @@ const { data, pending, error, refresh } = await useAsyncData("my-drafts", async 
 
 const drafts = computed(() => data.value?.data ?? []);
 const deletingId = ref<string | null>(null);
-
-const getTitle = (card: ModelCard) => card.latestVersion?.title || "Untitled Model";
 
 async function onDelete(id: string) {
   deletingId.value = id;

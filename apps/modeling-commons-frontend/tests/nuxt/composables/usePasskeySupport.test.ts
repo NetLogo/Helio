@@ -13,6 +13,7 @@ describe("usePasskeySupport", () => {
   });
 
   it("returns booleans for the resolved/supported computeds", () => {
+    // eslint-disable-next-line @typescript-eslint/no-extraneous-class
     vi.stubGlobal("PublicKeyCredential", class {});
     const support = usePasskeySupport();
     expect(typeof support.isPasskeySupported.value).toBe("boolean");

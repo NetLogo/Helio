@@ -64,7 +64,6 @@ beforeEach(async () => {
 describe("useProfileSettings", () => {
   it("seeds local refs from the loaded profile", async () => {
     const settings = useProfileSettings();
-    await settings.refresh();
     await nextTick();
 
     expect(settings.isProfilePublic.value).toBe(false);
@@ -110,7 +109,6 @@ describe("useProfileSettings", () => {
 
   it("saveProfileSettings short-circuits when nothing is dirty", async () => {
     const settings = useProfileSettings();
-    await settings.refresh();
     await nextTick();
 
     const result = await settings.saveProfileSettings();

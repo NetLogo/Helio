@@ -270,8 +270,6 @@ async function handleShare() {
 }
 
 function handleAddTag() {}
-function handleCompare() {}
-
 function handleEmbed() {
   embedDialogOpen.value = true;
 }
