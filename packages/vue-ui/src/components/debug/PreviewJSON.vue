@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable-next-line vue/no-v-html -->
   <pre><code v-html="html" /></pre>
 </template>
 
