@@ -1,6 +1,6 @@
 # {{title}}
 
-This document is an advanced guide that provides examples of how to run NetLogo BehaviorSpace experiments on a High-Performance Computing (HPC) cluster. The scripts provided in this guide are specifically for **Slurm**, a popular open-source workload manager and job scheduler, but they can be adapted for use with other schedulers.
+This document is an advanced guide that provides examples of how to run NetLogo [BehaviorSpace](/behaviorspace) experiments on a High-Performance Computing (HPC) cluster. The scripts provided in this guide are specifically for **Slurm**, a popular open-source workload manager and job scheduler, but they can be adapted for use with other schedulers.
 
 #### Table of Contents
 
