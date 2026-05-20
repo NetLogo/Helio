@@ -48,8 +48,15 @@ traces
 client.schema.d.ts
 
 # Exclude other apps (only need this backend)
-apps/
+apps/*
+!apps/modeling-commons-backend/
+!apps/modeling-commons-frontend/
 
-# Exclude unnecessary packages (keep only modeling-commons-shared)
 packages/*
 !packages/modeling-commons-shared/
+!packages/emails/
+!packages/eslint-config/
+!packages/typescript-config/
+
+# Node modules (handled by Dockerfile)
+node_modules/
