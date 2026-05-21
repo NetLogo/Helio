@@ -37,6 +37,15 @@ describe("SocialLink", () => {
     expect(wrapper.text()).toContain("https://example.com/");
   });
 
+  it("sets rel='noopener noreferrer' on the external anchor", async () => {
+    const wrapper = await mountSuspended(SocialLink, {
+      props: { type: "x", rawValue: "ada" },
+    });
+    const rel = wrapper.find("a").attributes("rel") ?? "";
+    expect(rel).toContain("noopener");
+    expect(rel).toContain("noreferrer");
+  });
+
   it("omits the display text in the compact variant but keeps the link", async () => {
     const wrapper = await mountSuspended(SocialLink, {
       props: { type: "github", rawValue: "octocat", variant: "compact" },

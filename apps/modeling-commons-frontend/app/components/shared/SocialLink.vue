@@ -2,6 +2,7 @@
   <a
     :href="sanitizeUrl(url)"
     target="_blank"
+    rel="noopener noreferrer"
     class="inline-flex gap-2 items-center underline group/social"
   >
     <UIcon
