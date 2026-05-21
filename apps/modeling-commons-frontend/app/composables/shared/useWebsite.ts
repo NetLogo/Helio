@@ -1,7 +1,6 @@
-import { createSharedComposable } from "@vueuse/core";
 import { WebsiteLogo } from "~/assets/website-logo";
 
-function _useWebsite() {
+export function useWebsite() {
   const {
     public: { website: websiteConfig },
   } = useRuntimeConfig();
@@ -23,7 +22,3 @@ function _useWebsite() {
     keywords: websiteConfig.productKeywords,
   });
 }
-
-const useWebsite = import.meta.client ? createSharedComposable(_useWebsite) : _useWebsite;
-
-export { useWebsite };

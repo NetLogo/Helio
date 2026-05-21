@@ -33,4 +33,26 @@ describe("useWebsite", () => {
     expect(website.value.keywords).toEqual(["netlogo", "models"]);
     expect(website.value.logo).toBeDefined();
   });
+
+  it("returns the same shape on SSR and client (no environment-dependent branching)", () => {
+    const a = useWebsite();
+    const b = useWebsite();
+    expect(Object.keys(a.value).sort()).toEqual(Object.keys(b.value).sort());
+    expect(a.value.name).toBe(b.value.name);
+    expect(a.value.url).toBe(b.value.url);
+  });
+});
+
+describe("useWebsite source — no SSR/client branch", () => {
+  it("does not switch implementations based on the environment", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const src = fs.readFileSync(
+      path.resolve(process.cwd(), "app/composables/shared/useWebsite.ts"),
+      "utf8",
+    );
+    const needle = ["import", "meta", "client"].join(".") + " ?";
+    expect(src.includes(needle)).toBe(false);
+    expect(src.includes("createSharedComposable")).toBe(false);
+  });
 });
