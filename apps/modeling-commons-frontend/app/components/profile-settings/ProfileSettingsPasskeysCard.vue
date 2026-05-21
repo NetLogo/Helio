@@ -20,20 +20,22 @@
       :closable="false"
     />
 
-    <div class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
-      <UFormField label="New passkey name">
-        <UInput v-model="newPasskeyName" placeholder="This device" icon="i-lucide-fingerprint" />
-      </UFormField>
+    <ClientOnly>
+      <div class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+        <UFormField label="New passkey name">
+          <UInput v-model="newPasskeyName" placeholder="This device" icon="i-lucide-fingerprint" />
+        </UFormField>
 
-      <UButton
-        color="primary"
-        :loading="isAddingPasskey"
-        :disabled="!isPasskeySupported || !newPasskeyName.trim()"
-        @click="createPasskey"
-      >
-        Add passkey
-      </UButton>
-    </div>
+        <UButton
+          color="primary"
+          :loading="isAddingPasskey"
+          :disabled="!isPasskeySupported || !newPasskeyName.trim()"
+          @click="createPasskey"
+        >
+          Add passkey
+        </UButton>
+      </div>
+    </ClientOnly>
 
     <div
       v-if="isPending || isRefetching"

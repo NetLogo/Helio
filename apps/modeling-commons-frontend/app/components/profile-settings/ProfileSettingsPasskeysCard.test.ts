@@ -143,6 +143,14 @@ describe("ProfileSettingsPasskeysCard", () => {
     expect(revokePasskeyMock).toHaveBeenCalledWith("pk-99");
   });
 
+  it("wraps the new-passkey-name input in <ClientOnly> so deviceName-driven UA differences don't cause hydration mismatch", async () => {
+    const wrapper = await mountSuspended(ProfileSettingsPasskeysCard);
+    const clientOnly = wrapper.findAllComponents({ name: "ClientOnly" });
+    expect(clientOnly.length).toBeGreaterThan(0);
+    const wrapsInput = clientOnly.some((c) => c.find("input").exists());
+    expect(wrapsInput).toBe(true);
+  });
+
   it.todo(
     "Source has no confirmation modal before revoke — revoke fires immediately. Add a confirmation step in the component before testing it here.",
   );
