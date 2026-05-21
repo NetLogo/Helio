@@ -1,4 +1,15 @@
 import * as MarkdownConfig from "@repo/nuxt-core/markdown.config";
+import {
+  getCdnUrl,
+  getConnectSrcAllowlist,
+  getImageDomains,
+  getImgSrcAllowlist,
+} from "./app/utils/runtime-image";
+
+const cdnUrl = getCdnUrl(process.env);
+const imageDomains = getImageDomains(process.env);
+const imgSrc = getImgSrcAllowlist(process.env);
+const connectSrc = getConnectSrcAllowlist(process.env);
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -15,8 +26,8 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE as string,
       authApiBase: process.env.NUXT_PUBLIC_AUTH_BASE as string,
       appUrl: process.env.NUXT_PUBLIC_APP_URL as string,
-      adminDashboardUrl: process.env.ADMIN_DASHBOARD_URL as string,
       storageBaseUrl: process.env.NUXT_STORAGE_BASE_URL as string,
+      cdnUrl,
     },
     turnstile: {
       secretKey: process.env.CAPTCHA_SECRET_KEY as string,
@@ -33,6 +44,12 @@ export default defineNuxtConfig({
 
   security: {
     enabled: process.env.NODE_ENV === "production",
+    headers: {
+      contentSecurityPolicy: {
+        "img-src": imgSrc,
+        "connect-src": connectSrc,
+      },
+    },
   },
 
   turnstile: {
@@ -133,12 +150,7 @@ export default defineNuxtConfig({
   },
 
   image: {
-    domains: [
-      process.env.NUXT_PUBLIC_STORAGE_BASE_URL,
-      process.env.NUXT_PUBLIC_APP_URL,
-      process.env.NUXT_PUBLIC_API_BASE,
-      process.env.NUXT_PUBLIC_AUTH_BASE,
-    ].filter((url): url is string => Boolean(url)),
+    domains: imageDomains,
     format: ["avif", "webp", "jpeg"],
     ipx: {
       // Avoid exposing name of internal binary
