@@ -11,7 +11,7 @@ export function sanitizeUrl(input: unknown): string {
   }
 
   try {
-    const url = new URL(trimmed, window.location.origin);
+    const url = new URL(trimmed, "https://_local_/");
     return SAFE_PROTOCOLS.includes(url.protocol) ? url.toString() : "";
   } catch {
     return "";
