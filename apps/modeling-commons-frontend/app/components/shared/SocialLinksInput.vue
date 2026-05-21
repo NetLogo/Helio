@@ -93,7 +93,7 @@ const addLink = () => {
     <div class="">
       <div
         v-for="(link, index) in links"
-        :key="index"
+        :key="`${link.type}:${link.rawValue}`"
         class="flex justify-between w-full mt-2 px-2 hover:bg-royal-blue-lightest/50 rounded-xl"
       >
         <SocialLink :type="link.type" :raw-value="link.rawValue" />

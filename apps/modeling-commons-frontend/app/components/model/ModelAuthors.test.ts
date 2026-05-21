@@ -55,6 +55,17 @@ describe("ModelAuthors", () => {
     expect(wrapper.text()).not.toContain("other");
   });
 
+  it("keys author iterations by userId so reorders move nodes instead of mutating in place", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const src = fs.readFileSync(
+      path.resolve(process.cwd(), "app/components/model/ModelAuthors.vue"),
+      "utf8",
+    );
+    expect(src).not.toMatch(/:key="index"/);
+    expect(src).toMatch(/:key="author\.userId"/);
+  });
+
   it("falls back to 'Anonymous' when the primary author has no name", async () => {
     const wrapper = await mountSuspended(ModelAuthors, {
       props: {

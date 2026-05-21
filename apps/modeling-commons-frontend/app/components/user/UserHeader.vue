@@ -13,8 +13,8 @@
       </p>
       <div v-if="socialLinks" class="flex gap-6">
         <SocialLink
-          v-for="(link, index) in socialLinks"
-          :key="index"
+          v-for="link in socialLinks"
+          :key="`${link.type}:${link.rawValue}`"
           v-bind="link"
           variant="compact"
           class="text-2xl"

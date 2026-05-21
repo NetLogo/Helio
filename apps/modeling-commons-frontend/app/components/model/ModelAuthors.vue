@@ -2,8 +2,8 @@
   <div class="flex items-center gap-2">
     <UAvatarGroup :max="3">
       <UAvatar
-        v-for="(author, index) in authors"
-        :key="index"
+        v-for="author in authors"
+        :key="author.userId"
         :name="author.userName ?? 'Anonymous'"
         :src="author.userImage ?? undefined"
         size="sm"
@@ -24,8 +24,8 @@
         <div class="space-y-2">
           <p class="text-sm font-semibold">Authors</p>
           <NuxtLink
-            v-for="(author, index) in authors"
-            :key="index"
+            v-for="author in authors"
+            :key="author.userId"
             class="flex items-center gap-2 group/author-link"
             :to="getAuthorUrl(author)"
           >
