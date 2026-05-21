@@ -155,7 +155,7 @@ const requestSucceeded = ref(false);
 const requestedEmail = ref("");
 const requestError = ref<string | null>(null);
 const resetError = ref<string | null>(null);
-const { links } = useSearchParamsNavigation();
+const { links } = useSearchParamsNavigation({ query: route.query});
 const returnLink = computed(() =>
   user.value.isLoggedIn ? links.value.back.href : authRoutes.login,
 );

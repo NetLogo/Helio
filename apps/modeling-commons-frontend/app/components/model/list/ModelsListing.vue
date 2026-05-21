@@ -12,7 +12,6 @@
       :loading="pending"
       :can-load-more="hasMore"
       :orientation="orientation"
-      :class="{ 'pointer-events-none opacity-50': pending }"
       :error="error ?? undefined"
       @on-load-more="nextPage()"
       @retry="refresh"

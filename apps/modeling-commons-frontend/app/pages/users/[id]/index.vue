@@ -8,12 +8,16 @@ const {
   data: profile,
   error,
   status,
-} = useAsyncData<UserProfile | null>(`profile-${id}`, async () => {
+} = await useAsyncData<UserProfile | null>(`profile-${id}`, async () => {
   const { data, error } = await api.GET("/api/v1/users/{id}", {
     params: { path: { id } },
   });
 
   return handleApiError(data, error, "fetching user profile");
+});
+
+useSeoMeta({
+  title: () => profile.value ? `${profile.value.name}'s Profile` : "User Profile",
 });
 
 const {

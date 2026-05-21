@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="container"
     class="gap-6"
     :class="{
       'flex flex-col ': orientation === 'horizontal',
@@ -48,16 +47,15 @@ const emit = defineEmits<{
   retry: [];
 }>();
 
-const ref = useTemplateRef("container");
-
 onMounted(() => {
   useInfiniteScroll(
-    ref.value,
+    window,
     () => {
       emit("onLoadMore");
     },
     {
-      distance: 20,
+      distance: 25,
+      interval: 250,
       canLoadMore: () => {
         return props.canLoadMore;
       },

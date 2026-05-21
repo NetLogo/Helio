@@ -1,6 +1,6 @@
 <template>
   <USelectMenu
-    :ref="selectMenu"
+    ref="selectMenu"
     v-model="selected"
     v-model:search-term="searchTerm"
     placeholder="Tags"
@@ -89,6 +89,7 @@ onMounted(() => {
       props.loadNextPage();
     },
     {
+      distance: 10,
       canLoadMore: () => {
         return props.canLoadMore;
       },
