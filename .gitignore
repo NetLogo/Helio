@@ -41,3 +41,5 @@ GITIGNORE_*/**/*
 .env.local
 .env.development
 .env.production
+
+apps/modeling-commons-backend/prisma/archive-output
