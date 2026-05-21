@@ -254,12 +254,13 @@ async function handleToggleLike() {
 }
 
 async function handleShare() {
+  if (!import.meta.client) return;
   if (!modelId.value) return;
-  const url = typeof window !== "undefined" ? window.location.href : "";
+  const url = window.location.href;
   try {
     if (navigator.share) {
       await navigator.share({ title: props.card?.latestVersion?.title ?? "Model", url });
-    } else if (url && navigator.clipboard) {
+    } else if (navigator.clipboard) {
       await navigator.clipboard.writeText(url);
       toast.add({ title: "Link copied to clipboard" });
     }
