@@ -13,7 +13,7 @@ interface UseModelsOptions {
   filters: Ref<ModelsFilters> | ComputedRef<ModelsFilters>;
 }
 
-export default function useModels({ filters }: UseModelsOptions) {
+export default function useForumModels({ filters }: UseModelsOptions) {
   const { GET } = useApi();
   const page = ref(0);
 

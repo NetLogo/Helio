@@ -11,9 +11,8 @@ export default function useModelsSearchController() {
   );
   const instanceKey = computed(() => JSON.stringify(filters.value));
 
-  const { page, rows, totalCount, pending, error, hasMore, isEmpty, refresh, nextPage } = useModels(
-    { filters },
-  );
+  const { page, rows, totalCount, pending, error, hasMore, isEmpty, refresh, nextPage } =
+    useForumModels({ filters });
 
   async function setFilter<K extends keyof ModelsFilters>(key: K, value: ModelsFilters[K]) {
     page.value = 0;

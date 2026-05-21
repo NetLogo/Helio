@@ -63,7 +63,7 @@ Mutations are NOT optimistic. The contributor list is short and the latency cost
 The added contributor receives an email per backend plan. Two places to reflect this in the UI:
 
 1. On the **adder's** toast (above) — "they'll receive an email."
-2. On the **added user's** in-app banner the next time they visit `/models` — a one-time dismissable `UAlert` "You were added to N model(s)." Backend doesn't have an inbox so we'd need a derived signal (e.g., `useModels({ contributorAddedSince: lastSeen })`). Defer this to the future notifications-system work the backend overview already flags.
+2. On the **added user's** in-app banner the next time they visit `/models` — a one-time dismissable `UAlert` "You were added to N model(s)." Backend doesn't have an inbox so we'd need a derived signal (e.g., `useForumModels({ contributorAddedSince: lastSeen })`). Defer this to the future notifications-system work the backend overview already flags.
 
 ## Out of scope
 

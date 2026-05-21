@@ -1,7 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
-import useModels from "~/composables/model/useModels";
+import useForumModels from "~/composables/model/useForumModels";
 import type { ModelsFilters } from "~/forms/models";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
@@ -29,14 +29,14 @@ beforeEach(() => {
   routeState.current = { query: {} };
 });
 
-describe("useModels", () => {
+describe("useForumModels", () => {
   it("requests /api/v1/models/card with default pagination", async () => {
     apiState.current!.GET.mockResolvedValue(
       apiResult.ok({ count: 0, limit: 20, page: 0, data: [] }),
     );
 
     const filters = ref<ModelsFilters>({ ...emptyFilters });
-    const models = useModels({ filters });
+    const models = useForumModels({ filters });
     await models.refresh();
 
     const listCall = apiState.current!.GET.mock.calls.find(
@@ -53,7 +53,7 @@ describe("useModels", () => {
     );
 
     const filters = ref<ModelsFilters>({ ...emptyFilters });
-    const models = useModels({ filters });
+    const models = useForumModels({ filters });
     await models.refresh();
 
     expect(models.rows.value).toEqual([]);

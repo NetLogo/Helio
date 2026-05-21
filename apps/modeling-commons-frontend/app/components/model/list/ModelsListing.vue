@@ -39,7 +39,9 @@ const filters = computed(() => props.filters);
 
 const orientation = ref<"horizontal" | "vertical">("horizontal");
 
-const { rows, totalCount, pending, error, hasMore, refresh, nextPage } = useModels({ filters });
+const { rows, totalCount, pending, error, hasMore, refresh, nextPage } = useForumModels({
+  filters,
+});
 
 defineExpose({ totalCount });
 
