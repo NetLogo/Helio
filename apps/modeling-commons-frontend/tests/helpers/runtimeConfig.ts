@@ -3,7 +3,6 @@ export const TEST_RUNTIME_CONFIG = {
     apiBase: "http://api.test",
     authApiBase: "http://api.test/api/auth",
     appUrl: "http://app.test",
-    storageBaseUrl: "http://storage.test",
     cdnUrl: "http://cdn.test",
   },
 } as const;

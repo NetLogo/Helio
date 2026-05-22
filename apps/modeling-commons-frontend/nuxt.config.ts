@@ -26,7 +26,6 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE as string,
       authApiBase: process.env.NUXT_PUBLIC_AUTH_BASE as string,
       appUrl: process.env.NUXT_PUBLIC_APP_URL as string,
-      storageBaseUrl: process.env.NUXT_STORAGE_BASE_URL as string,
       cdnUrl,
     },
     turnstile: {
@@ -53,7 +52,6 @@ export default defineNuxtConfig({
   },
 
   turnstile: {
-    enabled: process.env.CAPTCHA_SITE_KEY,
     siteKey: process.env.CAPTCHA_SITE_KEY as string,
   },
 
