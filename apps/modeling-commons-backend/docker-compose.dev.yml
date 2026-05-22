@@ -8,14 +8,14 @@ networks:
 
 services:
   postgres:
-    image: postgres:18
+    image: pgvector/pgvector:pg16-bookworm
     ports:
       - 5432:5432
     env_file:
       - path: ./.env
         required: true
     environment:
-      - PGDATA=/var/lib/postgresql/18/docker
+      - PGDATA=/var/lib/postgresql/16/docker
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -24,36 +24,43 @@ services:
     volumes:
       - /tmp/com.netlogo.modeling-commons/postgresql:/var/lib/postgresql
 
-  rustfs:
-    image: rustfs/rustfs:latest
-    command: /data
+  seaweedfs-master:
+    image: chrislusf/seaweedfs:latest
+    command: "master -ip=seaweedfs-master -ip.bind=0.0.0.0"
     ports:
-      - 41090:41090 # API
-      - 41091:41091 # Console
-    environment:
-      RUSTFS_ADDRESS: :41090
-      RUSTFS_CONSOLE_ENABLE: "true"
-      RUSTFS_CONSOLE_ADDRESS: :41091
-      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
-      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
-      RUSTFS_CORS_ALLOWED_ORIGINS: "*"
-      RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS: "*"
-      RUSTFS_OBS_LOGGER_LEVEL: info
-    healthcheck:
-      test: [
-          "CMD",
-          "sh",
-          "-c",
-          "curl -f http://localhost:41090/health && curl -f
-          http://localhost:41091/health",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+      - 9333:9333   # Master HTTP
+      - 19333:19333 # Master gRPC
     volumes:
-      - /tmp/modeling-commons-rustfs-data:/data
-      - /tmp/com.netlogo.modeling-commons/rustfs/logs:/logs
+      - /tmp/com.netlogo.modeling-commons/seaweedfs/master:/data
+    networks:
+      - app_network
+
+  seaweedfs-volume:
+    image: chrislusf/seaweedfs:latest
+    command: "volume -mserver=seaweedfs-master:9333 -ip.bind=0.0.0.0 -port=8080"
+    ports:
+      - 8080:8081   # Volume HTTP
+      - 18080:18080 # Volume gRPC
+    depends_on:
+      - seaweedfs-master
+    volumes:
+      - /tmp/com.netlogo.modeling-commons/seaweedfs/volume:/data
+    networks:
+      - app_network
+
+  seaweedfs-filer:
+    image: chrislusf/seaweedfs:latest
+    command: "filer -master=seaweedfs-master:9333 -ip.bind=0.0.0.0 -s3"
+    ports:
+      - 8888:8888   # Filer HTTP
+      - 8333:8333   # S3 API
+      - 18888:18888 # Filer gRPC
+    depends_on:
+      - seaweedfs-master
+      - seaweedfs-volume
+    volumes:
+      - /tmp/com.netlogo.modeling-commons/seaweedfs/filer:/data
+      - ./docker/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
     networks:
       - app_network
 

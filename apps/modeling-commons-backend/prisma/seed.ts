@@ -10,16 +10,17 @@ import path from 'node:path';
 const adapter = new PrismaPg({ connectionString: process.env['DATABASE_URL']! });
 const prisma = new PrismaClient({ adapter });
 const storage = new S3Client({
-  region: process.env['RUSTFS_REGION'],
+  region: process.env['STORE_REGION'],
 
   credentials: {
-    accessKeyId: process.env['RUSTFS_ACCESS_KEY']!,
-    secretAccessKey: process.env['RUSTFS_SECRET_KEY']!,
+    accessKeyId: process.env['STORE_ACCESS_KEY']!,
+    secretAccessKey: process.env['STORE_SECRET_KEY']!,
   },
 
-  endpoint: process.env['RUSTFS_ENDPOINT'],
+  endpoint: process.env['STORE_ENDPOINT'],
+  forcePathStyle: true,
 });
-const bucket = { Name: process.env['RUSTFS_BUCKET']! };
+const bucket = { Name: process.env['STORE_BUCKET']! };
 const seedFilesPath = path.join(import.meta.dirname, 'seed-files');
 
 const getNonRandomUUID = (() => {

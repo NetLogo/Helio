@@ -653,15 +653,20 @@ function sanitizeFilename(name: string): string {
   return cleaned || 'file';
 }
 
+function getAccessPrefix(access: 'public-read' | 'private'): string {
+  return access === 'public-read' ? 'files/public/uploads' : 'uploads';
+}
+
 function buildVersionFileKey(
   modelUuid: string,
   d: Date,
   fileUuid: string,
   _filename: string = 'file',
+  accessPolicy: 'public-read' | 'private' = 'private',
 ): string {
   const { y, m, day } = dateParts(d);
   const filename = sanitizeFilename(_filename);
-  return `uploads/models/${modelUuid}/versions/${y}/${m}/${day}/${fileUuid}/${filename}`;
+  return `${getAccessPrefix(accessPolicy)}/models/${modelUuid}/versions/${y}/${m}/${day}/${fileUuid}/${filename}`;
 }
 
 function buildPreviewFileKey(
@@ -672,7 +677,7 @@ function buildPreviewFileKey(
 ): string {
   const { y, m, day } = dateParts(d);
   const filename = sanitizeFilename(_filename);
-  return `uploads/models/${modelUuid}/preview-images/${y}/${m}/${day}/${fileUuid}/${filename}`;
+  return `${getAccessPrefix('private')}/models/${modelUuid}/preview-images/${y}/${m}/${day}/${fileUuid}/${filename}`;
 }
 
 function buildAttachmentFileKey(
@@ -683,7 +688,7 @@ function buildAttachmentFileKey(
 ): string {
   const { y, m, day } = dateParts(d);
   const filename = sanitizeFilename(_filename);
-  return `uploads/models/${modelUuid}/additionalFiles/${y}/${m}/${day}/${fileUuid}/${filename}`;
+  return `${getAccessPrefix('private')}/models/${modelUuid}/additionalFiles/${y}/${m}/${day}/${fileUuid}/${filename}`;
 }
 
 async function writeLocalFile(relKey: string, contents: Buffer) {

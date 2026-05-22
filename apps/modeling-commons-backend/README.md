@@ -30,7 +30,7 @@ docker compose -f docker-compose.dev.yml --profile cache --profile lambda up
 | Service | Description | Optional | Notes | Requires Authentication |
 |---------|-------------|----------|-------|-------------------------|
 | PostgreSQL | Relational Database | No | | No |
-| RustFS | Object Storage | No | | No |
+| SeaweedFS | Object Storage | No | | No |
 | Mailpit | Local SMTP catch-all + Web UI | No | SMTP on `:1025`, UI on http://localhost:8025 | No |
 | Redis | In-memory Cache | Yes | | No |
 | Galapagos | NetLogo Web Instance | Yes | Frontend .nlogox files runtime | Yes |

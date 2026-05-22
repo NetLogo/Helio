@@ -5,16 +5,17 @@ import path from 'node:path';
 import fs from 'fs/promises';
 
 const storage = new S3Client({
-  region: process.env['RUSTFS_REGION'],
+  region: process.env['STORE_REGION'],
 
   credentials: {
-    accessKeyId: process.env['RUSTFS_ACCESS_KEY']!,
-    secretAccessKey: process.env['RUSTFS_SECRET_KEY']!,
+    accessKeyId: process.env['STORE_ACCESS_KEY']!,
+    secretAccessKey: process.env['STORE_SECRET_KEY']!,
   },
 
-  endpoint: process.env['RUSTFS_ENDPOINT'],
+  endpoint: process.env['STORE_ENDPOINT'],
+  forcePathStyle: true,
 });
-const bucket = { Name: process.env['RUSTFS_BUCKET']! };
+const bucket = { Name: process.env['STORE_BUCKET']! };
 const seedFilesPath = path.join(import.meta.dirname, 'archive-output', 'files');
 
 // upload each file in seedFilesPath to the S3 bucket, key relative to seedFilesPath
@@ -36,6 +37,7 @@ async function uploadFiles() {
           Bucket: bucket.Name,
           Key: key,
           Body: fileContent,
+          ACL: 'public-read',
         }),
       );
 

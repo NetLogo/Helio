@@ -47,7 +47,7 @@ const checkRedis = async (): Promise<void> => {
   });
 };
 
-const checkRustFs = async (): Promise<void> => {
+const checkObjectStorage = async (): Promise<void> => {
   const controller = new AbortController();
   const timeout = setTimeout(() => {
     controller.abort();
@@ -60,7 +60,7 @@ const checkRustFs = async (): Promise<void> => {
     });
 
     if (response.status >= 500) {
-      throw new Error(`RustFS returned HTTP ${response.status}`);
+      throw new Error(`Object Storage returned HTTP ${response.status}`);
     }
   } finally {
     clearTimeout(timeout);
@@ -112,7 +112,7 @@ export const checkServicesHealth = async (log: FastifyBaseLogger): Promise<void>
 
   const checks: Array<HealthCheck> = [
     { name: 'postgres', run: checkPostgres, optional: false },
-    { name: 'rustfs', run: checkRustFs, optional: false },
+    { name: 'objectStorage', run: checkObjectStorage, optional: false },
     { name: 'redis', run: checkRedis, optional: true },
     { name: 'galapagos', run: checkGalapagos, optional: true },
     { name: 'netlogoServices', run: checkNetLogoServices, optional: true },

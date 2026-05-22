@@ -74,9 +74,17 @@ export default function makeFileService({
         return `${publicBaseUrl}/${key}`;
       }
       const { expiresIn = 3600, client = storage } = options;
-      return getSignedUrl(client, new GetObjectCommand({ Bucket: bucket.Name, Key: key }), {
-        expiresIn,
-      });
+      return getSignedUrl(
+        client,
+        new GetObjectCommand({
+          Bucket: bucket.Name,
+          Key: key,
+          ResponseContentDisposition: `attachment; filename="${key.split('/').pop()}"`,
+        }),
+        {
+          expiresIn,
+        },
+      );
     },
 
     async download(key: string): Promise<{

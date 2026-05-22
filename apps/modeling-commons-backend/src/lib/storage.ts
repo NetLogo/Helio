@@ -5,6 +5,7 @@ import {
   CreateBucketCommand,
   ListBucketsCommand,
   PutBucketPolicyCommand,
+  PutBucketCorsCommand,
 } from '@aws-sdk/client-s3';
 import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
 
@@ -43,12 +44,21 @@ function getDockerStorageClient() {
 
 const buckets = await storage.send(new ListBucketsCommand({}));
 let maybeBucket = buckets.Buckets?.find((b: Bucket) => b.Name === env.storage.bucket);
-maybeBucket ??= await storage.send(new CreateBucketCommand({ Bucket: env.storage.bucket }));
 
 if (!maybeBucket) {
-  throw new StorageConfigurationError(`Failed to access or create bucket: ${env.storage.bucket}`);
+  try {
+    await storage.send(new CreateBucketCommand({ Bucket: env.storage.bucket }));
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      err.name !== 'BucketAlreadyExists' &&
+      err.name !== 'BucketAlreadyOwnedByYou'
+    ) {
+      throw err;
+    }
+  }
+  maybeBucket = { Name: env.storage.bucket };
 }
-
 const bucket: Bucket = maybeBucket;
 
 const publicReadPolicy = {
@@ -57,7 +67,7 @@ const publicReadPolicy = {
     {
       Sid: 'AllowAnonymousReadOnPublicPrefix',
       Effect: 'Allow',
-      Principal: { AWS: ['*'] },
+      Principal: '*',
       Action: ['s3:GetObject'],
       Resource: [`arn:aws:s3:::${env.storage.bucket}/${PUBLIC_PREFIX}/*`],
     },
@@ -68,6 +78,23 @@ await storage.send(
   new PutBucketPolicyCommand({
     Bucket: env.storage.bucket,
     Policy: JSON.stringify(publicReadPolicy),
+  }),
+);
+
+await storage.send(
+  new PutBucketCorsCommand({
+    Bucket: env.storage.bucket,
+    CORSConfiguration: {
+      CORSRules: [
+        {
+          AllowedOrigins: env.cors.allowedOrigins,
+          AllowedMethods: ['GET', 'PUT', 'POST', 'DELETE', 'HEAD'],
+          AllowedHeaders: ['*'],
+          ExposeHeaders: ['ETag'],
+          MaxAgeSeconds: 3000,
+        },
+      ],
+    },
   }),
 );
 
