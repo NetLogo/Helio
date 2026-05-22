@@ -15,7 +15,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build":  "yarn run emit-types -p tsconfig.build.json && npx esbuild src/index.tsx --bundle --minify --sourcemap --target=esnext --format=esm --outfile=dist/index.js",
+    "emit-types": "tsc --emitDeclarationOnly --outDir dist",
     "dev": "email dev --dir src/templates",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"

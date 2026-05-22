@@ -15,8 +15,27 @@ async function build() {
 
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 
+  // Generate package.json
+  const distPkg = {
+    name: pkg.name || 'server',
+    type: 'module',
+    private: true,
+    dependencies: pkg.dependencies || {},
+    imports: pkg.imports || {},
+  };
+
+  const repoPkgs = Object.keys(distPkg.dependencies).filter((dep) => dep.startsWith('@repo/'));
+  for (const dep of Object.keys(distPkg.dependencies)) {
+    if (dep.startsWith('@repo/')) delete distPkg.dependencies[dep];
+  }
+  fs.writeFileSync(path.join(distDir, 'package.json'), JSON.stringify(distPkg, null, 2));
+
+  // Install deps
+  fs.copyFileSync(path.join(monorepoRoot, 'yarn.lock'), path.join(distDir, 'yarn.lock'));
+  execSync('yarn install --production --frozen-lockfile', { cwd: distDir, stdio: 'inherit' });
+
   // Build and copy @repo/* packages
-  const repoPkgs = Object.keys(pkg.dependencies || {}).filter((dep) => dep.startsWith('@repo/'));
+  console.log('Building and copying @repo/* packages:', repoPkgs);
   for (const pkg of repoPkgs) {
     execSync(`yarn workspace ${pkg} build`, { cwd: monorepoRoot, stdio: 'inherit' });
     const pkgName = pkg.replace('@repo/', '');
@@ -26,23 +45,6 @@ async function build() {
     execSync(`cp -r ${pkgDir}/dist ${dest}/dist`);
     fs.copyFileSync(path.join(pkgDir, 'package.json'), path.join(dest, 'package.json'));
   }
-
-  // Generate package.json
-  const distPkg = {
-    name: pkg.name || 'server',
-    type: 'module',
-    private: true,
-    dependencies: pkg.dependencies || {},
-    imports: pkg.imports || {},
-  };
-  for (const dep of Object.keys(distPkg.dependencies)) {
-    if (dep.startsWith('@repo/')) delete distPkg.dependencies[dep];
-  }
-  fs.writeFileSync(path.join(distDir, 'package.json'), JSON.stringify(distPkg, null, 2));
-
-  // Install deps
-  fs.copyFileSync(path.join(monorepoRoot, 'yarn.lock'), path.join(distDir, 'yarn.lock'));
-  execSync('yarn install --production --frozen-lockfile', { cwd: distDir, stdio: 'inherit' });
 
   console.log('Build complete: dist/');
   console.log('Run with: node dist/src/index.ts');

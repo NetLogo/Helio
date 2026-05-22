@@ -1,20 +1,13 @@
 import env from '#src/config/env.ts';
+import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
 import {
-  S3Client,
-  type Bucket,
   CreateBucketCommand,
   ListBucketsCommand,
-  PutBucketPolicyCommand,
   PutBucketCorsCommand,
+  PutBucketPolicyCommand,
+  S3Client,
+  type Bucket,
 } from '@aws-sdk/client-s3';
-import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
-
-class StorageConfigurationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'StorageConfigurationError';
-  }
-}
 
 const storage = new S3Client({
   region: env.storage.region,

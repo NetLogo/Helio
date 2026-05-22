@@ -17,7 +17,7 @@
     "init": "yarn run create:env && yarn run db:generate",
     "dev": "yarn run app & yarn run db",
     "app": "node --env-file=.env --import ./src/instrumentation.ts --watch src/index.ts | pino-pretty -clSt",
-    "fastify:build": "yarn run db:generate && yarn run generate:types && node scripts/build.cjs",
+    "fastify:build": "yarn run db:generate && node scripts/build.cjs",
     "svc": "docker-compose -f docker-compose.dev.yml up",
     "svc:full": "docker-compose -f docker-compose.dev.yml --profile optional up",
     "svc:down": "docker-compose -f docker-compose.dev.yml down",
