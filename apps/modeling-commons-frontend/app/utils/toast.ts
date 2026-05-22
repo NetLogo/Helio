@@ -32,3 +32,15 @@ export function showActionFailedToast(action: string, what?: string, sayMore?: s
     icon: "i-lucide-x-circle",
   });
 }
+
+export function toastLinkExpired() {
+  const toast = useToast();
+
+  toast.add({
+    title: "Link Expired",
+    description:
+      "The link you are trying to access has expired. Please refresh the page and try again.",
+    color: "error",
+    icon: "i-lucide-alert-triangle",
+  });
+}

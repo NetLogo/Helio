@@ -2,7 +2,18 @@ import { ref, computed } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mountSuspended, mockNuxtImport } from "@nuxt/test-utils/runtime";
 
-const { useSeoMetaSpy, useHeadSpy, useModelsMock, useModelCardMock, useModelVersionCardMock, useProfileSettingsMock, useAuthActionsMock, usePasskeysMock, useWebsiteMock, apiMock } = vi.hoisted(() => ({
+const {
+  useSeoMetaSpy,
+  useHeadSpy,
+  useModelsMock,
+  useModelCardMock,
+  useModelVersionCardMock,
+  useProfileSettingsMock,
+  useAuthActionsMock,
+  usePasskeysMock,
+  useWebsiteMock,
+  apiMock,
+} = vi.hoisted(() => ({
   useSeoMetaSpy: vi.fn(),
   useHeadSpy: vi.fn(),
   useModelsMock: vi.fn(),
@@ -20,7 +31,7 @@ mockNuxtImport("useHead", () => useHeadSpy);
 
 mockNuxtImport("useApi", () => () => apiMock);
 
-mockNuxtImport("useModels", () => useModelsMock);
+mockNuxtImport("useForumModels", () => useModelsMock);
 mockNuxtImport("useModelCard", () => useModelCardMock);
 mockNuxtImport("useModelVersionCard", () => useModelVersionCardMock);
 mockNuxtImport("useProfileSettings", () => useProfileSettingsMock);

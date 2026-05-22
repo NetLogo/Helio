@@ -11,14 +11,65 @@ export default function useApiPagination<T>(
   key: MaybeRefOrGetter<string>,
   fetchPage: (page: number) => Promise<PaginatedResponse<T>>,
   asyncDataOptions: Partial<AsyncDataOptions<PaginatedResponse<T>>> = {},
-  initialPage = 1,
+  initialPage = 0,
 ) {
+  // SSR
   const page = useState(`${toValue(key)}-pagination-page`, () => initialPage);
-  const data = ref<Array<T>>([]) as Ref<Array<T>>;
+  const {
+    data: fetchedPage,
+    error,
+    pending,
+    refresh,
+    clear,
+  } = useAsyncData(
+    () => `${toValue(key)}-page-${page.value}`,
+    () => fetchPage(page.value),
+    {
+      watch: [page, () => toValue(key)],
+      ...asyncDataOptions,
+    },
+  );
+  const ssrData = computed(() => fetchedPage.value?.data ?? []);
+  const ssrCount = computed(() => fetchedPage.value?.count);
+  const ssrLimit = computed(() => fetchedPage.value?.limit);
+
+  // SSR <-> CSR handoff
+  const pages = ref<Record<number, Array<T>>>({});
   const count = ref<number>();
   const limit = ref<number>();
   const initialized = ref(false);
-  const isKeyStale = ref(false);
+  watch(
+    fetchedPage,
+    (next) => {
+      if (!next) return;
+      pages.value = { ...pages.value, [next.page]: next.data };
+      if (!initialized.value) {
+        count.value = next.count;
+        limit.value = next.limit;
+        initialized.value = true;
+      }
+    },
+    { immediate: true },
+  );
+
+  // CSR
+  watch(
+    () => toValue(key),
+    () => {
+      reset();
+    },
+  );
+
+  // Render data
+  const data = computed(() => {
+    const result: Array<T> = [];
+    for (const p of Object.keys(pages.value)
+      .map(Number)
+      .sort((a, b) => a - b)) {
+      result.push(...pages.value[p]!);
+    }
+    return result;
+  });
 
   const numberOfPages = computed(() =>
     count.value !== undefined && limit.value !== undefined
@@ -26,56 +77,22 @@ export default function useApiPagination<T>(
       : undefined,
   );
 
-  const {
-    data: fetchedPage,
-    error,
-    pending,
-    refresh,
-  } = useAsyncData(
-    () => `${toValue(key)}-page-${page.value}`,
-    () => fetchPage(page.value),
-    { watch: [page, () => toValue(key)], ...asyncDataOptions },
-  );
-
   function reset() {
-    data.value = [];
+    pages.value = {};
+    clear();
     count.value = undefined;
     limit.value = undefined;
     initialized.value = false;
     page.value = initialPage;
+    refresh();
   }
-
-  function _setStaleKey() {
-    isKeyStale.value = true;
-  }
-
-  function _clearStaleKey() {
-    if (!isKeyStale.value) return;
-    reset();
-    isKeyStale.value = false;
-  }
-
-  watch(() => toValue(key), _setStaleKey);
-
-  watch(
-    fetchedPage,
-    (next) => {
-      if (!next) return;
-      _clearStaleKey();
-      data.value = [...data.value, ...next.data];
-      count.value = next.count;
-      limit.value = next.limit;
-      initialized.value = true;
-    },
-    { immediate: true },
-  );
 
   const canLoadMore = computed(
     () =>
       !pending.value &&
       initialized.value &&
       numberOfPages.value !== undefined &&
-      page.value < numberOfPages.value,
+      page.value < numberOfPages.value - 1,
   );
 
   function loadNextPage() {
@@ -83,10 +100,10 @@ export default function useApiPagination<T>(
   }
 
   return {
-    data,
+    data: import.meta.server ? ssrData : data,
     page,
-    count,
-    limit,
+    count: import.meta.server ? ssrCount : count,
+    limit: import.meta.server ? ssrLimit : limit,
     error,
     pending,
     loadNextPage,

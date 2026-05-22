@@ -1,4 +1,3 @@
-import type { ModelCard } from "~/composables/model/useModelCard";
 import {
   modelsPageLimit,
   modelsQuerySchema,
@@ -15,50 +14,32 @@ interface UseModelsOptions {
 
 export default function useForumModels({ filters }: UseModelsOptions) {
   const { GET } = useApi();
-  const page = ref(0);
 
-  const key = computed(() => `models-${page.value}-${JSON.stringify(filters.value)}`);
-
-  const { data, pending, error, refresh } = useAsyncData<{
-    rows: ModelCard[];
-    totalCount: number;
-  } | null>(
-    key,
-    async () => {
+  const {
+    data: rows,
+    page,
+    count: totalCount,
+    refresh,
+    error,
+    pending,
+    loadNextPage: nextPage,
+    canLoadMore: hasMore,
+  } = useApiPagination(
+    () => JSON.stringify(filters.value),
+    async (page) => {
       const query: ModelsQuery = {
         limit: modelsPageLimit,
-        page: page.value,
+        page,
       };
       const params = modelsQuerySchema.parse({ ...filters.value, ...query });
       const res = await GET("/api/v1/models/card", { params: { query: params } });
+      console.log(res.data, params);
       const parsed = handleApiError(res.data, res.error, "fetching model query result");
-      return { rows: parsed.data, totalCount: parsed.count };
+      return parsed;
     },
-    { watch: [filters, page] },
   );
 
-  const rows = ref(data.value?.rows ?? []);
-
-  onMounted(() => {
-    watch(data, (newData) => {
-      if (page.value === 0) {
-        rows.value = newData?.rows ?? [];
-      } else if (newData?.rows) {
-        rows.value = [...rows.value, ...newData.rows];
-      }
-    });
-  });
-
-  const totalCount = computed(() => data.value?.totalCount ?? 0);
-  const totalPages = computed(() => Math.ceil(totalCount.value / modelsPageLimit));
-  const hasMore = computed(
-    () => rows.value.length < totalCount.value && page.value < totalPages.value - 1,
-  );
   const isEmpty = computed(() => !pending.value && rows.value.length === 0);
-
-  function nextPage() {
-    if (hasMore.value) page.value += 1;
-  }
 
   return {
     page,

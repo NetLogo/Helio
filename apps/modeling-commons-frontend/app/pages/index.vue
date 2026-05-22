@@ -33,7 +33,7 @@
       <MarqueeGallery class="lg:w-5xl" height="80dvh" column-gap="12px">
         <MarqueeColumn
           v-for="(col, ci) in marqueeColumns"
-          :key="ci"
+          :key="col.reduce((acc, item) => acc + (item.kind === 'model' ? item.card.model.id : item.tag.id), '')"
           :direction="ci % 2 === 0 ? 'up' : 'down'"
           :speed="40 + ci * 10"
           width="300px"
@@ -245,6 +245,8 @@ const visibleSections = computed(() =>
 
 const MARQUEE_COLS = 3;
 
+const randomSeed = useState('seed', () => Math.random())
+const rand = ref(mulberry32(randomSeed.value));
 const marqueeColumns = computed(() => {
   // Flatten all section cards with their section metadata
   const allCards = visibleSections.value.flatMap((section) =>
@@ -266,7 +268,7 @@ const marqueeColumns = computed(() => {
   > = Array.from({ length: MARQUEE_COLS }, () => []);
 
   const mixedCards = (tagsCards ? [...allCards, ...tagsCards] : allCards).sort(
-    () => Math.random() - 0.5,
+    () => rand.value() - 0.5,
   ); // Shuffle to mix tags and models
 
   mixedCards.forEach((item, i) => {

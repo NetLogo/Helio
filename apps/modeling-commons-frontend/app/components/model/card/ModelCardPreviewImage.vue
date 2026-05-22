@@ -4,7 +4,6 @@
     :src="src"
     alt="Card image"
     class="w-full h-full object-cover rounded-t mb-4"
-    crossorigin="use-credentials"
     defer
     :placeholder="[30, 30]"
     @error="error = true"

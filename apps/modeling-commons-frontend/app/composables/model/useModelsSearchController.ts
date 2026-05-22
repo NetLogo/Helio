@@ -1,5 +1,11 @@
 import { readQueryParams, type QueryRecord } from "@repo/utils/lib/http/query";
-import { modelsQueryFilters, type ModelDateRangeKey, type ModelsFilters } from "~/forms/models";
+import {
+  modelsPageLimit,
+  modelsQueryFilters,
+  modelsQuerySchema,
+  type ModelDateRangeKey,
+  type ModelsFilters,
+} from "~/forms/models";
 
 export type { ModelDateRangeKey, ModelsFilters };
 
@@ -11,8 +17,30 @@ export default function useModelsSearchController() {
   );
   const instanceKey = computed(() => JSON.stringify(filters.value));
 
-  const { page, rows, totalCount, pending, error, hasMore, isEmpty, refresh, nextPage } =
-    useForumModels({ filters });
+  const { GET } = useApi();
+
+  const {
+    data,
+    page,
+    count: totalCount,
+    refresh,
+    error,
+    pending,
+    loadNextPage: nextPage,
+    canLoadMore: hasMore,
+  } = useApiPagination(
+    () => JSON.stringify(filters.value),
+    async (page) => {
+      const query: ModelsQuery = {
+        limit: modelsPageLimit,
+        page,
+      };
+      const params = modelsQuerySchema.parse({ ...filters.value, ...query });
+      const res = await GET("/api/v1/models/card", { params: { query: params } });
+      const parsed = handleApiError(res.data, res.error, "fetching model query result");
+      return parsed;
+    },
+  );
 
   async function setFilter<K extends keyof ModelsFilters>(key: K, value: ModelsFilters[K]) {
     page.value = 0;
@@ -69,13 +97,13 @@ export default function useModelsSearchController() {
   }
 
   return {
-    rows,
+    rows: data,
     totalCount,
     filters,
     pending,
     error,
     hasMore,
-    isEmpty,
+    isEmpty: computed(() => !pending.value && data.value.length === 0),
     refresh,
     setFilter,
     setDateRange,

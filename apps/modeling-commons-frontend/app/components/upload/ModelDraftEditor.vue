@@ -191,10 +191,10 @@ onMounted(() => {
   void init();
 });
 
-const { unlock} = useUnloadGuard(isDirty);
+// const { unlock } = useUnloadGuard(isDirty);
 
 async function onSubmit(): Promise<void> {
-  unlock();
+  // unlock();
 
   const visibility = formState.value.permission === "private" ? "private" : "public";
   try {
@@ -226,7 +226,7 @@ async function onSubmit(): Promise<void> {
 
 async function onDiscard(): Promise<void> {
   if (!draftId.value) return;
-  unlock();
+  // unlock();
 
   try {
     await discard();
@@ -269,7 +269,7 @@ async function onRevert(): Promise<void> {
 }
 
 async function onDelete(): Promise<void> {
-  unlock();
+  // unlock();
 
   try {
     await deleteModel();

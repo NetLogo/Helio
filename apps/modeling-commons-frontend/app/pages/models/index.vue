@@ -152,7 +152,7 @@
         @retry="refresh"
       />
 
-      <p v-if="totalCount > 0" class="mx-auto text-center text-xs text-dimmed">
+      <p v-if="totalCount && totalCount > 0" class="mx-auto text-center text-xs text-dimmed">
         Showing {{ rows.length }} of {{ totalCount }} models
       </p>
     </div>
@@ -184,7 +184,7 @@ const {
   setFilter,
   setDateRange,
   nextPage,
-  resetFilters,
+  resetFilters
 } = useModelsSearchController();
 
 const route = useRoute();

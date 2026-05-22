@@ -301,6 +301,14 @@ function handleRun() {
 
 function handleFileDownload(fileId: string) {
   const url = fileDownloadUrls.get(fileId);
+  if (!url) return;
+
+  const validResponse = checkValidCdnUrl(url);
+  if (!validResponse.success) {
+    toastLinkExpired();
+    return;
+  }
+
   if (url) window.open(url, "_blank");
 }
 </script>

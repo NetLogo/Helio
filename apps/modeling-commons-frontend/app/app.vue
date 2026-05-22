@@ -25,6 +25,9 @@ if (import.meta.server) {
     htmlAttrs: {
       lang: "en",
     },
+    bodyAttrs: {
+      "class": "static"
+    }
   });
   useSeoMeta({
     ogSiteName: "NetLogo",
@@ -33,4 +36,8 @@ if (import.meta.server) {
     twitterSite: "netlogo",
   });
 }
+
+onMounted(() => {
+  document.body.classList.remove("static");
+});
 </script>

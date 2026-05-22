@@ -1,6 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { defineVitestProject } from "@nuxt/test-utils/config";
 import { defineConfig } from "vitest/config";
+import { resolve } from "node:path";
 
 const nuxtEnvironmentOptions = {
   nuxt: {
@@ -20,7 +21,9 @@ export default defineConfig({
             { find: "~", replacement: fileURLToPath(new URL("./app", import.meta.url)) },
             {
               find: /^@repo\/utils\/(.*)$/,
-              replacement: fileURLToPath(new URL("../../packages/utils/dist/$1.js", import.meta.url)),
+              replacement: fileURLToPath(
+                new URL("../../packages/utils/dist/$1.js", import.meta.url),
+              ),
             },
           ],
         },
@@ -82,6 +85,11 @@ export default defineConfig({
         },
       }),
       await defineVitestProject({
+        resolve: {
+          alias: {
+            "bun:test": resolve("./vitest.config.ts"),
+          },
+        },
         test: {
           name: "e2e",
           include: ["tests/e2e/**/*.{test,spec}.ts"],
@@ -92,6 +100,8 @@ export default defineConfig({
           // E2E tests are slow; bump the default timeout
           testTimeout: 60_000,
           hookTimeout: 60_000,
+          pool: "forks",
+          maxWorkers: 1,
         },
       }),
     ],

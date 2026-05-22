@@ -10,7 +10,6 @@
       :src="previewImageUrl"
       alt="Model preview image"
       class="w-full h-full object-cover rounded mb-4 absolute inset-0"
-      crossorigin="use-credentials"
       :placeholder="[20, 20]"
     />
     <FallbackThumbnail
