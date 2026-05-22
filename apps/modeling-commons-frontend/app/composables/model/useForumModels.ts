@@ -33,7 +33,6 @@ export default function useForumModels({ filters }: UseModelsOptions) {
       };
       const params = modelsQuerySchema.parse({ ...filters.value, ...query });
       const res = await GET("/api/v1/models/card", { params: { query: params } });
-      console.log(res.data, params);
       const parsed = handleApiError(res.data, res.error, "fetching model query result");
       return parsed;
     },

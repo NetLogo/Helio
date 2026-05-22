@@ -30,14 +30,19 @@ export function getImgSrcAllowlist(env: EnvLike): string[] {
 }
 
 export function getConnectSrcAllowlist(env: EnvLike): string[] {
-  const extras = [env.NUXT_PUBLIC_CDN_URL, env.NUXT_PUBLIC_API_BASE, env.NUXT_PUBLIC_AUTH_BASE];
+  const extras = [
+    env.NUXT_PUBLIC_CDN_URL,
+    env.NUXT_PUBLIC_API_BASE,
+    env.NUXT_PUBLIC_AUTH_BASE,
+    env.NUXT_PUBLIC_NETLOGO_WEB_URL,
+  ];
   const origins = new Set<string>(["'self'"]);
   for (const candidate of extras) {
     if (!candidate) continue;
     try {
       origins.add(new URL(candidate).origin);
     } catch {
-      // ignore
+      // Skip malformed entries; nothing to allowlist.
     }
   }
   return [...origins];
