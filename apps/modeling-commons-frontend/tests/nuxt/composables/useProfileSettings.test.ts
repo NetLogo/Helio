@@ -4,17 +4,6 @@ import { computed, nextTick } from "vue";
 import useProfileSettings from "~/composables/user/useProfileSettings";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
-const profileUser = {
-  id: "user-1",
-  name: "Ada",
-  email: "ada@example.com",
-  emailVerified: true,
-  image: null,
-  systemRole: "user",
-  userKind: "student",
-  isProfilePublic: false,
-};
-
 const { apiState, userState } = vi.hoisted(() => ({
   apiState: { current: null as ReturnType<typeof makeApiClientMock> | null },
   userState: {

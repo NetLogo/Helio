@@ -15,7 +15,7 @@ trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
 # ── Wait for the health endpoint ────────────────────────────────────────────
 echo "Waiting for server to be ready…"
 elapsed=0
-until curl -sf "$SERVER_URL/health" > /dev/null 2>&1; do
+until curl -sf "$SERVER_URL/api/health" > /dev/null 2>&1; do
   sleep 1
   elapsed=$((elapsed + 1))
   if [ "$elapsed" -ge "$MAX_WAIT" ]; then

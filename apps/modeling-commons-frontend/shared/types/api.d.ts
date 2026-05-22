@@ -384,7 +384,6 @@ export interface paths {
                     "application/json": {
                         /** @enum {unknown} */
                         visibility?: "public" | "private" | "unlisted";
-                        isEndorsed?: boolean;
                     };
                 };
             };
@@ -2360,6 +2359,7 @@ export interface paths {
                                         mimeType: string;
                                     }[];
                                 };
+                                previewImageUrl: string | null;
                                 /** Format: date-time */
                                 createdAt: string;
                                 /** Format: date-time */
@@ -2557,6 +2557,7 @@ export interface paths {
                                     mimeType: string;
                                 }[];
                             };
+                            previewImageUrl: string | null;
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -2752,7 +2753,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "attachment"). */
+        /** @description Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "attachment" | "preview"). */
         post: {
             parameters: {
                 query?: never;
@@ -2773,11 +2774,12 @@ export interface paths {
                         "application/json": {
                             /** Format: uuid */
                             id?: string;
-                            role: "primary" | "attachment";
+                            role: "primary" | "attachment" | "preview";
                             s3Key: string;
                             filename: string;
                             sizeBytes: number;
                             mimeType: string;
+                            previewImageUrl?: string;
                         };
                     };
                 };
@@ -2917,6 +2919,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** @description Auto-generate a preview image from the draft's primary NetLogo file. Result is staged on the draft. */
         post: {
             parameters: {
                 query?: never;
@@ -2939,6 +2942,7 @@ export interface paths {
                             filename: string;
                             sizeBytes: number;
                             mimeType: string;
+                            previewImageUrl: string;
                         };
                     };
                 };
@@ -4481,89 +4485,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/models/{id}/versions/{version}/preview-image": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: string;
-                    version: number;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Default Response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                /** @description Default Response */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/models/{id}/tags": {
         parameters: {
             query?: never;
@@ -4871,77 +4792,6 @@ export interface paths {
                         "application/json": string[];
                     };
                 };
-                /** @description Default Response */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/dev/fill-in": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
                 /** @description Default Response */
                 400: {
                     headers: {
@@ -5591,7 +5441,6 @@ export interface paths {
                     "application/json": {
                         userKind?: "student" | "teacher" | "researcher" | "other";
                         isProfilePublic?: boolean;
-                        systemRole?: "admin" | "moderator" | "user";
                         onboardedAt?: string | null;
                     };
                 };
@@ -5963,7 +5812,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/health": {
+    "/api/health": {
         parameters: {
             query?: never;
             header?: never;
