@@ -11,6 +11,10 @@ async function build() {
   fs.mkdirSync(distDir, { recursive: true });
 
   execSync(`cp -r ${path.join(root, 'src')} ${distDir}/src`);
+  execSync(`cp -r ${path.join(root, 'prisma')} ${path.join(distDir, 'prisma')}`);
+  execSync(
+    `cp -r ${path.join(root, 'prisma.config.ts')} ${path.join(distDir, 'prisma.config.ts')}`,
+  );
   execSync(`cp -r ${path.join(root, 'generated')} ${distDir}/generated`);
 
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));

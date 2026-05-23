@@ -158,6 +158,11 @@ export default defineNuxtConfig({
     },
   },
 
+  icon: {
+    provider: "server",
+    serverBundle: "local",
+  },
+
   components: [
     {
       path: "~/components",
