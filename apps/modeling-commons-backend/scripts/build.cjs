@@ -13,7 +13,7 @@ async function build() {
   execSync(`cp -r ${path.join(root, 'src')} ${distDir}/src`);
   execSync(`cp -r ${path.join(root, 'prisma')} ${path.join(distDir, 'prisma')}`);
   execSync(
-    `cp -r ${path.join(root, 'prisma.config.ts')} ${path.join(distDir, 'prisma.config.ts')}`,
+    `cp ${path.join(root, 'prisma.config.ts')} ${path.join(distDir, 'prisma.config.ts')}`,
   );
   execSync(`cp -r ${path.join(root, 'generated')} ${distDir}/generated`);
 
