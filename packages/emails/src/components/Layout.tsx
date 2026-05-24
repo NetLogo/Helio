@@ -31,12 +31,12 @@ export function Layout({ branding, preview, unsubscribeUrl, children }: LayoutPr
         <Container style={container}>
           {/* Header */}
           <Section style={{ ...header, backgroundColor: branding.brandColor }}>
-            <Img
+            {branding.logoUrl ? <Img
               src={branding.logoUrl}
               alt={branding.productName}
               height={32}
               style={logo}
-            />
+            /> : <Text style={{ color: '#ffffff', fontSize: '20px', fontWeight: 'bold' }}>{branding.productName}</Text>}
           </Section>
 
           {/* Content */}

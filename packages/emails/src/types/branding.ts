@@ -1,7 +1,7 @@
 export interface Branding {
   productName: string;
   brandColor: string;
-  logoUrl: string;
+  logoUrl?: string;
   supportEmail: string;
 }
 
