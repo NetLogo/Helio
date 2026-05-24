@@ -21,6 +21,18 @@ const storage = new S3Client({
   forcePathStyle: true,
 });
 
+const signingStorageClient = new S3Client({
+  region: env.storage.region,
+
+  credentials: {
+    accessKeyId: env.storage.accessKey,
+    secretAccessKey: env.storage.secretKey,
+  },
+
+  endpoint: env.storage.publicEndpoint,
+  forcePathStyle: true,
+});
+
 function getDockerStorageClient() {
   return new S3Client({
     region: env.storage.region,
@@ -91,5 +103,7 @@ await storage.send(
   }),
 );
 
+const internalClient = storage;
+
 export default storage;
-export { bucket, getDockerStorageClient };
+export { bucket, getDockerStorageClient, internalClient, signingStorageClient };

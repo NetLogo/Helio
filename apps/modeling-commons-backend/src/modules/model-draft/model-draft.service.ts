@@ -102,6 +102,7 @@ export default function makeModelDraftService({
         contentType: params.data.previewImage.mimeType,
         pathPrefix: 'files/public/preview-images',
         acl: 'public-read',
+        userId: params.userId,
       });
     }
 
@@ -389,6 +390,7 @@ export default function makeModelDraftService({
         filename: data.primaryFile.filename,
         contentType: data.primaryFile.mimeType,
         pathPrefix: 'uploads/models',
+        userId,
       });
 
       const attachmentCopies = await Promise.all(
@@ -400,6 +402,7 @@ export default function makeModelDraftService({
             filename: att.filename,
             contentType: att.mimeType,
             pathPrefix: 'uploads/models/additional-files',
+            userId,
           }),
         })),
       );

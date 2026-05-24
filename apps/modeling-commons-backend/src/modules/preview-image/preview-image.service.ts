@@ -1,5 +1,5 @@
 import env from '#src/config/env.ts';
-import { getDockerStorageClient } from '#src/lib/storage.ts';
+import { getDockerStorageClient, internalClient } from '#src/lib/storage.ts';
 import type { StorageClient } from '#src/shared/storage/index.ts';
 import {
   ModelPreviewServiceError,
@@ -21,7 +21,7 @@ export default function makePreviewImageService({ fileService }: Dependencies) {
       // In development with docker storage we must sign URLs against the
       // docker-internal host so the netlogo-services container can reach them.
       const client: StorageClient | undefined =
-        env.isDevelopment && env.storage.dockerEndpoint ? getDockerStorageClient() : undefined;
+        env.isDevelopment && env.storage.dockerEndpoint ? getDockerStorageClient() : internalClient;
 
       const modelUrl = await fileService.getUrl(netlogoFileKey, { client });
       const modelFormat = netlogoFileKey.split('.').pop() ?? 'nlogox';

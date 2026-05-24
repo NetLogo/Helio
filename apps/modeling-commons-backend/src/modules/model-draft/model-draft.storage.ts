@@ -1,15 +1,14 @@
-import { randomUUID } from 'node:crypto';
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
   DeleteObjectsCommand,
   ListObjectsV2Command,
   PutObjectCommand,
-  type ObjectCannedACL,
 } from '#src/shared/storage/index.ts';
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
+import { randomUUID } from 'node:crypto';
 
-export default function makeModelDraftStorage({ storage, bucket }: Dependencies) {
+export default function makeModelDraftStorage({ storage, bucket, fileDomain }: Dependencies) {
   function stagingPrefix(userId: string, draftId: string): string {
     return `staging/${userId}/${draftId}/`;
   }
@@ -52,24 +51,29 @@ export default function makeModelDraftStorage({ storage, bucket }: Dependencies)
       filename: string;
       contentType: string;
       pathPrefix: string;
-      acl?: ObjectCannedACL;
+      acl?: 'private' | 'public-read';
+      userId?: string;
     }): Promise<string> {
-      const destKey = `${params.pathPrefix}/${params.modelId}/${randomUUID()}-${sanitizeFilename(params.filename)}`;
+      const file = fileDomain.createFile({
+        buffer: Buffer.alloc(0), // buffer is not used for copying, but domain requires it
+        filename: params.filename,
+        contentType: params.contentType,
+        access: params.acl ?? 'private',
+        pathPrefix: params.pathPrefix,
+        userId: params.userId,
+      });
       await storage.send(
         new CopyObjectCommand({
           Bucket: bucket.Name,
-          Key: destKey,
+          Key: file.key,
           CopySource: `${bucket.Name}/${params.stagingKey}`,
-          ContentType: params.contentType,
+          ContentType: file.contentType,
           MetadataDirective: 'REPLACE',
-          Metadata: {
-            filename: sanitizeFilename(params.filename),
-            createdat: new Date().toISOString(),
-          },
+          Metadata: file.metadata,
           ACL: params.acl,
         }),
       );
-      return destKey;
+      return file.key;
     },
 
     async deleteStagingPrefix(userId: string, draftId: string): Promise<void> {

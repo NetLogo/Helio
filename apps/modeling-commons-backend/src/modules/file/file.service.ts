@@ -1,3 +1,4 @@
+import { signingStorageClient } from '#src/lib/storage.ts';
 import { FileNotFoundError } from '#src/modules/file/domain/file.errors.ts';
 import {
   isPublicKey,
@@ -73,7 +74,7 @@ export default function makeFileService({
       if (isPublicKey(key)) {
         return `${publicBaseUrl}/${key}`;
       }
-      const { expiresIn = 3600, client = storage } = options;
+      const { expiresIn = 3600, client = signingStorageClient } = options;
       return getSignedUrl(
         client,
         new GetObjectCommand({
