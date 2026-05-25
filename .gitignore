@@ -43,4 +43,5 @@ GITIGNORE_*/**/*
 .env.production
 
 apps/modeling-commons-backend/prisma/archive-output
+apps/modeling-commons-backend/prisma/avatars
 .nuxt
