@@ -17,6 +17,7 @@
  */
 
 import { PrismaPg } from '@prisma/adapter-pg';
+import { exec } from 'child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -27,6 +28,7 @@ import { Prisma, PrismaClient } from '../generated/prisma/client.js';
 
 const OLD_URL = 'postgresql://admin:test@127.0.0.1:5432/nlcommons_production';
 const NEW_URL = required('DATABASE_URL');
+const AVATARS_DIR = path.join('.', 'prisma', 'avatars');
 const OUTPUT_DIR = process.env.OUTPUT_DIR ?? './prisma/archive-output';
 const FILES_DIR = path.join(OUTPUT_DIR, 'files');
 const BATCH = parseInt(process.env.BATCH_SIZE ?? '500', 10);
@@ -41,6 +43,12 @@ type OldPerson = {
   first_name: string | null;
   last_name: string | null;
   administrator: boolean | null;
+  birthdate: Date | null;
+  country_name: string | null;
+  url: string | null;
+  avatar_file_name: string | null;
+  avatar_updated_at: Date | null;
+  biography: string | null;
   created_at: Date | null;
   updated_at: Date | null;
 };
@@ -211,6 +219,8 @@ async function migrateUsers(): Promise<Map<number, string>> {
 
   await streamRows<OldPerson>(
     `SELECT id, email_address, first_name, last_name, administrator,
+            avatar_file_name,  avatar_updated_at,
+            birthdate, country_name, url, biography,
             created_at, updated_at
      FROM people
      ORDER BY id ASC`,
@@ -241,12 +251,38 @@ async function migrateUsers(): Promise<Map<number, string>> {
             .filter(Boolean)
             .join(' ') || null;
 
+        let imageUrl: string | null = null;
+        if (p.avatar_file_name) {
+          const avatarUuid = randomUUID();
+          const avatarKey = buildAvatarFileKey(
+            id,
+            p.avatar_updated_at ?? new Date(),
+            avatarUuid,
+            'avatar',
+          );
+          imageUrl = `cdn.modelingcommons.org/modeling-commons/${avatarKey}`;
+
+          const fsAvatarPath = path.join(AVATARS_DIR, `${p.id}`, 'original', p.avatar_file_name);
+          try {
+            await copyFile(fsAvatarPath, path.join(FILES_DIR, avatarKey));
+          } catch (err) {
+            report.errors.push(
+              `Failed to copy avatar for person id ${p.id} from ${fsAvatarPath}: ${(err as Error).message}`,
+            );
+            imageUrl = null;
+          }
+        }
+
         toCreate.push({
           id,
           legacyId: p.id,
           email,
           name,
           emailVerified: false,
+          bio: p.biography?.trim() || null,
+          dob: p.birthdate ?? null,
+          image: p.avatar_file_name ? imageUrl : null,
+          socialLinks: [{ type: 'other', rawValue: p.url?.trim() || null }],
           systemRole: 'user', // all users → user, per spec
           userKind: 'other',
           createdAt: p.created_at ?? new Date(),
@@ -677,7 +713,7 @@ function buildPreviewFileKey(
 ): string {
   const { y, m, day } = dateParts(d);
   const filename = sanitizeFilename(_filename);
-  return `${getAccessPrefix('private')}/models/${modelUuid}/preview-images/${y}/${m}/${day}/${fileUuid}/${filename}`;
+  return `${getAccessPrefix('public-read')}/models/${modelUuid}/preview-images/${y}/${m}/${day}/${fileUuid}/${filename}`;
 }
 
 function buildAttachmentFileKey(
@@ -689,6 +725,26 @@ function buildAttachmentFileKey(
   const { y, m, day } = dateParts(d);
   const filename = sanitizeFilename(_filename);
   return `${getAccessPrefix('private')}/models/${modelUuid}/additionalFiles/${y}/${m}/${day}/${fileUuid}/${filename}`;
+}
+
+function buildAvatarFileKey(
+  userUuid: string,
+  d: Date,
+  fileUuid: string,
+  _filename: string = 'file',
+): string {
+  const { y, m, day } = dateParts(d);
+  const filename = sanitizeFilename(_filename);
+  return `${getAccessPrefix('public-read')}/avatars/${userUuid}/${y}/${m}/${day}/${fileUuid}/${filename}`;
+}
+
+async function copyFile(src: string, dest: string) {
+  await mkdir(path.dirname(dest), { recursive: true });
+  await new Promise<void>((resolve, reject) => {
+    const cp = process.platform === 'win32' ? 'copy' : 'cp';
+    const cmd = `${cp} "${src}" "${dest}"`;
+    exec(cmd, (err: Error | null) => (err ? reject(err) : resolve()));
+  });
 }
 
 async function writeLocalFile(relKey: string, contents: Buffer) {
