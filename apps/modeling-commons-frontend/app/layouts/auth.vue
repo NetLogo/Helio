@@ -2,6 +2,10 @@
   <div
     class="min-h-screen flex items-center justify-center px-4 py-8 bg-linear-to-b from-[#F7F9FC] to-[#F8F5FE]"
   >
+    <div class="absolute inset-0">
+      <ConnectionBanner />
+    </div>
+
     <UButton
       icon="i-lucide-chevron-left"
       to="/"
@@ -16,6 +20,7 @@
         >Back to Modeling Commons</span
       >
     </UButton>
+
 
     <UPageCard
       variant="subtle"
