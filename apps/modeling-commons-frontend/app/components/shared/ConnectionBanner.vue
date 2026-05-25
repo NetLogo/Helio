@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 const { isOffline, checkNow } = useConnectionHealth();
+const toast = useToast();
 const checking = ref(false);
 
 async function retry() {
@@ -45,4 +46,14 @@ async function retry() {
     checking.value = false;
   }
 }
+
+watch(isOffline, (offline, wasOffline) => {
+  if (wasOffline && !offline) {
+    refreshNuxtData();
+    toast.add({
+      title: "Connection restored",
+      icon: "i-lucide-wifi",
+    });
+  }
+});
 </script>
