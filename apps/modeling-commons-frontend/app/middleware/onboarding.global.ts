@@ -15,7 +15,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   const { $auth } = useNuxtApp();
-  const session = await $auth.client.getSession();
+
+  let session: Awaited<ReturnType<typeof $auth.client.getSession>>;
+  try {
+    session = await $auth.client.getSession();
+  } catch {
+    return;
+  }
   const user = session?.data?.user;
   if (!user) return;
 

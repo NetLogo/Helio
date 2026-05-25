@@ -2,7 +2,6 @@ import { passkeyClient } from "@better-auth/passkey/client";
 import type {
   BetterAuthClientOptions,
   BetterAuthClientPlugin,
-  InferClientAPI,
   IsSignal,
   UnionToIntersection,
   User as _User,
@@ -99,7 +98,8 @@ export default defineNuxtPlugin({
     });
 
     const session = await nuxtApp.runWithContext(() => authClient.useSession(useFetchHeaders));
-    const refresh = () => authClient.updateSession({ fetchOptions: { headers } });
+    const refresh = () =>
+      authClient.getSession({ fetchOptions: { headers, credentials: "include" } });
 
     return {
       provide: {
@@ -164,8 +164,5 @@ type ExtendWithPlugin<O extends (...args: any[]) => BetterAuthClientPlugin> = In
   plugins: [ReturnType<O>];
 }> &
   InferActions<{
-    plugins: [ReturnType<O>];
-  }> &
-  InferClientAPI<{
     plugins: [ReturnType<O>];
   }>;
