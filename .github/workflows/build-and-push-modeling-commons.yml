@@ -96,3 +96,25 @@ jobs:
             ${{ steps.repo_slug.outputs.result }}/modeling-commons-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+  restart-deployments:
+    needs: build-and-push
+    runs-on: self-hosted
+    environment: netlogo1
+
+    steps:
+      - name: Restart deployments
+        run: |
+          APISERVER=https://kubernetes.default.svc
+          TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+          CA=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          PATCH='{"spec":{"template":{"metadata":{"annotations":{"kubectl.kubernetes.io/restartedAt":"'"$TIMESTAMP"'"}}}}}'
+
+          for DEPLOY in modeling-commons-backend modeling-commons-frontend; do
+            curl -sf -X PATCH \
+              -H "Authorization: Bearer $TOKEN" \
+              -H "Content-Type: application/strategic-merge-patch+json" \
+              -d "$PATCH" \
+              --cacert "$CA" \
+              "$APISERVER/apis/apps/v1/namespaces/modeling-commons/deployments/$DEPLOY"
+          done
