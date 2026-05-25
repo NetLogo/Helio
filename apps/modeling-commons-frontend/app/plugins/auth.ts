@@ -98,8 +98,14 @@ export default defineNuxtPlugin({
     });
 
     const session = await nuxtApp.runWithContext(() => authClient.useSession(useFetchHeaders));
-    const refresh = () =>
-      authClient.getSession({ fetchOptions: { headers, credentials: "include" } });
+
+    const refresh = () => {
+      try {
+        authClient.getSession({ fetchOptions: { headers, credentials: "include" } });
+      } catch (error) {
+        console.error("Failed to refresh session:", error);
+      }
+    };
 
     return {
       provide: {
