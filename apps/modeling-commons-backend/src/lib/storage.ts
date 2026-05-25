@@ -1,5 +1,6 @@
 import env from '#src/config/env.ts';
 import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
+import { ExceptionBase } from '#src/shared/exceptions/exception-base.ts';
 import {
   CreateBucketCommand,
   ListBucketsCommand,
@@ -7,7 +8,13 @@ import {
   PutBucketPolicyCommand,
   S3Client,
   type Bucket,
+  type ListBucketsCommandOutput,
 } from '@aws-sdk/client-s3';
+
+class StorageInitializationError extends ExceptionBase {
+  readonly statusCode = 500;
+  readonly error = 'Storage Initialization Error';
+}
 
 const storage = new S3Client({
   region: env.storage.region,
@@ -47,7 +54,16 @@ function getDockerStorageClient() {
   });
 }
 
-const buckets = await storage.send(new ListBucketsCommand({}));
+let buckets: ListBucketsCommandOutput;
+try {
+  buckets = await storage.send(new ListBucketsCommand({}));
+} catch (err: unknown) {
+  throw new StorageInitializationError(
+    'Failed to list storage buckets. This can happen if the storage service is not running or the provided credentials are invalid.',
+    err instanceof Error ? err : undefined,
+  );
+}
+
 let maybeBucket = buckets.Buckets?.find((b: Bucket) => b.Name === env.storage.bucket);
 
 if (!maybeBucket) {
