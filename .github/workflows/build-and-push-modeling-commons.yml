@@ -99,7 +99,6 @@ jobs:
   restart-deployments:
     needs: build-and-push
     runs-on: self-hosted
-    environment: netlogo1
 
     steps:
       - name: Restart deployments
