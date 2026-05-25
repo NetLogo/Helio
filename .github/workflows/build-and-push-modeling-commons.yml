@@ -20,6 +20,7 @@ on:
       - 'packages/netlogo-docs/**'
       - 'packages/emails/**'
       - 'yarn.lock'
+      - '.github/workflows/build-and-push-modeling-commons.yml'
   workflow_dispatch:
 
 jobs:
