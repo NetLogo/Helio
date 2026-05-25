@@ -9,15 +9,17 @@ const exemptPrefixes = [
   authRoutes.passkey,
 ];
 
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   if (exemptPrefixes.some((prefix) => to.path.startsWith(prefix))) {
     return;
   }
 
-  const user = useUser();
-  if (!user.value.isLoggedIn) return;
+  const { $auth } = useNuxtApp();
+  const session = await $auth.client.getSession();
+  const user = session?.data?.user;
+  if (!user) return;
 
-  const onboardedAt = (user.value.user as { onboardedAt?: string | null } | null)?.onboardedAt;
+  const onboardedAt = user.onboardedAt;
   if (onboardedAt) return;
 
   return navigateTo({
