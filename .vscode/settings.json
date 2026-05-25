@@ -1,5 +1,5 @@
 {
-  "window.title": "MC Frontend${separator}${separator}${rootName}${separator}${profileName}",
+  "window.title": "Helio - ${separator}${separator}${rootName}${separator}${profileName}",
   "files.watcherExclude": {
     "**/target": true
   },

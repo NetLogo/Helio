@@ -31,6 +31,8 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 - Emit domain audit via `eventRepository.insert(ctx, { type, actorId, resourceType, resourceId, payload })` in the same txn. Event types are dotted (`model.created`, `model.deleted`).
 - For child aggregates (e.g. comments on a model), set `resourceType` to the *parent* (`model`), not the child. Per-resource audit queries surface child activity that way.
 - Soft delete, don't hard delete: models/users carry `deletedAt`. Call `modelDomain.assertNotDeleted(entity)` before mutating.
+- **Models are written through drafts**, not directly. Flow: `POST /v1/model-drafts` → `PATCH /v1/model-drafts/:id` → multipart upload to `/v1/model-drafts/:id/files` → `POST /v1/model-drafts/:id/publish`. There is no `POST /v1/models`. Publish auto-creates `v1`; a model never has zero versions.
+- `POST /v1/models/:id/versions` is **multipart/form-data** (required `file` field), not JSON.
 
 ## Routes
 
@@ -65,6 +67,17 @@ Use path aliases, never relative `../../`:
 - Build content: `mailDomain.create*Email(...)` factories in `src/modules/mail/domain/mail.domain.ts`. New MVP notifications can reuse `createNotificationEmail`; dedicated templates are polish.
 - Templates: React Email components at `packages/emails/src/templates/` (`@repo/emails`).
 - Fire emails *after* `transactionManager.run` commits, with `Promise.allSettled` + logger on failure. Never block a write on SMTP, never let an email failure roll back the txn.
+- Local SMTP: Mailpit container (port 1025, web UI 8025) via `docker-compose.dev.yml`. No auth, no TLS.
+
+## Testing
+
+- `yarn run test:unit` (vitest) · `yarn run test:e2e` (cucumber, needs `yarn run svc` running for postgres/object-storage/mailpit/netlogo-services).
+- In vitest specs, import `beforeEach`/`afterEach` from `vitest`, never `node:test` — wrong import silently no-ops the hook.
+
+## Config & limits
+
+- Limits (file size, allowed MIME types, rate caps, …) live in `src/config/rules.ts`. Don't redeclare module-local constants.
+- App-level env (`SMTP_*`, `STORAGE_*`, …) flows through `src/config/env.ts`. Services receive derived values via awilix DI (`storagePublicBaseUrl`, `bucket`), not direct `env.*` reads.
 
 ## Dev servers
 
