@@ -74,8 +74,7 @@ if (error.value) {
         <div class="flex w-full justify-between">
           <h6>My Models</h6>
           <UButton variant="ghost" size="sm" :to="`/users/${id}/models`" class="ml-auto">
-            <span>See all</span>
-            <span v-if="models">{{ pluralize(models.count, "model") }}</span>
+            <span v-text="models && models.count > 1 ? `See all ${models.count} models` : 'See all models'" />
           </UButton>
         </div>
 
