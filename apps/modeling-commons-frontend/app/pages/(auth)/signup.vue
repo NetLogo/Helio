@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type * as z from "zod";
-import { signUpFields, signUpValidator, type UserKind } from "~/forms/auth";
+import { signUpFields, signUpValidator } from "~/forms/auth";
 import { authRoutes, getSafeNextPath } from "~/utils/auth";
 
 definePageMeta({
@@ -14,6 +14,7 @@ useSeoMeta({
   description: "Create an account to get started",
 });
 
+const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 const { signUpWithEmail } = useAuthActions();
@@ -39,11 +40,19 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     name,
     email,
     password,
-    userKind: userKind as UserKind,
+    userKind: userKind?.value ?? "other",
     next: route.query.next,
   });
 
-  if (error) return;
+  if (error) {
+    toast.add({
+      title: "Signup failed",
+      description: error.message ?? "We couldn't create your account.",
+      icon: "i-lucide-x-circle",
+      color: "error",
+    });
+    return;
+  }
 
   await router.push({
     path: authRoutes.verifyEmail,
