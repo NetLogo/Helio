@@ -150,6 +150,7 @@ export default defineNuxtConfig({
 
   image: {
     domains: imageDomains,
+    provider: "none",
     format: ["avif", "webp", "jpeg"],
     ipx: {
       // Avoid exposing name of internal binary
