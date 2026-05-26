@@ -16,7 +16,7 @@
       <div class="max-w-500 mx-auto flex items-center gap-3 px-4 py-2 text-sm">
         <UIcon name="i-lucide-wifi-off" class="size-4 shrink-0" />
         <span class="flex-1">
-          We can't reach our servers. Please check your connection and try again.
+          We're unable to reach the server. Please check your connection and try again.
         </span>
         <UButton
           size="xs"
