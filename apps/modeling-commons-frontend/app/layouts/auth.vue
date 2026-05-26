@@ -7,18 +7,15 @@
     </div>
 
     <UButton
-      icon="i-lucide-chevron-left"
       to="/"
       size="xl"
       color="neutral"
-      variant="subtle"
-      class="absolute left-8 top-8 rounded-full z-10 group/back max-w-12 hover:max-w-lg transition-all duration-300 ease-in-out"
-      title="Back to Modeling Commons"
+      variant="ghost"
+      class="absolute left-8 top-8 rounded-full z-10"
     >
-      <span
-        class="max-w-0 line-clamp-1 overflow-hidden group-hover/back:max-w-lg transition-all duration-300 ease-in-out"
-        >Back to Modeling Commons</span
-      >
+      <TurtlesSVG
+        class="w-12 pointer-events-none select-none hidden md:block"
+      />
     </UButton>
 
 
@@ -33,9 +30,6 @@
       <slot />
     </UPageCard>
 
-    <TurtlesSVG
-      class="fixed bottom-0 left-0 m-10 w-12 pointer-events-none select-none hidden md:block"
-    />
   </div>
 </template>
 
