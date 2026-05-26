@@ -31,6 +31,10 @@ const addLink = () => {
   if (!model.value || !currentInput.value) {
     return;
   }
+  if (props.onePerKind && links.value.some((link) => link.type === model.value?.value)) {
+    error.value = "You can only add one link of each type.";
+    return;
+  }
   const { value, schema } = model.value;
   const { data, error: parseError } = schema.safeParse(currentInput.value); // Will throw if invalid, preventing addition
   if (!data) {
