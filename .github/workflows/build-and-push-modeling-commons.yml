@@ -57,6 +57,13 @@ jobs:
           HELIO_HEADLESS: 1
           NUXT_TELEMETRY_DISABLED: 1
           NODE_OPTIONS: --max-old-space-size=4096
+          NUXT_PUBLIC_AUTH_BASE: 'https://beta.modelingcommons.org/api/auth'
+          NUXT_PUBLIC_API_BASE: 'https://beta.modelingcommons.org'
+          NUXT_PUBLIC_APP_URL: 'https://beta.modelingcommons.org'
+          NUXT_STORAGE_BASE_URL: 'https://cdn.modelingcommons.org'
+          NUXT_PUBLIC_CDN_URL: 'https://cdn.modelingcommons.org'
+          NUXT_PUBLIC_NETLOGO_WEB_URL: 'https://www.netlogoweb.org'
+          NUXT_PUBLIC_GA_TRACKING_ID: 'G-VJ4WPV2Q5B'
 
       - uses: docker/setup-buildx-action@v3
 

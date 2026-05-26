@@ -5,7 +5,6 @@ RUN apk add --no-cache dumb-init
 ENV NODE_ENV=production HOST=0.0.0.0 NITRO_PORT=3005
 ENV NUXT_PUBLIC_API_BASE="https://beta.modelingcommons.org"
 ENV NUXT_PUBLIC_AUTH_BASE="https://beta.modelingcommons.org/api/auth"
-ENV NUXT_PUBLIC_AUTH_API_BASE="https://beta.modelingcommons.org/api/auth"
 ENV NUXT_PUBLIC_APP_URL="https://beta.modelingcommons.org"
 ENV NUXT_STORAGE_BASE_URL="https://cdn.modelingcommons.org"
 ENV NUXT_PUBLIC_CDN_URL="https://cdn.modelingcommons.org"
