@@ -50,8 +50,13 @@ const socialMediaLinksKinds = [
     schema: z
       .string()
       .regex(/^@?[a-zA-Z0-9_]+$/, "Invalid X handle.")
-      .min(3, "X handles must be at least 3 characters long")
-      .max(16, "X handles cannot be longer than 16 characters")
+      .transform((val) => val.replace(/^@/, ""))
+      .pipe(
+         z
+          .string()
+          .min(3, "X handles must be at least 3 characters long")
+          .max(15, "X handles cannot be longer than 15 characters"),
+      )
       .optional(),
     toUrl: (input: string) => `https://x.com/${input.replace(/^@/, "")}`,
     toDisplay: (input: string) => `@${input.replace(/^@/, "")}`,
@@ -64,9 +69,14 @@ const socialMediaLinksKinds = [
     schema: z
       .string()
       .regex(/^@?[a-zA-Z0-9-]+$/, "Invalid GitHub username.")
-      .regex(/--/, "GitHub usernames cannot contain consecutive hyphens.")
-      .min(1, "GitHub username cannot be empty")
-      .max(39, "GitHub usernames cannot be longer than 39 characters")
+      .regex(/^(?!.*-{2,})/, "GitHub usernames cannot contain consecutive hyphens.")
+      .transform((v) => v.replace(/^@/, ""))
+      .pipe(
+        z
+          .string()
+          .min(1, "GitHub username cannot be empty")
+          .max(39, "GitHub usernames cannot be longer than 39 characters"),
+      )
       .optional(),
     toUrl: (input: string) => `https://github.com/${input.replace(/^@/, "")}`,
     toDisplay: id,
@@ -78,7 +88,10 @@ const socialMediaLinksKinds = [
     icon: "mdi:linkedin",
     schema: z
       .url()
-      .regex(/^https?:\/\/(www\.)?linkedin\.com\/.*$/, "Invalid LinkedIn URL.")
+      .regex(
+        /^https?:\/\/(www\.)?linkedin\.com\/(in|pub)\/.*$/,
+        "Invalid LinkedIn profile URL.",
+      )
       .optional(),
     toUrl: (input: string) => new URL(input).href,
     toDisplay: id,
@@ -91,7 +104,7 @@ const socialMediaLinksKinds = [
     schema: z
       .url()
       .regex(
-        /^https?:\/\/(scholar\.google\.com|.*\.scholar\.google\.com)\/.*$/,
+        /^https?:\/\/scholar\.google\.[a-z.]+\/.*$/,
         "Invalid Google Scholar URL.",
       )
       .optional(),
