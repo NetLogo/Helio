@@ -91,10 +91,10 @@ const links = [
 ];
 
 const products = [
-  { label: "NetLogo", href: "https://www.netlogo.org/", icon: "netlogo-netlogo-desktop" },
-  { label: "NetLogo Web", href: "https://www.netlogoweb.org/", icon: "netlogo-netlogo-web" },
-  { label: "Hubnet Web", href: "https://hubnetweb.org/", icon: "netlogo-hubnet-web" },
-  { label: "NetTango", href: "https://nettango.org/", icon: "netlogo-nettango" },
+  { label: "NetLogo", href: "https://www.netlogo.org/", icon: "netlogo-netlogo-desktop-fill" },
+  { label: "NetLogo Web", href: "https://www.netlogoweb.org/", icon: "netlogo-netlogo-web-fill" },
+  { label: "Hubnet Web", href: "https://hubnetweb.org/", icon: "netlogo-hubnet-web-fill" },
+  { label: "NetTango", href: "https://nettango.org/", icon: "netlogo-nettango-fill" },
 ];
 
 onMounted(() => {
