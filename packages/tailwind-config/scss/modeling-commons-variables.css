@@ -197,11 +197,11 @@
   --primary-heading-background-color: var(--color-royal-blue);
   --primary-heading-background-color-hover: var(--color-royal-blue-dark);
   --primary-heading-text-color: var(--color-text-on-primary);
-  --secondary-heading-background-color: var(--color-coral-lighter);
+  --secondary-heading-background-color: var(--color-royal-blue-lightest);
   --secondary-heading-background-color-hover: color-mix(
     in srgb,
-    var(--color-coral-light) 50%,
-    var(--color-coral-lighter)
+    var(--color-royal-blue-lighter) 50%,
+    var(--color-royal-blue-lightest)
   );
   --secondary-heading-text-color: var(--color-black);
 
