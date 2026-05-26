@@ -222,7 +222,7 @@ const navbarLinks = ref<Array<NavbarLink>>([
       { title: "All Models", href: "/models", icon: "i-lucide-box" },
       { title: "Featured Models", href: "/featured-models", icon: "i-lucide-star" },
       { title: "New Models", href: "/new-models", icon: "i-lucide-circle-plus" },
-      { title: "Models by Tag", href: "/models/tags", icon: "i-lucide-tag" },
+      { title: "Models by Tag", href: "/tags", icon: "i-lucide-tag" },
     ],
   },
   {
