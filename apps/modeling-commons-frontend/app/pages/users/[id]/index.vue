@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const route = useRoute();
 const api = useApi();
+const user = useUser();
 
 const id = route.params.id as string;
 
@@ -19,6 +20,8 @@ const {
 useSeoMeta({
   title: () => profile.value ? `${profile.value.name}'s Profile` : "User Profile",
 });
+
+const isMyself = computed(() => user.value?.user?.id === id);
 
 const {
   data: models,
@@ -58,6 +61,7 @@ if (error.value) {
         :affiliation="profile.affiliation"
         :created-at="profile.createdAt"
         :social-links="profile.socialLinks"
+        :is-myself="isMyself"
       />
 
       <USeparator />
