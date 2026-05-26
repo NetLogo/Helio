@@ -185,6 +185,7 @@ const rules = {
       { pattern: /^application\/javascript$/, mapped: 'application/octet-stream' },
       { pattern: /^application\/x-/, mapped: 'application/octet-stream' },
       { pattern: /^image\/svg\+xml$/, mapped: 'application/octet-stream' },
+      { pattern: /^application\/xml/, mapped: 'application/octet-stream' },
     ],
     undetectedTypesDefault: 'application/octet-stream',
     // Declared types that aren't real claims (browser fallbacks for unrecognized
