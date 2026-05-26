@@ -112,6 +112,9 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    "/": {
+      isr: 60 * 10,
+    },
     "/models/**/embed": {
       security: {
         headers: {
