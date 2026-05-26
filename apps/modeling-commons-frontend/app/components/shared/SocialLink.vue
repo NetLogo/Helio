@@ -24,7 +24,7 @@ const socialMediaLinksKinds = [
     value: "website",
     label: "Personal website",
     placeholder: "https://www.mywebsite.com",
-    icon: "iconoir:www",
+    icon: "i-lucide-house",
     schema: z
       .url("Invalid URL. Make sure to include https:// at the beginning of your URL")
       .optional(),
