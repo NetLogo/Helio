@@ -1,8 +1,8 @@
 export default function useUsers() {
-  const key = computed(() => `users-${query.value}`);
   const { GET } = useApi();
 
-  const query = useSearchQuery("userId");
+  const { query, debouncedQuery } = useSearchQuery();
+  const key = computed(() => `users-${debouncedQuery.value}`);
 
   const {
     data: users,
@@ -30,7 +30,7 @@ export default function useUsers() {
   }
 
   function _getKeywordValue() {
-    return query.value.length > 0 ? query.value : undefined;
+    return debouncedQuery.value?.trim().length === 0 ? undefined : debouncedQuery.value?.trim();
   }
 
   return {

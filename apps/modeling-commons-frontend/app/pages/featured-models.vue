@@ -1,6 +1,6 @@
 <template>
   <UContainer>
-    <ModelsListing v-model:search-query="query" :filters="filters">
+    <ModelsListing :filters="filters">
       <template #header>
         <div class="space-y-2">
           <h4 class="tracking-tight">Featured Models</h4>
@@ -19,6 +19,5 @@ useSeoMeta({
   description: "Community-endorsed NetLogo simulations.",
 });
 
-const query = useSearchQuery("endorsed-models");
-const filters = computed<ModelsFilters>(() => ({ isEndorsed: true, keyword: query.value }));
+const filters = computed<ModelsFilters>(() => ({ isEndorsed: true }));
 </script>

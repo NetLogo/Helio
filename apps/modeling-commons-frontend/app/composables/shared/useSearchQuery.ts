@@ -1,8 +1,8 @@
 import { refDebounced } from "@vueuse/core";
 
-export default function useSearchQuery(queryKey: string, options: SearchQueryOptions = {}) {
+export default function useSearchQuery(options: SearchQueryOptions = {}) {
   const {
-    debounce: { ms = 300, maxWait = 1000 } = {},
+    debounce: { ms = 300, maxWait = 10000 } = {},
     defaultValue = "",
     transform = (q) => q,
   } = options;
@@ -11,13 +11,13 @@ export default function useSearchQuery(queryKey: string, options: SearchQueryOpt
   const debouncedQuery = refDebounced(rawQuery, ms, { maxWait });
 
   const query = computed({
-    get: () => debouncedQuery.value,
+    get: () => rawQuery.value,
     set: (val: string) => {
       rawQuery.value = transform(val);
     },
   });
 
-  return query;
+  return { query, debouncedQuery };
 }
 
 export type SearchQueryOptions = {
