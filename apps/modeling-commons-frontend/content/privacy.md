@@ -1,6 +1,6 @@
 ---
 title: Privacy Policy
-last_revised: 2026-06-20
+last_revised: 2026-06-26
 has_hero: false
 hero_class: "bg-coral-dark text-white"
 description: |
@@ -9,54 +9,82 @@ description: |
   Last revised on ${last_revised}.
 ---
 # Privacy Policy
+We value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our services.
 
-#### Table of Contents { "maxDepth": 3 }
+### Definitions
 
-### The Gist
+This Privacy Policy uses the same definitions as our [Terms of Service](/terms). In addition:
 
-[COMPANY] will collect certain non-personally identify information about you as you use our sites. We may use this data to better understand our users. We can also publish this data, but the data will be about a large group of users, not individuals.
+- **Personal Information** refers to any information that identifies or can reasonably be used to identify You as an individual.
 
-We will also ask you to provide personal information, but you'll always be able to opt out. If you give us personal information, we won't do anything evil with it.
+- **Usage Data** refers to information collected automatically about how You interact with the Service.
 
-We can also use cookies, but you can choose not to store these.
+### Overview
 
-That's the basic idea, but you must read through the entire Privacy Policy below and agree with all the details before you use any of our sites.
+The Modeling Commons collects limited information to operate and improve the Service. We collect what we need, we don't sell your data, and we try to be straightforward about what we do with it.
+
+### Information We Collect
+
+**Account Information.** When You register, we collect Your username, email address, and any other information You provide during registration.
+
+**User Content.** Models, source code, documentation, images, thumbnails, metadata, and other materials You upload or create through the Service. See our Terms of Service for details on visibility settings and licensing.
+
+**Usage Data.** We automatically collect information such as Your IP address, browser type, operating system, referring URL, pages visited, and the date and time of Your requests. We use Google Analytics to collect and analyze this data. Google Analytics uses cookies and may transfer data to Google's servers. Google's privacy policy governs their handling of this data: [google.com/policies/privacy](https://policies.google.com/privacy).
+
+**Cookies.** The Service uses session cookies to maintain Your login state and enable core functionality. These cookies expire when You close Your browser. Google Analytics sets additional cookies for usage analysis. You may configure Your browser to refuse cookies, but some features of the Service may not function properly without them.
+
+### How We Use Your Information
+
+We use the information we collect to:
+
+- Operate, maintain, and provide the features of the Service.
+- Authenticate users and maintain session state.
+- Analyze usage patterns to improve the Service.
+- Communicate with You about the Service (e.g., account-related notices).
+- Enforce our Terms of Service and protect against misuse.
+- Share model data with related services, including NetLogo Web, for operational purposes such as running models in the browser.
+
+### Information Sharing
+
+We do not sell, rent, or trade Your Personal Information.
+
+We may share Your information in the following circumstances:
+
+**Service operations.** With employees, contractors, and affiliated organizations of Northwestern University who need access to perform their duties, and with related services such as NetLogo Web that require model data for operational functionality.
+
+**Legal requirements.** When required by law, or when the Company believes in good faith that disclosure is reasonably necessary to protect the rights, property, or safety of the Company, its users, or the public.
+
+**Aggregated data.** We may publish aggregated, non-identifying statistics about Service usage (e.g., total number of models shared, usage trends).
+
+### Data Storage and Security
+
+The Service uses third-party vendors and hosting partners to provide the infrastructure required to operate. Your data may be stored on third-party servers and transmitted through third-party networks. The Company takes reasonable measures to protect against unauthorized access, use, alteration, or destruction of Your information, but no method of transmission or storage is completely secure.
+
+### Your Choices
+
+**Account information.** You may update Your account information through the Service at any time.
+
+**Cookies.** You may configure Your browser to refuse cookies. Session cookies are required for login functionality.
+
+**Data deletion.** You may request deletion of Your account and associated data by contacting [feedback@ccl.northwestern.edu](mailto:feedback@ccl.northwestern.edu) or [bugs@ccl.northwestern.edu](mailto:bugs@ccl.northwestern.edu). Deletion is subject to the data retention provisions described in our Terms of Service.
+
+**Communications.** If we send You service-related emails, You may opt out of non-essential communications.
+
+### Children's Privacy
+
+The Service is available to users aged 13 and older. We do not knowingly collect Personal Information from children under 13. If we become aware that we have collected information from a child under 13, we will take steps to delete it promptly. If You believe a child under 13 has provided us with Personal Information, please contact us at [feedback@ccl.northwestern.edu](mailto:feedback@ccl.northwestern.edu).
+
+### Changes to This Policy
+
+The Company may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date. Your continued use of the Service after any changes constitutes acceptance of the revised policy. We encourage You to review this page periodically.
 
 ### Reuse
 
-This document is based upon the [Automattic Privacy Policy](http://automattic.com/privacy/) and is licensed under [Creative Commons Attribution Share-Alike License 2.5](http://creativecommons.org/licenses/by-sa/2.5/). Basically, this means you can use it verbatim or edited, but you must release new versions under the same license and you have to credit Automattic somewhere (like this!). Automattic is not connected with and does not sponsor or endorse [COMPANY] or its use of the work.
+This document is based upon the [Automattic Privacy Policy](http://automattic.com/privacy/) and is licensed under [Creative Commons Attribution Share-Alike License 2.5](http://creativecommons.org/licenses/by-sa/2.5/). This means you can use it verbatim or edited, but you must release new versions under the same license and you must credit Automattic. Automattic is not connected with and does not sponsor or endorse the Company or its use of the work.
 
-[COMPANY], Inc. ("[COMPANY]") makes available services include our web sites ([URL] and [URL]), our blog, our API, and any other software, sites, and services offered by [COMPANY] in connection to any of those (taken together, the "Service"). It is [COMPANY]'s policy to respect your privacy regarding any information we may collect while operating our websites.
+### Contact
 
-### Questions
+For questions about this Privacy Policy:
 
-If you have question about this Privacy Policy, please contact us at [CONTACT EMAIL]
-
-### Visitors
-
-Like most website operators, [COMPANY] collects non-personally-identifying information of the sort that web browsers and servers typically make available, such as the browser type, language preference, referring site, and the date and time of each visitor request. [COMPANY]'s purpose in collecting non-personally identifying information is to better understand how [COMPANY]'s visitors use its website. From time to time, [COMPANY] may release non-personally-identifying information in the aggregate, e.g., by publishing a report on trends in the usage of its website.
-
-[COMPANY] also collects potentially personally-identifying information like Internet Protocol (IP) addresses. [COMPANY] does not use such information to identify its visitors, however, and does not disclose such information, other than under the same circumstances that it uses and discloses personally-identifying information, as described below. We may also collect and use IP addresses to block users who violated our Terms of Service.
-
-### Gathering of Personally-Identifying Information
-
-Certain visitors to [COMPANY]'s websites choose to interact with [COMPANY] in ways that require [COMPANY] to gather personally-identifying information. The amount and type of information that [COMPANY] gathers depends on the nature of the interaction. [COMPANY] collects such information only insofar as is necessary or appropriate to fulfill the purpose of the visitor's interaction with [COMPANY]. [COMPANY] does not disclose personally-identifying information other than as described below. And visitors can always refuse to supply personally-identifying information, with the caveat that it may prevent them from engaging in certain Service-related activities.
-
-Additionally, some interactions, such as posting a comment, may ask for optional personal information. For instance, when posting a comment, may provide a website that will be displayed along with a user's name when the comment is displayed. Supplying such personal information is completely optional and is only displayed for the benefit and the convenience of the user.
-
-### Aggregated Statistics
-
-[COMPANY] may collect statistics about the behavior of visitors to the Service. For instance, [COMPANY] may monitor the most popular parts of the [URL]. [COMPANY] may display this information publicly or provide it to others. However, [COMPANY] does not disclose personally-identifying information other than as described below.
-
-### Protection of Certain Personally-Identifying Information
-
-[COMPANY] discloses potentially personally-identifying and personally-identifying information only to those of its employees, contractors and affiliated organizations that (i) need to know that information in order to process it on [COMPANY]'s behalf or to provide services available at [COMPANY]'s websites, and (ii) that have agreed not to disclose it to others. Some of those employees, contractors and affiliated organizations may be located outside of your home country; by using the Service, you consent to the transfer of such information to them. [COMPANY] will not rent or sell potentially personally-identifying and personally-identifying information to anyone. Other than to its employees, contractors and affiliated organizations, as described above, [COMPANY] discloses potentially personally-identifying and personally-identifying information only when required to do so by law, or when [COMPANY] believes in good faith that disclosure is reasonably necessary to protect the property or rights of [COMPANY], third parties or the public at large. If you are a registered user of the Service and have supplied your email address, [COMPANY] may occasionally send you an email to tell you about new features, solicit your feedback, or just keep you up to date with what's going on with [COMPANY] and our products. We primarily use our website and blog to communicate this type of information, so we expect to keep this type of email to a minimum. If you send us a request (for example via a support email or via one of our feedback mechanisms), we reserve the right to publish it in order to help us clarify or respond to your request or to help us support other users. [COMPANY] takes all measures reasonably necessary to protect against the unauthorized access, use, alteration or destruction of potentially personally-identifying and personally-identifying information.
-
-### Cookies
-A cookie is a string of information that a website stores on a visitor's computer, and that the visitor's browser provides to the Service each time the visitor returns. [COMPANY] uses cookies to help [COMPANY] identify and track visitors, their usage of [COMPANY] Service, and their Service access preferences. [COMPANY] visitors who do not wish to have cookies placed on their computers should set their browsers to refuse cookies before using [COMPANY]'s websites, with the drawback that certain features of [COMPANY]'s websites may not function properly without the aid of cookies.
-
-### Data Storage
-[COMPANY] uses third party vendors and hosting partners to provide the necessary hardware, software, networking, storage, and related technology required to run the Service. You understand that although you retain full rights to your data, it may be stored on third party storage and transmitted through third party networks.
-
-### Privacy Policy Changes
-Although most changes are likely to be minor, [COMPANY] may change its Privacy Policy from time to time, and in [COMPANY]'s sole discretion. [COMPANY] encourages visitors to frequently check this page for any changes to its Privacy Policy. Your continued use of this site after any change in this Privacy Policy will constitute your acceptance of such change.
+- [feedback@ccl.northwestern.edu](mailto:feedback@ccl.northwestern.edu)
+- [bugs@ccl.northwestern.edu](mailto:bugs@ccl.northwestern.edu)
