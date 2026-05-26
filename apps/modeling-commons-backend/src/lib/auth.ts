@@ -62,7 +62,7 @@ export const auth = betterAuth({
           newEmail,
           url,
         );
-        void transporter.sendMail(email).catch((err) => {
+        void transporter.sendMail(email).catch((err: unknown) => {
           console.error('Failed to send account email change confirmation email', err);
         });
       },
@@ -83,7 +83,7 @@ export const auth = betterAuth({
     minPasswordLength: rules.auth.password.length.min,
     sendResetPassword: async ({ user, url }) => {
       const email = await mailDomain().createPasswordResetEmail(user.email, user.name, url);
-      void transporter.sendMail(email).catch((err) => {
+      void transporter.sendMail(email).catch((err: unknown) => {
         console.error('Failed to send password reset email', err);
       });
     },
@@ -91,11 +91,12 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendOnSignUp: true,
+    sendOnSignIn: true,
     expiresIn: 60 * 60 * 24, // 24 hours
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
       const email = await mailDomain().createVerificationEmail(user.email, user.name, url);
-      void transporter.sendMail(email).catch((err) => {
+      void transporter.sendMail(email).catch((err: unknown) => {
         console.error('Failed to send verification email', err);
       });
     },
