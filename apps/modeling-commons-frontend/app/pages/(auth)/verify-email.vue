@@ -88,7 +88,7 @@ const resendButtonLabel = computed(() =>
 
 const statusDescription = computed(() => {
   if (email.value) {
-    return `We${route.query.sent === "1" ? "" : " can"} send a verification link to ${email.value}.`;
+    return `We${route.query.sent === "1" ? "sent" : " can send"} a verification link to ${email.value}.`;
   }
 
   return "Enter the address tied to your account and we'll send a verification link.";
