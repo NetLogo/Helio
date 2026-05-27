@@ -1,7 +1,12 @@
-export type DateInput = Date | string | number | null | undefined;
+import { CalendarDate } from "@internationalized/date";
+export type DateInput = CalendarDate | Date | string | number | null | undefined;
 export function createApiDateString(value: DateInput): string | undefined {
   if (value === null || value === undefined || value === "") {
     return undefined;
+  }
+
+  if (value instanceof CalendarDate) {
+    return value.toString();
   }
 
   const date = typeof value === "string" || typeof value === "number" ? new Date(value) : value;
