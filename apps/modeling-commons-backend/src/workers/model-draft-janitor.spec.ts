@@ -7,6 +7,7 @@ const bossInstance = {
   work: vi.fn().mockResolvedValue(undefined),
   schedule: vi.fn().mockResolvedValue(undefined),
   stop: vi.fn().mockResolvedValue(undefined),
+  createQueue: vi.fn().mockResolvedValue(undefined),
 };
 
 vi.mock('pg-boss', () => ({
@@ -45,10 +46,7 @@ describe('startModelDraftJanitor', () => {
       'purge-stale-model-drafts',
       expect.any(Function),
     );
-    expect(bossInstance.schedule).toHaveBeenCalledWith(
-      'purge-stale-model-drafts',
-      '0 3 * * 0',
-    );
+    expect(bossInstance.schedule).toHaveBeenCalledWith('purge-stale-model-drafts', '0 3 * * 0');
     expect(boss).toBe(bossInstance);
   });
 

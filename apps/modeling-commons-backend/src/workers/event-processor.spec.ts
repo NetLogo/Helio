@@ -7,6 +7,7 @@ const bossInstance = {
   work: vi.fn().mockResolvedValue(undefined),
   schedule: vi.fn().mockResolvedValue(undefined),
   stop: vi.fn().mockResolvedValue(undefined),
+  createQueue: vi.fn().mockResolvedValue(undefined),
 };
 
 vi.mock('pg-boss', () => ({
@@ -38,7 +39,9 @@ describe('startEventProcessor', () => {
 
     const boss = await startEventProcessor({
       connectionString: 'postgres://test',
-      eventRepository: eventRepository as unknown as Parameters<typeof startEventProcessor>[0]['eventRepository'],
+      eventRepository: eventRepository as unknown as Parameters<
+        typeof startEventProcessor
+      >[0]['eventRepository'],
       logger,
     });
 
@@ -50,15 +53,14 @@ describe('startEventProcessor', () => {
 
   it('marks each unprocessed event as processed when the handler runs', async () => {
     const eventRepository = mockEventRepository();
-    eventRepository.findUnprocessed.mockResolvedValue([
-      { id: 'event-1' },
-      { id: 'event-2' },
-    ]);
+    eventRepository.findUnprocessed.mockResolvedValue([{ id: 'event-1' }, { id: 'event-2' }]);
     eventRepository.markProcessed.mockResolvedValue(undefined);
 
     await startEventProcessor({
       connectionString: 'postgres://test',
-      eventRepository: eventRepository as unknown as Parameters<typeof startEventProcessor>[0]['eventRepository'],
+      eventRepository: eventRepository as unknown as Parameters<
+        typeof startEventProcessor
+      >[0]['eventRepository'],
       logger,
     });
 
