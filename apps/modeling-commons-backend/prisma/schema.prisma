@@ -176,6 +176,10 @@ model Model {
   visibility          ModelVisibility @default(public)
   isEndorsed          Boolean         @default(false)
   isLibraryModel      Boolean         @default(false)
+  viewCount           Int             @default(0)
+  runCount            Int             @default(0)
+  downloadCount       Int             @default(0)
+  shareCount          Int             @default(0)
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   deletedAt           DateTime?
@@ -197,6 +201,9 @@ model Model {
   @@unique([id, latestVersionNumber])
   @@index([parentModelId])
   @@index([parentModelId, parentVersionNumber])
+  @@index([viewCount])
+  @@index([runCount])
+  @@index([downloadCount])
 }
 
 model ModelVersion {

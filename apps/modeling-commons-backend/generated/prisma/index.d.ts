@@ -8859,12 +8859,20 @@ export namespace Prisma {
     legacyId: number | null
     latestVersionNumber: number | null
     parentVersionNumber: number | null
+    viewCount: number | null
+    runCount: number | null
+    downloadCount: number | null
+    shareCount: number | null
   }
 
   export type ModelSumAggregateOutputType = {
     legacyId: number | null
     latestVersionNumber: number | null
     parentVersionNumber: number | null
+    viewCount: number | null
+    runCount: number | null
+    downloadCount: number | null
+    shareCount: number | null
   }
 
   export type ModelMinAggregateOutputType = {
@@ -8876,6 +8884,10 @@ export namespace Prisma {
     visibility: $Enums.ModelVisibility | null
     isEndorsed: boolean | null
     isLibraryModel: boolean | null
+    viewCount: number | null
+    runCount: number | null
+    downloadCount: number | null
+    shareCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -8890,6 +8902,10 @@ export namespace Prisma {
     visibility: $Enums.ModelVisibility | null
     isEndorsed: boolean | null
     isLibraryModel: boolean | null
+    viewCount: number | null
+    runCount: number | null
+    downloadCount: number | null
+    shareCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -8904,6 +8920,10 @@ export namespace Prisma {
     visibility: number
     isEndorsed: number
     isLibraryModel: number
+    viewCount: number
+    runCount: number
+    downloadCount: number
+    shareCount: number
     createdAt: number
     updatedAt: number
     deletedAt: number
@@ -8915,12 +8935,20 @@ export namespace Prisma {
     legacyId?: true
     latestVersionNumber?: true
     parentVersionNumber?: true
+    viewCount?: true
+    runCount?: true
+    downloadCount?: true
+    shareCount?: true
   }
 
   export type ModelSumAggregateInputType = {
     legacyId?: true
     latestVersionNumber?: true
     parentVersionNumber?: true
+    viewCount?: true
+    runCount?: true
+    downloadCount?: true
+    shareCount?: true
   }
 
   export type ModelMinAggregateInputType = {
@@ -8932,6 +8960,10 @@ export namespace Prisma {
     visibility?: true
     isEndorsed?: true
     isLibraryModel?: true
+    viewCount?: true
+    runCount?: true
+    downloadCount?: true
+    shareCount?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -8946,6 +8978,10 @@ export namespace Prisma {
     visibility?: true
     isEndorsed?: true
     isLibraryModel?: true
+    viewCount?: true
+    runCount?: true
+    downloadCount?: true
+    shareCount?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -8960,6 +8996,10 @@ export namespace Prisma {
     visibility?: true
     isEndorsed?: true
     isLibraryModel?: true
+    viewCount?: true
+    runCount?: true
+    downloadCount?: true
+    shareCount?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -9061,6 +9101,10 @@ export namespace Prisma {
     visibility: $Enums.ModelVisibility
     isEndorsed: boolean
     isLibraryModel: boolean
+    viewCount: number
+    runCount: number
+    downloadCount: number
+    shareCount: number
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -9094,6 +9138,10 @@ export namespace Prisma {
     visibility?: boolean
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: boolean
+    runCount?: boolean
+    downloadCount?: boolean
+    shareCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -9120,6 +9168,10 @@ export namespace Prisma {
     visibility?: boolean
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: boolean
+    runCount?: boolean
+    downloadCount?: boolean
+    shareCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -9137,6 +9189,10 @@ export namespace Prisma {
     visibility?: boolean
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: boolean
+    runCount?: boolean
+    downloadCount?: boolean
+    shareCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -9154,12 +9210,16 @@ export namespace Prisma {
     visibility?: boolean
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: boolean
+    runCount?: boolean
+    downloadCount?: boolean
+    shareCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
   }
 
-  export type ModelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "legacyId" | "latestVersionNumber" | "parentModelId" | "parentVersionNumber" | "visibility" | "isEndorsed" | "isLibraryModel" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["model"]>
+  export type ModelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "legacyId" | "latestVersionNumber" | "parentModelId" | "parentVersionNumber" | "visibility" | "isEndorsed" | "isLibraryModel" | "viewCount" | "runCount" | "downloadCount" | "shareCount" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["model"]>
   export type ModelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     latestVersion?: boolean | Model$latestVersionArgs<ExtArgs>
     parentModel?: boolean | Model$parentModelArgs<ExtArgs>
@@ -9209,6 +9269,10 @@ export namespace Prisma {
       visibility: $Enums.ModelVisibility
       isEndorsed: boolean
       isLibraryModel: boolean
+      viewCount: number
+      runCount: number
+      downloadCount: number
+      shareCount: number
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -9654,6 +9718,10 @@ export namespace Prisma {
     readonly visibility: FieldRef<"Model", 'ModelVisibility'>
     readonly isEndorsed: FieldRef<"Model", 'Boolean'>
     readonly isLibraryModel: FieldRef<"Model", 'Boolean'>
+    readonly viewCount: FieldRef<"Model", 'Int'>
+    readonly runCount: FieldRef<"Model", 'Int'>
+    readonly downloadCount: FieldRef<"Model", 'Int'>
+    readonly shareCount: FieldRef<"Model", 'Int'>
     readonly createdAt: FieldRef<"Model", 'DateTime'>
     readonly updatedAt: FieldRef<"Model", 'DateTime'>
     readonly deletedAt: FieldRef<"Model", 'DateTime'>
@@ -22777,6 +22845,10 @@ export namespace Prisma {
     visibility: 'visibility',
     isEndorsed: 'isEndorsed',
     isLibraryModel: 'isLibraryModel',
+    viewCount: 'viewCount',
+    runCount: 'runCount',
+    downloadCount: 'downloadCount',
+    shareCount: 'shareCount',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
@@ -23638,6 +23710,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFilter<"Model"> | $Enums.ModelVisibility
     isEndorsed?: BoolFilter<"Model"> | boolean
     isLibraryModel?: BoolFilter<"Model"> | boolean
+    viewCount?: IntFilter<"Model"> | number
+    runCount?: IntFilter<"Model"> | number
+    downloadCount?: IntFilter<"Model"> | number
+    shareCount?: IntFilter<"Model"> | number
     createdAt?: DateTimeFilter<"Model"> | Date | string
     updatedAt?: DateTimeFilter<"Model"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Model"> | Date | string | null
@@ -23663,6 +23739,10 @@ export namespace Prisma {
     visibility?: SortOrder
     isEndorsed?: SortOrder
     isLibraryModel?: SortOrder
+    viewCount?: SortOrder
+    runCount?: SortOrder
+    downloadCount?: SortOrder
+    shareCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -23692,6 +23772,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFilter<"Model"> | $Enums.ModelVisibility
     isEndorsed?: BoolFilter<"Model"> | boolean
     isLibraryModel?: BoolFilter<"Model"> | boolean
+    viewCount?: IntFilter<"Model"> | number
+    runCount?: IntFilter<"Model"> | number
+    downloadCount?: IntFilter<"Model"> | number
+    shareCount?: IntFilter<"Model"> | number
     createdAt?: DateTimeFilter<"Model"> | Date | string
     updatedAt?: DateTimeFilter<"Model"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Model"> | Date | string | null
@@ -23717,6 +23801,10 @@ export namespace Prisma {
     visibility?: SortOrder
     isEndorsed?: SortOrder
     isLibraryModel?: SortOrder
+    viewCount?: SortOrder
+    runCount?: SortOrder
+    downloadCount?: SortOrder
+    shareCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -23739,6 +23827,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityWithAggregatesFilter<"Model"> | $Enums.ModelVisibility
     isEndorsed?: BoolWithAggregatesFilter<"Model"> | boolean
     isLibraryModel?: BoolWithAggregatesFilter<"Model"> | boolean
+    viewCount?: IntWithAggregatesFilter<"Model"> | number
+    runCount?: IntWithAggregatesFilter<"Model"> | number
+    downloadCount?: IntWithAggregatesFilter<"Model"> | number
+    shareCount?: IntWithAggregatesFilter<"Model"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Model"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Model"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Model"> | Date | string | null
@@ -25044,6 +25136,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -25069,6 +25165,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -25087,6 +25187,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25112,6 +25216,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25134,6 +25242,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -25144,6 +25256,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25158,6 +25274,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26564,6 +26684,10 @@ export namespace Prisma {
     visibility?: SortOrder
     isEndorsed?: SortOrder
     isLibraryModel?: SortOrder
+    viewCount?: SortOrder
+    runCount?: SortOrder
+    downloadCount?: SortOrder
+    shareCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -26573,6 +26697,10 @@ export namespace Prisma {
     legacyId?: SortOrder
     latestVersionNumber?: SortOrder
     parentVersionNumber?: SortOrder
+    viewCount?: SortOrder
+    runCount?: SortOrder
+    downloadCount?: SortOrder
+    shareCount?: SortOrder
   }
 
   export type ModelMaxOrderByAggregateInput = {
@@ -26584,6 +26712,10 @@ export namespace Prisma {
     visibility?: SortOrder
     isEndorsed?: SortOrder
     isLibraryModel?: SortOrder
+    viewCount?: SortOrder
+    runCount?: SortOrder
+    downloadCount?: SortOrder
+    shareCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -26598,6 +26730,10 @@ export namespace Prisma {
     visibility?: SortOrder
     isEndorsed?: SortOrder
     isLibraryModel?: SortOrder
+    viewCount?: SortOrder
+    runCount?: SortOrder
+    downloadCount?: SortOrder
+    shareCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -26607,6 +26743,10 @@ export namespace Prisma {
     legacyId?: SortOrder
     latestVersionNumber?: SortOrder
     parentVersionNumber?: SortOrder
+    viewCount?: SortOrder
+    runCount?: SortOrder
+    downloadCount?: SortOrder
+    shareCount?: SortOrder
   }
 
   export type EnumModelVisibilityWithAggregatesFilter<$PrismaModel = never> = {
@@ -30153,6 +30293,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30177,6 +30321,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30199,6 +30347,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30222,6 +30374,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30545,6 +30701,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30569,6 +30729,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30609,6 +30773,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFilter<"Model"> | $Enums.ModelVisibility
     isEndorsed?: BoolFilter<"Model"> | boolean
     isLibraryModel?: BoolFilter<"Model"> | boolean
+    viewCount?: IntFilter<"Model"> | number
+    runCount?: IntFilter<"Model"> | number
+    downloadCount?: IntFilter<"Model"> | number
+    shareCount?: IntFilter<"Model"> | number
     createdAt?: DateTimeFilter<"Model"> | Date | string
     updatedAt?: DateTimeFilter<"Model"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Model"> | Date | string | null
@@ -30803,6 +30971,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30827,6 +30999,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30849,6 +31025,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30871,6 +31051,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30894,6 +31078,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -30916,6 +31104,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -31018,6 +31210,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31042,6 +31238,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31070,6 +31270,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31092,6 +31296,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31410,6 +31618,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -31434,6 +31646,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -31506,6 +31722,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31530,6 +31750,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31629,6 +31853,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -31653,6 +31881,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -31759,6 +31991,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31783,6 +32019,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31879,6 +32119,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -31903,6 +32147,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -32009,6 +32257,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32033,6 +32285,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32129,6 +32385,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -32153,6 +32413,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -32259,6 +32523,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32283,6 +32551,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32379,6 +32651,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -32403,6 +32679,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -32509,6 +32789,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32533,6 +32817,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32702,6 +32990,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -32726,6 +33018,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -32838,6 +33134,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32862,6 +33162,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33430,6 +33734,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -33500,6 +33808,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33523,6 +33835,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33544,6 +33860,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33746,6 +34066,10 @@ export namespace Prisma {
     visibility?: $Enums.ModelVisibility
     isEndorsed?: boolean
     isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -33772,6 +34096,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33794,6 +34122,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33814,6 +34146,10 @@ export namespace Prisma {
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
     isEndorsed?: BoolFieldUpdateOperationsInput | boolean
     isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

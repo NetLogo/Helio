@@ -1,4 +1,4 @@
-import { ModelInteractionKind, type Prisma } from '#prisma/index';
+import type { Prisma } from '#prisma/index';
 import type { ModelSearchFilters, ModelSortBy } from '#src/modules/model/dtos/model.dto.ts';
 import dateRangeQueryArgs from '#src/shared/db/date-range-query.args.ts';
 import type { PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
@@ -80,14 +80,20 @@ export function buildModelOrderBy(
   if (filters.sortBy === 'likes') {
     return { likes: { _count: order } };
   }
+  const countColumn = filters.sortBy ? sortKeyToCountColumn[filters.sortBy] : undefined;
+  if (countColumn) {
+    return { [countColumn]: order };
+  }
   if (params.orderBy) {
     return { [params.orderBy.field]: order };
   }
   return { createdAt: order };
 }
 
-export const interactionKindBySortKey: Partial<Record<ModelSortBy, ModelInteractionKind>> = {
-  views: ModelInteractionKind.view,
-  runs: ModelInteractionKind.run,
-  downloads: ModelInteractionKind.download,
+export const sortKeyToCountColumn: Partial<
+  Record<ModelSortBy, 'viewCount' | 'runCount' | 'downloadCount'>
+> = {
+  views: 'viewCount',
+  runs: 'runCount',
+  downloads: 'downloadCount',
 };

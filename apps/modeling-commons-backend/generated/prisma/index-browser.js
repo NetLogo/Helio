@@ -206,6 +206,10 @@ exports.Prisma.ModelScalarFieldEnum = {
   visibility: 'visibility',
   isEndorsed: 'isEndorsed',
   isLibraryModel: 'isLibraryModel',
+  viewCount: 'viewCount',
+  runCount: 'runCount',
+  downloadCount: 'downloadCount',
+  shareCount: 'shareCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'

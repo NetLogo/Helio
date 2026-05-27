@@ -1,5 +1,4 @@
 import type {
-  InteractionCounts,
   ModelInteractionEntity,
   ModelInteractionKind,
 } from '#src/modules/model-interaction/domain/model-interaction.types.ts';
@@ -18,7 +17,4 @@ export type RecentMatchParams = {
 export interface ModelInteractionRepository {
   insertTx: (ctx: TransactionContext, entity: ModelInteractionEntity) => Promise<void>;
   hasRecentMatch: (params: RecentMatchParams) => Promise<boolean>;
-  countByModelAndKind: (modelId: string, kind: ModelInteractionKind) => Promise<number>;
-  countsByKindForModel: (modelId: string) => Promise<InteractionCounts>;
-  countsForModels: (modelIds: Array<string>) => Promise<Record<string, InteractionCounts>>;
 }

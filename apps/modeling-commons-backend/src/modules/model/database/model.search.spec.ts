@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { ModelInteractionKind } from '#prisma/index';
 import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
 import type { PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
-import { buildModelWhere, buildModelOrderBy, interactionKindBySortKey } from './model.search.ts';
+import { buildModelWhere, buildModelOrderBy, sortKeyToCountColumn } from './model.search.ts';
 
 const emptyFilters: ModelSearchFilters = {} as ModelSearchFilters;
 
@@ -178,6 +177,30 @@ describe('buildModelOrderBy', () => {
     expect(result).toEqual({ likes: { _count: 'asc' } });
   });
 
+  it('orders by the viewCount column when sortBy is "views"', () => {
+    const result = buildModelOrderBy(
+      { sortBy: 'views', order: 'desc' } as ModelSearchFilters,
+      noParams,
+    );
+    expect(result).toEqual({ viewCount: 'desc' });
+  });
+
+  it('orders by the runCount column when sortBy is "runs"', () => {
+    const result = buildModelOrderBy(
+      { sortBy: 'runs', order: 'asc' } as ModelSearchFilters,
+      noParams,
+    );
+    expect(result).toEqual({ runCount: 'asc' });
+  });
+
+  it('orders by the downloadCount column when sortBy is "downloads"', () => {
+    const result = buildModelOrderBy(
+      { sortBy: 'downloads' } as ModelSearchFilters,
+      noParams,
+    );
+    expect(result).toEqual({ downloadCount: 'desc' });
+  });
+
   it('uses params.orderBy when provided and sortBy is not "likes"', () => {
     const result = buildModelOrderBy(emptyFilters, {
       orderBy: { field: 'updatedAt', param: 'asc' },
@@ -191,17 +214,17 @@ describe('buildModelOrderBy', () => {
   });
 });
 
-describe('interactionKindBySortKey', () => {
-  it('maps view/run/download sort keys to their interaction kinds', () => {
-    expect(interactionKindBySortKey).toEqual({
-      views: ModelInteractionKind.view,
-      runs: ModelInteractionKind.run,
-      downloads: ModelInteractionKind.download,
+describe('sortKeyToCountColumn', () => {
+  it('maps view/run/download sort keys to their denormalized count columns', () => {
+    expect(sortKeyToCountColumn).toEqual({
+      views: 'viewCount',
+      runs: 'runCount',
+      downloads: 'downloadCount',
     });
   });
 
-  it('does not define mappings for non-interaction sort keys', () => {
-    expect(interactionKindBySortKey).not.toHaveProperty('likes');
-    expect(interactionKindBySortKey).not.toHaveProperty('createdAt');
+  it('does not define mappings for non-count sort keys', () => {
+    expect(sortKeyToCountColumn).not.toHaveProperty('likes');
+    expect(sortKeyToCountColumn).not.toHaveProperty('createdAt');
   });
 });

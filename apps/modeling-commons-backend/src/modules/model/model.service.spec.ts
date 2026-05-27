@@ -23,6 +23,10 @@ function makeModel(overrides: Partial<Model> = {}): Model {
     deletedAt: null,
     legacyId: null,
     isLibraryModel: false,
+    viewCount: 0,
+    runCount: 0,
+    downloadCount: 0,
+    shareCount: 0,
     ...overrides,
   };
 }

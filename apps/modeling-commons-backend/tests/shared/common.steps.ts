@@ -77,3 +77,15 @@ Then(
     assert.strictEqual(body[property], false);
   },
 );
+
+Then(
+  'the response body path {string} should be {int}',
+  function (this: ICustomWorld, dotPath: string, expected: number) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const value = dotPath.split('.').reduce<unknown>((obj, key) => {
+      if (obj !== null && typeof obj === 'object') return (obj as Record<string, unknown>)[key];
+      return undefined;
+    }, body);
+    assert.strictEqual(value, expected, `Expected path "${dotPath}" to be ${expected}, got ${String(value)}`);
+  },
+);

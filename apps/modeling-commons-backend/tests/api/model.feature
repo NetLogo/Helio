@@ -168,3 +168,33 @@ Feature: Model Management
     When "owner" sends a GET request to "/api/v1/models?fromDate=2999-01-01"
     Then the response status should be 200
     And the response body property "data" should have length 0
+
+  Scenario: Search sortBy=views orders models by view count descending
+    Given an authenticated user "owner"
+    And a public model "Most Viewed" created by "owner"
+    And a public model "Mid Viewed" created by "owner"
+    And a public model "Least Viewed" created by "owner"
+    And an authenticated user "viewer1"
+    And an authenticated user "viewer2"
+    And an authenticated user "viewer3"
+    When "viewer1" records a "view" interaction on "Most Viewed"
+    And "viewer2" records a "view" interaction on "Most Viewed"
+    And "viewer3" records a "view" interaction on "Most Viewed"
+    And "viewer1" records a "view" interaction on "Mid Viewed"
+    And "viewer2" records a "view" interaction on "Mid Viewed"
+    And "viewer1" records a "view" interaction on "Least Viewed"
+    And "owner" sends a GET request to "/api/v1/models?sortBy=views&order=desc"
+    Then the response status should be 200
+    And the known models "Most Viewed", "Mid Viewed", "Least Viewed" appear in that relative order in the search results
+
+  Scenario: Search sortBy=runs orders models by run count descending
+    Given an authenticated user "owner"
+    And a public model "High Runs" created by "owner"
+    And a public model "Low Runs" created by "owner"
+    And an authenticated user "runner"
+    When "runner" records a "run" interaction on "High Runs"
+    And "runner" records a "run" interaction on "High Runs"
+    And "runner" records a "run" interaction on "Low Runs"
+    And "owner" sends a GET request to "/api/v1/models?sortBy=runs&order=desc"
+    Then the response status should be 200
+    And the known models "High Runs", "Low Runs" appear in that relative order in the search results

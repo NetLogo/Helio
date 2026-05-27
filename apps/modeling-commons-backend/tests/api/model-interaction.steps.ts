@@ -13,6 +13,22 @@ function getModels(context: Record<string, unknown>): Map<string, string> {
   return context['models'] as Map<string, string>;
 }
 
+// View interactions dedupe on userId OR sessionId OR cookie OR ipHash within a
+// window. server.inject() gives every request the same req.ip, so without a
+// distinct trusted IP per actor a second user's view collapses into the first
+// by ipHash. Hand each actor a stable, distinct x-forwarded-for (the app's
+// first trusted IP header) so distinct viewers produce distinct view rows.
+function ipForActor(context: Record<string, unknown>, actorName: string): string {
+  if (!context['actorIps']) context['actorIps'] = new Map<string, string>();
+  const ips = context['actorIps'] as Map<string, string>;
+  let ip = ips.get(actorName);
+  if (!ip) {
+    ip = `10.10.0.${ips.size + 1}`;
+    ips.set(actorName, ip);
+  }
+  return ip;
+}
+
 const KIND_TO_PATH: Record<string, string> = {
   view: 'views',
   run: 'runs',
@@ -48,7 +64,11 @@ When(
       method: 'POST',
       url: `/api/v1/models/${modelId}/${pathFor(kind)}`,
       payload: {},
-      headers: { cookie: actor.cookie, 'content-type': 'application/json' },
+      headers: {
+        cookie: actor.cookie,
+        'content-type': 'application/json',
+        'x-forwarded-for': ipForActor(this.context, actorName),
+      },
     });
   },
 );
@@ -71,5 +91,18 @@ Then(
   function (this: ICustomWorld, key: string, expected: number) {
     const body = JSON.parse(this.context.latestResponse!.body);
     assert.strictEqual(body[key], expected, `Expected ${key} to be ${expected}, got ${body[key]}`);
+  },
+);
+
+When(
+  '{string} gets the card for model {string}',
+  async function (this: ICustomWorld, actorName: string, modelTitle: string) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models/${modelId}/card`,
+      headers: { cookie: actor.cookie },
+    });
   },
 );

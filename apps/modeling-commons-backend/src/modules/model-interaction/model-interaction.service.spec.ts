@@ -5,6 +5,7 @@ import { ModelInteractionKind } from '#src/modules/model-interaction/domain/mode
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelInteractionRepository } from '#src/modules/model-interaction/database/model-interaction.repository.mock.ts';
 import { mockModelLikeRepository } from '#src/modules/model-like/database/model-like.repository.mock.ts';
+import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import type { ClientContext } from '#src/shared/http/client-context.ts';
 
 function ctx(overrides: Partial<ClientContext> = {}): ClientContext {
@@ -22,6 +23,7 @@ function ctx(overrides: Partial<ClientContext> = {}): ClientContext {
 describe('modelInteractionService', () => {
   const modelInteractionRepository = mockModelInteractionRepository();
   const modelLikeRepository = mockModelLikeRepository();
+  const modelRepository = mockModelRepository();
   const transactionManager = mockTransactionManager();
   const domain = modelInteractionDomain();
 
@@ -30,6 +32,7 @@ describe('modelInteractionService', () => {
     modelInteractionRepository,
     modelInteractionDomain: domain,
     modelLikeRepository,
+    modelRepository,
   } as never);
 
   beforeEach(() => {
@@ -37,7 +40,7 @@ describe('modelInteractionService', () => {
   });
 
   describe('record', () => {
-    it('inserts a non-view interaction without dedupe', async () => {
+    it('inserts a non-view interaction without dedupe and increments the counter', async () => {
       await service.record(ModelInteractionKind.run, 'model-1', ctx(), 1);
 
       expect(modelInteractionRepository.hasRecentMatch).not.toHaveBeenCalled();
@@ -49,29 +52,40 @@ describe('modelInteractionService', () => {
           versionNumber: 1,
         }),
       );
+      expect(modelRepository.incrementInteractionCount).toHaveBeenCalledWith(
+        expect.anything(),
+        'model-1',
+        ModelInteractionKind.run,
+      );
     });
 
-    it('inserts a view when no recent match exists', async () => {
+    it('inserts a view and increments the counter when no recent match exists', async () => {
       modelInteractionRepository.hasRecentMatch.mockResolvedValue(false);
 
       await service.record(ModelInteractionKind.view, 'model-1', ctx(), null);
 
       expect(modelInteractionRepository.hasRecentMatch).toHaveBeenCalled();
       expect(modelInteractionRepository.insertTx).toHaveBeenCalledOnce();
+      expect(modelRepository.incrementInteractionCount).toHaveBeenCalledWith(
+        expect.anything(),
+        'model-1',
+        ModelInteractionKind.view,
+      );
     });
 
-    it('drops a view that matches a recent one (dedupe window)', async () => {
+    it('drops a view that matches a recent one and does not increment (dedupe window)', async () => {
       modelInteractionRepository.hasRecentMatch.mockResolvedValue(true);
 
       await service.record(ModelInteractionKind.view, 'model-1', ctx(), null);
 
       expect(modelInteractionRepository.insertTx).not.toHaveBeenCalled();
+      expect(modelRepository.incrementInteractionCount).not.toHaveBeenCalled();
     });
   });
 
   describe('summary', () => {
     it('returns kind counts plus likes for an authenticated viewer', async () => {
-      modelInteractionRepository.countsByKindForModel.mockResolvedValue({
+      modelRepository.findInteractionCounts.mockResolvedValue({
         view: 10,
         run: 4,
         download: 1,
@@ -93,12 +107,7 @@ describe('modelInteractionService', () => {
     });
 
     it('returns likedByMe=false without checking existsFor for an anonymous viewer', async () => {
-      modelInteractionRepository.countsByKindForModel.mockResolvedValue({
-        view: 0,
-        run: 0,
-        download: 0,
-        share: 0,
-      });
+      modelRepository.findInteractionCounts.mockResolvedValue(null);
       modelLikeRepository.countByModel.mockResolvedValue(0);
 
       const result = await service.summary('model-1', null);

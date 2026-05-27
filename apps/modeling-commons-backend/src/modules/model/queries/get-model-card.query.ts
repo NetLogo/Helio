@@ -9,7 +9,6 @@ export default function makeGetModelCardQuery({
   modelAuthorMapper,
   tagMapper,
   fileService,
-  modelInteractionRepository,
   modelLikeRepository,
 }: Dependencies) {
   return {
@@ -42,23 +41,15 @@ export default function makeGetModelCardQuery({
         ? await fileService.getUrl(latestWithTags.previewImageFileKey)
         : null;
 
-      // const [interactionCounts, likedByMe] = await Promise.all([
-      //   modelInteractionRepository.countsByKindForModel(model.id),
-      //   viewerUserId
-      //     ? modelLikeRepository.existsFor(model.id, viewerUserId)
-      //     : Promise.resolve(false),
-      // ]);
-
-      // It is causing N+1 query problem. We swap to no-op
-      // until a patch is implemented.
-      // -- Omar Ibrahim, May 26 26
-      const likedByMe = false;
       const interactionCounts = {
-        view: 0,
-        run: 0,
-        download: 0,
-        share: 0,
+        view: model.viewCount,
+        run: model.runCount,
+        download: model.downloadCount,
+        share: model.shareCount,
       };
+      const likedByMe = viewerUserId
+        ? await modelLikeRepository.existsFor(model.id, viewerUserId)
+        : false;
 
       return {
         model: modelMapper.toResponse(model),

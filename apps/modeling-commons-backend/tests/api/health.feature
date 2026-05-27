@@ -3,8 +3,7 @@ Feature: Health Check
   I want to verify the API is running
   So that I can confirm the service is available
 
-  Scenario: Test endpoint returns success
-    When I send a GET request to "/api/v1/test"
+  Scenario: Health endpoint reports the service is up
+    When I send a GET request to "/api/health"
     Then the response status should be 200
-    And the response body property "success" should equal "true"
-    And the response body should have property "data"
+    And the response body property "status" should equal "ok"

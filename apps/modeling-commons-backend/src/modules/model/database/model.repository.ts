@@ -3,7 +3,10 @@ import {
   modelCardArgs,
   type ModelCardRecord,
 } from '#src/modules/model/database/model.card.record.ts';
-import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
+import type {
+  ModelInteractionCounts,
+  ModelRepository,
+} from '#src/modules/model/database/model.repository.port.ts';
 import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
@@ -13,7 +16,14 @@ import {
   type PaginatedQueryParams,
 } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
-import { buildModelOrderBy, buildModelWhere, interactionKindBySortKey } from './model.search.ts';
+import { buildModelOrderBy, buildModelWhere } from './model.search.ts';
+
+const interactionCountColumn: Record<ModelInteractionKind, keyof Model> = {
+  view: 'viewCount',
+  run: 'runCount',
+  download: 'downloadCount',
+  share: 'shareCount',
+};
 
 export default function modelRepository({
   db,
@@ -90,21 +100,6 @@ export default function modelRepository({
       const where = buildModelWhere(filters, userId);
       const { include, map } = options;
 
-      const interactionKind = filters.sortBy ? interactionKindBySortKey[filters.sortBy] : undefined;
-
-      if (interactionKind) {
-        const { count: _count, sorted } = await this.fetchByInteraction(
-          where,
-          params,
-          interactionKind,
-          {
-            include,
-            order: filters.order ?? params.orderBy.param ?? 'desc',
-          },
-        );
-        return paginate((sorted as Array<never>).map(map), params, _count);
-      }
-
       const orderBy = buildModelOrderBy(filters, params);
 
       const [count, records] = await Promise.all([
@@ -115,40 +110,31 @@ export default function modelRepository({
       return paginate((records as Array<never>).map(map), params, count);
     },
 
-    async fetchByInteraction<I extends Prisma.ModelInclude>(
-      where: Prisma.ModelWhereInput,
-      params: PaginatedQueryParams,
-      interactionKind: ModelInteractionKind,
-      options: { include?: I; order: 'asc' | 'desc' },
-    ): Promise<{ count: number; sorted: Array<Prisma.ModelGetPayload<{ include: I }>> }> {
-      const [count, grouped] = await Promise.all([
-        db.model.count({ where }),
-        db.modelInteraction.groupBy({
-          by: ['modelId'],
-          where: { kind: interactionKind, model: where },
-          _count: { _all: true },
-          orderBy: { _count: { id: options.order } },
-          skip: params.offset,
-          take: params.limit,
-        }),
-      ]);
+    async incrementInteractionCount(
+      ctx: TransactionContext,
+      modelId: string,
+      kind: ModelInteractionKind,
+    ): Promise<void> {
+      const client = resolveTransaction(ctx);
+      const column = interactionCountColumn[kind];
+      await client.model.update({
+        where: { id: modelId },
+        data: { [column]: { increment: 1 } },
+      });
+    },
 
-      const orderedIds = grouped.map((g) => g.modelId);
-      if (orderedIds.length === 0) return { count, sorted: [] };
-
-      const records = (await db.model.findMany({
-        where: { ...where, id: { in: orderedIds } },
-        include: options.include,
-      })) as Array<Prisma.ModelGetPayload<{ include: I }> & { id: string }>;
-
-      const byId = new Map(records.map((r) => [r.id, r] as const));
-      const sorted = orderedIds
-        .map((id) => byId.get(id))
-        .filter(
-          (r): r is Prisma.ModelGetPayload<{ include: I }> & { id: string } => r !== undefined,
-        );
-
-      return { count, sorted };
+    async findInteractionCounts(modelId: string): Promise<ModelInteractionCounts | null> {
+      const record = await db.model.findUnique({
+        where: { id: modelId },
+        select: { viewCount: true, runCount: true, downloadCount: true, shareCount: true },
+      });
+      if (!record) return null;
+      return {
+        view: record.viewCount,
+        run: record.runCount,
+        download: record.downloadCount,
+        share: record.shareCount,
+      };
     },
 
     async findCard(modelId: string): Promise<ModelCardRecord | null> {

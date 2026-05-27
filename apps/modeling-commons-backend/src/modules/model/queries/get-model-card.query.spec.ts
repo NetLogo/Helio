@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeGetModelCardQuery from '#src/modules/model/queries/get-model-card.query.ts';
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
-import { mockModelInteractionRepository } from '#src/modules/model-interaction/database/model-interaction.repository.mock.ts';
 import { mockModelLikeRepository } from '#src/modules/model-like/database/model-like.repository.mock.ts';
 
 function makeCard(overrides: Record<string, unknown> = {}) {
@@ -16,6 +15,10 @@ function makeCard(overrides: Record<string, unknown> = {}) {
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
     deletedAt: null,
+    viewCount: 10,
+    runCount: 1,
+    downloadCount: 2,
+    shareCount: 3,
     versions: [
       {
         modelId: 'm1',
@@ -46,7 +49,6 @@ function makeCard(overrides: Record<string, unknown> = {}) {
 
 function buildQuery() {
   const modelRepository = mockModelRepository();
-  const modelInteractionRepository = mockModelInteractionRepository();
   const modelLikeRepository = mockModelLikeRepository();
   const modelMapper = { toResponse: vi.fn((m: { id: string }) => ({ id: m.id, mapped: true })) };
   const modelVersionMapper = {
@@ -58,13 +60,6 @@ function buildQuery() {
   const tagMapper = { toResponse: vi.fn((t: { id: string; name: string }) => t) };
   const fileService = { getUrl: vi.fn(async (k: string) => `https://cdn/${k}`) };
 
-  modelInteractionRepository.countsByKindForModel.mockResolvedValue({
-    view: 10,
-    run: 1,
-    download: 2,
-    share: 3,
-  });
-
   const query = makeGetModelCardQuery({
     modelRepository,
     modelMapper,
@@ -72,14 +67,12 @@ function buildQuery() {
     modelAuthorMapper,
     tagMapper,
     fileService,
-    modelInteractionRepository,
     modelLikeRepository,
   } as never);
 
   return {
     query,
     modelRepository,
-    modelInteractionRepository,
     modelLikeRepository,
     fileService,
   };

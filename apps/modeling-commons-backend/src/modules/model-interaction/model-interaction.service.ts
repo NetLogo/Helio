@@ -11,6 +11,7 @@ export default function makeModelInteractionService({
   modelInteractionRepository,
   modelInteractionDomain,
   modelLikeRepository,
+  modelRepository,
 }: Dependencies) {
   return {
     async record(
@@ -35,6 +36,7 @@ export default function makeModelInteractionService({
       const entity = modelInteractionDomain.create(modelId, kind, ctx, versionNumber);
       await transactionManager.run(async (tx) => {
         await modelInteractionRepository.insertTx(tx, entity);
+        await modelRepository.incrementInteractionCount(tx, modelId, kind);
       });
     },
 
@@ -45,11 +47,12 @@ export default function makeModelInteractionService({
       InteractionCounts & { likes: number; likedByMe: boolean }
     > {
       const [counts, likes, likedByMe] = await Promise.all([
-        modelInteractionRepository.countsByKindForModel(modelId),
+        modelRepository.findInteractionCounts(modelId),
         modelLikeRepository.countByModel(modelId),
         userId ? modelLikeRepository.existsFor(modelId, userId) : Promise.resolve(false),
       ]);
-      return { ...counts, likes, likedByMe };
+      const resolved = counts ?? { view: 0, run: 0, download: 0, share: 0 };
+      return { ...resolved, likes, likedByMe };
     },
   };
 }

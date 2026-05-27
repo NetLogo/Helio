@@ -45,3 +45,24 @@ Feature: Model Interactions
     And an authenticated user "outsider"
     When "outsider" records a "view" interaction on "Closed"
     Then the response status should be 403
+
+  Scenario: View dedupe is counted once within the window
+    Given an authenticated user "owner"
+    And a public model "Deduped" created by "owner"
+    And an authenticated user "viewer"
+    When "viewer" records a "view" interaction on "Deduped"
+    And "viewer" records a "view" interaction on "Deduped"
+    And "viewer" gets the interactions summary for "Deduped"
+    Then the response status should be 200
+    And the interactions summary "views" should be 1
+
+  Scenario: Model card stats reflect recorded interactions
+    Given an authenticated user "owner"
+    And a public model "Counted" created by "owner"
+    And an authenticated user "viewer"
+    When "viewer" records a "run" interaction on "Counted"
+    And "viewer" records a "download" interaction on "Counted"
+    And "owner" gets the card for model "Counted"
+    Then the response status should be 200
+    And the response body path "stats.runs" should be 1
+    And the response body path "stats.downloads" should be 1

@@ -284,3 +284,47 @@ When(
   },
 );
 
+Then(
+  'the known models {string}, {string}, {string} appear in that relative order in the search results',
+  function (this: ICustomWorld, first: string, second: string, third: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const data: Array<{ id: string }> = body.data;
+    const models = getModels(this.context);
+    const ids = [first, second, third].map((title) => {
+      const id = models.get(title);
+      assert.ok(id, `Model "${title}" not found in context`);
+      return id;
+    });
+    const positions = ids.map((id) => data.findIndex((item) => item.id === id));
+    for (const pos of positions) {
+      assert.ok(pos !== -1, `Expected model id "${ids[positions.indexOf(pos)]}" to appear in search results`);
+    }
+    assert.ok(
+      positions[0]! < positions[1]! && positions[1]! < positions[2]!,
+      `Expected order ${first} (${positions[0]}) < ${second} (${positions[1]}) < ${third} (${positions[2]}) in results`,
+    );
+  },
+);
+
+Then(
+  'the known models {string}, {string} appear in that relative order in the search results',
+  function (this: ICustomWorld, first: string, second: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const data: Array<{ id: string }> = body.data;
+    const models = getModels(this.context);
+    const ids = [first, second].map((title) => {
+      const id = models.get(title);
+      assert.ok(id, `Model "${title}" not found in context`);
+      return id;
+    });
+    const positions = ids.map((id) => data.findIndex((item) => item.id === id));
+    for (const pos of positions) {
+      assert.ok(pos !== -1, `Expected model id "${ids[positions.indexOf(pos)]}" to appear in search results`);
+    }
+    assert.ok(
+      positions[0]! < positions[1]!,
+      `Expected order ${first} (${positions[0]}) < ${second} (${positions[1]}) in results`,
+    );
+  },
+);
+

@@ -9,6 +9,13 @@ import type {
 } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
+export type ModelInteractionCounts = {
+  view: number;
+  run: number;
+  download: number;
+  share: number;
+};
+
 export interface ModelRepository extends RepositoryPort<Model> {
   findByIdIncludeDeleted: (id: string) => Promise<Model | undefined>;
   setLatestVersion: (ctx: TransactionContext, modelId: string, versionNumber: number) => Promise<void>;
@@ -22,15 +29,12 @@ export interface ModelRepository extends RepositoryPort<Model> {
       map: (record: Prisma.ModelGetPayload<{ include: I }>) => T;
     },
   ) => Promise<Paginated<T>>;
-  fetchByInteraction: <I extends Prisma.ModelInclude>(
-    where: Prisma.ModelWhereInput,
-    params: PaginatedQueryParams,
-    interactionKind: ModelInteractionKind,
-    options: {
-      include?: I;
-      order: 'asc' | 'desc';
-    },
-  ) => Promise<{ count: number; sorted: Array<Prisma.ModelGetPayload<{ include: I }>> }>;
+  incrementInteractionCount: (
+    ctx: TransactionContext,
+    modelId: string,
+    kind: ModelInteractionKind,
+  ) => Promise<void>;
+  findInteractionCounts: (modelId: string) => Promise<ModelInteractionCounts | null>;
   findChildren: (modelId: string, params: PaginatedQueryParams) => Promise<Paginated<Model>>;
   findCard: (modelId: string) => Promise<ModelCardRecord | null>;
   insertTx: (ctx: TransactionContext, entity: Model) => Promise<void>;

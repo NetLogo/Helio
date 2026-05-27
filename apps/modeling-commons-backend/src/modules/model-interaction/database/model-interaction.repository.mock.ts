@@ -7,8 +7,5 @@ export function mockModelInteractionRepository(): {
   return {
     insertTx: vi.fn(),
     hasRecentMatch: vi.fn(),
-    countByModelAndKind: vi.fn(),
-    countsByKindForModel: vi.fn(),
-    countsForModels: vi.fn(),
   };
 }
