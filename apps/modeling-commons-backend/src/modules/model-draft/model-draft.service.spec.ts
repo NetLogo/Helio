@@ -1,11 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeModelDraftService from '#src/modules/model-draft/model-draft.service.ts';
 import modelDraftDomain from '#src/modules/model-draft/domain/model-draft.domain.ts';
+import modelDomain from '#src/modules/model/domain/model.domain.ts';
+import modelVersionDomain from '#src/modules/model-version/domain/model-version.domain.ts';
+import modelVersionTagDomain from '#src/modules/model-version-tag/domain/model-version-tag.domain.ts';
+import modelAuthorDomain from '#src/modules/model-author/domain/model-author.domain.ts';
+import modelAdditionalFileDomain from '#src/modules/model-additional-file/domain/model-additional-file.domain.ts';
 import { ModelDraftFileNotFoundError } from '#src/modules/model-draft/domain/model-draft.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.mock.ts';
+import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
+import { mockModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.mock.ts';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
 import type { DraftDataV1 } from '#src/modules/model-draft/schemas/v1.ts';
+import type { Model } from '#prisma/index';
 
 function makeDraft(data: DraftDataV1 = {}, overrides: Partial<ModelDraftEntity> = {}): ModelDraftEntity {
   return {
@@ -53,6 +61,54 @@ function buildService(overrides: Record<string, unknown> = {}) {
 
   return { service, modelDraftRepository, modelDraftStorage, transactionManager };
 }
+
+function makeModel(overrides: Partial<Model> = {}): Model {
+  return { ...modelDomain().createModel({ title: 'Existing', visibility: 'public' }), ...overrides };
+}
+
+function buildPublishService(overrides: Record<string, unknown> = {}) {
+  const modelRepository = mockModelRepository();
+  const modelVersionRepository = mockModelVersionRepository();
+  modelVersionRepository.getNextVersionNumber.mockResolvedValue(1);
+  modelVersionRepository.findLatestByModel.mockResolvedValue(null);
+
+  const modelDraftStorage = {
+    ...makeStorageMock(),
+    copyStagedToPermanent: vi.fn().mockResolvedValue('uploads/models/permanent.nlogo'),
+  };
+
+  const previewImageService = {
+    generatePreviewFromNetlogoFile: vi.fn().mockRejectedValue(new Error('no preview')),
+  };
+
+  const built = buildService({
+    modelRepository,
+    modelVersionRepository,
+    modelDraftStorage,
+    previewImageService,
+    modelDomain: modelDomain(),
+    modelVersionDomain: modelVersionDomain(),
+    modelVersionTagDomain: modelVersionTagDomain(),
+    modelVersionTagRepository: { insertTx: vi.fn() },
+    modelAuthorDomain: modelAuthorDomain(),
+    modelAuthorRepository: { insertTx: vi.fn() },
+    modelAdditionalFileDomain: modelAdditionalFileDomain(),
+    modelAdditionalFileRepository: { insertTx: vi.fn() },
+    tagService: { upsertByName: vi.fn() },
+    tagRepository: { findOneById: vi.fn() },
+    fileService: { upload: vi.fn() },
+    eventRepository: { insert: vi.fn() },
+    ...overrides,
+  });
+
+  return { ...built, modelRepository, modelVersionRepository };
+}
+
+const publishableDraftData: DraftDataV1 = {
+  title: 'My Model',
+  visibility: 'private',
+  primaryFile: validPrimary,
+};
 
 describe('modelDraftService', () => {
   beforeEach(() => {
@@ -223,6 +279,51 @@ describe('modelDraftService', () => {
       modelDraftStorage.deleteStagingPrefix.mockRejectedValue(new Error('s3 down'));
 
       await expect(service.abandon(makeDraft())).resolves.toBeUndefined();
+    });
+  });
+
+  describe('publish', () => {
+    it('syncs the model visibility to the draft visibility on a new model', async () => {
+      const { service, modelRepository } = buildPublishService();
+      const draft = makeDraft(publishableDraftData);
+
+      await service.publish(draft);
+
+      expect(modelRepository.updateFields).toHaveBeenCalledOnce();
+      const [, modelId, fields] = modelRepository.updateFields.mock.calls[0]!;
+      expect(typeof modelId).toBe('string');
+      expect(fields).toEqual({ visibility: 'private' });
+    });
+
+    it('updates an existing model visibility when the draft changes it', async () => {
+      const existingModel = makeModel({ id: 'model-1', visibility: 'public' });
+      const { service, modelRepository } = buildPublishService();
+      modelRepository.findOneById.mockResolvedValue(existingModel);
+
+      const draft = makeDraft(
+        { ...publishableDraftData, visibility: 'private' },
+        { modelId: 'model-1' },
+      );
+
+      await service.publish(draft);
+
+      expect(modelRepository.insertTx).not.toHaveBeenCalled();
+      expect(modelRepository.updateFields).toHaveBeenCalledWith(
+        expect.anything(),
+        'model-1',
+        { visibility: 'private' },
+      );
+    });
+
+    it('keeps the visibility update inside the same transaction as the version write', async () => {
+      const { service, modelRepository, modelVersionRepository } = buildPublishService();
+      const draft = makeDraft(publishableDraftData);
+
+      await service.publish(draft);
+
+      const updateCtx = modelRepository.updateFields.mock.calls[0]![0];
+      const versionCtx = modelVersionRepository.insertTx.mock.calls[0]![0];
+      expect(updateCtx).toBe(versionCtx);
     });
   });
 
