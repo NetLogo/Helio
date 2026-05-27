@@ -19,20 +19,11 @@ function normalizeUserKind(value: string | undefined | null): NonNullable<UserKi
   return "other";
 }
 
-function toDate(value: unknown): Date | null {
+function toDateString(value: unknown): string | null {
   if (!value) return null;
-  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
-  if (typeof value === "string" || typeof value === "number") {
-    const d = new Date(value);
-    return Number.isNaN(d.getTime()) ? null : d;
-  }
-  return null;
-}
-
-function sameDay(a: Date | null, b: Date | null): boolean {
-  if (!a && !b) return true;
-  if (!a || !b) return false;
-  return a.getTime() === b.getTime();
+  const d = value instanceof Date ? value : new Date(String(value));
+  if (isNaN(d.getTime())) return null;
+  return d.toISOString().split("T")[0] ?? null;
 }
 
 function sameSocialLinks(a: Array<SocialMediaLink>, b: Array<SocialMediaLink>): boolean {
@@ -51,7 +42,7 @@ export default function useProfileSettings() {
 
   const nameField = useTrackedField(() => profile.value?.name ?? "");
   const bioField = useTrackedField(() => profile.value?.bio ?? "");
-  const dobField = useTrackedField(() => toDate(profile.value?.dob), sameDay);
+  const dobField = useTrackedField(() => toDateString(profile.value?.dob));
   const socialLinksField = useTrackedField(
     () => (Array.isArray(profile.value?.socialLinks) ? profile.value?.socialLinks : []),
     sameSocialLinks,
