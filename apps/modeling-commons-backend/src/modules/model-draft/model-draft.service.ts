@@ -465,6 +465,7 @@ export default function makeModelDraftService({
         );
 
         await modelRepository.setLatestVersion(ctx, model.id, versionNumber);
+        await modelRepository.updateFields(ctx, model.id, { visibility: data.visibility });
 
         for (const att of attachmentCopies) {
           await modelAdditionalFileRepository.insertTx(
