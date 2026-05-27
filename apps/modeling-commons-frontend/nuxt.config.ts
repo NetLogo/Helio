@@ -194,4 +194,10 @@ export default defineNuxtConfig({
     serveStatic: true,
     prerender: false,
   },
+
+  // @disable-after-beta
+  sourcemap: {
+    server: true,
+    client: true,
+  },
 });
