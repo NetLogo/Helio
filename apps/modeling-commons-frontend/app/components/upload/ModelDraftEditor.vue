@@ -162,6 +162,7 @@ const {
   revert,
   deleteModel,
 } = useModelDraftForm({
+  mode: props.mode,
   initialDraftId: props.initialDraftId,
   seedModelId: props.seedModelId,
 });
@@ -196,7 +197,7 @@ onMounted(() => {
 async function onSubmit(): Promise<void> {
   // unlock();
 
-  const visibility = formState.value.permission === "private" ? "private" : "public";
+  const visibility = formState.value.permission ?? "public";
   try {
     const result = await submit(visibility);
     if (!result) return;

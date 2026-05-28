@@ -7,6 +7,7 @@ import { collectTagNames, draftToFormState, emptyUploadFormState } from "~/forms
 type PreviewImageMeta = NonNullable<DraftData["previewImage"]>;
 
 export interface UseModelDraftFormOptions {
+  mode?: "create" | "edit";
   initialDraftId?: string;
   seedModelId?: string;
 }
@@ -115,10 +116,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     return "Saved";
   });
 
-  function hydrateFromDraft(
-    data: DraftData,
-    serverPreviewImageUrl: string | null = null,
-  ) {
+  function hydrateFromDraft(data: DraftData, serverPreviewImageUrl: string | null = null) {
     hydrating.value = true;
     originalData.value = JSON.parse(JSON.stringify(data)) as DraftData;
     originalPreviewImageUrl.value = serverPreviewImageUrl;
@@ -183,6 +181,25 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
       formState.value = emptyUploadFormState();
       return;
     }
+
+    if (opts.mode === "create" && !/\.nlogox(3d)?$/i.test(file.name)) {
+      showActionFailedToast(
+        "Invalid file type",
+        undefined,
+        "Please upload a .nlogox or .nlogox3d file.",
+      );
+      pickedFile.value = null;
+      return;
+    } else if (opts.mode === "edit" && !/\.nlogo(x)?(3d)?$/i.test(file.name)) {
+      showActionFailedToast(
+        "Invalid file type",
+        undefined,
+        "Please upload a .nlogo, .nlogox, .nlogo3d, or .nlogox3d file.",
+      );
+      pickedFile.value = null;
+      return;
+    }
+
     if (formState.value.title === "") {
       formState.value.title = file.name.replace(/\.nlogox$/i, "");
       try {
@@ -211,8 +228,10 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     } catch (err) {
       showActionFailedToast(
         "Upload failed",
+        undefined,
         err instanceof Error ? err.message : "Could not stage the model file.",
       );
+      pickedFile.value = null;
     }
   });
 
@@ -265,6 +284,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
       } catch (err) {
         showActionFailedToast(
           "Upload failed",
+          undefined,
           err instanceof Error ? err.message : `Failed to upload ${file.name}.`,
         );
       }
@@ -311,10 +331,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
   async function generatePreview(): Promise<void> {
     if (generatingPreview.value || uploadingPreview.value) return;
     if (!primaryFile.value && !pickedFile.value) {
-      showActionFailedToast(
-        "No model file",
-        "Upload a .nlogox before generating a preview image.",
-      );
+      showActionFailedToast("No model file", "Upload a .nlogox before generating a preview image.");
       return;
     }
     generatingPreview.value = true;

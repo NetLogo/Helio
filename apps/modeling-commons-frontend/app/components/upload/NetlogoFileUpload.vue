@@ -3,8 +3,8 @@
     ref="fileUploader"
     v-model="model"
     label="Drag and drop a NetLogo model here"
-    accept=".nlogox"
-    :description="`Supported file types: .nlogox (max. ${formattedMaxFileSize})`"
+    accept=".nlogox,.nlogox3d"
+    :description="`Supported file types: .nlogox, .nlogox3d (max. ${formattedMaxFileSize})`"
     include-browse-button
   />
 </template>
