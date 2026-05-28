@@ -192,12 +192,18 @@ onMounted(() => {
   void init();
 });
 
-// const { unlock } = useUnloadGuard(isDirty);
-
 async function onSubmit(): Promise<void> {
-  // unlock();
+  const visibility = formState.value.permission;
+  if (!visibility) {
+    toast.add({
+      title: "Invalid permissions",
+      description: "Please select a valid permission level before publishing.",
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+    return;
+  }
 
-  const visibility = formState.value.permission ?? "public";
   try {
     const result = await submit(visibility);
     if (!result) return;
@@ -227,8 +233,6 @@ async function onSubmit(): Promise<void> {
 
 async function onDiscard(): Promise<void> {
   if (!draftId.value) return;
-  // unlock();
-
   try {
     await discard();
     toast.add({

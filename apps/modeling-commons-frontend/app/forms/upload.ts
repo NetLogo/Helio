@@ -55,7 +55,7 @@ const permissionOptions = [
   { value: "private", label: "Private, only I can see this model" },
   { value: "unlisted", label: "Unlisted, anyone with the link can see this model" },
   { value: "public", label: "Public, anyone can see this model" },
-];
+] as const;
 
 const collaboratorOptions = [
   {
