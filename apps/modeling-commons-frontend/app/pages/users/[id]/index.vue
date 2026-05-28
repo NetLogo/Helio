@@ -17,8 +17,10 @@ const {
   return handleApiError(data, error, "fetching user profile");
 });
 
+const isProfilePublic = computed(() => profile.value?.isProfilePublic);
+
 useSeoMeta({
-  title: () => profile.value ? `${profile.value.name}'s Profile` : "User Profile",
+  title: () => (profile.value ? `${profile.value.name}'s Profile` : "User Profile"),
 });
 
 const isMyself = computed(() => user.value?.user?.id === id);
@@ -52,6 +54,27 @@ if (error.value) {
   <UContainer>
     <div v-if="status === 'pending'">Loading...</div>
     <div v-else-if="error">{{ error }}</div>
+    <Error
+      v-else-if="!profile"
+      title="User Not Found"
+      message="The user profile you are looking for does not exist."
+      class="min-h-150"
+      :action="{
+        label: 'Go Back',
+        onClick: () => useRouter().back(),
+      }"
+    />
+    <Error
+      v-else-if="!isProfilePublic && !isMyself"
+      title="Private Profile"
+      message="This user's profile is private."
+      icon="i-lucide-lock"
+      :action="{
+        label: 'Go Back',
+        onClick: () => useRouter().back(),
+      }"
+      class="min-h-150"
+    />
     <main v-else-if="profile" class="space-y-10">
       <!-- User Header -->
       <UserHeader
@@ -78,7 +101,11 @@ if (error.value) {
         <div class="flex w-full justify-between">
           <h6>My Models</h6>
           <UButton variant="ghost" size="sm" :to="`/users/${id}/models`" class="ml-auto">
-            <span v-text="models && models.count > 1 ? `See all ${models.count} models` : 'See all models'" />
+            <span
+              v-text="
+                models && models.count > 1 ? `See all ${models.count} models` : 'See all models'
+              "
+            />
           </UButton>
         </div>
 
