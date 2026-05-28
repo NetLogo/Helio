@@ -212,6 +212,24 @@ export default function makeModelDraftService({
       }),
     );
 
+    const previewImageCopy = version.previewImageFileKey
+      ? await copyToStaging({
+          sourceKey: version.previewImageFileKey,
+          userId,
+          draftId,
+          filename: filenameFromKey(version.previewImageFileKey),
+        })
+      : undefined;
+
+    const previewImage = previewImageCopy
+      ? {
+          s3Key: previewImageCopy.s3Key,
+          filename: filenameFromKey(version.previewImageFileKey ?? 'preview.png'),
+          sizeBytes: previewImageCopy.sizeBytes,
+          mimeType: previewImageCopy.mimeType,
+        }
+      : undefined;
+
     return {
       title: version.title,
       description: version.description ?? undefined,
@@ -219,6 +237,7 @@ export default function makeModelDraftService({
       tags: tags.length > 0 ? tags : undefined,
       primaryFile,
       attachments: attachments.length > 0 ? attachments : undefined,
+      previewImage,
     };
   }
 
