@@ -51,7 +51,6 @@
         <UInput
           v-model="email"
           type="email"
-          size="lg"
           icon="i-lucide-mail"
           placeholder="Enter your email"
         />
@@ -67,7 +66,6 @@
         <UInput
           v-model="password"
           type="password"
-          size="lg"
           icon="i-lucide-lock"
           placeholder="Enter your new password"
         />
@@ -77,7 +75,6 @@
         <UInput
           v-model="confirmPassword"
           type="password"
-          size="lg"
           icon="i-lucide-shield-check"
           placeholder="Confirm your new password"
         />
@@ -89,9 +86,7 @@
     </form>
 
     <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-      <UButton class="justify-center sm:flex-1" color="neutral" variant="outline" :to="returnLink">
-        {{ user.isLoggedIn ? "Back to settings" : "Back to login" }}
-      </UButton>
+
       <UButton
         v-if="isTokenFlow"
         class="justify-center sm:flex-1"
@@ -155,10 +150,7 @@ const requestSucceeded = ref(false);
 const requestedEmail = ref("");
 const requestError = ref<string | null>(null);
 const resetError = ref<string | null>(null);
-const { links } = useSearchParamsNavigation({ query: route.query});
-const returnLink = computed(() =>
-  user.value.isLoggedIn ? links.value.back.href : authRoutes.login,
-);
+
 const successDescription = computed(() => {
   if (!requestedEmail.value) {
     return "If that email exists in our system, you'll receive a reset link shortly.";

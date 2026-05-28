@@ -19,7 +19,6 @@
         <UInput
           v-model="email"
           type="email"
-          size="lg"
           icon="i-lucide-mail"
           placeholder="Enter your email"
           disabled
