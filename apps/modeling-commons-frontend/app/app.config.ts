@@ -42,6 +42,13 @@ export default defineAppConfig({
             root: "bg-neutral-lightest text-royal-blue-darker ring-neutral-lighter text-neutral-darkest",
           },
         },
+        {
+          color: "warning",
+          variant: "subtle",
+          class: {
+            root: "bg-warning-lighter/50 text-warning-darker ring-warning-dark/40",
+          },
+        },
       ],
     },
 

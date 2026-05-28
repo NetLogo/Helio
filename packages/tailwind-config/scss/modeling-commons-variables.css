@@ -59,20 +59,36 @@
 
   /* States */
   --color-danger: oklch(0.4437 0.1677 25.41);
-  --color-danger-hover: colormix(in srgb, var(--color-danger) 80%, black);
-  --color-danger-active: colormix(in srgb, var(--color-danger) 60%, black);
+  --color-danger-hover: color-mix(in srgb, var(--color-danger) 80%, black);
+  --color-danger-active: color-mix(in srgb, var(--color-danger) 60%, black);
+  --color-danger-light: color-mix(in srgb, var(--color-danger) 80%, white);
+  --color-danger-lighter: color-mix(in srgb, var(--color-danger) 60%, white);
+  --color-danger-dark: color-mix(in srgb, var(--color-danger) 80%, black);
+  --color-danger-darker: color-mix(in srgb, var(--color-danger) 60%, black);
 
   --color-success: oklch(0.4437 0.168 145.62);
-  --color-success-hover: colormix(in srgb, var(--color-success) 80%, black);
-  --color-success-active: colormix(in srgb, var(--color-success) 60%, black);
+  --color-success-hover: color-mix(in srgb, var(--color-success) 80%, black);
+  --color-success-active: color-mix(in srgb, var(--color-success) 60%, black);
+  --color-success-light: color-mix(in srgb, var(--color-success) 80%, white);
+  --color-success-lighter: color-mix(in srgb, var(--color-success) 60%, white);
+  --color-success-dark: color-mix(in srgb, var(--color-success) 80%, black);
+  --color-success-darker: color-mix(in srgb, var(--color-success) 60%, black);
 
   --color-info: var(--color-royal-blue);
   --color-info-hover: var(--color-royal-blue-dark);
   --color-info-active: var(--color-royal-blue-darker);
+  --color-info-light: color-mix(in srgb, var(--color-royal-blue) 80%, white);
+  --color-info-lighter: color-mix(in srgb, var(--color-royal-blue) 60%, white);
+  --color-info-dark: color-mix(in srgb, var(--color-royal-blue) 80%, black);
+  --color-info-darker: color-mix(in srgb, var(--color-royal-blue) 60%, black);
 
-  --color-warning: oklch(0.7826 0.1621 79.41);
-  --color-warning-hover: colormix(in srgb, var(--color-warning) 80%, black);
-  --color-warning-active: colormix(in srgb, var(--color-warning) 60%, black);
+  --color-warning: oklch(0.78 0.16 79);
+  --color-warning-hover: oklch(from var(--color-warning) calc(l - 0.08) calc(c - 0.01) h);
+  --color-warning-active: oklch(from var(--color-warning) calc(l - 0.16) calc(c - 0.02) h);
+  --color-warning-dark: oklch(from var(--color-warning) calc(l - 0.13) calc(c - 0.02) h);
+  --color-warning-darker: oklch(from var(--color-warning) calc(l - 0.26) calc(c - 0.04) h);
+  --color-warning-light: oklch(from var(--color-warning) calc(l + 0.1) calc(c - 0.06) h);
+  --color-warning-lighter: oklch(from var(--color-warning) calc(l + 0.16) calc(c - 0.1) h);
 
   /* Functional colors */
   --color-primary: var(--color-royal-blue);
@@ -145,21 +161,37 @@
   --color-coral-darker: var(--color-coral-darker);
   --color-coral-darkest: var(--color-coral-darkest);
 
+  --color-danger-lighter: var(--color-danger-lighter);
+  --color-danger-light: var(--color-danger-light);
   --color-danger: var(--color-danger);
   --color-danger-hover: var(--color-danger-hover);
   --color-danger-active: var(--color-danger-active);
+  --color-danger-dark: var(--color-danger-dark);
+  --color-danger-darker: var(--color-danger-darker);
 
+  --color-success-lighter: var(--color-success-lighter);
+  --color-success-light: var(--color-success-light);
   --color-success: var(--color-success);
   --color-success-hover: var(--color-success-hover);
   --color-success-active: var(--color-success-active);
+  --color-success-dark: var(--color-success-dark);
+  --color-success-darker: var(--color-success-darker);
 
+  --color-info-light: var(--color-info-light);
+  --color-info-lighter: var(--color-info-lighter);
   --color-info: var(--color-info);
   --color-info-hover: var(--color-info-hover);
   --color-info-active: var(--color-info-active);
+  --color-info-dark: var(--color-info-dark);
+  --color-info-darker: var(--color-info-darker);
 
+  --color-warning-light: var(--color-warning-light);
+  --color-warning-lighter: var(--color-warning-lighter);
   --color-warning: var(--color-warning);
   --color-warning-hover: var(--color-warning-hover);
   --color-warning-active: var(--color-warning-active);
+  --color-warning-dark: var(--color-warning-dark);
+  --color-warning-darker: var(--color-warning-darker);
 
   --text-lg: var(--text-lg);
   --text-md: var(--text-md);
