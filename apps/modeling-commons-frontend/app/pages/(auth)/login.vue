@@ -23,6 +23,7 @@
       </template>
 
       <template #providers>
+        <ReclaimAccount  />
         <UButton
           class="w-full justify-center"
           color="neutral"
