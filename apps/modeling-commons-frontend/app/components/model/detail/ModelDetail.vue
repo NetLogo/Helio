@@ -38,7 +38,6 @@
       </article>
 
       <TagList
-        v-if="card.tagsOnLatestVersion.length > 0"
         :tags="card.tagsOnLatestVersion"
         :editable="permissions.canEdit"
         @add="handleAddTag"
@@ -270,7 +269,10 @@ async function handleShare() {
   }
 }
 
-function handleAddTag() {}
+function handleAddTag() {
+  showComingSoonToast("Add tag button");
+}
+
 function handleEmbed() {
   embedDialogOpen.value = true;
 }
@@ -282,7 +284,7 @@ function handleDownload() {
 }
 
 function handleFork() {
-  // @to-do
+  showComingSoonToast("Forking models", { icon: "i-lucide-git-fork" });
 }
 
 function handleEdit() {

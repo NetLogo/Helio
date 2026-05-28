@@ -93,7 +93,7 @@ const modelActionsDropdownItems = ref([
   {
     ...modelActions.edit,
     onClick: () => emit(modelActions.edit.action),
-    disabled: !props.permissions.canEdit,
+    class: !props.permissions.canEdit ? 'hidden' : '',
   },
   {
     ...modelActions.embed,
@@ -109,7 +109,7 @@ const modelActionsDropdownItems = ref([
   {
     ...modelActions.fork,
     onClick: () => emit(modelActions.fork.action),
-    disabled: !props.permissions.canFork,
+    class: !props.permissions.canFork ? 'hidden' : '',
   },
 ] satisfies Array<DropdownMenuItem>);
 </script>

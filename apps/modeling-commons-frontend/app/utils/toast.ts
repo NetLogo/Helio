@@ -31,6 +31,18 @@ export function showActionFailedToast(action: string, sayMore?: string) {
   });
 }
 
+export function showComingSoonToast(feature: string, options: { icon?: string } = {}) {
+  const toast = useToast();
+  const { icon = "i-lucide-clock" } = options;
+
+  toast.add({
+    title: `${feature} is not available yet`,
+    description: `We're working hard to bring it to you! Stay tuned for updates.`,
+    color: "info",
+    icon,
+  });
+}
+
 export function toastLinkExpired() {
   const toast = useToast();
 
