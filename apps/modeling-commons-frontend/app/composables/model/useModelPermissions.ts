@@ -31,9 +31,4 @@ export default function useUserModelPermissions(modelId: MaybeRefOrGetter<string
   return { ...result, data };
 }
 
-export function revokePermissionsCache(modelId: string) {
-  const key = `user-model-permissions-${modelId}`;
-  clearNuxtData(key);
-}
-
 export type { UserModelPermissions };

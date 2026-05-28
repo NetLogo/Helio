@@ -56,18 +56,15 @@ const { data: versionCard } = useModelVersionCard(
   computed(() => modelVersionNumber.value ?? 0),
 );
 
-const { data: permissions } = useModelPermissions(modelId);
+const { data: permissions, refresh: refreshPermissions } = useModelPermissions(modelId);
 
 // Ensure permissions are not stale after a model update.
 // -- Omar Ibrahim, May 27 26
-watch(
-  () => card.value?.model.updatedAt,
-  () => {
-    if (card.value) {
-      revokePermissionsCache(card.value.model.id);
-    }
-  }, { immediate: true },
-);
+onMounted(() => {
+  if (card.value) {
+    refreshPermissions();
+  }
+});
 
 const displayCard = computed<ModelCard | null>(() => {
   if (!card.value) return null;
