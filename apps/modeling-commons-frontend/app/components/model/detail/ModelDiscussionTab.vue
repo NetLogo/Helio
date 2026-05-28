@@ -10,8 +10,8 @@
 
     <div class="flex flex-col items-center justify-center py-12 text-dimmed">
       <UIcon name="i-lucide-message-circle" class="size-12 mb-3" />
-      <p class="text-sm font-medium">No discussions yet</p>
-      <p class="text-xs mt-1">Be the first to start a conversation about this model.</p>
+      <p class="text-sm font-medium">Discussions are coming soon!</p>
+      <p class="text-xs mt-1">In the meantime, if you have any questions or feedback about this model, please reach out to the author.</p>
     </div>
   </div>
 </template>
