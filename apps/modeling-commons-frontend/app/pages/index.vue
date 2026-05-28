@@ -4,7 +4,7 @@
       class="flex flex-col lg:flex-row gap-10 px-10 py-10 bg-linear-to-t from-white via-coral-lighter/10 to-royal-blue/15"
     >
       <div class="flex flex-col w-full justify-center p-5 gap-4">
-        <span class="text-sm text-royal-blue font-bold uppercase">The Modeling Commons</span>
+        <span class="text-lg text-royal-blue font-bold uppercase">The Modeling Commons</span>
         <h5 class="text-4xl sm:text-5xl max-w-4xl leading-tight tracking-tight">
           Discover, share, and learn about
           <span class="text-royal-blue">complex systems</span> together
@@ -29,11 +29,20 @@
             Random
           </UButton>
         </div>
+
+        <NuxtLink to="https://www.netlogo.org/" target="_blank" rel="noopener noreferrer" class="mt-8 text-center lg:text-left text-md">
+            Powered by <NetlogoLogo class="inline-block h-6 w-auto -mt-0.5 -ml-1" />
+        </NuxtLink>
       </div>
       <MarqueeGallery class="lg:w-5xl" height="80dvh" column-gap="12px">
         <MarqueeColumn
           v-for="(col, ci) in marqueeColumns"
-          :key="col.reduce((acc, item) => acc + (item.kind === 'model' ? item.card.model.id : item.tag.id), '')"
+          :key="
+            col.reduce(
+              (acc, item) => acc + (item.kind === 'model' ? item.card.model.id : item.tag.id),
+              '',
+            )
+          "
           :direction="ci % 2 === 0 ? 'up' : 'down'"
           :speed="40 + ci * 10"
           width="300px"
@@ -151,6 +160,7 @@
 
 <script setup lang="ts">
 import type { ModelCard } from "~/composables/model/useModelCard";
+import NetlogoLogo from "@repo/vue-ui/assets/brands/NetLogoOrgLogo.svg";
 
 type SortBy = "recent" | "views" | "downloads" | "runs" | "likes";
 
@@ -245,7 +255,7 @@ const visibleSections = computed(() =>
 
 const MARQUEE_COLS = 3;
 
-const randomSeed = useState('seed', () => Math.random())
+const randomSeed = useState("seed", () => Math.random());
 const rand = ref(mulberry32(randomSeed.value));
 const marqueeColumns = computed(() => {
   // Flatten all section cards with their section metadata
