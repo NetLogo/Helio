@@ -31,6 +31,7 @@ import { sanitizeFilename } from '#src/shared/storage/utils.ts';
 import { randomUUID } from 'node:crypto';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
+import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
 
 export default function makeModelDraftService({
   transactionManager,
@@ -298,6 +299,11 @@ export default function makeModelDraftService({
 
       const next: DraftData = { ...data };
       if (role === 'primary') {
+        if (!isValidNetlogoFilename(file.filename)) {
+          throw new ModelDraftInvalidPayloadError(
+            'Primary file must have a valid NetLogo filename extension (.nlogo, .nlogo3d, .nlogox, .nlogox3d)',
+          );
+        }
         if (data.primaryFile) {
           await modelDraftStorage.deleteObject(data.primaryFile.s3Key).catch(() => undefined);
         }
