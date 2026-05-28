@@ -20,14 +20,12 @@ export function showNotFoundToast(what: string = "item", sayMore?: string) {
   });
 }
 
-export function showActionFailedToast(action: string, what?: string, sayMore?: string) {
+export function showActionFailedToast(action: string, sayMore?: string) {
   const toast = useToast();
 
   toast.add({
-    title: `${sentenceCase(action)} ${what ?? ""} Failed`,
-    description:
-      sayMore ??
-      `We were unable to ${action.toLowerCase()} the ${(what ?? "").toLowerCase()}. Please try again.`,
+    title: `${sentenceCase(action)} Failed`,
+    description: sayMore,
     color: "error",
     icon: "i-lucide-x-circle",
   });

@@ -183,17 +183,12 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     }
 
     if (opts.mode === "create" && !/\.nlogox(3d)?$/i.test(file.name)) {
-      showActionFailedToast(
-        "Invalid file type",
-        undefined,
-        "Please upload a .nlogox or .nlogox3d file.",
-      );
+      showActionFailedToast("Invalid file type", "Please upload a .nlogox or .nlogox3d file.");
       pickedFile.value = null;
       return;
     } else if (opts.mode === "edit" && !/\.nlogo(x)?(3d)?$/i.test(file.name)) {
       showActionFailedToast(
         "Invalid file type",
-        undefined,
         "Please upload a .nlogo, .nlogox, .nlogo3d, or .nlogox3d file.",
       );
       pickedFile.value = null;
@@ -228,7 +223,6 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     } catch (err) {
       showActionFailedToast(
         "Upload failed",
-        undefined,
         err instanceof Error ? err.message : "Could not stage the model file.",
       );
       pickedFile.value = null;
@@ -284,7 +278,6 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
       } catch (err) {
         showActionFailedToast(
           "Upload failed",
-          undefined,
           err instanceof Error ? err.message : `Failed to upload ${file.name}.`,
         );
       }

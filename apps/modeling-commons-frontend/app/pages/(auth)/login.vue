@@ -187,11 +187,11 @@ async function onSubmit(payload?: FormSubmitEvent<Schema>): Promise<void> {
     }
 
     if (error) {
-      showActionFailedToast("Login", undefined, error.message);
+      showActionFailedToast("Login", error.message);
       return;
     }
   } catch (error) {
-    showActionFailedToast("Login", undefined, (error as Error).message);
+    showActionFailedToast("Login", (error as Error).message);
     return;
   }
 
