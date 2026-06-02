@@ -114,6 +114,7 @@ export default defineNuxtConfig({
   routeRules: {
     "/": {
       isr: 60 * 10,
+      prerender: false,
     },
     "/models/**/embed": {
       security: {
@@ -192,7 +193,10 @@ export default defineNuxtConfig({
   nitro: {
     static: false,
     serveStatic: true,
-    prerender: false,
+    prerender: {
+      crawlLinks: false,
+      routes: [],
+    },
   },
 
   // @disable-after-beta
@@ -200,4 +204,5 @@ export default defineNuxtConfig({
     server: true,
     client: true,
   },
+  logLevel: "verbose",
 });
