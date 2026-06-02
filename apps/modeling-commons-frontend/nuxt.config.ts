@@ -135,11 +135,11 @@ export default defineNuxtConfig({
       ssr: false,
     },
 
-    "/privacy": { prerender: true },
-    "/terms-of-service": { prerender: true },
-    "/cookies": { prerender: true },
-    "/about": { prerender: true },
-    "/donate": { prerender: true },
+    "/privacy": { isr: 60 * 60 },
+    "/terms-of-service": { isr: 60 * 60 },
+    "/cookies": { isr: 60 * 60 },
+    "/about": { isr: 60 * 60 },
+    "/donate": { isr: 60 * 60 },
   },
 
   vite: {
@@ -150,6 +150,17 @@ export default defineNuxtConfig({
 
   content: {
     build: MarkdownConfig.buildOptions,
+    experimental: { nativeSqlite: true },
+    database: {
+      type: "sqlite",
+      filename: ":memory:",
+    },
+  },
+
+  mdc: {
+    components: {
+      prose: false,
+    },
   },
 
   image: {
