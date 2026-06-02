@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import * as z from "zod";
+const z = await import("zod");
 
 const id = <T,>(i: T): T => i;
 const socialMediaLinksKinds = [

@@ -1,5 +1,7 @@
 import type { QueryKey } from "@repo/utils/lib/http/query";
-import * as z from "zod";
+import type { infer as Infer } from "zod";
+
+const z = await import("zod");
 
 export type ModelsQuery = QueryParams<"GET", "/api/v1/models/card">;
 export type ModelsFilters = Omit<ModelsQuery, "limit" | "page">;
@@ -16,7 +18,7 @@ export const modelSortByValues = [
   "likes",
 ] as const satisfies Readonly<Array<ApiModelSortBy>>;
 export const modelSortByValidator = z.enum(modelSortByValues);
-export type ModelSortBy = z.infer<typeof modelSortByValidator>;
+export type ModelSortBy = Infer<typeof modelSortByValidator>;
 
 export const modelSortByOptions = [
   { label: "Date Published", value: "recent" },
@@ -27,7 +29,7 @@ export const modelSortByOptions = [
 
 export const modelOrderValues = ["asc", "desc"] as const;
 export const modelOrderValidator = z.enum(modelOrderValues);
-export type ModelOrder = z.infer<typeof modelOrderValidator>;
+export type ModelOrder = Infer<typeof modelOrderValidator>;
 
 export const modelOrderIcons: Record<ModelOrder, string> = {
   asc: "i-lucide-arrow-up-narrow-wide",

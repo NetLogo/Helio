@@ -1,8 +1,11 @@
-import * as z from "zod";
+import type { infer as Infer, input as Input } from "zod";
+
 import type { DraftData } from "~/composables/model/useModelDraft";
 import { deniedFileTypes, imageFileFormats } from "~/utils/constants";
 import { sizeToBytes } from "~/utils/converters";
 import { makeFileSchema } from "~/utils/file-schema";
+
+const z = await import("zod");
 
 const maxNetlogoFileSize = 10 * 1024 * 1024; // 10 MB
 const netlogoFileSchema = makeFileSchema({
@@ -49,7 +52,7 @@ const AddDetailsCardSchema = z.object({
   subjects: z.array(z.string()).default([]),
 });
 
-type AddDetailsCard = z.infer<typeof AddDetailsCardSchema>;
+type AddDetailsCard = Infer<typeof AddDetailsCardSchema>;
 
 const permissionOptions = [
   { value: "private", label: "Private, only I can see this model" },
@@ -73,7 +76,7 @@ const SetPermissionsCardSchema = z.object({
   askForCollaborators: z.boolean().default(false),
 });
 
-type SetPermissionsCard = z.infer<typeof SetPermissionsCardSchema>;
+type SetPermissionsCard = Infer<typeof SetPermissionsCardSchema>;
 
 const peerReviewKindOptions = [
   { value: "visualization", label: "I want suggestions to improve the visualization" },
@@ -86,7 +89,7 @@ const PeerReviewCardSchema = z.object({
   peerReviewDescription: z.string().nullable().default(null),
 });
 
-type PeerReviewCard = z.infer<typeof PeerReviewCardSchema>;
+type PeerReviewCard = Infer<typeof PeerReviewCardSchema>;
 
 const UploadFormSchema = z
   .object({
@@ -96,8 +99,8 @@ const UploadFormSchema = z
   .extend(SetPermissionsCardSchema.shape)
   .extend(PeerReviewCardSchema.shape);
 
-type UploadForm = z.infer<typeof UploadFormSchema>;
-type UploadFormInput = Omit<z.input<typeof UploadFormSchema>, "nlogoxFile">;
+type UploadForm = Infer<typeof UploadFormSchema>;
+type UploadFormInput = Omit<Input<typeof UploadFormSchema>, "nlogoxFile">;
 
 type PrimaryFileMeta = NonNullable<DraftData["primaryFile"]> & { fileId?: string };
 type StagedAttachmentMeta = NonNullable<DraftData["attachments"]>[number];
