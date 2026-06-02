@@ -59,20 +59,20 @@
 
   /* States */
   --color-danger: oklch(0.4437 0.1677 25.41);
-  --color-danger-hover: color-mix(in srgb, var(--color-danger) 80%, black);
-  --color-danger-active: color-mix(in srgb, var(--color-danger) 60%, black);
-  --color-danger-light: color-mix(in srgb, var(--color-danger) 80%, white);
-  --color-danger-lighter: color-mix(in srgb, var(--color-danger) 60%, white);
-  --color-danger-dark: color-mix(in srgb, var(--color-danger) 80%, black);
-  --color-danger-darker: color-mix(in srgb, var(--color-danger) 60%, black);
+  --color-danger-hover: color-mix(in oklab, var(--color-danger) 80%, black);
+  --color-danger-active: color-mix(in oklab, var(--color-danger) 60%, black);
+  --color-danger-light: color-mix(in oklab, var(--color-danger) 80%, white);
+  --color-danger-lighter: color-mix(in oklab, var(--color-danger) 60%, white);
+  --color-danger-dark: color-mix(in oklab, var(--color-danger) 80%, black);
+  --color-danger-darker: color-mix(in oklab, var(--color-danger) 60%, black);
 
   --color-success: oklch(0.4437 0.168 145.62);
-  --color-success-hover: color-mix(in srgb, var(--color-success) 80%, black);
-  --color-success-active: color-mix(in srgb, var(--color-success) 60%, black);
-  --color-success-light: color-mix(in srgb, var(--color-success) 80%, white);
-  --color-success-lighter: color-mix(in srgb, var(--color-success) 60%, white);
-  --color-success-dark: color-mix(in srgb, var(--color-success) 80%, black);
-  --color-success-darker: color-mix(in srgb, var(--color-success) 60%, black);
+  --color-success-hover: color-mix(in oklab, var(--color-success) 80%, black);
+  --color-success-active: color-mix(in oklab, var(--color-success) 60%, black);
+  --color-success-light: color-mix(in oklab, var(--color-success) 80%, white);
+  --color-success-lighter: color-mix(in oklab, var(--color-success) 60%, white);
+  --color-success-dark: color-mix(in oklab, var(--color-success) 80%, black);
+  --color-success-darker: color-mix(in oklab, var(--color-success) 60%, black);
 
   --color-info: var(--color-royal-blue);
   --color-info-hover: var(--color-royal-blue-dark);
@@ -83,12 +83,12 @@
   --color-info-darker: color-mix(in srgb, var(--color-royal-blue) 60%, black);
 
   --color-warning: oklch(0.78 0.16 79);
-  --color-warning-hover: oklch(from var(--color-warning) calc(l - 0.08) calc(c - 0.01) h);
-  --color-warning-active: oklch(from var(--color-warning) calc(l - 0.16) calc(c - 0.02) h);
-  --color-warning-dark: oklch(from var(--color-warning) calc(l - 0.13) calc(c - 0.02) h);
-  --color-warning-darker: oklch(from var(--color-warning) calc(l - 0.26) calc(c - 0.04) h);
-  --color-warning-light: oklch(from var(--color-warning) calc(l + 0.1) calc(c - 0.06) h);
-  --color-warning-lighter: oklch(from var(--color-warning) calc(l + 0.16) calc(c - 0.1) h);
+  --color-warning-hover: color-mix(in oklab, var(--color-warning) 80%, black);
+  --color-warning-active: color-mix(in oklab, var(--color-warning) 60%, black);
+  --color-warning-light: color-mix(in oklab, var(--color-warning) 80%, white);
+  --color-warning-lighter: color-mix(in oklab, var(--color-warning) 60%, white);
+  --color-warning-dark: color-mix(in oklab, var(--color-warning) 80%, black);
+  --color-warning-darker: color-mix(in oklab, var(--color-warning) 60%, black);
 
   /* Functional colors */
   --color-primary: var(--color-royal-blue);
