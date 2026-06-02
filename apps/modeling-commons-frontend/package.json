@@ -66,8 +66,6 @@
     "nuxt-security": "2.5.1",
     "nuxt-svgo": "4.2.6",
     "postcss": "^8.5.8",
-    "radix-vue": "1.9.17",
-    "reka-ui": "^2.6.0",
     "slugify": "^1.6.9",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.18",
