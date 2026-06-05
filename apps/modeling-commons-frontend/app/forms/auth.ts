@@ -52,7 +52,7 @@ export type UserKind = Infer<typeof userKindValidator>;
 export const logInValidator = z.object({
   email: emailValidator,
   password: miniPasswordValidator,
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.optional(z.boolean()),
 });
 
 export const emailOnlyValidator = z.object({

@@ -156,10 +156,10 @@ async function continueWithPasskey() {
 
   if (error) {
     toast.add({
-      title: error.code === "AUTH_CANCELLED" ? "Passkey canceled" : "Passkey sign in failed",
-      description: error.message ?? "We couldn't sign you in with a passkey.",
+      title: getPasskeyErrorCode(error) === "AUTH_CANCELLED" ? "Passkey canceled" : "Passkey sign in failed",
+      description: getPasskeyErrorMessage(error) ?? "We couldn't sign you in with a passkey.",
       icon: "i-lucide-key-round",
-      color: error.code === "AUTH_CANCELLED" ? "warning" : "error",
+      color: getPasskeyErrorCode(error) === "AUTH_CANCELLED" ? "warning" : "error",
     });
     return;
   }

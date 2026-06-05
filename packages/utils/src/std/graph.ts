@@ -1,9 +1,7 @@
 type RK = string | number | symbol;
 
-type Tree<T extends Record<PropertyKey, unknown>> = Array<Node<T>>;
-type Node<T extends Record<PropertyKey, unknown>> = T & {
-  [K in RK]?: Array<Node<T>>;
-};
+type Node<T, K extends RK> = T & { [P in K]?: Array<Node<T, K>> };
+type Tree<T, K extends RK> = Array<Node<T, K>>;
 
 enum WalkOptions {
   SKIP = "skip",
@@ -11,36 +9,27 @@ enum WalkOptions {
   CONTINUE = "continue",
 }
 
-type WalkCallback<T extends Record<PropertyKey, unknown>> = (
-  node: Node<T>,
+type WalkCallback<T, K extends RK> = (
+  node: Node<T, K>,
   index: number,
-  parent: Tree<T> | Node<T> | null,
+  parent: Tree<T, K> | Node<T, K> | null,
   // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 ) => void | WalkOptions | Promise<void | WalkOptions>;
 
-function hasChildren<T extends Record<PropertyKey, unknown>>(
-  node: Node<T>,
-  recursionKey: RK,
-): boolean {
-  return Array.isArray(node[recursionKey]) && node[recursionKey].length > 0;
+function getChildren<T, K extends RK>(node: Node<T, K>, recursionKey: K): Array<Node<T, K>> {
+  const value = (node as Record<RK, unknown>)[recursionKey];
+  return Array.isArray(value) ? (value as Array<Node<T, K>>) : [];
 }
 
-function getChildren<T extends Record<PropertyKey, unknown>>(
-  node: Node<T>,
-  recursionKey: RK,
-): Array<Node<T>> {
-  return node[recursionKey] ?? [];
-}
-
-async function walk<T extends Record<PropertyKey, unknown>>(
-  tree: Tree<T>,
-  callback: WalkCallback<T>,
-  recursionKey: RK,
+async function walk<T, K extends RK>(
+  tree: Tree<T, K>,
+  callback: WalkCallback<T, K>,
+  recursionKey: K,
 ): Promise<boolean> {
   const visit = async (
-    node: Node<T>,
+    node: Node<T, K>,
     index: number,
-    parent: Tree<T> | Node<T> | null,
+    parent: Tree<T, K> | Node<T, K> | null,
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   ): Promise<WalkOptions | undefined | void> => {
     const res = await callback(node, index, parent);
@@ -48,7 +37,7 @@ async function walk<T extends Record<PropertyKey, unknown>>(
       return WalkOptions.EXIT;
     }
 
-    if (res !== WalkOptions.SKIP && hasChildren(node, recursionKey)) {
+    if (res !== WalkOptions.SKIP) {
       const children = getChildren(node, recursionKey);
       for (let i = 0; i < children.length; i++) {
         const child = children[i];

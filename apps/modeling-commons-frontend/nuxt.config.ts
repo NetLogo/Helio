@@ -189,16 +189,6 @@ export default defineNuxtConfig({
     },
   ],
 
-  typescript: {
-    tsConfig: {
-      include: ["../tests/**/*"],
-    },
-  },
-
-  csurf: {
-    https: process.env.NODE_ENV === "production",
-  },
-
   linkChecker: { enabled: false },
 
   nitro: {

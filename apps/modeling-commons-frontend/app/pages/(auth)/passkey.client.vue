@@ -100,10 +100,10 @@ async function addPasskey() {
   if (error) {
     toast.add({
       title:
-        error.code === "ERROR_CEREMONY_ABORTED" ? "Passkey setup canceled" : "Passkey setup failed",
-      description: error.message ?? "We couldn't add a passkey for this device.",
+        getPasskeyErrorCode(error) === "ERROR_CEREMONY_ABORTED" ? "Passkey setup canceled" : "Passkey setup failed",
+      description: getPasskeyErrorMessage(error) ?? "We couldn't add a passkey for this device.",
       icon: "i-lucide-key-round",
-      color: error.code === "ERROR_CEREMONY_ABORTED" ? "warning" : "error",
+      color: getPasskeyErrorCode(error) === "ERROR_CEREMONY_ABORTED" ? "warning" : "error",
     });
     return;
   }

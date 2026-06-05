@@ -45,7 +45,7 @@
                   class="w-fit"
                   :disabled="!hasPrimaryFile || generatingPreview || uploadingPreview"
                   data-testid="upload-thumbnail-button"
-                  @click="$refs.imageFileInput?.openFilePicker()"
+                  @click="imageFileInput?.openFilePicker()"
                 >
                   Upload thumbnail
                 </UButton>
@@ -115,6 +115,7 @@
 <script setup lang="ts">
 import { toTagSelectMenuItem, type TagItem } from "~/components/tag/TagSelectMenu.vue";
 import { modelUsecases, type UploadFormInput } from "~/forms/upload";
+import type ImageUploader from './ImageUploader.vue';
 
 const state = defineModel<UploadFormInput>({ required: true });
 const props = withDefaults(
@@ -134,6 +135,7 @@ const props = withDefaults(
 defineEmits<{ "generate-preview": [] }>();
 
 const tags = reactive(useTags());
+const imageFileInput = useTemplateRef<InstanceType<typeof ImageUploader>>("imageFileInput");
 
 const { previewImageUrl, hasPrimaryFile, generatingPreview, uploadingPreview } = toRefs(props);
 

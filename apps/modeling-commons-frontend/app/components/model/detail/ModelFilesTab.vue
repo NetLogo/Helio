@@ -50,6 +50,7 @@
 <script setup lang="ts">
 import { USkeleton } from "#components";
 import type { AttachedFile } from "./types";
+import type { TableProps } from "@nuxt/ui";
 
 const props = defineProps<{
   files: AttachedFile[];
@@ -62,7 +63,18 @@ defineEmits<{
 }>();
 
 const loading = computed(() => props.status === "pending");
-const columns = computed(() => {
+
+type TableData = {
+  id: string;
+  title: string;
+  type: string;
+  authorName: string;
+  updatedAt: string;
+}
+
+type TableColumns = TableProps<TableData>['columns'];
+
+const columns = computed<TableColumns>(() => {
   const baseColumns = [
     { accessorKey: "title", header: "File" },
     { accessorKey: "type", header: "Type" },
@@ -72,6 +84,7 @@ const columns = computed(() => {
   ];
   return loading.value ? withSkeleton(baseColumns) : baseColumns;
 });
+
 const data = computed(() =>
   loading.value
     ? Array.from({ length: 5 }).map((_, i) => ({
@@ -88,8 +101,8 @@ const pendingCell = () => {
   return h(USkeleton, { class: "w-full h-4" });
 };
 
-const withSkeleton = (columns: Record<string, unknown>[]) => {
-  return columns.map((col) => {
+const withSkeleton = <T extends TableData>(columns: TableProps<T>['columns']): TableProps<T>['columns'] => {
+  return columns?.map((col) => {
     return { ...col, cell: pendingCell };
   });
 };

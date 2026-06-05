@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  collectTagNames,
-  draftToFormState,
-  emptyUploadFormState,
-} from "~/forms/upload";
+import { collectTagNames, draftToFormState, emptyUploadFormState } from "~/forms/upload";
 
 describe("emptyUploadFormState", () => {
   it("returns a form with private visibility and empty arrays", () => {
@@ -21,7 +17,8 @@ describe("emptyUploadFormState", () => {
   it("returns a fresh object on every call (no shared references)", () => {
     const a = emptyUploadFormState();
     const b = emptyUploadFormState();
-    a.tags.push("mutation");
+    expect(a.tags).toEqual([]);
+    (a.tags as string[]).push("mutation");
     expect(b.tags).toEqual([]);
   });
 });
@@ -132,8 +129,6 @@ describe("draftToFormState", () => {
     const { formState } = draftToFormState({
       tags: ["agents", "usecase:research"],
     });
-    expect(collectTagNames(formState).sort()).toEqual(
-      ["agents", "usecase:research"].sort(),
-    );
+    expect(collectTagNames(formState).sort()).toEqual(["agents", "usecase:research"].sort());
   });
 });

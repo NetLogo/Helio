@@ -34,7 +34,7 @@ function buildAbsoluteAuthUrl(
   return url.toString();
 }
 
-export function getSafeNextPath(next: unknown, fallback = authRoutes.models) {
+export function getSafeNextPath(next: unknown, fallback: string = authRoutes.models) {
   return normalizeNextPath(next) ?? fallback;
 }
 

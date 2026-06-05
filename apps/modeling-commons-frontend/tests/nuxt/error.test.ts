@@ -21,7 +21,7 @@ const stubs = {
 describe("error.vue", () => {
   it("renders the 404 status code from props.error.statusCode", async () => {
     const wrapper = await mountSuspended(ErrorPage, {
-      props: { error: { statusCode: 404, message: "Not found" } },
+      props: { error: createError({ statusCode: 404, message: "Not found" }) },
       global: { stubs },
     });
     expect(wrapper.find('[data-testid="error-code"]').text()).toBe("404");
@@ -29,7 +29,7 @@ describe("error.vue", () => {
 
   it("renders the 500 status code from props.error.statusCode", async () => {
     const wrapper = await mountSuspended(ErrorPage, {
-      props: { error: { statusCode: 500, message: "Boom" } },
+      props: { error: createError({ statusCode: 500, message: "Boom" }) },
       global: { stubs },
     });
     expect(wrapper.find('[data-testid="error-code"]').text()).toBe("500");
@@ -37,7 +37,7 @@ describe("error.vue", () => {
 
   it("renders the error message from props.error.message", async () => {
     const wrapper = await mountSuspended(ErrorPage, {
-      props: { error: { statusCode: 500, message: "Internal failure" } },
+      props: { error: createError({ statusCode: 500, message: "Internal failure" }) },
       global: { stubs },
     });
     expect(wrapper.find('[data-testid="error-details"]').text()).toBe("Internal failure");
@@ -45,7 +45,7 @@ describe("error.vue", () => {
 
   it("forwards both ClientNavbar and ClientFooter around the ErrorDisplay", async () => {
     const wrapper = await mountSuspended(ErrorPage, {
-      props: { error: { statusCode: 404, message: "Not found" } },
+      props: { error: createError({ statusCode: 404, message: "Not found" }) },
       global: { stubs },
     });
     expect(wrapper.find('[data-testid="stub-navbar"]').exists()).toBe(true);

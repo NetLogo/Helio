@@ -1,6 +1,6 @@
 <template>
   <USelectMenu
-    :ref="selectMenu"
+    ref="selectMenu"
     v-model="selectedUser"
     v-model:search-term="searchTerm"
     placeholder="Author"
@@ -74,6 +74,10 @@ const selectMenu = useTemplateRef("selectMenu");
 
 onMounted(() => {
   useInfiniteScroll(
+    // @ts-expect-error -- need to update @nuxt/ui for this to work
+    // but this is a chore for later and won't cause issues in the
+    // meantime
+    // -- Omar Ibrahim, Jun 02 26
     () => selectMenu.value?.viewportRef,
     () => {
       props.loadNextPage();

@@ -94,8 +94,6 @@ export default function useProfileSettings() {
       {} as Record<string, unknown>,
     );
 
-    console.info("Saving profile with payload:", authPayload);
-
     try {
       await auth.client.updateUser(authPayload);
       await refresh();

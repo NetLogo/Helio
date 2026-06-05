@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 defineProps<{
-  src?: string;
+  src?: string | null;
   width?: string;
 }>();
 

@@ -41,7 +41,7 @@
         variant="card"
         :items="userKindOptions"
         color="primary"
-        @update:model-value="$emit('update:userKind', $event as EditableUserKind)"
+        @update:model-value="$emit('update:userKind', $event as UserKind)"
       />
     </section>
 
@@ -64,11 +64,11 @@
 
 <script setup lang="ts">
 import type { RadioGroupItem } from "@nuxt/ui";
-import type { EditableUserKind } from "~/composables/user/useProfileSettings";
+import type { UserKind } from '~/forms/auth';
 
 defineProps<{
   isProfilePublic: boolean;
-  userKind: EditableUserKind;
+  userKind: UserKind;
   userKindOptions: Array<RadioGroupItem>;
   isDirty: boolean;
   isSaving: boolean;
@@ -78,7 +78,7 @@ defineProps<{
 
 defineEmits<{
   "update:isProfilePublic": [value: boolean];
-  "update:userKind": [value: EditableUserKind];
+  "update:userKind": [value: UserKind];
   reset: [];
   save: [];
 }>();

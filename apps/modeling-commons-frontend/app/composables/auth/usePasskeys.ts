@@ -1,4 +1,5 @@
 import type { Passkey } from "@better-auth/passkey/client";
+import type { RawError } from "better-auth";
 
 interface AddPasskeyInput {
   name?: string;
@@ -43,7 +44,7 @@ export default function usePasskeys(options: { withList?: boolean } = {}) {
 
     await refreshPasskeys();
 
-    return response;
+    return response as { error?: { message?: string } };
   }
 
   async function revokePasskey(id: string) {
@@ -55,7 +56,7 @@ export default function usePasskeys(options: { withList?: boolean } = {}) {
 
     await refreshPasskeys();
 
-    return response;
+    return response as { error?: { message?: string } };
   }
 
   async function refreshPasskeys() {
@@ -77,4 +78,32 @@ export default function usePasskeys(options: { withList?: boolean } = {}) {
     revokePasskey,
     refreshPasskeys,
   };
+}
+
+export function getPasskeyErrorCode(error: unknown) {
+  if (!error) return null;
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof (error as { code: unknown }).code === "string"
+  ) {
+    return (error as { code: string }).code;
+  }
+  return null;
+}
+
+export function getPasskeyErrorMessage(error: unknown) {
+  if (!error) return null;
+  if (typeof error === "object" && error !== null && "message" in error) {
+    const message = (error as { message: string | RawError | null }).message;
+    if (message === null) {
+      return null;
+    } else if (typeof message === "string") {
+      return message;
+    } else if (typeof message === "object" && "message" in message) {
+      return (message as { message: unknown }).message as string;
+    }
+  }
+  return null;
 }

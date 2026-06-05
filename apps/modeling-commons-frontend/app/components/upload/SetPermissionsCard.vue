@@ -18,7 +18,7 @@
           <template #label>
             <span class="text-md">Model Permissions <span class="text-coral">*</span></span>
           </template>
-          <URadioGroup v-model="state.permission" :items="permissionOptions" class="mt-2" />
+          <URadioGroup v-model="state.permission" :items="permissionOptions as Mutable<typeof permissionOptions>" class="mt-2" />
         </UFormField>
       </div>
     </div>
