@@ -27,6 +27,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment: netlogo1
     permissions:
       contents: read
@@ -86,9 +87,55 @@ jobs:
           timeout 30 bash -c 'until curl -sf http://localhost:3000/api/health; do sleep 1; done'
         working-directory: apps/modeling-commons-backend
 
+      - name: Get Playwright version
+        id: pw-version
+        run: echo "version=$(npx playwright --version)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: playwright
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}
+
+      # - name: Install Playwright browser
+      #   if: steps.playwright.outputs.cache-hit != 'true'
+      #   run: yarn run e2e:install-browser
+      #   working-directory: apps/modeling-commons-frontend
+
+      - name: Install Playwright deps
+        run: npx playwright-core install-deps chromium
+        working-directory: apps/modeling-commons-frontend
+
+      - name: Install Playwright browser
+        timeout-minutes: 5
+        run: |
+            npx playwright-core install chromium
+            sudo fc-cache -f
+        env:
+          FONTCONFIG_PATH: /dev/null
+        working-directory: apps/modeling-commons-frontend
+
+      - name: Build frontend
+        run: yarn run nuxt:build
+        working-directory: apps/modeling-commons-frontend
+        env:
+          NUXT_TELEMETRY_DISABLED: '1'
+
+      - name: Run frontend server
+        run: node .output/server/index.mjs &
+          timeout 60 bash -c 'until curl -sf http://localhost:3005/ >/dev/null; do sleep 1; done'
+        working-directory: apps/modeling-commons-frontend
+        env:
+          PORT: '3005'
+          NODE_OPTIONS: --dns-result-order=ipv4first
+
+      # E2E runs against the already-built server (E2E_HOST), so the e2e project
+      # skips its per-file Nuxt build — the non-e2e projects are unaffected.
       - name: Run frontend tests
         run: yarn run test:all
         working-directory: apps/modeling-commons-frontend
+        env:
+          E2E_HOST: http://localhost:3005
 
       - if: always()
         run: docker compose -f docker-compose.dev.yml down -v
