@@ -43,7 +43,9 @@ describe("auth: signup + login", async () => {
     await Promise.race([
       page.waitForURL(/\/verify-email/, { timeout: 15_000 }),
       page
-        .getByText(/verify your email|Login failed/i)
+        .locator("[data-slot='title']")
+        .filter({ hasText: /verify your email|Login failed/i })
+        .first()
         .waitFor({ timeout: 15_000 }),
     ]);
 
@@ -61,7 +63,9 @@ describe("auth: signup + login", async () => {
     await page.getByRole("button", { name: "Log In" }).click();
 
     await page
-      .getByText(/Login failed|verify your email/i)
+      .locator("[data-slot='title']")
+      .filter({ hasText: /Login failed|verify your email/i })
+      .first()
       .waitFor({ timeout: 15_000 });
 
     expect(page.url()).not.toMatch(/\/models\/?$/);

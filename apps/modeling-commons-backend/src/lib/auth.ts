@@ -13,7 +13,7 @@ export const auth = betterAuth({
   baseURL: env.auth.url,
   basePath: '/api/auth',
   secret: env.auth.secret,
-  trustedOrigins: env.cors.allowedOrigins,
+  trustedOrigins: env.isDevelopment ? ['*'] : env.cors.allowedOrigins,
 
   user: {
     additionalFields: {

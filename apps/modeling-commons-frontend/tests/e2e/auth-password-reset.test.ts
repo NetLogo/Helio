@@ -29,9 +29,14 @@ describe("auth: password reset request", async () => {
         .waitFor({ timeout: 15_000 }),
     ]);
 
-    // URL should reflect the email param after the success branch.
+    // URL should reflect the email param after the success branch. The page
+    // shows the alert before awaiting navigateTo({ query: { email } }), so wait
+    // for the URL to catch up rather than reading it immediately.
     if (await page.getByText(/Check your inbox/i).isVisible()) {
-      expect(page.url()).toContain(encodeURIComponent(email));
+      await page.waitForURL((u) => u.searchParams.get("email") === email, {
+        timeout: 15_000,
+      });
+      expect(new URL(page.url()).searchParams.get("email")).toBe(email);
     }
 
     await page.close();

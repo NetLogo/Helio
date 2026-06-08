@@ -24,43 +24,19 @@ services:
     volumes:
       - /tmp/com.netlogo.modeling-commons/postgresql:/var/lib/postgresql
 
-  seaweedfs-master:
-    image: chrislusf/seaweedfs:latest
-    command: "master -ip=seaweedfs-master -ip.bind=0.0.0.0"
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.27
+    command: "server -s3 -ip.bind=0.0.0.0"
     ports:
-      - 9333:9333   # Master HTTP
-      - 19333:19333 # Master gRPC
-    volumes:
-      - /tmp/com.netlogo.modeling-commons/seaweedfs/master:/data
-    networks:
-      - app_network
-
-  seaweedfs-volume:
-    image: chrislusf/seaweedfs:latest
-    command: "volume -mserver=seaweedfs-master:9333 -ip.bind=0.0.0.0 -port=8080"
-    ports:
-      - 8080:8081   # Volume HTTP
-      - 18080:18080 # Volume gRPC
-    depends_on:
-      - seaweedfs-master
-    volumes:
-      - /tmp/com.netlogo.modeling-commons/seaweedfs/volume:/data
-    networks:
-      - app_network
-
-  seaweedfs-filer:
-    image: chrislusf/seaweedfs:latest
-    command: "filer -master=seaweedfs-master:9333 -ip.bind=0.0.0.0 -s3"
-    ports:
-      - 8888:8888   # Filer HTTP
-      - 8333:8333   # S3 API
-      - 18888:18888 # Filer gRPC
-    depends_on:
-      - seaweedfs-master
-      - seaweedfs-volume
-    volumes:
-      - /tmp/com.netlogo.modeling-commons/seaweedfs/filer:/data
-      - ./docker/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
+      - 9333:9333   # master
+      - 8080:8080   # volume
+      - 8888:8888   # filer
+      - 8333:8333   # S3
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8888/"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     networks:
       - app_network
 

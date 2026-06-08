@@ -15,6 +15,7 @@
 import { describe, expect, it } from "vitest";
 import { createPage, url } from "@nuxt/test-utils/e2e";
 import { e2eSetup } from "./setup";
+import { modelCardLink } from "./helpers/page";
 
 describe("model detail: tabs and likes", async () => {
   await e2eSetup();
@@ -23,7 +24,7 @@ describe("model detail: tabs and likes", async () => {
     const page = await createPage();
     await page.goto(url("/models"));
 
-    const firstCard = page.locator("a[href^='/models/']").first();
+    const firstCard = page.locator(modelCardLink).first();
     if (!(await firstCard.count())) {
       await page.close();
       return; // empty seed; nothing to test

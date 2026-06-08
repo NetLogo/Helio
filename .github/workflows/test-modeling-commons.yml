@@ -1,0 +1,77 @@
+name: Test Modeling Commons
+
+on:
+  push:
+    branches: [main, app/modeling-commons, staging/modeling-commons]
+    paths:
+      - 'apps/modeling-commons-backend/**'
+      - 'apps/modeling-commons-frontend/**'
+      - 'packages/modeling-commons-shared/**'
+      - 'packages/typescript-config/**'
+      - 'packages/tailwind-config/**'
+      - 'packages/nuxt-core/**'
+      - 'packages/vue-ui/**'
+      - 'packages/markdown/**'
+      - 'packages/eslint-config/**'
+      - 'packages/utils/**'
+      - 'packages/common-data/**'
+      - 'packages/template/**'
+      - 'packages/nuxt-content-assets/**'
+      - 'packages/netlogo-docs/**'
+      - 'packages/emails/**'
+      - 'yarn.lock'
+      - '.github/workflows/build-and-push-modeling-commons.yml'
+      - '.github/workflows/test-modeling-commons.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment: netlogo1
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn run init
+        env:
+          HELIO_SKIP_CHECKS: '1'
+          NUXT_TELEMETRY_DISABLED: '1'
+
+      - name: Build backend
+        run: yarn workspace modeling-commons-backend fastify:build
+        env:
+          HELIO_HEADLESS: 1
+
+      - name: Run services
+        run: docker compose -f docker-compose.dev.yml up -d --wait
+        working-directory: apps/modeling-commons-backend
+
+      - name: Seed the services
+        run: yarn run db:migrate:dev && yarn run db:seed
+        working-directory: apps/modeling-commons-backend
+
+      - name: Run backend tests
+        run: yarn run test
+        working-directory: apps/modeling-commons-backend
+
+      - name: Run backend server
+        run: node dist/src/index.ts &
+          timeout 30 bash -c 'until curl -sf http://localhost:3000/health; do sleep 1; done'
+        working-directory: apps/modeling-commons-backend
+
+      - name: Run frontend tests
+        run: yarn run test:all
+        working-directory: apps/modeling-commons-frontend
+
+      - if: always()
+        run: docker compose -f docker-compose.dev.yml down -v
+        working-directory: apps/modeling-commons-backend
