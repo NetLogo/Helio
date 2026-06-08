@@ -48,6 +48,16 @@ jobs:
             turbo-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-
             turbo-${{ runner.os }}-
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
       - name: Install dependencies
         run: yarn run init
         env:
