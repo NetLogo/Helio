@@ -8,6 +8,7 @@
 import { describe, expect, it } from "vitest";
 import { createPage, url } from "@nuxt/test-utils/e2e";
 import { e2eSetup } from "./setup";
+import { fillField } from "./helpers/form";
 
 describe("auth: password reset request", async () => {
   await e2eSetup();
@@ -17,7 +18,7 @@ describe("auth: password reset request", async () => {
     await page.goto(url("/reset-password"));
 
     const email = `reset+${Date.now()}@example.test`;
-    await page.getByLabel("Email").fill(email);
+    await fillField(page.getByLabel("Email"), email);
     await page.getByRole("button", { name: "Send reset link" }).click();
 
     // The page shows either a success alert (any input) or an error alert

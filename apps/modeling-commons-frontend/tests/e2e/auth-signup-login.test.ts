@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest";
 import { createPage, url } from "@nuxt/test-utils/e2e";
 import { e2eSetup } from "./setup";
 import { buildRandomUser, signUpRandomUser } from "./helpers/auth";
+import { fillField } from "./helpers/form";
 
 describe("auth: signup + login", async () => {
   await e2eSetup();
@@ -24,7 +25,9 @@ describe("auth: signup + login", async () => {
     const user = await signUpRandomUser(page);
 
     expect(page.url()).toContain("/verify-email");
-    expect(page.url()).toContain(encodeURIComponent(user.email));
+    // Vue Router doesn't percent-encode `+`/`@` in query values, so compare the
+    // decoded `email` param rather than assuming a specific URL encoding.
+    expect(new URL(page.url()).searchParams.get("email")).toBe(user.email);
     expect(errors).toEqual([]);
 
     await page.close();
@@ -35,8 +38,8 @@ describe("auth: signup + login", async () => {
     const user = await signUpRandomUser(page);
 
     await page.goto(url("/login"));
-    await page.getByLabel("Email").fill(user.email);
-    await page.getByLabel("Password", { exact: true }).fill(user.password);
+    await fillField(page.getByLabel("Email"), user.email);
+    await fillField(page.getByLabel("Password", { exact: true }), user.password);
     await page.getByRole("button", { name: "Log In" }).click();
 
     // The auth flow either bounces back to /verify-email or surfaces a toast.
@@ -58,8 +61,8 @@ describe("auth: signup + login", async () => {
     await page.goto(url("/login"));
 
     const fake = buildRandomUser();
-    await page.getByLabel("Email").fill(fake.email);
-    await page.getByLabel("Password", { exact: true }).fill(fake.password);
+    await fillField(page.getByLabel("Email"), fake.email);
+    await fillField(page.getByLabel("Password", { exact: true }), fake.password);
     await page.getByRole("button", { name: "Log In" }).click();
 
     await page

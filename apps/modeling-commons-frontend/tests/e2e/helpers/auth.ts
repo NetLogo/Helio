@@ -1,5 +1,6 @@
 import type { Page } from "playwright-core";
 import { url } from "@nuxt/test-utils/e2e";
+import { fillField } from "./form";
 
 export interface SignedUpUser {
   email: string;
@@ -22,10 +23,10 @@ export async function signUpRandomUser(page: Page): Promise<SignedUpUser> {
   const user = buildRandomUser();
   await page.goto(url("/signup"));
 
-  await page.getByLabel("Name").fill(user.name);
-  await page.getByLabel("Email").fill(user.email);
-  await page.getByLabel("Password", { exact: true }).fill(user.password);
-  await page.getByLabel("Confirm Password").fill(user.password);
+  await fillField(page.getByLabel("Name"), user.name);
+  await fillField(page.getByLabel("Email"), user.email);
+  await fillField(page.getByLabel("Password", { exact: true }), user.password);
+  await fillField(page.getByLabel("Confirm Password"), user.password);
 
   await page.getByRole("button", { name: "Sign Up" }).click();
 
@@ -39,8 +40,8 @@ export async function signIn(
 ): Promise<void> {
   await page.goto(url("/login"));
 
-  await page.getByLabel("Email").fill(creds.email);
-  await page.getByLabel("Password", { exact: true }).fill(creds.password);
+  await fillField(page.getByLabel("Email"), creds.email);
+  await fillField(page.getByLabel("Password", { exact: true }), creds.password);
   await page.getByRole("button", { name: "Log In" }).click();
 
   await page.waitForURL(/\/(models|passkey|profile)/, { timeout: 30_000 });

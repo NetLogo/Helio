@@ -25,7 +25,7 @@
     "test:components": "vitest run --project=components",
     "test:nuxt": "vitest run --project=nuxt",
     "test:bff": "vitest run --project=bff",
-    "test:e2e": "vitest run --project=e2e",
+    "test:e2e": "NODE_OPTIONS=--dns-result-order=ipv4first vitest run --project=e2e",
     "check-types": "nuxi typecheck",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",

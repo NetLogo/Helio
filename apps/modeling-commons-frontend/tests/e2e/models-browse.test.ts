@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 import { createPage, url } from "@nuxt/test-utils/e2e";
 import { e2eSetup } from "./setup";
 import { expectPageIdentity, modelCardLink } from "./helpers/page";
+import { fillField } from "./helpers/form";
 
 // /models renders "Explore Models" only in the document <title>; its visible
 // headings are dynamic model-card titles. Wait for cards or the empty state
@@ -46,7 +47,7 @@ describe("models: browse", async () => {
     const initialCount = await page.locator(modelCardLink).count();
 
     const searchInput = page.getByRole("textbox").first();
-    await searchInput.fill("zzznoresultsexpected" + Date.now());
+    await fillField(searchInput, "zzznoresultsexpected" + Date.now());
 
     // Debounced 300ms; wait for either fewer cards or the empty state.
     await expect
