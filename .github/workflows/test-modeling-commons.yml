@@ -40,6 +40,14 @@ jobs:
           node-version: '24'
           cache: yarn
 
+      - uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/turbo
+          key: turbo-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-
+            turbo-${{ runner.os }}-
+
       - name: Install dependencies
         run: yarn run init
         env:
@@ -65,7 +73,7 @@ jobs:
 
       - name: Run backend server
         run: node dist/src/index.ts &
-          timeout 30 bash -c 'until curl -sf http://localhost:3000/health; do sleep 1; done'
+          timeout 30 bash -c 'until curl -sf http://localhost:3000/api/health; do sleep 1; done'
         working-directory: apps/modeling-commons-backend
 
       - name: Run frontend tests
