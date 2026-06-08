@@ -161,7 +161,6 @@ export class ModelVersionBuilder {
         },
       },
       update: {},
-      // @ts-expect-error -- Shared vs. Non-Shared Buffer
       create: data,
     });
 
