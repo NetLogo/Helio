@@ -97,22 +97,9 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}
 
-      # - name: Install Playwright browser
-      #   if: steps.playwright.outputs.cache-hit != 'true'
-      #   run: yarn run e2e:install-browser
-      #   working-directory: apps/modeling-commons-frontend
-
-      - name: Install Playwright deps
-        run: npx playwright-core install-deps chromium
-        working-directory: apps/modeling-commons-frontend
-
       - name: Install Playwright browser
-        timeout-minutes: 5
-        run: |
-            npx playwright-core install chromium
-            sudo fc-cache -f
-        env:
-          FONTCONFIG_PATH: /dev/null
+        if: steps.playwright.outputs.cache-hit != 'true'
+        run: yarn run e2e:install-browser
         working-directory: apps/modeling-commons-frontend
 
       - name: Build frontend
