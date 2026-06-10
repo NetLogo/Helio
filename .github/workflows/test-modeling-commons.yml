@@ -2,7 +2,7 @@ name: Test Modeling Commons
 
 on:
   push:
-    branches: [main, app/modeling-commons, staging/modeling-commons]
+    branches: [main, staging/modeling-commons]
     paths:
       - 'apps/modeling-commons-backend/**'
       - 'apps/modeling-commons-frontend/**'
@@ -127,3 +127,9 @@ jobs:
       - if: always()
         run: docker compose -f docker-compose.dev.yml down -v
         working-directory: apps/modeling-commons-backend
+
+  deploy-staging:
+    needs: test
+    uses: ./.github/workflows/build-and-push-modeling-commons.yml
+    with:
+      environment: modeling-commons-staging

@@ -22,11 +22,16 @@ on:
       - 'yarn.lock'
       - '.github/workflows/build-and-push-modeling-commons.yml'
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    environment: netlogo1
+    environment: ${{ inputs.environment || 'modeling-commons-production' }}
     permissions:
       contents: read
       packages: write
@@ -42,28 +47,28 @@ jobs:
       - name: Install dependencies
         run: yarn run init
         env:
-          HELIO_SKIP_CHECKS: '1'
-          NUXT_TELEMETRY_DISABLED: '1'
+          HELIO_SKIP_CHECKS: ${{ vars.HELIO_SKIP_CHECKS }}
+          NUXT_TELEMETRY_DISABLED: ${{ vars.NUXT_TELEMETRY_DISABLED }}
 
       - name: Build backend
         run: yarn workspace modeling-commons-backend fastify:build
         env:
-          HELIO_HEADLESS: 1
+          HELIO_HEADLESS: ${{ vars.HELIO_HEADLESS }}
 
       - name: Build frontend
         working-directory: apps/modeling-commons-frontend
         run: yarn nuxt:build
         env:
-          HELIO_HEADLESS: 1
-          NUXT_TELEMETRY_DISABLED: 1
-          NODE_OPTIONS: --max-old-space-size=4096
-          NUXT_PUBLIC_AUTH_BASE: 'https://beta.modelingcommons.org/api/auth'
-          NUXT_PUBLIC_API_BASE: 'https://beta.modelingcommons.org'
-          NUXT_PUBLIC_APP_URL: 'https://beta.modelingcommons.org'
-          NUXT_STORAGE_BASE_URL: 'https://cdn.modelingcommons.org'
-          NUXT_PUBLIC_CDN_URL: 'https://cdn.modelingcommons.org'
-          NUXT_PUBLIC_NETLOGO_WEB_URL: 'https://www.netlogoweb.org'
-          NUXT_PUBLIC_GA_TRACKING_ID: 'G-VJ4WPV2Q5B'
+          HELIO_HEADLESS: ${{ vars.HELIO_HEADLESS }}
+          NUXT_TELEMETRY_DISABLED: ${{ vars.NUXT_TELEMETRY_DISABLED }}
+          NODE_OPTIONS: ${{ vars.NODE_OPTIONS }}
+          NUXT_PUBLIC_AUTH_BASE: ${{ vars.NUXT_PUBLIC_AUTH_BASE }}
+          NUXT_PUBLIC_API_BASE: ${{ vars.NUXT_PUBLIC_API_BASE }}
+          NUXT_PUBLIC_APP_URL: ${{ vars.NUXT_PUBLIC_APP_URL }}
+          NUXT_STORAGE_BASE_URL: ${{ vars.NUXT_STORAGE_BASE_URL }}
+          NUXT_PUBLIC_CDN_URL: ${{ vars.NUXT_PUBLIC_CDN_URL }}
+          NUXT_PUBLIC_NETLOGO_WEB_URL: ${{ vars.NUXT_PUBLIC_NETLOGO_WEB_URL }}
+          NUXT_PUBLIC_GA_TRACKING_ID: ${{ vars.NUXT_PUBLIC_GA_TRACKING_ID }}
 
       - uses: docker/setup-buildx-action@v3
 
@@ -89,7 +94,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.repo_slug.outputs.result }}/modeling-commons-backend:${{ github.sha }}
-            ${{ steps.repo_slug.outputs.result }}/modeling-commons-backend:latest
+            ${{ steps.repo_slug.outputs.result }}/modeling-commons-backend:${{ vars.VARIANT_IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -101,15 +106,19 @@ jobs:
           push: true
           tags: |
             ${{ steps.repo_slug.outputs.result }}/modeling-commons-frontend:${{ github.sha }}
-            ${{ steps.repo_slug.outputs.result }}/modeling-commons-frontend:latest
+            ${{ steps.repo_slug.outputs.result }}/modeling-commons-frontend:${{ vars.VARIANT_IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
   restart-deployments:
     needs: build-and-push
     runs-on: self-hosted
+    environment: ${{ inputs.environment || 'modeling-commons-production' }}
 
     steps:
       - name: Restart deployments
+        env:
+          KUBE_NAMESPACE: ${{ vars.KUBE_NAMESPACE }}
         run: |
           APISERVER=https://kubernetes.default.svc
           TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
@@ -123,5 +132,5 @@ jobs:
               -H "Content-Type: application/strategic-merge-patch+json" \
               -d "$PATCH" \
               --cacert "$CA" \
-              "$APISERVER/apis/apps/v1/namespaces/modeling-commons/deployments/$DEPLOY"
+              "$APISERVER/apis/apps/v1/namespaces/$KUBE_NAMESPACE/deployments/$DEPLOY"
           done
