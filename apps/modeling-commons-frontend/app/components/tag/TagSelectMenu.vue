@@ -7,7 +7,7 @@
     :items="userMenuItems"
     icon="i-lucide-hash"
     virtualize
-    loading-icon="i-lucide-loader"
+    :loading="loading"
     multiple
     @update:model-value="
       emit(

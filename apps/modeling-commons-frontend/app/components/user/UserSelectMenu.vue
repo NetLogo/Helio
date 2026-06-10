@@ -6,6 +6,7 @@
     placeholder="Author"
     :items="userMenuItems"
     virtualize
+    :loading="loading"
   >
     <template #empty>
       <UEmpty
@@ -23,6 +24,7 @@
         size="xs"
         class="size-5"
       />
+      <UIcon v-else-if="loading" name="lucide:loader-circle" class="size-5 animate-spin text-muted" />
       <UIcon v-else name="i-lucide-user-circle" class="size-5 text-muted" />
     </template>
   </USelectMenu>
