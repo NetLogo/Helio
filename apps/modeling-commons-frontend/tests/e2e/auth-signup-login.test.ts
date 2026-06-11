@@ -44,12 +44,12 @@ describe("auth: signup + login", async () => {
 
     // The auth flow either bounces back to /verify-email or surfaces a toast.
     await Promise.race([
-      page.waitForURL(/\/verify-email/, { timeout: 15_000 }),
+      page.waitForURL(/\/verify-email/, { timeout: 30_000 }),
       page
         .locator("[data-slot='title']")
         .filter({ hasText: /verify your email|Login failed/i })
         .first()
-        .waitFor({ timeout: 15_000 }),
+        .waitFor({ timeout: 30_000 }),
     ]);
 
     expect(page.url()).not.toMatch(/\/models\/?$/);
@@ -69,7 +69,7 @@ describe("auth: signup + login", async () => {
       .locator("[data-slot='title']")
       .filter({ hasText: /Login failed|verify your email/i })
       .first()
-      .waitFor({ timeout: 15_000 });
+      .waitFor({ timeout: 30_000 });
 
     expect(page.url()).not.toMatch(/\/models\/?$/);
     await page.close();

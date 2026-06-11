@@ -116,10 +116,18 @@ jobs:
           PORT: '3005'
           NODE_OPTIONS: --dns-result-order=ipv4first
 
+      # Split the suite so e2e doesn't share the runner's 2 cores with the other
+      # five in-process projects (plus Chromium).
+      # -- Omar Ibrahim, Jun 11 26
+      - name: Run in-process frontend tests
+        run: yarn run test:in-process
+        working-directory: apps/modeling-commons-frontend
+
       # E2E runs against the already-built server (E2E_HOST), so the e2e project
-      # skips its per-file Nuxt build — the non-e2e projects are unaffected.
-      - name: Run frontend tests
-        run: yarn run test:all
+      # skips its per-file Nuxt build.
+      # -- Omar Ibrahim, Jun 11 26
+      - name: Run frontend e2e tests
+        run: yarn run test:e2e
         working-directory: apps/modeling-commons-frontend
         env:
           E2E_HOST: http://localhost:3005

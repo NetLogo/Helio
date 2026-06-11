@@ -19,6 +19,7 @@
     "nuxt:prepare": "nuxt prepare",
     "test": "vitest run --project=unit --project=components",
     "test:all": "vitest run",
+    "test:in-process": "vitest run --project=unit --project=ssr --project=components --project=nuxt --project=bff",
     "test:watch": "vitest",
     "test:unit": "vitest run --project=unit",
     "test:ssr": "vitest run --project=ssr",
