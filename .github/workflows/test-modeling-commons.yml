@@ -131,6 +131,17 @@ jobs:
         working-directory: apps/modeling-commons-frontend
         env:
           E2E_HOST: http://localhost:3005
+          E2E_ARTIFACT_DIR: ${{ runner.temp }}/e2e-artifacts
+
+      # Failure-only net: on a failed e2e run, upload the screenshot + HTML that
+      # dumpOnFailure captured at the point of failure.
+      - name: Upload e2e failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-failure-artifacts
+          if-no-files-found: ignore
+          path: ${{ runner.temp }}/e2e-artifacts
 
       - if: always()
         run: docker compose -f docker-compose.dev.yml down -v

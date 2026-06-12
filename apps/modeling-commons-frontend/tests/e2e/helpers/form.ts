@@ -2,15 +2,10 @@ import type { Locator } from "playwright-core";
 import { expect } from "vitest";
 
 /**
- * Fill an input so the value survives Nuxt's SSR hydration.
+ * Fill an input, re-filling until the value sticks.
  *
- * Right after navigation, Vue hydrates the server-rendered markup and re-renders
- * the inputs. If Playwright types into a field before hydration settles, the
- * re-render silently clears it — this reliably wiped the *first* field filled on
- * a freshly loaded page (e.g. "Name" on /signup, "Email" on /login), so the form
- * failed validation, never submitted, and `waitForURL` timed out. The result was
- * an intermittent failure that looked like a backend/CORS problem but was a
- * client-side race. Re-fill until the value sticks.
+ * Navigate with `gotoHydrated` first so the field is interactive; this only
+ * guards against a transient re-render flushing the value mid-fill.
  */
 export async function fillField(locator: Locator, value: string): Promise<void> {
   await locator.waitFor({ state: "visible" });

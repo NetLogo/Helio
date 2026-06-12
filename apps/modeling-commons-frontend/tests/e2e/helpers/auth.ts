@@ -1,6 +1,6 @@
 import type { Page } from "playwright-core";
-import { url } from "@nuxt/test-utils/e2e";
 import { fillField } from "./form";
+import { gotoHydrated } from "./nav";
 
 export interface SignedUpUser {
   email: string;
@@ -21,7 +21,7 @@ export function buildRandomUser(): SignedUpUser {
 
 export async function signUpRandomUser(page: Page): Promise<SignedUpUser> {
   const user = buildRandomUser();
-  await page.goto(url("/signup"));
+  await gotoHydrated(page, "/signup");
 
   await fillField(page.getByLabel("Name"), user.name);
   await fillField(page.getByLabel("Email"), user.email);
@@ -38,7 +38,7 @@ export async function signIn(
   page: Page,
   creds: { email: string; password: string },
 ): Promise<void> {
-  await page.goto(url("/login"));
+  await gotoHydrated(page, "/login");
 
   await fillField(page.getByLabel("Email"), creds.email);
   await fillField(page.getByLabel("Password", { exact: true }), creds.password);
