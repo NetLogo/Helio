@@ -43,11 +43,11 @@ jobs:
 
       - uses: actions/cache@v4
         with:
-          path: node_modules/.cache/turbo
-          key: turbo-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
           restore-keys: |
-            turbo-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-
-            turbo-${{ runner.os }}-
+            ${{ runner.os }}-turbo-${{ hashFiles('yarn.lock') }}-
+            ${{ runner.os }}-turbo-
 
       - uses: actions/cache@v4
         with:
