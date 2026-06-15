@@ -176,12 +176,13 @@ export default defineNuxtConfig({
 
   image: {
     domains: imageDomains,
-    provider: "none",
+    provider: "ipx",
     format: ["avif", "webp", "jpeg"],
     ipx: {
       // Avoid exposing name of internal binary
       // -Omar Ibrahim, Apr 20 26
       baseURL: "/_images",
+      maxAge: 60 * 60 * 24 * 30,
     },
   },
 
