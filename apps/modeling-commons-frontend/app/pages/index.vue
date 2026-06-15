@@ -31,7 +31,7 @@
         </div>
 
         <NuxtLink to="https://www.netlogo.org/" target="_blank" rel="noopener noreferrer" class="mt-8 text-center lg:text-left text-md">
-            Powered by <NuxtImg :src="NetlogoLogo" class="inline-block h-6 w-auto -mt-0.5 -ml-1" />
+            Powered by <img :src="NetlogoLogo" alt="NetLogo" class="inline-block h-6 w-auto -mt-0.5 -ml-1" />
         </NuxtLink>
       </div>
       <MarqueeGallery class="lg:w-5xl" height="80dvh" column-gap="12px">

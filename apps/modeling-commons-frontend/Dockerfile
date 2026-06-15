@@ -23,9 +23,23 @@ ENV NUXT_PUBLIC_CDN_URL=${NUXT_PUBLIC_CDN_URL}
 ENV NUXT_PUBLIC_NETLOGO_WEB_URL=${NUXT_PUBLIC_NETLOGO_WEB_URL}
 ENV NUXT_PUBLIC_GA_TRACKING_ID=${NUXT_PUBLIC_GA_TRACKING_ID}
 
-RUN addgroup -g 1001 -S nodejs && adduser -S nuxt -u 1001 -G nodejs
+RUN groupadd -r -g 1001 nodejs && useradd -r -u 1001 -g nodejs -s /usr/sbin/nologin nuxt
 WORKDIR /app
 COPY .output .output
+
+# Nitro symlinks sharp's native packages to @version-suffixed dirs under
+# .output/.nitro, which breaks the $ORIGIN-relative rpath the sharp binding uses
+# to find libvips at load time (ERR_DLOPEN_FAILED: libvips-cpp.so). Reinstall
+# sharp (same traced version) as a flat tree so the rpath resolves.
+RUN SHARP_VERSION="$(node -p "require('./.output/server/node_modules/sharp/package.json').version")" \
+  && npm install --no-save --no-audit --no-fund \
+      --os=linux --cpu="$(node -p process.arch)" --libc=glibc \
+      --prefix /tmp/sharp "sharp@${SHARP_VERSION}" \
+  && rm -rf .output/server/node_modules/sharp .output/server/node_modules/@img \
+  && cp -R /tmp/sharp/node_modules/sharp .output/server/node_modules/sharp \
+  && cp -R /tmp/sharp/node_modules/@img .output/server/node_modules/@img \
+  && rm -rf /tmp/sharp
+
 USER nuxt
 EXPOSE 3005
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
