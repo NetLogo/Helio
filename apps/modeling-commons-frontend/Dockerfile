@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM node:24-alpine
-RUN apk add --no-cache dumb-init
+FROM node:24-slim
+RUN apt-get update && apt-get install -y --no-install-recommends dumb-init \
+  && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production HOST=0.0.0.0 NITRO_PORT=3005
 
