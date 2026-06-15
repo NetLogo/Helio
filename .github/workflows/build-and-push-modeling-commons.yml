@@ -117,6 +117,14 @@ jobs:
           tags: |
             ${{ steps.repo_slug.outputs.result }}/modeling-commons-frontend:${{ github.sha }}
             ${{ steps.repo_slug.outputs.result }}/modeling-commons-frontend:${{ vars.VARIANT_IMAGE_TAG }}
+          build-args: |
+            NUXT_PUBLIC_API_BASE=${{ vars.NUXT_PUBLIC_API_BASE }}
+            NUXT_PUBLIC_AUTH_BASE=${{ vars.NUXT_PUBLIC_AUTH_BASE }}
+            NUXT_PUBLIC_APP_URL=${{ vars.NUXT_PUBLIC_APP_URL }}
+            NUXT_STORAGE_BASE_URL=${{ vars.NUXT_STORAGE_BASE_URL }}
+            NUXT_PUBLIC_CDN_URL=${{ vars.NUXT_PUBLIC_CDN_URL }}
+            NUXT_PUBLIC_NETLOGO_WEB_URL=${{ vars.NUXT_PUBLIC_NETLOGO_WEB_URL }}
+            NUXT_PUBLIC_GA_TRACKING_ID=${{ vars.NUXT_PUBLIC_GA_TRACKING_ID }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
