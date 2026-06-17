@@ -44,7 +44,7 @@
         <span>{{ relativeDate }}</span>
         <template v-if="netlogoVersion">
           <Middot v-if="authors.length > 0" />
-          <span>Written in {{ netlogoVersion }}</span>
+          <span>Authored in {{ netlogoVersion }}</span>
         </template>
         <template v-if="modelGroup">
           <Middot v-if="authors.length > 0" />
