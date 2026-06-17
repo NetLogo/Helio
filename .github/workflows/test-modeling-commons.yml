@@ -24,6 +24,10 @@ on:
       - '.github/workflows/test-modeling-commons.yml'
   workflow_dispatch:
 
+concurrency:
+  group: modeling-commons-testing
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
