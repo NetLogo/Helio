@@ -200,7 +200,7 @@ const isMobileScreen = ref(false);
 const navbarRef = useTemplateRef<InstanceType<typeof _Navbar>>("navbar");
 
 const brand = computed(() => WebsiteLogo);
-const brandAttrs = computed(() => ({ class: "w-40 lg:w-48 lg:ml-0 lg:[&>svg]:w-full!" }));
+const brandAttrs = computed(() => ({ class: "w-50! lg:w-60! lg:ml-0 lg:[&>svg]:w-full!" }));
 
 const handleMediaQueryChange = (): void => {
   if (import.meta.client) {
