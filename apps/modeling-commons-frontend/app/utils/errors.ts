@@ -20,7 +20,9 @@ export function handleApiError<T>(
   data: NonNullable<T> | undefined | null,
   error: ApiError | undefined,
   when: string | undefined = undefined,
-  whatNow: string | undefined = "try again later or contact support",
+  whatNow:
+    | string
+    | undefined = "try again later or reach out via email, GitHub, or the NetLogo Forum if the problem persists",
 ): T {
   if (error) {
     throw createApiError(error, when, whatNow);
