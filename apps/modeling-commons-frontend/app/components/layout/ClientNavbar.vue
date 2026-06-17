@@ -33,9 +33,16 @@
     </NavbarLinksContainer>
 
     <NavbarActionsContainer class="gap-3! ml-0!">
-      <NuxtLink v-if="user.isLoggedIn" to="/models/upload" title="Upload a Model">
-        <UButton variant="outline" size="xs" square icon="i-lucide-upload" />
-      </NuxtLink>
+      <UButton
+        v-if="user.isLoggedIn"
+        title="Upload Model"
+        size="xs"
+        square
+        icon="i-lucide-upload"
+        to="/models/upload"
+        variant="solid"
+        color="primary"
+      />
       <UDropdownMenu v-if="user.isLoggedIn" :items="userDropdownItems" :content="{ align: 'end' }">
         <template #user-info>
           <UserAvatar
