@@ -72,11 +72,9 @@ describe("getModelEmbedMarkdownCode", () => {
     expect(md).toContain(getModelEmbedUrl(target));
   });
 
-  it("includes both markdown link and HTML iframe comment", () => {
+  it("includes markdown link with preview image", () => {
     const md = getModelEmbedMarkdownCode(target, "Title", "http://img.test/p.png");
     expect(md).toContain("[![Title](http://img.test/p.png)](");
-    expect(md).toContain("<iframe");
-    expect(md).toContain("<!-- or via iframe embed code (uncomment to embed) -->");
   });
 });
 
