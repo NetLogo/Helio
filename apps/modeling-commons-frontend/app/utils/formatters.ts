@@ -72,6 +72,11 @@ export function pluralize(count: number, singular: string, plural?: string): str
   return `${numberFormatter.format(count)} ${plural || singular + "s"}`;
 }
 
+export function pluralizeWithCount(count: number, singular: string, plural?: string): string {
+  if (count === 1) return `1 ${singular}`;
+  return `${numberFormatter.format(count)} ${plural || singular + "s"}`;
+}
+
 export function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }

@@ -1,7 +1,7 @@
 <template>
   <UContainer>
     <ModelsListing :filters="filters">
-      <template #header>
+      <template #header="{ totalCount}">
         <div v-if="tagStatus === 'pending'" class="space-y-2">
           <div class="h-8 w-48 bg-accented rounded animate-pulse" />
           <div class="h-4 w-64 bg-muted rounded animate-pulse" />
@@ -11,8 +11,7 @@
 
         <div v-else-if="tag" class="space-y-2">
           <div class="flex items-center gap-3 flex-wrap">
-            <TagChip :name="tag.name" :display-name="tag.displayName" :linkable="false" />
-            <h4 class="tracking-tight">{{ tag.displayName }}</h4>
+            <h4 class="tracking-tight">{{ tag.displayName }} <span v-if="totalCount" class="text-md text-muted">(tagged {{ pluralizeWithCount(totalCount, 'time') }})</span></h4>
           </div>
           <p class="text-sm text-muted">
             Models tagged with <span class="font-medium">{{ tag.displayName }}</span>

@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8">
-    <slot name="header" />
+    <slot name="header" :total-count="totalCount" />
 
     <div class="flex gap-2 w-full flex-1">
       <SearchBar v-if="props.showSearch" v-model="searchQuery" placeholder="Search models..." />
