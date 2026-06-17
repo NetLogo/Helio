@@ -74,7 +74,7 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
   [
     { label: "Account", type: "label" },
     { label: "Public Profile", icon: "i-lucide-user-cog", to: "/profile/settings" },
-    { label: "Login & Security", icon: "i-lucide-key-round", to: "/profile/security" },
+    { label: "Log In & Security", icon: "i-lucide-key-round", to: "/profile/security" },
     // {
     //   label: "Notifications & Preferences",
     //   icon: "i-lucide-sliders-horizontal",

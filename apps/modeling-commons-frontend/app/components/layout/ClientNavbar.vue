@@ -168,7 +168,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           href: "/profile/settings",
         },
         {
-          label: "Login & Security",
+          label: "Log In & Security",
           icon: "i-lucide-key-round",
           href: "/profile/security",
         },

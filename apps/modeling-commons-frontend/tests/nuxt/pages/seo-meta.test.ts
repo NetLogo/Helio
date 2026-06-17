@@ -168,7 +168,7 @@ describe("Page SEO meta", () => {
     await mountSuspended(Page);
     const meta = lastSeoCall();
     expect(meta).not.toBeNull();
-    expect(String(resolveMaybe(meta!.title))).toContain("Login");
+    expect(String(resolveMaybe(meta!.title))).toContain("Log In");
     expect(String(resolveMaybe(meta!.description) ?? "").length).toBeGreaterThan(0);
   });
 

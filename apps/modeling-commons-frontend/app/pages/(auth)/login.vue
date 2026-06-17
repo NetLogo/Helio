@@ -80,8 +80,8 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Login",
-  description: "Login to your account to continue",
+  title: "Log In",
+  description: "Log In to your account to continue",
 });
 
 const meta = useWebsite();
@@ -187,11 +187,11 @@ async function onSubmit(payload?: FormSubmitEvent<Schema>): Promise<void> {
     }
 
     if (error) {
-      showActionFailedToast("Login", error.message);
+      showActionFailedToast("Log In", error.message);
       return;
     }
   } catch (error) {
-    showActionFailedToast("Login", (error as Error).message);
+    showActionFailedToast("Log In", (error as Error).message);
     return;
   }
 
