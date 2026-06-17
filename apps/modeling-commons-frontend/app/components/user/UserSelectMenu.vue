@@ -7,7 +7,15 @@
     :items="userMenuItems"
     virtualize
     :loading="loading"
+    clear
   >
+     <template v-if="selectedUser?.value" #content-bottom >
+      <div class="px-2 py-1 border-t border-muted fade-in">
+        <UButton variant="link" color="error" size="xs" class="w-full" icon="i-lucide-x" @click.stop="clearSelection">
+          <span class="text-sm">Clear selected user</span>
+      </UButton>
+      </div>
+    </template>
     <template #empty>
       <UEmpty
         icon="i-lucide-users"
@@ -67,12 +75,18 @@ const userMenuItems = computed<UserSelectMenuItem[]>(() => {
   }
   return [...props.users.map(toUserSelectMenuItem)];
 });
-const selectedUser = defineModel<UserSelectMenuItem>({
-  type: Object as () => UserSelectMenuItem,
-  default: null,
+const selectedUser = defineModel<UserSelectMenuItem | undefined>({
+  type: Object as () => UserSelectMenuItem | undefined,
+  default: undefined,
 });
 const searchTerm = defineModel<string>("search-term", { type: String, default: "" });
 const selectMenu = useTemplateRef("selectMenu");
+
+function clearSelection() {
+  selectedUser.value = undefined;
+  searchTerm.value = "";
+  selectMenu.value?.triggerRef.click();
+}
 
 onMounted(() => {
   useInfiniteScroll(
