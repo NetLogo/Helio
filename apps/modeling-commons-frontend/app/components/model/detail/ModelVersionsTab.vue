@@ -8,11 +8,14 @@
           compare.
         </p>
       </div>
+      <!-- TODO: Enable compare button once implemented -->
       <UButton
         variant="soft"
-        :disabled="!canCompare"
         size="sm"
-        @click="$emit('compare', selected[0] ?? null, selected[1] ?? null)"
+        :disabled="!canCompare"
+        color="neutral"
+        title="Version comparison is coming soon!"
+        @click="showComingSoonToast('Version comparison')"
       >
         Compare Selected
       </UButton>
