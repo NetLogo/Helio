@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 const hero = {
-  title: "Support A More \nModel-Literate World",
+  title: "Help us build a more\nscientifically-literate world",
   description: [
     "Together, we’re building a future where complex models aren’t locked away in labs, but accessible to everyone",
   ],
