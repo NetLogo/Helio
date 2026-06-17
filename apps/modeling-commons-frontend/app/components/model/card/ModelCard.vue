@@ -50,11 +50,12 @@ const imageSrc = computed(() =>
 const badges = computed<BadgeProps[]>(() => {
   const result: BadgeProps[] = [];
   if (props.card.model.isEndorsed) {
-    result.push({ icon: "i-lucide-award", label: "Featured" });
+    result.push({ icon: "i-lucide-award", label: "Featured", variant: "outline" });
   }
   if (props.card.model.parentModelId) {
-    result.push({ icon: "i-lucide-git-branch", label: "Derived" });
+    result.push({ icon: "i-lucide-git-branch", label: "Derived", variant: "outline" });
   }
+  if (props.card.model.visibility === "public") return result;
   result.push({
     icon: getVisibilityIcon(props.card.model.visibility),
     variant: "solid",
