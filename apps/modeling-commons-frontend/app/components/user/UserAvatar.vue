@@ -20,6 +20,8 @@
       :alt="displayAlt"
       :text="initials"
       :size="variantProps.avatar.size"
+      :width="headlineImagePx"
+      :height="headlineImagePx"
       class="size-20 lg:size-8"
       :ui="{ ...asRecord(variantProps.avatar.ui), ...asRecord($attrs.ui) }"
       v-bind="$attrs"
@@ -58,6 +60,13 @@ const props = withDefaults(defineProps<AvatarProps>(), {
   pending: false,
   container: "",
 });
+
+// UAvatar requests the IPX image at its `size` token (caps at 48px), but the
+// headline box is painted at size-20 (80px). Request 80px so @nuxt/image's 2×
+// density variant stays sharp on retina; the externally-sized `compact` variant
+// is left to its call sites since its box varies (20px–160px).
+// -- Omar Ibrahim, Jun 18 26
+const headlineImagePx = 80;
 
 const displayAlt = computed(() => createAltText(props.alt, props.name));
 const initials = computed(() => createInitials(props.name));

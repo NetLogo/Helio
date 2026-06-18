@@ -5,6 +5,8 @@
         :src="image"
         :name="name"
         class="size-25 sm:size-30 lg:size-35"
+        :width="140"
+        :height="140"
         variant="compact"
       />
       <div class="space-y-2">
