@@ -156,6 +156,8 @@
         Showing {{ rows.length }} of {{ totalCount }} models
       </p>
     </div>
+
+    <BackToTop :show="showBackToTop" @click="scrollToTop" />
   </UContainer>
 </template>
 
@@ -202,6 +204,8 @@ const highlightFlags = ref({
       route.query.toDate,
   ),
 });
+
+const { show: showBackToTop, scrollToTop } = useBackToTop();
 
 const author = reactive(useUserFilter(filters, setFilter));
 const tags = reactive(useTagsFilter(filters, setFilter));

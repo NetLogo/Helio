@@ -20,6 +20,8 @@
     <p v-if="totalCount && totalCount > 0" class="mx-auto text-center text-xs text-dimmed">
       Showing {{ rows.length }} of {{ totalCount }} models
     </p>
+
+    <BackToTop :show="showBackToTop" @click="scrollToTop" />
   </div>
 </template>
 
@@ -38,6 +40,8 @@ const searchQuery = defineModel("searchQuery", {
 const filters = computed(() => props.filters);
 
 const orientation = ref<"horizontal" | "vertical">("horizontal");
+
+const { show: showBackToTop, scrollToTop } = useBackToTop();
 
 const { rows, totalCount, pending, error, hasMore, refresh, nextPage } = useForumModels({
   filters,
