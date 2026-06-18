@@ -83,7 +83,7 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
   ],
   [
     { label: "Models", type: "label" },
-    { label: "Published", icon: "i-lucide-globe", to: `/users/${user.value.user!.id}/models` },
+    { label: "Published", icon: "i-lucide-globe", to: `/users/${user.value.user?.id}/models` },
     { label: "Drafts", icon: "i-lucide-file-text", to: `/profile/drafts` },
   ],
   // [
