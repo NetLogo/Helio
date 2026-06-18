@@ -15,7 +15,7 @@
         variant="outline"
         size="sm"
         class="w-full justify-center"
-        @click="open()"
+        @click.stop="open()"
       />
     </template>
   </UFileUpload>
