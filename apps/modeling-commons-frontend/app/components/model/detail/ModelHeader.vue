@@ -31,7 +31,7 @@
         >
           Download
         </UButton>
-        <UDropdownMenu :content="{ align: 'end' }" :items="modelActionsDropdownItems">
+        <UDropdownMenu :content="{ align: 'end' }" :items="modelActionsDropdownItems" :modal="false" :portal="false">
           <UButton icon="i-lucide-ellipsis-vertical" square size="sm" />
         </UDropdownMenu>
       </div>
