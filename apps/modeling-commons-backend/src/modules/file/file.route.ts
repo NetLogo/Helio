@@ -4,6 +4,7 @@ import { resolveFile } from '#src/shared/hooks/resolve-file.ts';
 import type { FastifyInstance } from 'fastify';
 import { Type } from 'typebox';
 import { FileTooLargeError } from './domain/file.errors.ts';
+import { randomUUID } from 'node:crypto';
 
 const MAX_AVATAR_BYTES = rules.avatar.maxFileSize;
 
@@ -40,11 +41,13 @@ export default async function fileRoutes(fastify: FastifyInstance) {
       ],
     },
     async (request, reply) => {
-      const { filename, mimetype, buffer } = request.uploadedFile;
+      const { mimetype, buffer } = request.uploadedFile;
 
       if (buffer.length > MAX_AVATAR_BYTES) {
         throw new FileTooLargeError(buffer.length, MAX_AVATAR_BYTES);
       }
+
+      const filename = `${randomUUID()}-ua`;
 
       const key = await fileService.upload({
         filename,
