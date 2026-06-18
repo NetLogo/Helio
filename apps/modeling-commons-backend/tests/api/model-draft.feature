@@ -69,6 +69,29 @@ Feature: Model Drafts
     And the response body should have property "modelId"
     And the response body should have property "versionNumber"
 
+  Scenario: Uploading a preview image returns a public unsigned URL
+    Given an authenticated user
+    And an empty draft
+    When I upload a preview image to the draft
+    Then the response status should be 201
+    And the response body should have property "previewImageUrl"
+    And the response body property "previewImageUrl" should contain "files/public/"
+    And the response body property "previewImageUrl" should not contain "X-Amz-Signature"
+
+  Scenario: A draft seeded from a model with a preview keeps it public and unsigned
+    Given an authenticated user
+    And an empty draft
+    When I patch the draft with title "Seeded Preview Model" and visibility "public"
+    And I upload a primary file to the draft
+    And I upload a preview image to the draft
+    And I publish the draft
+    Then the response status should be 201
+    When I seed a new draft from the published model
+    And I get the draft
+    Then the response status should be 200
+    And the response body property "previewImageUrl" should contain "files/public/"
+    And the response body property "previewImageUrl" should not contain "X-Amz-Signature"
+
   @smoke
   Scenario: Publishing a draft seeded from an existing model creates a new version
     Given an authenticated user

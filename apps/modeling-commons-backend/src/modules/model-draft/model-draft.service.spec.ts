@@ -255,6 +255,75 @@ describe('modelDraftService', () => {
       expect(next.attachments).toHaveLength(1);
       expect(next.attachments![0]!.s3Key).toBe('staging/user-1/draft-1/att.csv');
     });
+
+    it('stages a preview image as a public object and persists it', async () => {
+      const { service, modelDraftRepository, modelDraftStorage } = buildService();
+      modelDraftStorage.putStaged.mockResolvedValue(
+        'files/public/staging/user-1/draft-1/abc-preview.png',
+      );
+      const draft = makeDraft();
+
+      const result = await service.addFile(draft, 'preview', {
+        buffer: Buffer.from('img') as Buffer<ArrayBuffer>,
+        filename: 'preview.png',
+        contentType: 'image/png',
+      });
+
+      expect(result.role).toBe('preview');
+      expect(modelDraftStorage.putStaged).toHaveBeenCalledWith(
+        expect.objectContaining({ public: true }),
+      );
+      const next = modelDraftRepository.updateDataTx.mock.calls[0]![3] as DraftDataV1;
+      expect(next.previewImage?.s3Key).toBe('files/public/staging/user-1/draft-1/abc-preview.png');
+    });
+
+    it('stages non-preview files as private objects', async () => {
+      const { service, modelDraftStorage } = buildService();
+      modelDraftStorage.putStaged.mockResolvedValue('staging/user-1/draft-1/abc-new.nlogo');
+
+      await service.addFile(makeDraft(), 'primary', {
+        buffer: Buffer.from('x') as Buffer<ArrayBuffer>,
+        filename: 'new.nlogo',
+        contentType: 'text/plain',
+      });
+
+      expect(modelDraftStorage.putStaged).toHaveBeenCalledWith(
+        expect.objectContaining({ public: false }),
+      );
+    });
+  });
+
+  describe('generatePreviewImage', () => {
+    function buildWithPreview() {
+      const previewImageService = {
+        generatePreviewFromNetlogoFile: vi
+          .fn()
+          .mockResolvedValue({ buffer: new Uint8Array([1, 2, 3]).buffer, contentType: 'image/png' }),
+      };
+      return { previewImageService, ...buildService({ previewImageService }) };
+    }
+
+    it('stages the generated preview as a public object', async () => {
+      const { service, modelDraftStorage } = buildWithPreview();
+      modelDraftStorage.putStaged.mockResolvedValue(
+        'files/public/staging/user-1/draft-1/uuid-preview.png',
+      );
+      const draft = makeDraft({ primaryFile: validPrimary });
+
+      const result = await service.generatePreviewImage(draft);
+
+      expect(result.s3Key).toBe('files/public/staging/user-1/draft-1/uuid-preview.png');
+      expect(modelDraftStorage.putStaged).toHaveBeenCalledWith(
+        expect.objectContaining({ public: true, filename: 'preview.png', contentType: 'image/png' }),
+      );
+    });
+
+    it('throws when the draft has no primary file', async () => {
+      const { service } = buildWithPreview();
+      await expect(service.generatePreviewImage(makeDraft({}))).rejects.toThrow(
+        ModelDraftFileNotFoundError,
+      );
+    });
   });
 
   describe('abandon', () => {

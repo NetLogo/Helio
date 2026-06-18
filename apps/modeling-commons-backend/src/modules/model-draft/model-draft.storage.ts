@@ -1,3 +1,4 @@
+import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
@@ -13,8 +14,45 @@ export default function makeModelDraftStorage({ storage, bucket, fileDomain }: D
     return `staging/${userId}/${draftId}/`;
   }
 
-  function stagingKey(userId: string, draftId: string, filename: string): string {
-    return `${stagingPrefix(userId, draftId)}${randomUUID()}-${sanitizeFilename(filename)}`;
+  function publicStagingPrefix(userId: string, draftId: string): string {
+    return `${PUBLIC_PREFIX}/staging/${userId}/${draftId}/`;
+  }
+
+  function stagingKey(
+    userId: string,
+    draftId: string,
+    filename: string,
+    isPublic = false,
+  ): string {
+    const prefix = isPublic
+      ? publicStagingPrefix(userId, draftId)
+      : stagingPrefix(userId, draftId);
+    return `${prefix}${randomUUID()}-${sanitizeFilename(filename)}`;
+  }
+
+  async function deletePrefix(prefix: string): Promise<void> {
+    let continuationToken: string | undefined;
+    do {
+      const listed = await storage.send(
+        new ListObjectsV2Command({
+          Bucket: bucket.Name,
+          Prefix: prefix,
+          ContinuationToken: continuationToken,
+        }),
+      );
+      const keys = (listed.Contents ?? [])
+        .map((o) => o.Key)
+        .filter((k): k is string => Boolean(k));
+      if (keys.length > 0) {
+        await storage.send(
+          new DeleteObjectsCommand({
+            Bucket: bucket.Name,
+            Delete: { Objects: keys.map((Key) => ({ Key })) },
+          }),
+        );
+      }
+      continuationToken = listed.IsTruncated ? listed.NextContinuationToken : undefined;
+    } while (continuationToken);
   }
 
   return {
@@ -24,14 +62,16 @@ export default function makeModelDraftStorage({ storage, bucket, fileDomain }: D
       buffer: Buffer<ArrayBuffer>;
       filename: string;
       contentType: string;
+      public?: boolean;
     }): Promise<string> {
-      const key = stagingKey(params.userId, params.draftId, params.filename);
+      const key = stagingKey(params.userId, params.draftId, params.filename, params.public);
       await storage.send(
         new PutObjectCommand({
           Bucket: bucket.Name,
           Key: key,
           Body: params.buffer,
           ContentType: params.contentType,
+          ...(params.public ? { ACL: 'public-read' } : {}),
           Metadata: {
             filename: sanitizeFilename(params.filename),
             createdat: new Date().toISOString(),
@@ -77,29 +117,8 @@ export default function makeModelDraftStorage({ storage, bucket, fileDomain }: D
     },
 
     async deleteStagingPrefix(userId: string, draftId: string): Promise<void> {
-      const prefix = stagingPrefix(userId, draftId);
-      let continuationToken: string | undefined;
-      do {
-        const listed = await storage.send(
-          new ListObjectsV2Command({
-            Bucket: bucket.Name,
-            Prefix: prefix,
-            ContinuationToken: continuationToken,
-          }),
-        );
-        const keys = (listed.Contents ?? [])
-          .map((o) => o.Key)
-          .filter((k): k is string => Boolean(k));
-        if (keys.length > 0) {
-          await storage.send(
-            new DeleteObjectsCommand({
-              Bucket: bucket.Name,
-              Delete: { Objects: keys.map((Key) => ({ Key })) },
-            }),
-          );
-        }
-        continuationToken = listed.IsTruncated ? listed.NextContinuationToken : undefined;
-      } while (continuationToken);
+      await deletePrefix(stagingPrefix(userId, draftId));
+      await deletePrefix(publicStagingPrefix(userId, draftId));
     },
   };
 }

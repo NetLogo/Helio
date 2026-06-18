@@ -23,6 +23,7 @@ import {
   type DraftPreviewImageV1,
   type DraftPrimaryFileV1,
 } from '#src/modules/model-draft/schemas/index.ts';
+import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
 import { UnauthorizedException } from '#src/shared/exceptions/exceptions.ts';
 import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
 import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
@@ -79,8 +80,16 @@ export default function makeModelDraftService({
     });
   }
 
-  function stagingKey(userId: string, draftId: string, filename: string): string {
-    return `staging/${userId}/${draftId}/${randomUUID()}-${sanitizeFilename(filename)}`;
+  function stagingKey(
+    userId: string,
+    draftId: string,
+    filename: string,
+    isPublic = false,
+  ): string {
+    const prefix = isPublic
+      ? `${PUBLIC_PREFIX}/staging/${userId}/${draftId}/`
+      : `staging/${userId}/${draftId}/`;
+    return `${prefix}${randomUUID()}-${sanitizeFilename(filename)}`;
   }
 
   function filenameFromKey(key: string): string {
@@ -134,13 +143,15 @@ export default function makeModelDraftService({
     userId: string;
     draftId: string;
     filename: string;
+    public?: boolean;
   }): Promise<{ s3Key: string; sizeBytes: number; mimeType: string }> {
-    const destKey = stagingKey(params.userId, params.draftId, params.filename);
+    const destKey = stagingKey(params.userId, params.draftId, params.filename, params.public);
     await storage.send(
       new CopyObjectCommand({
         Bucket: bucket.Name,
         Key: destKey,
         CopySource: `${bucket.Name}/${params.sourceKey}`,
+        ...(params.public ? { ACL: 'public-read' } : {}),
       }),
     );
     const head = await storage.send(new HeadObjectCommand({ Bucket: bucket.Name, Key: destKey }));
@@ -219,6 +230,7 @@ export default function makeModelDraftService({
           userId,
           draftId,
           filename: filenameFromKey(version.previewImageFileKey),
+          public: true,
         })
       : undefined;
 
@@ -287,6 +299,7 @@ export default function makeModelDraftService({
         buffer: file.buffer,
         filename: file.filename,
         contentType: file.contentType,
+        public: role === 'preview',
       });
 
       const data = currentData(draft);
@@ -344,6 +357,7 @@ export default function makeModelDraftService({
         buffer: previewBuffer,
         filename: 'preview.png',
         contentType: 'image/png',
+        public: true,
       });
 
       if (data.previewImage) {

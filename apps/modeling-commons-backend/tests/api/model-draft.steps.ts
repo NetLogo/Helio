@@ -31,6 +31,22 @@ function buildPrimaryFileMultipart(content: string): { payload: Buffer; contentT
   };
 }
 
+function buildPreviewImageMultipart(content: string): { payload: Buffer; contentType: string } {
+  const boundary = `----DraftPreviewBoundary${Date.now().toString(16)}`;
+  const parts = [
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="preview.png"\r\n` +
+      `Content-Type: image/png\r\n\r\n` +
+      `${content}\r\n`,
+    `--${boundary}\r\n` + `Content-Disposition: form-data; name="role"\r\n\r\n` + `preview\r\n`,
+    `--${boundary}--\r\n`,
+  ];
+  return {
+    payload: Buffer.from(parts.join(''), 'utf-8'),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
+}
+
 async function createEmptyDraft(
   server: import('fastify').FastifyInstance,
   user: TestUser,
@@ -172,6 +188,57 @@ When('I upload a primary file to the draft', async function (this: ICustomWorld)
     headers: { cookie: user.cookie, 'content-type': contentType },
   });
 });
+
+When('I upload a preview image to the draft', async function (this: ICustomWorld) {
+  const user = this.context['currentUser'] as TestUser;
+  const draftId = this.context['currentDraftId'] as string;
+  const { payload, contentType } = buildPreviewImageMultipart('fake-png-bytes');
+  this.context.latestResponse = await this.server.inject({
+    method: 'POST',
+    url: `/api/v1/model-drafts/${draftId}/files`,
+    payload,
+    headers: { cookie: user.cookie, 'content-type': contentType },
+  });
+});
+
+When('I seed a new draft from the published model', async function (this: ICustomWorld) {
+  const user = this.context['currentUser'] as TestUser;
+  const modelId = JSON.parse(this.context.latestResponse!.body).modelId;
+  const res = await this.server.inject({
+    method: 'POST',
+    url: '/api/v1/model-drafts',
+    payload: { modelId },
+    headers: { cookie: user.cookie, 'content-type': 'application/json' },
+  });
+  this.context.latestResponse = res;
+  if (res.statusCode === 201) {
+    const id = JSON.parse(res.body).id;
+    this.context['currentDraftId'] = id;
+    getDrafts(this.context).set('current', id);
+  }
+});
+
+Then(
+  'the response body property {string} should contain {string}',
+  function (this: ICustomWorld, property: string, substring: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    assert.ok(
+      typeof body[property] === 'string' && body[property].includes(substring),
+      `Expected "${property}" (${String(body[property])}) to contain "${substring}"`,
+    );
+  },
+);
+
+Then(
+  'the response body property {string} should not contain {string}',
+  function (this: ICustomWorld, property: string, substring: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    assert.ok(
+      typeof body[property] === 'string' && !body[property].includes(substring),
+      `Expected "${property}" (${String(body[property])}) to not contain "${substring}"`,
+    );
+  },
+);
 
 When('I publish the draft', async function (this: ICustomWorld) {
   const user = this.context['currentUser'] as TestUser;
