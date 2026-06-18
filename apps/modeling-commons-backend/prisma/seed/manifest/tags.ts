@@ -1,0 +1,28 @@
+import type { TagSeed } from './types.js';
+
+export const TAGS: TagSeed[] = [
+  { name: 'ecology', displayName: 'Ecology', legacyId: 101 },
+  { name: 'predator-prey', displayName: 'Predator–Prey', legacyId: 102 },
+  { name: 'biology', displayName: 'Biology', legacyId: 103 },
+  { name: 'emergence', displayName: 'Emergence', legacyId: 104 },
+  { name: 'fire', displayName: 'Fire', legacyId: 105 },
+  { name: 'physics', displayName: 'Physics' },
+  { name: 'chemistry', displayName: 'Chemistry' },
+  { name: 'network', displayName: 'Networks' },
+  { name: 'epidemiology', displayName: 'Epidemiology' },
+  { name: 'swarm-intelligence', displayName: 'Swarm Intelligence' },
+  { name: 'social-science', displayName: 'Social Science' },
+  { name: 'economics', displayName: 'Economics' },
+  { name: 'game-theory', displayName: 'Game Theory' },
+  { name: 'traffic', displayName: 'Traffic' },
+  { name: 'urban', displayName: 'Urban Dynamics' },
+  { name: 'cellular-automata', displayName: 'Cellular Automata' },
+  { name: 'mathematics', displayName: 'Mathematics' },
+  { name: 'climate', displayName: 'Climate' },
+  { name: 'evolution', displayName: 'Evolution' },
+  { name: 'segregation', displayName: 'Segregation' },
+  { name: 'education', displayName: 'Education' },
+  { name: 'beginner', displayName: 'Beginner Friendly' },
+  { name: 'complexity', displayName: 'Complexity' },
+  { name: 'agent-based', displayName: 'Agent-Based' },
+];
