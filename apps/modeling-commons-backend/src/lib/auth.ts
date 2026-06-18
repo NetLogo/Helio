@@ -8,6 +8,7 @@ import rules from '#src/config/rules.ts';
 import transporter, { mailDomain } from './mail.ts';
 import { prisma } from './prisma.ts';
 
+const corePlugins = [openAPI({ disableDefaultReference: false }), admin()];
 export const auth = betterAuth({
   appName: env.product.name,
   baseURL: env.auth.url,
@@ -120,7 +121,12 @@ export const auth = betterAuth({
     },
   },
 
-  plugins: [openAPI({ disableDefaultReference: false }), admin(), passkey()],
+  // The passkey plugin breaks types on frontend and backend
+  // The solution here is easier since we don't rely on the
+  // passkey API directly, so we can just exclude it from the inferred
+  // plugin types.
+  // -- Omar Ibrahim, Jun 18 26
+  plugins: [openAPI({ disableDefaultReference: false }), admin(), passkey()] as typeof corePlugins,
 });
 
 export type Session = typeof auth.$Infer.Session;
