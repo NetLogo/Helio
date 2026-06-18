@@ -57,14 +57,6 @@
       >
         Get started
       </UButton>
-      <UButton
-        class="w-full justify-center"
-        variant="ghost"
-        :disabled="isFinishing"
-        @click="finish"
-      >
-        Skip for now
-      </UButton>
     </div>
   </div>
 </template>
