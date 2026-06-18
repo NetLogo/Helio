@@ -82,14 +82,40 @@ const displayCard = computed<ModelCard | null>(() => {
   };
 });
 
+const seoMeta = computed(() => {
+  const title = displayCard.value?.latestVersion?.title;
+  if (title) {
+    return {
+      title,
+      description:
+        displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+    };
+  }
+  if (error.value) {
+    return isAccessDeniedError(error.value)
+      ? {
+          title: defaultStrings.privateModelName,
+          description: defaultStrings.privateModelDescription,
+        }
+      : {
+          title: defaultStrings.unavailableModelName,
+          description: defaultStrings.unavailableModelDescription,
+        };
+  }
+  return {
+    title: defaultStrings.modelName,
+    description:
+      displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+  };
+});
+
 useSeoMeta({
-  title: () => displayCard.value?.latestVersion?.title ?? defaultStrings.modelName,
-  description: () =>
-    displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
-  ogTitle: () => displayCard.value?.latestVersion?.title ?? defaultStrings.modelName,
-  ogDescription: () =>
-    displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+  title: () => seoMeta.value.title,
+  description: () => seoMeta.value.description,
+  ogTitle: () => seoMeta.value.title,
+  ogDescription: () => seoMeta.value.description,
   ogType: "article",
+  robots: () => (error.value ? "noindex, nofollow" : undefined),
 });
 
 const isLatestVersion = computed(() => {

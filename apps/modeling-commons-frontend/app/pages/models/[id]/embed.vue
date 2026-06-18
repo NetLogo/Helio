@@ -63,9 +63,7 @@ const { data: card, error, status, refresh } = useModelCard(modelId);
 
 const isAccessDenied = computed(() => {
   if (!error.value) return false;
-  const e = error.value as { status?: number; response?: { status?: number } };
-  const status = e?.status ?? e?.response?.status;
-  return status === 401 || status === 403 || status === 404;
+  return isAccessDeniedError(error.value) || getErrorStatus(error.value) === 404;
 });
 
 const title = computed(() => card.value?.latestVersion?.title ?? "NetLogo Model");
