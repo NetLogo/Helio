@@ -167,6 +167,11 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           icon: "i-lucide-user",
           href: "/profile",
         },
+        {
+          label: "My Models",
+          icon: "i-lucide-box",
+          href: `/users/${user.value.id}/models`,
+        },
       ],
       [
         {
