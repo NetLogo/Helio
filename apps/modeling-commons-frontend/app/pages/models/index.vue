@@ -4,11 +4,7 @@
       <div class="space-y-2">
         <div class="flex flex-col sm:flex-row gap-3">
           <div class="relative flex-1">
-            <SearchBar
-              :model-value="filters.keyword"
-              autofocus
-              @update:model-value="onKeywordChange"
-            />
+            <SearchBar v-model="keyword" autofocus />
           </div>
 
           <!-- @extract -->
@@ -230,13 +226,21 @@ watch(pending, (isLoading) => {
   else indicator.finish();
 });
 
-let keywordTimeout: ReturnType<typeof setTimeout>;
-function onKeywordChange(value: string | number) {
-  clearTimeout(keywordTimeout);
-  keywordTimeout = setTimeout(() => {
-    void setFilter("keyword", String(value));
-  }, modelKeywordDebounceMs);
-}
+const { query: keyword, debouncedQuery: debouncedKeyword } = useSearchQuery({
+  defaultValue: filters.value.keyword ?? "",
+  debounce: { ms: modelKeywordDebounceMs },
+});
+
+watch(debouncedKeyword, (value) => {
+  void setFilter("keyword", value ?? "");
+});
+
+watch(
+  () => filters.value.keyword,
+  (value) => {
+    if ((value ?? "") !== debouncedKeyword.value) keyword.value = value ?? "";
+  },
+);
 </script>
 
 <style>
