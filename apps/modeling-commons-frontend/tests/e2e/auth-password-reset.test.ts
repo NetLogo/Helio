@@ -42,7 +42,7 @@ async function signOut(page: Page): Promise<void> {
 }
 
 describe("auth: password reset request", async () => {
-  await e2eSetup({ testTimeout: 120_000 });
+  await e2eSetup();
 
   it("submits a reset request and surfaces the success alert", async () => {
     const page = await createPage();
@@ -72,7 +72,7 @@ describe("auth: password reset request", async () => {
     }
 
     await page.close();
-  });
+  }, 120_000);
 
   it("resets the password via the emailed token link and signs in with the new password", async () => {
     const label = "password-reset-token";

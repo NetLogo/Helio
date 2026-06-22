@@ -15,7 +15,7 @@ import { sampleNlogoxPath } from "./helpers/fixtures";
 import { dumpOnFailure } from "./helpers/debug";
 
 describe("models: draft resume journey", async () => {
-  await e2eSetup({ testTimeout: 120_000 });
+  await e2eSetup();
 
   it(
     "starts an upload, navigates away, opens /profile/drafts, clicks Resume editing, completes publish",

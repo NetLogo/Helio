@@ -18,42 +18,37 @@ import { sampleNlogoxPath } from "./helpers/fixtures";
 import { dumpOnFailure } from "./helpers/debug";
 
 describe("models: upload journey", async () => {
-  await e2eSetup({
-    // Uploads + publish round-trip tend to exceed the project default.
-    testTimeout: 120_000,
-  });
+  await e2eSetup();
 
-  it(
-    "signs in a verified user, attaches sample.nlogox, sets visibility public, publishes, lands on the new model detail page",
-    async () => {
-      const label = "model-upload";
-      const page = await createPage();
-      try {
-        await signUpAndVerify(page);
-        await page.goto(appUrl("/models/upload"));
+  // Uploads + publish round-trip tend to exceed the project default.
+  it("signs in a verified user, attaches sample.nlogox, sets visibility public, publishes, lands on the new model detail page", async () => {
+    const label = "model-upload";
+    const page = await createPage();
+    try {
+      await signUpAndVerify(page);
+      await page.goto(appUrl("/models/upload"));
 
-        const title = `E2E Model ${Date.now()}`;
-        const fileInput = page.locator("input[type=file]").first();
-        await fileInput.setInputFiles(sampleNlogoxPath);
-        await page.getByLabel("Title").fill(title);
-        await page.getByRole("button", { name: /Set Permissions/i }).click();
-        await page.getByRole("radio", { name: /Public/i }).check();
-        await page.getByRole("button", { name: "Publish" }).click();
-        // Publish navigates to the new model's detail page (/models/<id>, which
-        // may canonicalize to /models/<slug>/<id>); just not back to /upload.
-        await page.waitForURL(
-          (u) => u.pathname.startsWith("/models/") && u.pathname !== "/models/upload",
-          { timeout: 60_000 },
-        );
-        await page.getByText(title).first().waitFor({ state: "visible", timeout: 30_000 });
+      const title = `E2E Model ${Date.now()}`;
+      const fileInput = page.locator("input[type=file]").first();
+      await fileInput.setInputFiles(sampleNlogoxPath);
+      await page.getByLabel("Title").fill(title);
+      await page.getByRole("button", { name: /Set Permissions/i }).click();
+      await page.getByRole("radio", { name: /Public/i }).check();
+      await page.getByRole("button", { name: "Publish" }).click();
+      // Publish navigates to the new model's detail page (/models/<id>, which
+      // may canonicalize to /models/<slug>/<id>); just not back to /upload.
+      await page.waitForURL(
+        (u) => u.pathname.startsWith("/models/") && u.pathname !== "/models/upload",
+        { timeout: 60_000 },
+      );
+      await page.getByText(title).first().waitFor({ state: "visible", timeout: 30_000 });
 
-        // Reload and confirm the published model persists.
-        await page.reload();
-        await page.getByText(title).first().waitFor({ state: "visible", timeout: 30_000 });
-        await page.close();
-      } catch (err) {
-        await dumpOnFailure(page, label, err);
-      }
-    },
-  );
+      // Reload and confirm the published model persists.
+      await page.reload();
+      await page.getByText(title).first().waitFor({ state: "visible", timeout: 30_000 });
+      await page.close();
+    } catch (err) {
+      await dumpOnFailure(page, label, err);
+    }
+  }, 120_000);
 });
