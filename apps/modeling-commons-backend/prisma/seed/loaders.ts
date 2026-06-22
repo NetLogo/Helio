@@ -225,10 +225,16 @@ export async function loadModels(
         const fileAsset = textAsset(sf.filename, sf.content, `uploads/models/${m.key}`);
         await uploader.putSupplementary(fileAsset);
         const fileId = seedId('mvfile', m.key, versionNumber, sf.filename);
-        await prisma.modelVersionFile.upsert({
+        await prisma.modelAdditionalFile.upsert({
           where: { id: fileId },
           update: {},
-          create: { id: fileId, modelId: id, versionNumber, fileKey: fileAsset.key },
+          create: {
+            id: fileId,
+            modelId: id,
+            taggedVersionNumber: versionNumber,
+            fileKey: fileAsset.key,
+            kind: 'model',
+          },
         });
       }
     }

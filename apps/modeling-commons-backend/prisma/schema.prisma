@@ -46,6 +46,11 @@ enum ModelInteractionKind {
   share
 }
 
+enum ModelFileKind {
+  model
+  additional
+}
+
 // Better Auth core tables
 
 model User {
@@ -224,24 +229,11 @@ model ModelVersion {
   latestOfModel  Model?  @relation("LatestVersion")
   parentOfModels Model[] @relation("ParentVersion")
 
-  files ModelVersionFile[]
   tags  ModelVersionTag[]
   taggedAdditionalFiles ModelAdditionalFile[]
 
   @@id([modelId, versionNumber])
   @@index([modelId])
-}
-
-model ModelVersionFile {
-  id            String @id @default(uuid())
-  modelId       String
-  versionNumber Int
-  fileKey       String
-
-  modelVersion ModelVersion @relation(fields: [modelId, versionNumber], references: [modelId, versionNumber], onDelete: Cascade)
-
-  @@index([modelId, versionNumber])
-  @@index([fileKey])
 }
 
 model ModelVersionTag {
@@ -262,6 +254,7 @@ model ModelAdditionalFile {
   modelId             String
   taggedVersionNumber Int
   fileKey             String
+  kind                ModelFileKind @default(additional)
   createdAt           DateTime @default(now())
 
   model         Model        @relation(fields: [modelId], references: [id], onDelete: Cascade)
