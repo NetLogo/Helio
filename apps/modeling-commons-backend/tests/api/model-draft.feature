@@ -133,7 +133,6 @@ Feature: Model Drafts
     Then the response status should be 201
     And no drafts targeting the model "Purge On Publish Model" remain for the current user
 
-  @pending
   Scenario: Publishing a draft with only metadata changes patches the current version
     Given an authenticated user
     And a public model "Metadata Only Model" created by the current user
@@ -143,7 +142,6 @@ Feature: Model Drafts
     Then the response status should be 200
     And the response body property "versionNumber" should equal "1"
 
-  @pending
   Scenario: Publishing a draft with a new NetLogo file creates a new version
     Given an authenticated user
     And a public model "NetLogo File Change Model" created by the current user
@@ -152,3 +150,23 @@ Feature: Model Drafts
     And I publish the draft
     Then the response status should be 201
     And the response body property "versionNumber" should equal "2"
+
+  Scenario: Uploading an additional file to a seeded draft keeps the same version
+    Given an authenticated user
+    And a public model "Attachment Edit Model" created by the current user
+    And a draft seeded from the model "Attachment Edit Model"
+    When I upload an additional file to the draft
+    And I publish the draft
+    Then the response status should be 200
+    And the response body property "versionNumber" should equal "1"
+    And the model "Attachment Edit Model" latest version number should be 1
+
+  Scenario: Uploading a model file to a seeded draft creates a new version
+    Given an authenticated user
+    And a public model "Model File Edit Model" created by the current user
+    And a draft seeded from the model "Model File Edit Model"
+    When I upload a model file to the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the response body property "versionNumber" should equal "2"
+    And the model "Model File Edit Model" latest version number should be 2

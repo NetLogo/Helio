@@ -31,6 +31,42 @@ function buildPrimaryFileMultipart(content: string): { payload: Buffer; contentT
   };
 }
 
+function buildModelFileMultipart(content: string): { payload: Buffer; contentType: string } {
+  const boundary = `----DraftBoundary${Date.now().toString(16)}`;
+  const parts = [
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="model.nlogox"\r\n` +
+      `Content-Type: text/plain\r\n\r\n` +
+      `${content}\r\n`,
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="role"\r\n\r\n` +
+      `model-file\r\n`,
+    `--${boundary}--\r\n`,
+  ];
+  return {
+    payload: Buffer.from(parts.join(''), 'utf-8'),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
+}
+
+function buildAttachmentFileMultipart(content: string): { payload: Buffer; contentType: string } {
+  const boundary = `----DraftBoundary${Date.now().toString(16)}`;
+  const parts = [
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="notes.txt"\r\n` +
+      `Content-Type: text/plain\r\n\r\n` +
+      `${content}\r\n`,
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="role"\r\n\r\n` +
+      `attachment\r\n`,
+    `--${boundary}--\r\n`,
+  ];
+  return {
+    payload: Buffer.from(parts.join(''), 'utf-8'),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
+}
+
 function buildPreviewImageMultipart(content: string): { payload: Buffer; contentType: string } {
   const boundary = `----DraftPreviewBoundary${Date.now().toString(16)}`;
   const parts = [
@@ -189,6 +225,32 @@ When('I upload a primary file to the draft', async function (this: ICustomWorld)
   });
 });
 
+When('I upload a model file to the draft', async function (this: ICustomWorld) {
+  const user = this.context['currentUser'] as TestUser;
+  const draftId = this.context['currentDraftId'] as string;
+  const { payload, contentType } = buildModelFileMultipart(
+    `; Test Model File\nto go\ntick\nend\n`,
+  );
+  this.context.latestResponse = await this.server.inject({
+    method: 'POST',
+    url: `/api/v1/model-drafts/${draftId}/files`,
+    payload,
+    headers: { cookie: user.cookie, 'content-type': contentType },
+  });
+});
+
+When('I upload an additional file to the draft', async function (this: ICustomWorld) {
+  const user = this.context['currentUser'] as TestUser;
+  const draftId = this.context['currentDraftId'] as string;
+  const { payload, contentType } = buildAttachmentFileMultipart('supplementary notes\n');
+  this.context.latestResponse = await this.server.inject({
+    method: 'POST',
+    url: `/api/v1/model-drafts/${draftId}/files`,
+    payload,
+    headers: { cookie: user.cookie, 'content-type': contentType },
+  });
+});
+
 When('I upload a preview image to the draft', async function (this: ICustomWorld) {
   const user = this.context['currentUser'] as TestUser;
   const draftId = this.context['currentDraftId'] as string;
@@ -277,5 +339,25 @@ When(
       payload: { modelId },
       headers: { cookie: actor.cookie, 'content-type': 'application/json' },
     });
+  },
+);
+
+Then(
+  'the model {string} latest version number should be {int}',
+  async function (this: ICustomWorld, modelTitle: string, expected: number) {
+    const user = this.context['currentUser'] as TestUser;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    const res = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models/${modelId}`,
+      headers: { cookie: user.cookie },
+    });
+    assert.strictEqual(res.statusCode, 200, `Failed to fetch model (${res.statusCode}): ${res.body}`);
+    const body = JSON.parse(res.body);
+    assert.strictEqual(
+      body.latestVersionNumber,
+      expected,
+      `Expected latestVersionNumber ${expected}, got ${body.latestVersionNumber}`,
+    );
   },
 );

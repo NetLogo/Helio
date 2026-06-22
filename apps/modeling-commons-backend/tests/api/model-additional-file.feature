@@ -31,6 +31,7 @@ Feature: Model Additional Files
     And the response body should have property "id"
     And the response body should have property "fileKey"
     And the response body should have property "downloadUrl"
+    And the response body property "kind" should equal "additional"
 
   Scenario: Uploaded file appears in the listing
     Given an authenticated user "owner"
