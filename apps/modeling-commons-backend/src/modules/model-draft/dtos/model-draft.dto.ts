@@ -27,6 +27,7 @@ export const draftFileParamsSchema = Type.Object({
 
 export const draftFileRoleSchema = Type.Union([
   Type.Literal('primary'),
+  Type.Literal('model-file'),
   Type.Literal('attachment'),
   Type.Literal('preview'),
 ]);
@@ -74,6 +75,7 @@ export const generatePreviewImageResponseSchema = Type.Object({
 export const publishDraftResponseSchema = Type.Object({
   modelId: Type.String(),
   versionNumber: Type.Integer({ minimum: 1 }),
+  createdNewVersion: Type.Boolean(),
 });
 
 export type CreateDraftRequestDto = Static<typeof createDraftRequestDtoSchema>;

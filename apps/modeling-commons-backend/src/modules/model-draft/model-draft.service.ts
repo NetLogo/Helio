@@ -22,6 +22,9 @@ import {
   type DraftFileV1,
   type DraftPreviewImageV1,
   type DraftPrimaryFileV1,
+  type DraftSeededFromV1,
+  type ModelFileKind,
+  type StrictDraftData,
 } from '#src/modules/model-draft/schemas/index.ts';
 import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
 import { UnauthorizedException } from '#src/shared/exceptions/exceptions.ts';
@@ -96,6 +99,27 @@ export default function makeModelDraftService({
     const last = key.split('/').pop() ?? key;
     // S3 keys we emit are `${uuid}-${sanitizedFilename}`. Slice past the 36-char uuid + '-'.
     return last.length > 37 ? last.slice(37) : last;
+  }
+
+  function setEqual(a: Array<string>, b: Array<string>): boolean {
+    if (a.length !== b.length) return false;
+    const sa = new Set(a);
+    return b.every((k) => sa.has(k));
+  }
+
+  function modelFileKeys(attachments?: Array<DraftFileV1>): Array<string> {
+    return (attachments ?? []).filter((a) => a.kind === 'model').map((a) => a.s3Key);
+  }
+
+  function toPublishable(data: DraftData): StrictDraftData {
+    try {
+      return assertPublishable(data);
+    } catch (err) {
+      if (err instanceof ModelDraftInvalidPayloadError) {
+        throw new ModelDraftNotPublishableError(err.message);
+      }
+      throw err;
+    }
   }
 
   async function resolvePreviewImageFileKey(params: {
@@ -220,6 +244,7 @@ export default function makeModelDraftService({
           filename,
           sizeBytes: copy.sizeBytes,
           mimeType: copy.mimeType,
+          kind: att.kind,
         };
       }),
     );
@@ -243,6 +268,16 @@ export default function makeModelDraftService({
         }
       : undefined;
 
+    const seededFrom: DraftSeededFromV1 = {
+      versionNumber: version.versionNumber,
+      primaryFileS3Key: primaryFile.s3Key,
+      modelFileS3Keys: attachments.filter((a) => a.kind === 'model').map((a) => a.s3Key),
+      additionalFileS3Keys: attachments
+        .filter((a) => (a.kind ?? 'additional') === 'additional')
+        .map((a) => a.s3Key),
+      previewImageS3Key: previewImage?.s3Key,
+    };
+
     return {
       title: version.title,
       description: version.description ?? undefined,
@@ -251,6 +286,7 @@ export default function makeModelDraftService({
       primaryFile,
       attachments: attachments.length > 0 ? attachments : undefined,
       previewImage,
+      seededFrom,
     };
   }
 
@@ -334,7 +370,8 @@ export default function makeModelDraftService({
         return { role, ...meta };
       }
 
-      const attachment: DraftFileV1 = { id: randomUUID(), ...meta };
+      const kind: ModelFileKind = role === 'model-file' ? 'model' : 'additional';
+      const attachment: DraftFileV1 = { id: randomUUID(), ...meta, kind };
       next.attachments = [...(data.attachments ?? []), attachment];
       await persistData(draft, next);
       return { id: attachment.id, role, ...meta };
@@ -402,134 +439,242 @@ export default function makeModelDraftService({
     async publish(draft: ModelDraftEntity): Promise<PublishDraftResponseDto> {
       const userId = draft.userId;
       const draftId = draft.id;
-      let data;
-      try {
-        data = assertPublishable(currentData(draft));
-      } catch (err) {
-        if (err instanceof ModelDraftInvalidPayloadError) {
-          throw new ModelDraftNotPublishableError(err.message);
-        }
-        throw err;
-      }
+
+      const fullData = currentData(draft);
+      const data = toPublishable(fullData);
 
       const existingModel = draft.modelId ? await modelRepository.findOneById(draft.modelId) : null;
       if (draft.modelId && !existingModel) throw new ModelDraftNotFoundError(draftId);
       if (existingModel) modelDomain.assertNotDeleted(existingModel);
 
-      const model =
-        existingModel ??
-        modelDomain.createModel({
-          title: data.title,
-          visibility: data.visibility,
-        });
+      // Version-relevant changes (primary file or the model-file set) bump the version.
+      // Metadata-only edits (title/description/visibility/tags/preview/additional files) patch
+      // the current version in place. A missing baseline falls back to a safe new version.
+      const seededFrom = fullData.seededFrom;
+      const createNewVersion =
+        !existingModel || !seededFrom
+          ? true
+          : data.primaryFile.s3Key !== seededFrom.primaryFileS3Key ||
+            !setEqual(modelFileKeys(data.attachments), seededFrom.modelFileS3Keys);
 
-      const netlogoFileKey = await modelDraftStorage.copyStagedToPermanent({
-        stagingKey: data.primaryFile.s3Key,
-        modelId: model.id,
-        filename: data.primaryFile.filename,
-        contentType: data.primaryFile.mimeType,
-        pathPrefix: 'uploads/models',
-        userId,
-      });
+      async function publishNewVersion(): Promise<PublishDraftResponseDto> {
+        const model =
+          existingModel ??
+          modelDomain.createModel({
+            title: data.title,
+            visibility: data.visibility,
+          });
 
-      const attachmentCopies = await Promise.all(
-        (data.attachments ?? []).map(async (att) => ({
-          ...att,
-          copiedKey: await modelDraftStorage.copyStagedToPermanent({
-            stagingKey: att.s3Key,
-            modelId: model.id,
-            filename: att.filename,
-            contentType: att.mimeType,
-            pathPrefix: 'uploads/models/additional-files',
-            userId,
-          }),
-        })),
-      );
-
-      const previewImageFileKey = await resolvePreviewImageFileKey({
-        data,
-        modelId: model.id,
-        netlogoFileKey,
-        userId,
-      });
-
-      const tags = await Promise.all(
-        (data.tags ?? []).map(async (tagName) => {
-          return tagService.upsertByName(tagName);
-        }),
-      );
-
-      const result = await transactionManager.run(async (ctx) => {
-        if (!existingModel) {
-          await modelRepository.insertTx(ctx, model);
-          await modelAuthorRepository.insertTx(
-            ctx,
-            modelAuthorDomain.createAuthor(model.id, userId, 'owner'),
-          );
-        }
-
-        const previousVersion = existingModel
-          ? await modelVersionRepository.findLatestByModel(model.id, ctx)
-          : null;
-        if (previousVersion) {
-          await modelVersionRepository.finalize(
-            ctx,
-            previousVersion.modelId,
-            previousVersion.versionNumber,
-          );
-        }
-
-        const versionNumber = await modelVersionRepository.getNextVersionNumber(ctx, model.id);
-        const version = modelVersionDomain.createVersion({
+        const netlogoFileKey = await modelDraftStorage.copyStagedToPermanent({
+          stagingKey: data.primaryFile.s3Key,
           modelId: model.id,
-          versionNumber,
-          title: data.title,
-          description: data.description,
-          netlogoFileKey,
-          previewImageFileKey,
+          filename: data.primaryFile.filename,
+          contentType: data.primaryFile.mimeType,
+          pathPrefix: 'uploads/models',
+          userId,
         });
 
-        await modelVersionRepository.insertTx(ctx, version);
+        const attachmentCopies = await Promise.all(
+          (data.attachments ?? []).map(async (att) => ({
+            ...att,
+            copiedKey: await modelDraftStorage.copyStagedToPermanent({
+              stagingKey: att.s3Key,
+              modelId: model.id,
+              filename: att.filename,
+              contentType: att.mimeType,
+              pathPrefix: 'uploads/models/additional-files',
+              userId,
+            }),
+          })),
+        );
 
-        await Promise.all(
-          tags
-            .map((tag) =>
+        const previewImageFileKey = await resolvePreviewImageFileKey({
+          data,
+          modelId: model.id,
+          netlogoFileKey,
+          userId,
+        });
+
+        const tags = await Promise.all(
+          (data.tags ?? []).map(async (tagName) => tagService.upsertByName(tagName)),
+        );
+
+        return transactionManager.run(async (ctx) => {
+          if (!existingModel) {
+            await modelRepository.insertTx(ctx, model);
+            await modelAuthorRepository.insertTx(
+              ctx,
+              modelAuthorDomain.createAuthor(model.id, userId, 'owner'),
+            );
+          }
+
+          const previousVersion = existingModel
+            ? await modelVersionRepository.findLatestByModel(model.id, ctx)
+            : null;
+          if (previousVersion) {
+            await modelVersionRepository.finalize(
+              ctx,
+              previousVersion.modelId,
+              previousVersion.versionNumber,
+            );
+          }
+
+          const versionNumber = await modelVersionRepository.getNextVersionNumber(ctx, model.id);
+          const version = modelVersionDomain.createVersion({
+            modelId: model.id,
+            versionNumber,
+            title: data.title,
+            description: data.description,
+            netlogoFileKey,
+            previewImageFileKey,
+          });
+
+          await modelVersionRepository.insertTx(ctx, version);
+
+          await Promise.all(
+            tags
+              .map((tag) =>
+                modelVersionTagDomain.createModelVersionTag({
+                  modelId: model.id,
+                  versionNumber,
+                  tagId: tag.id,
+                }),
+              )
+              .map(async (entity) => modelVersionTagRepository.insertTx(ctx, entity)),
+          );
+
+          await modelRepository.setLatestVersion(ctx, model.id, versionNumber);
+          await modelRepository.updateFields(ctx, model.id, { visibility: data.visibility });
+
+          for (const att of attachmentCopies) {
+            await modelAdditionalFileRepository.insertTx(
+              ctx,
+              modelAdditionalFileDomain.createAdditionalFile({
+                modelId: model.id,
+                taggedVersionNumber: versionNumber,
+                fileKey: att.copiedKey,
+                kind: att.kind ?? 'additional',
+              }),
+            );
+          }
+
+          await eventRepository.insert(ctx, {
+            type: existingModel ? 'model.version.created' : 'model.created',
+            actorId: userId,
+            resourceType: 'model',
+            resourceId: model.id,
+            payload: { draftId, versionId: `${model.id}:${versionNumber}` },
+          });
+
+          await modelDraftRepository.hardDeleteTx(ctx, draftId);
+
+          return { modelId: model.id, versionNumber, createdNewVersion: true };
+        });
+      }
+
+      async function publishMetadataPatch(): Promise<PublishDraftResponseDto> {
+        // existingModel and seededFrom are guaranteed non-null when createNewVersion is false.
+        const model = existingModel as NonNullable<typeof existingModel>;
+        const baseline = seededFrom as NonNullable<typeof seededFrom>;
+
+        const current = await modelVersionRepository.findLatestByModel(model.id);
+        if (!current) throw new ModelDraftNotFoundError(draftId);
+        modelVersionDomain.assertNotFinalized(current);
+        const versionNumber = current.versionNumber;
+
+        const previewChanged = fullData.previewImage?.s3Key !== baseline.previewImageS3Key;
+        const newPreviewKey =
+          previewChanged && data.previewImage
+            ? await modelDraftStorage.copyStagedToPermanent({
+                stagingKey: data.previewImage.s3Key,
+                modelId: model.id,
+                filename: data.previewImage.filename,
+                contentType: data.previewImage.mimeType,
+                pathPrefix: 'files/public/preview-images',
+                acl: 'public-read',
+                userId,
+              })
+            : undefined;
+
+        const desiredTags = await Promise.all(
+          (data.tags ?? []).map(async (tagName) => tagService.upsertByName(tagName)),
+        );
+        const desiredTagIds = new Set(desiredTags.map((t) => t.id));
+        const currentTagIds = new Set(
+          (await modelVersionTagRepository.findByVersion(model.id, versionNumber)).map(
+            (t) => t.tagId,
+          ),
+        );
+        const tagIdsToInsert = [...desiredTagIds].filter((id) => !currentTagIds.has(id));
+        const tagIdsToDelete = [...currentTagIds].filter((id) => !desiredTagIds.has(id));
+
+        const newAdditionalFiles = (data.attachments ?? []).filter(
+          (att) =>
+            (att.kind ?? 'additional') === 'additional' &&
+            !baseline.additionalFileS3Keys.includes(att.s3Key),
+        );
+        const additionalCopies = await Promise.all(
+          newAdditionalFiles.map(async (att) =>
+            modelDraftStorage.copyStagedToPermanent({
+              stagingKey: att.s3Key,
+              modelId: model.id,
+              filename: att.filename,
+              contentType: att.mimeType,
+              pathPrefix: 'uploads/models/additional-files',
+              userId,
+            }),
+          ),
+        );
+
+        return transactionManager.run(async (ctx) => {
+          await modelVersionRepository.updateFields(ctx, model.id, versionNumber, {
+            title: data.title,
+            description: data.description,
+            ...(newPreviewKey !== undefined ? { previewImageFileKey: newPreviewKey } : {}),
+          });
+          await modelRepository.updateFields(ctx, model.id, { visibility: data.visibility });
+
+          for (const tagId of tagIdsToInsert) {
+            await modelVersionTagRepository.insertTx(
+              ctx,
               modelVersionTagDomain.createModelVersionTag({
                 modelId: model.id,
                 versionNumber,
-                tagId: tag.id,
+                tagId,
               }),
-            )
-            .map(async (entity) => modelVersionTagRepository.insertTx(ctx, entity)),
-        );
+            );
+          }
+          for (const tagId of tagIdsToDelete) {
+            await modelVersionTagRepository.deleteTx(ctx, model.id, versionNumber, tagId);
+          }
 
-        await modelRepository.setLatestVersion(ctx, model.id, versionNumber);
-        await modelRepository.updateFields(ctx, model.id, { visibility: data.visibility });
+          for (const copiedKey of additionalCopies) {
+            await modelAdditionalFileRepository.insertTx(
+              ctx,
+              modelAdditionalFileDomain.createAdditionalFile({
+                modelId: model.id,
+                taggedVersionNumber: versionNumber,
+                fileKey: copiedKey,
+                kind: 'additional',
+              }),
+            );
+          }
 
-        for (const att of attachmentCopies) {
-          await modelAdditionalFileRepository.insertTx(
-            ctx,
-            modelAdditionalFileDomain.createAdditionalFile({
-              modelId: model.id,
-              taggedVersionNumber: versionNumber,
-              fileKey: att.copiedKey,
-            }),
-          );
-        }
+          await eventRepository.insert(ctx, {
+            type: 'model.version.updated',
+            actorId: userId,
+            resourceType: 'model',
+            resourceId: model.id,
+            payload: { draftId, versionId: `${model.id}:${versionNumber}` },
+          });
 
-        await eventRepository.insert(ctx, {
-          type: existingModel ? 'model.version.created' : 'model.created',
-          actorId: userId,
-          resourceType: 'model',
-          resourceId: model.id,
-          payload: { draftId, versionId: `${model.id}:${versionNumber}` },
+          await modelDraftRepository.hardDeleteTx(ctx, draftId);
+
+          return { modelId: model.id, versionNumber, createdNewVersion: false };
         });
+      }
 
-        await modelDraftRepository.hardDeleteTx(ctx, draftId);
-
-        return { modelId: model.id, versionNumber };
-      });
-
+      const result = createNewVersion ? await publishNewVersion() : await publishMetadataPatch();
       await modelDraftStorage.deleteStagingPrefix(userId, draftId).catch(() => undefined);
       return result;
     },
