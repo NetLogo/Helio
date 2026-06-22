@@ -9,7 +9,13 @@
 import { describe, expect, it } from "vitest";
 import { createPage } from "@nuxt/test-utils/e2e";
 import { e2eSetup } from "./setup";
-import { buildRandomUser, signUpRandomUser } from "./helpers/auth";
+import {
+  buildRandomUser,
+  signIn,
+  signOutViaNavbar,
+  signUpAndVerify,
+  signUpRandomUser,
+} from "./helpers/auth";
 import { fillField } from "./helpers/form";
 import { gotoHydrated } from "./helpers/nav";
 import { dumpOnFailure } from "./helpers/debug";
@@ -86,7 +92,23 @@ describe("auth: signup + login", async () => {
     }
   });
 
-  it.todo(
-    "completes the verification handshake, lands on /models, signs out via navbar, signs back in (needs backend test-token retrieval)",
-  );
+  it("completes the verification handshake, lands on /models, signs out via navbar, signs back in", async () => {
+    const label = "verify-handshake";
+    const page = await createPage();
+    try {
+      const user = await signUpAndVerify(page);
+      expect(page.url()).toMatch(/\/models/);
+
+      await signOutViaNavbar(page);
+      await signIn(page, user);
+      // Login can route through the /passkey interstitial; force a fresh
+      // hydrated load so SSR re-resolves the session and lands on /models.
+      await gotoHydrated(page, "/models");
+      expect(page.url()).toMatch(/\/models/);
+
+      await page.close();
+    } catch (err) {
+      await dumpOnFailure(page, label, err);
+    }
+  });
 });

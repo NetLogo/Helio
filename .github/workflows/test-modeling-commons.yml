@@ -136,6 +136,7 @@ jobs:
         env:
           E2E_HOST: http://localhost:3005
           E2E_ARTIFACT_DIR: ${{ runner.temp }}/e2e-artifacts
+          MAILPIT_URL: http://localhost:8025
 
       # Failure-only net: on a failed e2e run, upload the screenshot + HTML that
       # dumpOnFailure captured at the point of failure.
