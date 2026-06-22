@@ -83,4 +83,74 @@ describe('model-draft schemas', () => {
       ).toThrow(ModelDraftInvalidPayloadError);
     });
   });
+
+  describe('kind and seededFrom round-trip', () => {
+    const seededFrom = {
+      versionNumber: 1,
+      primaryFileS3Key: 'k',
+      modelFileS3Keys: ['m'],
+      additionalFileS3Keys: ['a'],
+      previewImageS3Key: 'p',
+    };
+
+    const modelAttachment = {
+      id: '11111111-1111-1111-1111-111111111111',
+      s3Key: 'staging/u/d/model.nlogo',
+      filename: 'model.nlogo',
+      sizeBytes: 5,
+      mimeType: 'text/plain',
+      kind: 'model' as const,
+    };
+
+    it('upcast preserves attachment kind and the seededFrom baseline (not stripped by Clean)', () => {
+      const input: DraftData = {
+        title: 'Hi',
+        visibility: 'public',
+        primaryFile: validPrimary,
+        attachments: [modelAttachment],
+        seededFrom,
+      };
+
+      const result = upcast(input, LATEST_DRAFT_SCHEMA_VERSION);
+
+      expect(result.attachments?.[0]?.kind).toBe('model');
+      expect(result.seededFrom).toEqual(seededFrom);
+    });
+
+    it('assertPublishable preserves attachment kind and seededFrom on the strict schema', () => {
+      const input: DraftData = {
+        title: 'Publishable',
+        visibility: 'public',
+        primaryFile: validPrimary,
+        attachments: [modelAttachment],
+        seededFrom,
+      };
+
+      const strict = assertPublishable(input);
+
+      expect(strict.attachments?.[0]?.kind).toBe('model');
+      expect(strict.seededFrom).toEqual(seededFrom);
+    });
+
+    it('upcast leaves kind undefined when an attachment omits it', () => {
+      const input: DraftData = {
+        title: 'Hi',
+        visibility: 'public',
+        primaryFile: validPrimary,
+        attachments: [
+          {
+            id: '22222222-2222-2222-2222-222222222222',
+            s3Key: 'staging/u/d/extra.csv',
+            filename: 'extra.csv',
+            sizeBytes: 3,
+            mimeType: 'text/csv',
+          },
+        ],
+      };
+
+      const result = upcast(input, LATEST_DRAFT_SCHEMA_VERSION);
+
+      expect(result.attachments?.[0]?.kind).toBeUndefined();
+    });
+  });
 });

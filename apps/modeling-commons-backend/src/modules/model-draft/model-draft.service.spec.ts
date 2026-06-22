@@ -11,6 +11,7 @@ import { mockTransactionManager } from '#src/shared/test/mock-transaction-manage
 import { mockModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.mock.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import { mockModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.mock.ts';
+import { mockModelVersionTagRepository } from '#src/modules/model-version-tag/database/model-version-tag.repository.mock.ts';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
 import type { DraftDataV1 } from '#src/modules/model-draft/schemas/v1.ts';
 import type { Model } from '#prisma/index';
@@ -291,6 +292,38 @@ describe('modelDraftService', () => {
         expect.objectContaining({ public: false }),
       );
     });
+
+    it("tags a 'model-file' attachment with kind 'model'", async () => {
+      const { service, modelDraftRepository, modelDraftStorage } = buildService();
+      modelDraftStorage.putStaged.mockResolvedValue('staging/user-1/draft-1/extra.nlogo');
+      const draft = makeDraft();
+
+      await service.addFile(draft, 'model-file', {
+        buffer: Buffer.from('abc') as Buffer<ArrayBuffer>,
+        filename: 'extra.nlogo',
+        contentType: 'text/plain',
+      });
+
+      const next = modelDraftRepository.updateDataTx.mock.calls[0]![3] as DraftDataV1;
+      expect(next.attachments).toHaveLength(1);
+      expect(next.attachments!.at(-1)!.kind).toBe('model');
+    });
+
+    it("tags an 'attachment' upload with kind 'additional'", async () => {
+      const { service, modelDraftRepository, modelDraftStorage } = buildService();
+      modelDraftStorage.putStaged.mockResolvedValue('staging/user-1/draft-1/att.csv');
+      const draft = makeDraft();
+
+      await service.addFile(draft, 'attachment', {
+        buffer: Buffer.from('abc') as Buffer<ArrayBuffer>,
+        filename: 'att.csv',
+        contentType: 'text/csv',
+      });
+
+      const next = modelDraftRepository.updateDataTx.mock.calls[0]![3] as DraftDataV1;
+      expect(next.attachments).toHaveLength(1);
+      expect(next.attachments!.at(-1)!.kind).toBe('additional');
+    });
   });
 
   describe('generatePreviewImage', () => {
@@ -393,6 +426,151 @@ describe('modelDraftService', () => {
       const updateCtx = modelRepository.updateFields.mock.calls[0]![0];
       const versionCtx = modelVersionRepository.insertTx.mock.calls[0]![0];
       expect(updateCtx).toBe(versionCtx);
+    });
+
+    function seededDraftData(
+      overrides: Partial<DraftDataV1> = {},
+      seededOverrides: Partial<NonNullable<DraftDataV1['seededFrom']>> = {},
+    ): DraftDataV1 {
+      return {
+        title: 'Edited title',
+        description: 'Edited description',
+        visibility: 'private',
+        primaryFile: validPrimary,
+        seededFrom: {
+          versionNumber: 1,
+          primaryFileS3Key: validPrimary.s3Key,
+          modelFileS3Keys: [],
+          additionalFileS3Keys: [],
+          ...seededOverrides,
+        },
+        ...overrides,
+      };
+    }
+
+    function buildEditPublishService() {
+      const modelVersionTagRepository = mockModelVersionTagRepository();
+      modelVersionTagRepository.findByVersion.mockResolvedValue([]);
+      const eventRepository = { insert: vi.fn() };
+      const built = buildPublishService({ modelVersionTagRepository, eventRepository });
+      built.modelRepository.findOneById.mockResolvedValue(
+        makeModel({ id: 'model-1', visibility: 'public', deletedAt: null }),
+      );
+      return { ...built, modelVersionTagRepository, eventRepository };
+    }
+
+    it('patches the current version for a metadata-only edit (no new version)', async () => {
+      const {
+        service,
+        modelRepository,
+        modelVersionRepository,
+        eventRepository,
+        modelDraftRepository,
+      } = buildEditPublishService();
+      modelVersionRepository.findLatestByModel.mockResolvedValue({
+        modelId: 'model-1',
+        versionNumber: 1,
+        title: 'Old',
+        description: null,
+        previewImageFileKey: null,
+        netlogoFileKey: 'uploads/models/old.nlogo',
+        netlogoVersion: null,
+        infoTab: null,
+        createdAt: new Date(),
+        finalizedAt: null,
+      });
+
+      const draft = makeDraft(seededDraftData(), { modelId: 'model-1' });
+
+      const result = await service.publish(draft);
+
+      expect(result).toEqual({
+        modelId: 'model-1',
+        versionNumber: 1,
+        createdNewVersion: false,
+      });
+      expect(modelVersionRepository.updateFields).toHaveBeenCalledOnce();
+      expect(modelVersionRepository.getNextVersionNumber).not.toHaveBeenCalled();
+      expect(modelVersionRepository.insertTx).not.toHaveBeenCalled();
+      expect(eventRepository.insert).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ type: 'model.version.updated' }),
+      );
+      expect(modelRepository.findOneById).toHaveBeenCalledWith('model-1');
+      expect(modelDraftRepository.hardDeleteTx).toHaveBeenCalledWith(expect.anything(), draft.id);
+    });
+
+    it('bumps the version when the primary file changes', async () => {
+      const { service, modelVersionRepository, eventRepository } = buildEditPublishService();
+      modelVersionRepository.getNextVersionNumber.mockResolvedValue(2);
+      modelVersionRepository.findLatestByModel.mockResolvedValue({
+        modelId: 'model-1',
+        versionNumber: 1,
+        finalizedAt: null,
+      } as never);
+
+      const draft = makeDraft(
+        seededDraftData({
+          primaryFile: { ...validPrimary, s3Key: 'staging/user-1/draft-1/new-primary.nlogo' },
+        }),
+        { modelId: 'model-1' },
+      );
+
+      const result = await service.publish(draft);
+
+      expect(result.createdNewVersion).toBe(true);
+      expect(result.versionNumber).toBe(2);
+      expect(modelVersionRepository.finalize).toHaveBeenCalledOnce();
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledOnce();
+      expect(eventRepository.insert).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ type: 'model.version.created' }),
+      );
+    });
+
+    it('bumps the version when a model-file is added', async () => {
+      const { service, modelVersionRepository } = buildEditPublishService();
+      modelVersionRepository.getNextVersionNumber.mockResolvedValue(2);
+      modelVersionRepository.findLatestByModel.mockResolvedValue({
+        modelId: 'model-1',
+        versionNumber: 1,
+        finalizedAt: null,
+      } as never);
+
+      const draft = makeDraft(
+        seededDraftData({
+          attachments: [
+            {
+              id: '33333333-3333-3333-3333-333333333333',
+              s3Key: 'staging/user-1/draft-1/new-model.nlogo',
+              filename: 'new-model.nlogo',
+              sizeBytes: 5,
+              mimeType: 'text/plain',
+              kind: 'model',
+            },
+          ],
+        }),
+        { modelId: 'model-1' },
+      );
+
+      const result = await service.publish(draft);
+
+      expect(result.createdNewVersion).toBe(true);
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledOnce();
+    });
+
+    it('falls back to a new version when the draft has no seededFrom baseline', async () => {
+      const { service, modelVersionRepository } = buildEditPublishService();
+
+      const draft = makeDraft(
+        { title: 'Edited', visibility: 'private', primaryFile: validPrimary },
+        { modelId: 'model-1' },
+      );
+
+      const result = await service.publish(draft);
+
+      expect(result.createdNewVersion).toBe(true);
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledOnce();
     });
   });
 
