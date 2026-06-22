@@ -62,6 +62,7 @@ describe('modelAdditionalFileService', () => {
       expect(result.modelId).toBe('model-1');
       expect(result.taggedVersionNumber).toBe(1);
       expect(result.fileKey).toBe('2026/04/17/abcd-extra.csv');
+      expect(result.kind).toBe('additional');
       expect(fileService.upload).toHaveBeenCalledOnce();
       expect(modelAdditionalFileRepository.insertTx).toHaveBeenCalledOnce();
     });
@@ -118,6 +119,29 @@ describe('modelAdditionalFileService', () => {
       await service.listByModel('model-1', 1);
 
       expect(modelAdditionalFileRepository.findByModel).toHaveBeenCalledWith('model-1', 1);
+    });
+  });
+
+  describe('createAdditionalFile domain', () => {
+    it('defaults kind to additional', () => {
+      const entity = additionalFileDomain.createAdditionalFile({
+        modelId: 'model-1',
+        taggedVersionNumber: 1,
+        fileKey: '2026/04/17/abcd-extra.csv',
+      });
+
+      expect(entity.kind).toBe('additional');
+    });
+
+    it('honors an explicit kind of model', () => {
+      const entity = additionalFileDomain.createAdditionalFile({
+        modelId: 'model-1',
+        taggedVersionNumber: 1,
+        fileKey: '2026/04/17/abcd-model.nlogo',
+        kind: 'model',
+      });
+
+      expect(entity.kind).toBe('model');
     });
   });
 });

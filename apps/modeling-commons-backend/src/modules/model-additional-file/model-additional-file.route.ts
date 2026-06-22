@@ -32,6 +32,7 @@ export default async function modelAdditionalFileRoutes(fastify: FastifyInstance
       modelId: entity.modelId,
       taggedVersionNumber: entity.taggedVersionNumber,
       fileKey: entity.fileKey,
+      kind: entity.kind,
       filename: info.metadata.filename,
       contentType: info.contentType,
       sizeBytes: Number(info.sizeBytes),
