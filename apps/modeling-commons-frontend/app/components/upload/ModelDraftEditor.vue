@@ -157,6 +157,7 @@ const {
   previewImageUrl,
   init,
   generatePreview,
+  flushDraft,
   submit,
   discard,
   revert,
@@ -166,6 +167,8 @@ const {
   initialDraftId: props.initialDraftId,
   seedModelId: props.seedModelId,
 });
+
+const { unlock } = useUnloadGuard(isDirty, { onLeave: flushDraft });
 
 const currentNetlogoFileName = computed(
   () => pickedFile.value?.name ?? primaryFile.value?.filename ?? null,
@@ -215,6 +218,7 @@ async function onSubmit(): Promise<void> {
       icon: "i-lucide-badge-check",
       color: "success",
     });
+    unlock();
     emit("published", result.id);
   } catch (err) {
     toast.add({
@@ -240,6 +244,7 @@ async function onDiscard(): Promise<void> {
       icon: "i-lucide-trash-2",
       color: "neutral",
     });
+    unlock();
     emit("discarded");
   } catch (err) {
     toast.add({
@@ -274,8 +279,6 @@ async function onRevert(): Promise<void> {
 }
 
 async function onDelete(): Promise<void> {
-  // unlock();
-
   try {
     await deleteModel();
     confirmDelete.value = false;
@@ -284,6 +287,7 @@ async function onDelete(): Promise<void> {
       icon: "i-lucide-trash-2",
       color: "neutral",
     });
+    unlock();
     emit("deleted");
   } catch (err) {
     toast.add({

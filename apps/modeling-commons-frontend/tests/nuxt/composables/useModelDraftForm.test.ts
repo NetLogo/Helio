@@ -373,6 +373,23 @@ describe("useModelDraftForm", () => {
     });
   });
 
+  describe("saveStatusLabel", () => {
+    it("shows 'Saving…' while a debounced write is pending, then 'Saved' after flush", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      expect(form.saveStatusLabel.value).toBe("Saved");
+
+      form.formState.value.title = "Wolf Sheep v2";
+      await nextTick();
+      expect(form.saveStatusLabel.value).toBe("Saving…");
+
+      await form.flushDraft();
+      expect(form.saveStatusLabel.value).toBe("Saved");
+    });
+  });
+
   describe("existingAttachments vs session-added", () => {
     it("only includes hydrated attachment ids", async () => {
       apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));

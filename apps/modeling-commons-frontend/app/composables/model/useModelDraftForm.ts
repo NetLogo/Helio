@@ -18,6 +18,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     draftId,
     saving,
     publishing,
+    pendingWrite,
     ensureDraft,
     load,
     patch,
@@ -112,9 +113,13 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
 
   const saveStatusLabel = computed(() => {
     if (!draftId.value) return "";
-    if (saving.value) return "Saving…";
+    if (saving.value || pendingWrite.value) return "Saving…";
     return "Saved";
   });
+
+  async function flushDraft(): Promise<void> {
+    await patch.flush();
+  }
 
   function hydrateFromDraft(data: DraftData, serverPreviewImageUrl: string | null = null) {
     hydrating.value = true;
@@ -460,6 +465,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     hydrateFromDraft,
     generatePreview,
     uploadPreviewImage,
+    flushDraft,
     submit,
     discard,
     revert,

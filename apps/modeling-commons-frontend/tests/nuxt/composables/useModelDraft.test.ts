@@ -64,6 +64,21 @@ describe("useModelDraft.patch (debounced)", () => {
       body: { title: "third" },
     });
   });
+
+  it("flags pendingWrite while a write is queued and clears it after flush", async () => {
+    vi.useFakeTimers();
+    apiState.current!.POST.mockResolvedValueOnce(apiResult.ok({ id: "draft-1" }));
+    apiState.current!.PATCH.mockResolvedValueOnce(apiResult.ok({}));
+
+    const draft = useModelDraft();
+    expect(draft.pendingWrite.value).toBe(false);
+
+    void draft.patch({ title: "queued" });
+    expect(draft.pendingWrite.value).toBe(true);
+
+    await draft.patch.flush();
+    expect(draft.pendingWrite.value).toBe(false);
+  });
 });
 
 describe("useModelDraft.uploadPrimaryFile / uploadAttachment", () => {
