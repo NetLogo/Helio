@@ -6,7 +6,10 @@ import modelVersionDomain from '#src/modules/model-version/domain/model-version.
 import modelVersionTagDomain from '#src/modules/model-version-tag/domain/model-version-tag.domain.ts';
 import modelAuthorDomain from '#src/modules/model-author/domain/model-author.domain.ts';
 import modelAdditionalFileDomain from '#src/modules/model-additional-file/domain/model-additional-file.domain.ts';
-import { ModelDraftFileNotFoundError } from '#src/modules/model-draft/domain/model-draft.errors.ts';
+import {
+  ModelDraftFileNotFoundError,
+  ModelDraftInvalidPayloadError,
+} from '#src/modules/model-draft/domain/model-draft.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { mockModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.mock.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
@@ -224,6 +227,41 @@ describe('modelDraftService', () => {
       const next = modelDraftRepository.updateDataTx.mock.calls[0]![3] as DraftDataV1;
       expect(next.primaryFile?.s3Key).toBe('staging/user-1/draft-1/abc-new.nlogo');
     });
+
+    it('rejects a primary file without a valid NetLogo extension', async () => {
+      const { service, modelDraftRepository, modelDraftStorage } = buildService();
+      modelDraftStorage.putStaged.mockResolvedValue('staging/user-1/draft-1/abc-model.txt');
+      const draft = makeDraft();
+
+      await expect(
+        service.addFile(draft, 'primary', {
+          buffer: Buffer.from('not a model') as Buffer<ArrayBuffer>,
+          filename: 'model.txt',
+          contentType: 'text/plain',
+        }),
+      ).rejects.toThrow(ModelDraftInvalidPayloadError);
+
+      expect(modelDraftRepository.updateDataTx).not.toHaveBeenCalled();
+    });
+
+    it.each(['model.nlogo', 'model.nlogox', 'model.nlogo3d', 'model.nlogox3d'])(
+      'accepts a primary file named %s',
+      async (filename) => {
+        const { service, modelDraftRepository, modelDraftStorage } = buildService();
+        modelDraftStorage.putStaged.mockResolvedValue(`staging/user-1/draft-1/abc-${filename}`);
+        const draft = makeDraft();
+
+        const result = await service.addFile(draft, 'primary', {
+          buffer: Buffer.from('; a model') as Buffer<ArrayBuffer>,
+          filename,
+          contentType: 'text/plain',
+        });
+
+        expect(result.role).toBe('primary');
+        const next = modelDraftRepository.updateDataTx.mock.calls[0]![3] as DraftDataV1;
+        expect(next.primaryFile?.filename).toBe(filename);
+      },
+    );
 
     it('replaces an existing primary file and deletes the old object', async () => {
       const { service, modelDraftStorage } = buildService();

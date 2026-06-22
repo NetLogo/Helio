@@ -69,6 +69,66 @@ Feature: Model Drafts
     And the response body should have property "modelId"
     And the response body should have property "versionNumber"
 
+  Scenario: Uploading a primary file with a valid NetLogo extension succeeds
+    Given an authenticated user
+    And an empty draft
+    When I upload a primary file named "model.nlogox" to the draft
+    Then the response status should be 201
+    And the response body property "role" should equal "primary"
+
+  Scenario: Uploading a non-NetLogo primary file is rejected
+    Given an authenticated user
+    And an empty draft
+    When I upload a primary file named "notes.txt" to the draft
+    Then the response status should be 400
+
+  Scenario: Uploading a denied executable as a primary file is rejected
+    Given an authenticated user
+    And an empty draft
+    When I upload a denied primary file to the draft
+    Then the response status should be 400
+
+  Scenario: Uploading an oversized primary file is rejected
+    Given an authenticated user
+    And an empty draft
+    When I upload an oversized primary file to the draft
+    Then the response status should be 413
+
+  Scenario: Publishing a draft with tags creates and links them to the version
+    Given an authenticated user
+    And an empty draft
+    When I patch the draft with title "Tagged Publish" visibility "public" and tags "ecology, simulation"
+    And I upload a primary file to the draft
+    And I publish the draft
+    Then the response status should be 201
+    When I fetch the card for the published model
+    Then the response status should be 200
+    And the card latest version tags should include "ecology"
+    And the card latest version tags should include "simulation"
+
+  Scenario: Publishing a draft with a usecase-prefixed tag links it to the version
+    Given an authenticated user
+    And an empty draft
+    When I patch the draft with title "Usecase Tagged Publish" visibility "public" and tags "usecase:teaching"
+    And I upload a primary file to the draft
+    And I publish the draft
+    Then the response status should be 201
+    When I fetch the card for the published model
+    Then the response status should be 200
+    And the card latest version tags should include "usecase:teaching"
+
+  Scenario: A staged preview image is used on publish and exposed as a public unsigned URL
+    Given an authenticated user
+    And an empty draft
+    When I patch the draft with title "Staged Preview Publish" and visibility "public"
+    And I upload a primary file to the draft
+    And I upload a preview image to the draft
+    And I publish the draft
+    Then the response status should be 201
+    When I fetch the card for the published model
+    Then the response status should be 200
+    And the card preview image url should be public and unsigned
+
   Scenario: Uploading a preview image returns a public unsigned URL
     Given an authenticated user
     And an empty draft
@@ -124,14 +184,13 @@ Feature: Model Drafts
     When I create a draft targeting the model "Single Draft Model"
     Then the response status should not be 201
 
-  @pending
   Scenario: Per user per model drafts are purged on publish
     Given an authenticated user
     And a public model "Purge On Publish Model" created by the current user
     And a draft seeded from the model "Purge On Publish Model"
     When I patch the draft with title "Purge On Publish v2" and visibility "public"
     And I publish the draft
-    Then the response status should be 201
+    Then the response status should be 200
     And no drafts targeting the model "Purge On Publish Model" remain for the current user
 
   Scenario: Publishing a draft with only metadata changes patches the current version

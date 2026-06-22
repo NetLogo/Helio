@@ -67,6 +67,69 @@ function buildAttachmentFileMultipart(content: string): { payload: Buffer; conte
   };
 }
 
+function buildNamedPrimaryFileMultipart(
+  filename: string,
+  content: string,
+): { payload: Buffer; contentType: string } {
+  const boundary = `----DraftBoundary${Date.now().toString(16)}`;
+  const parts = [
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="${filename}"\r\n` +
+      `Content-Type: text/plain\r\n\r\n` +
+      `${content}\r\n`,
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="role"\r\n\r\n` +
+      `primary\r\n`,
+    `--${boundary}--\r\n`,
+  ];
+  return {
+    payload: Buffer.from(parts.join(''), 'utf-8'),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
+}
+
+function buildDeniedPrimaryFileMultipart(): { payload: Buffer; contentType: string } {
+  const boundary = `----DraftBoundary${Date.now().toString(16)}`;
+  const peHeader = Buffer.from([0x4d, 0x5a, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00]);
+  const body = Buffer.concat([peHeader, Buffer.alloc(256, 0)]);
+  const head = Buffer.from(
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="evil.exe"\r\n` +
+      `Content-Type: application/octet-stream\r\n\r\n`,
+    'utf-8',
+  );
+  const between = Buffer.from(
+    `\r\n--${boundary}\r\n` + `Content-Disposition: form-data; name="role"\r\n\r\n` + `primary\r\n`,
+    'utf-8',
+  );
+  const tail = Buffer.from(`--${boundary}--\r\n`, 'utf-8');
+  return {
+    payload: Buffer.concat([head, body, between, tail]),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
+}
+
+function buildOversizedPrimaryFileMultipart(): { payload: Buffer; contentType: string } {
+  const boundary = `----DraftBoundary${Date.now().toString(16)}`;
+  const oversizeBytes = 15 * 1024 * 1024 + 1024;
+  const body = Buffer.alloc(oversizeBytes, 0x61);
+  const head = Buffer.from(
+    `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="huge.nlogo"\r\n` +
+      `Content-Type: text/plain\r\n\r\n`,
+    'utf-8',
+  );
+  const between = Buffer.from(
+    `\r\n--${boundary}\r\n` + `Content-Disposition: form-data; name="role"\r\n\r\n` + `primary\r\n`,
+    'utf-8',
+  );
+  const tail = Buffer.from(`--${boundary}--\r\n`, 'utf-8');
+  return {
+    payload: Buffer.concat([head, body, between, tail]),
+    contentType: `multipart/form-data; boundary=${boundary}`,
+  };
+}
+
 function buildPreviewImageMultipart(content: string): { payload: Buffer; contentType: string } {
   const boundary = `----DraftPreviewBoundary${Date.now().toString(16)}`;
   const parts = [
@@ -262,6 +325,122 @@ When('I upload a preview image to the draft', async function (this: ICustomWorld
     headers: { cookie: user.cookie, 'content-type': contentType },
   });
 });
+
+When(
+  'I upload a primary file named {string} to the draft',
+  async function (this: ICustomWorld, filename: string) {
+    const user = this.context['currentUser'] as TestUser;
+    const draftId = this.context['currentDraftId'] as string;
+    const { payload, contentType } = buildNamedPrimaryFileMultipart(
+      filename,
+      `; Test Model\nto setup\nclear-all\nend\n`,
+    );
+    this.context.latestResponse = await this.server.inject({
+      method: 'POST',
+      url: `/api/v1/model-drafts/${draftId}/files`,
+      payload,
+      headers: { cookie: user.cookie, 'content-type': contentType },
+    });
+  },
+);
+
+When('I upload a denied primary file to the draft', async function (this: ICustomWorld) {
+  const user = this.context['currentUser'] as TestUser;
+  const draftId = this.context['currentDraftId'] as string;
+  const { payload, contentType } = buildDeniedPrimaryFileMultipart();
+  this.context.latestResponse = await this.server.inject({
+    method: 'POST',
+    url: `/api/v1/model-drafts/${draftId}/files`,
+    payload,
+    headers: { cookie: user.cookie, 'content-type': contentType },
+  });
+});
+
+When('I upload an oversized primary file to the draft', async function (this: ICustomWorld) {
+  const user = this.context['currentUser'] as TestUser;
+  const draftId = this.context['currentDraftId'] as string;
+  const { payload, contentType } = buildOversizedPrimaryFileMultipart();
+  this.context.latestResponse = await this.server.inject({
+    method: 'POST',
+    url: `/api/v1/model-drafts/${draftId}/files`,
+    payload,
+    headers: { cookie: user.cookie, 'content-type': contentType },
+  });
+});
+
+When(
+  'I patch the draft with title {string} visibility {string} and tags {string}',
+  async function (this: ICustomWorld, title: string, visibility: string, tags: string) {
+    const user = this.context['currentUser'] as TestUser;
+    const draftId = this.context['currentDraftId'] as string;
+    const tagList = tags
+      .split(',')
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
+    this.context.latestResponse = await this.server.inject({
+      method: 'PATCH',
+      url: `/api/v1/model-drafts/${draftId}`,
+      payload: { title, visibility, tags: tagList },
+      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+When('I fetch the card for the published model', async function (this: ICustomWorld) {
+  const user = this.context['currentUser'] as TestUser;
+  const modelId = JSON.parse(this.context.latestResponse!.body).modelId;
+  this.context['publishedModelId'] = modelId;
+  this.context.latestResponse = await this.server.inject({
+    method: 'GET',
+    url: `/api/v1/models/${modelId}/card`,
+    headers: { cookie: user.cookie },
+  });
+});
+
+Then(
+  'the card latest version tags should include {string}',
+  function (this: ICustomWorld, tagName: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const tags = (body.tagsOnLatestVersion ?? []) as Array<{ name: string }>;
+    assert.ok(
+      tags.some((t) => t.name === tagName),
+      `Expected tag "${tagName}" in [${tags.map((t) => t.name).join(', ')}]`,
+    );
+  },
+);
+
+Then(
+  'the card preview image url should be public and unsigned',
+  function (this: ICustomWorld) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const url = body.previewImageUrl as string | null;
+    assert.ok(typeof url === 'string' && url.length > 0, 'Expected a previewImageUrl');
+    assert.ok(url!.includes('files/public/'), `Expected public URL, got "${url}"`);
+    assert.ok(!url!.includes('X-Amz-Signature'), `Expected unsigned URL, got "${url}"`);
+  },
+);
+
+Then(
+  'no drafts targeting the model {string} remain for the current user',
+  async function (this: ICustomWorld, modelTitle: string) {
+    const user = this.context['currentUser'] as TestUser;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    const res = await this.server.inject({
+      method: 'GET',
+      url: '/api/v1/model-drafts',
+      headers: { cookie: user.cookie },
+    });
+    assert.strictEqual(res.statusCode, 200, `Failed to list drafts (${res.statusCode}): ${res.body}`);
+    const body = JSON.parse(res.body);
+    const drafts = (body.data ?? []) as Array<{ modelId: string | null }>;
+    const remaining = drafts.filter((d) => d.modelId === modelId);
+    assert.strictEqual(
+      remaining.length,
+      0,
+      `Expected no drafts targeting model ${modelId}, found ${remaining.length}`,
+    );
+  },
+);
 
 When('I seed a new draft from the published model', async function (this: ICustomWorld) {
   const user = this.context['currentUser'] as TestUser;
