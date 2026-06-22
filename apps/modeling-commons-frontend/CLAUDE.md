@@ -58,6 +58,11 @@ When a parent passes server data and the child mutates a derived view of it (e.g
 
 `shared/types/api.d.ts` can lag behind the backend. If the server returns a field the client types don't know about yet, use a narrow local cast (`props.card as unknown as { stats?: Partial<CardStats> }`) rather than `any`, and drop the cast after regenerating types.
 
+## Testing
+
+- Upload/edit interaction logic lives in `tests/nuxt/composables/*` (`vitest --project=nuxt`) with `useApi` mocked via `tests/helpers/mockApi` (`makeApiClientMock`/`apiResult`). Don't mount the editor stepper in component tests — the `UStepper` recursive-update flake under `@nuxt/test-utils` makes it unreliable.
+- Full journeys go in `tests/e2e` (real backend + Chromium): they need the backend + Mailpit running and use `signUpAndVerify` for a verified session.
+
 ## Dev servers
 
 Don't start them.
