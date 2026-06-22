@@ -5,7 +5,7 @@ import useModelDraftForm from "~/composables/model/useModelDraftForm";
 import type { DraftData } from "~/composables/model/useModelDraft";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
-const { apiState, userState } = vi.hoisted(() => ({
+const { apiState, userState, toastAdd, infoTabState } = vi.hoisted(() => ({
   apiState: { current: null as ReturnType<typeof makeApiClientMock> | null },
   userState: {
     current: {
@@ -14,10 +14,18 @@ const { apiState, userState } = vi.hoisted(() => ({
       session: {},
     } as unknown,
   },
+  toastAdd: vi.fn(),
+  infoTabState: {
+    infoTab: null as string | null,
+    firstParagraph: "",
+  },
 }));
 
 mockNuxtImport("useApi", () => () => apiState.current!.client);
 mockNuxtImport("useUser", () => () => computed(() => userState.current));
+mockNuxtImport("useToast", () => () => ({ add: toastAdd }));
+mockNuxtImport("readInfoTabFromNlogox", () => async () => infoTabState.infoTab);
+mockNuxtImport("getFirstParagraphTextFromMarkdown", () => async () => infoTabState.firstParagraph);
 
 function makeDraftDto(
   data: DraftData,
@@ -64,7 +72,16 @@ beforeEach(() => {
   apiState.current.PATCH.mockResolvedValue(apiResult.ok(undefined as never));
   apiState.current.POST.mockResolvedValue(apiResult.ok({ id: "draft-default" }));
   apiState.current.DELETE.mockResolvedValue(apiResult.ok(undefined as never));
+  toastAdd.mockReset();
+  infoTabState.infoTab = null;
+  infoTabState.firstParagraph = "";
 });
+
+function fileUploadPosts() {
+  return apiState.current!.POST.mock.calls.filter(
+    (args) => (args as [string])[0] === "/api/v1/model-drafts/{id}/files",
+  );
+}
 
 describe("useModelDraftForm", () => {
   describe("init with initialDraftId", () => {
@@ -466,6 +483,180 @@ describe("useModelDraftForm", () => {
 
       const ids = form.existingAttachments.value.map((a) => a.id);
       expect(ids).toEqual(["att-existing-1"]);
+    });
+  });
+
+  describe("primary file format gate (Goal 2)", () => {
+    it("create mode rejects a .txt file before any upload and resets pickedFile", async () => {
+      const form = useModelDraftForm({ mode: "create" });
+
+      const file = new File(["plain text"], "model.txt", { type: "text/plain" });
+      form.pickedFile.value = file;
+      for (let i = 0; i < 20; i++) await nextTick();
+
+      expect(form.pickedFile.value).toBeNull();
+      expect(form.primaryFile.value).toBeNull();
+      expect(fileUploadPosts()).toHaveLength(0);
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Invalid file type Failed" }),
+      );
+    });
+
+    it("create mode rejects a .nlogo (non-x) file", async () => {
+      const form = useModelDraftForm({ mode: "create" });
+
+      const file = new File(["legacy"], "model.nlogo", { type: "application/octet-stream" });
+      form.pickedFile.value = file;
+      for (let i = 0; i < 20; i++) await nextTick();
+
+      expect(form.pickedFile.value).toBeNull();
+      expect(form.primaryFile.value).toBeNull();
+      expect(fileUploadPosts()).toHaveLength(0);
+    });
+
+    it("edit mode accepts a .nlogo file and uploads it", async () => {
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          id: "primary",
+          s3Key: "staging/u/d/legacy-model.nlogo",
+          filename: "model.nlogo",
+          sizeBytes: 4096,
+          mimeType: "application/octet-stream",
+        }),
+      );
+
+      const form = useModelDraftForm({ mode: "edit" });
+
+      const file = new File(["legacy"], "model.nlogo", { type: "application/octet-stream" });
+      form.pickedFile.value = file;
+      for (let i = 0; i < 20; i++) await nextTick();
+
+      expect(form.pickedFile.value?.name).toBe("model.nlogo");
+      expect(form.primaryFile.value?.filename).toBe("model.nlogo");
+      expect(fileUploadPosts()).toHaveLength(1);
+      expect(toastAdd).not.toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Invalid file type Failed" }),
+      );
+    });
+  });
+
+  describe("title-from-filename + description-from-info-tab (Goal 5)", () => {
+    it("create mode derives title from filename and description from the info-tab first paragraph", async () => {
+      infoTabState.infoTab = "## WHAT IS IT?\n\nA predator-prey simulation.";
+      infoTabState.firstParagraph = "A predator-prey simulation.";
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          id: "primary",
+          s3Key: "staging/u/d/my-model.nlogox",
+          filename: "My Model.nlogox",
+          sizeBytes: 4096,
+          mimeType: "application/octet-stream",
+        }),
+      );
+
+      const form = useModelDraftForm({ mode: "create" });
+
+      const file = new File(["<info>...</info>"], "My Model.nlogox", {
+        type: "application/octet-stream",
+      });
+      form.pickedFile.value = file;
+      for (let i = 0; i < 20; i++) await nextTick();
+
+      expect(form.formState.value.title).toBe("My Model");
+      expect(form.formState.value.description).toBe("A predator-prey simulation.");
+      expect(form.primaryFile.value?.filename).toBe("My Model.nlogox");
+    });
+
+    it("leaves description blank when the info tab has no paragraph", async () => {
+      infoTabState.infoTab = null;
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          id: "primary",
+          s3Key: "staging/u/d/blank.nlogox",
+          filename: "Blank.nlogox",
+          sizeBytes: 4096,
+          mimeType: "application/octet-stream",
+        }),
+      );
+
+      const form = useModelDraftForm({ mode: "create" });
+
+      const file = new File(["<x/>"], "Blank.nlogox", { type: "application/octet-stream" });
+      form.pickedFile.value = file;
+      for (let i = 0; i < 20; i++) await nextTick();
+
+      expect(form.formState.value.title).toBe("Blank");
+      expect(form.formState.value.description).toBe("");
+    });
+  });
+
+  describe("submit (Goal 1)", () => {
+    it("happy path: flushes patches, publishes, and returns the model id", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.POST.mockImplementation((path: string) => {
+        if (path === "/api/v1/model-drafts/{id}/publish") {
+          return Promise.resolve(apiResult.ok({ modelId: "model-99" }));
+        }
+        return Promise.resolve(apiResult.ok({ id: "draft-1" }));
+      });
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      form.formState.value.title = "Wolf Sheep v2";
+      await nextTick();
+      expect(form.saveStatusLabel.value).toBe("Saving…");
+
+      const result = await form.submit("public");
+
+      expect(result).toEqual({ id: "model-99" });
+      expect(apiState.current!.POST).toHaveBeenCalledWith(
+        "/api/v1/model-drafts/{id}/publish",
+        { params: { path: { id: "draft-1" } } },
+      );
+      expect(form.saveStatusLabel.value).toBe("Saved");
+    });
+
+    it("guard: returns null and does not publish when no primary file is present", async () => {
+      apiState.current!.GET.mockResolvedValue(
+        apiResult.ok(makeDraftDto({ ...sampleDraftData, primaryFile: undefined })),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+      toastAdd.mockReset();
+
+      const result = await form.submit("public");
+
+      expect(result).toBeNull();
+      expect(apiState.current!.POST).not.toHaveBeenCalledWith(
+        "/api/v1/model-drafts/{id}/publish",
+        expect.anything(),
+      );
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Missing model file Failed" }),
+      );
+    });
+
+    it("guard: returns null and does not publish when the title is blank", async () => {
+      apiState.current!.GET.mockResolvedValue(
+        apiResult.ok(makeDraftDto({ ...sampleDraftData, title: "" })),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+      toastAdd.mockReset();
+
+      const result = await form.submit("public");
+
+      expect(result).toBeNull();
+      expect(apiState.current!.POST).not.toHaveBeenCalledWith(
+        "/api/v1/model-drafts/{id}/publish",
+        expect.anything(),
+      );
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Missing title Failed" }),
+      );
     });
   });
 });
