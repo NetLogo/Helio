@@ -98,6 +98,7 @@ Feature: Model Drafts
     And a public model "Editable Model" created by the current user
     And a draft seeded from the model "Editable Model"
     When I patch the draft with title "Editable Model v2" and visibility "public"
+    And I upload a primary file to the draft
     And I publish the draft
     Then the response status should be 201
     And the response body should have property "modelId"
