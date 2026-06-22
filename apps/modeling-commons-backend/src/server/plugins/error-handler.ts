@@ -32,6 +32,11 @@ const fastifyErrorCodesMap: Record<
     error: 'Not Found',
     statusCode: 404, //  'https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4',
   }),
+  FST_REQ_FILE_TOO_LARGE: () => ({
+    message: 'File exceeds the maximum allowed size',
+    error: 'Payload Too Large',
+    statusCode: 413, // https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.11
+  }),
 };
 
 async function errorHandlerPlugin(fastify: FastifyInstance) {
