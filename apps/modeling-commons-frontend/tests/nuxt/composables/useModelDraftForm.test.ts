@@ -390,6 +390,66 @@ describe("useModelDraftForm", () => {
     });
   });
 
+  describe("kind routing", () => {
+    function fileUploadRole(filename: string): string | null {
+      const call = apiState.current!.POST.mock.calls.find((args) => {
+        const [path, opts] = args as [string, { body?: unknown } | undefined];
+        if (path !== "/api/v1/model-drafts/{id}/files") return false;
+        const body = opts?.body;
+        return body instanceof FormData && (body.get("file") as File | null)?.name === filename;
+      });
+      if (!call) return null;
+      const body = (call[1] as { body: FormData }).body;
+      return body.get("role") as string | null;
+    }
+
+    it("uploads modelFiles with role 'model-file'", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          id: "att-model-1",
+          s3Key: "staging/u/d/extra.nls",
+          filename: "extra.nls",
+          sizeBytes: 64,
+          mimeType: "application/octet-stream",
+        }),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      const file = new File([new Uint8Array(8)], "extra.nls", { type: "application/octet-stream" });
+      form.modelFiles.value = [file];
+      await nextTick();
+      for (let i = 0; i < 5; i++) await nextTick();
+
+      expect(fileUploadRole("extra.nls")).toBe("model-file");
+    });
+
+    it("uploads additionalFiles with role 'attachment'", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          id: "att-extra-1",
+          s3Key: "staging/u/d/doc.pdf",
+          filename: "doc.pdf",
+          sizeBytes: 128,
+          mimeType: "application/pdf",
+        }),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      const file = new File([new Uint8Array(8)], "doc.pdf", { type: "application/pdf" });
+      form.additionalFiles.value = [file];
+      await nextTick();
+      for (let i = 0; i < 5; i++) await nextTick();
+
+      expect(fileUploadRole("doc.pdf")).toBe("attachment");
+    });
+  });
+
   describe("existingAttachments vs session-added", () => {
     it("only includes hydrated attachment ids", async () => {
       apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
