@@ -108,7 +108,7 @@ export default function useModelDraft(initialDraftId?: string) {
   }, 500);
 
   async function uploadFileRaw(
-    role: "primary" | "attachment" | "preview",
+    role: "primary" | "model-file" | "attachment" | "preview",
     file: File,
   ): Promise<StagedFile & { previewImageUrl?: string }> {
     const id = await ensureDraft();
@@ -141,6 +141,10 @@ export default function useModelDraft(initialDraftId?: string) {
 
   async function uploadPrimaryFile(file: File): Promise<StagedFile> {
     return uploadFileRaw("primary", file);
+  }
+
+  async function uploadModelFile(file: File): Promise<StagedFile> {
+    return uploadFileRaw("model-file", file);
   }
 
   async function uploadAttachment(file: File): Promise<StagedFile> {
@@ -224,6 +228,7 @@ export default function useModelDraft(initialDraftId?: string) {
     load,
     patch,
     uploadPrimaryFile,
+    uploadModelFile,
     uploadAttachment,
     uploadPreviewImage,
     removeFile,

@@ -1,5 +1,5 @@
 import type { ModelCard } from "~/composables/model/useModelCard";
-import type { DraftData, Visibility } from "~/composables/model/useModelDraft";
+import type { DraftData, StagedFile, Visibility } from "~/composables/model/useModelDraft";
 import { getModelPreviewCard } from "~/forms/models";
 import type { PrimaryFileMeta, StagedAttachmentMeta, UploadFormInput } from "~/forms/upload";
 import { collectTagNames, draftToFormState, emptyUploadFormState } from "~/forms/upload";
@@ -23,6 +23,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     load,
     patch,
     uploadPrimaryFile,
+    uploadModelFile,
     uploadAttachment,
     uploadPreviewImage: uploadPreviewImageApi,
     removeFile,
@@ -265,6 +266,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
   async function syncAttachments(
     files: File[] | undefined,
     prev: File[] | undefined,
+    upload: (file: File) => Promise<StagedFile>,
   ): Promise<void> {
     if (hydrating.value) return;
     const current = files ?? [];
@@ -272,7 +274,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     const added = current.filter((f) => !previous.includes(f));
     for (const file of added) {
       try {
-        const staged = await uploadAttachment(file);
+        const staged = await upload(file);
         stagedAttachments.value.push({
           id: staged.fileId,
           filename: staged.filename,
@@ -298,11 +300,11 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
   }
 
   watch(modelFiles, (files, prev) => {
-    void syncAttachments(files, prev);
+    void syncAttachments(files, prev, uploadModelFile);
   });
 
   watch(additionalFiles, (files, prev) => {
-    void syncAttachments(files, prev);
+    void syncAttachments(files, prev, uploadAttachment);
   });
 
   async function submit(visibility: Visibility): Promise<{ id: string } | null> {
