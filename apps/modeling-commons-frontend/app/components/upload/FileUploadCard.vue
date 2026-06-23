@@ -8,7 +8,7 @@
     <div class="flex flex-col gap-10">
       <UploadCardTitle title="Upload Files" />
 
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5" data-testid="model-files-uploader">
         <h6>Model Files</h6>
 
         <div v-if="existingModelFiles.length > 0" class="flex flex-col gap-2">
