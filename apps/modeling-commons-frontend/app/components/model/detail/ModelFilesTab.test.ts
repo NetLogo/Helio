@@ -109,7 +109,7 @@ describe("ModelFilesTab", () => {
     expect(downloadEmits?.[0]).toEqual(["f1"]);
   });
 
-  it("shows only model files tagged to the latest version", async () => {
+  it("shows only model files tagged to the viewed version", async () => {
     const wrapper = await mountSuspended(ModelFilesTab, {
       props: {
         files: [
@@ -117,7 +117,7 @@ describe("ModelFilesTab", () => {
           makeFile({ id: "new", title: "new-dataset.csv", kind: "model", taggedVersionNumber: 2 }),
         ],
         status: "success",
-        latestVersionNumber: 2,
+        viewedVersionNumber: 2,
       },
     });
     const text = wrapper.text();
@@ -125,7 +125,23 @@ describe("ModelFilesTab", () => {
     expect(text).not.toContain("old-dataset.csv");
   });
 
-  it("keeps additional files from every version regardless of latestVersionNumber", async () => {
+  it("viewing v1 shows v1's model files and hides v2's model files", async () => {
+    const wrapper = await mountSuspended(ModelFilesTab, {
+      props: {
+        files: [
+          makeFile({ id: "v1m", title: "v1-only.csv", kind: "model", taggedVersionNumber: 1 }),
+          makeFile({ id: "v2m", title: "v2-only.csv", kind: "model", taggedVersionNumber: 2 }),
+        ],
+        status: "success",
+        viewedVersionNumber: 1,
+      },
+    });
+    const text = wrapper.text();
+    expect(text).toContain("v1-only.csv");
+    expect(text).not.toContain("v2-only.csv");
+  });
+
+  it("keeps additional files from every version regardless of viewedVersionNumber", async () => {
     const wrapper = await mountSuspended(ModelFilesTab, {
       props: {
         files: [
@@ -133,7 +149,7 @@ describe("ModelFilesTab", () => {
           makeFile({ id: "a2", title: "v2-notes.md", kind: "additional", taggedVersionNumber: 2 }),
         ],
         status: "success",
-        latestVersionNumber: 2,
+        viewedVersionNumber: 2,
       },
     });
     const text = wrapper.text();

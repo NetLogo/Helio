@@ -39,7 +39,7 @@ const props = defineProps<{
   files: AttachedFile[];
   editable?: boolean;
   status: "pending" | "error" | "success" | "idle";
-  latestVersionNumber?: number | null;
+  viewedVersionNumber?: number | null;
 }>();
 
 defineEmits<{
@@ -51,8 +51,8 @@ const modelFiles = computed(() =>
   props.files.filter(
     (f) =>
       f.kind === "model" &&
-      (props.latestVersionNumber == null ||
-        f.taggedVersionNumber === props.latestVersionNumber),
+      (props.viewedVersionNumber == null ||
+        f.taggedVersionNumber === props.viewedVersionNumber),
   ),
 );
 const additionalFiles = computed(() => props.files.filter((f) => f.kind === "additional"));
