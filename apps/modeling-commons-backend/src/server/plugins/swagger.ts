@@ -40,7 +40,6 @@ async function swaggerGeneratorPlugin(fastify: FastifyInstance) {
       hide: true,
     },
     handler: async (_, reply) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const schema = (await auth.api.generateOpenAPISchema()) as Record<string, unknown>;
       reply.send(schema);
     },

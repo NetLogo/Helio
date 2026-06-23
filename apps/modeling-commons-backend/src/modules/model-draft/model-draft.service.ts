@@ -83,12 +83,7 @@ export default function makeModelDraftService({
     });
   }
 
-  function stagingKey(
-    userId: string,
-    draftId: string,
-    filename: string,
-    isPublic = false,
-  ): string {
+  function stagingKey(userId: string, draftId: string, filename: string, isPublic = false): string {
     const prefix = isPublic
       ? `${PUBLIC_PREFIX}/staging/${userId}/${draftId}/`
       : `staging/${userId}/${draftId}/`;
@@ -574,9 +569,9 @@ export default function makeModelDraftService({
       }
 
       async function publishMetadataPatch(): Promise<PublishDraftResponseDto> {
-        // existingModel and seededFrom are guaranteed non-null when createNewVersion is false.
-        const model = existingModel as NonNullable<typeof existingModel>;
-        const baseline = seededFrom as NonNullable<typeof seededFrom>;
+        if (!existingModel || !seededFrom) throw new ModelDraftNotFoundError(draftId);
+        const model = existingModel;
+        const baseline = seededFrom;
 
         const current = await modelVersionRepository.findLatestByModel(model.id);
         if (!current) throw new ModelDraftNotFoundError(draftId);

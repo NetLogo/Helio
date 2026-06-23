@@ -148,8 +148,7 @@ const attachedFiles = computed<AttachedFile[]>(() => {
   fileDownloadUrls.clear();
   return (additionalFiles.value ?? []).map((file) => {
     fileDownloadUrls.set(file.id, file.downloadUrl);
-    // `kind` is not in the generated client types yet; narrow cast until `generate:types` runs.
-    const kind = (file as unknown as { kind?: "model" | "additional" }).kind ?? "additional";
+    const kind = file.kind ?? "additional";
     return {
       id: file.id,
       title: file.filename,
