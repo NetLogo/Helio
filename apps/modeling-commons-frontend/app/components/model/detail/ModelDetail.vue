@@ -93,6 +93,7 @@
         v-else-if="activeTab === 'files'"
         :files="attachedFiles"
         :status="filesStatus"
+        :latest-version-number="card.model.latestVersionNumber"
         @download="handleFileDownload"
       />
 

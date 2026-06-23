@@ -109,6 +109,38 @@ describe("ModelFilesTab", () => {
     expect(downloadEmits?.[0]).toEqual(["f1"]);
   });
 
+  it("shows only model files tagged to the latest version", async () => {
+    const wrapper = await mountSuspended(ModelFilesTab, {
+      props: {
+        files: [
+          makeFile({ id: "old", title: "old-dataset.csv", kind: "model", taggedVersionNumber: 1 }),
+          makeFile({ id: "new", title: "new-dataset.csv", kind: "model", taggedVersionNumber: 2 }),
+        ],
+        status: "success",
+        latestVersionNumber: 2,
+      },
+    });
+    const text = wrapper.text();
+    expect(text).toContain("new-dataset.csv");
+    expect(text).not.toContain("old-dataset.csv");
+  });
+
+  it("keeps additional files from every version regardless of latestVersionNumber", async () => {
+    const wrapper = await mountSuspended(ModelFilesTab, {
+      props: {
+        files: [
+          makeFile({ id: "a1", title: "v1-notes.md", kind: "additional", taggedVersionNumber: 1 }),
+          makeFile({ id: "a2", title: "v2-notes.md", kind: "additional", taggedVersionNumber: 2 }),
+        ],
+        status: "success",
+        latestVersionNumber: 2,
+      },
+    });
+    const text = wrapper.text();
+    expect(text).toContain("v1-notes.md");
+    expect(text).toContain("v2-notes.md");
+  });
+
   it("shows the Add Files button only when editable is true", async () => {
     const wrapperReadonly = await mountSuspended(ModelFilesTab, {
       props: { files: [], status: "success" },
