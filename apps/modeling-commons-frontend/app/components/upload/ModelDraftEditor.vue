@@ -11,9 +11,10 @@
       </Banner>
 
       <div
-        v-if="initializing"
+        v-if="loadingDraft"
         class="flex items-center justify-center min-h-[70vh] text-muted"
         aria-live="polite"
+        data-testid="draft-loading"
       >
         <UIcon name="i-lucide-loader-circle" class="animate-spin size-6 mr-2" />
         Loading draft…
@@ -73,6 +74,7 @@
             <ModelDraftActionBar
               :is-edit="isEdit"
               :publishing="publishing"
+              :hydrating="hydrating"
               :reverting="reverting"
               :deleting-model="deletingModel"
               :is-dirty="isDirty"
@@ -140,6 +142,7 @@ const {
   draftId,
   publishing,
   initializing,
+  hydrating,
   formState,
   pickedFile,
   primaryFile,
@@ -183,6 +186,10 @@ const confirmDelete = ref(false);
 const confirmDiscard = ref(false);
 
 const isEdit = computed(() => props.mode === "edit");
+const isSeedingDraft = computed(() => Boolean(props.initialDraftId || props.seedModelId));
+const loadingDraft = computed(
+  () => isSeedingDraft.value && (initializing.value || hydrating.value),
+);
 const showPicker = computed(() => !isEdit.value && !hasPrimaryFile.value);
 const submitLabel = computed(() => "Publish");
 const discardLabel = computed(() => (isEdit.value ? "Discard edits" : "Discard draft"));

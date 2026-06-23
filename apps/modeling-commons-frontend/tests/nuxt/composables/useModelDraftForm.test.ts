@@ -162,6 +162,39 @@ describe("useModelDraftForm", () => {
     });
   });
 
+  describe("hydration gating", () => {
+    it("hydrating is true while a draft is hydrating and flips false once done", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      const hydrated = form.hydrateFromDraft(sampleDraftData);
+
+      expect(form.hydrating.value).toBe(true);
+
+      await hydrated;
+
+      expect(form.hydrating.value).toBe(false);
+    });
+
+    it("hydrating stays true across the whole init load+hydrate window for a seeded draft", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      expect(form.hydrating.value).toBe(false);
+
+      await form.init();
+      await nextTick();
+
+      expect(form.hydrating.value).toBe(false);
+    });
+
+    it("hydrating is false in create mode (no seed, no hydration wait)", async () => {
+      const form = useModelDraftForm({ mode: "create" });
+      await form.init();
+      expect(form.hydrating.value).toBe(false);
+    });
+  });
+
   describe("init with seedModelId", () => {
     it("creates a draft seeded by modelId then loads it", async () => {
       apiState.current!.POST.mockResolvedValue(apiResult.ok({ id: "draft-2" }));
