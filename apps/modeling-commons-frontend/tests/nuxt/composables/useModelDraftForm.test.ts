@@ -5,7 +5,7 @@ import useModelDraftForm from "~/composables/model/useModelDraftForm";
 import type { DraftData } from "~/composables/model/useModelDraft";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
-const { apiState, userState, toastAdd, infoTabState } = vi.hoisted(() => ({
+const { apiState, userState, toastAdd, infoTabState, additionalFilesState } = vi.hoisted(() => ({
   apiState: { current: null as ReturnType<typeof makeApiClientMock> | null },
   userState: {
     current: {
@@ -19,6 +19,9 @@ const { apiState, userState, toastAdd, infoTabState } = vi.hoisted(() => ({
     infoTab: null as string | null,
     firstParagraph: "",
   },
+  additionalFilesState: {
+    current: [] as unknown[],
+  },
 }));
 
 mockNuxtImport("useApi", () => () => apiState.current!.client);
@@ -26,6 +29,9 @@ mockNuxtImport("useUser", () => () => computed(() => userState.current));
 mockNuxtImport("useToast", () => () => ({ add: toastAdd }));
 mockNuxtImport("readInfoTabFromNlogox", () => async () => infoTabState.infoTab);
 mockNuxtImport("getFirstParagraphTextFromMarkdown", () => async () => infoTabState.firstParagraph);
+mockNuxtImport("useModelAdditionalFiles", () => () => ({
+  data: computed(() => additionalFilesState.current),
+}));
 
 function makeDraftDto(
   data: DraftData,
@@ -58,10 +64,11 @@ const sampleDraftData: DraftData = {
   attachments: [
     {
       id: "att-existing-1",
-      s3Key: "staging/u/d/xyz-readme.md",
-      filename: "readme.md",
+      s3Key: "staging/u/d/xyz-dataset.csv",
+      filename: "dataset.csv",
       sizeBytes: 200,
-      mimeType: "text/markdown",
+      mimeType: "text/csv",
+      kind: "model",
     },
   ],
 };
@@ -75,6 +82,7 @@ beforeEach(() => {
   toastAdd.mockReset();
   infoTabState.infoTab = null;
   infoTabState.firstParagraph = "";
+  additionalFilesState.current = [];
 });
 
 function fileUploadPosts() {
@@ -101,8 +109,9 @@ describe("useModelDraftForm", () => {
       expect(form.formState.value.tags).toEqual(["agents"]);
       expect(form.formState.value.usecases).toEqual(["research"]);
       expect(form.primaryFile.value?.filename).toBe("model.nlogox");
-      expect(form.existingAttachments.value).toHaveLength(1);
-      expect(form.existingAttachments.value[0]?.id).toBe("att-existing-1");
+      expect(form.existingModelFiles.value).toHaveLength(1);
+      expect(form.existingModelFiles.value[0]?.id).toBe("att-existing-1");
+      expect(form.existingModelFiles.value[0]?.filename).toBe("dataset.csv");
     });
 
     it("does not call PATCH while hydrating (watchers are suppressed)", async () => {
@@ -223,6 +232,7 @@ describe("useModelDraftForm", () => {
         filename: "doc.pdf",
         sizeBytes: 100,
         mimeType: "application/pdf",
+        kind: "additional",
       });
 
       await form.revert();
@@ -231,8 +241,8 @@ describe("useModelDraftForm", () => {
         "/api/v1/model-drafts/{id}/files/{fileId}",
         { params: { path: { id: "draft-1", fileId: "att-session-1" } } },
       );
-      expect(form.existingAttachments.value).toHaveLength(1);
-      expect(form.existingAttachments.value[0]?.id).toBe("att-existing-1");
+      expect(form.existingModelFiles.value).toHaveLength(1);
+      expect(form.existingModelFiles.value[0]?.id).toBe("att-existing-1");
     });
   });
 
@@ -467,8 +477,26 @@ describe("useModelDraftForm", () => {
     });
   });
 
-  describe("existingAttachments vs session-added", () => {
-    it("only includes hydrated attachment ids", async () => {
+  describe("kind-aware seeded files", () => {
+    it("surfaces hydrated kind:'model' attachments as editable existing model files", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      const ids = form.existingModelFiles.value.map((a) => a.id);
+      expect(ids).toEqual(["att-existing-1"]);
+      expect(form.existingModelFiles.value[0]?.kind).toBe("model");
+    });
+
+    it("does not surface seeded model files as locked additional files", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      expect(form.lockedAdditionalFiles.value).toEqual([]);
+    });
+
+    it("excludes session-added additional uploads from existing model files", async () => {
       apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
       const form = useModelDraftForm({ initialDraftId: "draft-1" });
       await form.init();
@@ -476,13 +504,117 @@ describe("useModelDraftForm", () => {
       form.stagedAttachments.value.push({
         id: "att-session-1",
         s3Key: "k",
-        filename: "f",
+        filename: "doc.pdf",
         sizeBytes: 1,
-        mimeType: "x",
+        mimeType: "application/pdf",
+        kind: "additional",
       });
 
-      const ids = form.existingAttachments.value.map((a) => a.id);
-      expect(ids).toEqual(["att-existing-1"]);
+      expect(form.existingModelFiles.value.map((a) => a.id)).toEqual(["att-existing-1"]);
+      expect(form.sessionAddedAdditionalFiles.value.map((a) => a.id)).toEqual(["att-session-1"]);
+    });
+  });
+
+  describe("session-added kind routing onto staged attachments", () => {
+    it("tags newly-uploaded model files with kind 'model'", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          id: "att-model-2",
+          s3Key: "staging/u/d/extra.nls",
+          filename: "extra.nls",
+          sizeBytes: 64,
+          mimeType: "application/octet-stream",
+        }),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      const file = new File([new Uint8Array(8)], "extra.nls", { type: "application/octet-stream" });
+      form.modelFiles.value = [file];
+      for (let i = 0; i < 6; i++) await nextTick();
+
+      const staged = form.stagedAttachments.value.find((a) => a.id === "att-model-2");
+      expect(staged?.kind).toBe("model");
+      // Session-added model files are tracked via the add-zone, not the hydrated existing list.
+      expect(form.existingModelFiles.value.map((a) => a.id)).not.toContain("att-model-2");
+    });
+
+    it("tags newly-uploaded additional files with kind 'additional'", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.POST.mockResolvedValue(
+        apiResult.ok({
+          id: "att-extra-2",
+          s3Key: "staging/u/d/doc.pdf",
+          filename: "doc.pdf",
+          sizeBytes: 128,
+          mimeType: "application/pdf",
+        }),
+      );
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+
+      const file = new File([new Uint8Array(8)], "doc.pdf", { type: "application/pdf" });
+      form.additionalFiles.value = [file];
+      for (let i = 0; i < 6; i++) await nextTick();
+
+      const staged = form.stagedAttachments.value.find((a) => a.id === "att-extra-2");
+      expect(staged?.kind).toBe("additional");
+      expect(form.sessionAddedAdditionalFiles.value.map((a) => a.id)).toContain("att-extra-2");
+    });
+  });
+
+  describe("removing existing model files", () => {
+    it("deletes the file from the draft and drops it from existing model files", async () => {
+      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
+      apiState.current!.DELETE.mockResolvedValue(apiResult.ok(undefined as never));
+
+      const form = useModelDraftForm({ initialDraftId: "draft-1" });
+      await form.init();
+      expect(form.isDirty.value).toBe(false);
+
+      await form.removeExistingModelFile("att-existing-1");
+
+      expect(apiState.current!.DELETE).toHaveBeenCalledWith(
+        "/api/v1/model-drafts/{id}/files/{fileId}",
+        { params: { path: { id: "draft-1", fileId: "att-existing-1" } } },
+      );
+      expect(form.existingModelFiles.value).toHaveLength(0);
+      expect(form.isDirty.value).toBe(true);
+      expect(form.modelFilesAdded.value).toBe(true);
+    });
+  });
+
+  describe("locked additional files in edit mode", () => {
+    it("exposes the model's existing additional files as locked (display-only)", async () => {
+      apiState.current!.POST.mockResolvedValue(apiResult.ok({ id: "draft-edit" }));
+      apiState.current!.GET.mockResolvedValue(
+        apiResult.ok(makeDraftDto(sampleDraftData, "draft-edit")),
+      );
+      additionalFilesState.current = [
+        {
+          id: "extra-1",
+          filename: "license.txt",
+          sizeBytes: 50,
+          kind: "additional",
+          taggedVersionNumber: 1,
+        },
+        {
+          id: "legacy-model-file",
+          filename: "old-data.csv",
+          sizeBytes: 10,
+          kind: "model",
+          taggedVersionNumber: 1,
+        },
+      ];
+
+      const form = useModelDraftForm({ mode: "edit", seedModelId: "model-1" });
+      await form.init();
+
+      const lockedIds = form.lockedAdditionalFiles.value.map((f) => f.id);
+      expect(lockedIds).toEqual(["extra-1"]);
     });
   });
 

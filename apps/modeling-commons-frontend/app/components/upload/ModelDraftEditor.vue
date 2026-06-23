@@ -48,8 +48,9 @@
                 <FileUploadCard
                   v-model:model-files="modelFiles"
                   v-model:additional-files="additionalFiles"
-                  :existing-attachments="existingAttachments"
-                  :lock-existing="isEdit"
+                  :existing-model-files="existingModelFiles"
+                  :locked-additional-files="lockedAdditionalFiles"
+                  @remove-model-file="removeExistingModelFile"
                 />
               </template>
               <template #details>
@@ -147,7 +148,9 @@ const {
   previewCard,
   saveStatusLabel,
   hasPrimaryFile,
-  existingAttachments,
+  existingModelFiles,
+  lockedAdditionalFiles,
+  removeExistingModelFile,
   primaryFileChanged,
   modelFilesAdded,
   isDirty,
