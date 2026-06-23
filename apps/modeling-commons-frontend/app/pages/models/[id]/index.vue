@@ -60,7 +60,7 @@ const { data: permissions, refresh: refreshPermissions } = useModelPermissions(m
 
 // Ensure permissions are not stale after a model update.
 // -- Omar Ibrahim, May 27 26
-onMounted(() => {
+watch(() => versionCard.value, () => {
   if (card.value) {
     refreshPermissions();
   }
