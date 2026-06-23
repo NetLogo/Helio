@@ -1600,6 +1600,7 @@ export interface paths {
                             userId?: string;
                             taggedVersionNumber: number;
                             fileKey: string;
+                            kind: "model" | "additional";
                             filename: string;
                             contentType: string;
                             sizeBytes: number;
@@ -1689,6 +1690,7 @@ export interface paths {
                             userId?: string;
                             taggedVersionNumber: number;
                             fileKey: string;
+                            kind: "model" | "additional";
                             filename: string;
                             contentType: string;
                             sizeBytes: number;
@@ -2357,7 +2359,15 @@ export interface paths {
                                         filename: string;
                                         sizeBytes: number;
                                         mimeType: string;
+                                        kind?: "model" | "additional";
                                     }[];
+                                    seededFrom?: {
+                                        versionNumber: number;
+                                        primaryFileS3Key: string;
+                                        modelFileS3Keys: string[];
+                                        additionalFileS3Keys: string[];
+                                        previewImageS3Key?: string;
+                                    };
                                 };
                                 previewImageUrl: string | null;
                                 /** Format: date-time */
@@ -2555,7 +2565,15 @@ export interface paths {
                                     filename: string;
                                     sizeBytes: number;
                                     mimeType: string;
+                                    kind?: "model" | "additional";
                                 }[];
+                                seededFrom?: {
+                                    versionNumber: number;
+                                    primaryFileS3Key: string;
+                                    modelFileS3Keys: string[];
+                                    additionalFileS3Keys: string[];
+                                    previewImageS3Key?: string;
+                                };
                             };
                             previewImageUrl: string | null;
                             /** Format: date-time */
@@ -2753,7 +2771,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "attachment" | "preview"). */
+        /** @description Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "model-file" | "attachment" | "preview"). A "model-file" is a version-relevant model file; an "attachment" is an additional (non-version-relevant) file. */
         post: {
             parameters: {
                 query?: never;
@@ -2774,7 +2792,7 @@ export interface paths {
                         "application/json": {
                             /** Format: uuid */
                             id?: string;
-                            role: "primary" | "attachment" | "preview";
+                            role: "primary" | "model-file" | "attachment" | "preview";
                             s3Key: string;
                             filename: string;
                             sizeBytes: number;
@@ -3020,6 +3038,19 @@ export interface paths {
             requestBody?: never;
             responses: {
                 /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            modelId: string;
+                            versionNumber: number;
+                            createdNewVersion: boolean;
+                        };
+                    };
+                };
+                /** @description Default Response */
                 201: {
                     headers: {
                         [name: string]: unknown;
@@ -3028,6 +3059,7 @@ export interface paths {
                         "application/json": {
                             modelId: string;
                             versionNumber: number;
+                            createdNewVersion: boolean;
                         };
                     };
                 };
