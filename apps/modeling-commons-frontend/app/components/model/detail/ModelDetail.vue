@@ -147,11 +147,16 @@ const attachedFiles = computed<AttachedFile[]>(() => {
   fileDownloadUrls.clear();
   return (additionalFiles.value ?? []).map((file) => {
     fileDownloadUrls.set(file.id, file.downloadUrl);
+    // `kind` is not in the generated client types yet; narrow cast until `generate:types` runs.
+    const kind = (file as unknown as { kind?: "model" | "additional" }).kind ?? "additional";
     return {
       id: file.id,
       title: file.filename,
       description: "",
       type: file.contentType,
+      kind,
+      taggedVersionNumber: file.taggedVersionNumber,
+      versionUrl: `/models/${modelId.value}/versions/${file.taggedVersionNumber}`,
       // @todo: get real file uploader name
       authorName: "Model Author",
       updatedAt: new Date(file.createdAt).toLocaleDateString(),

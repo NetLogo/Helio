@@ -13,6 +13,9 @@ export interface AttachedFile {
   title: string;
   description: string;
   type: string;
+  kind: "model" | "additional";
+  taggedVersionNumber: number;
+  versionUrl: string;
   authorName: string;
   updatedAt: string;
   isPending: boolean;

@@ -9,6 +9,9 @@ function makeFile(overrides: Partial<AttachedFile> = {}): AttachedFile {
     title: "data.csv",
     description: "",
     type: "csv",
+    kind: "additional",
+    taggedVersionNumber: 1,
+    versionUrl: "/models/model-1/versions/1",
     authorName: "Ada Lovelace",
     updatedAt: new Date("2026-04-15T00:00:00Z").toISOString(),
     isPending: false,
@@ -39,6 +42,55 @@ describe("ModelFilesTab", () => {
       props: { files: [], status: "success" },
     });
     expect(wrapper.text()).toContain("No files attached");
+  });
+
+  it("groups model files and additional files under separate headings", async () => {
+    const wrapper = await mountSuspended(ModelFilesTab, {
+      props: {
+        files: [
+          makeFile({ id: "m1", title: "dataset.csv", kind: "model" }),
+          makeFile({ id: "a1", title: "README.md", kind: "additional" }),
+        ],
+        status: "success",
+      },
+    });
+    const text = wrapper.text();
+    expect(text).toContain("Model Files");
+    expect(text).toContain("Additional Files");
+    expect(text).toContain("dataset.csv");
+    expect(text).toContain("README.md");
+  });
+
+  it("omits the Model Files heading when there are only additional files", async () => {
+    const wrapper = await mountSuspended(ModelFilesTab, {
+      props: {
+        files: [makeFile({ id: "a1", title: "README.md", kind: "additional" })],
+        status: "success",
+      },
+    });
+    const text = wrapper.text();
+    expect(text).toContain("Additional Files");
+    expect(text).not.toContain("Model Files");
+  });
+
+  it("shows the version an additional file was added to as a link to that version", async () => {
+    const wrapper = await mountSuspended(ModelFilesTab, {
+      props: {
+        files: [
+          makeFile({
+            id: "a1",
+            title: "notes.md",
+            kind: "additional",
+            taggedVersionNumber: 3,
+            versionUrl: "/models/m1/versions/3",
+          }),
+        ],
+        status: "success",
+      },
+    });
+    const link = wrapper.find('a[href*="/models/m1/versions/3"]');
+    expect(link.exists()).toBe(true);
+    expect(link.text()).toContain("v3");
   });
 
   it.todo("emits download with the file id when the row download button is clicked — button selector doesn't match Nuxt UI rendered DOM; needs data-testid on source", async () => {
