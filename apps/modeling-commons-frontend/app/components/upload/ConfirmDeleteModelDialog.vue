@@ -1,5 +1,5 @@
 <template>
-  <UModal v-model:open="open" title="Delete Model" class="lg:max-w-2xl">
+  <UModal v-model:open="open" title="Delete Model" class="lg:max-w-xl">
     <template #content>
       <div class="space-y-8 p-8">
         <h6 class="text-center">Are you sure you want to delete this model?</h6>
