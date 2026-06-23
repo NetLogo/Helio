@@ -60,6 +60,7 @@ type TableData = {
   taggedVersionNumber: number;
   authorName: string;
   updatedAt: string;
+  versionUrl?: string;
 };
 
 type TableColumns = TableProps<TableData>["columns"];
@@ -76,7 +77,7 @@ const columns = computed<TableColumns>(() => {
   return props.loading ? withSkeleton(baseColumns) : baseColumns;
 });
 
-const data = computed(() =>
+const data = computed<TableData[]>(() =>
   props.loading
     ? Array.from({ length: 3 }).map((_, i) => ({
         id: "file-" + i,

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ModelDraftActionBar from "./ModelDraftActionBar.vue";
+import type { DOMWrapper } from "@vue/test-utils";
 
 function makeProps(overrides: Record<string, unknown> = {}) {
   return {
@@ -19,7 +20,9 @@ function makeProps(overrides: Record<string, unknown> = {}) {
 }
 
 function publishButton(wrapper: Awaited<ReturnType<typeof mountSuspended>>) {
-  return wrapper.findAll("button").find((b) => b.text().includes("Publish"));
+  return wrapper
+    .findAll("button")
+    .find((b: DOMWrapper<HTMLButtonElement>) => b.text().includes("Publish"));
 }
 
 describe("ModelDraftActionBar", () => {
