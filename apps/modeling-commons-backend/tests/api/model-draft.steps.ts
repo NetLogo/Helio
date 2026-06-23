@@ -540,3 +540,98 @@ Then(
     );
   },
 );
+
+Given(
+  'the current user has uploaded an additional file to {string}',
+  async function (this: ICustomWorld, modelTitle: string) {
+    const user = this.context['currentUser'] as TestUser;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    const boundary = `----AddFileBoundary${Date.now().toString(16)}`;
+    const head = Buffer.from(
+      `--${boundary}\r\n` +
+        `Content-Disposition: form-data; name="file"; filename="data.csv"\r\n` +
+        `Content-Type: text/csv\r\n\r\n`,
+      'utf-8',
+    );
+    const tail = Buffer.from(`\r\n--${boundary}--\r\n`, 'utf-8');
+    const payload = Buffer.concat([head, Buffer.from('col1,col2\n1,2\n', 'utf-8'), tail]);
+    const res = await this.server.inject({
+      method: 'POST',
+      url: `/api/v1/models/${modelId}/additional-files`,
+      payload,
+      headers: { cookie: user.cookie, 'content-type': `multipart/form-data; boundary=${boundary}` },
+    });
+    if (res.statusCode !== 201) {
+      throw new Error(`Failed to upload additional file (${res.statusCode}): ${res.body}`);
+    }
+  },
+);
+
+type AdditionalFileRow = { kind: 'model' | 'additional'; taggedVersionNumber: number };
+
+When(
+  'I list the additional files for model {string} version {int}',
+  async function (this: ICustomWorld, modelTitle: string, version: number) {
+    const user = this.context['currentUser'] as TestUser;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models/${modelId}/additional-files?taggedVersionNumber=${version}`,
+      headers: { cookie: user.cookie },
+    });
+  },
+);
+
+When(
+  'I list all additional files for model {string}',
+  async function (this: ICustomWorld, modelTitle: string) {
+    const user = this.context['currentUser'] as TestUser;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models/${modelId}/additional-files`,
+      headers: { cookie: user.cookie },
+    });
+  },
+);
+
+Then(
+  'the additional files response should contain {int} files of kind {string}',
+  function (this: ICustomWorld, expected: number, kind: string) {
+    const rows = JSON.parse(this.context.latestResponse!.body) as Array<AdditionalFileRow>;
+    const matching = rows.filter((r) => r.kind === kind);
+    assert.strictEqual(
+      matching.length,
+      expected,
+      `Expected ${expected} files of kind "${kind}", got ${matching.length}`,
+    );
+  },
+);
+
+Then(
+  'the additional files response should contain {int} files of kind {string} tagged at version {int}',
+  function (this: ICustomWorld, expected: number, kind: string, version: number) {
+    const rows = JSON.parse(this.context.latestResponse!.body) as Array<AdditionalFileRow>;
+    const matching = rows.filter((r) => r.kind === kind && r.taggedVersionNumber === version);
+    assert.strictEqual(
+      matching.length,
+      expected,
+      `Expected ${expected} files of kind "${kind}" tagged at version ${version}, ` +
+        `got ${matching.length} (rows: ${JSON.stringify(rows.map((r) => ({ kind: r.kind, v: r.taggedVersionNumber })))})`,
+    );
+  },
+);
+
+Then(
+  'each tag in the response should have a non-empty displayName',
+  function (this: ICustomWorld) {
+    const rows = JSON.parse(this.context.latestResponse!.body) as Array<{ displayName?: string }>;
+    assert.ok(rows.length > 0, 'Expected at least one tag in the response');
+    for (const row of rows) {
+      assert.ok(
+        typeof row.displayName === 'string' && row.displayName.length > 0,
+        `Expected a non-empty displayName, got ${JSON.stringify(row)}`,
+      );
+    }
+  },
+);

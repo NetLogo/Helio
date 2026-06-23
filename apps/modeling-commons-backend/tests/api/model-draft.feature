@@ -230,3 +230,50 @@ Feature: Model Drafts
     Then the response status should be 201
     And the response body property "versionNumber" should equal "2"
     And the model "Model File Edit Model" latest version number should be 2
+
+  Scenario: Model files carry forward to each new version
+    Given an authenticated user
+    And a public model "Carry Forward Model" created by the current user
+    And a draft seeded from the model "Carry Forward Model"
+    When I upload a model file to the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the response body property "versionNumber" should equal "2"
+    And a draft seeded from the model "Carry Forward Model"
+    When I upload a primary file to the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the response body property "versionNumber" should equal "3"
+    When I list the additional files for model "Carry Forward Model" version 3
+    Then the response status should be 200
+    And the additional files response should contain 1 files of kind "model" tagged at version 3
+    And the additional files response should contain 0 files of kind "additional"
+
+  Scenario: Additional files are single-source and never duplicated across versions
+    Given an authenticated user
+    And a public model "Single Source Model" created by the current user
+    And the current user has uploaded an additional file to "Single Source Model"
+    And a draft seeded from the model "Single Source Model"
+    When I upload a model file to the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the response body property "versionNumber" should equal "2"
+    When I list all additional files for model "Single Source Model"
+    Then the response status should be 200
+    And the additional files response should contain 1 files of kind "additional" tagged at version 1
+    And the additional files response should contain 0 files of kind "additional" tagged at version 2
+    And the additional files response should contain 1 files of kind "model" tagged at version 2
+
+  Scenario: A new additional file added during a version bump attaches to the new version
+    Given an authenticated user
+    And a public model "Bump With Additional Model" created by the current user
+    And a draft seeded from the model "Bump With Additional Model"
+    When I upload a model file to the draft
+    And I upload an additional file to the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the response body property "versionNumber" should equal "2"
+    When I list all additional files for model "Bump With Additional Model"
+    Then the response status should be 200
+    And the additional files response should contain 1 files of kind "additional" tagged at version 2
+    And the additional files response should contain 1 files of kind "model" tagged at version 2

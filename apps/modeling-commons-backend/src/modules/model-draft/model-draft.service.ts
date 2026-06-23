@@ -229,8 +229,11 @@ export default function makeModelDraftService({
       mimeType: primaryCopy.mimeType,
     };
 
+    // Only model-kind files are version-relevant and seeded into the draft. Additional-kind
+    // files are a single source of truth tagged to their origin version and never copied.
+    const modelFiles = additionalFiles.filter((att) => att.kind === 'model');
     const attachments: Array<DraftFileV1> = await Promise.all(
-      additionalFiles.map(async (att) => {
+      modelFiles.map(async (att) => {
         const filename = filenameFromKey(att.fileKey);
         const copy = await copyToStaging({
           sourceKey: att.fileKey,
@@ -272,9 +275,7 @@ export default function makeModelDraftService({
       versionNumber: version.versionNumber,
       primaryFileS3Key: primaryFile.s3Key,
       modelFileS3Keys: attachments.filter((a) => a.kind === 'model').map((a) => a.s3Key),
-      additionalFileS3Keys: attachments
-        .filter((a) => (a.kind ?? 'additional') === 'additional')
-        .map((a) => a.s3Key),
+      additionalFileS3Keys: [],
       previewImageS3Key: previewImage?.s3Key,
     };
 

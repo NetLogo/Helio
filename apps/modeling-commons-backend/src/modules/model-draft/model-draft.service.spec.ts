@@ -612,6 +612,111 @@ describe('modelDraftService', () => {
     });
   });
 
+  describe('create (seedDraftDataFromModel)', () => {
+    function buildSeedService(additionalFiles: Array<{ fileKey: string; kind: 'model' | 'additional' }>) {
+      const modelRepository = mockModelRepository();
+      modelRepository.findOneById.mockResolvedValue(
+        makeModel({ id: 'model-1', visibility: 'public', latestVersionNumber: 1, deletedAt: null }),
+      );
+
+      const modelVersionRepository = mockModelVersionRepository();
+      modelVersionRepository.findByModelAndVersion.mockResolvedValue({
+        modelId: 'model-1',
+        versionNumber: 1,
+        title: 'Seeded title',
+        description: 'Seeded description',
+        netlogoFileKey: 'uploads/models/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee-primary.nlogo',
+        previewImageFileKey: null,
+        finalizedAt: null,
+      } as never);
+
+      const modelVersionTagRepository = mockModelVersionTagRepository();
+      modelVersionTagRepository.findByVersion.mockResolvedValue([]);
+
+      const modelAdditionalFileRepository = {
+        findByModel: vi.fn().mockResolvedValue(
+          additionalFiles.map((f, i) => ({
+            id: `file-${i}`,
+            modelId: 'model-1',
+            taggedVersionNumber: 1,
+            fileKey: f.fileKey,
+            kind: f.kind,
+          })),
+        ),
+        insertTx: vi.fn(),
+      };
+
+      const storage = {
+        send: vi.fn().mockResolvedValue({ ContentLength: 7, ContentType: 'text/plain' }),
+      };
+      const bucket = { Name: 'test-bucket' };
+
+      const db = {
+        user: { findUnique: vi.fn().mockResolvedValue({ id: 'user-1', systemRole: 'user', banned: false, deletedAt: null }) },
+        model: {
+          findUnique: vi.fn().mockResolvedValue({
+            id: 'model-1',
+            visibility: 'public',
+            deletedAt: null,
+            authors: [{ role: 'owner' }],
+            permissions: [],
+          }),
+        },
+      };
+
+      const built = buildService({
+        modelRepository,
+        modelVersionRepository,
+        modelVersionTagRepository,
+        modelAdditionalFileRepository,
+        modelDomain: modelDomain(),
+        tagRepository: { findOneById: vi.fn() },
+        storage,
+        bucket,
+        db,
+      });
+
+      return { ...built, modelAdditionalFileRepository };
+    }
+
+    it('copies only kind:model files into the draft and leaves additionalFileS3Keys empty', async () => {
+      const { service, modelDraftRepository, modelAdditionalFileRepository } = buildSeedService([
+        { fileKey: 'uploads/models/additional-files/11111111-1111-1111-1111-111111111111-extra.nlogo', kind: 'model' },
+        { fileKey: 'uploads/models/additional-files/22222222-2222-2222-2222-222222222222-data.csv', kind: 'additional' },
+      ]);
+
+      await service.create('user-1', { modelId: 'model-1' });
+
+      expect(modelAdditionalFileRepository.findByModel).toHaveBeenCalledWith('model-1', 1);
+
+      const entity = modelDraftRepository.insertTx.mock.calls[0]![1] as { data: DraftDataV1 };
+      const data = entity.data;
+
+      expect(data.attachments).toHaveLength(1);
+      expect(data.attachments![0]!.kind).toBe('model');
+      expect(data.attachments![0]!.filename).toBe('extra.nlogo');
+
+      expect(data.seededFrom!.additionalFileS3Keys).toEqual([]);
+      expect(data.seededFrom!.modelFileS3Keys).toEqual([data.attachments![0]!.s3Key]);
+      expect(data.title).toBe('Seeded title');
+    });
+
+    it('seeds an empty attachments set when the version has only additional files', async () => {
+      const { service, modelDraftRepository } = buildSeedService([
+        { fileKey: 'uploads/models/additional-files/33333333-3333-3333-3333-333333333333-data.csv', kind: 'additional' },
+      ]);
+
+      await service.create('user-1', { modelId: 'model-1' });
+
+      const entity = modelDraftRepository.insertTx.mock.calls[0]![1] as { data: DraftDataV1 };
+      const data = entity.data;
+
+      expect(data.attachments).toBeUndefined();
+      expect(data.seededFrom!.additionalFileS3Keys).toEqual([]);
+      expect(data.seededFrom!.modelFileS3Keys).toEqual([]);
+    });
+  });
+
   describe('purgeStale', () => {
     it('returns the number of deleted drafts and clears storage for each', async () => {
       const { service, modelDraftRepository, modelDraftStorage } = buildService();
