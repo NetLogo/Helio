@@ -98,7 +98,7 @@ if (error.value) {
 
       <!-- Models -->
       <section class="space-y-4">
-        <div class="flex w-full justify-between">
+        <div class="flex w-full justify-between items-center">
           <h6>My Models</h6>
           <UButton variant="ghost" size="sm" :to="`/users/${id}/models`" class="ml-auto">
             <span

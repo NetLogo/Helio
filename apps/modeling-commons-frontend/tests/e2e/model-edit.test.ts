@@ -18,7 +18,9 @@
 //   file"). A `data-testid` on each would make these less locator-fragile.
 // - On a successful edit, the editor toasts "Model updated" (vs "Model
 //   published" for new models) and navigates back to the model detail page.
-// - The detail page's Versions tab label reads `Versions (<n>)`.
+// - The detail page's Versions tab is a UTabs trigger (role="tab"). Its label
+//   reads `Versions (<n>)` once there are multiple versions; a single-version
+//   model shows a bare `Versions` (the count is omitted for n <= 1).
 
 import { describe, expect, it } from "vitest";
 import { createPage } from "@nuxt/test-utils/e2e";
@@ -98,11 +100,11 @@ describe("models: edit journey", async () => {
         );
 
         // A metadata-only edit must NOT bump the version: reload the detail page
-        // and assert the Versions tab still reads "Versions (1)".
+        // and assert the Versions tab still reads a bare "Versions" (a single
+        // version omits the count; a bump would make it read "Versions (2)").
         await page.goto(appUrl(`/models/${modelId}`));
         await page
-          .getByText(/Versions \(1\)/)
-          .first()
+          .getByRole("tab", { name: "Versions", exact: true })
           .waitFor({ state: "visible", timeout: 30_000 });
 
         await page.close();
@@ -191,8 +193,7 @@ describe("models: edit journey", async () => {
         // assert the Versions tab now reads "Versions (2)".
         await page.goto(appUrl(`/models/${modelId}`));
         await page
-          .getByText(/Versions \(2\)/)
-          .first()
+          .getByRole("tab", { name: /^Versions \(2\)/ })
           .waitFor({ state: "visible", timeout: 30_000 });
 
         await page.close();
@@ -256,7 +257,20 @@ describe("models: edit journey", async () => {
 
         // Drop any file into the "Model Files" zone — NOT the primary file
         // input. Reuse the existing .nlogo fixture; a model file can be any file.
+        // Staging a model file POSTs it to .../files and PATCHes the draft.
+        // Publish only flushes already-scheduled work, so a click that races the
+        // upload would publish without the new model file (no version bump). Wait
+        // for the upload POST and the "Saved" indicator before publishing.
+        const modelFileUploaded = page.waitForResponse(
+          (r) =>
+            /\/api\/v1\/model-drafts\/[^/]+\/files$/.test(r.url()) &&
+            r.request().method() === "POST" &&
+            r.ok(),
+          { timeout: 60_000 },
+        );
         await modelFilesInput.setInputFiles(sampleNlogoPath);
+        await modelFileUploaded;
+        await page.getByText(/^Saved$/).waitFor({ timeout: 30_000 });
 
         await publish.click();
         // Edit publish navigates back to the model detail page (not /edit).
@@ -269,8 +283,7 @@ describe("models: edit journey", async () => {
         // version: reload the detail page and assert "Versions (2)".
         await page.goto(appUrl(`/models/${modelId}`));
         await page
-          .getByText(/Versions \(2\)/)
-          .first()
+          .getByRole("tab", { name: /^Versions \(2\)/ })
           .waitFor({ state: "visible", timeout: 30_000 });
 
         await page.close();

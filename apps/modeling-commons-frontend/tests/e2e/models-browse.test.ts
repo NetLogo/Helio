@@ -81,9 +81,10 @@ describe("models: browse", async () => {
     await page.waitForURL(/\/models\/.+/, { timeout: 15_000 });
 
     // Detail page rendered: the tab bar (Discussion/Files/Versions/Family) is a
-    // stable anchor present on every model detail page.
+    // stable anchor present on every model detail page. UTabs renders each
+    // trigger as a role="tab".
     await page
-      .getByRole("button", { name: /^Discussion$/ })
+      .getByRole("tab", { name: /^Discussion$/ })
       .waitFor({ timeout: 15_000 });
 
     await page.close();

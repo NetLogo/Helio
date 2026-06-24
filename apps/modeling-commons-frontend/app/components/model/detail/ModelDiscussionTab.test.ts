@@ -16,6 +16,6 @@ describe("ModelDiscussionTab", () => {
 
   it("renders a filter selector", async () => {
     const wrapper = await mountSuspended(ModelDiscussionTab);
-    expect(wrapper.text()).toContain("Filter Comments By");
+    expect(wrapper.text()).toContain("Filter by");
   });
 });

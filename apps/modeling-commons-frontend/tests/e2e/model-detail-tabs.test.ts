@@ -2,12 +2,13 @@
 // toggle the like button on a model.
 //
 // Notes for source-side maintainers:
-// - Tab buttons in `ModelDetail.vue` are unlabelled `<button>`s in a flex
-//   container. They have no `role="tab"`. We locate them by visible text.
-//   Adding `role="tab"` plus an aria-controls/data-testid would make this
-//   journey more robust.
-// - The like button in `ModelBottomBar.vue` (via `ModelLike.vue`) is a UButton with text "Like" /
-//   "Liked". Locating it by accessible name works today.
+// - The tab bar in `ModelDetail.vue` is a Nuxt UI `UTabs`, so each trigger is a
+//   `role="tab"` element (selected one carries `data-state="active"`). We locate
+//   them by role + accessible name (the tab's visible label).
+// - The like button in `ModelBottomBar.vue` (via `ModelLike.vue`) renders twice:
+//   a text "Like"/"Liked" button shown from `sm` up and an icon-only variant for
+//   smaller screens, both with the accessible name "Like"/"Liked". Use `.first()`
+//   (the labelled, text-bearing variant) to stay out of strict-mode trouble.
 // - The like persistence assertion needs a verified, signed-in user, obtained
 //   via `signUpAndVerify` (drives the real verification handshake by reading
 //   the email from Mailpit).
@@ -27,17 +28,17 @@ const modelCardLink = "a[href^='/models/']:not([href='/models/upload']) span";
 
 // The tab `@click` can lag visibility after an SPA navigation (the detail view
 // is wrapped in <Suspense>), so a single click may land before the handler is
-// wired. Retry the click until the button reports the active border.
+// wired. Retry the click until the trigger reports the active state.
 async function activateTab(tab: Locator): Promise<void> {
   await expect
     .poll(
       async () => {
         await tab.click();
-        return tab.evaluate((el) => el.className);
+        return tab.getAttribute("data-state");
       },
       { timeout: 15_000, interval: 300 },
     )
-    .toContain("border-primary");
+    .toBe("active");
 }
 
 describe("model detail: tabs and likes", async () => {
@@ -57,11 +58,11 @@ describe("model detail: tabs and likes", async () => {
       (u) => u.pathname.startsWith("/models/") && u.pathname !== "/models/upload",
     );
 
-    // Tabs are buttons containing the labels.
-    const discussion = page.getByRole("button", { name: /^Discussion$/ });
-    const files = page.getByRole("button", { name: /^Files$/ });
-    const versions = page.getByRole("button", { name: /^Versions/ });
-    const family = page.getByRole("button", { name: /^Family$/ });
+    // UTabs renders each trigger as a role="tab" with the label as its name.
+    const discussion = page.getByRole("tab", { name: /^Discussion$/ });
+    const files = page.getByRole("tab", { name: /^Files$/ });
+    const versions = page.getByRole("tab", { name: /^Versions/ });
+    const family = page.getByRole("tab", { name: /^Family$/ });
 
     await discussion.waitFor({ timeout: 15_000 });
 
@@ -90,7 +91,7 @@ describe("model detail: tabs and likes", async () => {
         (u) => u.pathname.startsWith("/models/") && u.pathname !== "/models/upload",
       );
 
-      const likeButton = page.getByRole("button", { name: /^(Like|Liked)$/ });
+      const likeButton = page.getByRole("button", { name: /^(Like|Liked)$/ }).first();
       await likeButton.waitFor({ timeout: 15_000 });
 
       const wasLiked = (await likeButton.textContent())?.trim() === "Liked";
@@ -121,6 +122,7 @@ describe("model detail: tabs and likes", async () => {
           () =>
             page
               .getByRole("button", { name: /^(Like|Liked)$/ })
+              .first()
               .textContent()
               .then((t) => t?.trim()),
           { timeout: 15_000 },

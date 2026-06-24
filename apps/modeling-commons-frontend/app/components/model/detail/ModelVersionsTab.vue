@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6">
+  <div class="p-2 lg:p-6">
     <div class="flex items-center justify-between mb-4">
       <div>
         <h3 class="text-lg font-semibold text-highlighted">Version History</h3>
@@ -15,6 +15,7 @@
         :disabled="!canCompare"
         color="neutral"
         title="Version comparison is coming soon!"
+        data-show-from="lg"
         @click="showComingSoonToast('Version comparison')"
       >
         Compare Selected

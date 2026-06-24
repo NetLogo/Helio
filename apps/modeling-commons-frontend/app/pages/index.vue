@@ -4,12 +4,12 @@
       class="flex flex-col lg:flex-row gap-10 px-10 py-10 bg-linear-to-t from-white via-coral-lighter/10 to-royal-blue/15"
     >
       <div class="flex flex-col w-full justify-center p-5 gap-4">
-        <span class="text-lg text-royal-blue font-bold uppercase">The Modeling Commons</span>
-        <h5 class="text-4xl sm:text-5xl max-w-4xl leading-tight tracking-tight">
+        <span class="text-sm sm:text-md md:text-lg text-royal-blue font-bold uppercase">The Modeling Commons</span>
+        <h5 class="text-3xl sm:text-5xl max-w-4xl leading-tight tracking-tight">
           Discover, share, and learn about
           <span class="text-royal-blue">complex systems</span> together
         </h5>
-        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center w-full">
+        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center w-full">
           <SearchBar
             class="max-w-md md:max-w-3xl"
             @keydown.enter="
@@ -103,7 +103,7 @@
                   variant="ghost"
                   trailing-icon="i-lucide-arrow-right"
                 >
-                  View all
+                  <span data-show-from="sm">View all</span>
                 </UButton>
               </div>
               <!-- @replace -->

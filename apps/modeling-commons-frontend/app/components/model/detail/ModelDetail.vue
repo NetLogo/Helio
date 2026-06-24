@@ -71,45 +71,38 @@
       @share="handleShare"
     />
 
-    <section class="rounded-xl border border-default overflow-hidden">
-      <div class="flex border-b border-default">
-        <button
-          v-for="tab in tabs"
-          :key="tab.key"
-          class="flex-1 py-3 text-sm font-medium text-center transition-colors border-b-2 -mb-px"
-          :class="
-            activeTab === tab.key
-              ? 'border-primary-600 text-highlighted'
-              : 'border-transparent text-muted hover:text-toned'
-          "
-          @click="onTabChange(tab.key)"
-        >
-          {{ tab.label }}
-        </button>
-      </div>
-      <ModelDiscussionTab v-if="activeTab === 'discussion'" />
-
-      <ModelFilesTab
-        v-else-if="activeTab === 'files'"
-        :files="attachedFiles"
-        :status="filesStatus"
-        :viewed-version-number="card.latestVersion?.versionNumber"
-        @download="handleFileDownload"
-      />
-
-      <ModelVersionsTab
-        v-else-if="activeTab === 'versions'"
-        :model-id="card.model.id"
-        :versions="versions ?? []"
-        :pending="versionsStatus === 'pending'"
-      />
-
-      <ModelFamilyTab
-        v-else-if="activeTab === 'family'"
-        :parent="family?.parent ?? null"
-        :children="family?.children ?? []"
-      />
-    </section>
+    <UTabs
+      v-model="activeTab"
+      :items="tabs"
+      color="primary"
+      :ui="{ root: 'w-full' }"
+      @update:model-value="idx => onTabChange(idx)"
+    >
+      <template #discussion>
+        <ModelDiscussionTab />
+      </template>
+      <template #files>
+        <ModelFilesTab
+          :files="attachedFiles"
+          :status="filesStatus"
+          :viewed-version-number="card.latestVersion?.versionNumber"
+          @download="handleFileDownload"
+        />
+      </template>
+      <template #versions>
+        <ModelVersionsTab
+          :model-id="card.model.id"
+          :versions="versions ?? []"
+          :pending="versionsStatus === 'pending'"
+        />
+      </template>
+      <template #family>
+        <ModelFamilyTab
+          :parent="family?.parent ?? null"
+          :children="family?.children ?? []"
+        />
+      </template>
+    </UTabs>
   </UCard>
 </template>
 
@@ -120,7 +113,7 @@ const props = defineProps<{ card: ModelCard; permissions: UserModelPermissions }
 
 type TabKey = "discussion" | "files" | "versions" | "family";
 
-const activeTab = ref<TabKey>("discussion");
+const activeTab = ref<string>('0');
 
 const user = useUser();
 const modelId = computed(() => props.card?.model.id ?? "");
@@ -165,11 +158,16 @@ const attachedFiles = computed<AttachedFile[]>(() => {
   });
 });
 
-const tabs = computed(() => [
-  { key: "discussion" as const, label: "Discussion" },
-  { key: "files" as const, label: "Files" },
-  { key: "versions" as const, label: `Versions (${props.card?.counts.versions ?? 0})` },
-  { key: "family" as const, label: "Family" },
+
+const versionTabLabel = computed(() => {
+  const count = props.card.model.latestVersionNumber ?? 0;
+  return count > 1 ? `Versions (${count})` : "Versions";
+});
+const tabs = computed<Array<({ label: string; icon: string; slot: TabKey })>>(() => [
+  { label: "Discussion", icon: "i-lucide-message-square", slot: "discussion" },
+  { label: "Files", icon: "i-lucide-file-text", slot: "files" },
+  { label: versionTabLabel.value, icon: "lucide:git-branch", slot: "versions" },
+  { label: "Family", icon: "i-lucide-users", slot: "family" },
 ]);
 
 const downloadUrl = computed(() => {
@@ -186,8 +184,8 @@ const previewImageUrl = computed(() => {
   return appendWindowProtocol(props.card.previewImageUrl);
 });
 
-function onTabChange(key: TabKey) {
-  activeTab.value = key;
+function onTabChange(idx: string | number) {
+  const key = tabs.value[Number(idx)]?.slot;
   if (key === "family" && familyStatus.value === "idle") {
     void loadFamily();
   }

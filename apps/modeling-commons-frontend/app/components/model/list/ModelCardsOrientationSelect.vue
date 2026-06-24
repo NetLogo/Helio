@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-end gap-2 ml-auto">
+  <div class="flex items-center justify-end gap-2 ml-auto" data-show-from="sm">
     <UButton
       icon="i-lucide-layout-grid"
       size="sm"

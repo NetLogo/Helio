@@ -36,6 +36,7 @@
       :model-url="downloadUrl ?? ''"
       :preview-image-url="previewImageUrl"
       :model-title="title"
+      show-play-button="persistent"
       @run="handleRun"
     />
 

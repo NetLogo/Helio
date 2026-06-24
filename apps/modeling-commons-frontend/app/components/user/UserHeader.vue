@@ -10,7 +10,7 @@
         variant="compact"
       />
       <div class="space-y-2">
-        <h4 class="mb-0">
+        <h4 class="mb-0 line-clamp-1 tracking-tight">
           {{ name }}
           <span v-if="isMyself" class="text-sm text-muted">(You)</span>
         </h4>

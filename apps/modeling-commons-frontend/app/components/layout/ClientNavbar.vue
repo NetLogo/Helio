@@ -2,7 +2,7 @@
   <Navbar
     id="main-navbar"
     ref="navbar"
-    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none! max-w-500 mx-auto flex-1 w-full"
+    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none! mx-auto flex-1 w-full"
     :brand="brand"
     brand-href="/"
     :brand-attrs="brandAttrs"
@@ -205,7 +205,7 @@ const isMobileScreen = ref(false);
 const navbarRef = useTemplateRef<InstanceType<typeof _Navbar>>("navbar");
 
 const brand = computed(() => WebsiteLogo);
-const brandAttrs = computed(() => ({ class: "w-50! lg:w-60! lg:ml-0 lg:[&>svg]:w-full!" }));
+const brandAttrs = computed(() => ({ class: "w-40! lg:w-60! lg:ml-0 lg:[&>svg]:w-full!" }));
 
 const handleMediaQueryChange = (): void => {
   if (import.meta.client) {

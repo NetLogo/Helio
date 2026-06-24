@@ -17,13 +17,12 @@
               Filter and Sort
             </UButton>
 
-            <template #content>
-              <div class="flex justify-between items-center border-0">
+            <template #header>
                 <h5>Filter & Sort</h5>
-                <UButton variant="link" size="xs" @click="resetFilters()"> Clear All </UButton>
-              </div>
+            </template>
 
-              <div class="space-y-8 mt-2 border-0">
+            <template #body>
+              <div class="space-y-8 border-0">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-center gap-2 justify-between">
                     <span class="text-start wrap-break-word text-md font-medium py-1">Sort by</span>
@@ -73,8 +72,8 @@
                     >Publish Date</span
                   >
                   <div>
-                    <div class="flex gap-6 w-full">
-                      <UFormField label="From" class="w-full">
+                    <div class="flex flex-col sm:flex-row gap-6 w-full">
+                      <UFormField label="From" class="w-full" :ui="{ 'label': 'text-sm'}">
                         <UInput
                           type="date"
                           label="From"
@@ -82,7 +81,7 @@
                           @update:model-value="(v) => setDateRange(v as string, 'fromDate')"
                         />
                       </UFormField>
-                      <UFormField label="To" class="w-full">
+                      <UFormField label="To" class="w-full" :ui="{ 'label': 'text-sm'}">
                         <UInput
                           type="date"
                           label="To"
@@ -95,10 +94,19 @@
                 </div>
               </div>
             </template>
+
+            <template #footer="{close}">
+              <div class="flex justify-end gap-5 w-full">
+                <UButton variant="link" size="xs" @click="resetFilters()"> Clear All </UButton>
+                <UButton variant="solid" size="xs" data-show-below="sm" @click="close()">
+                  Apply Filters
+                </UButton>
+              </div>
+            </template>
           </USlideover>
         </div>
 
-        <div class="flex gap-3">
+        <div class="flex flex-col sm:flex-row gap-3">
           <UserSelectMenu
             v-model="author.selected"
             v-model:search-term="author.searchTerm"

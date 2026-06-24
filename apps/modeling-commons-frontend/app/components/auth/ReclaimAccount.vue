@@ -3,7 +3,7 @@
     variant="subtle"
     icon="i-lucide-alert-triangle"
     color="warning"
-    title="Do you have an old account?"
+    title="Got an old account?"
     class="text-left"
     :actions="[
       {
