@@ -352,10 +352,15 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
       showActionFailedToast("Missing title", "Add a title before publishing.");
       return null;
     }
-    await patch.flush();
-    await patch({ visibility, tags: collectTagNames(formState.value) });
-    await patch.flush();
-    return publish();
+    publishing.value = true;
+    try {
+      await patch.flush();
+      await patch({ visibility, tags: collectTagNames(formState.value) });
+      await patch.flush();
+      return await publish();
+    } finally {
+      publishing.value = false;
+    }
   }
 
   async function discard(): Promise<void> {
