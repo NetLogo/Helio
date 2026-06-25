@@ -3,7 +3,7 @@
     <UButton v-bind="buttonProps" data-show-from="sm" @click="$emit('toggle')">
       <span>{{ buttonText }}</span>
     </UButton>
-    <UButton v-bind="buttonProps" data-hide-from="sm" @click="$emit('toggle')" />
+    <UButton v-bind="buttonProps" data-show-below="sm" @click="$emit('toggle')" />
   </div>
 </template>
 
