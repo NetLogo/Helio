@@ -95,6 +95,7 @@
         <UFormField name="tags" label="Tags">
           <TagSelectMenu
             v-model="selectedTags"
+            v-model:search-term="tags.prefix"
             :tags="tags.tags"
             :loading="tags.pending"
             :load-next-page="tags.loadNextPage"
