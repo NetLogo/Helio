@@ -24,4 +24,9 @@ export const modelActions = {
     label: "Edit",
     icon: "i-lucide-square-pen",
   },
+  delete: {
+    action: "delete",
+    label: "Delete",
+    icon: "i-lucide-trash-2",
+  },
 } as const;

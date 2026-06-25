@@ -31,6 +31,13 @@
         @embed="handleEmbed"
         @fork="handleFork"
         @edit="handleEdit"
+        @delete="handleDeleteRequest"
+      />
+
+      <ConfirmDeleteModelDialog
+        v-model:open="deleteOpen"
+        :deleting="deleting"
+        @confirm="handleDelete"
       />
 
       <article v-if="card.latestVersion?.description" class="docs prose prose-sm max-w-none">
@@ -108,6 +115,7 @@
 
 <script setup lang="ts">
 import type { AttachedFile } from "./types";
+import { getAuthorUrl, getPrimaryAuthor } from "~/components/model/ModelAuthors.vue";
 
 const props = defineProps<{ card: ModelCard; permissions: UserModelPermissions }>();
 
@@ -288,6 +296,30 @@ function handleDownload() {
 
 function handleFork() {
   showComingSoonToast("Forking models", { icon: "i-lucide-git-fork" });
+}
+
+const deleteOpen = ref(false);
+const deleting = ref(false);
+
+function handleDeleteRequest() {
+  deleteOpen.value = true;
+}
+
+async function handleDelete() {
+  if (!modelId.value) return;
+  deleting.value = true;
+  try {
+    const api = useApi();
+    const { data, error } = await api.DELETE("/api/v1/models/{id}", {
+      params: { path: { id: modelId.value } },
+    });
+    handleApiError(data, error, "deleting model");
+    deleteOpen.value = false;
+    toast.add({ title: "Model deleted", color: "success" });
+    await navigateTo(getAuthorUrl(getPrimaryAuthor(props.card.authors)));
+  } finally {
+    deleting.value = false;
+  }
 }
 
 function handleEdit() {

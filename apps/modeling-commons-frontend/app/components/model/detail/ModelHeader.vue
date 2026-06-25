@@ -83,6 +83,7 @@ const emit = defineEmits<{
   download: [];
   fork: [];
   edit: [];
+  delete: [];
 }>();
 
 const relativeDate = computed(() => formatRelativeDate(props.createdAt));
@@ -110,6 +111,12 @@ const modelActionsDropdownItems = computed(() => [
     ...modelActions.fork,
     onClick: () => emit(modelActions.fork.action),
     class: !props.permissions.canFork ? 'hidden' : '',
+  },
+  {
+    ...modelActions.delete,
+    color: "error",
+    onClick: () => emit(modelActions.delete.action),
+    class: !props.permissions.canDelete ? 'hidden' : '',
   },
 ] satisfies Array<DropdownMenuItem>);
 </script>
