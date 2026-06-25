@@ -124,7 +124,6 @@ useSeoMeta({
 
 const route = useRoute();
 const router = useRouter();
-const toast = useToast();
 const user = useUser();
 const { requestPasswordReset, resetPassword: submitPasswordReset } = useAuthActions();
 const token = computed(() => (typeof route.query.token === "string" ? route.query.token : null));
@@ -239,15 +238,6 @@ async function resetPassword() {
     resetError.value = error.message ?? "We couldn't reset your password.";
     return;
   }
-
-  toast.add({
-    title: "Password updated",
-    description: user.value.isLoggedIn
-      ? "Your password has been updated for this account."
-      : "Sign in with your new password.",
-    icon: "i-lucide-badge-check",
-    color: "success",
-  });
 
   if (user.value.isLoggedIn) {
     await router.push({
