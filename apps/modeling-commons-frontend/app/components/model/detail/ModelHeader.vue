@@ -88,7 +88,7 @@ const emit = defineEmits<{
 const relativeDate = computed(() => formatRelativeDate(props.createdAt));
 const visibility = getModelVisibilityDisplayInfo(props.modelVisibility || "");
 
-const modelActionsDropdownItems = ref([
+const modelActionsDropdownItems = computed(() => [
   { type: "label", label: "Actions" },
   {
     ...modelActions.edit,
