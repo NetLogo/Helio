@@ -215,6 +215,7 @@ model ModelVersion {
   versionNumber       Int
   title               String
   description         String?
+  changeSummary       String?
   previewImageFileKey String?
   netlogoFileKey      String
   netlogoVersion      String?
