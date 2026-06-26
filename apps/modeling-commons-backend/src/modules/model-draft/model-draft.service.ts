@@ -27,6 +27,7 @@ import {
   type StrictDraftData,
 } from '#src/modules/model-draft/schemas/index.ts';
 import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
+import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { UnauthorizedException } from '#src/shared/exceptions/exceptions.ts';
 import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
 import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
@@ -688,6 +689,19 @@ export default function makeModelDraftService({
         deleted.map(async (d) => modelDraftStorage.deleteStagingPrefix(d.userId, d.id)),
       );
       return deleted.length;
+    },
+
+    async purgeForModelTx(
+      ctx: TransactionContext,
+      modelId: string,
+    ): Promise<Array<ModelDraftEntity>> {
+      return modelDraftRepository.deleteByModelIdTx(ctx, modelId);
+    },
+
+    async cleanupDraftStaging(drafts: Array<ModelDraftEntity>): Promise<void> {
+      await Promise.allSettled(
+        drafts.map(async (d) => modelDraftStorage.deleteStagingPrefix(d.userId, d.id)),
+      );
     },
   };
 }

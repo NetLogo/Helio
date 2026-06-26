@@ -733,4 +733,40 @@ describe('modelDraftService', () => {
       expect(modelDraftStorage.deleteStagingPrefix).toHaveBeenCalledWith('u2', 'd2');
     });
   });
+
+  describe('purgeForModelTx', () => {
+    it('hard-deletes every draft for the model within the transaction', async () => {
+      const { service, modelDraftRepository, transactionManager } = buildService();
+      const drafts = [makeDraft({}, { id: 'd1', modelId: 'm1' })];
+      modelDraftRepository.deleteByModelIdTx.mockResolvedValue(drafts);
+
+      const result = await transactionManager.run((ctx) => service.purgeForModelTx(ctx, 'm1'));
+
+      expect(modelDraftRepository.deleteByModelIdTx).toHaveBeenCalledWith(expect.anything(), 'm1');
+      expect(result).toBe(drafts);
+    });
+  });
+
+  describe('cleanupDraftStaging', () => {
+    it('clears the staging prefix for each purged draft', async () => {
+      const { service, modelDraftStorage } = buildService();
+
+      await service.cleanupDraftStaging([
+        makeDraft({}, { id: 'd1', userId: 'u1' }),
+        makeDraft({}, { id: 'd2', userId: 'u2' }),
+      ]);
+
+      expect(modelDraftStorage.deleteStagingPrefix).toHaveBeenCalledWith('u1', 'd1');
+      expect(modelDraftStorage.deleteStagingPrefix).toHaveBeenCalledWith('u2', 'd2');
+    });
+
+    it('swallows storage cleanup failures', async () => {
+      const { service, modelDraftStorage } = buildService();
+      modelDraftStorage.deleteStagingPrefix.mockRejectedValue(new Error('s3 down'));
+
+      await expect(
+        service.cleanupDraftStaging([makeDraft({}, { id: 'd1', userId: 'u1' })]),
+      ).resolves.toBeUndefined();
+    });
+  });
 });

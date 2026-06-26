@@ -442,6 +442,30 @@ Then(
   },
 );
 
+Then(
+  'the database should have {int} draft row(s) referencing the model {string}',
+  async function (this: ICustomWorld, expected: number, modelTitle: string) {
+    const modelId = getModels(this.context).get(modelTitle)!;
+    const { prisma } = this.server.diContainer.cradle as unknown as {
+      prisma: {
+        $queryRawUnsafe: (
+          query: string,
+          ...params: unknown[]
+        ) => Promise<Array<{ count: number }>>;
+      };
+    };
+    const rows = await prisma.$queryRawUnsafe(
+      'SELECT COUNT(*)::int AS count FROM "ModelDraft" WHERE "modelId" = $1',
+      modelId,
+    );
+    assert.strictEqual(
+      Number(rows[0]?.count ?? -1),
+      expected,
+      `Expected ${expected} ModelDraft rows for ${modelId}, found ${rows[0]?.count}`,
+    );
+  },
+);
+
 When('I seed a new draft from the published model', async function (this: ICustomWorld) {
   const user = this.context['currentUser'] as TestUser;
   const modelId = JSON.parse(this.context.latestResponse!.body).modelId;

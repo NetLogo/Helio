@@ -10,6 +10,7 @@ export function mockModelDraftRepository(): {
     insertTx: vi.fn(),
     updateDataTx: vi.fn(),
     hardDeleteTx: vi.fn(),
+    deleteByModelIdTx: vi.fn(),
     deleteStaleBefore: vi.fn(),
   };
 }

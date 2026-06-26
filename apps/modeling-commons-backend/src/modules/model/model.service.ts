@@ -7,6 +7,7 @@ export default function makeModelService({
   modelRepository,
   modelDomain,
   eventRepository,
+  modelDraftService,
 }: Dependencies) {
   return {
     async update(modelId: string, input: UpdateModelProps): Promise<void> {
@@ -24,8 +25,9 @@ export default function makeModelService({
       if (!model) throw new ModelNotFoundError(modelId);
       modelDomain.assertNotDeleted(model);
 
-      await transactionManager.run(async (ctx) => {
+      const purgedDrafts = await transactionManager.run(async (ctx) => {
         await modelRepository.softDelete(ctx, modelId);
+        const drafts = await modelDraftService.purgeForModelTx(ctx, modelId);
         await eventRepository.insert(ctx, {
           type: 'model.deleted',
           actorId: userId,
@@ -33,7 +35,10 @@ export default function makeModelService({
           resourceId: modelId,
           payload: {},
         });
+        return drafts;
       });
+
+      await modelDraftService.cleanupDraftStaging(purgedDrafts);
     },
 
     async findById(modelId: string): Promise<Model> {

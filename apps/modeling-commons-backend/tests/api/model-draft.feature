@@ -193,6 +193,29 @@ Feature: Model Drafts
     Then the response status should be 200
     And no drafts targeting the model "Purge On Publish Model" remain for the current user
 
+  Scenario: Soft-deleting a model hard-deletes its drafts
+    Given an authenticated user
+    And a public model "Cascade Delete Model" created by the current user
+    And a draft seeded from the model "Cascade Delete Model"
+    When I delete the model "Cascade Delete Model"
+    Then the response status should be 204
+    And the database should have 0 draft rows referencing the model "Cascade Delete Model"
+    And no drafts targeting the model "Cascade Delete Model" remain for the current user
+
+  Scenario: Soft-deleting a model leaves drafts for other models intact
+    Given an authenticated user
+    And a public model "Targeted Delete Model" created by the current user
+    And a public model "Bystander Model" created by the current user
+    And a draft seeded from the model "Targeted Delete Model"
+    And a draft seeded from the model "Bystander Model"
+    And an empty draft
+    When I delete the model "Targeted Delete Model"
+    Then the response status should be 204
+    And the database should have 0 draft rows referencing the model "Targeted Delete Model"
+    And the database should have 1 draft row referencing the model "Bystander Model"
+    When I list my drafts
+    Then the response body property "data" should have length 2
+
   Scenario: Publishing a draft with only metadata changes patches the current version
     Given an authenticated user
     And a public model "Metadata Only Model" created by the current user

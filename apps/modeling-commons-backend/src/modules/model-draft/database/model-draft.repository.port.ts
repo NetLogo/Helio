@@ -16,5 +16,9 @@ export interface ModelDraftRepository {
     data: unknown,
   ) => Promise<void>;
   hardDeleteTx: (ctx: TransactionContext, id: string) => Promise<void>;
+  deleteByModelIdTx: (
+    ctx: TransactionContext,
+    modelId: string,
+  ) => Promise<Array<ModelDraftEntity>>;
   deleteStaleBefore: (cutoff: Date) => Promise<Array<ModelDraftEntity>>;
 }
