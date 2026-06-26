@@ -315,7 +315,7 @@ async function handleDelete() {
     });
     handleApiError(data, error, "deleting model");
     deleteOpen.value = false;
-    toast.add({ title: "Model deleted", color: "success" });
+    toast.add({ title: "Model deleted", color: "success", icon: "i-lucide-trash-2" });
     await navigateTo(getAuthorUrl(getPrimaryAuthor(props.card.authors)));
   } finally {
     deleting.value = false;
