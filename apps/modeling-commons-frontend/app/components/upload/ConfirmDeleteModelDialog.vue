@@ -7,6 +7,10 @@
           This action cannot be undone. If this is the only copy of the model, the model file and
           all its versions will be permanently deleted.
         </p>
+        <p class="text-center text-error font-medium">
+          Any unpublished draft(s) of this model will also be permanently deleted and cannot be
+          recovered.
+        </p>
         <div class="flex justify-end gap-2 w-full mt-4">
           <UButton variant="outline" color="neutral" size="sm" @click="open = false">
             Cancel
