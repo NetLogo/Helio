@@ -1,12 +1,21 @@
 <template>
   <USelectMenu
-    :ref="selectMenu"
+    ref="selectMenu"
     v-model="selectedUser"
     v-model:search-term="searchTerm"
     placeholder="Author"
     :items="userMenuItems"
     virtualize
+    :loading="loading"
+    clear
   >
+     <template v-if="selectedUser?.value" #content-bottom >
+      <div class="px-2 py-1 border-t border-muted fade-in">
+        <UButton variant="link" color="error" size="xs" class="w-full" icon="i-lucide-x" @click.stop="clearSelection">
+          <span class="text-sm">Clear selected user</span>
+      </UButton>
+      </div>
+    </template>
     <template #empty>
       <UEmpty
         icon="i-lucide-users"
@@ -23,6 +32,7 @@
         size="xs"
         class="size-5"
       />
+      <UIcon v-else-if="loading" name="lucide:loader-circle" class="size-5 animate-spin text-muted" />
       <UIcon v-else name="i-lucide-user-circle" class="size-5 text-muted" />
     </template>
   </USelectMenu>
@@ -65,15 +75,25 @@ const userMenuItems = computed<UserSelectMenuItem[]>(() => {
   }
   return [...props.users.map(toUserSelectMenuItem)];
 });
-const selectedUser = defineModel<UserSelectMenuItem>({
-  type: Object as () => UserSelectMenuItem,
-  default: null,
+const selectedUser = defineModel<UserSelectMenuItem | undefined>({
+  type: Object as () => UserSelectMenuItem | undefined,
+  default: undefined,
 });
 const searchTerm = defineModel<string>("search-term", { type: String, default: "" });
 const selectMenu = useTemplateRef("selectMenu");
 
+function clearSelection() {
+  selectedUser.value = undefined;
+  searchTerm.value = "";
+  selectMenu.value?.triggerRef.click();
+}
+
 onMounted(() => {
   useInfiniteScroll(
+    // @ts-expect-error -- need to update @nuxt/ui for this to work
+    // but this is a chore for later and won't cause issues in the
+    // meantime
+    // -- Omar Ibrahim, Jun 02 26
     () => selectMenu.value?.viewportRef,
     () => {
       props.loadNextPage();

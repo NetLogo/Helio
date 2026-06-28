@@ -43,11 +43,16 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   modelUrl: string;
   previewImageUrl?: string | null;
   modelTitle?: string;
-}>();
+  showPlayButton?: "onHover" | "persistent";
+}>(), {
+  previewImageUrl: null,
+  modelTitle: "NetLogo Model",
+  showPlayButton: "onHover",
+});
 
 const emit = defineEmits<{ run: [] }>();
 const state = ref<NLWEmbedState>(NLWEmbedState.Preview);
@@ -57,6 +62,14 @@ function onRun() {
   state.value = NLWEmbedState.Running;
   emit("run");
 }
+
+
+const actionButtonClass = computed(() => [
+  "flex flex-col items-center justify-center gap-4 z-10",
+  "w-full h-full text-royal-blue-light",
+  "opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-lightest/80",
+  props.showPlayButton === "persistent" ? "opacity-85" : "",
+]);
 </script>
 
 <script lang="ts">
@@ -67,10 +80,4 @@ export const NLWEmbedState = {
 };
 
 export type NLWEmbedState = (typeof NLWEmbedState)[keyof typeof NLWEmbedState];
-
-const actionButtonClass = [
-  "flex flex-col items-center justify-center gap-4 z-10",
-  "w-full h-full text-royal-blue-light",
-  "opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-lightest/80",
-];
 </script>

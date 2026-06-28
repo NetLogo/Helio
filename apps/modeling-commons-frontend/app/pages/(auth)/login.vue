@@ -80,8 +80,8 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Login",
-  description: "Login to your account to continue",
+  title: "Log In",
+  description: "Log In to your account to continue",
 });
 
 const meta = useWebsite();
@@ -156,10 +156,10 @@ async function continueWithPasskey() {
 
   if (error) {
     toast.add({
-      title: error.code === "AUTH_CANCELLED" ? "Passkey canceled" : "Passkey sign in failed",
-      description: error.message ?? "We couldn't sign you in with a passkey.",
+      title: getPasskeyErrorCode(error) === "AUTH_CANCELLED" ? "Passkey canceled" : "Passkey sign in failed",
+      description: getPasskeyErrorMessage(error) ?? "We couldn't sign you in with a passkey.",
       icon: "i-lucide-key-round",
-      color: error.code === "AUTH_CANCELLED" ? "warning" : "error",
+      color: getPasskeyErrorCode(error) === "AUTH_CANCELLED" ? "warning" : "error",
     });
     return;
   }
@@ -187,11 +187,11 @@ async function onSubmit(payload?: FormSubmitEvent<Schema>): Promise<void> {
     }
 
     if (error) {
-      showActionFailedToast("Login", error.message);
+      showActionFailedToast("Log In", error.message);
       return;
     }
   } catch (error) {
-    showActionFailedToast("Login", (error as Error).message);
+    showActionFailedToast("Log In", (error as Error).message);
     return;
   }
 

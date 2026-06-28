@@ -46,6 +46,16 @@ Feature: Model Version Tags
     Then the response status should be 200
     And the response body should be an array
 
+  Scenario: Listing tags for a version returns each tag with a displayName
+    Given an authenticated user
+    And a public model "Version Tags With Display" created by the current user
+    And tag "biology" has been added to model "Version Tags With Display"
+    When I list tags for version 1 of model "Version Tags With Display"
+    Then the response status should be 200
+    And the response body should be an array
+    And the response body should have length 1
+    And each tag in the response should have a non-empty displayName
+
   Scenario: Tagging requires write permission
     Given an authenticated user "owner"
     And a private model "Protected Model" created by "owner"

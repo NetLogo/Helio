@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6">
+  <div class="p-2 lg:p-6">
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-lg font-semibold text-highlighted">Attached Files</h3>
       <UButton v-if="editable" variant="outline" icon="i-lucide-plus" size="sm">
@@ -7,54 +7,39 @@
       </UButton>
     </div>
 
-    <UStripedTable :data="data" :columns="columns" :loading="loading">
-      <template #empty>
-        <div class="flex flex-col items-center justify-center py-12 text-dimmed">
-          <UIcon name="i-lucide-file" class="size-12 mb-3" />
-          <p class="text-sm font-medium">No files attached</p>
-          <p class="text-xs mt-1">Additional files for this model will appear here.</p>
-        </div>
-      </template>
+    <ModelFilesTable v-if="loading" :files="[]" loading />
 
-      <template #title-cell="{ cell }">
-        <div class="flex items-center">
-          <UIcon
-            :name="getFileTypeDisplayInfo(cell.getValue() as string).icon"
-            class="size-5 text-royal-blue mr-2"
-          />
-          <span>{{ cell.getValue() }}</span>
-        </div>
-      </template>
+    <div
+      v-else-if="modelFiles.length === 0 && additionalFiles.length === 0"
+      class="flex flex-col items-center justify-center py-12 text-dimmed"
+    >
+      <UIcon name="i-lucide-file" class="size-12 mb-3" />
+      <p class="text-sm font-medium">No files attached</p>
+      <p class="text-xs mt-1">Model and additional files for this model will appear here.</p>
+    </div>
 
-      <template #type-cell="{ row }">
-        <span>{{ getFileTypeDisplayInfo(row.original.title).label }}</span>
-      </template>
+    <div v-else class="flex flex-col gap-8">
+      <section v-if="modelFiles.length">
+        <h4 class="text-sm font-semibold text-highlighted mb-2">Model Files</h4>
+        <ModelFilesTable :files="modelFiles" @download="$emit('download', $event)" />
+      </section>
 
-      <template #authorName-cell="{ cell }">
-        <NuxtLink class="text-primary-700 hover:underline">{{ cell.getValue() }}</NuxtLink>
-      </template>
-
-      <template #actions-cell="{ row }">
-        <UButton
-          variant="ghost"
-          icon="i-lucide-download"
-          size="xs"
-          square
-          @click="$emit('download', row.original.id)"
-        />
-      </template>
-    </UStripedTable>
+      <section v-if="additionalFiles.length">
+        <h4 class="text-sm font-semibold text-highlighted mb-2">Additional Files</h4>
+        <ModelFilesTable :files="additionalFiles" show-version @download="$emit('download', $event)" />
+      </section>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { USkeleton } from "#components";
 import type { AttachedFile } from "./types";
 
 const props = defineProps<{
   files: AttachedFile[];
   editable?: boolean;
   status: "pending" | "error" | "success" | "idle";
+  viewedVersionNumber?: number | null;
 }>();
 
 defineEmits<{
@@ -62,35 +47,13 @@ defineEmits<{
 }>();
 
 const loading = computed(() => props.status === "pending");
-const columns = computed(() => {
-  const baseColumns = [
-    { accessorKey: "title", header: "File" },
-    { accessorKey: "type", header: "Type" },
-    { accessorKey: "authorName", header: "Author" },
-    { accessorKey: "updatedAt", header: "Updated" },
-    { header: "", id: "actions" },
-  ];
-  return loading.value ? withSkeleton(baseColumns) : baseColumns;
-});
-const data = computed(() =>
-  loading.value
-    ? Array.from({ length: 5 }).map((_, i) => ({
-        id: "file-" + i,
-        title: "",
-        type: "",
-        authorName: "",
-        updatedAt: new Date().toISOString(),
-      }))
-    : props.files,
+const modelFiles = computed(() =>
+  props.files.filter(
+    (f) =>
+      f.kind === "model" &&
+      (props.viewedVersionNumber == null ||
+        f.taggedVersionNumber === props.viewedVersionNumber),
+  ),
 );
-
-const pendingCell = () => {
-  return h(USkeleton, { class: "w-full h-4" });
-};
-
-const withSkeleton = (columns: Record<string, unknown>[]) => {
-  return columns.map((col) => {
-    return { ...col, cell: pendingCell };
-  });
-};
+const additionalFiles = computed(() => props.files.filter((f) => f.kind === "additional"));
 </script>

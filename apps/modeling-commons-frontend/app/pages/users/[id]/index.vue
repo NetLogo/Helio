@@ -59,20 +59,14 @@ if (error.value) {
       title="User Not Found"
       message="The user profile you are looking for does not exist."
       class="min-h-150"
-      :action="{
-        label: 'Go Back',
-        onClick: () => useRouter().back(),
-      }"
+      :action="{ label: 'Browse models', to: '/models' }"
     />
     <Error
       v-else-if="!isProfilePublic && !isMyself"
       title="Private Profile"
       message="This user's profile is private."
       icon="i-lucide-lock"
-      :action="{
-        label: 'Go Back',
-        onClick: () => useRouter().back(),
-      }"
+      :action="{ label: 'Browse models', to: '/models' }"
       class="min-h-150"
     />
     <main v-else-if="profile" class="space-y-10">
@@ -98,7 +92,7 @@ if (error.value) {
 
       <!-- Models -->
       <section class="space-y-4">
-        <div class="flex w-full justify-between">
+        <div class="flex w-full justify-between items-center">
           <h6>My Models</h6>
           <UButton variant="ghost" size="sm" :to="`/users/${id}/models`" class="ml-auto">
             <span

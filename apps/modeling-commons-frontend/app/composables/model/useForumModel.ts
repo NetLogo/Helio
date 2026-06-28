@@ -2,7 +2,7 @@ import type { MaybeRefOrGetter } from "vue";
 
 type Model = ResponseSuccessData<"GET", "/api/v1/models/{id}">;
 
-export default function useModel(modelId: MaybeRefOrGetter<string>) {
+export default function useForumModel(modelId: MaybeRefOrGetter<string>) {
   const { GET } = useApi();
   const id = computed(() => toValue(modelId));
 

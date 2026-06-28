@@ -220,19 +220,13 @@ exports.Prisma.ModelVersionScalarFieldEnum = {
   versionNumber: 'versionNumber',
   title: 'title',
   description: 'description',
+  changeSummary: 'changeSummary',
   previewImageFileKey: 'previewImageFileKey',
   netlogoFileKey: 'netlogoFileKey',
   netlogoVersion: 'netlogoVersion',
   infoTab: 'infoTab',
   createdAt: 'createdAt',
   finalizedAt: 'finalizedAt'
-};
-
-exports.Prisma.ModelVersionFileScalarFieldEnum = {
-  id: 'id',
-  modelId: 'modelId',
-  versionNumber: 'versionNumber',
-  fileKey: 'fileKey'
 };
 
 exports.Prisma.ModelVersionTagScalarFieldEnum = {
@@ -247,6 +241,7 @@ exports.Prisma.ModelAdditionalFileScalarFieldEnum = {
   modelId: 'modelId',
   taggedVersionNumber: 'taggedVersionNumber',
   fileKey: 'fileKey',
+  kind: 'kind',
   createdAt: 'createdAt'
 };
 
@@ -363,6 +358,11 @@ exports.ModelVisibility = exports.$Enums.ModelVisibility = {
   unlisted: 'unlisted'
 };
 
+exports.ModelFileKind = exports.$Enums.ModelFileKind = {
+  model: 'model',
+  additional: 'additional'
+};
+
 exports.AuthorRole = exports.$Enums.AuthorRole = {
   owner: 'owner',
   contributor: 'contributor'
@@ -389,7 +389,6 @@ exports.Prisma.ModelName = {
   Passkey: 'Passkey',
   Model: 'Model',
   ModelVersion: 'ModelVersion',
-  ModelVersionFile: 'ModelVersionFile',
   ModelVersionTag: 'ModelVersionTag',
   ModelAdditionalFile: 'ModelAdditionalFile',
   Tag: 'Tag',

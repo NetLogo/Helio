@@ -84,7 +84,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       <template #description>
         <span class="text-muted">
           Already have an account?
-          <ULink :to="loginLink" class="font-medium text-primary underline">Login</ULink>.
+          <ULink :to="loginLink" class="font-medium text-primary underline">Log In</ULink>.
         </span>
         <ReclaimAccount  class="mt-4"/>
       </template>

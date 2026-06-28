@@ -1,5 +1,7 @@
 import type { AuthFormField, RadioGroupItem } from "#ui/types";
-import * as z from "zod";
+import type { infer as Infer } from "zod";
+
+const z = await import("zod");
 
 export const nameValidator = z
   .string("Name is required")
@@ -45,12 +47,12 @@ export const userKindOptions = [
 ] satisfies Array<RadioGroupItem>;
 
 export const userKindValidator = z.enum(["student", "teacher", "researcher", "other"]).optional();
-export type UserKind = z.infer<typeof userKindValidator>;
+export type UserKind = Infer<typeof userKindValidator>;
 
 export const logInValidator = z.object({
   email: emailValidator,
   password: miniPasswordValidator,
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.optional(z.boolean()),
 });
 
 export const emailOnlyValidator = z.object({

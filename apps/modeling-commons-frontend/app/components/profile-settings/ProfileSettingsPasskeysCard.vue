@@ -177,10 +177,10 @@ async function createPasskey() {
   if (error) {
     toast.add({
       title:
-        error.code === "ERROR_CEREMONY_ABORTED" ? "Passkey setup canceled" : "Passkey setup failed",
-      description: error.message ?? "We couldn't add a passkey for this device.",
+        getPasskeyErrorCode(error) === "ERROR_CEREMONY_ABORTED" ? "Passkey setup canceled" : "Passkey setup failed",
+      description: getPasskeyErrorMessage(error) ?? "We couldn't add a passkey for this device.",
       icon: "i-lucide-fingerprint",
-      color: error.code === "ERROR_CEREMONY_ABORTED" ? "warning" : "error",
+      color: getPasskeyErrorCode(error) === "ERROR_CEREMONY_ABORTED" ? "warning" : "error",
     });
     return;
   }
@@ -205,7 +205,7 @@ async function rename(passkey: Passkey) {
   if (response.error) {
     toast.add({
       title: "Couldn't rename passkey",
-      description: response.error.message ?? "Please try again.",
+      description: response.error?.message ?? "Please try again.",
       icon: "i-lucide-circle-alert",
       color: "error",
     });
@@ -232,7 +232,7 @@ async function revoke(passkey: Passkey) {
   if (response.error) {
     toast.add({
       title: "Couldn't revoke passkey",
-      description: response.error.message ?? "Please try again.",
+      description: response.error?.message ?? "Please try again.",
       icon: "i-lucide-circle-alert",
       color: "error",
     });

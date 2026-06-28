@@ -36,12 +36,17 @@ describe('modelService', () => {
   const eventRepository = mockEventRepository();
   const transactionManager = mockTransactionManager();
   const domain = modelDomain();
+  const modelDraftService = {
+    purgeForModelTx: vi.fn().mockResolvedValue([]),
+    cleanupDraftStaging: vi.fn().mockResolvedValue(undefined),
+  };
 
   const service = makeModelService({
     transactionManager,
     modelRepository,
     modelDomain: domain,
     eventRepository,
+    modelDraftService,
   } as never);
 
   beforeEach(() => {
@@ -83,6 +88,27 @@ describe('modelService', () => {
         expect.anything(),
         expect.objectContaining({ type: 'model.deleted' }),
       );
+    });
+
+    it('purges drafts within the same transaction as the soft delete', async () => {
+      modelRepository.findOneById.mockResolvedValue(makeModel());
+      const purged = [{ id: 'draft-1', userId: 'user-1' }];
+      modelDraftService.purgeForModelTx.mockResolvedValue(purged);
+
+      await service.softDelete('model-1', 'user-1');
+
+      const ctxArg = modelRepository.softDelete.mock.calls[0]![0];
+      expect(modelDraftService.purgeForModelTx).toHaveBeenCalledWith(ctxArg, 'model-1');
+      expect(modelDraftService.cleanupDraftStaging).toHaveBeenCalledWith(purged);
+    });
+
+    it('does not clean up draft staging when the transaction fails', async () => {
+      modelRepository.findOneById.mockResolvedValue(makeModel());
+      modelDraftService.purgeForModelTx.mockResolvedValue([]);
+      eventRepository.insert.mockRejectedValueOnce(new Error('boom'));
+
+      await expect(service.softDelete('model-1', 'user-1')).rejects.toThrow('boom');
+      expect(modelDraftService.cleanupDraftStaging).not.toHaveBeenCalled();
     });
 
     it('throws if model not found', async () => {

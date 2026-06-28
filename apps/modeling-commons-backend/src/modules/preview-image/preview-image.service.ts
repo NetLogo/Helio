@@ -44,28 +44,27 @@ export default function makePreviewImageService({ fileService }: Dependencies) {
       } catch (error) {
         clearTimeout(timeout);
         if ((error as Error).name === 'AbortError') {
-          throw new ModelPreviewTimeoutError(netlogoFileKey);
+          throw new ModelPreviewTimeoutError();
         }
-        throw new ModelPreviewServiceError(netlogoFileKey, error as Error);
+        throw new ModelPreviewServiceError((error as Error).message);
       }
       clearTimeout(timeout);
 
       if (!image.ok) {
         throw new ModelPreviewServiceError(
-          netlogoFileKey,
-          new Error(`Rendering service responded with status ${image.status}`),
+          `Rendering service responded with status ${image.status}.`,
         );
       }
 
       const contentLength = Number(image.headers.get('Content-Length'));
       if (contentLength && contentLength > MAX_IMAGE_SIZE) {
         await image.body?.cancel();
-        throw new ModelPreviewTooLargeError(netlogoFileKey);
+        throw new ModelPreviewTooLargeError();
       }
 
       const buffer = await image.arrayBuffer();
       if (buffer.byteLength > MAX_IMAGE_SIZE) {
-        throw new ModelPreviewTooLargeError(netlogoFileKey);
+        throw new ModelPreviewTooLargeError();
       }
 
       return {

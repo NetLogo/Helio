@@ -73,6 +73,17 @@ export default defineNuxtConfig({
 
   hooks: {
     "pages:extend"(pages) {
+      // In test mode (@nuxt/test-utils) Nuxt stops ignoring *.test/*.spec files,
+      // so co-located tests under pages/ get scanned as routes and break the
+      // production build. Drop them here regardless of mode.
+      // --Omar Ibrahim, Jun 05 26
+      const isTestFile = (p: string) => /\.(test|spec)\.[cm]?[jt]sx?$/.test(p);
+      for (let i = pages.length - 1; i >= 0; i--) {
+        const page = pages[i];
+        if (!page?.file) continue;
+        if (isTestFile(page.file)) pages.splice(i, 1);
+      }
+
       pages.push({
         name: "model-slug",
         path: "/models/:slug/:id",
@@ -165,12 +176,13 @@ export default defineNuxtConfig({
 
   image: {
     domains: imageDomains,
-    provider: "none",
+    provider: "ipx",
     format: ["avif", "webp", "jpeg"],
     ipx: {
       // Avoid exposing name of internal binary
       // -Omar Ibrahim, Apr 20 26
       baseURL: "/_images",
+      maxAge: 60 * 60 * 24 * 30,
     },
   },
 
@@ -189,16 +201,6 @@ export default defineNuxtConfig({
     },
   ],
 
-  typescript: {
-    tsConfig: {
-      include: ["../tests/**/*"],
-    },
-  },
-
-  csurf: {
-    https: process.env.NODE_ENV === "production",
-  },
-
   linkChecker: { enabled: false },
 
   nitro: {
@@ -207,6 +209,16 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: false,
       routes: [],
+    },
+    // Nitro's esbuild defaults to es2019, which rejects top-level await (e.g.
+    // `await import("zod")` in SocialLink). Prod builds externalize those chunks
+    // so it never bites, but test-mode (@nuxt/test-utils) inlines them into the
+    // server bundle. Our runtime is Node 24, so es2022 is safe and supports TLA.
+    // -- Omar Ibrahim, Jun 05 26
+    esbuild: {
+      options: {
+        target: "es2022",
+      },
     },
   },
 

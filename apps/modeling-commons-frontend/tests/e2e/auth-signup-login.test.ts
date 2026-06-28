@@ -7,9 +7,18 @@
 //   relying on positional locators or class-string hooks.
 
 import { describe, expect, it } from "vitest";
-import { createPage, url } from "@nuxt/test-utils/e2e";
+import { createPage } from "@nuxt/test-utils/e2e";
 import { e2eSetup } from "./setup";
-import { buildRandomUser, signUpRandomUser } from "./helpers/auth";
+import {
+  buildRandomUser,
+  signIn,
+  signOutViaNavbar,
+  signUpAndVerify,
+  signUpRandomUser,
+} from "./helpers/auth";
+import { fillField } from "./helpers/form";
+import { gotoHydrated } from "./helpers/nav";
+import { dumpOnFailure } from "./helpers/debug";
 
 describe("auth: signup + login", async () => {
   await e2eSetup();
@@ -24,51 +33,82 @@ describe("auth: signup + login", async () => {
     const user = await signUpRandomUser(page);
 
     expect(page.url()).toContain("/verify-email");
-    expect(page.url()).toContain(encodeURIComponent(user.email));
+    // Vue Router doesn't percent-encode `+`/`@` in query values, so compare the
+    // decoded `email` param rather than assuming a specific URL encoding.
+    expect(new URL(page.url()).searchParams.get("email")).toBe(user.email);
     expect(errors).toEqual([]);
 
     await page.close();
   });
 
   it("blocks login for a freshly signed-up but unverified user", async () => {
+    const label = "unverified-login";
     const page = await createPage();
-    const user = await signUpRandomUser(page);
+    try {
+      const user = await signUpRandomUser(page);
 
-    await page.goto(url("/login"));
-    await page.getByLabel("Email").fill(user.email);
-    await page.getByLabel("Password", { exact: true }).fill(user.password);
-    await page.getByRole("button", { name: "Log In" }).click();
+      await gotoHydrated(page, "/login");
+      await fillField(page.getByLabel("Email"), user.email);
+      await fillField(page.getByLabel("Password", { exact: true }), user.password);
 
-    // The auth flow either bounces back to /verify-email or surfaces a toast.
-    await Promise.race([
-      page.waitForURL(/\/verify-email/, { timeout: 15_000 }),
-      page
-        .getByText(/verify your email|Login failed/i)
-        .waitFor({ timeout: 15_000 }),
-    ]);
+      // Assert the backend rejects the unverified login, then that the client
+      // bounces to the verify-email screen rather than logging in.
+      const signIn = page.waitForResponse((r) => r.url().includes("/sign-in/email"), {
+        timeout: 30_000,
+      });
+      await page.getByRole("button", { name: "Log In" }).click();
+      const response = await signIn;
 
-    expect(page.url()).not.toMatch(/\/models\/?$/);
-    await page.close();
+      expect(response.ok()).toBe(false);
+      await page.waitForURL(/\/verify-email/, { timeout: 30_000 });
+      expect(page.url()).not.toMatch(/\/models\/?$/);
+      await page.close();
+    } catch (err) {
+      await dumpOnFailure(page, label, err);
+    }
   });
 
   it("rejects login with bogus credentials", async () => {
+    const label = "bogus-login";
     const page = await createPage();
-    await page.goto(url("/login"));
+    try {
+      await gotoHydrated(page, "/login");
 
-    const fake = buildRandomUser();
-    await page.getByLabel("Email").fill(fake.email);
-    await page.getByLabel("Password", { exact: true }).fill(fake.password);
-    await page.getByRole("button", { name: "Log In" }).click();
+      const fake = buildRandomUser();
+      await fillField(page.getByLabel("Email"), fake.email);
+      await fillField(page.getByLabel("Password", { exact: true }), fake.password);
 
-    await page
-      .getByText(/Login failed|verify your email/i)
-      .waitFor({ timeout: 15_000 });
+      const signIn = page.waitForResponse((r) => r.url().includes("/sign-in/email"), {
+        timeout: 30_000,
+      });
+      await page.getByRole("button", { name: "Log In" }).click();
+      const response = await signIn;
 
-    expect(page.url()).not.toMatch(/\/models\/?$/);
-    await page.close();
+      expect(response.ok()).toBe(false);
+      expect(page.url()).not.toMatch(/\/models\/?$/);
+      await page.close();
+    } catch (err) {
+      await dumpOnFailure(page, label, err);
+    }
   });
 
-  it.todo(
-    "completes the verification handshake, lands on /models, signs out via navbar, signs back in (needs backend test-token retrieval)",
-  );
+  it("completes the verification handshake, lands on /models, signs out via navbar, signs back in", async () => {
+    const label = "verify-handshake";
+    const page = await createPage();
+    try {
+      const user = await signUpAndVerify(page);
+      expect(page.url()).toMatch(/\/models/);
+
+      await signOutViaNavbar(page);
+      await signIn(page, user);
+      // Login can route through the /passkey interstitial; force a fresh
+      // hydrated load so SSR re-resolves the session and lands on /models.
+      await gotoHydrated(page, "/models");
+      expect(page.url()).toMatch(/\/models/);
+
+      await page.close();
+    } catch (err) {
+      await dumpOnFailure(page, label, err);
+    }
+  });
 });

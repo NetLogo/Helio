@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3" data-testid="primary-file-uploader">
     <h6>Netlogo File <span class="text-coral">*</span></h6>
     <div
       v-if="currentFileName"

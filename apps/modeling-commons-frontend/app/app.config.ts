@@ -262,6 +262,8 @@ export default defineAppConfig({
     tabs: {
       slots: {
         content: "pt-4",
+        trigger: "grow flex-col lg:flex-row gap-1 py-2",
+        label: "text-[10px]/3 lg:text-sm",
       },
     },
 

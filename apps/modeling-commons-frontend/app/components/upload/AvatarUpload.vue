@@ -19,6 +19,8 @@
           :text="initials"
           :pending="pending"
           class="size-full rounded-full bg-neutral-darkest/5 text-2xl"
+          :width="160"
+          :height="160"
           variant="compact"
         />
 

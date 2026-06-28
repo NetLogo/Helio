@@ -34,7 +34,7 @@
       </UButton>
       <UButton
         :loading="publishing"
-        :disabled="publishing"
+        :disabled="publishing || hydrating"
         variant="solid"
         color="primary"
         @click="emit('submit')"
@@ -46,17 +46,21 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  isEdit: boolean;
-  publishing: boolean;
-  reverting: boolean;
-  deletingModel: boolean;
-  isDirty: boolean;
-  draftId: string | null | undefined;
-  saveStatusLabel: string;
-  submitLabel: string;
-  discardLabel: string;
-}>();
+withDefaults(
+  defineProps<{
+    isEdit: boolean;
+    publishing: boolean;
+    hydrating?: boolean;
+    reverting: boolean;
+    deletingModel: boolean;
+    isDirty: boolean;
+    draftId: string | null | undefined;
+    saveStatusLabel: string;
+    submitLabel: string;
+    discardLabel: string;
+  }>(),
+  { hydrating: false },
+);
 
 const emit = defineEmits<{
   delete: [];

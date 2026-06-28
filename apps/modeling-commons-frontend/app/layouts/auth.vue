@@ -24,7 +24,7 @@
       class="max-w-2xl w-full"
       :ui="{
         root: 'ring-0 border-0',
-        container: 'bg-neutral-white rounded-lg px-10 py-10 md:px-30 md:py-16',
+        container: 'bg-neutral-white rounded-lg px-5 sm:px-10 py-10 md:px-30 md:py-16',
       }"
     >
       <slot />

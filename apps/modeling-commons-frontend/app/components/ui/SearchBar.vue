@@ -21,8 +21,8 @@ defineShortcuts({
     icon="i-lucide-search"
   >
     <template #trailing>
-      <UKbd value="meta" />
-      <UKbd value="K" />
+      <UKbd data-show-from="sm" value="meta" />
+      <UKbd data-show-from="sm" value="K" />
     </template>
   </UInput>
 </template>

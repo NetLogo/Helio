@@ -12,6 +12,7 @@ export default function modelAdditionalFileDomain() {
         modelId: props.modelId,
         taggedVersionNumber: props.taggedVersionNumber,
         fileKey: props.fileKey,
+        kind: props.kind ?? 'additional',
         createdAt: new Date(),
       };
     },

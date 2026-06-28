@@ -1,0 +1,159 @@
+name: Test Modeling Commons
+
+on:
+  push:
+    branches: [main, staging/modeling-commons]
+    paths:
+      - 'apps/modeling-commons-backend/**'
+      - 'apps/modeling-commons-frontend/**'
+      - 'packages/modeling-commons-shared/**'
+      - 'packages/typescript-config/**'
+      - 'packages/tailwind-config/**'
+      - 'packages/nuxt-core/**'
+      - 'packages/vue-ui/**'
+      - 'packages/markdown/**'
+      - 'packages/eslint-config/**'
+      - 'packages/utils/**'
+      - 'packages/common-data/**'
+      - 'packages/template/**'
+      - 'packages/nuxt-content-assets/**'
+      - 'packages/netlogo-docs/**'
+      - 'packages/emails/**'
+      - 'yarn.lock'
+      - '.github/workflows/build-and-push-modeling-commons.yml'
+      - '.github/workflows/test-modeling-commons.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: modeling-commons-testing
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: netlogo1
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: yarn
+
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ hashFiles('yarn.lock') }}-
+            ${{ runner.os }}-turbo-
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: yarn run init
+        env:
+          HELIO_SKIP_CHECKS: '1'
+          NUXT_TELEMETRY_DISABLED: '1'
+
+      - name: Build backend
+        run: yarn workspace modeling-commons-backend fastify:build
+        env:
+          HELIO_HEADLESS: 1
+
+      - name: Run services
+        run: docker compose -f docker-compose.dev.yml up -d --wait
+        working-directory: apps/modeling-commons-backend
+
+      - name: Seed the services
+        run: yarn run db:migrate:dev && yarn run db:seed
+        working-directory: apps/modeling-commons-backend
+
+      - name: Run backend tests
+        run: yarn run test
+        working-directory: apps/modeling-commons-backend
+
+      - name: Run backend server
+        run: node dist/src/index.ts &
+          timeout 30 bash -c 'until curl -sf http://localhost:3000/api/health; do sleep 1; done'
+        working-directory: apps/modeling-commons-backend
+
+      - name: Get Playwright version
+        id: pw-version
+        run: echo "version=$(npx playwright --version)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: playwright
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}
+
+      - name: Install Playwright browser
+        if: steps.playwright.outputs.cache-hit != 'true'
+        run: yarn run e2e:install-browser
+        working-directory: apps/modeling-commons-frontend
+
+      - name: Build frontend
+        run: yarn run nuxt:build
+        working-directory: apps/modeling-commons-frontend
+        env:
+          NUXT_TELEMETRY_DISABLED: '1'
+
+      - name: Run frontend server
+        run: node .output/server/index.mjs &
+          timeout 60 bash -c 'until curl -sf http://localhost:3005/ >/dev/null; do sleep 1; done'
+        working-directory: apps/modeling-commons-frontend
+        env:
+          PORT: '3005'
+          NODE_OPTIONS: --dns-result-order=ipv4first
+
+      # Split the suite so e2e doesn't share the runner's 2 cores with the other
+      # five in-process projects (plus Chromium).
+      # -- Omar Ibrahim, Jun 11 26
+      - name: Run in-process frontend tests
+        run: yarn run test:in-process
+        working-directory: apps/modeling-commons-frontend
+
+      # E2E runs against the already-built server (E2E_HOST), so the e2e project
+      # skips its per-file Nuxt build.
+      # -- Omar Ibrahim, Jun 11 26
+      - name: Run frontend e2e tests
+        run: yarn run test:e2e
+        working-directory: apps/modeling-commons-frontend
+        env:
+          E2E_HOST: http://localhost:3005
+          E2E_ARTIFACT_DIR: ${{ runner.temp }}/e2e-artifacts
+          MAILPIT_URL: http://localhost:8025
+
+      # Failure-only net: on a failed e2e run, upload the screenshot + HTML that
+      # dumpOnFailure captured at the point of failure.
+      - name: Upload e2e failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-failure-artifacts
+          if-no-files-found: ignore
+          path: ${{ runner.temp }}/e2e-artifacts
+
+      - if: always()
+        run: docker compose -f docker-compose.dev.yml down -v
+        working-directory: apps/modeling-commons-backend
+
+  deploy-staging:
+    needs: test
+    uses: ./.github/workflows/build-and-push-modeling-commons.yml
+    with:
+      environment: modeling-commons-staging

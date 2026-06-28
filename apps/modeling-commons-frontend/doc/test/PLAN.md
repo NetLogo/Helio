@@ -182,9 +182,12 @@ Keep this list short. Each file is one journey, one `describe`.
 
 ### E2E helpers
 
-- `tests/e2e/helpers/auth.ts` — `signUpRandomUser(page)`, `signIn(page, email, password)`. Uses real Fastify endpoints; cleans up via DB or leaves fixtures (the backend test DB is reset between runs)
+- `tests/e2e/helpers/auth.ts` — `signUpRandomUser(page)`, `signIn(page, email, password)`, `signUpAndVerify(page)` (returns a verified, signed-in, onboarded user by reading the verification email from Mailpit's HTTP API — `MAILPIT_URL`, default `http://localhost:8025` — following the auto-sign-in verification link, then completing onboarding). Uses real Fastify endpoints; cleans up via DB or leaves fixtures (the backend test DB is reset between runs)
+- `tests/e2e/helpers/mailpit.ts` — thin wrapper over Mailpit's HTTP API: `waitForMessageTo`, `extractLink`, `clearMessages`
 - `tests/e2e/helpers/fixtures.ts` — paths to small `.nlogo` test fixture, sample preview image
 - `tests/e2e/setup.ts` — shared `setup({ ... })` config
+
+No backend test endpoint was needed — the real verification flow is exercised end-to-end.
 
 ### Rules (mirroring `TESTING-OVERVIEW.md`)
 

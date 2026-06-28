@@ -5,6 +5,17 @@
 import { describe, expect, it } from "vitest";
 import { createPage, url } from "@nuxt/test-utils/e2e";
 import { e2eSetup } from "./setup";
+import { expectPageIdentity, modelCardLink } from "./helpers/page";
+import { fillField } from "./helpers/form";
+
+// /models renders "Explore Models" only in the document <title>; its visible
+// headings are dynamic model-card titles. Wait for cards or the empty state
+// instead of a fixed heading.
+const cardOrEmpty = (page: Awaited<ReturnType<typeof createPage>>) =>
+  Promise.race([
+    page.locator(modelCardLink).first().waitFor({ timeout: 15_000 }),
+    page.getByText(/No models found/i).waitFor({ timeout: 15_000 }),
+  ]);
 
 describe("models: browse", async () => {
   await e2eSetup();
@@ -19,15 +30,8 @@ describe("models: browse", async () => {
     const response = await page.goto(url("/models"));
     expect(response?.ok()).toBe(true);
 
-    await page
-      .getByRole("heading", { name: /Explore Models/i })
-      .waitFor({ timeout: 15_000 });
-
-    // Either at least one ModelCard renders, or the empty state shows up.
-    await Promise.race([
-      page.locator("a[href^='/models/']").first().waitFor({ timeout: 15_000 }),
-      page.getByText(/No models found/i).waitFor({ timeout: 15_000 }),
-    ]);
+    await expectPageIdentity(page, /Explore Models/i, "/models");
+    await cardOrEmpty(page);
 
     expect(errors).toEqual([]);
     await page.close();
@@ -37,14 +41,13 @@ describe("models: browse", async () => {
     const page = await createPage();
     await page.goto(url("/models"));
 
-    await page
-      .getByRole("heading", { name: /Explore Models/i })
-      .waitFor({ timeout: 15_000 });
+    await expectPageIdentity(page, /Explore Models/i, "/models");
+    await cardOrEmpty(page);
 
-    const initialCount = await page.locator("a[href^='/models/']").count();
+    const initialCount = await page.locator(modelCardLink).count();
 
     const searchInput = page.getByRole("textbox").first();
-    await searchInput.fill("zzznoresultsexpected" + Date.now());
+    await fillField(searchInput, "zzznoresultsexpected" + Date.now());
 
     // Debounced 300ms; wait for either fewer cards or the empty state.
     await expect
@@ -52,7 +55,7 @@ describe("models: browse", async () => {
         async () => {
           const empty = await page.getByText(/No models found/i).isVisible();
           if (empty) return "empty";
-          const count = await page.locator("a[href^='/models/']").count();
+          const count = await page.locator(modelCardLink).count();
           return count < initialCount ? "smaller" : "same";
         },
         { timeout: 10_000 },
@@ -66,7 +69,7 @@ describe("models: browse", async () => {
     const page = await createPage();
     await page.goto(url("/models"));
 
-    const firstCard = page.locator("a[href^='/models/']").first();
+    const firstCard = page.locator(modelCardLink).first();
     const exists = await firstCard.count();
     if (!exists) {
       // Empty seed — there's nothing to click into. Skip rather than fail.
@@ -77,10 +80,11 @@ describe("models: browse", async () => {
     await firstCard.click();
     await page.waitForURL(/\/models\/.+/, { timeout: 15_000 });
 
-    // Header / hero region should render. Use the "Back to models" button as
-    // a stable anchor — it appears at the top of the [id] page.
+    // Detail page rendered: the tab bar (Discussion/Files/Versions/Family) is a
+    // stable anchor present on every model detail page. UTabs renders each
+    // trigger as a role="tab".
     await page
-      .getByRole("link", { name: /Back to models/i })
+      .getByRole("tab", { name: /^Discussion$/ })
       .waitFor({ timeout: 15_000 });
 
     await page.close();

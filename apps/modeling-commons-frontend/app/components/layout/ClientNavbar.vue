@@ -2,7 +2,7 @@
   <Navbar
     id="main-navbar"
     ref="navbar"
-    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none! max-w-500 mx-auto flex-1 w-full"
+    class="bg-background! py-4! lg:px-[2.5vw]! shadow-none! mx-auto flex-1 w-full"
     :brand="brand"
     brand-href="/"
     :brand-attrs="brandAttrs"
@@ -33,9 +33,16 @@
     </NavbarLinksContainer>
 
     <NavbarActionsContainer class="gap-3! ml-0!">
-      <NuxtLink v-if="user.isLoggedIn" to="/models/upload" title="Upload a Model">
-        <UButton variant="outline" size="xs" square icon="i-lucide-upload" />
-      </NuxtLink>
+      <UButton
+        v-if="user.isLoggedIn"
+        title="Upload Model"
+        size="xs"
+        square
+        icon="i-lucide-upload"
+        to="/models/upload"
+        variant="solid"
+        color="primary"
+      />
       <UDropdownMenu v-if="user.isLoggedIn" :items="userDropdownItems" :content="{ align: 'end' }">
         <template #user-info>
           <UserAvatar
@@ -160,6 +167,11 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           icon: "i-lucide-user",
           href: "/profile",
         },
+        {
+          label: "My Models",
+          icon: "i-lucide-box",
+          href: `/users/${user.value.id}/models`,
+        },
       ],
       [
         {
@@ -168,7 +180,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           href: "/profile/settings",
         },
         {
-          label: "Login & Security",
+          label: "Log In & Security",
           icon: "i-lucide-key-round",
           href: "/profile/security",
         },
@@ -193,7 +205,7 @@ const isMobileScreen = ref(false);
 const navbarRef = useTemplateRef<InstanceType<typeof _Navbar>>("navbar");
 
 const brand = computed(() => WebsiteLogo);
-const brandAttrs = computed(() => ({ class: "w-40 lg:w-48 lg:ml-0 lg:[&>svg]:w-full!" }));
+const brandAttrs = computed(() => ({ class: "w-40! lg:w-60! lg:ml-0 lg:[&>svg]:w-full!" }));
 
 const handleMediaQueryChange = (): void => {
   if (import.meta.client) {

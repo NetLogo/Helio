@@ -8,6 +8,7 @@ export const modelAdditionalFileResponseDtoSchema = Type.Intersect([
     userId: Type.Optional(Type.String({ format: 'uuid' })),
     taggedVersionNumber: Type.Integer(),
     fileKey: Type.String(),
+    kind: Type.Union([Type.Literal('model'), Type.Literal('additional')]),
     filename: Type.String(),
     contentType: Type.String(),
     sizeBytes: Type.Integer(),

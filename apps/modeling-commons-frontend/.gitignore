@@ -17,3 +17,6 @@ logs
 .DS_Store
 .fleet
 .idea
+
+# e2e diagnostic artifacts (local)
+tests/e2e/.artifacts/

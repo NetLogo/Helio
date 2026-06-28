@@ -98,6 +98,8 @@ describe("ModelDetail like-handler rollback (focused harness)", () => {
         resolve = r;
       }),
     );
+
+    // @ts-expect-error -- mock is equivalent to () => Promise<void>
     const Harness = createHarness({ like: likeMock, unlike: unlikeMock, toast: toastMock });
 
     const wrapper = mount(Harness);
@@ -122,6 +124,8 @@ describe("ModelDetail like-handler rollback (focused harness)", () => {
         reject = r;
       }),
     );
+
+    // @ts-expect-error -- mock is equivalent to () => Promise<void>
     const Harness = createHarness({ like: likeMock, unlike: unlikeMock, toast: toastMock });
 
     const wrapper = mount(Harness);
@@ -147,8 +151,11 @@ describe("ModelDetail like-handler rollback (focused harness)", () => {
       }),
     );
     const Harness = createHarness({
+      // @ts-expect-error -- mock is equivalent to () => Promise<void>
       like: likeMock,
+      // @ts-expect-error -- mock is equivalent to () => Promise<void>
       unlike: unlikeMock,
+      // @ts-expect-error -- mock is equivalent to () => Promise<void>
       toast: toastMock,
       initial: { likes: 5, likedByMe: true },
     });
@@ -175,6 +182,8 @@ describe("ModelDetail like-handler rollback (focused harness)", () => {
         resolve = r;
       }),
     );
+
+    // @ts-expect-error -- mock is equivalent to () => Promise<void>
     const Harness = createHarness({ like: likeMock, unlike: unlikeMock, toast: toastMock });
 
     const wrapper = mount(Harness);

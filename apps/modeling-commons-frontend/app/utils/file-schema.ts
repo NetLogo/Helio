@@ -1,5 +1,6 @@
-import * as z from "zod";
 import { formatBytes } from "~/utils/formatters";
+
+const z = await import("zod");
 
 export const makeFileSchema = ({
   maxFileSize,

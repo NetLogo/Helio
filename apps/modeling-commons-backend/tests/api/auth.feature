@@ -22,3 +22,25 @@ Feature: Authentication
     Given a verified user with email "carol@test.local" and password "StrongPass1!"
     When I sign in with email "carol@test.local" and password "WrongPass1!"
     Then the signin should be rejected
+
+  @legacy-signup
+  Scenario: Legacy user without an account gets a password reset instead of a sign-up
+    Given a legacy user with email "legacy@test.local" and no linked account
+    When I sign up with name "Legacy" email "legacy@test.local" and password "StrongPass1!"
+    Then the response status should be 200
+    And the response body should not have property "user"
+    And the user "legacy@test.local" should still have no linked account
+
+  @legacy-signup
+  Scenario: Existing user with an account is handled normally on sign-up
+    Given a verified user with email "existing@test.local" and password "StrongPass1!"
+    When I sign up with name "Existing" email "existing@test.local" and password "StrongPass1!"
+    Then the response status should be 200
+    And the response body should have property "user"
+
+  @legacy-signup
+  Scenario: New user with no account is signed up normally
+    When I sign up with name "Newbie" email "newbie@test.local" and password "StrongPass1!"
+    Then the response status should be 200
+    And the response body should have property "user"
+    And the user "newbie@test.local" should have a linked account

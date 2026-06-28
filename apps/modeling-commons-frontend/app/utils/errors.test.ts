@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createApiError, handleApiError } from "./errors";
+import { createApiError, getErrorStatus, handleApiError, isAccessDeniedError } from "./errors";
 
 type CreateErrorInput = { statusCode?: number; message?: string; data?: unknown };
 
@@ -61,6 +61,38 @@ describe("createApiError", () => {
     const payload = { statusCode: 403, message: "Forbidden", correlationId: "xyz" };
     const err = createApiError(payload as never);
     expect(err.data).toMatchObject(payload);
+  });
+});
+
+describe("getErrorStatus", () => {
+  it("reads statusCode from a wrapped Nuxt error", () => {
+    expect(getErrorStatus({ statusCode: 403 })).toBe(403);
+  });
+
+  it("falls back to status", () => {
+    expect(getErrorStatus({ status: 404 })).toBe(404);
+  });
+
+  it("falls back to a nested response status", () => {
+    expect(getErrorStatus({ response: { status: 401 } })).toBe(401);
+  });
+
+  it("returns undefined for non-object errors", () => {
+    expect(getErrorStatus(null)).toBeUndefined();
+    expect(getErrorStatus("nope")).toBeUndefined();
+  });
+});
+
+describe("isAccessDeniedError", () => {
+  it("is true for 401 and 403", () => {
+    expect(isAccessDeniedError({ statusCode: 401 })).toBe(true);
+    expect(isAccessDeniedError({ statusCode: 403 })).toBe(true);
+  });
+
+  it("is false for other statuses", () => {
+    expect(isAccessDeniedError({ statusCode: 404 })).toBe(false);
+    expect(isAccessDeniedError({ statusCode: 500 })).toBe(false);
+    expect(isAccessDeniedError(null)).toBe(false);
   });
 });
 

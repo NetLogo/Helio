@@ -18,10 +18,7 @@ export function getModelEmbedUrl({ modelId, slug, appUrl }: ModelEmbedTarget) {
   return new URL(path, appUrl).toString();
 }
 
-export function getModelEmbedIframeCode(
-  target: ModelEmbedTarget,
-  title: string = "NetLogo Model",
-) {
+export function getModelEmbedIframeCode(target: ModelEmbedTarget, title: string = "NetLogo Model") {
   const embedUrl = getModelEmbedUrl(target);
   return `<iframe src="${embedUrl}" title="${title}" style="width: 100%; min-height: 600px;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="no-referrer" allowfullscreen></iframe>`;
 }
@@ -32,17 +29,11 @@ export function getModelEmbedMarkdownCode(
   previewImageUrl?: string | null,
 ) {
   const embedUrl = getModelEmbedUrl(target);
-  const iframeCode = getModelEmbedIframeCode(target, title);
-
-  const iframePart = [
-    "<!-- or via iframe embed code (uncomment to embed) -->",
-    `<!-- ${iframeCode} -->`,
-  ].join("\n");
 
   if (previewImageUrl) {
-    return `[![${title}](${previewImageUrl})](${embedUrl})\n\n\n${iframePart}\n`;
+    return `[![${title}](${previewImageUrl})](${embedUrl})\n`;
   } else {
-    return `[${title}](${embedUrl})\n\n\n${iframePart}\n`;
+    return `[${title}](${embedUrl})\n`;
   }
 }
 

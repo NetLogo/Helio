@@ -10,12 +10,12 @@ describe("ModelDiscussionTab", () => {
 
   it("renders the empty state copy", async () => {
     const wrapper = await mountSuspended(ModelDiscussionTab);
-    expect(wrapper.text()).toContain("No discussions yet");
-    expect(wrapper.text()).toContain("Be the first to start a conversation");
+    expect(wrapper.text()).toContain("Discussions are coming soon!");
+    expect(wrapper.text()).toContain("please reach out to the author");
   });
 
   it("renders a filter selector", async () => {
     const wrapper = await mountSuspended(ModelDiscussionTab);
-    expect(wrapper.text()).toContain("Filter Comments By");
+    expect(wrapper.text()).toContain("Filter by");
   });
 });

@@ -1,5 +1,6 @@
+import type { AdditionalFile } from "~/composables/model/useModelAdditionalFiles";
 import type { ModelCard } from "~/composables/model/useModelCard";
-import type { DraftData, Visibility } from "~/composables/model/useModelDraft";
+import type { DraftData, StagedFile, Visibility } from "~/composables/model/useModelDraft";
 import { getModelPreviewCard } from "~/forms/models";
 import type { PrimaryFileMeta, StagedAttachmentMeta, UploadFormInput } from "~/forms/upload";
 import { collectTagNames, draftToFormState, emptyUploadFormState } from "~/forms/upload";
@@ -18,10 +19,12 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     draftId,
     saving,
     publishing,
+    pendingWrite,
     ensureDraft,
     load,
     patch,
     uploadPrimaryFile,
+    uploadModelFile,
     uploadAttachment,
     uploadPreviewImage: uploadPreviewImageApi,
     removeFile,
@@ -47,6 +50,11 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
   const originalData = ref<DraftData | null>(null);
   const originalPreviewImageUrl = ref<string | null>(null);
   const hydratedAttachmentIds = ref<Set<string>>(new Set());
+  const removedModelFileIds = ref<Set<string>>(new Set());
+
+  const { data: liveAdditionalFiles } = opts.seedModelId
+    ? useModelAdditionalFiles(opts.seedModelId)
+    : { data: ref<AdditionalFile[] | null>(null) };
 
   const previewImage = ref<PreviewImageMeta | null>(null);
   const previewImageUrl = ref<string | null>(null);
@@ -68,8 +76,20 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
 
   const hasPrimaryFile = computed(() => primaryFile.value !== null || pickedFile.value !== null);
 
-  const existingAttachments = computed<StagedAttachmentMeta[]>(() =>
-    stagedAttachments.value.filter((a) => hydratedAttachmentIds.value.has(a.id)),
+  const existingModelFiles = computed<StagedAttachmentMeta[]>(() =>
+    stagedAttachments.value.filter(
+      (a) => hydratedAttachmentIds.value.has(a.id) && (a.kind ?? "model") === "model",
+    ),
+  );
+
+  const sessionAddedAdditionalFiles = computed<StagedAttachmentMeta[]>(() =>
+    stagedAttachments.value.filter(
+      (a) => !hydratedAttachmentIds.value.has(a.id) && a.kind === "additional",
+    ),
+  );
+
+  const lockedAdditionalFiles = computed<AdditionalFile[]>(() =>
+    (liveAdditionalFiles.value ?? []).filter((f) => f.kind === "additional"),
   );
 
   const primaryFileChanged = computed(() => {
@@ -78,7 +98,9 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     return primaryFile.value?.s3Key !== originalKey;
   });
 
-  const modelFilesAdded = computed(() => modelFiles.value.length > 0);
+  const modelFilesAdded = computed(
+    () => modelFiles.value.length > 0 || removedModelFileIds.value.size > 0,
+  );
 
   const sessionAddedAttachments = computed(() =>
     stagedAttachments.value.filter((a) => !hydratedAttachmentIds.value.has(a.id)),
@@ -107,14 +129,19 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     if (additionalFiles.value.length > 0) return true;
     if (primaryFileChanged.value) return true;
     if (sessionAddedAttachments.value.length > 0) return true;
+    if (removedModelFileIds.value.size > 0) return true;
     return false;
   });
 
   const saveStatusLabel = computed(() => {
     if (!draftId.value) return "";
-    if (saving.value) return "Saving…";
+    if (saving.value || pendingWrite.value) return "Saving…";
     return "Saved";
   });
+
+  async function flushDraft(): Promise<void> {
+    await patch.flush();
+  }
 
   function hydrateFromDraft(data: DraftData, serverPreviewImageUrl: string | null = null) {
     hydrating.value = true;
@@ -125,6 +152,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     primaryFile.value = next.primaryFile;
     stagedAttachments.value = next.attachments;
     hydratedAttachmentIds.value = new Set(next.attachments.map((a) => a.id));
+    removedModelFileIds.value = new Set();
     previewImage.value = data.previewImage ? { ...data.previewImage } : null;
     previewImageUrl.value = serverPreviewImageUrl;
     pickedFile.value = null;
@@ -260,6 +288,8 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
   async function syncAttachments(
     files: File[] | undefined,
     prev: File[] | undefined,
+    upload: (file: File) => Promise<StagedFile>,
+    kind: "model" | "additional",
   ): Promise<void> {
     if (hydrating.value) return;
     const current = files ?? [];
@@ -267,13 +297,14 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     const added = current.filter((f) => !previous.includes(f));
     for (const file of added) {
       try {
-        const staged = await uploadAttachment(file);
+        const staged = await upload(file);
         stagedAttachments.value.push({
           id: staged.fileId,
           filename: staged.filename,
           sizeBytes: staged.sizeBytes,
           mimeType: staged.mimeType,
           s3Key: staged.s3Key,
+          kind,
         });
       } catch (err) {
         showActionFailedToast(
@@ -284,7 +315,9 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     }
     const removed = previous.filter((f) => !current.includes(f));
     for (const file of removed) {
-      const match = stagedAttachments.value.find((s) => s.filename === file.name);
+      const match = stagedAttachments.value.find(
+        (s) => s.filename === file.name && !hydratedAttachmentIds.value.has(s.id),
+      );
       if (match) {
         stagedAttachments.value = stagedAttachments.value.filter((s) => s !== match);
         await removeFile(match.id).catch(() => null);
@@ -293,12 +326,21 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
   }
 
   watch(modelFiles, (files, prev) => {
-    void syncAttachments(files, prev);
+    void syncAttachments(files, prev, uploadModelFile, "model");
   });
 
   watch(additionalFiles, (files, prev) => {
-    void syncAttachments(files, prev);
+    void syncAttachments(files, prev, uploadAttachment, "additional");
   });
+
+  async function removeExistingModelFile(fileId: string): Promise<void> {
+    const match = stagedAttachments.value.find((s) => s.id === fileId);
+    if (!match) return;
+    stagedAttachments.value = stagedAttachments.value.filter((s) => s !== match);
+    hydratedAttachmentIds.value.delete(fileId);
+    removedModelFileIds.value = new Set(removedModelFileIds.value).add(fileId);
+    await removeFile(fileId).catch(() => null);
+  }
 
   async function submit(visibility: Visibility): Promise<{ id: string } | null> {
     if (publishing.value) return null;
@@ -310,10 +352,15 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
       showActionFailedToast("Missing title", "Add a title before publishing.");
       return null;
     }
-    await patch.flush();
-    await patch({ visibility, tags: collectTagNames(formState.value) });
-    await patch.flush();
-    return publish();
+    publishing.value = true;
+    try {
+      await patch.flush();
+      await patch({ visibility, tags: collectTagNames(formState.value) });
+      await patch.flush();
+      return await publish();
+    } finally {
+      publishing.value = false;
+    }
   }
 
   async function discard(): Promise<void> {
@@ -447,7 +494,10 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     previewCard,
     saveStatusLabel,
     hasPrimaryFile,
-    existingAttachments,
+    existingModelFiles,
+    sessionAddedAdditionalFiles,
+    lockedAdditionalFiles,
+    removeExistingModelFile,
     primaryFileChanged,
     modelFilesAdded,
     isDirty,
@@ -460,6 +510,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     hydrateFromDraft,
     generatePreview,
     uploadPreviewImage,
+    flushDraft,
     submit,
     discard,
     revert,

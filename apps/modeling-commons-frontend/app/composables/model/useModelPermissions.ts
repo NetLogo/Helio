@@ -16,7 +16,7 @@ export default function useUserModelPermissions(modelId: MaybeRefOrGetter<string
       if (error) throw error;
       return data ?? null;
     },
-    { watch: [id] },
+    { watch: [id], immediate: true, getCachedData: getNuxtPayloadData, dedupe: "cancel" },
   );
 
   const data = computed<UserModelPermissions>(() => {

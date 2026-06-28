@@ -11,9 +11,10 @@
       </Banner>
 
       <div
-        v-if="initializing"
+        v-if="loadingDraft"
         class="flex items-center justify-center min-h-[70vh] text-muted"
         aria-live="polite"
+        data-testid="draft-loading"
       >
         <UIcon name="i-lucide-loader-circle" class="animate-spin size-6 mr-2" />
         Loading draft…
@@ -48,8 +49,9 @@
                 <FileUploadCard
                   v-model:model-files="modelFiles"
                   v-model:additional-files="additionalFiles"
-                  :existing-attachments="existingAttachments"
-                  :lock-existing="isEdit"
+                  :existing-model-files="existingModelFiles"
+                  :locked-additional-files="lockedAdditionalFiles"
+                  @remove-model-file="removeExistingModelFile"
                 />
               </template>
               <template #details>
@@ -72,6 +74,7 @@
             <ModelDraftActionBar
               :is-edit="isEdit"
               :publishing="publishing"
+              :hydrating="hydrating"
               :reverting="reverting"
               :deleting-model="deletingModel"
               :is-dirty="isDirty"
@@ -139,6 +142,7 @@ const {
   draftId,
   publishing,
   initializing,
+  hydrating,
   formState,
   pickedFile,
   primaryFile,
@@ -147,7 +151,9 @@ const {
   previewCard,
   saveStatusLabel,
   hasPrimaryFile,
-  existingAttachments,
+  existingModelFiles,
+  lockedAdditionalFiles,
+  removeExistingModelFile,
   primaryFileChanged,
   modelFilesAdded,
   isDirty,
@@ -157,6 +163,7 @@ const {
   previewImageUrl,
   init,
   generatePreview,
+  flushDraft,
   submit,
   discard,
   revert,
@@ -166,6 +173,8 @@ const {
   initialDraftId: props.initialDraftId,
   seedModelId: props.seedModelId,
 });
+
+const { unlock } = useUnloadGuard(isDirty, { onLeave: flushDraft });
 
 const currentNetlogoFileName = computed(
   () => pickedFile.value?.name ?? primaryFile.value?.filename ?? null,
@@ -177,6 +186,10 @@ const confirmDelete = ref(false);
 const confirmDiscard = ref(false);
 
 const isEdit = computed(() => props.mode === "edit");
+const isSeedingDraft = computed(() => Boolean(props.initialDraftId || props.seedModelId));
+const loadingDraft = computed(
+  () => isSeedingDraft.value && (initializing.value || hydrating.value),
+);
 const showPicker = computed(() => !isEdit.value && !hasPrimaryFile.value);
 const submitLabel = computed(() => "Publish");
 const discardLabel = computed(() => (isEdit.value ? "Discard edits" : "Discard draft"));
@@ -215,6 +228,7 @@ async function onSubmit(): Promise<void> {
       icon: "i-lucide-badge-check",
       color: "success",
     });
+    unlock();
     emit("published", result.id);
   } catch (err) {
     toast.add({
@@ -240,6 +254,7 @@ async function onDiscard(): Promise<void> {
       icon: "i-lucide-trash-2",
       color: "neutral",
     });
+    unlock();
     emit("discarded");
   } catch (err) {
     toast.add({
@@ -274,8 +289,6 @@ async function onRevert(): Promise<void> {
 }
 
 async function onDelete(): Promise<void> {
-  // unlock();
-
   try {
     await deleteModel();
     confirmDelete.value = false;
@@ -284,6 +297,7 @@ async function onDelete(): Promise<void> {
       icon: "i-lucide-trash-2",
       color: "neutral",
     });
+    unlock();
     emit("deleted");
   } catch (err) {
     toast.add({

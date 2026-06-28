@@ -74,7 +74,7 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
   [
     { label: "Account", type: "label" },
     { label: "Public Profile", icon: "i-lucide-user-cog", to: "/profile/settings" },
-    { label: "Login & Security", icon: "i-lucide-key-round", to: "/profile/security" },
+    { label: "Log In & Security", icon: "i-lucide-key-round", to: "/profile/security" },
     // {
     //   label: "Notifications & Preferences",
     //   icon: "i-lucide-sliders-horizontal",
@@ -83,7 +83,7 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
   ],
   [
     { label: "Models", type: "label" },
-    { label: "Published", icon: "i-lucide-globe", to: `/users/${user.value.user!.id}/models` },
+    { label: "Published", icon: "i-lucide-globe", to: `/users/${user.value.user?.id}/models` },
     { label: "Drafts", icon: "i-lucide-file-text", to: `/profile/drafts` },
   ],
   // [

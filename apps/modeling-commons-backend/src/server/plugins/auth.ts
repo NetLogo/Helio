@@ -43,12 +43,10 @@ class AuthService {
       if (value) headers.append(key, Array.isArray(value) ? value.join(', ') : value);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const session = await auth.api.getSession({ headers });
     if (!session) return null;
 
     const dbUser = await prisma.user.findUnique({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       where: { id: session.user.id },
     });
     if (!dbUser) return null;
@@ -57,11 +55,8 @@ class AuthService {
 
     return {
       session: {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         id: session.session.id,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         userId: session.session.userId,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         expiresAt: session.session.expiresAt,
       },
       user: {
@@ -112,7 +107,28 @@ async function authPlugin(fastify: FastifyInstance) {
           ...(request.body ? { body: JSON.stringify(request.body) } : {}),
         });
 
-        const response = await auth.handler(req);
+        const signUpEmailPath = `${auth.options.basePath}/sign-up/email`;
+
+        let response: Response;
+        if (url.pathname === signUpEmailPath && request.method === 'POST') {
+          const { email } = request.body as { email?: string };
+          const isLegacyUserWithNoAccount = email
+            ? await prisma.user.findFirst({
+                where: {
+                  email,
+                  legacyId: { not: null },
+                  accounts: { none: {} },
+                },
+              })
+            : null;
+
+          response =
+            isLegacyUserWithNoAccount && email
+              ? await auth.api.requestPasswordReset({ asResponse: true, body: { email } })
+              : await auth.handler(req);
+        } else {
+          response = await auth.handler(req);
+        }
 
         reply.status(response.status);
         response.headers.forEach((value, key) => reply.header(key, value));

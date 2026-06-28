@@ -160,7 +160,6 @@ async function wipeTarget() {
     TRUNCATE TABLE
       "ModelVersionTag",
       "ModelAdditionalFile",
-      "ModelVersionFile",
       "ModelVersion",
       "ModelAuthor",
       "ModelPermission",

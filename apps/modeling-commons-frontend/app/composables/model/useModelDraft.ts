@@ -22,6 +22,7 @@ function debounceWithFlush<Args extends unknown[]>(
   let pendingArgs: Args | null = null;
   let pendingResolve: (() => void) | null = null;
   let pendingPromise: Promise<void> | null = null;
+  const pending = ref(false);
 
   async function run() {
     if (!pendingArgs) return;
@@ -31,6 +32,7 @@ function debounceWithFlush<Args extends unknown[]>(
     pendingResolve = null;
     pendingPromise = null;
     timer = null;
+    pending.value = false;
     try {
       await fn(...args);
     } finally {
@@ -40,6 +42,7 @@ function debounceWithFlush<Args extends unknown[]>(
 
   function debounced(...args: Args): Promise<void> {
     pendingArgs = args;
+    pending.value = true;
     if (!pendingPromise) {
       pendingPromise = new Promise((r) => {
         pendingResolve = r;
@@ -49,6 +52,8 @@ function debounceWithFlush<Args extends unknown[]>(
     timer = setTimeout(() => void run(), wait);
     return pendingPromise;
   }
+
+  debounced.pending = pending;
 
   debounced.flush = async (): Promise<void> => {
     if (timer) {
@@ -103,7 +108,7 @@ export default function useModelDraft(initialDraftId?: string) {
   }, 500);
 
   async function uploadFileRaw(
-    role: "primary" | "attachment" | "preview",
+    role: "primary" | "model-file" | "attachment" | "preview",
     file: File,
   ): Promise<StagedFile & { previewImageUrl?: string }> {
     const id = await ensureDraft();
@@ -136,6 +141,10 @@ export default function useModelDraft(initialDraftId?: string) {
 
   async function uploadPrimaryFile(file: File): Promise<StagedFile> {
     return uploadFileRaw("primary", file);
+  }
+
+  async function uploadModelFile(file: File): Promise<StagedFile> {
+    return uploadFileRaw("model-file", file);
   }
 
   async function uploadAttachment(file: File): Promise<StagedFile> {
@@ -214,10 +223,12 @@ export default function useModelDraft(initialDraftId?: string) {
     draft,
     saving,
     publishing,
+    pendingWrite: patch.pending,
     ensureDraft,
     load,
     patch,
     uploadPrimaryFile,
+    uploadModelFile,
     uploadAttachment,
     uploadPreviewImage,
     removeFile,

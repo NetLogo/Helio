@@ -62,19 +62,17 @@ async function createModel(
     throw new Error(`Failed to patch draft (${patchRes.statusCode}): ${patchRes.body}`);
   }
 
-  if (!parentModelId) {
-    const { payload, contentType } = buildPrimaryFileMultipart(
-      `; ${title}\nto setup\nclear-all\nend\n`,
-    );
-    const uploadRes = await server.inject({
-      method: 'POST',
-      url: `/api/v1/model-drafts/${draftId}/files`,
-      payload,
-      headers: { cookie: user.cookie, 'content-type': contentType },
-    });
-    if (uploadRes.statusCode !== 201) {
-      throw new Error(`Failed to upload primary file (${uploadRes.statusCode}): ${uploadRes.body}`);
-    }
+  const { payload, contentType } = buildPrimaryFileMultipart(
+    `; ${title}\nto setup\nclear-all\nend\n`,
+  );
+  const uploadRes = await server.inject({
+    method: 'POST',
+    url: `/api/v1/model-drafts/${draftId}/files`,
+    payload,
+    headers: { cookie: user.cookie, 'content-type': contentType },
+  });
+  if (uploadRes.statusCode !== 201) {
+    throw new Error(`Failed to upload primary file (${uploadRes.statusCode}): ${uploadRes.body}`);
   }
 
   const publishRes = await server.inject({

@@ -4,12 +4,12 @@
       class="flex flex-col lg:flex-row gap-10 px-10 py-10 bg-linear-to-t from-white via-coral-lighter/10 to-royal-blue/15"
     >
       <div class="flex flex-col w-full justify-center p-5 gap-4">
-        <span class="text-lg text-royal-blue font-bold uppercase">The Modeling Commons</span>
-        <h5 class="text-4xl sm:text-5xl max-w-4xl leading-tight tracking-tight">
+        <span class="text-sm sm:text-md md:text-lg text-royal-blue font-bold uppercase">The Modeling Commons</span>
+        <h5 class="text-3xl sm:text-5xl max-w-4xl leading-tight tracking-tight">
           Discover, share, and learn about
           <span class="text-royal-blue">complex systems</span> together
         </h5>
-        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center justify-center w-full">
+        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center w-full">
           <SearchBar
             class="max-w-md md:max-w-3xl"
             @keydown.enter="
@@ -31,7 +31,7 @@
         </div>
 
         <NuxtLink to="https://www.netlogo.org/" target="_blank" rel="noopener noreferrer" class="mt-8 text-center lg:text-left text-md">
-            Powered by <NuxtImg :src="NetlogoLogo" class="inline-block h-6 w-auto -mt-0.5 -ml-1" />
+            Powered by <img :src="NetlogoLogo" alt="NetLogo" class="inline-block h-6 w-auto -mt-0.5 -ml-1" />
         </NuxtLink>
       </div>
       <MarqueeGallery class="lg:w-5xl" height="80dvh" column-gap="12px">
@@ -103,7 +103,7 @@
                   variant="ghost"
                   trailing-icon="i-lucide-arrow-right"
                 >
-                  View all
+                  <span data-show-from="sm">View all</span>
                 </UButton>
               </div>
               <!-- @replace -->

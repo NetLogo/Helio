@@ -10,12 +10,10 @@
 </template>
 
 <script setup lang="ts">
-const FileUploader = resolveComponent("FileUploader");
-
 withDefaults(defineProps<{ disabled?: boolean }>(), { disabled: false });
 const modelValue = defineModel<File | null | undefined>();
 
-const fileUploader = useTemplateRef<InstanceType<typeof FileUploader>>("fileUploader");
+const fileUploader = useTemplateRef("fileUploader");
 defineExpose({
   openFilePicker: () => {
     fileUploader.value?.openFilePicker();

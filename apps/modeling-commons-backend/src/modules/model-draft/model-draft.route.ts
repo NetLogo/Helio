@@ -124,7 +124,7 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
         tags: ['ModelDraft'],
         consumes: ['multipart/form-data'],
         description:
-          'Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "attachment" | "preview").',
+          'Upload a file to the draft. Multipart form with required "file" field and "role" field ("primary" | "model-file" | "attachment" | "preview"). A "model-file" is a version-relevant model file; an "attachment" is an additional (non-version-relevant) file.',
       },
       preHandler: [
         requireAuth,
@@ -185,14 +185,14 @@ export default async function modelDraftRoutes(fastify: FastifyInstance) {
     {
       schema: {
         params: draftIdParamsSchema,
-        response: { 201: publishDraftResponseSchema },
+        response: { 200: publishDraftResponseSchema, 201: publishDraftResponseSchema },
         tags: ['ModelDraft'],
       },
       preHandler: [requireAuth, resolveModelDraft()],
     },
     async (request, reply) => {
       const result = await modelDraftService.publish(request.modelDraft);
-      return reply.code(201).send(result);
+      return reply.code(result.createdNewVersion ? 201 : 200).send(result);
     },
   );
 

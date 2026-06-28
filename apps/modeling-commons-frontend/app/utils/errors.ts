@@ -16,11 +16,24 @@ export function createApiError(error: ApiError, when?: string, whatNow?: string)
   });
 }
 
+export function getErrorStatus(error: unknown): number | undefined {
+  if (!error || typeof error !== "object") return undefined;
+  const e = error as { statusCode?: number; status?: number; response?: { status?: number } };
+  return e.statusCode ?? e.status ?? e.response?.status;
+}
+
+export function isAccessDeniedError(error: unknown): boolean {
+  const status = getErrorStatus(error);
+  return status === 401 || status === 403;
+}
+
 export function handleApiError<T>(
   data: NonNullable<T> | undefined | null,
   error: ApiError | undefined,
   when: string | undefined = undefined,
-  whatNow: string | undefined = "try again later or contact support",
+  whatNow:
+    | string
+    | undefined = "try again later or reach out via email, GitHub, or the NetLogo Forum if the problem persists",
 ): T {
   if (error) {
     throw createApiError(error, when, whatNow);

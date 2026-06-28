@@ -33,6 +33,7 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 - Soft delete, don't hard delete: models/users carry `deletedAt`. Call `modelDomain.assertNotDeleted(entity)` before mutating.
 - **Models are written through drafts**, not directly. Flow: `POST /v1/model-drafts` → `PATCH /v1/model-drafts/:id` → multipart upload to `/v1/model-drafts/:id/files` → `POST /v1/model-drafts/:id/publish`. There is no `POST /v1/models`. Publish auto-creates `v1`; a model never has zero versions.
 - `POST /v1/models/:id/versions` is **multipart/form-data** (required `file` field), not JSON.
+- Draft data persists as versioned JSON validated by compiled Typebox `Parse` (`model-draft/schemas/v1.ts`); its `Clean` step strips properties absent from the schema, so add any new draft field to the schema or it's silently dropped on the next read.
 
 ## Routes
 
@@ -49,7 +50,7 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 Use path aliases, never relative `../../`:
 
 - `#src/...` - app source
-- `#prisma/index` - generated Prisma client (output is `generated/prisma`, not `@prisma/client`)
+- `#prisma/index` - generated Prisma client (output is `generated/prisma`, not `@prisma/client`). It's committed — after editing `schema.prisma` run `yarn db:generate` and commit the regenerated client alongside the migration.
 
 ## Client/request context
 
@@ -72,6 +73,7 @@ Use path aliases, never relative `../../`:
 ## Testing
 
 - `yarn run test:unit` (vitest) · `yarn run test:e2e` (cucumber, needs `yarn run svc` running for postgres/object-storage/mailpit/netlogo-services).
+- `test:unit` is fully mocked (no DB); apply pending migrations before `test:e2e` (`yarn run db:migrate:dev`) — an unapplied migration makes the generated client mismatch the DB and 500s every affected route. Diagnose e2e failures from `reports/cucumber-report.json`.
 - In vitest specs, import `beforeEach`/`afterEach` from `vitest`, never `node:test` — wrong import silently no-ops the hook.
 
 ## Config & limits

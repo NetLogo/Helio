@@ -16,7 +16,7 @@
           <div class="space-y-3">
             <p class="text-sm">Copy the URL to share a live preview of the model</p>
             <UFieldGroup class="w-full">
-              <UInput :value="embedPageUrl" readonly class="flex-1" />
+              <UInput :value="embedPageUrl" readonly class="flex-1" :ui="{ base: 'scrollbar-hidden'}" />
               <CopyButton :text="embedPageUrl" />
             </UFieldGroup>
 
@@ -32,7 +32,7 @@
           <div class="space-y-3">
             <p class="text-sm">Copy the HTML code to embed the model in a webpage</p>
             <UFieldGroup class="w-full">
-              <UTextarea :value="iframeCode" readonly :rows="6" class="flex-1">
+              <UTextarea :value="iframeCode" readonly :rows="6" class="flex-1" :ui="{ base: 'scrollbar-hidden'}">
                 <template #trailing>
                   <CopyButton :text="iframeCode" />
                 </template>
@@ -52,7 +52,7 @@
           <div class="space-y-3">
             <p class="text-sm">Copy the Markdown code to embed the model in a Markdown document</p>
             <UFieldGroup class="w-full">
-              <UTextarea :value="markdownCode" readonly :rows="5" class="flex-1">
+              <UTextarea :value="markdownCode" readonly :rows="5" class="flex-1" :ui="{ base: 'scrollbar-hidden'}">
                 <template #trailing>
                   <CopyButton :text="markdownCode" />
                 </template>

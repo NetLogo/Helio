@@ -3,12 +3,7 @@
     <div class="space-y-4">
       <ModelDetailSkeleton v-if="status === 'pending'" />
 
-      <ModelError
-        v-else-if="error"
-        :title="error.message || undefined"
-        class="py-50"
-        @retry="refresh()"
-      />
+      <ModelError v-else-if="error" :error="error" class="py-50" @retry="refresh()" />
 
       <template v-else-if="displayCard">
         <UAlert
@@ -60,7 +55,7 @@ const { data: permissions, refresh: refreshPermissions } = useModelPermissions(m
 
 // Ensure permissions are not stale after a model update.
 // -- Omar Ibrahim, May 27 26
-onMounted(() => {
+watch(() => versionCard.value, () => {
   if (card.value) {
     refreshPermissions();
   }
@@ -82,14 +77,40 @@ const displayCard = computed<ModelCard | null>(() => {
   };
 });
 
+const seoMeta = computed(() => {
+  const title = displayCard.value?.latestVersion?.title;
+  if (title) {
+    return {
+      title,
+      description:
+        displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+    };
+  }
+  if (error.value) {
+    return isAccessDeniedError(error.value)
+      ? {
+          title: defaultStrings.privateModelName,
+          description: defaultStrings.privateModelDescription,
+        }
+      : {
+          title: defaultStrings.unavailableModelName,
+          description: defaultStrings.unavailableModelDescription,
+        };
+  }
+  return {
+    title: defaultStrings.modelName,
+    description:
+      displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+  };
+});
+
 useSeoMeta({
-  title: () => displayCard.value?.latestVersion?.title ?? defaultStrings.modelName,
-  description: () =>
-    displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
-  ogTitle: () => displayCard.value?.latestVersion?.title ?? defaultStrings.modelName,
-  ogDescription: () =>
-    displayCard.value?.latestVersion?.description ?? defaultStrings.modelDescription,
+  title: () => seoMeta.value.title,
+  description: () => seoMeta.value.description,
+  ogTitle: () => seoMeta.value.title,
+  ogDescription: () => seoMeta.value.description,
   ogType: "article",
+  robots: () => (error.value ? "noindex, nofollow" : undefined),
 });
 
 const isLatestVersion = computed(() => {

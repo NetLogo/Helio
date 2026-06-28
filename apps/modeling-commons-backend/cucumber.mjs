@@ -21,6 +21,7 @@ const baseConfig = {
     'progress-bar',
     '@cucumber/pretty-formatter',
   ],
+  tags: 'not @pending and not @wip and not @skip',
   formatOptions: { snippetInterface: 'async-await' },
 };
 

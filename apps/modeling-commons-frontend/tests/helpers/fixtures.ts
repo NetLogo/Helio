@@ -2,13 +2,15 @@ import type { ResponseSuccessData } from "~/utils/openapi";
 
 export type ModelCard = ResponseSuccessData<"GET", "/api/v1/models/{id}/card">;
 
-export function makeUser(overrides: Partial<{
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  image: string | null;
-}> = {}) {
+export function makeUser(
+  overrides: Partial<{
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+  }> = {},
+) {
   return {
     id: "user-1",
     name: "Ada Lovelace",
@@ -69,6 +71,7 @@ export function makeModelCard(
       parentVersionNumber: null,
       visibility: overrides.visibility ?? "public",
       isEndorsed: overrides.isEndorsed ?? false,
+      isLibraryModel: false,
     },
     latestVersion: {
       modelId: id,
@@ -91,13 +94,15 @@ export function makeModelCard(
   };
 }
 
-export function makeDraft(overrides: Partial<{
-  id: string;
-  userId: string;
-  modelId: string | null;
-  schemaVersion: number;
-  data: Record<string, unknown>;
-}> = {}) {
+export function makeDraft(
+  overrides: Partial<{
+    id: string;
+    userId: string;
+    modelId: string | null;
+    schemaVersion: number;
+    data: Record<string, unknown>;
+  }> = {},
+) {
   return {
     id: "draft-1",
     userId: "user-1",

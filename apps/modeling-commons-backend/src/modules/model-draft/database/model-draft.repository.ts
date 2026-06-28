@@ -1,3 +1,4 @@
+import type { Prisma } from '#prisma/index';
 import type { ModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.port.ts';
 import type { ModelDraftRecord } from '#src/modules/model-draft/database/model-draft.record.ts';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
@@ -21,7 +22,10 @@ export default function modelDraftRepository({
       userId: string,
       params: PaginatedQueryParams,
     ): Promise<Paginated<ModelDraftEntity>> {
-      const where = { userId };
+      const where: Prisma.ModelDraftWhereInput = {
+        userId,
+        OR: [{ modelId: null }, { model: { deletedAt: null } }],
+      };
       const [count, records] = await Promise.all([
         db.modelDraft.count({ where }),
         db.modelDraft.findMany({
@@ -74,6 +78,19 @@ export default function modelDraftRepository({
     async hardDeleteTx(ctx: TransactionContext, id: string): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelDraft.delete({ where: { id } });
+    },
+
+    async deleteByModelIdTx(
+      ctx: TransactionContext,
+      modelId: string,
+    ): Promise<Array<ModelDraftEntity>> {
+      const client = resolveTransaction(ctx);
+      const records = await client.modelDraft.findMany({ where: { modelId } });
+      if (records.length === 0) return [];
+      await client.modelDraft.deleteMany({ where: { modelId } });
+      return records.map((r: unknown) =>
+        modelDraftMapper.toDomain(r as ModelDraftRecord),
+      );
     },
 
     async deleteStaleBefore(cutoff: Date): Promise<Array<ModelDraftEntity>> {

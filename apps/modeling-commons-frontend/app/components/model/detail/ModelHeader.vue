@@ -31,7 +31,7 @@
         >
           Download
         </UButton>
-        <UDropdownMenu :content="{ align: 'end' }" :items="modelActionsDropdownItems">
+        <UDropdownMenu :content="{ align: 'end' }" :items="modelActionsDropdownItems" :modal="false" :portal="false">
           <UButton icon="i-lucide-ellipsis-vertical" square size="sm" />
         </UDropdownMenu>
       </div>
@@ -44,7 +44,7 @@
         <span>{{ relativeDate }}</span>
         <template v-if="netlogoVersion">
           <Middot v-if="authors.length > 0" />
-          <span>Written in {{ netlogoVersion }}</span>
+          <span>Authored in {{ netlogoVersion }}</span>
         </template>
         <template v-if="modelGroup">
           <Middot v-if="authors.length > 0" />
@@ -83,12 +83,13 @@ const emit = defineEmits<{
   download: [];
   fork: [];
   edit: [];
+  delete: [];
 }>();
 
 const relativeDate = computed(() => formatRelativeDate(props.createdAt));
 const visibility = getModelVisibilityDisplayInfo(props.modelVisibility || "");
 
-const modelActionsDropdownItems = ref([
+const modelActionsDropdownItems = computed(() => [
   { type: "label", label: "Actions" },
   {
     ...modelActions.edit,
@@ -110,6 +111,12 @@ const modelActionsDropdownItems = ref([
     ...modelActions.fork,
     onClick: () => emit(modelActions.fork.action),
     class: !props.permissions.canFork ? 'hidden' : '',
+  },
+  {
+    ...modelActions.delete,
+    color: "error",
+    onClick: () => emit(modelActions.delete.action),
+    class: !props.permissions.canDelete ? 'hidden' : '',
   },
 ] satisfies Array<DropdownMenuItem>);
 </script>

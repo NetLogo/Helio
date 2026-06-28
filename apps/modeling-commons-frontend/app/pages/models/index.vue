@@ -4,11 +4,7 @@
       <div class="space-y-2">
         <div class="flex flex-col sm:flex-row gap-3">
           <div class="relative flex-1">
-            <SearchBar
-              :model-value="filters.keyword"
-              autofocus
-              @update:model-value="onKeywordChange"
-            />
+            <SearchBar v-model="keyword" autofocus />
           </div>
 
           <!-- @extract -->
@@ -21,13 +17,12 @@
               Filter and Sort
             </UButton>
 
-            <template #content>
-              <div class="flex justify-between items-center border-0">
+            <template #header>
                 <h5>Filter & Sort</h5>
-                <UButton variant="link" size="xs" @click="resetFilters()"> Clear All </UButton>
-              </div>
+            </template>
 
-              <div class="space-y-8 mt-2 border-0">
+            <template #body>
+              <div class="space-y-8 border-0">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-center gap-2 justify-between">
                     <span class="text-start wrap-break-word text-md font-medium py-1">Sort by</span>
@@ -77,8 +72,8 @@
                     >Publish Date</span
                   >
                   <div>
-                    <div class="flex gap-6 w-full">
-                      <UFormField label="From" class="w-full">
+                    <div class="flex flex-col sm:flex-row gap-6 w-full">
+                      <UFormField label="From" class="w-full" :ui="{ 'label': 'text-sm'}">
                         <UInput
                           type="date"
                           label="From"
@@ -86,7 +81,7 @@
                           @update:model-value="(v) => setDateRange(v as string, 'fromDate')"
                         />
                       </UFormField>
-                      <UFormField label="To" class="w-full">
+                      <UFormField label="To" class="w-full" :ui="{ 'label': 'text-sm'}">
                         <UInput
                           type="date"
                           label="To"
@@ -99,10 +94,19 @@
                 </div>
               </div>
             </template>
+
+            <template #footer="{close}">
+              <div class="flex justify-end gap-5 w-full">
+                <UButton variant="link" size="xs" @click="resetFilters()"> Clear All </UButton>
+                <UButton variant="solid" size="xs" data-show-below="sm" @click="close()">
+                  Apply Filters
+                </UButton>
+              </div>
+            </template>
           </USlideover>
         </div>
 
-        <div class="flex gap-3">
+        <div class="flex flex-col sm:flex-row gap-3">
           <UserSelectMenu
             v-model="author.selected"
             v-model:search-term="author.searchTerm"
@@ -156,6 +160,8 @@
         Showing {{ rows.length }} of {{ totalCount }} models
       </p>
     </div>
+
+    <BackToTop :show="showBackToTop" @click="scrollToTop" />
   </UContainer>
 </template>
 
@@ -203,6 +209,8 @@ const highlightFlags = ref({
   ),
 });
 
+const { show: showBackToTop, scrollToTop } = useBackToTop();
+
 const author = reactive(useUserFilter(filters, setFilter));
 const tags = reactive(useTagsFilter(filters, setFilter));
 const version = reactive(useNetlogoVersionsFilter(filters, setFilter));
@@ -226,13 +234,21 @@ watch(pending, (isLoading) => {
   else indicator.finish();
 });
 
-let keywordTimeout: ReturnType<typeof setTimeout>;
-function onKeywordChange(value: string | number) {
-  clearTimeout(keywordTimeout);
-  keywordTimeout = setTimeout(() => {
-    void setFilter("keyword", String(value));
-  }, modelKeywordDebounceMs);
-}
+const { query: keyword, debouncedQuery: debouncedKeyword } = useSearchQuery({
+  defaultValue: filters.value.keyword ?? "",
+  debounce: { ms: modelKeywordDebounceMs },
+});
+
+watch(debouncedKeyword, (value) => {
+  void setFilter("keyword", value ?? "");
+});
+
+watch(
+  () => filters.value.keyword,
+  (value) => {
+    if ((value ?? "") !== debouncedKeyword.value) keyword.value = value ?? "";
+  },
+);
 </script>
 
 <style>
