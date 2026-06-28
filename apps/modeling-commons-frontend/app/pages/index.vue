@@ -186,7 +186,7 @@ const sectionConfigs: SectionConfig[] = [
     key: "featured",
     title: "Featured Models",
     subtitle: "Community-endorsed simulations",
-    query: { limit: 6, isEndorsed: true },
+    query: { limit: 8, isEndorsed: true },
     viewAllTo: "/featured-models",
   },
   {
