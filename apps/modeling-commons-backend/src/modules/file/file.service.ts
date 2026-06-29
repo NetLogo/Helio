@@ -72,7 +72,8 @@ export default function makeFileService({
       options: { client?: StorageClient; expiresIn?: number } = {},
     ): Promise<string> {
       if (isPublicKey(key)) {
-        return `${publicBaseUrl}/${key}`;
+        const encoded = key.split('/').map(encodeURIComponent).join('/');
+        return `${publicBaseUrl}/${encoded}`;
       }
       const { expiresIn = 3600, client = signingStorageClient } = options;
       return getSignedUrl(
