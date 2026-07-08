@@ -164,6 +164,12 @@ instead of by manually pressing the Tab key to change the indentation of a line.
 
 When selected line numbers will be shown on the left edge of the Code Tab.
 
+### Show auto-complete popup while typing
+
+When selected, a code completion popup will automatically appear as you type in
+the Code tab. Whether or not this preference is enabled, the popup can always be
+opened by pressing Control + Space.
+
 ### Code Font
 
 This preference allows you to set the font to use wherever NetLogo would

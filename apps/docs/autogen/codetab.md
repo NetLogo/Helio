@@ -124,6 +124,17 @@ can select a whole region of code and press the tab key to re-indent all of it.
 By default line numbers are shown on the left edge of the code area. They can be
 removed by unselecting the "Show line numbers" Code preference.
 
+## Code Completion
+
+The Code tab features an inline code completion popup, which appears as you
+type and displays a list of suggested keywords, primitives, variables, and
+procedures, based on what you've typed so far in the current word. You can use
+the up and down arrow keys to navigate through the list, and the Enter/Return
+key to accept a suggestion. Note that the automatic opening of the popup as you
+type can be disabled in [Code Preferences](netlogopreferences#code-preferences).
+At any time, whether or not this preference is enabled, you can also manually
+open the popup by pressing Control + Space.
+
 ## More Editing Options
 
 To find a particular procedure definition in your code, use the "Procedures"
