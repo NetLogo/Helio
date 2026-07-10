@@ -119,6 +119,12 @@ export default defineNuxtConfig({
         path: "/models/:slug/:id/edit",
         file: "~/pages/models/[id]/edit.vue",
       });
+
+      pages.push({
+        name: "model-slug-comment-thread",
+        path: "/models/:slug/:id/comments/:commentId",
+        file: "~/pages/models/[id]/comments/[commentId].vue",
+      });
     },
   },
 
