@@ -7,6 +7,7 @@ export type CommentAuthor = {
 export type CommentMetadataBarProps = {
   author: CommentAuthor;
   createdAt: string;
+  threadLink?: string;
   edited?: boolean;
   collapsible?: boolean;
   collapsed?: boolean;

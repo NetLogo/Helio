@@ -1,6 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
+import { UAvatar } from "#components";
 import CommentActions from "./CommentActions.vue";
 import CommentInput from "./CommentInput.vue";
 import CommentView from "./CommentView.vue";
@@ -29,6 +30,36 @@ describe("CommentView rendering", () => {
     expect(wrapper.text()).toContain("This is a reply to the comment.");
     expect(wrapper.text()).toContain("And this is a nested reply.");
     expect(wrapper.text()).toContain("Short one.");
+  });
+});
+
+describe("CommentView author profile links", () => {
+  it("wraps the avatar in a link to the author's profile", async () => {
+    const wrapper = await mountCommentView(shortComment);
+
+    const avatar = wrapper.findComponent(UAvatar);
+    expect(avatar.exists()).toBe(true);
+    expect(avatar.element.closest("a")?.getAttribute("href")).toBe(shortComment.author.url);
+  });
+
+  it("leaves the avatar unwrapped when the author has no profile url", async () => {
+    const wrapper = await mountCommentView({
+      ...shortComment,
+      author: { ...shortComment.author, url: undefined },
+    });
+
+    const avatar = wrapper.findComponent(UAvatar);
+    expect(avatar.exists()).toBe(true);
+    expect(avatar.element.closest("a")).toBeNull();
+  });
+
+  it("links the author name to the same profile url", async () => {
+    const wrapper = await mountCommentView(shortComment);
+
+    const nameLink = wrapper
+      .findAll(`a[href="${shortComment.author.url}"]`)
+      .find((link) => link.text().includes(shortComment.author.name));
+    expect(nameLink).toBeDefined();
   });
 });
 

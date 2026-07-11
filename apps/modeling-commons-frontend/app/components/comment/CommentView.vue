@@ -17,7 +17,16 @@
       <CommentSpineEraser v-if="isNested && isLastSibling && !parentHasSeeMoreReplies" />
 
       <!-- Avatar as anchor -->
+      <NuxtLink v-if="comment.author.url" :to="comment.author.url" class="contents">
+        <UAvatar
+          :src="comment.author.image"
+          :alt="comment.author.name"
+          size="lg"
+          class="self-start my-1"
+        />
+      </NuxtLink>
       <UAvatar
+        v-else
         :src="comment.author.image"
         :alt="comment.author.name"
         size="lg"
@@ -29,6 +38,7 @@
       <CommentMetadataBar
         :author="comment.author"
         :created-at="comment.createdAt"
+        :thread-link="threadLink ?? undefined"
         :edited="comment.edited"
         collapsible
         :collapsed="isCollapsed"
@@ -110,6 +120,7 @@
 
           <UButton
             v-if="atNestingLimit && threadLink"
+            data-testid="continue-thread-link"
             :to="threadLink"
             variant="link"
             size="xs"

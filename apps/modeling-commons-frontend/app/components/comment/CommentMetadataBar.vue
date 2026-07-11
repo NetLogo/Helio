@@ -13,7 +13,14 @@
     />
     <NuxtLink v-if="author.url" :to="author.url" class="font-semibold">{{ author.name }}</NuxtLink>
     <span v-else class="font-semibold">{{ author.name }}</span>
-    <span class="text-xs text-gray-500">{{ formatRelativeDate(createdAt) }}</span>
+    <NuxtLink
+      v-if="threadLink"
+      :to="threadLink"
+      class="text-xs text-gray-500 hover:text-gray-700 hover:underline transition-colors"
+    >
+      {{ formatRelativeDate(createdAt) }}
+    </NuxtLink>
+    <span v-else class="text-xs text-gray-500">{{ formatRelativeDate(createdAt) }}</span>
     <span v-if="edited" class="text-xs text-gray-500">(edited)</span>
     <span v-if="collapsed" class="text-xs text-gray-500">{{ collapsedSummary }}</span>
   </div>
