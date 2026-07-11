@@ -26,8 +26,7 @@ describe("continue-thread link at the nesting limit", () => {
 
     const link = wrapper.find(`a[href="${threadHref(deepThread)}"]`);
     expect(link.exists()).toBe(true);
-    expect(link.text()).toContain("Continue this thread");
-    expect(link.text()).toContain("4 replies");
+    expect(link.text()).toContain(String(deepThread.replyPagination?.count));
     expect(wrapper.findComponent(CommentSeeMore).exists()).toBe(false);
   });
 

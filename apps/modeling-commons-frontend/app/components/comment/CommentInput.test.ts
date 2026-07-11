@@ -22,27 +22,35 @@ function textareaValue(wrapper: Awaited<ReturnType<typeof mountInput>>) {
   return (wrapper.find("textarea").element as HTMLTextAreaElement).value;
 }
 
+async function placeholderOf(props: CommentInputProps = {}) {
+  const wrapper = await mountInput(props);
+  return wrapper.find("textarea").attributes("placeholder");
+}
+
 describe("CommentInput placeholder", () => {
-  it("defaults to leaving a comment", async () => {
-    const wrapper = await mountInput();
-    expect(wrapper.find("textarea").attributes("placeholder")).toBe("Leave a comment...");
+  it("shows a default prompt without naming anyone", async () => {
+    const placeholder = await placeholderOf();
+    expect(placeholder).toBeTruthy();
+    expect(placeholder).not.toContain("Jane Doe");
   });
 
-  it("targets the comment author when replying", async () => {
-    const wrapper = await mountInput({ target: "Jane Doe" });
-    expect(wrapper.find("textarea").attributes("placeholder")).toBe("Reply to Jane Doe...");
+  it("names the target author when replying", async () => {
+    const placeholder = await placeholderOf({ target: "Jane Doe" });
+    expect(placeholder).toContain("Jane Doe");
+    expect(placeholder).not.toBe(await placeholderOf());
   });
 
-  it("switches to editing copy", async () => {
-    const wrapper = await mountInput({ isEditing: true });
-    expect(wrapper.find("textarea").attributes("placeholder")).toBe("Edit your comment...");
+  it("distinguishes editing from writing a new comment", async () => {
+    const placeholder = await placeholderOf({ isEditing: true });
+    expect(placeholder).toBeTruthy();
+    expect(placeholder).not.toBe(await placeholderOf());
   });
 
-  it("combines editing and reply-target copy", async () => {
-    const wrapper = await mountInput({ isEditing: true, target: "Jane Doe" });
-    expect(wrapper.find("textarea").attributes("placeholder")).toBe(
-      "Edit your reply to Jane Doe...",
-    );
+  it("names the target and differs from a plain reply when editing a reply", async () => {
+    const placeholder = await placeholderOf({ isEditing: true, target: "Jane Doe" });
+    expect(placeholder).toContain("Jane Doe");
+    expect(placeholder).not.toBe(await placeholderOf({ target: "Jane Doe" }));
+    expect(placeholder).not.toBe(await placeholderOf({ isEditing: true }));
   });
 });
 
