@@ -1,8 +1,10 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { flushPromises } from "@vue/test-utils";
 import { vi } from "vitest";
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import CommentView from "~/components/comment/CommentView.vue";
 import CommentsPanel from "~/components/comment/CommentsPanel.vue";
+import CommentsSection from "~/components/comment/CommentsSection.vue";
 import type { Comment, CommentViewSettings, CommentsPanelProps } from "~/components/comment/types";
 import { makeSession, makeUser } from "./fixtures";
 
@@ -56,4 +58,15 @@ export function mountCommentView(comment: Comment, overrides: Partial<CommentVie
   return mountSuspended(CommentView, {
     props: { comment, ...overrides },
   });
+}
+
+export async function mountCommentsSection(props: {
+  modelId?: string;
+  commentId?: string;
+  readOnly?: boolean;
+}) {
+  const wrapper = await mountSuspended(CommentsSection, { props });
+  await flushPromises();
+  await nextTick();
+  return wrapper;
 }

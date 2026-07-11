@@ -1,14 +1,16 @@
-import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { beforeEach, describe, expect, it } from "vitest";
 import { nextTick } from "vue";
 import CommentsPanel from "./CommentsPanel.vue";
-import CommentsSection from "./CommentsSection.vue";
 import { findCommentById } from "./comment-tree";
 import { comments as fixtureComments } from "./fixtures";
 import type { Comment, CommentPagination } from "./types";
 import {
+  mountCommentsSection,
   resetCommentMocks,
+  setLoggedIn,
+  toastAddMock,
   useProfileMock,
   useToastMock,
   useUserMock,
@@ -21,13 +23,6 @@ mockNuxtImport("useToast", () => () => useToastMock());
 beforeEach(() => {
   resetCommentMocks();
 });
-
-async function mountCommentsSection(props: { modelId?: string; commentId?: string }) {
-  const wrapper = await mountSuspended(CommentsSection, { props });
-  await flushPromises();
-  await nextTick();
-  return wrapper;
-}
 
 function panelComments(wrapper: Awaited<ReturnType<typeof mountCommentsSection>>) {
   return wrapper.getComponent(CommentsPanel).props("comments") as Array<Comment>;
@@ -91,6 +86,33 @@ describe("CommentsSection sources", () => {
     const wrapper = await mountCommentsSection({});
 
     expect(wrapper.findComponent(CommentsPanel).exists()).toBe(false);
+  });
+});
+
+describe("CommentsSection auth gating", () => {
+  it("marks the panel read-only and toasts on write attempts when logged out", async () => {
+    setLoggedIn(false);
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+
+    expect(wrapper.getComponent(CommentsPanel).props("readOnly")).toBe(true);
+
+    await emitFromPanel(wrapper, "write");
+    expect(toastAddMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders a writable panel and stays silent on write attempts when logged in", async () => {
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+
+    expect(wrapper.getComponent(CommentsPanel).props("readOnly")).toBe(false);
+
+    await emitFromPanel(wrapper, "write");
+    expect(toastAddMock).not.toHaveBeenCalled();
+  });
+
+  it("forces the panel read-only via the readOnly prop while logged in", async () => {
+    const wrapper = await mountCommentsSection({ modelId: "model-1", readOnly: true });
+
+    expect(wrapper.getComponent(CommentsPanel).props("readOnly")).toBe(true);
   });
 });
 
