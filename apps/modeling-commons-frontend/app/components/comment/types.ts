@@ -26,6 +26,7 @@ export type CommentPermissions = {
 export type Comment = {
   id: string;
   modelId?: string;
+  parentId?: string;
   author: CommentAuthor;
   /* Plaintext string */
   content: string;

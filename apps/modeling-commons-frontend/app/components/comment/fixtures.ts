@@ -12,13 +12,14 @@ const [omar, jane, john] = authors;
 
 export const DEMO_MODEL_ID = "model-demo";
 
-const stampModelId = (comment: Comment, modelId: string = DEMO_MODEL_ID): Comment => ({
+const stampTree = (comment: Comment, parentId?: string, modelId: string = DEMO_MODEL_ID): Comment => ({
   ...comment,
   modelId,
-  replies: comment.replies?.map((reply) => stampModelId(reply, modelId)),
+  parentId,
+  replies: comment.replies?.map((reply) => stampTree(reply, comment.id, modelId)),
 });
 
-export const longComment: Comment = stampModelId({
+export const longComment: Comment = stampTree({
   id: "1",
   author: omar,
   content: commentText,
@@ -77,7 +78,7 @@ export const longComment: Comment = stampModelId({
   ],
 });
 
-export const deepThread: Comment = stampModelId({
+export const deepThread: Comment = stampTree({
   id: "100",
   author: omar,
   content: "Hot take: tabs are objectively better than spaces. Fight me.",
@@ -310,7 +311,7 @@ export const deepThread: Comment = stampModelId({
   ],
 });
 
-export const shortComment: Comment = stampModelId({
+export const shortComment: Comment = stampTree({
   id: "5",
   author: jane,
   content: "Nice.",
@@ -324,7 +325,7 @@ export const shortComment: Comment = stampModelId({
   replies: [],
 });
 
-export const editedComment: Comment = stampModelId({
+export const editedComment: Comment = stampTree({
   id: "6",
   author: omar,
   content: "I fixed a typo in this one.",
@@ -339,7 +340,7 @@ export const editedComment: Comment = stampModelId({
   replies: [],
 });
 
-export const noRepliesComment: Comment = stampModelId({
+export const noRepliesComment: Comment = stampTree({
   id: "7",
   author: john,
   content: "Standalone comment with no thread.",
