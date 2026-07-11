@@ -16,6 +16,7 @@
       :is-nested="isNested"
       :parent-has-see-more-replies="parentHasSeeMoreReplies"
       :read-only="readOnly"
+      :highlighted-comment-id="highlightedCommentId"
       @reply="emit('reply', $event)"
       @edit="emit('edit', $event)"
       @like="emit('like', $event)"
@@ -23,6 +24,7 @@
       @load="emit('load', $event)"
       @delete="confirmDelete"
       @write="emit('write')"
+      @highlight-dismiss="emit('highlight-dismiss')"
     />
     <UButton
       v-if="remainingComments > 0"
@@ -60,6 +62,7 @@ const emit = defineEmits<{
   load: [{ commentId: string }];
   "load-more": [pagination: CommentPagination];
   write: [];
+  "highlight-dismiss": [];
 }>();
 
 const toast = useToast();

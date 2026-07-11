@@ -2,6 +2,7 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { beforeEach, describe, expect, it } from "vitest";
 import { nextTick } from "vue";
+import CommentView from "./CommentView.vue";
 import CommentsPanel from "./CommentsPanel.vue";
 import { findCommentById } from "./comment-tree";
 import { comments as fixtureComments } from "./fixtures";
@@ -9,9 +10,13 @@ import type { Comment, CommentPagination } from "./types";
 import {
   mountCommentsSection,
   resetCommentMocks,
+  routerReplaceMock,
   setLoggedIn,
+  setRouteQuery,
   toastAddMock,
   useProfileMock,
+  useRouteMock,
+  useRouterMock,
   useToastMock,
   useUserMock,
 } from "~~/tests/helpers";
@@ -19,6 +24,8 @@ import {
 mockNuxtImport("useUser", () => () => useUserMock());
 mockNuxtImport("useProfile", () => () => useProfileMock());
 mockNuxtImport("useToast", () => () => useToastMock());
+mockNuxtImport("useRoute", () => () => useRouteMock());
+mockNuxtImport("useRouter", () => () => useRouterMock());
 
 beforeEach(() => {
   resetCommentMocks();
@@ -113,6 +120,64 @@ describe("CommentsSection auth gating", () => {
     const wrapper = await mountCommentsSection({ modelId: "model-1", readOnly: true });
 
     expect(wrapper.getComponent(CommentsPanel).props("readOnly")).toBe(true);
+  });
+});
+
+describe("CommentsSection highlight", () => {
+  function viewFor(wrapper: Awaited<ReturnType<typeof mountCommentsSection>>, id: string) {
+    return wrapper
+      .findAllComponents(CommentView)
+      .find((view) => view.props("comment")?.id === id);
+  }
+
+  it("threads the highlighted comment id from the URL down to the targeted comment", async () => {
+    setRouteQuery({ highlightedCommentId: "5" });
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+
+    expect(wrapper.getComponent(CommentsPanel).props("highlightedCommentId")).toBe("5");
+
+    const target = viewFor(wrapper, "5");
+    const other = viewFor(wrapper, "1");
+    expect(target).toBeDefined();
+    expect(other).toBeDefined();
+    expect(target!.attributes("tabindex")).toBe("-1");
+    expect(other!.attributes("tabindex")).toBeUndefined();
+    expect(target!.attributes("class")).not.toBe(other!.attributes("class"));
+  });
+
+  it("clears the highlight and strips only its query param on focusout", async () => {
+    setRouteQuery({ highlightedCommentId: "5", page: "2" });
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+
+    const target = wrapper.find('[tabindex="-1"]');
+    expect(target.exists()).toBe(true);
+
+    await target.trigger("focusout");
+    await nextTick();
+
+    expect(wrapper.getComponent(CommentsPanel).props("highlightedCommentId")).toBeUndefined();
+    expect(wrapper.find('[tabindex="-1"]').exists()).toBe(false);
+    expect(routerReplaceMock).toHaveBeenCalledWith({ query: { page: "2" } });
+  });
+
+  it("highlights nothing for a non-matching id", async () => {
+    setRouteQuery({ highlightedCommentId: "does-not-exist" });
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+
+    expect(wrapper.getComponent(CommentsPanel).props("highlightedCommentId")).toBe(
+      "does-not-exist",
+    );
+    expect(wrapper.find('[tabindex="-1"]').exists()).toBe(false);
+  });
+
+  it("ignores array and empty highlight query values", async () => {
+    setRouteQuery({ highlightedCommentId: ["5", "7"] });
+    const fromArray = await mountCommentsSection({ modelId: "model-1" });
+    expect(fromArray.getComponent(CommentsPanel).props("highlightedCommentId")).toBeUndefined();
+
+    setRouteQuery({ highlightedCommentId: "" });
+    const fromEmpty = await mountCommentsSection({ modelId: "model-1" });
+    expect(fromEmpty.getComponent(CommentsPanel).props("highlightedCommentId")).toBeUndefined();
   });
 });
 

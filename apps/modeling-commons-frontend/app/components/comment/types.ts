@@ -50,6 +50,7 @@ export type CommentViewSettings = {
   parentHasSeeMoreReplies?: boolean;
   isLastSibling?: boolean;
   readOnly?: boolean;
+  highlightedCommentId?: string;
 };
 
 export type CommentViewProps = {
