@@ -24,6 +24,7 @@
       v-else
       :comments="local.comments"
       :pagination="local.pagination"
+      :read-only="isReadOnly"
       @create="handleCreate"
       @reply="handleReply"
       @edit="handleEdit"
@@ -32,6 +33,7 @@
       @delete="handleDelete"
       @load="handleLoad"
       @load-more="handleLoadMore"
+      @write="handleWriteAttempt"
     />
   </template>
 </template>
@@ -44,6 +46,7 @@ import type { CommentsPayload, CommentsSource } from "~/composables/comments/use
 const props = defineProps<{
   modelId?: string;
   commentId?: string;
+  readOnly?: boolean;
 }>();
 
 const hasSource = computed(() => Boolean(props.modelId || props.commentId));
@@ -87,6 +90,14 @@ const { profile } = useProfile();
 const commentAuthor = computed<CommentAuthor | null>(() =>
   profile.value ? { name: profile.value.name, image: profile.value.image ?? "" } : null,
 );
+
+const user = useUser();
+const isReadOnly = computed(() => props.readOnly || !user.value.isLoggedIn);
+const handleWriteAttempt = () => {
+  if (!user.value.isLoggedIn) {
+    showRequiresLoginToast("participate in discussions");
+  }
+};
 
 let localIdCounter = 0;
 const makeLocalComment = (content: string, author: CommentAuthor): Comment => ({

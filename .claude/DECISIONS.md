@@ -109,3 +109,12 @@ Critical, non-obvious decisions made while working in this repo. Newest first.
 4. **Enter submits, Shift+Enter newlines** in `CommentInput` via `@keydown.enter.exact.prevent` — `.exact` short-circuits before `.prevent`, so modified Enter reaches the textarea natively.
 5. **`remainingCommentCount(comments, pagination)`** replaced the props-object signature; result clamps at ≥ 0. Panel-level load-more math is the only consumer.
 6. **Linkifier keeps balanced trailing closers:** `splitTrailingPunct` re-attaches `)`/`]`/`}` from the stripped tail while the URL has more matching openers than closers; unbalanced closers stay stripped.
+
+## 2026-07-10 — Comments: auth gating moved from CommentsPanel to CommentsSection
+
+**Context:** `app/components/comment/` refactor. Supersedes decision 2 of the previous entry ("Panel read-only is `props.readOnly || !user.isLoggedIn`").
+
+**Decisions:**
+1. **`CommentsPanel` is auth-unaware.** Its `readOnly` prop (default `false`) is the only read-only source; it no longer calls `useUser` or shows the login toast, and it re-emits `write` upward. `CommentsSection` owns the session: effective read-only = `props.readOnly || !user.isLoggedIn` (new optional `readOnly` section prop), and it answers the panel's `write` emit with `showRequiresLoginToast("participate in discussions")` when logged out. Direct `CommentsPanel` consumers (the `theme.vue` demo) get no auth gating unless they pass `readOnly` themselves.
+2. **The delete-dialog flow (including its success toast) stays in the panel** — it is local UI state, not session awareness; only the auth toast moved up.
+3. **The BUG-3 regression pin moved to the section level** (`bugs.test.ts` → "CommentsSection bugs"): explicit `readOnly` respected while logged in, asserted through the mounted section. Panel tests now pin only the prop-driven contract; a shared `mountCommentsSection` helper lives in `tests/helpers/comment.ts`.

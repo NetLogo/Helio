@@ -8,14 +8,10 @@ import { editedComment, noRepliesComment, shortComment } from "./fixtures";
 import {
   mountCommentsPanel,
   resetCommentMocks,
-  setLoggedIn,
-  toastAddMock,
   useProfileMock,
   useToastMock,
-  useUserMock,
 } from "~~/tests/helpers";
 
-mockNuxtImport("useUser", () => () => useUserMock());
 mockNuxtImport("useProfile", () => () => useProfileMock());
 mockNuxtImport("useToast", () => () => useToastMock());
 
@@ -34,15 +30,14 @@ describe("CommentsPanel", () => {
     expect(wrapper.text()).toContain("Standalone comment with no thread.");
   });
 
-  it("shows the top-level comment input when logged in", async () => {
+  it("shows the top-level comment input by default", async () => {
     const wrapper = await mountCommentsPanel(flatComments);
     expect(wrapper.findComponent(CommentInput).exists()).toBe(true);
     expect(wrapper.findComponent(CommentView).props("readOnly")).toBe(false);
   });
 
-  it("hides the comment input and marks comments read-only when logged out", async () => {
-    setLoggedIn(false);
-    const wrapper = await mountCommentsPanel(flatComments);
+  it("hides the comment input and marks comments read-only when the readOnly prop is set", async () => {
+    const wrapper = await mountCommentsPanel(flatComments, { readOnly: true });
     expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
     expect(wrapper.findComponent(CommentView).props("readOnly")).toBe(true);
   });
@@ -58,22 +53,12 @@ describe("CommentsPanel", () => {
     expect(dialog.props("open")).toBe(true);
   });
 
-  it("shows a toast when a logged-out visitor attempts to write", async () => {
-    setLoggedIn(false);
+  it("re-emits write when a comment view reports a write attempt", async () => {
     const wrapper = await mountCommentsPanel(flatComments);
 
     wrapper.findComponent(CommentView).vm.$emit("write");
     await nextTick();
 
-    expect(toastAddMock).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not toast on write attempts when logged in", async () => {
-    const wrapper = await mountCommentsPanel(flatComments);
-
-    wrapper.findComponent(CommentView).vm.$emit("write");
-    await nextTick();
-
-    expect(toastAddMock).not.toHaveBeenCalled();
+    expect(wrapper.emitted("write")).toHaveLength(1);
   });
 });

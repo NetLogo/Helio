@@ -15,6 +15,7 @@ import { deepThread, editedComment, longComment, noRepliesComment, shortComment 
 import {
   mountCommentView,
   mountCommentsPanel,
+  mountCommentsSection,
   resetCommentMocks,
   useProfileMock,
   useToastMock,
@@ -63,16 +64,6 @@ describe("CommentsPanel bugs", () => {
     expect(dialog.props("deleting")).toBe(false);
   });
 
-  // BUG-3 (fixed): the effective read-only state is `props.readOnly || !isLoggedIn`
-  // (local computed renamed to isReadOnly), so a consumer can force a
-  // read-only panel for a logged-in user.
-  it("respects an explicit readOnly prop even when the user is logged in", async () => {
-    const wrapper = await mountCommentsPanel(flatComments, { readOnly: true });
-
-    expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
-    expect(wrapper.findComponent(CommentView).props("readOnly")).toBe(true);
-  });
-
   // BUG-12 (fixed): CommentInput no longer clears itself on submit; the panel
   // clears its top-level composer only after emitting create. (Restore-on-failure
   // lands with the backend at the CommentsSection runOptimistic seam.)
@@ -85,6 +76,18 @@ describe("CommentsPanel bugs", () => {
 
     expect(wrapper.emitted("create")).toEqual([[{ content: "A fresh top-level comment" }]]);
     expect((textarea.element as HTMLTextAreaElement).value).toBe("");
+  });
+});
+
+describe("CommentsSection bugs", () => {
+  // BUG-3 (fixed): the effective read-only state (`props.readOnly || !isLoggedIn`)
+  // now lives on CommentsSection, so a consumer can force a read-only discussion
+  // for a logged-in user.
+  it("respects an explicit readOnly prop even when the user is logged in", async () => {
+    const wrapper = await mountCommentsSection({ modelId: "model-1", readOnly: true });
+
+    expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
+    expect(wrapper.findComponent(CommentView).props("readOnly")).toBe(true);
   });
 });
 

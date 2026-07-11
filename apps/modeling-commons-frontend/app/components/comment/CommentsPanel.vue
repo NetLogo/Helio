@@ -6,7 +6,7 @@
       @confirm="handleDelete"
       @cancel="cleanupDeleteEvent"
     />
-    <CommentInput v-if="!isReadOnly" ref="composer" class="mb-5" @submit="handleCreate" @cancel="handleCancel" />
+    <CommentInput v-if="!readOnly" ref="composer" class="mb-5" @submit="handleCreate" @cancel="handleCancel" />
     <CommentView
       v-for="comment in comments"
       :key="comment.id"
@@ -15,14 +15,14 @@
       :maximum-shown-replies-per-level="maximumShownRepliesPerLevel"
       :is-nested="isNested"
       :parent-has-see-more-replies="parentHasSeeMoreReplies"
-      :read-only="isReadOnly"
+      :read-only="readOnly"
       @reply="emit('reply', $event)"
       @edit="emit('edit', $event)"
       @like="emit('like', $event)"
       @unlike="emit('unlike', $event)"
       @load="emit('load', $event)"
       @delete="confirmDelete"
-      @write="handleWriteAttempt"
+      @write="emit('write')"
     />
     <UButton
       v-if="remainingComments > 0"
@@ -47,6 +47,7 @@ const props = withDefaults(defineProps<CommentsPanelProps>(), {
   maximumShownRepliesPerLevel: COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel,
   isNested: false,
   parentHasSeeMoreReplies: false,
+  readOnly: false,
 });
 
 const emit = defineEmits<{
@@ -58,12 +59,10 @@ const emit = defineEmits<{
   delete: [{ commentId: string }];
   load: [{ commentId: string }];
   "load-more": [pagination: CommentPagination];
+  write: [];
 }>();
 
 const toast = useToast();
-const user = useUser();
-
-const isReadOnly = computed(() => props.readOnly || !user.value.isLoggedIn);
 
 const composer = ref<{ clear: () => void } | null>(null);
 const handleCreate = (content: string) => {
@@ -103,12 +102,6 @@ const confirmDelete = (event: { commentId: string }) => {
 };
 const cleanupDeleteEvent = () => {
   deleteTarget.value = null;
-};
-
-const handleWriteAttempt = () => {
-  if (!user.value.isLoggedIn) {
-    showRequiresLoginToast("participate in discussions");
-  }
 };
 
 const remainingComments = computed(() => remainingCommentCount(props.comments, props.pagination));
