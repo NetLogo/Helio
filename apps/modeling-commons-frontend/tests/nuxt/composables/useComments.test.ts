@@ -31,6 +31,14 @@ describe("useComments with a modelId source", () => {
     expect(comments.value[0]?.replies).toHaveLength(fixtureComments[0]!.replies!.length);
   });
 
+  it("returns roots without a parentId", async () => {
+    const { comments, refresh } = useComments({ modelId: "m-parents" });
+    await refresh();
+
+    expect(comments.value.length).toBeGreaterThan(0);
+    expect(comments.value.every((comment) => comment.parentId === undefined)).toBe(true);
+  });
+
   it("returns an empty payload for an empty modelId", async () => {
     const { comments, pagination, refresh } = useComments({ modelId: "" });
     await refresh();
@@ -57,6 +65,15 @@ describe("useComments with a commentId source", () => {
 
     expect(comments.value[0]?.id).toBe("103");
     expect(comments.value[0]?.replies?.map((reply) => reply.id)).toEqual(["104", "107"]);
+  });
+
+  it("carries the stamped parentId through the thread fetch", async () => {
+    const { comments, refresh } = useComments({ commentId: "103" });
+    await refresh();
+
+    expect(comments.value[0]?.parentId).toBe("102");
+    expect(comments.value[0]?.replies?.length).toBeGreaterThan(0);
+    expect(comments.value[0]?.replies?.every((reply) => reply.parentId === "103")).toBe(true);
   });
 
   it("returns an empty payload for an unknown commentId", async () => {

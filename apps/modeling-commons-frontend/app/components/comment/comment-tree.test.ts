@@ -158,6 +158,20 @@ const makeComment = (id: string, overrides: Partial<Comment> = {}): Comment => (
   ...overrides,
 });
 
+describe("fixture parent stamping", () => {
+  it("stamps every nested reply with its parent's id", () => {
+    expect(findCommentById([deepThread], "103")?.parentId).toBe("102");
+    expect(findCommentById([deepThread], "106")?.parentId).toBe("105");
+    expect(findCommentById([longComment], "3")?.parentId).toBe("2");
+  });
+
+  it("leaves fixture roots without a parentId", () => {
+    expect(deepThread.parentId).toBeUndefined();
+    expect(longComment.parentId).toBeUndefined();
+    expect(shortComment.parentId).toBeUndefined();
+  });
+});
+
 describe("findCommentById", () => {
   it("finds a top-level comment", () => {
     expect(findCommentById([deepThread], "100")).toBe(deepThread);

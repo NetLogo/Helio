@@ -128,3 +128,12 @@ Critical, non-obvious decisions made while working in this repo. Newest first.
 2. **Dismissal is focus-based and literal:** the highlighted root gets `tabindex="-1"`, is scrolled (`scrollIntoView({ block: "center" })`) and focused (`preventScroll: true`) in `onMounted` (client-only, so SSR-safe); ANY `focusout` of that root — including clicking a button inside the comment — emits `highlight-dismiss`, which bubbles view → panel → section. The section then clears the ref and `router.replace`s the query with only `highlightedCommentId` removed.
 3. **Highlight treatment:** primary-tinted `ring`/`bg` plus `p-2 -m-2` so the box gains breathing room without shifting content position.
 4. **`CommentView` roots now carry `data-comment-id`** — a stable DOM hook for tests (and future scroll/anchor logic); tests select roots by it instead of Tailwind classes. Mocking `useRouter` via `mockNuxtImport` must include `afterEach` (a `vi.fn()` suffices) or `@nuxt/test-utils`'s own runtime setup crashes the suite.
+
+## 2026-07-10 — Comments: thread page parent-thread navigation + root-derived copy
+
+**Context:** `app/pages/models/[id]/comments/[commentId].vue`. Replies now carry `parentId?: string` on `Comment` (future backend shape; fixtures stamp it recursively via `stampTree`, roots stay undefined).
+
+**Decisions:**
+1. **The page reads the thread root by calling `useComments({ commentId })` itself** instead of having `CommentsSection` expose it via emit/slot. Both callers resolve to the same `useAsyncData` key (`comments:thread:<id>`), so Nuxt dedupes them into one shared fetch — verified under the nuxt test runtime with no duplicate-key warnings. When the real backend lands, only `fetchComments` changes and both consumers keep working.
+2. **"See parent thread" renders only when the loaded root has a `parentId`** and links to `/models/<modelId>/comments/<parentId>` using the route's model id (consistent with "Back to model").
+3. **The subtitle derives from the loaded root** ("The full conversation under <author>'s comment.") with the old generic sentence as the loading/absent fallback. `data-testid` hooks (`parent-thread-link`, `thread-subtitle`) keep tests off copy and classes.
