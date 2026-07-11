@@ -118,3 +118,13 @@ Critical, non-obvious decisions made while working in this repo. Newest first.
 1. **`CommentsPanel` is auth-unaware.** Its `readOnly` prop (default `false`) is the only read-only source; it no longer calls `useUser` or shows the login toast, and it re-emits `write` upward. `CommentsSection` owns the session: effective read-only = `props.readOnly || !user.isLoggedIn` (new optional `readOnly` section prop), and it answers the panel's `write` emit with `showRequiresLoginToast("participate in discussions")` when logged out. Direct `CommentsPanel` consumers (the `theme.vue` demo) get no auth gating unless they pass `readOnly` themselves.
 2. **The delete-dialog flow (including its success toast) stays in the panel** — it is local UI state, not session awareness; only the auth toast moved up.
 3. **The BUG-3 regression pin moved to the section level** (`bugs.test.ts` → "CommentsSection bugs"): explicit `readOnly` respected while logged in, asserted through the mounted section. Panel tests now pin only the prop-driven contract; a shared `mountCommentsSection` helper lives in `tests/helpers/comment.ts`.
+
+## 2026-07-10 — Comments: URL-driven comment highlight (`?highlightedCommentId=`)
+
+**Context:** `app/components/comment/` feature. Any page that renders `CommentsSection` gets deep-link highlighting for free.
+
+**Decisions:**
+1. **The highlight lives on `CommentsSection`, seeded ONCE from `route.query.highlightedCommentId` at setup** (arrays and empty strings ignored; later URL changes don't re-arm it). It threads section → panel → recursive `CommentView` as the optional `highlightedCommentId` setting in `CommentViewSettings`.
+2. **Dismissal is focus-based and literal:** the highlighted root gets `tabindex="-1"`, is scrolled (`scrollIntoView({ block: "center" })`) and focused (`preventScroll: true`) in `onMounted` (client-only, so SSR-safe); ANY `focusout` of that root — including clicking a button inside the comment — emits `highlight-dismiss`, which bubbles view → panel → section. The section then clears the ref and `router.replace`s the query with only `highlightedCommentId` removed.
+3. **Highlight treatment:** primary-tinted `ring`/`bg` plus `p-2 -m-2` so the box gains breathing room without shifting content position.
+4. **`CommentView` roots now carry `data-comment-id`** — a stable DOM hook for tests (and future scroll/anchor logic); tests select roots by it instead of Tailwind classes. Mocking `useRouter` via `mockNuxtImport` must include `afterEach` (a `vi.fn()` suffices) or `@nuxt/test-utils`'s own runtime setup crashes the suite.

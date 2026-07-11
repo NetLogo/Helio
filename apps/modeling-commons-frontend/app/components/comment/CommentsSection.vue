@@ -25,6 +25,7 @@
       :comments="local.comments"
       :pagination="local.pagination"
       :read-only="isReadOnly"
+      :highlighted-comment-id="highlightedCommentId"
       @create="handleCreate"
       @reply="handleReply"
       @edit="handleEdit"
@@ -34,6 +35,7 @@
       @load="handleLoad"
       @load-more="handleLoadMore"
       @write="handleWriteAttempt"
+      @highlight-dismiss="dismissHighlight"
     />
   </template>
 </template>
@@ -97,6 +99,24 @@ const handleWriteAttempt = () => {
   if (!user.value.isLoggedIn) {
     showRequiresLoginToast("participate in discussions");
   }
+};
+
+const route = useRoute();
+const router = useRouter();
+
+const initialHighlightId = route.query.highlightedCommentId;
+const highlightedCommentId = ref(
+  typeof initialHighlightId === "string" && initialHighlightId !== ""
+    ? initialHighlightId
+    : undefined,
+);
+
+const dismissHighlight = () => {
+  if (!highlightedCommentId.value) return;
+  highlightedCommentId.value = undefined;
+  const query = { ...route.query };
+  delete query.highlightedCommentId;
+  router.replace({ query });
 };
 
 let localIdCounter = 0;

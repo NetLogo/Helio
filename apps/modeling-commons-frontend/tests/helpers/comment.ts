@@ -1,7 +1,7 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { vi } from "vitest";
-import { computed, nextTick, ref } from "vue";
+import { computed, nextTick, reactive, ref } from "vue";
 import CommentView from "~/components/comment/CommentView.vue";
 import CommentsPanel from "~/components/comment/CommentsPanel.vue";
 import CommentsSection from "~/components/comment/CommentsSection.vue";
@@ -36,9 +36,42 @@ export function setLoggedIn(value: boolean) {
   loggedIn.value = value;
 }
 
+const routeQuery = ref<Record<string, unknown>>({});
+export const routerReplaceMock = vi.fn();
+
+export function setRouteQuery(query: Record<string, unknown>) {
+  routeQuery.value = query;
+}
+
+export function useRouteMock() {
+  return reactive({
+    name: "test-route",
+    path: "/",
+    fullPath: "/",
+    params: {},
+    query: routeQuery,
+    hash: "",
+    matched: [],
+    meta: {},
+  });
+}
+
+export function useRouterMock() {
+  return {
+    replace: routerReplaceMock,
+    push: vi.fn(),
+    afterEach: vi.fn(),
+    beforeEach: vi.fn(),
+    beforeResolve: vi.fn(),
+    resolve: vi.fn(),
+  };
+}
+
 export function resetCommentMocks() {
   loggedIn.value = true;
   toastAddMock.mockClear();
+  routeQuery.value = {};
+  routerReplaceMock.mockClear();
 }
 
 export function mountCommentsPanel(

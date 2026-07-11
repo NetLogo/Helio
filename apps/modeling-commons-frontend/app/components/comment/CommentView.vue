@@ -1,5 +1,12 @@
 <template>
-  <div class="flex gap-4 group/reply">
+  <div
+    ref="rootEl"
+    :data-comment-id="comment.id"
+    class="flex gap-4 group/reply"
+    :class="isHighlighted ? 'rounded-lg bg-primary/5 ring-2 ring-primary/30 outline-none p-2 -m-2' : undefined"
+    :tabindex="isHighlighted ? -1 : undefined"
+    @focusout="handleFocusOut"
+  >
     <div class="relative">
       <!-- Spine and its parts -->
       <CommentElbowSvg
@@ -78,6 +85,7 @@
             :parent-has-see-more-replies="remainingReplies > 0"
             :is-last-sibling="index === shownReplies.length - 1"
             :read-only="readOnly"
+            :highlighted-comment-id="highlightedCommentId"
             @reply="emit('reply', $event)"
             @edit="emit('edit', $event)"
             @like="emit('like', $event)"
@@ -85,6 +93,7 @@
             @delete="emit('delete', $event)"
             @load="emit('load', $event)"
             @write="emit('write')"
+            @highlight-dismiss="emit('highlight-dismiss')"
           />
         </div>
 
@@ -152,7 +161,21 @@ const emit = defineEmits<{
   delete: [{ commentId: string }];
   load: [{ commentId: string }];
   write: [];
+  "highlight-dismiss": [];
 }>();
+
+const rootEl = ref<HTMLElement | null>(null);
+const isHighlighted = computed(() => props.highlightedCommentId === props.comment.id);
+
+onMounted(() => {
+  if (!isHighlighted.value || !rootEl.value) return;
+  rootEl.value.scrollIntoView({ block: "center" });
+  rootEl.value.focus({ preventScroll: true });
+});
+
+const handleFocusOut = () => {
+  if (isHighlighted.value) emit("highlight-dismiss");
+};
 
 const revealedCount = ref(props.maximumShownRepliesPerLevel);
 

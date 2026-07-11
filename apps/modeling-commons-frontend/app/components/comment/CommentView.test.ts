@@ -1,5 +1,5 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import CommentActions from "./CommentActions.vue";
 import CommentInput from "./CommentInput.vue";
@@ -108,6 +108,81 @@ describe("CommentView interactions", () => {
 
     nested!.vm.$emit("delete", { commentId: "3" });
     expect(wrapper.emitted("delete")).toEqual([[{ commentId: "3" }]]);
+  });
+});
+
+describe("CommentView highlight", () => {
+  const rootOf = (wrapper: Awaited<ReturnType<typeof mountCommentView>>, id: string) =>
+    wrapper.find(`[data-comment-id="${id}"]`);
+
+  it("gives the highlighted comment a distinct, focusable root", async () => {
+    const plain = await mountCommentView(shortComment);
+    const highlighted = await mountCommentView(shortComment, {
+      highlightedCommentId: shortComment.id,
+    });
+
+    const plainRoot = rootOf(plain, shortComment.id);
+    const highlightedRoot = rootOf(highlighted, shortComment.id);
+
+    expect(highlightedRoot.attributes("tabindex")).toBe("-1");
+    expect(plainRoot.attributes("tabindex")).toBeUndefined();
+    expect(highlightedRoot.attributes("class")).not.toBe(plainRoot.attributes("class"));
+  });
+
+  it("applies no highlight treatment for a non-matching id", async () => {
+    const plain = await mountCommentView(shortComment);
+    const nonMatching = await mountCommentView(shortComment, {
+      highlightedCommentId: "someone-else",
+    });
+
+    expect(rootOf(nonMatching, shortComment.id).attributes("tabindex")).toBeUndefined();
+    expect(rootOf(nonMatching, shortComment.id).attributes("class")).toBe(
+      rootOf(plain, shortComment.id).attributes("class"),
+    );
+  });
+
+  it("scrolls to and focuses the highlighted root on mount only", async () => {
+    const scrollSpy = vi.spyOn(Element.prototype, "scrollIntoView").mockImplementation(() => {});
+    const focusSpy = vi.spyOn(HTMLElement.prototype, "focus").mockImplementation(() => {});
+
+    try {
+      await mountCommentView(shortComment);
+      expect(scrollSpy).not.toHaveBeenCalled();
+
+      await mountCommentView(shortComment, { highlightedCommentId: shortComment.id });
+      expect(scrollSpy).toHaveBeenCalledWith({ block: "center" });
+      expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true });
+    } finally {
+      scrollSpy.mockRestore();
+      focusSpy.mockRestore();
+    }
+  });
+
+  it("emits highlight-dismiss on focusout only while highlighted", async () => {
+    const highlighted = await mountCommentView(shortComment, {
+      highlightedCommentId: shortComment.id,
+    });
+    await rootOf(highlighted, shortComment.id).trigger("focusout");
+    expect(highlighted.emitted("highlight-dismiss")).toHaveLength(1);
+
+    const plain = await mountCommentView(shortComment);
+    await rootOf(plain, shortComment.id).trigger("focusout");
+    expect(plain.emitted("highlight-dismiss")).toBeUndefined();
+  });
+
+  it("threads the highlight to nested replies and bubbles the dismiss", async () => {
+    const wrapper = await mountCommentView(longComment, { highlightedCommentId: "3" });
+
+    const nested = wrapper
+      .findAllComponents(CommentView)
+      .find((view) => view.props("comment")?.id === "3");
+    expect(nested).toBeDefined();
+    expect(nested!.props("highlightedCommentId")).toBe("3");
+    expect(nested!.attributes("tabindex")).toBe("-1");
+    expect(rootOf(wrapper, longComment.id).attributes("tabindex")).toBeUndefined();
+
+    await nested!.trigger("focusout");
+    expect(wrapper.emitted("highlight-dismiss")).toHaveLength(1);
   });
 });
 
