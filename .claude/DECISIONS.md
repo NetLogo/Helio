@@ -137,3 +137,13 @@ Critical, non-obvious decisions made while working in this repo. Newest first.
 1. **The page reads the thread root by calling `useComments({ commentId })` itself** instead of having `CommentsSection` expose it via emit/slot. Both callers resolve to the same `useAsyncData` key (`comments:thread:<id>`), so Nuxt dedupes them into one shared fetch — verified under the nuxt test runtime with no duplicate-key warnings. When the real backend lands, only `fetchComments` changes and both consumers keep working.
 2. **"See parent thread" renders only when the loaded root has a `parentId`** and links to `/models/<modelId>/comments/<parentId>` using the route's model id (consistent with "Back to model").
 3. **The subtitle derives from the loaded root** ("The full conversation under <author>'s comment.") with the old generic sentence as the loading/absent fallback. `data-testid` hooks (`parent-thread-link`, `thread-subtitle`) keep tests off copy and classes.
+
+## 2026-07-10 — Comments: dates and authors link out
+
+**Context:** `app/components/comment/`. Every comment's relative date now links to its thread page and avatars/names link to author profiles.
+
+**Decisions:**
+1. **`CommentMetadataBar` stays presentation-only:** it takes an optional `threadLink?: string` prop (rendered as a muted `NuxtLink` with a hover affordance, plain span otherwise) instead of deriving the URL itself; `CommentView` passes its existing `threadLink` computed, so the "no modelId → no link" rule lives in one place.
+2. **The avatar's profile link wrapper is `class="contents"`** so the anchor is layout-inert: the `UAvatar` keeps its own positioning classes and continues to anchor the spine/elbow drawing exactly as before.
+3. **Fixture authors carry `/users/user-<name>` profile urls** matching the `/users/:id` route convention; the metadata bar's pre-existing name link lights up from the same `author.url`.
+4. **The continue-thread button now carries `data-testid="continue-thread-link"`** — date links share the `/models/<id>/comments/<id>` href shape, so href-only selectors no longer disambiguate it in tests.
