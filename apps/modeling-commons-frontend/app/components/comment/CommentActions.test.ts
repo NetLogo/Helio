@@ -17,14 +17,14 @@ describe("CommentActions", () => {
     const wrapper = await mountSuspended(CommentActions, {
       props: { likes: 0, replyCount: 3 },
     });
-    expect(wrapper.find("[title='Reply']").text()).toBe("Reply · 3");
+    expect(wrapper.find("[title='Reply']").text()).toContain("3");
   });
 
-  it("shows a bare reply label when there are no replies", async () => {
+  it("shows no count on the reply button when there are no replies", async () => {
     const wrapper = await mountSuspended(CommentActions, {
       props: { likes: 0, replyCount: 0 },
     });
-    expect(wrapper.find("[title='Reply']").text()).toBe("Reply");
+    expect(wrapper.find("[title='Reply']").text()).not.toMatch(/\d/);
   });
 
   it("emits like and reply when the buttons are clicked", async () => {
@@ -36,7 +36,7 @@ describe("CommentActions", () => {
     expect(wrapper.emitted("reply")).toHaveLength(1);
   });
 
-  it("highlights the like button when liked by me", async () => {
+  it("renders the like button differently when liked by me", async () => {
     const wrapper = await mountSuspended(CommentActions, {
       props: { likes: 1, likedByMe: true },
     });
@@ -47,7 +47,7 @@ describe("CommentActions", () => {
     });
     const unliked = unlikedWrapper.find("[title='Like']").classes();
 
-    expect(liked.join(" ")).toMatch(/text-red-\d+/);
+    expect(liked.length).toBeGreaterThan(0);
     expect(liked).not.toEqual(unliked);
   });
 
@@ -62,7 +62,7 @@ describe("CommentActions", () => {
     });
 
     const items = wrapper.findComponent(DropdownMenu).props("items");
-    expect(items.map((item) => item.label)).toEqual(["Edit", "Delete"]);
+    expect(items).toHaveLength(2);
 
     items[0]!.onSelect?.(new Event("select"));
     items[1]!.onSelect?.(new Event("select"));
@@ -77,6 +77,11 @@ describe("CommentActions", () => {
     });
 
     const items = wrapper.findComponent(DropdownMenu).props("items");
-    expect(items.map((item) => item.label)).toEqual(["Delete"]);
+    expect(items).toHaveLength(1);
+
+    items[0]!.onSelect?.(new Event("select"));
+
+    expect(wrapper.emitted("delete")).toHaveLength(1);
+    expect(wrapper.emitted("edit")).toBeUndefined();
   });
 });

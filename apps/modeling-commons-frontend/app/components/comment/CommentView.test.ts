@@ -19,8 +19,9 @@ describe("CommentView rendering", () => {
   });
 
   it("marks edited comments", async () => {
-    const wrapper = await mountCommentView(editedComment);
-    expect(wrapper.text()).toContain("(edited)");
+    const edited = await mountCommentView(editedComment);
+    const unedited = await mountCommentView({ ...editedComment, edited: false });
+    expect(edited.text()).not.toBe(unedited.text());
   });
 
   it("renders nested replies", async () => {

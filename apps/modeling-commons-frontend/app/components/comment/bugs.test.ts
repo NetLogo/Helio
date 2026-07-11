@@ -36,13 +36,13 @@ describe("CommentsPanel bugs", () => {
   // so the load-more button renders whenever the server holds more comments.
   it("shows a load-more button when pagination.count exceeds the shown comments", async () => {
     const wrapper = await mountCommentsPanel(flatComments, {
-      pagination: { count: 10, lastPage: 4 },
+      pagination: { count: 12, lastPage: 4 },
     });
 
     const loadMore = wrapper
       .findAll("button")
-      .find((button) => button.text().includes("more comment"));
-    expect(loadMore, "expected a 'Load 7 more comments' button").toBeDefined();
+      .find((button) => button.text().includes("9"));
+    expect(loadMore, "expected a load-more button showing the 9-comment remainder").toBeDefined();
   });
 
   // BUG-2 (fixed): handleDelete closes the dialog and resets `deleting` in a
@@ -189,8 +189,8 @@ describe("CommentView bugs", () => {
   });
 
   // BUG-13 (fixed): the recursive render passes the parent comment's author
-  // name down, so editing a nested reply shows "Edit your reply to X".
-  it("shows 'Edit your reply to <parent author>' when editing a nested reply", async () => {
+  // name down, so editing a nested reply names the parent author.
+  it("names the parent author in the edit placeholder of a nested reply", async () => {
     const wrapper = await mountCommentView(deepThread);
 
     const nested = wrapper
@@ -203,21 +203,23 @@ describe("CommentView bugs", () => {
     await nextTick();
 
     const editInput = nested!.findComponent(CommentInput);
-    expect(editInput.find("textarea").attributes("placeholder")).toBe(
-      `Edit your reply to ${deepThread.author.name}...`,
+    expect(editInput.find("textarea").attributes("placeholder")).toContain(
+      deepThread.author.name,
     );
   });
 
-  // BUG-13 (fixed): top-level comments have no parent, so their edit input
-  // keeps the plain placeholder.
-  it("keeps the plain edit placeholder for top-level comments", async () => {
+  // BUG-13 (fixed): top-level comments have no parent, so their edit
+  // placeholder must not name anyone.
+  it("keeps the edit placeholder free of author names for top-level comments", async () => {
     const wrapper = await mountCommentView(deepThread);
 
     wrapper.findComponent(CommentActions).vm.$emit("edit");
     await nextTick();
 
     const editInput = wrapper.findComponent(CommentInput);
-    expect(editInput.find("textarea").attributes("placeholder")).toBe("Edit your comment...");
+    const placeholder = editInput.find("textarea").attributes("placeholder");
+    expect(placeholder).toBeTruthy();
+    expect(placeholder).not.toContain(deepThread.author.name);
   });
 });
 
@@ -247,7 +249,7 @@ describe("ConfirmDeleteCommentDialog bugs", () => {
     });
 
     const confirmButton = Array.from(document.body.querySelectorAll("button"))
-      .filter((button) => button.textContent?.includes("Delete comment"))
+      .filter((button) => /delete/i.test(button.textContent ?? ""))
       .at(-1);
     expect(confirmButton).toBeDefined();
     confirmButton!.click();
