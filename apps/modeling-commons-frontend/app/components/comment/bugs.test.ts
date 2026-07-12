@@ -33,20 +33,18 @@ beforeEach(() => {
 });
 
 describe("CommentsPanel bugs", () => {
-  // BUG-1 (fixed): remainingComments reads pagination.count (clamped at 0),
+  // remainingComments reads pagination.count (clamped at 0),
   // so the load-more button renders whenever the server holds more comments.
   it("shows a load-more button when pagination.count exceeds the shown comments", async () => {
     const wrapper = await mountCommentsPanel(flatComments, {
       pagination: { count: 12, lastPage: 4 },
     });
 
-    const loadMore = wrapper
-      .findAll("button")
-      .find((button) => button.text().includes("9"));
+    const loadMore = wrapper.findAll("button").find((button) => button.text().includes("9"));
     expect(loadMore, "expected a load-more button showing the 9-comment remainder").toBeDefined();
   });
 
-  // BUG-2 (fixed): handleDelete closes the dialog and resets `deleting` in a
+  // handleDelete closes the dialog and resets `deleting` in a
   // finally, so the dialog cannot get stuck open or permanently loading.
   it("closes the delete dialog and resets the loading state after confirm", async () => {
     const wrapper = await mountCommentsPanel(flatComments);
@@ -64,7 +62,7 @@ describe("CommentsPanel bugs", () => {
     expect(dialog.props("deleting")).toBe(false);
   });
 
-  // BUG-12 (fixed): CommentInput no longer clears itself on submit; the panel
+  // CommentInput no longer clears itself on submit; the panel
   // clears its top-level composer only after emitting create. (Restore-on-failure
   // lands with the backend at the CommentsSection runOptimistic seam.)
   it("clears the top-level composer after emitting create", async () => {
@@ -80,7 +78,7 @@ describe("CommentsPanel bugs", () => {
 });
 
 describe("CommentsSection bugs", () => {
-  // BUG-3 (fixed): the effective read-only state (`props.readOnly || !isLoggedIn`)
+  // the effective read-only state (`props.readOnly || !isLoggedIn`)
   // now lives on CommentsSection, so a consumer can force a read-only discussion
   // for a logged-in user.
   it("respects an explicit readOnly prop even when the user is logged in", async () => {
@@ -92,7 +90,7 @@ describe("CommentsSection bugs", () => {
 });
 
 describe("CommentView bugs", () => {
-  // BUG-5 (fixed): the recursive <CommentView> render must pass
+  // the recursive <CommentView> render must pass
   // maximum-shown-replies-per-level down so every depth uses the configured value.
   it("propagates maximumShownRepliesPerLevel to nested reply levels", async () => {
     const wrapper = await mountCommentView(deepThread, { maximumShownRepliesPerLevel: 1 });
@@ -104,7 +102,7 @@ describe("CommentView bugs", () => {
     expect(nested!.props("maximumShownRepliesPerLevel")).toBe(1);
   });
 
-  // BUG-6 (fixed): `write` fires only on genuine write attempts — closing or
+  // `write` fires only on genuine write attempts — closing or
   // cancelling an input must not emit it.
   it("does not emit write when the reply input is closed via cancel", async () => {
     const wrapper = await mountCommentView(shortComment);
@@ -119,7 +117,7 @@ describe("CommentView bugs", () => {
     expect(wrapper.emitted("write")).toHaveLength(1);
   });
 
-  // BUG-7 (fixed): readOnly gates only the open transition, so an input that is
+  // readOnly gates only the open transition, so an input that is
   // already open stays closable if readOnly flips (e.g. session expiry).
   it("still allows closing an open reply input after readOnly becomes true", async () => {
     const wrapper = await mountCommentView(shortComment);
@@ -137,7 +135,7 @@ describe("CommentView bugs", () => {
     expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
   });
 
-  // BUG-9 (fixed): CommentView consumes CommentSeeMore's declared
+  // CommentView consumes CommentSeeMore's declared
   // see-more-replies emit. `load` fires once all loaded replies are revealed
   // and only a server remainder is left. (The former attribute-fallthrough
   // companion test is retired — the @click wiring it proved no longer exists.)
@@ -191,7 +189,7 @@ describe("CommentView bugs", () => {
     expect(wrapper.emitted("load")).toEqual([[{ commentId: partiallyLoaded.id }]]);
   });
 
-  // BUG-13 (fixed): the recursive render passes the parent comment's author
+  // the recursive render passes the parent comment's author
   // name down, so editing a nested reply names the parent author.
   it("names the parent author in the edit placeholder of a nested reply", async () => {
     const wrapper = await mountCommentView(deepThread);
@@ -206,12 +204,10 @@ describe("CommentView bugs", () => {
     await nextTick();
 
     const editInput = nested!.findComponent(CommentInput);
-    expect(editInput.find("textarea").attributes("placeholder")).toContain(
-      deepThread.author.name,
-    );
+    expect(editInput.find("textarea").attributes("placeholder")).toContain(deepThread.author.name);
   });
 
-  // BUG-13 (fixed): top-level comments have no parent, so their edit
+  // top-level comments have no parent, so their edit
   // placeholder must not name anyone.
   it("keeps the edit placeholder free of author names for top-level comments", async () => {
     const wrapper = await mountCommentView(deepThread);
@@ -227,7 +223,7 @@ describe("CommentView bugs", () => {
 });
 
 describe("ConfirmDeleteCommentDialog bugs", () => {
-  // BUG-10 (fixed): any close that is not confirm-driven (ESC, overlay click,
+  // any close that is not confirm-driven (ESC, overlay click,
   // Cancel button) emits `cancel` so the parent's cleanup always runs.
   it("emits cancel when the modal is dismissed via ESC/overlay", async () => {
     const wrapper = await mountSuspended(ConfirmDeleteCommentDialog, {
@@ -267,7 +263,7 @@ describe("ConfirmDeleteCommentDialog bugs", () => {
 });
 
 describe("CommentInput bugs", () => {
-  // BUG-11 (fixed): Enter submits via `.exact`, so Shift+Enter falls through
+  // Enter submits via `.exact`, so Shift+Enter falls through
   // to the textarea and inserts a newline.
   it("inserts a newline instead of submitting on Shift+Enter", async () => {
     const wrapper = await mountSuspended(CommentInput, { props: {} });
@@ -281,7 +277,7 @@ describe("CommentInput bugs", () => {
 });
 
 describe("CommentTextRepresentation bugs", () => {
-  // BUG-15 (fixed): trailing closers balanced by an opener inside the URL are
+  // trailing closers balanced by an opener inside the URL are
   // kept (e.g. Wikipedia links); unbalanced ones are still stripped.
   it("keeps the closing paren of a URL with balanced parentheses", async () => {
     const url = "https://en.wikipedia.org/wiki/Rust_(programming_language)";
