@@ -19,7 +19,7 @@
       title="Reply"
       @click="$emit('reply')"
     >
-      {{ replyLabel }}
+      <span>Reply <span v-if="replyCount" class="text-xs text-muted align-middle">({{  replyCount }})</span></span>
     </UButton>
     <UDropdownMenu
       v-if="dropdownActions.length > 0"
@@ -55,8 +55,6 @@ const emits = defineEmits<{
   edit: [];
   delete: [];
 }>();
-
-const replyLabel = computed(() => (props.replyCount ? `Reply · ${props.replyCount}` : "Reply"));
 
 const dropdownActions = computed<Array<DropdownMenuItem>>(() => {
   const actions: DropdownMenuItem[] = [];
