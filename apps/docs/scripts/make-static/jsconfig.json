@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "checkJs": true, // Enables type checking for JavaScript files
-    "target": "es2020",
-    "module": "commonjs"
-  },
-  "exclude": ["node_modules"]
-}
