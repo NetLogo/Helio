@@ -23,9 +23,10 @@
     </NavbarLinksContainer>
 
     <NavbarActionsContainer>
-      <SSRUContentSearchButton />
+      <SSRUContentSearchButton v-if="!isOffline" />
 
       <VersionSelectDropdown
+        v-if="!isOffline"
         :versions="versions"
         :selected-version="selectedVersion"
         @version-change="(version) => onVersionChange(version, { productVersion, productWebsite })"
@@ -60,6 +61,7 @@ import { onVersionChange, pullVersionsFromSource } from '~~/shared/versions';
 const {
   public: {
     website: { productWebsite, productVersion, versionsSrc  },
+    isOffline
   },
 } = useRuntimeConfig();
 

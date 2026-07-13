@@ -127,6 +127,7 @@
   background: var(--color-nav-hover);
 }
 
+[data-mode="offline"] .item:hover > .dropdown,
 .item:hover:not(:has(.dropdown:hover)) > .dropdown,
 .dropdown.open,
 .dropdown:has(> *:focus-visible) {
