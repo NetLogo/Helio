@@ -36,4 +36,6 @@ nw:load-matrix load-matrix.html
 nw:save-graphml save-graphml.html
 nw:load-graphml load-graphml.html
 nw:load load.html
+nw:load-from-string load-from-string.html
 nw:save save.html
+nw:save-to-string save-to-string.html
