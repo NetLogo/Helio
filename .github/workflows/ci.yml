@@ -2,9 +2,12 @@ name: Validate
 
 on:
   push:
-    branches: [main]
   pull_request:
     branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
@@ -40,9 +43,9 @@ jobs:
       fail-fast: false
       matrix:
         app:
-          - docs:
-              command: "yarn run docs:generate"
-              path: "./apps/docs"
+          - name: docs
+            command: "yarn run nuxt:generate"
+            path: "./apps/docs"
 
     steps:
       - name: Checkout code
@@ -58,6 +61,6 @@ jobs:
         run: |
           yarn run init
 
-      - name: Build ${{ matrix.app }}
+      - name: Build ${{ matrix.app.name }}
         working-directory: ${{ matrix.app.path }}
         run: ${{ matrix.app.command }}
