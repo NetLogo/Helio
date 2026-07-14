@@ -71,6 +71,12 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
               ? tag.replace(/\s+crossorigin(="[^"]*")?/g, '')
               : tag
         )
+
+        // Remove any empty class attributes
+        route.contents = route.contents.replace(
+          /\s+class=""/g,
+          ''
+        )
       }
     }
   }
