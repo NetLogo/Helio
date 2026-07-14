@@ -1,4 +1,7 @@
 import type { DefineNuxtConfig } from 'nuxt/config';
+import { minify } from 'html-minifier-terser';
+import { existsSync,  mkdirSync, writeFileSync } from 'node:fs';
+import { rm,glob, } from 'node:fs/promises';
 
 const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
   app: {
@@ -26,9 +29,24 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
   ogImage: { enabled: false },
   linkChecker: { enabled: false },
 
+  vite: {
+    css: {
+      modules: {
+        generateScopedName: '[hash:base64:4]'
+      }
+    }
+  },
+
   nitro: {
     hooks: {
-      'prerender:generate'(route) {
+      async close() {
+        const cwd = '.output/public'
+        await rm(`${cwd}/__nuxt_content`, { recursive: true, force: true })
+        await rm(`${cwd}/turtles.png`, { force: true })
+        for await (const e of glob(['_nuxt/*.wasm', '_nuxt/*.js'], { cwd }))
+          await rm(`${cwd}/${e}`, { force: true })
+      },
+      'prerender:generate': async (route) => {
         if (!route.fileName?.endsWith('.html') || !route.contents) return
 
         const depth = route.route.split('/').filter(Boolean).length - 1
@@ -39,13 +57,29 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
         // -- Omar I. Jul 13 2026
         const p = prefix.slice(0, -1)
 
+        
+        // Extract Nuxt UI colors from the HTML into a separate 
+        // CSS file and replace the <style> tag with a <link> tag
+        const m = route.contents.match(/<style id="nuxt-ui-colors">[\s\S]*?<\/style>/)
+        if (m) {
+          const dir = '.output/public/_nuxt'
+          if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
+          const cssPath = `${dir}/ui-colors.css`
+          if (!existsSync(cssPath)) {
+            writeFileSync(cssPath, m[0].replace(/^<style[^>]*>/, '').replace(/<\/style>$/, ''))
+          }
+          route.contents = route.contents.replace(
+            m[0],
+            `<link rel="stylesheet" href="${p}/_nuxt/ui-colors.css">` 
+          )
+        }
 
         // Transform absolute src/href attributes to relative paths
         route.contents = route.contents.replace(
           /\b(src|href)="((?:\$CDN\/|\/)[^"]*)"/g,
           (m, attr, val) => {
             const isCDN = val.startsWith('$CDN/')
-            const clean = isCDN ? val.slice('$CDN'.length) : val   
+            const clean = isCDN ? val.slice('$CDN'.length) : val
             if (clean.startsWith('//')) return m
 
             if (attr === 'href') {
@@ -72,11 +106,20 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
               : tag
         )
 
-        // Remove any empty class attributes
+        // Remove any empty class/style attributes
         route.contents = route.contents.replace(
-          /\s+class=""/g,
+          /\s+(class|style)="\s*"/g,
           ''
         )
+
+        route.contents = await minify(route.contents, {
+          collapseWhitespace: true,
+          removeComments: true,
+          minifyCSS: true,
+          removeRedundantAttributes: true,
+          removeAttributeQuotes: false,
+          keepClosingSlash: true,
+        })
       }
     }
   }
