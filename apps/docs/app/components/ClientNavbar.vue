@@ -234,6 +234,7 @@ const versions = ref<Record<string, VersionProps>>({
 
 const selectedVersion = ref<string>(productVersion);
 
+updateActiveStates();
 onMounted(() => {
   if (import.meta.client) {
     updateActiveStates();
