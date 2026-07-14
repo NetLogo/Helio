@@ -7,6 +7,7 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
   },
 
   features: {
+    inlineStyles: false,
     'noScripts': true,
   },
 
