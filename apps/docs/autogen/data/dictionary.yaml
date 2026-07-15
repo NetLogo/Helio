@@ -563,7 +563,7 @@ entries:
         - code: back *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: base-colors
     entry_categories:
       - title: Color
@@ -667,7 +667,7 @@ entries:
         - code: both-ends
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: breedvar
     entry_categories:
       - title: Built-in Variables
@@ -713,9 +713,9 @@ entries:
         - code: breed
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: breed
     entry_categories:
       - title: Built-in Variables
@@ -833,7 +833,7 @@ entries:
         - code: can-move? *distance*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: carefully
     entry_categories:
       - title: Control Flow and Logic
@@ -1089,9 +1089,9 @@ entries:
         - code: color
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: cos
     entry_categories:
       - title: Mathematical
@@ -1275,7 +1275,7 @@ entries:
         - code: create-links-with *turtleset* [ *commands* ]
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: create-turtles
     entry_categories:
       - title: Turtle-related
@@ -1421,9 +1421,9 @@ entries:
         - code: die
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: diffuse
     entry_categories:
       - title: Patch-related
@@ -1599,9 +1599,9 @@ entries:
         - code: distance *agent*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: distancexy
     entry_categories:
       - title: Patch-related
@@ -1631,9 +1631,9 @@ entries:
         - code: distancexy *x* *y*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: downhill
     entry_categories:
       - title: Turtle-related
@@ -1675,7 +1675,7 @@ entries:
         - code: downhill4 *patch-variable*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: dxy
     entry_categories:
       - title: Turtle-related
@@ -1717,7 +1717,7 @@ entries:
         - code: dy
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: empty
     entry_categories:
       - title: List
@@ -1780,7 +1780,7 @@ entries:
         - code: end1
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: end2
     entry_categories:
       - title: Built-in Variables
@@ -1810,7 +1810,7 @@ entries:
         - code: end2
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: error
     entry_categories:
       - title: Control Flow and Logic
@@ -2088,7 +2088,7 @@ entries:
         - code: face *agent*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: facexy
     entry_categories:
       - title: Turtle-related
@@ -2111,7 +2111,7 @@ entries:
         - code: facexy *x* *y*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: file-at-end
     entry_categories:
       - title: File
@@ -2599,7 +2599,7 @@ entries:
         - code: follow-me
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: foreach
     entry_categories:
       - title: Anonymous Procedures
@@ -2676,7 +2676,7 @@ entries:
         - code: forward *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: fput
     entry_categories:
       - title: List
@@ -2755,7 +2755,7 @@ entries:
         - code: hatch-<breeds> *number* [ *commands* ]
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: heading
     entry_categories:
       - title: Built-in Variables
@@ -2785,7 +2785,7 @@ entries:
         - code: heading
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: hidden
     entry_categories:
       - title: Built-in Variables
@@ -2821,9 +2821,9 @@ entries:
         - code: hidden?
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: hide-link
     entry_categories:
       - title: Link-related
@@ -2844,7 +2844,7 @@ entries:
         - code: hide-link
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: hide-turtle
     entry_categories:
       - title: Turtle-related
@@ -2867,7 +2867,7 @@ entries:
         - code: hide-turtle
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: histogram
     entry_categories:
       - title: Plotting
@@ -2932,7 +2932,7 @@ entries:
         - code: home
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: home-directory
     entry_categories:
       - title: File
@@ -3684,7 +3684,7 @@ entries:
         - code: "*agentset* in-cone *distance* *angle*"
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: in-link-neighbor
     entry_categories:
       - title: Link-related
@@ -3716,7 +3716,7 @@ entries:
         - code: in-link-neighbor? *turtle*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: in-link-neighbors
     entry_categories:
       - title: Link-related
@@ -3743,7 +3743,7 @@ entries:
         - code: in-link-neighbors
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: in-link-from
     entry_categories:
       - title: Link-related
@@ -3774,7 +3774,7 @@ entries:
         - code: in-link-from *turtle*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: includes
     entry_categories:
       - title: Keyword
@@ -3829,9 +3829,9 @@ entries:
         - code: "*agentset* in-radius *number*"
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: insert-item
     entry_categories:
       - title: String
@@ -4072,7 +4072,7 @@ entries:
         - code: jump *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: label
     entry_categories:
       - title: Built-in Variables
@@ -4110,9 +4110,9 @@ entries:
         - code: label
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: label-color
     entry_categories:
       - title: Built-in Variables
@@ -4148,9 +4148,9 @@ entries:
         - code: label-color
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: last
     entry_categories:
       - title: String
@@ -4365,7 +4365,7 @@ entries:
         - code: left *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: length
     entry_categories:
       - title: String
@@ -4468,7 +4468,7 @@ entries:
         - code: link-heading
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: link-length
     entry_categories:
       - title: Link-related
@@ -4491,7 +4491,7 @@ entries:
         - code: link-length
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: link-set
     entry_categories:
       - title: Agentset
@@ -5198,7 +5198,7 @@ entries:
         - code: move-to *agent*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: my-links
     entry_categories:
       - title: Link-related
@@ -5238,7 +5238,7 @@ entries:
         - code: my-links
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: my-in-links
     entry_categories:
       - title: Link-related
@@ -5272,7 +5272,7 @@ entries:
         - code: my-in-links
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: my-out-links
     entry_categories:
       - title: Link-related
@@ -5305,7 +5305,7 @@ entries:
         - code: my-out-links
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: myself
     entry_categories:
       - title: Patch-related
@@ -5349,11 +5349,11 @@ entries:
         - code: myself
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: n-of
     entry_categories:
       - title: Agentset
@@ -5460,9 +5460,9 @@ entries:
         - code: neighbors4
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: link-neighbors
     entry_categories:
       - title: Link-related
@@ -5496,7 +5496,7 @@ entries:
         - code: link-neighbors
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: link-neighbor
     entry_categories:
       - title: Link-related
@@ -5528,7 +5528,7 @@ entries:
         - code: link-neighbor? *turtle*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: netlogo-version
     entry_categories:
       - title: System
@@ -5833,9 +5833,9 @@ entries:
         - code: other *agentset*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: other-end
     entry_categories:
       - title: Link-related
@@ -5868,9 +5868,9 @@ entries:
         - code: other-end
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: out-link-neighbor
     entry_categories:
       - title: Link-related
@@ -5903,7 +5903,7 @@ entries:
         - code: out-link-neighbor? *turtle*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: out-link-neighbors
     entry_categories:
       - title: Link-related
@@ -5938,7 +5938,7 @@ entries:
         - code: out-link-neighbors
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: out-link-to
     entry_categories:
       - title: Link-related
@@ -5974,7 +5974,7 @@ entries:
         - code: out-link-to *turtle*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: output-cmds
     entry_categories:
       - title: Input/Output
@@ -6066,7 +6066,7 @@ entries:
         - code: patch-ahead *distance*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: patch-at
     entry_categories:
       - title: Patch-related
@@ -6096,9 +6096,9 @@ entries:
         - code: patch-at *dx* *dy*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: patch-at-heading-and-distance
     entry_categories:
       - title: Patch-related
@@ -6128,9 +6128,9 @@ entries:
         - code: patch-at-heading-and-distance *heading* *distance*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: patch-here
     entry_categories:
       - title: Patch-related
@@ -6151,7 +6151,7 @@ entries:
         - code: patch-here
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: patch-lr-and-ahead
     entry_categories:
       - title: Patch-related
@@ -6189,7 +6189,7 @@ entries:
         - code: patch-right-and-ahead *angle* *distance*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: patch-set
     entry_categories:
       - title: Patch-related
@@ -6307,9 +6307,9 @@ entries:
         - code: pcolor
     icons:
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: pen-switch-status
     entry_categories:
       - title: Turtle-related
@@ -6350,7 +6350,7 @@ entries:
         - code: pen-up
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: pen-mode
     entry_categories:
       - title: Built-in Variables
@@ -6369,7 +6369,7 @@ entries:
 
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: pen-size
     entry_categories:
       - title: Built-in Variables
@@ -6387,7 +6387,7 @@ entries:
 
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: plabel
     entry_categories:
       - title: Built-in Variables
@@ -6413,9 +6413,9 @@ entries:
         - code: plabel
     icons:
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: plabel-color
     entry_categories:
       - title: Built-in Variables
@@ -6441,9 +6441,9 @@ entries:
         - code: plabel-color
     icons:
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: plot
     entry_categories:
       - title: Plotting
@@ -6682,9 +6682,9 @@ entries:
         - code: pycor
     icons:
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: random
     entry_categories:
       - title: Mathematical
@@ -7356,7 +7356,7 @@ entries:
         - code: ride-me
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: right
     entry_categories:
       - title: Turtle-related
@@ -7374,7 +7374,7 @@ entries:
         - code: right *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: round
     entry_categories:
       - title: Mathematical
@@ -7527,11 +7527,11 @@ entries:
         - code: self
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: semicolon
     entry_categories:
       - title: Control Flow and Logic
@@ -7780,7 +7780,7 @@ entries:
         - code: __set-line-thickness *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: set-patch-size
     entry_categories:
       - title: World
@@ -7989,7 +7989,7 @@ entries:
         - code: setxy *x y*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: shade-of
     entry_categories:
       - title: Color
@@ -8052,9 +8052,9 @@ entries:
         - code: shape
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: shapes
     entry_categories:
       - title: Turtle-related
@@ -8119,7 +8119,7 @@ entries:
         - code: show-turtle
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: show-link
     entry_categories:
       - title: Link-related
@@ -8140,7 +8140,7 @@ entries:
         - code: show-link
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: shuffle
     entry_categories:
       - title: List
@@ -8201,7 +8201,7 @@ entries:
         - code: size
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: sort
     entry_categories:
       - title: Agentset
@@ -8378,7 +8378,7 @@ entries:
         - code: sprout-<breeds> *number* [ *commands* ]
     icons:
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: sqrt
     entry_categories:
       - title: Mathematical
@@ -8411,9 +8411,9 @@ entries:
         - code: stamp
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: stamp-erase
     entry_categories:
       - title: Turtle-related
@@ -8433,9 +8433,9 @@ entries:
         - code: stamp-erase
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: standard-deviation
     entry_categories:
       - title: Mathematical
@@ -8703,7 +8703,7 @@ entries:
         - code: thickness
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: tick
     entry_categories:
       - title: World
@@ -8813,7 +8813,7 @@ entries:
         - code: tie
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: tie-mode
     entry_categories:
       - title: Built-in Variables
@@ -8837,7 +8837,7 @@ entries:
         - code: tie-mode
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: timer
     entry_categories:
       - title: Input/Output
@@ -8950,9 +8950,9 @@ entries:
         - code: towards *agent*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: towardsxy
     entry_categories:
       - title: Turtle-related
@@ -8978,9 +8978,9 @@ entries:
         - code: towardsxy *x* *y*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: turtle
     entry_categories:
       - title: Turtle-related
@@ -9078,9 +9078,9 @@ entries:
         - code: <breeds>-at *dx* *dy*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: turtles-here
     entry_categories:
       - title: Patch-related
@@ -9120,9 +9120,9 @@ entries:
         - code: <breeds>-here
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: turtles-on
     entry_categories:
       - title: Turtle-related
@@ -9160,9 +9160,9 @@ entries:
         - code: <breeds>-on *turtleset or patchset*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: turtles-own
     entry_categories:
       - title: Turtle-related
@@ -9289,7 +9289,7 @@ entries:
         - code: untie
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: up-to-n-of
     entry_categories:
       - title: Agentset
@@ -9390,7 +9390,7 @@ entries:
         - code: uphill4 *patch-variable*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: user-directory
     entry_categories:
       - title: Input/Output
@@ -9673,11 +9673,11 @@ entries:
         - code: watch-me
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: while
     entry_categories:
       - title: Control Flow and Logic
@@ -9759,7 +9759,7 @@ entries:
         - code: who
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: who-are-not
     entry_categories:
       - title: Agentset
@@ -9851,7 +9851,7 @@ entries:
         - code: link-with *turtle*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: with-max
     entry_categories:
       - title: Agentset
@@ -10097,7 +10097,7 @@ entries:
         - code: xcor
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: xor
     entry_categories:
       - title: Control Flow and Logic
@@ -10143,7 +10143,7 @@ entries:
         - code: ycor
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: arrow
     entry_categories:
       - title: Anonymous Procedures

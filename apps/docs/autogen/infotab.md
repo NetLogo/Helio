@@ -3,7 +3,7 @@
 The Info tab provides an introduction to a model. It explains what system is being modeled, how the model was
 created, and and how to use it. It may also suggest things to explore and ways to extend the model, or call your
 attention to particular NetLogo features the model uses.
-![[infotab/infotab.png]]
+![[infotab/infotab.webp]]
 
 You may wish to read the Info tab of an existing model before interacting with its widgets or its code.
 
@@ -14,7 +14,7 @@ You may wish to read the Info tab of an existing model before interacting with i
 The normal, formatted view of the Info tab is not editable. To make edits, click the &quot;Edit&quot; button.
 When done editing, click the &quot;Edit&quot; button again.
 
-![[infotab/infotabedit.png]]
+![[infotab/infotabedit.webp]]
 
 You edit the Info tab as unformatted plain text. When you're done editing, the plain text you entered is
 displayed in a more attractive format.

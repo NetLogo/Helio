@@ -31,7 +31,7 @@ Commercial licenses are also available. To inquire about commercial licenses, pl
 
 Copyright 1999-2025 by Uri Wilensky.
 
-[![Creative Commons License](images/cc-by-sa-3.0.png)](https://creativecommons.org/licenses/by-sa/3.0/)
+[![Creative Commons License](images/cc-by-sa-3.0.webp)](https://creativecommons.org/licenses/by-sa/3.0/)
 
 The NetLogo User Manual by [Uri Wilensky](http://ccl.northwestern.edu/netlogo/) is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](https://creativecommons.org/licenses/by-sa/3.0/).
 

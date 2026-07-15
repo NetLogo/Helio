@@ -198,7 +198,7 @@ This step can be performed on your local machine, not necessarily on an HPC.
 
 1. Export your BehaviorSpace experiment as an XML file. In BehaviorSpace, select your experiment and click _Export_.
 
-![[hpc/export.png]]
+![[hpc/export.webp]]
 
 - For maximum parallelization, set repetitions to **1** before exporting. This allows submitting a separate job for each repetition.
 

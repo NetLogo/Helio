@@ -45,6 +45,24 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
         await rm(`${cwd}/turtles.png`, { force: true })
         for await (const e of glob(['_nuxt/*.wasm', '_nuxt/*.js'], { cwd }))
           await rm(`${cwd}/${e}`, { force: true })
+
+        
+        const filesToDelete = [
+          '_content/images/netlogo-logo.webp',
+          '_content/images/banner-dark.webp',
+          '_content/images/banner-with-code.webp',
+          '_content/images/user-manual-logo.webp',
+          '_content/images/interfacetab/plot-dialog.webp',
+          '_content/images/codetab/separatecodetab.webp',
+          '_content/images/nl7intro/start-interface-tab-light.webp',
+          '_content/images/nl7intro/netlogopreferences.webp',
+          '_content/images/nl7intro/modelspeedslider.webp',
+          '_content/images/nl7intro/codetabpreferences.webp',
+          '_content/images/infotab/Perspective Example.webp',
+        ]
+
+        for await (const e of glob(filesToDelete, { cwd }))
+          await rm(`${cwd}/${e}`, { force: true })
       },
       'prerender:generate': async (route) => {
         if (!route.fileName?.endsWith('.html') || !route.contents) return
