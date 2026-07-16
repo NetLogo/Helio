@@ -26,10 +26,16 @@ export default async function runDocsAutogen() {
     netlogoDictionary: prebuildHandlebarsHelper,
   });
 
+  const version = process.env["PRODUCT_VERSION"] || "7.0.1";
   const buildVariables = {
-    version: process.env["PRODUCT_VERSION"] || "7.0.1",
+    version: version,
+    versionMajorMinor: version.match(/^\d+\.\d+/)?.[0],
     buildDate: process.env["PRODUCT_BUILD_DATE"] || new Date().toISOString(),
   };
+
+  if (buildVariables.versionMajorMinor === null) {
+    throw new Error("Failed to extract major and minor version number.");
+  }
 
   const result = await Promise.all([
     generateBetweenDirectoriesPages(renderer, buildVariables),
