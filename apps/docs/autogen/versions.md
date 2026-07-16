@@ -7,6 +7,92 @@ For help running models made in old versions, see the
 
 #### Table of Contents
 
+## Version 7.1.0-internal1 (July 2026)
+
+### Major New Features
+
+  * A module system  
+  * Improved Code tab editor, with better auto-complete and syntax highlighting  
+  * Improved Info tab (e.g. LaTeX, videos, more image formats)  
+  * Better macOS installation UX  
+  * Auto-converter service  
+  * BehaviorSpace runs in a separate process, preventing memory leaks from sustained use  
+  * BehaviorSpace displays in a separate window, allowing usage and editing of the model while experiments are running
+
+### New Features
+
+  * `.nls` files are now forbidden to take on names that would be invalid NetLogo variable names  
+    * The “Distribution Center Discrete Event Simulator” and “Discrete Event Mousetrap” models now demonstrate the usage of the new module system  
+  * Updated to Java 21  
+  * The NW extension is has a compatible equivalent in NetLogo Web, and has added primitives `save-to-string` and `load-from-string`  
+  * Ability to set model name for display in NetLogo Web (in View/model settings)  
+  * `.nls` files can be renamed within NetLogo by right-clicking their tab in the list  
+  * Command Center input can now consist of more than one line of code  
+  * Command Center input is now saved, per model, across NetLogo sessions  
+  * Improved command line interface for launching NetLogo (now much clearer about errors and available options)  
+  * The "internal error" dialog now provides a simple button for directly reporting errors to the NetLogo team  
+  * Improved experience for editing NetLogo files with a third-party editors  
+    * After turning on the "Enable remote commands" preference, NetLogo can receive commands from external sources  
+    * Code and Info tab contents are always bounded by newlines and `CDATA` tags  
+  * Monitor widgets now have a "Copy text" option in their right-click menu  
+  * BehaviorSpace can now be given an upper limit of how much memory to allocate to the process  
+  * The BehaviorSpace "Run" dialog now allows specifying desired behavior for when errors occur: Ignore them, abort the errored run, or abort the entire experiment
+
+### Bugs Fixed
+
+  * NetLogo language  
+    * Improved error messages when a string or number is provided as a global variable name  
+  * Widgets  
+    * "Forever" buttons with "Disable until ticks start" enabled will now stop when `clear-ticks` is called  
+    * For display text of some particular widths, ellipses were wrongly being shown when creating new widgets  
+    * Plot widgets now reset the scroll level of plot pen editors after the dialog is closed  
+    * Plot pen editors now instantly recompile when you click away from them  
+    * Sliders now handle it more gracefully when widget editor fields are invalid-but-compilable  
+    * Note widgets were showing excessive whitespace on when, when set to render Markdown  
+    * Output widgets now do a better job of importing long content with `import-world`  
+    * Output widgets now crop the text on a line-by-line basis  
+    * Reduced visual artifacts on some rounded borders  
+  * View  
+    * Drawings could previously be duplicated when combining world wrapping with large pen sizes   
+  * Command Center  
+    * Fixed a case where the font style was changing when zoomed  
+    * The "command history" button was not matching the look and feel of the rest of the NetLogo 7 UI  
+  * Code tab  
+    * Error text can not be selected and copied  
+    * Missing characters (e.g. CJK characters) are now shown in a fallback font when the current font does not define them  
+  * Extensions  
+    * Fixed a crash with `vid:camera-select` on Windows, when no camera was selected  
+  * BehaviorSpace  
+    * The error messages about invalid world dimensions have been improved  
+  * HubNet  
+    * After importing a HubNet client interface via "File → Import → Import HubNet Client Interface", the widgets can now be edited properly  
+    * Client view widget height now updates correctly when set in the "Edit" dialog  
+  * Auto-converter  
+    * NetLogo will now suggest using our external model-converter service, when opening an old model  
+    * Now knows how to remove the old `hubnet-set-client-interface` primitive  
+    * Will now run `movie-`/`vid` conversions, even if only `movie-set-frame-rate` is used in the model  
+    * Avoids producing syntactically invalid code when doing conversions  
+    * Can now relocate declarations that were defined in now-invalid places  
+    * Can now run on code in monitor widgets, even if that code is not wrapped in parentheses  
+    * Will not add extra parentheses around code in monitor widgets  
+    * Can now handle conflicting breed names  
+    * Can convert from the old `breed [ xs ]` syntax  
+    * Can install extensions automatically, when needed  
+  * Miscellaneous  
+    * The "Reload model on external changes" preference was leaving watch services running unnecessarily  
+    * The "Extension Manager samples" section of the Models Library is now far more organized and navigable  
+    * Uninstalling an in-use extension will no longer produce internal errors  
+    * File icons were not being set properly on Linux  
+    * Reduced display of redundant announcement banners  
+    * The "About" dialog's text can now be selected and copied  
+    * The "About" dialog no longer shows a text input caret after being clicked  
+    * Loading an autosave from an old version of NetLogo could lead to an unwanted and unnecessary "Save as" dialog  
+    * "Undo" and "redo" options were presented differently in the Code tab from how they are in the Interface tab  
+    * Error dialog now points people to the newer URL for downloading the latest NetLogo  
+    * The error message when loading a model from version of NetLogo that is simply old no longer claims that the version is unknown  
+    * The Info tab "Help" links are now valid again  
+    * The Extension Manager now does a better job of handling registries of extensions from multiple different versions
+
 ## Version 7.0.4 (April 2026)
 
 ### New Features
