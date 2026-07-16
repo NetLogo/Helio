@@ -99,6 +99,35 @@ empty model.
 If you use an editor outside of NetLogo to change the model or any included .nls
 files, the changed file is updated in NetLogo.
 
+### Enable remote commands
+
+When this option is enabled, NetLogo listens for commands to execute on a Unix Domain Socket. Received commands are executed in the observer context as if they were entered in the Command Center. This can be used by external software such as editor plugins for better integration with NetLogo.
+
+If the environment variable `XDG_RUNTIME_DIR` is set, the listening socket is created under `XDG_RUNTIME_DIR`. Otherwise, it is created under the NetLogo directory:
+- On Mac OS X: `Library/Application Support/NetLogo/{{versionMajorMinor}}`
+- On Windows: `AppData\NetLogo\\{{versionMajorMinor}}`
+- On Linux: `.netlogo/{{versionMajorMinor}}`
+
+The listening socket is named using the following pattern `netlogo-<PID>` where `<PID>` is the process ID of the associated NetLogo process.
+
+To send a command to NetLogo, encode the command in a JSON object as follows, replacing `<COMMAND>` with the command. The resulting string should then be written to the listening socket.
+
+```json
+{
+    "type": "nl-run-code",
+    "code": "<COMMAND>"
+}
+```
+
+Once the command is received and processed, NetLogo will respond with the following JSON object. If the command is successfully parsed and executed, `<STATUS>` will be `ok`. Otherwise, it will be a message describing the error that occurred. Note that this will only report errors that occur during the processing of the request. Runtime errors that occur as a result of executing the provided command are not reported here.
+
+```json
+{
+    "type": "nl-status",
+    "status": "<STATUS>"
+}
+```
+
 ### Bold widget text
 
 By default, widget text is not in bold, use this option to bold it.
