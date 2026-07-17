@@ -24,18 +24,10 @@ function prepare() {
     log_info "Command output -> $STDOUT_LOG / $STDERR_LOG"
   fi
 
-  # Kill interfering processes in interactive mode
-  if is_interactive; then
-    processes_to_kill=(node yarn npm)
-    log_warn "This script will kill all ${processes_to_kill[*]} processes."
-    kill_processes_by_name "${processes_to_kill[@]}"
-    log_success "Killed specified processes."
-
-    if build_latest; then
-      log_info "Building latest version in addition to ${PRODUCT_VERSION}"
-    else
-      log_info "Building only version ${PRODUCT_VERSION}"
-    fi
+  if build_latest; then
+    log_info "Building latest version in addition to ${PRODUCT_VERSION}"
+  else
+    log_info "Building only version ${PRODUCT_VERSION}"
   fi
 
   # Clean target directory
