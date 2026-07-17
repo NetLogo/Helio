@@ -11,7 +11,7 @@
     :is-loading="loading"
     with-route-transition
     :class="{
-      'lg:mt-5 mb-10 px-2 mx-auto nl-container-width': isOffline
+      'lg:mt-5 mb-10 px-2 mx-auto nl-container-width min-h-[70vh]': isOffline
     }"
   >
     <div class="w-full [&>.min-h-screen]:min-h-0 lg:pr-5 pb-10 min-h-rest">
@@ -22,7 +22,7 @@
         <Anchor :href="removeHtmlExtension(dictionaryHomeDirectory)"> {{ dictionaryDisplayName }} </Anchor>.
       </p>
 
-      <Surround :surround="surround" class="mt-auto" />
+      <Surround v-if="!isOffline" :surround="surround" class="mt-auto"/>
     </div>
   </component>
 </template>
