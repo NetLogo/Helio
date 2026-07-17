@@ -945,9 +945,10 @@ unfamiliar to some readers.
 #### Keywords
 
 The only keywords in the language are [[globals]], [[breed]], [[turtles-own]],
-[[patches-own]], [[to]], [[to-report]], and [[end]], plus [[extensions]] and the
-experimental [[__includes|includes]] keyword. (Built-in primitive names may not be
-shadowed or redefined, so they are effectively a kind of keyword as well.)
+[[patches-own]], [[to]], [[to-report]], [[end]], [[import]], and [[export]],
+plus [[extensions]] and the experimental [[__includes|includes]] keyword.
+(Built-in primitive names may not be shadowed or redefined, so they are
+effectively a kind of keyword as well.)
 
 #### Identifiers
 
