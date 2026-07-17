@@ -14,9 +14,18 @@ require_env \
   "BUILD_LATEST" \
   "BUILD_BRANCH"
 
+export DEPLOY_MODE="${DEPLOY_MODE:-"production"}"
+if [ "$DEPLOY_MODE" = "staging" ]; then
+  log_info "Running in staging mode"
+  log_info "versions.json will not be updated"
+  log_info "BUILD_LATEST will be set to false"
+  export BUILD_LATEST="false"
+else
+  export BUILD_LATEST="${BUILD_LATEST}"
+fi
+
 export PRODUCT_VERSION="${PRODUCT_VERSION}"
 export PRODUCT_DISPLAY_NAME="${PRODUCT_DISPLAY_NAME}"
-export BUILD_LATEST="${BUILD_LATEST}"
 export BUILD_REPO="${BUILD_REPO}"
 export BUILD_BRANCH="${BUILD_BRANCH}"
 
@@ -60,8 +69,12 @@ else
   clone_branch $BUILD_REPO $BUILD_BRANCH $REPO_DIRNAME
 fi
 
-log_title "Step 3: Update versions.json"
-COMMIT_HASH=$(git rev-parse HEAD) node ../$UPDATE_VERSIONS_SCRIPT_PATH
+if [ "$DEPLOY_MODE" = "staging" ]; then
+  log_info "Skipping versions.json update in staging mode."
+else
+  log_title "Step 3: Update versions.json"
+  COMMIT_HASH=$(git rev-parse HEAD) node ../$UPDATE_VERSIONS_SCRIPT_PATH
+fi
 
 log_title "Step 4: Copy build files"
 BUILD_DIR="../$BUILD_DIRNAME"
