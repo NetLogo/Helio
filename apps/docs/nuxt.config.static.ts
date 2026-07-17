@@ -3,6 +3,13 @@ import { minify } from 'html-minifier-terser';
 import { existsSync,  mkdirSync, writeFileSync } from 'node:fs';
 import { rm,glob, } from 'node:fs/promises';
 
+// The UnoCSS icon `@layer base` <style> block (~5KB) is inlined into every
+// page, but the exact set of icons differs per page. Accumulate the union of
+// icon rules across all prerendered routes here and emit a single shared
+// icons.css in the nitro close() hook.
+// -- Omar I. Jul 17 2026
+const iconLayerRules = new Set<string>();
+
 const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
   app: {
     baseURL: "./",
@@ -63,6 +70,14 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
 
         for await (const e of glob(filesToDelete, { cwd }))
           await rm(`${cwd}/${e}`, { force: true })
+
+        // Emit the shared icon stylesheet accumulated during prerendering.
+        // Each page links to this instead of inlining its own copy.
+        if (iconLayerRules.size) {
+          const dir = `${cwd}/_nuxt`
+          if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
+          writeFileSync(`${dir}/icons.css`, `@layer base{${[...iconLayerRules].join('')}}`)
+        }
       },
       'prerender:generate': async (route) => {
         if (!route.fileName?.endsWith('.html') || !route.contents) return
@@ -88,7 +103,7 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
           }
           route.contents = route.contents.replace(
             m[0],
-            `<link rel="stylesheet" href="${p}/_nuxt/ui-colors.css">` 
+            `<link rel="stylesheet" href="${p}/_nuxt/ui-colors.css">`
           )
         }
 
@@ -138,6 +153,21 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
           removeAttributeQuotes: false,
           keepClosingSlash: true,
         })
+
+        // Runs after minify() so the block is in its final minified form. 
+        // The icon set differs per page, so collect each rule into the union 
+        // set (written out in close()) and swap the inline block for a <link>.
+        // -- Omar I. Jul 17 2026
+        const icons = route.contents.match(/<style>@layer base\{[\s\S]*?<\/style>/)
+        if (icons) {
+          const body = icons[0].slice('<style>@layer base{'.length, -'}</style>'.length)
+          for (const rule of body.match(/:where\([^)]*\)\{[^}]*\}/g) ?? [])
+            iconLayerRules.add(rule)
+          route.contents = route.contents.replace(
+            icons[0],
+            `<link rel="stylesheet" href="${p}/_nuxt/icons.css">`
+          )
+        }
       }
     }
   }
