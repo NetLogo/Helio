@@ -136,6 +136,14 @@
   pointer-events: auto;
 }
 
+[data-mode="offline"] .item > .dropdown {
+  transition-delay: 0.2s;
+}
+
+[data-mode="offline"] .item:hover > .dropdown {
+  transition-delay: 0s;
+}
+
 /* Version selector */
 .version-select {
   appearance: base-select;
