@@ -12,6 +12,7 @@
     "docs:build": "./scripts/generate.sh",
     "docs:deploy": "bash ./scripts/deploy.sh",
     "docs:deploy:staging": "sh -c 'DEPLOY_MODE=staging bash ./scripts/deploy.sh'",
+    "docs:deploy:testing": "sh -c 'DEPLOY_MODE=testing bash ./scripts/deploy.sh'",
     "docs:preview": "bash ./scripts/preview.sh",
     "docs:clean-up": "bash ./scripts/clean-up.sh",
     "docs:build-and-generate-manual": "bash ./scripts/generate-manual/build-html.sh && yarn run docs:generate-manual",
