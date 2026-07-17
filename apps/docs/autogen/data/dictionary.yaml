@@ -3508,6 +3508,59 @@ entries:
         - code: ifelse-value *boolean1* [ *reporter1* ] [ *elsereporter* ]
         - code: (ifelse-value *boolean1* [ *reporter1* ] *boolean2* [ *reporter2* ] ... [ *elsereporter* ])
           since: "6.1"
+  - id: import
+    entry_categories:
+      - title: Keyword
+        id: keywords
+    data:
+      syntax:
+        - name: import
+          since: "7.1"
+      description: |+
+        Make the procedures in the given module available for use in the
+        current file. The file name of the module file (with the `.nls` suffix)
+        must be a valid NetLogo name, so there can be no space in the name.
+
+        For example:
+
+        ```
+        import utils
+        ```
+
+        This will import procedures in "utils.nls" in the same directory as the
+        current file and make them available with a "utils:" prefix. As an example,
+        if there is a reporter called `add` in "utils.nls", then it will be made
+        available for use under the name `utils:add`.
+
+        The prefix can be changed as follows:
+
+        ```
+        import utils as u
+        ```
+
+        This will instead make `add` available as `u:add`.
+
+        It is also possible to selectively import a subset of procedures or
+        reporters from a module, for example:
+
+        ```
+        import [add subtract] from utils
+        ```
+
+        This will make `add` and `subtract` available in the current file. Note
+        that no prefix is added when a module is imported this way.
+
+        Imported procedures and reporters can be renamed as follows:
+
+        ```
+        import [add (subtract as sub)] from utils
+        ```
+
+        This will instead make `subtract` available as `sub`.
+
+      examples:
+        - code: import *module* as *prefix*
+        - code: import [ *names* ] from *module*
   - id: import-drawing
     entry_categories:
       - title: Input/Output
