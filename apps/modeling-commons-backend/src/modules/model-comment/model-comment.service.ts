@@ -43,8 +43,8 @@ export default function makeModelCommentService({
   mailDomain,
   logger,
 }: Dependencies) {
-  // No dedicated "new comment" template yet (plan §15 item 5 is polish); the
-  // unsubscribe link is a placeholder until a real preferences endpoint exists.
+  // No dedicated "new comment" template yet (plan §15 item 5 is polish); until a
+  // real unsubscribe/preferences endpoint exists, point at the support inbox.
   async function notifyOnNewComment(entity: ModelCommentEntity, parent?: ModelCommentEntity) {
     try {
       const authors = await modelAuthorRepository.findAllByModel(entity.modelId);
@@ -65,12 +65,9 @@ export default function makeModelCommentService({
             recipient.email,
             recipient.name ?? 'there',
             'Someone commented on a model you are involved with.',
-            `${env.product.website}/unsubscribe`,
+            `mailto:${env.product.supportEmail}`,
           );
-          // mailDomain returns a plain { from, to, subject, html, text } object; mailService's
-          // param type comes straight from nodemailer's Mail class, which no other caller in
-          // this codebase satisfies structurally either — cast rather than widen that signature here.
-          await mailService.sendMail(content as never);
+          await mailService.sendMail(content);
         }),
       );
 
