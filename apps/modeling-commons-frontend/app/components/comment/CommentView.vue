@@ -21,7 +21,7 @@
         <UAvatar
           :src="comment.author.image"
           :alt="comment.author.name"
-          size="md"
+          size="lg"
           class="self-start my-1"
         />
       </NuxtLink>
@@ -29,7 +29,7 @@
         v-else
         :src="comment.author.image"
         :alt="comment.author.name"
-        size="md"
+        size="lg"
         class="self-start my-1"
       />
     </div>

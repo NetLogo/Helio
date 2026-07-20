@@ -13,6 +13,6 @@ const props = withDefaults(defineProps<{ class?: string }>(), {
   class: "",
 });
 const className = computed(() => {
-  return cn("absolute -left-1/2 -translate-x-9 top-3 w-full -z-1 bg-background h-[calc(100%-1rem)]", props.class);
+  return cn("absolute -left-1/2 -translate-x-9 top-3 w-full z-2 bg-background h-[calc(100%-1rem)]", props.class);
 });
 </script>
