@@ -29,7 +29,8 @@ export const EMBED_PARAMS: PaginatedQueryParams = {
 };
 
 export function commentOrderBy(sort?: ListCommentsQueryDto['sort']): OrderBy {
-  return { field: sort ?? 'createdAt', param: sort === 'likes' ? 'desc' : 'asc' };
+  const field = sort ?? 'likes';
+  return { field, param: field === 'likes' ? 'desc' : 'asc' };
 }
 
 type CommentTreeDeps = {
@@ -42,13 +43,9 @@ type CommentTreeDeps = {
 // levels, embedding at most `maximumShownRepliesPerLevel` replies per node.
 // The deepest expanded level's own children aren't fetched, only counted
 // (`countRepliesByParent`), so the UI can offer "continue this thread (N)".
-// A childless deleted node is dropped from its parent's `replies.data`
-// (decision #9); a deleted node with replies is kept. `page.count` is the raw
-// DB total for this node's replies, which can include childless tombstones
-// that get dropped from the fetched page — `visibleCount` corrects for those
-// so a node whose only replies were dropped tombstones reports 0 (and thus
-// isn't itself kept as a "has visible replies" tombstone), instead of leaking
-// a `replies.count` that promises data a follow-up fetch can't produce.
+// Soft-deleted nodes are always kept and render as `[deleted]` tombstones via
+// the mapper, so `page.count` (the raw DB total for this node's replies) is
+// reported as-is.
 export async function expandCommentTree(
   deps: CommentTreeDeps,
   entity: ModelCommentEntity,
@@ -62,25 +59,15 @@ export async function expandCommentTree(
 
   const nextDepth = depth + 1;
   let data: Array<CommentResponseDto>;
-  let droppedInPage: number;
 
   if (nextDepth < COMMENT_TREE_DEFAULTS.maximumNested) {
-    const expandedPairs = await Promise.all(
-      page.data.map(async (child) => ({
-        child,
-        childDto: await expandCommentTree(deps, child, nextDepth, ctx, EMBED_PARAMS),
-      })),
+    data = await Promise.all(
+      page.data.map((child) => expandCommentTree(deps, child, nextDepth, ctx, EMBED_PARAMS)),
     );
-    const kept = expandedPairs.filter(
-      ({ child, childDto }) => !(child.deletedAt !== null && childDto.replies === undefined),
-    );
-    data = kept.map(({ childDto }) => childDto);
-    droppedInPage = expandedPairs.length - kept.length;
   } else {
     const ids = page.data.map((child) => child.id);
     const counts = await deps.modelCommentRepository.countRepliesByParent(ids);
-    const kept = page.data.filter((child) => !(child.deletedAt !== null && (counts.get(child.id) ?? 0) === 0));
-    data = kept.map((child) => {
+    data = page.data.map((child) => {
       const childDto = deps.modelCommentMapper.toResponse(child, ctx);
       const count = counts.get(child.id) ?? 0;
       if (count > 0) {
@@ -88,13 +75,9 @@ export async function expandCommentTree(
       }
       return childDto;
     });
-    droppedInPage = page.data.length - kept.length;
   }
 
-  const visibleCount = page.count - droppedInPage;
-  if (visibleCount === 0) return dto;
-
-  dto.replies = { count: visibleCount, limit: page.limit, page: page.page, data };
+  dto.replies = { count: page.count, limit: page.limit, page: page.page, data };
   return dto;
 }
 
@@ -116,15 +99,9 @@ export default function makeListCommentsQuery({
       const rootsPage = await modelCommentRepository.listTopLevel(modelId, params, ctx.viewerId);
       const deps: CommentTreeDeps = { modelCommentRepository, modelCommentMapper };
 
-      const expandedPairs = await Promise.all(
-        rootsPage.data.map(async (root) => ({
-          root,
-          dto: await expandCommentTree(deps, root, 0, ctx, EMBED_PARAMS),
-        })),
+      const roots = await Promise.all(
+        rootsPage.data.map((root) => expandCommentTree(deps, root, 0, ctx, EMBED_PARAMS)),
       );
-      const roots = expandedPairs
-        .filter(({ root, dto }) => !(root.deletedAt !== null && dto.replies === undefined))
-        .map(({ dto }) => dto);
 
       return paginate(roots, params, rootsPage.count);
     },

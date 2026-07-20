@@ -55,7 +55,7 @@ describe('listCommentsQuery', () => {
     expect(result.data[0]!.replies).toBeUndefined();
     expect(modelCommentRepository.listTopLevel).toHaveBeenCalledWith(
       'model-1',
-      expect.objectContaining({ limit: 20, page: 0, orderBy: { field: 'createdAt', param: 'asc' } }),
+      expect.objectContaining({ limit: 20, page: 0, orderBy: { field: 'likes', param: 'desc' } }),
       undefined,
     );
   });
@@ -142,7 +142,7 @@ describe('listCommentsQuery', () => {
     expect(modelCommentRepository.listReplies).toHaveBeenCalledTimes(3);
   });
 
-  it('drops a childless deleted top-level comment from the page', async () => {
+  it('keeps a childless deleted top-level comment in the page as a tombstone', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const live = makeEntity({ id: 'live-root' });
     const tombstone = makeEntity({ id: 'dead-root', content: null, deletedAt: new Date() });
@@ -152,8 +152,10 @@ describe('listCommentsQuery', () => {
 
     const result = await query.execute('model-1', {});
 
-    expect(result.data.map((c) => c.id)).toEqual(['live-root']);
-    expect(result.count).toBe(2); // raw total is untouched by the app-level filter
+    expect(result.data.map((c) => c.id)).toEqual(['live-root', 'dead-root']);
+    expect(result.data[1]!.deleted).toBe(true);
+    expect(result.data[1]!.content).toBe('[deleted]');
+    expect(result.count).toBe(2);
   });
 
   it('keeps a deleted top-level comment that still has replies', async () => {
@@ -175,7 +177,7 @@ describe('listCommentsQuery', () => {
     expect(result.data[0]!.replies!.count).toBe(1);
   });
 
-  it('filters tombstones at the deepest (count-only) level too: childless dropped, has-replies kept', async () => {
+  it('keeps tombstones at the deepest (count-only) level, reporting their raw reply counts', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const root = makeEntity({ id: 'root' });
     const depth1 = makeEntity({ id: 'd1', parentId: 'root' });
@@ -210,13 +212,14 @@ describe('listCommentsQuery', () => {
     const result = await query.execute('model-1', {});
 
     const d2Dto = result.data[0]!.replies!.data[0]!.replies!.data[0]!;
-    const leafIds = d2Dto.replies!.data.map((c) => c.id);
+    const leaves = d2Dto.replies!.data;
 
-    expect(leafIds).toEqual(['e-dead-with-replies']);
-    expect(d2Dto.replies!.data[0]!.replies).toEqual({ count: 3, limit: 2, page: 0, data: [] });
+    expect(leaves.map((c) => c.id)).toEqual(['e-dead-childless', 'e-dead-with-replies']);
+    expect(leaves[0]!.replies).toBeUndefined();
+    expect(leaves[1]!.replies).toEqual({ count: 3, limit: 2, page: 0, data: [] });
   });
 
-  it('drops a deleted top-level comment whose only reply is itself a childless tombstone', async () => {
+  it('keeps a deleted top-level comment whose only reply is itself a tombstone', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const tombstoneRoot = makeEntity({ id: 'dead-root', content: null, deletedAt: new Date() });
     const tombstoneReply = makeEntity({
@@ -233,10 +236,13 @@ describe('listCommentsQuery', () => {
 
     const result = await query.execute('model-1', {});
 
-    expect(result.data).toHaveLength(0);
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0]!.id).toBe('dead-root');
+    expect(result.data[0]!.replies!.data.map((c) => c.id)).toEqual(['dead-reply']);
+    expect(result.data[0]!.replies!.count).toBe(1);
   });
 
-  it('keeps a deleted top-level comment whose reply is a live comment, reporting the corrected count', async () => {
+  it('keeps a deleted top-level comment with mixed live/tombstone replies, reporting the raw count', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const tombstoneRoot = makeEntity({ id: 'dead-root', content: null, deletedAt: new Date() });
     const liveReply = makeEntity({ id: 'live-reply', parentId: 'dead-root' });
@@ -256,11 +262,11 @@ describe('listCommentsQuery', () => {
 
     expect(result.data).toHaveLength(1);
     expect(result.data[0]!.id).toBe('dead-root');
-    expect(result.data[0]!.replies!.data.map((c) => c.id)).toEqual(['live-reply']);
-    expect(result.data[0]!.replies!.count).toBe(1);
+    expect(result.data[0]!.replies!.data.map((c) => c.id)).toEqual(['live-reply', 'dead-reply']);
+    expect(result.data[0]!.replies!.count).toBe(2);
   });
 
-  it('drops a childless deleted reply from a parent’s embedded replies (nested, not just top-level)', async () => {
+  it('keeps a childless deleted reply in a parent’s embedded replies (nested, not just top-level)', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const root = makeEntity({ id: 'root' });
     const liveChild = makeEntity({ id: 'live-child', parentId: 'root' });
@@ -279,6 +285,6 @@ describe('listCommentsQuery', () => {
 
     const result = await query.execute('model-1', {});
 
-    expect(result.data[0]!.replies!.data.map((c) => c.id)).toEqual(['live-child']);
+    expect(result.data[0]!.replies!.data.map((c) => c.id)).toEqual(['live-child', 'dead-child']);
   });
 });

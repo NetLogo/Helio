@@ -117,7 +117,7 @@ describe('getCommentQuery', () => {
     expect(result.permissions).toEqual({ canEdit: true, canDelete: true });
   });
 
-  it('drops a deleted child whose only reply is itself a childless tombstone, from the re-rooted comment', async () => {
+  it('keeps a deleted child and its tombstone grandchild in the re-rooted comment', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const target = makeEntity({ id: 'target-1' });
     const tombstoneChild = makeEntity({
@@ -142,7 +142,9 @@ describe('getCommentQuery', () => {
 
     const result = await query.execute('target-1', {});
 
-    expect(result.replies).toBeUndefined();
+    expect(result.replies!.data.map((c) => c.id)).toEqual(['dead-child']);
+    expect(result.replies!.count).toBe(1);
+    expect(result.replies!.data[0]!.replies!.data.map((c) => c.id)).toEqual(['dead-grandchild']);
   });
 
   it('bounds deeper levels to the standard 2-per-level embed even though the root page uses a bigger limit', async () => {
