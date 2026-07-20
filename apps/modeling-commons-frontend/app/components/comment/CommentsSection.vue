@@ -36,7 +36,7 @@
       @highlight-dismiss="dismissHighlight"
     />
     <Empty
-      v-if="!isLoading && pagination.count === 0"
+      v-if="!isLoading && pagination.count === 0 && local.comments.length === 0"
       icon="lucide:message-circle-dashed"
       title="Looks like there are no comments yet."
       description="Be the first to start the discussion."
