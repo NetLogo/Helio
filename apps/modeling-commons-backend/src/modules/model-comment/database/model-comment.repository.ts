@@ -1,4 +1,4 @@
-import type { Prisma } from '#prisma/index';
+import { Prisma } from '#prisma/index';
 import {
   modelCommentInclude,
   type ModelCommentRecord,
@@ -86,7 +86,7 @@ export default function modelCommentRepository({ db }: Dependencies): ModelComme
       return paginate(records.map(toEntity), params, count);
     },
 
-    async countRepliesByParent(parentIds: string[]): Promise<Map<string, number>> {
+    async countRepliesByParent(parentIds: Array<string>): Promise<Map<string, number>> {
       const result = new Map<string, number>();
       if (parentIds.length === 0) return result;
 
@@ -130,12 +130,15 @@ export default function modelCommentRepository({ db }: Dependencies): ModelComme
 
     async addLikeTx(ctx: TransactionContext, commentId: string, userId: string): Promise<boolean> {
       const client = resolveTransaction(ctx);
-      const existing = await client.modelCommentLike.findUnique({
-        where: { modelCommentId_userId: { modelCommentId: commentId, userId } },
-      });
-      if (existing) return false;
+      try {
+        await client.modelCommentLike.create({ data: { modelCommentId: commentId, userId } });
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+          return false;
+        }
+        throw error;
+      }
 
-      await client.modelCommentLike.create({ data: { modelCommentId: commentId, userId } });
       await client.modelComment.update({
         where: { id: commentId },
         data: { likesCount: { increment: 1 } },
