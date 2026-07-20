@@ -1,11 +1,12 @@
 import { prisma } from './providers.js';
 import { AssetUploader } from './assets.js';
-import { USERS, TAGS, MODELS, DRAFTS } from './manifest/index.js';
+import { USERS, TAGS, MODELS, COMMENTS, DRAFTS } from './manifest/index.js';
 import {
   loadUsers,
   loadTags,
   loadModels,
   loadEngagement,
+  loadComments,
   loadDrafts,
   type IdMap,
 } from './loaders.js';
@@ -30,6 +31,10 @@ async function main() {
   );
 
   const modelIds: IdMap = new Map(models.map((m) => [m.key, m.id]));
+
+  const comments = await loadComments(COMMENTS, users, modelIds);
+  console.log(`  ✓ ${comments.comments} comments, ${comments.likes} comment likes`);
+
   const draftCount = await loadDrafts(DRAFTS, users, modelIds, uploader);
   console.log(`  ✓ ${draftCount} model drafts`);
 
