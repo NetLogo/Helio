@@ -1,6 +1,6 @@
 # {{title}}
 
-<p><img width="600" height="300" src="images/whatis/thumbnails.png" alt="">
+<p><img width="600" height="300" src="images/whatis/thumbnails.webp" alt="">
 
 **NetLogo** is a programmable modeling environment for simulating natural and
 social phenomena. It was authored by Uri Wilensky in 1999 and has been in

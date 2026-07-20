@@ -34,10 +34,10 @@ Code Preferences
 <tr>
 <tr>
 <td>
-<img src="./images/preferences/generalprefs.png" style="width:5in" />
+<img src="./images/preferences/generalprefs.webp" style="width:5in" />
 </td>
 <td>
-<img src="./images/preferences/codeprefs.png" style="width:5in" />
+<img src="./images/preferences/codeprefs.webp" style="width:5in" />
 </td>
 </tr>
 </tbody>
@@ -62,10 +62,10 @@ Color Themes
 <tr>
 <tr>
 <td>
-<img src="./images/preferences/loggingprefs.png" style="width:5in" />
+<img src="./images/preferences/loggingprefs.webp" style="width:5in" />
 </td>
 <td>
-<img src="./images/preferences/colorthemes.png" style="width:5in" />
+<img src="./images/preferences/colorthemes.webp" style="width:5in" />
 </td>
 <tr>
 </tbody>
@@ -229,15 +229,15 @@ example of each theme.
 
 ### Light
 
-<img src="./images/nl7intro/inttablight.png" style="width:5in" />
+<img src="./images/nl7intro/inttablight.webp" style="width:5in" />
 
 ### Dark
 
-<img src="./images/nl7intro/inttabdark.png" style="width:5in" />
+<img src="./images/nl7intro/inttabdark.webp" style="width:5in" />
 
 ### Classic
 
-<img src="./images/nl7intro/inttabclassic.png" style="width:5in" />
+<img src="./images/nl7intro/inttabclassic.webp" style="width:5in" />
 
 ### Automatic
 

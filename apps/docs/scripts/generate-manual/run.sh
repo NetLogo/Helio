@@ -104,8 +104,12 @@ node scripts/generate-manual/index.cjs \
 
 log "✅ Generated .build/$MANUAL_NAME"
 
-cp ".build/$MANUAL_NAME" .build/${PRODUCT_VERSION}/$MANUAL_NAME
-log "✅ Copied to .build/${PRODUCT_VERSION}/$MANUAL_NAME"
+if [ -d ".build/${PRODUCT_VERSION}" ]; then
+  cp ".build/$MANUAL_NAME" .build/${PRODUCT_VERSION}/$MANUAL_NAME
+  log "✅ Copied to .build/${PRODUCT_VERSION}/$MANUAL_NAME"
+else
+  log "⚠️  Skipping copy to .build/${PRODUCT_VERSION}/$MANUAL_NAME (directory does not exist)"
+fi
 
 if [ -d ".build/latest" ]; then
   cp ".build/$MANUAL_NAME" .build/latest/$MANUAL_NAME

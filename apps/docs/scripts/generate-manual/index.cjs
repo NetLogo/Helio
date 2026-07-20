@@ -429,6 +429,7 @@ async function main() {
   const fullHtmlContent = `
 ${titleHTML}
 ${tocHTML}
+'<div style="page-break-before: always;"></div>'
 ${combinedHtml.filter(Boolean).join('')}
 `;
 

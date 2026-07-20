@@ -55,15 +55,15 @@ Classic Theme
 <tbody>
 <tr>
 <td>
-<img src="./images/nl7intro/inttablight.png" style="width:3in"
+<img src="./images/nl7intro/inttablight.webp" style="width:3in"
 alt="Alt Text" />
 </td>
 <td>
-<img src="./images/nl7intro/inttabdark.png" style="width:3in"
+<img src="./images/nl7intro/inttabdark.webp" style="width:3in"
 alt="Alt Text" />
 </td>
 <td>
-<img src="./images/nl7intro/inttabclassic.png" style="width:3in"
+<img src="./images/nl7intro/inttabclassic.webp" style="width:3in"
 alt="Alt Text" />
 </td>
 </tr>
@@ -90,7 +90,7 @@ default height of sliders, switches, choosers, inputs, monitors and plots has
 been increased. The image below shows some widgets in their new sizes on the
 left, and the original/pre-NetLogo 7 sizes on the right.
 
-<p><img src="./images/nl7intro/widgetsrelativesize.png" style="width:4.3in" /></p>
+<p><img src="./images/nl7intro/widgetsrelativesize.webp" style="width:4.3in" /></p>
 
 When you create a new model, widgets will appear by default in their new
 (generally larger) sizes. Existing models will open with new style widgets that
@@ -100,7 +100,7 @@ converted to the new sizes.
 Note that opening an old model in NetLogo 7 will automatically prompt you to
 perform an automatic widget conversion, as shown in the dialog below.
 
-<p><img src="./images/nl7intro/openmodelconvert.png" style="width:4in"/></p>
+<p><img src="./images/nl7intro/openmodelconvert.webp" style="width:4in"/></p>
 
 Click "Resize and adjust positions" to resize the widgets and change their
 placements. Click "Resize only" to resize the widgets without changing their
@@ -111,13 +111,13 @@ result of the automatic conversion. If you choose not to make the full
 conversion, you can later use the tools menu item _Tools -&gt; Convert Widgets
 to New Sizes_.
 
-<p><img src="./images/nl7intro/converttool.png" style="width:4in"/></p>
+<p><img src="./images/nl7intro/converttool.webp" style="width:4in"/></p>
 
 You can also switch the size of an individual widget by clicking the _Use old
 sizing_ checkbox. This only holds for widgets that have undergone a size change
 for NetLogo 7. The size of the output area and notes have remained the same.
 
-<p><img src="./images/nl7intro/editslider.png" style="width:4.7in" /></p>
+<p><img src="./images/nl7intro/editslider.webp" style="width:4.7in" /></p>
 
 ## New File Format
 
@@ -161,7 +161,7 @@ There is a new [Align Widgets Menu](/interfacetab#align-widgets-menu). This menu
 only active if more than one element is selected. Only one of a set of related
 options will be explained. Use the link above for more details.
 
-<p><img src="./images/interfacetab/alignwidgetsmenu.png" style="width:3in" /></p>
+<p><img src="./images/interfacetab/alignwidgetsmenu.webp" style="width:3in" /></p>
 
 With Align Left the left-most widget remains in place. The other widgets move to
 align to left-most widget edge.
@@ -192,7 +192,7 @@ The changes to the Info Tab are purely visual. The Find and Edit icons and the
 section headers have been updated, as has the Help Icon that is visible when
 editing the Info Tab.
 
-<p><img src="./images/nl7intro/infotabtoolbaredithelp.png" style="width:4in" /></p>
+<p><img src="./images/nl7intro/infotabtoolbaredithelp.webp" style="width:4in" /></p>
 
 These are the new Info Tab color themes.
 
@@ -214,11 +214,11 @@ Dark Theme
 <tbody>
 <tr>
 <td>
-<img src="./images/nl7intro/infotablight.png" style="width:4in"
+<img src="./images/nl7intro/infotablight.webp" style="width:4in"
 alt="Alt Text" />
 </td>
 <td>
-<img src="./images/nl7intro/infotabdark.png" style="width:4in"
+<img src="./images/nl7intro/infotabdark.webp" style="width:4in"
 alt="Alt Text" />
 </td>
 </tr>
@@ -250,11 +250,11 @@ Dark Theme
 <tbody>
 <tr>
 <td>
-<img src="./images/nl7intro/codetablight.png" style="width:4in"
+<img src="./images/nl7intro/codetablight.webp" style="width:4in"
 alt="Alt Text" />
 </td>
 <td>
-<img src="./images/nl7intro/codetabdark.png" style="width:4in"
+<img src="./images/nl7intro/codetabdark.webp" style="width:4in"
 alt="Alt Text" />
 </td>
 </tr>
@@ -288,7 +288,7 @@ NetLogo settings. On Windows and Linux, it is opened with the Tools menu
 “Preferences” item. For Macs, it’s under the “NetLogo” menu and reads
 “Settings”.
 
-<p><img src="./images/preferences/generalprefs.png" style="width:5in" /></p>
+<p><img src="./images/preferences/generalprefs.webp" style="width:5in" /></p>
 
 Here is a brief description of the new preferences. See the
 [Preferences Documentation](#netlogopreferences) for more details.
@@ -345,10 +345,10 @@ shapes.
 <tbody>
 <tr>
  <td>
-<img src="./images/nl7intro/turtleshapeseditor.png" style="width:3" />
+<img src="./images/nl7intro/turtleshapeseditor.webp" style="width:3" />
 </td>
 <td>
-<img src="./images/nl7intro/linkshapeseditor.png" style="width:3" />
+<img src="./images/nl7intro/linkshapeseditor.webp" style="width:3" />
 </td>
 </tr>
 </tbody>

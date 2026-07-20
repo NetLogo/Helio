@@ -23,9 +23,10 @@
     </NavbarLinksContainer>
 
     <NavbarActionsContainer>
-      <SSRUContentSearchButton />
+      <SSRUContentSearchButton v-if="!isOffline" />
 
       <VersionSelectDropdown
+        v-if="!isOffline"
         :versions="versions"
         :selected-version="selectedVersion"
         @version-change="(version) => onVersionChange(version, { productVersion, productWebsite })"
@@ -49,8 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import NetLogoUserManualLogo from '@repo/vue-ui/assets/brands/NetLogoUserManual.svg';
-import TurtlesLogo from '@repo/vue-ui/assets/brands/Turtles.svg';
+import NetLogoUserManualLogo from '@repo/vue-ui/assets/brands/NetLogoUserManual.svg?url';
+import TurtlesLogo from '@repo/vue-ui/assets/brands/Turtles.svg?url';
 import type { Navbar as _Navbar } from '@repo/vue-ui/components/navbar/index';
 import type { VersionProps } from '@repo/vue-ui/widgets/VersionSelectDropdown.vue';
 import { useMediaQuery } from '@vueuse/core';
@@ -60,6 +61,7 @@ import { onVersionChange, pullVersionsFromSource } from '~~/shared/versions';
 const {
   public: {
     website: { productWebsite, productVersion, versionsSrc  },
+    isOffline
   },
 } = useRuntimeConfig();
 
@@ -80,7 +82,10 @@ const extensionList = useRuntimeConfig().public.extensions as Array<{
 const isMobileScreen = ref(false);
 const navbarRef = useTemplateRef<InstanceType<typeof _Navbar>>('navbar');
 
-const brand = computed(() => (isMobileScreen.value ? TurtlesLogo : NetLogoUserManualLogo));
+const brand = computed(() => ( h( 'img', {
+  src: isMobileScreen.value ? TurtlesLogo : NetLogoUserManualLogo,
+  alt: 'NetLogo User Manual',
+})));  
 const brandAttrs = computed(() => (isMobileScreen.value ? { style: { width: '2rem' } } : { width: 'auto' }));
 
 
@@ -229,6 +234,7 @@ const versions = ref<Record<string, VersionProps>>({
 
 const selectedVersion = ref<string>(productVersion);
 
+updateActiveStates();
 onMounted(() => {
   if (import.meta.client) {
     updateActiveStates();

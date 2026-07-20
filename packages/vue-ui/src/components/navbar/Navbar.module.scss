@@ -127,12 +127,21 @@
   background: var(--color-nav-hover);
 }
 
+[data-mode="offline"] .item:hover > .dropdown,
 .item:hover:not(:has(.dropdown:hover)) > .dropdown,
 .dropdown.open,
 .dropdown:has(> *:focus-visible) {
   opacity: 1;
   transform: scaleY(1);
   pointer-events: auto;
+}
+
+[data-mode="offline"] .item > .dropdown {
+  transition-delay: 0.2s;
+}
+
+[data-mode="offline"] .item:hover > .dropdown {
+  transition-delay: 0s;
 }
 
 /* Version selector */
