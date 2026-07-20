@@ -163,6 +163,10 @@ const rules = {
         '/sign-up': { window: 60, max: 10 },
       },
     } as BetterAuthRateLimitOptions,
+
+    comment: {
+      content: { min: 1, max: 10_000 } as MinMax,
+    },
   },
   mime: {
     deniedTypes: [
