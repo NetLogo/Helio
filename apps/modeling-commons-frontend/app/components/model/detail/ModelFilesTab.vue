@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 lg:p-6">
+  <div id="files" class="p-2 lg:p-6">
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-lg font-semibold text-highlighted">Attached Files</h3>
       <UButton v-if="editable" variant="outline" icon="i-lucide-plus" size="sm">
