@@ -1,4 +1,5 @@
 import { requireAuth } from '#src/shared/hooks/require-auth.ts';
+import { resolveComment } from '#src/shared/hooks/resolve-comment.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
 import type { FastifyInstance } from 'fastify';
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
@@ -78,7 +79,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
         response: { 200: commentResponseDtoSchema },
         tags: ['Comment'],
       },
-      preHandler: [resolveModel('read')],
+      preHandler: [resolveModel('read'), resolveComment()],
     },
     async (request) => {
       return getCommentQuery.execute(request.params.commentId, request.query, {
@@ -96,7 +97,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
         body: updateCommentRequestDtoSchema,
         tags: ['Comment'],
       },
-      preHandler: [requireAuth, resolveModel('read')],
+      preHandler: [requireAuth, resolveModel('read'), resolveComment()],
     },
     async (request, reply) => {
       await modelCommentService.updateContent({
@@ -114,7 +115,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
     '/v1/models/:id/comments/:commentId',
     {
       schema: { params: modelCommentDetailParamsSchema, tags: ['Comment'] },
-      preHandler: [requireAuth, resolveModel('read')],
+      preHandler: [requireAuth, resolveModel('read'), resolveComment()],
     },
     async (request, reply) => {
       await modelCommentService.softDelete({
@@ -131,7 +132,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
     '/v1/models/:id/comments/:commentId/like',
     {
       schema: { params: modelCommentDetailParamsSchema, tags: ['Comment'] },
-      preHandler: [requireAuth, resolveModel('read')],
+      preHandler: [requireAuth, resolveModel('read'), resolveComment()],
     },
     async (request, reply) => {
       await modelCommentService.like({
@@ -148,7 +149,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
     '/v1/models/:id/comments/:commentId/like',
     {
       schema: { params: modelCommentDetailParamsSchema, tags: ['Comment'] },
-      preHandler: [requireAuth, resolveModel('read')],
+      preHandler: [requireAuth, resolveModel('read'), resolveComment()],
     },
     async (request, reply) => {
       await modelCommentService.unlike({
