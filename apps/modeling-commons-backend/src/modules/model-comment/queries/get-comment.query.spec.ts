@@ -117,6 +117,34 @@ describe('getCommentQuery', () => {
     expect(result.permissions).toEqual({ canEdit: true, canDelete: true });
   });
 
+  it('drops a deleted child whose only reply is itself a childless tombstone, from the re-rooted comment', async () => {
+    const { query, modelCommentRepository } = buildQuery();
+    const target = makeEntity({ id: 'target-1' });
+    const tombstoneChild = makeEntity({
+      id: 'dead-child',
+      parentId: 'target-1',
+      content: null,
+      deletedAt: new Date(),
+    });
+    const tombstoneGrandchild = makeEntity({
+      id: 'dead-grandchild',
+      parentId: 'dead-child',
+      content: null,
+      deletedAt: new Date(),
+    });
+
+    modelCommentRepository.findById.mockResolvedValue(target);
+    modelCommentRepository.listReplies.mockImplementation(async (parentId: string) => {
+      if (parentId === 'target-1') return page([tombstoneChild], 1, 20, 0);
+      if (parentId === 'dead-child') return page([tombstoneGrandchild], 1);
+      return page([], 0);
+    });
+
+    const result = await query.execute('target-1', {});
+
+    expect(result.replies).toBeUndefined();
+  });
+
   it('bounds deeper levels to the standard 2-per-level embed even though the root page uses a bigger limit', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const target = makeEntity({ id: 'target-1' });
