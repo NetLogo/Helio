@@ -54,9 +54,3 @@ export default function modelCommentMapper(): ModelCommentMapper {
     },
   };
 }
-
-declare global {
-  interface Dependencies {
-    modelCommentMapper: ModelCommentMapper;
-  }
-}
