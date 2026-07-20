@@ -147,3 +147,14 @@ Critical, non-obvious decisions made while working in this repo. Newest first.
 2. **The avatar's profile link wrapper is `class="contents"`** so the anchor is layout-inert: the `UAvatar` keeps its own positioning classes and continues to anchor the spine/elbow drawing exactly as before.
 3. **Fixture authors carry `/users/user-<name>` profile urls** matching the `/users/:id` route convention; the metadata bar's pre-existing name link lights up from the same `author.url`.
 4. **The continue-thread button now carries `data-testid="continue-thread-link"`** — date links share the `/models/<id>/comments/<id>` href shape, so href-only selectors no longer disambiguate it in tests.
+
+## 2026-07-20 — Comments backend: `model-comment` module (greenfield)
+
+**Context:** New DDD module `apps/modeling-commons-backend/src/modules/model-comment/` implementing the plan in `apps/modeling-commons-backend/doc/discussion-plan.md`. Routes nested under `/v1/models/:id/comments`.
+
+**Decisions:**
+1. **Cross-model authorization is a dedicated preHandler hook** `src/shared/hooks/resolve-comment.ts` (`resolveComment()`), applied to all five `:commentId` routes after `resolveModel('read')`. It loads the comment and 404s (`CommentNotFoundError`) when it's missing or `comment.modelId !== params.id`. This closes an IDOR on `GET .../comments/:commentId` (the read path previously loaded by id globally). The service's own `modelId` re-check on writes stays as defense-in-depth. A generic `resolveModelResource<T>` exists but the bespoke hook was chosen to throw the module's own not-found error.
+2. **Deliberate corrections to the plan (repo reality, not deviations to fix):** routes use `:id` not `:modelId` (`resolveModel` reads `request.params.id`); 400s use `ArgumentInvalidException` (repo has no `BadRequestException`); the recursive response DTO uses `Type.Cyclic`/`Type.Ref` (this repo's `typebox` v1.1.x has no `Type.Recursive`); private-model access returns **403** not 404 (`resolveModel` always throws `ForbiddenException`).
+3. **`addLikeTx` is insert-and-catch-`P2002`**, not check-then-act, so concurrent duplicate likes are an idempotent no-op instead of a 500.
+4. **`mailService.sendMail` param type corrected** from nodemailer's `Mail` class to `Mail.Options` (the real seam bug behind the former `as never` cast). New-comment notification reuses `createNotificationEmail`; a dedicated `createNewCommentEmail` template remains a polish follow-up. No unsubscribe route exists, so the email links `mailto:${env.product.supportEmail}`.
+5. **Migration `20260720000000_add_model_comment` was hand-authored** (Docker/postgres unavailable in the authoring environment) and is **NOT yet applied**; the SQL was reviewed as faithful to `schema.prisma` but must be applied (`yarn db:migrate:dev`) and ideally sanity-checked with `prisma migrate diff` before the cucumber e2e (`tests/api/model-comment.*`) can run.
