@@ -118,6 +118,7 @@ import type { AttachedFile } from "./types";
 import { getAuthorUrl, getPrimaryAuthor } from "~/components/model/ModelAuthors.vue";
 
 const props = defineProps<{ card: ModelCard; permissions: UserModelPermissions }>();
+const router = useRouter();
 
 type TabKey = "discussion" | "files" | "versions" | "family";
 
@@ -203,7 +204,24 @@ function onTabChange(idx: string | number) {
   if (key === "files" && filesStatus.value === "idle") {
     void loadFiles();
   }
+
+  router.replace({
+    hash: "#" + key,
+  })
 }
+
+onMounted(() => {
+  const hash = router.currentRoute.value.hash.replace(/^#/, "");
+  const tabIndex = tabs.value.findIndex((tab) => tab.slot === hash);
+  if (tabIndex >= 0) {
+    activeTab.value = String(tabIndex);
+  }
+  nextTick(() =>
+    setTimeout(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "instant" });
+    }, 100)
+  );
+});
 
 const interactions = useModelInteractions();
 const toast = useToast();

@@ -9,9 +9,9 @@
     <UserAvatar
       v-if="!props.isEditing"
       :src="profile?.image"
-      :alt="profile?.name"
+      :name="profile?.name"
       variant="compact"
-      class="self-start my-1"
+      class="self-start my-1 text-xs"
     />
     <UTextarea
       :id="props.id"

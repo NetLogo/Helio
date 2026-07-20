@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 lg:p-6">
+  <div id="discussion" class="p-2 lg:p-6">
     <div class="flex items-center justify-between mb-6">
       <h3 class="text-lg font-semibold text-highlighted">Discussion</h3>
       <div class="flex items-center gap-2 text-sm">

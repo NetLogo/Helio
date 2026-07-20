@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 lg:p-6">
+  <div id="family" class="p-2 lg:p-6">
     <div class="mb-4">
       <h3 class="text-lg font-semibold text-highlighted">Model Family</h3>
       <p class="text-xs text-dimmed mt-1">

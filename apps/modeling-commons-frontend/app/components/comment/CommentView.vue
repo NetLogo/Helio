@@ -22,7 +22,7 @@
           :src="comment.author.image"
           :alt="comment.author.name"
           size="lg"
-          class="self-start my-1"
+          class="self-start my-1 text-xs"
         />
       </NuxtLink>
       <UAvatar
@@ -30,7 +30,7 @@
         :src="comment.author.image"
         :alt="comment.author.name"
         size="lg"
-        class="self-start my-1"
+        class="self-start my-1 text-xs"
       />
     </div>
 
