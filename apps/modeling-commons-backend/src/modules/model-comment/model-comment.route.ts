@@ -21,11 +21,16 @@ import {
   listCommentsQueryDtoSchema,
   type ListCommentsQueryDto,
 } from '#src/modules/model-comment/dtos/list-comments.query.dto.ts';
-import { commentResponseDtoSchema } from '#src/modules/model-comment/dtos/comment.response.dto.ts';
+import {
+  commentResponseDtoSchema,
+  commentResponseRefSchema,
+} from '#src/modules/model-comment/dtos/comment.response.dto.ts';
 import { commentPaginatedResponseSchema } from '#src/modules/model-comment/dtos/comment.paginated.response.dto.ts';
 
 export default async function modelCommentRoutes(fastify: FastifyInstance) {
   const { modelCommentService, listCommentsQuery, getCommentQuery } = fastify.diContainer.cradle;
+
+  fastify.addSchema(commentResponseDtoSchema);
 
   fastify.get<{ Params: ModelCommentParams; Querystring: ListCommentsQueryDto }>(
     '/v1/models/:id/comments',
@@ -76,7 +81,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
       schema: {
         params: modelCommentDetailParamsSchema,
         querystring: listCommentsQueryDtoSchema,
-        response: { 200: commentResponseDtoSchema },
+        response: { 200: commentResponseRefSchema },
         tags: ['Comment'],
       },
       preHandler: [resolveModel('read'), resolveComment()],
