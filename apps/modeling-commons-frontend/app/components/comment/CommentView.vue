@@ -238,6 +238,13 @@ const toggleReplyInput = () => {
   }
   emit("write");
   if (props.readOnly) return;
+  // At the nesting limit an inline reply would be inserted below the deepest
+  // rendered level and never shown. Continue the conversation on the comment's
+  // own thread page, where it is re-rooted with fresh depth.
+  if (atNestingLimit.value && threadLink.value) {
+    navigateTo(threadLink.value);
+    return;
+  }
   isReplyInputVisible.value = true;
 };
 

@@ -8,8 +8,10 @@ import CommentView from "./CommentView.vue";
 import { editedComment, longComment, shortComment } from "./fixtures";
 import { mountCommentView, useProfileMock, useUserMock } from "~~/tests/helpers";
 
+const navigateToMock = vi.hoisted(() => vi.fn());
 mockNuxtImport("useUser", () => () => useUserMock());
 mockNuxtImport("useProfile", () => () => useProfileMock());
+mockNuxtImport("navigateTo", () => navigateToMock);
 
 describe("CommentView rendering", () => {
   it("renders the author name, content, and like count", async () => {
@@ -125,6 +127,30 @@ describe("CommentView interactions", () => {
       [{ commentId: editedComment.id, content: "Updated content" }],
     ]);
     expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
+  });
+
+  it("routes to the thread page instead of an inline composer at the nesting limit", async () => {
+    navigateToMock.mockClear();
+    const wrapper = await mountCommentView(shortComment, { maximumNested: 0 });
+
+    wrapper.findComponent(CommentActions).vm.$emit("reply");
+    await nextTick();
+
+    expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
+    expect(navigateToMock).toHaveBeenCalledWith(
+      `/models/${shortComment.modelId}/comments/${shortComment.id}`,
+    );
+  });
+
+  it("opens an inline composer above the nesting limit", async () => {
+    navigateToMock.mockClear();
+    const wrapper = await mountCommentView(shortComment, { maximumNested: 2 });
+
+    wrapper.findComponent(CommentActions).vm.$emit("reply");
+    await nextTick();
+
+    expect(wrapper.findComponent(CommentInput).exists()).toBe(true);
+    expect(navigateToMock).not.toHaveBeenCalled();
   });
 
   it("bubbles events from nested replies with the reply's payload", async () => {
