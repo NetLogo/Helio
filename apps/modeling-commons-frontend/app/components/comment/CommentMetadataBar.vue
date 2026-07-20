@@ -1,16 +1,6 @@
 <template>
   <div class="flex items-center gap-3">
-    <UButton
-      v-if="collapsible"
-      :icon="collapsed ? 'i-lucide-chevron-down' : 'i-lucide-chevron-up'"
-      variant="ghost"
-      color="neutral"
-      size="xs"
-      class="p-1"
-      :aria-expanded="!collapsed"
-      :aria-label="collapsed ? 'Expand comment' : 'Collapse comment'"
-      @click="emit('toggle-collapse')"
-    />
+
     <NuxtLink v-if="author.url" :to="author.url" class="font-semibold">{{ author.name }}</NuxtLink>
     <span v-else class="font-semibold">{{ author.name }}</span>
     <NuxtLink
@@ -22,7 +12,19 @@
     </NuxtLink>
     <span v-else class="text-xs text-gray-500">{{ formatRelativeDate(createdAt) }}</span>
     <span v-if="edited" class="text-xs text-gray-500">(edited)</span>
+    <UButton
+      v-if="collapsible"
+      :icon="collapsed ? 'i-lucide-chevron-down' : 'i-lucide-chevron-up'"
+      variant="ghost"
+      color="neutral"
+      size="xs"
+      class="p-1"
+      :aria-expanded="!collapsed"
+      :aria-label="collapsed ? 'Expand comment' : 'Collapse comment'"
+      @click="emit('toggle-collapse')"
+    />
     <span v-if="collapsed" class="text-xs text-gray-500">{{ collapsedSummary }}</span>
+
   </div>
 </template>
 
