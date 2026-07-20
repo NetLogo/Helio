@@ -8,6 +8,11 @@ export const commentAuthorDtoSchema = Type.Object({
 
 export type CommentAuthorDto = Static<typeof commentAuthorDtoSchema>;
 
+// Registered as a shared schema (see model-comment.route.ts) so @fastify/swagger can hoist
+// the recursive `replies.data` reference into `components/schemas` instead of leaving it
+// dangling when the same cyclic schema is inlined into multiple routes.
+export const commentResponseSchemaId = 'CommentResponse';
+
 export const commentResponseDtoSchema = Type.Cyclic(
   {
     Comment: Type.Object({
@@ -40,6 +45,9 @@ export const commentResponseDtoSchema = Type.Cyclic(
     }),
   },
   'Comment',
+  { $id: commentResponseSchemaId },
 );
 
 export type CommentResponseDto = Static<typeof commentResponseDtoSchema>;
+
+export const commentResponseRefSchema = { $ref: `${commentResponseSchemaId}#` };
