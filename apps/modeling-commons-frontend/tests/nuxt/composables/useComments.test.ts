@@ -1,34 +1,38 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, ref } from "vue";
-import { comments as fixtureComments, deepThread } from "~/components/comment/fixtures";
+import { comments as fixtureComments } from "~/components/comment/fixtures";
 import useComments from "~/composables/comments/useComments";
 import type { CommentsSource } from "~/composables/comments/useComments";
+import { commentFetchCalls, installCommentFetchMock } from "~~/tests/helpers";
+
+beforeEach(() => {
+  installCommentFetchMock();
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 describe("useComments with a modelId source", () => {
-  it("returns the fixture comments with pagination and a success status", async () => {
+  it("maps the paginated list response with a success status", async () => {
     const { comments, pagination, status, error, refresh } = useComments({ modelId: "m-1" });
     await refresh();
 
-    expect(comments.value).toEqual(fixtureComments);
-    expect(pagination.value).toEqual({ count: fixtureComments.length, lastPage: 1 });
+    expect(comments.value.map((comment) => comment.id)).toEqual(
+      fixtureComments.map((comment) => comment.id),
+    );
+    expect(pagination.value).toEqual({ count: fixtureComments.length, lastPage: 0 });
     expect(status.value).toBe("success");
     expect(error.value).toBeFalsy();
   });
 
-  it("returns deep clones so consumers cannot corrupt the fixtures", async () => {
-    const { comments, refresh } = useComments({ modelId: "m-2" });
+  it("maps author ids into profile urls and defaults likedByMe", async () => {
+    const { comments, refresh } = useComments({ modelId: "m-1" });
     await refresh();
 
     const first = comments.value[0]!;
-    expect(first).not.toBe(fixtureComments[0]);
-    expect(first.replies?.[0]).not.toBe(fixtureComments[0]!.replies?.[0]);
-
-    first.content = "mutated";
-    first.replies?.splice(0);
-    await refresh();
-
-    expect(comments.value[0]?.content).toBe(fixtureComments[0]!.content);
-    expect(comments.value[0]?.replies).toHaveLength(fixtureComments[0]!.replies!.length);
+    expect(first.author.url).toBe("/users/user-omar");
+    expect(typeof first.likedByMe).toBe("boolean");
   });
 
   it("returns roots without a parentId", async () => {
@@ -39,45 +43,48 @@ describe("useComments with a modelId source", () => {
     expect(comments.value.every((comment) => comment.parentId === undefined)).toBe(true);
   });
 
-  it("returns an empty payload for an empty modelId", async () => {
+  it("forwards the sort key as a query param", async () => {
+    const { refresh } = useComments({ modelId: "m-1" }, "likes");
+    await refresh();
+
+    const listCall = commentFetchCalls().find((call) => call.method === "GET");
+    expect(listCall?.url).toContain("sort=likes");
+  });
+
+  it("returns an empty payload for an empty modelId without fetching", async () => {
     const { comments, pagination, refresh } = useComments({ modelId: "" });
     await refresh();
 
     expect(comments.value).toEqual([]);
     expect(pagination.value).toEqual({ count: 0, lastPage: 0 });
+    expect(commentFetchCalls()).toHaveLength(0);
   });
 });
 
 describe("useComments with a commentId source", () => {
   it("wraps the found comment as the single root of the thread", async () => {
-    const { comments, pagination, refresh } = useComments({ commentId: "100" });
+    const { comments, pagination, refresh } = useComments({ modelId: "m-1", commentId: "100" });
     await refresh();
 
     expect(comments.value).toHaveLength(1);
-    expect(comments.value[0]).toEqual(deepThread);
-    expect(comments.value[0]).not.toBe(deepThread);
-    expect(pagination.value).toEqual({ count: 1, lastPage: 1 });
+    expect(comments.value[0]?.id).toBe("100");
+    expect(comments.value[0]?.replies?.length).toBeGreaterThan(0);
+    expect(pagination.value).toEqual({ count: 1, lastPage: 0 });
   });
 
   it("roots the thread at a nested comment", async () => {
-    const { comments, refresh } = useComments({ commentId: "103" });
+    const { comments, refresh } = useComments({ modelId: "m-1", commentId: "103" });
     await refresh();
 
     expect(comments.value[0]?.id).toBe("103");
     expect(comments.value[0]?.replies?.map((reply) => reply.id)).toEqual(["104", "107"]);
   });
 
-  it("carries the stamped parentId through the thread fetch", async () => {
-    const { comments, refresh } = useComments({ commentId: "103" });
-    await refresh();
-
-    expect(comments.value[0]?.parentId).toBe("102");
-    expect(comments.value[0]?.replies?.length).toBeGreaterThan(0);
-    expect(comments.value[0]?.replies?.every((reply) => reply.parentId === "103")).toBe(true);
-  });
-
   it("returns an empty payload for an unknown commentId", async () => {
-    const { comments, pagination, status, refresh } = useComments({ commentId: "nope" });
+    const { comments, pagination, status, refresh } = useComments({
+      modelId: "m-1",
+      commentId: "nope",
+    });
     await refresh();
 
     expect(comments.value).toEqual([]);
@@ -94,7 +101,7 @@ describe("useComments source reactivity", () => {
 
     expect(comments.value).toHaveLength(fixtureComments.length);
 
-    source.value = { commentId: "100" };
+    source.value = { modelId: "m-3", commentId: "100" };
     await nextTick();
 
     await vi.waitFor(() => {
@@ -105,7 +112,7 @@ describe("useComments source reactivity", () => {
 
   it("accepts a getter source", async () => {
     const id = ref("5");
-    const { comments, refresh } = useComments(() => ({ commentId: id.value }));
+    const { comments, refresh } = useComments(() => ({ modelId: "m-1", commentId: id.value }));
     await refresh();
 
     expect(comments.value[0]?.id).toBe("5");

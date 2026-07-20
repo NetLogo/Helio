@@ -2,7 +2,7 @@
  * Regression suite for the nested-comments feature.
  */
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import { UModal } from "#components";
 import CommentActions from "./CommentActions.vue";
@@ -13,6 +13,7 @@ import CommentView from "./CommentView.vue";
 import ConfirmDeleteCommentDialog from "./ConfirmDeleteCommentDialog.vue";
 import { deepThread, editedComment, longComment, noRepliesComment, shortComment } from "./fixtures";
 import {
+  installCommentFetchMock,
   mountCommentView,
   mountCommentsPanel,
   mountCommentsSection,
@@ -30,6 +31,11 @@ const flatComments = [shortComment, editedComment, noRepliesComment];
 
 beforeEach(() => {
   resetCommentMocks();
+  installCommentFetchMock();
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe("CommentsPanel bugs", () => {

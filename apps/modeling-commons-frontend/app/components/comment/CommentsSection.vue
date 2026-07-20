@@ -16,9 +16,7 @@
       icon="i-lucide-message-circle-off"
       title="Comments failed to load"
       description="Something went wrong while loading the discussion."
-      :actions="[
-        { label: 'Retry', color: 'error', variant: 'outline', onClick: () => refresh() },
-      ]"
+      :actions="[{ label: 'Retry', color: 'error', variant: 'outline', onClick: () => refresh() }]"
     />
     <CommentsPanel
       v-else
@@ -37,33 +35,51 @@
       @write="handleWriteAttempt"
       @highlight-dismiss="dismissHighlight"
     />
+    <Empty
+      v-if="!isLoading && pagination.count === 0"
+      icon="lucide:message-circle-dashed"
+      title="Looks like there are no comments yet."
+      description="Be the first to start the discussion."
+    >
+      <UButton color="primary" variant="outline" size="sm" @click="handleWriteAttempt"> Write a comment </UButton>
+    </Empty>
   </template>
 </template>
 
 <script lang="ts" setup>
-import { insertReply, removeCommentById, updateCommentById } from "./comment-tree";
-import type { Comment, CommentAuthor } from "./types";
-import type { CommentsPayload, CommentsSource } from "~/composables/comments/useComments";
+import { findCommentById, insertReply, removeCommentById, updateCommentById } from "./comment-tree";
+import { COMMENT_TREE_DEFAULTS } from "./types";
+import type { Comment, CommentAuthor, CommentPagination } from "./types";
+import type {
+  CommentsPayload,
+  CommentSort,
+  CommentsSource,
+} from "~/composables/comments/useComments";
+import {
+  commentsApiBase,
+  fetchComment,
+  fetchModelComments,
+} from "~/composables/comments/useComments";
 
 const props = defineProps<{
   modelId?: string;
   commentId?: string;
   readOnly?: boolean;
+  sort?: CommentSort;
 }>();
 
-const hasSource = computed(() => Boolean(props.modelId || props.commentId));
+const hasSource = computed(() => Boolean(props.modelId));
 
-if (import.meta.dev && (!hasSource.value || (props.modelId && props.commentId))) {
-  console.warn("[CommentsSection] expected exactly one of modelId or commentId");
+if (import.meta.dev && !hasSource.value) {
+  console.warn("[CommentsSection] a modelId is required");
 }
 
-const source = computed<CommentsSource>(() =>
-  props.modelId || !props.commentId
-    ? { modelId: props.modelId ?? "" }
-    : { commentId: props.commentId },
-);
+const source = computed<CommentsSource>(() => ({
+  modelId: props.modelId ?? "",
+  commentId: props.commentId,
+}));
 
-const { comments, pagination, status, refresh } = useComments(source);
+const { comments, pagination, status, refresh } = useComments(source, () => props.sort);
 
 const isLoading = computed(() => status.value === "pending" || status.value === "idle");
 
@@ -132,90 +148,178 @@ const makeLocalComment = (content: string, author: CommentAuthor): Comment => ({
   permissions: { canEdit: true, canDelete: true },
 });
 
+const toast = useToast();
+const apiBase = commentsApiBase();
+const mutations = useCommentMutations(() => props.modelId ?? "");
+
+const notifyFailure = () =>
+  toast.add({
+    title: "Something went wrong",
+    description: "Your change could not be saved. Please try again.",
+    color: "error",
+    icon: "i-lucide-triangle-alert",
+  });
+
 const busy = ref(false);
-const runOptimistic = async (mutate: () => void) => {
+const runOptimistic = async (apply: () => void, persist: () => Promise<void>) => {
   if (busy.value) return;
   busy.value = true;
+  const snapshot = { comments: local.comments, pagination: { ...local.pagination } };
   try {
-    mutate();
-    // TODO: once the backend exists, await the real API call here; on failure
-    // restore the pre-mutation local.comments/local.pagination and toast.
+    apply();
+    await persist();
+  } catch {
+    local.comments = snapshot.comments;
+    local.pagination = snapshot.pagination;
+    notifyFailure();
   } finally {
     busy.value = false;
   }
 };
 
-// TODO: POST /api/v1/models/{id}/comments — swap the local id for the created one.
+const swapLocalId = (temporaryId: string, id: string) => {
+  local.comments = updateCommentById(local.comments, temporaryId, (comment) => ({
+    ...comment,
+    id,
+  }));
+};
+
 const handleCreate = ({ content }: { content: string }) => {
   const author = commentAuthor.value;
   if (!author) return;
-  runOptimistic(() => {
-    local.comments = [makeLocalComment(content, author), ...local.comments];
-    local.pagination = { ...local.pagination, count: local.pagination.count + 1 };
-  });
+  const optimistic = makeLocalComment(content, author);
+  runOptimistic(
+    () => {
+      local.comments = [optimistic, ...local.comments];
+      local.pagination = { ...local.pagination, count: local.pagination.count + 1 };
+    },
+    async () => {
+      const { id } = await mutations.create({ content });
+      swapLocalId(optimistic.id, id);
+    },
+  );
 };
 
-// TODO: POST /api/v1/comments/{id}/replies — swap the local id for the created one.
 const handleReply = ({ commentId, content }: { commentId: string; content: string }) => {
   const author = commentAuthor.value;
   if (!author) return;
-  runOptimistic(() => {
-    local.comments = insertReply(local.comments, commentId, makeLocalComment(content, author));
-  });
+  const optimistic = { ...makeLocalComment(content, author), parentId: commentId };
+  runOptimistic(
+    () => {
+      local.comments = insertReply(local.comments, commentId, optimistic);
+    },
+    async () => {
+      const { id } = await mutations.create({ content, parentId: commentId });
+      swapLocalId(optimistic.id, id);
+    },
+  );
 };
 
-// TODO: PATCH /api/v1/comments/{id}
 const handleEdit = ({ commentId, content }: { commentId: string; content: string }) => {
-  runOptimistic(() => {
-    local.comments = updateCommentById(local.comments, commentId, (comment) => ({
-      ...comment,
-      content,
-      edited: true,
-    }));
-  });
+  runOptimistic(
+    () => {
+      local.comments = updateCommentById(local.comments, commentId, (comment) => ({
+        ...comment,
+        content,
+        edited: true,
+      }));
+    },
+    () => mutations.edit({ commentId, content }),
+  );
 };
 
-// TODO: POST /api/v1/comments/{id}/like
 const handleLike = ({ commentId }: { commentId: string }) => {
-  runOptimistic(() => {
-    local.comments = updateCommentById(local.comments, commentId, (comment) => ({
-      ...comment,
-      likes: comment.likes + 1,
-      likedByMe: true,
-    }));
-  });
+  runOptimistic(
+    () => {
+      local.comments = updateCommentById(local.comments, commentId, (comment) => ({
+        ...comment,
+        likes: comment.likes + 1,
+        likedByMe: true,
+      }));
+    },
+    () => mutations.like({ commentId }),
+  );
 };
 
-// TODO: DELETE /api/v1/comments/{id}/like
 const handleUnlike = ({ commentId }: { commentId: string }) => {
-  runOptimistic(() => {
-    local.comments = updateCommentById(local.comments, commentId, (comment) => ({
-      ...comment,
-      likes: Math.max(0, comment.likes - 1),
-      likedByMe: false,
-    }));
-  });
+  runOptimistic(
+    () => {
+      local.comments = updateCommentById(local.comments, commentId, (comment) => ({
+        ...comment,
+        likes: Math.max(0, comment.likes - 1),
+        likedByMe: false,
+      }));
+    },
+    () => mutations.unlike({ commentId }),
+  );
 };
 
-// TODO: DELETE /api/v1/comments/{id}
 const handleDelete = ({ commentId }: { commentId: string }) => {
-  runOptimistic(() => {
-    const wasTopLevel = local.comments.some((comment) => comment.id === commentId);
-    local.comments = removeCommentById(local.comments, commentId);
-    if (wasTopLevel) {
-      local.pagination = {
-        ...local.pagination,
-        count: Math.max(0, local.pagination.count - 1),
-      };
-    }
-  });
+  const wasTopLevel = local.comments.some((comment) => comment.id === commentId);
+  runOptimistic(
+    () => {
+      local.comments = removeCommentById(local.comments, commentId);
+      if (wasTopLevel) {
+        local.pagination = {
+          ...local.pagination,
+          count: Math.max(0, local.pagination.count - 1),
+        };
+      }
+    },
+    () => mutations.remove({ commentId }),
+  );
 };
 
-// TODO: GET /api/v1/comments/{id}/replies?page=… — append the fetched replies to
-// the target comment and advance its replyPagination. No backend to page from yet.
-const handleLoad = (_event: { commentId: string }) => {};
+// Replies always read chronologically, so paging a node's replies keeps the
+// default (createdAt) order rather than the top-level sort.
+const handleLoad = async ({ commentId }: { commentId: string }) => {
+  if (busy.value || !props.modelId) return;
+  const target = findCommentById(local.comments, commentId);
+  if (!target) return;
+  busy.value = true;
+  try {
+    const nextPage = (target.replyPagination?.lastPage ?? 0) + 1;
+    const root = await fetchComment(apiBase, props.modelId, commentId, {
+      page: nextPage,
+      limit: COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel,
+    });
+    if (!root) return;
+    const fetched = root.replies ?? [];
+    local.comments = updateCommentById(local.comments, commentId, (comment) => {
+      const seen = new Set((comment.replies ?? []).map((reply) => reply.id));
+      const added = fetched.filter((reply) => !seen.has(reply.id));
+      return {
+        ...comment,
+        replies: [...(comment.replies ?? []), ...added],
+        replyPagination: {
+          count: root.replyPagination?.count ?? comment.replyPagination?.count ?? 0,
+          lastPage: nextPage,
+        },
+      };
+    });
+  } catch {
+    notifyFailure();
+  } finally {
+    busy.value = false;
+  }
+};
 
-// TODO: GET /api/v1/models/{id}/comments?page=… — append the next page to
-// local.comments and advance local.pagination. No backend to page from yet.
-const handleLoadMore = (_pagination: { count: number; lastPage: number }) => {};
+const handleLoadMore = async (current: CommentPagination) => {
+  if (busy.value || !props.modelId) return;
+  busy.value = true;
+  try {
+    const next = await fetchModelComments(apiBase, props.modelId, {
+      page: current.lastPage + 1,
+      sort: props.sort,
+    });
+    const seen = new Set(local.comments.map((comment) => comment.id));
+    const added = next.comments.filter((comment) => !seen.has(comment.id));
+    local.comments = [...local.comments, ...added];
+    local.pagination = next.pagination;
+  } catch {
+    notifyFailure();
+  } finally {
+    busy.value = false;
+  }
+};
 </script>
