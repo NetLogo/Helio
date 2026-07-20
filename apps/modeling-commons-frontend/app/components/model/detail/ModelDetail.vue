@@ -86,7 +86,7 @@
       @update:model-value="idx => onTabChange(idx)"
     >
       <template #discussion>
-        <ModelDiscussionTab />
+        <ModelDiscussionTab :model-id="card.model.id" />
       </template>
       <template #files>
         <ModelFilesTab

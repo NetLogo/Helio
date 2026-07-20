@@ -29,7 +29,7 @@
         <h4 class="tracking-tight">Comment thread</h4>
         <p data-testid="thread-subtitle" class="text-sm text-muted">{{ subtitle }}</p>
       </div>
-      <CommentsSection :comment-id="commentId" />
+      <CommentsSection :model-id="modelId" :comment-id="commentId" />
     </div>
   </UContainer>
 </template>
@@ -43,7 +43,10 @@ const route = useRoute();
 const modelId = computed(() => String(route.params.id ?? ""));
 const commentId = computed(() => String(route.params.commentId ?? ""));
 
-const { comments } = useComments(() => ({ commentId: commentId.value }));
+const { comments } = useComments(() => ({
+  modelId: modelId.value,
+  commentId: commentId.value,
+}));
 const threadRoot = computed(() => comments.value[0]);
 
 const parentThreadLink = computed(() =>

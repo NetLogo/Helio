@@ -1,11 +1,11 @@
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import CommentsSection from "~/components/comment/CommentsSection.vue";
 import { findCommentById } from "~/components/comment/comment-tree";
 import { deepThread } from "~/components/comment/fixtures";
-import { useProfileMock, useUserMock } from "~~/tests/helpers";
+import { installCommentFetchMock, useProfileMock, useUserMock } from "~~/tests/helpers";
 
 mockNuxtImport("useUser", () => () => useUserMock());
 mockNuxtImport("useProfile", () => () => useProfileMock());
@@ -25,6 +25,11 @@ mockNuxtImport("useRoute", () => () => ({
 
 beforeEach(() => {
   routeState.commentId = "100";
+  installCommentFetchMock();
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 async function mountThreadPage(commentId: string) {
