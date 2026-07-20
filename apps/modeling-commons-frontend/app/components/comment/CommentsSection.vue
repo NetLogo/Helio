@@ -138,6 +138,7 @@ const dismissHighlight = () => {
 let localIdCounter = 0;
 const makeLocalComment = (content: string, author: CommentAuthor): Comment => ({
   id: `local-${++localIdCounter}`,
+  modelId: props.modelId,
   author,
   content,
   createdAt: new Date().toISOString(),
