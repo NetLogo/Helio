@@ -43,7 +43,12 @@ type CommentTreeDeps = {
 // The deepest expanded level's own children aren't fetched, only counted
 // (`countRepliesByParent`), so the UI can offer "continue this thread (N)".
 // A childless deleted node is dropped from its parent's `replies.data`
-// (decision #9); a deleted node with replies is kept.
+// (decision #9); a deleted node with replies is kept. `page.count` is the raw
+// DB total for this node's replies, which can include childless tombstones
+// that get dropped from the fetched page — `visibleCount` corrects for those
+// so a node whose only replies were dropped tombstones reports 0 (and thus
+// isn't itself kept as a "has visible replies" tombstone), instead of leaking
+// a `replies.count` that promises data a follow-up fetch can't produce.
 export async function expandCommentTree(
   deps: CommentTreeDeps,
   entity: ModelCommentEntity,
@@ -57,6 +62,7 @@ export async function expandCommentTree(
 
   const nextDepth = depth + 1;
   let data: Array<CommentResponseDto>;
+  let droppedInPage: number;
 
   if (nextDepth < COMMENT_TREE_DEFAULTS.maximumNested) {
     const expandedPairs = await Promise.all(
@@ -65,25 +71,30 @@ export async function expandCommentTree(
         childDto: await expandCommentTree(deps, child, nextDepth, ctx, EMBED_PARAMS),
       })),
     );
-    data = expandedPairs
-      .filter(({ child, childDto }) => !(child.deletedAt !== null && childDto.replies === undefined))
-      .map(({ childDto }) => childDto);
+    const kept = expandedPairs.filter(
+      ({ child, childDto }) => !(child.deletedAt !== null && childDto.replies === undefined),
+    );
+    data = kept.map(({ childDto }) => childDto);
+    droppedInPage = expandedPairs.length - kept.length;
   } else {
     const ids = page.data.map((child) => child.id);
     const counts = await deps.modelCommentRepository.countRepliesByParent(ids);
-    data = page.data
-      .filter((child) => !(child.deletedAt !== null && (counts.get(child.id) ?? 0) === 0))
-      .map((child) => {
-        const childDto = deps.modelCommentMapper.toResponse(child, ctx);
-        const count = counts.get(child.id) ?? 0;
-        if (count > 0) {
-          childDto.replies = { count, limit: EMBED_LIMIT, page: 0, data: [] };
-        }
-        return childDto;
-      });
+    const kept = page.data.filter((child) => !(child.deletedAt !== null && (counts.get(child.id) ?? 0) === 0));
+    data = kept.map((child) => {
+      const childDto = deps.modelCommentMapper.toResponse(child, ctx);
+      const count = counts.get(child.id) ?? 0;
+      if (count > 0) {
+        childDto.replies = { count, limit: EMBED_LIMIT, page: 0, data: [] };
+      }
+      return childDto;
+    });
+    droppedInPage = page.data.length - kept.length;
   }
 
-  dto.replies = { count: page.count, limit: page.limit, page: page.page, data };
+  const visibleCount = page.count - droppedInPage;
+  if (visibleCount === 0) return dto;
+
+  dto.replies = { count: visibleCount, limit: page.limit, page: page.page, data };
   return dto;
 }
 

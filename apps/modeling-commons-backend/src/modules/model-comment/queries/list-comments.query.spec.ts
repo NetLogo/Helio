@@ -216,6 +216,50 @@ describe('listCommentsQuery', () => {
     expect(d2Dto.replies!.data[0]!.replies).toEqual({ count: 3, limit: 2, page: 0, data: [] });
   });
 
+  it('drops a deleted top-level comment whose only reply is itself a childless tombstone', async () => {
+    const { query, modelCommentRepository } = buildQuery();
+    const tombstoneRoot = makeEntity({ id: 'dead-root', content: null, deletedAt: new Date() });
+    const tombstoneReply = makeEntity({
+      id: 'dead-reply',
+      parentId: 'dead-root',
+      content: null,
+      deletedAt: new Date(),
+    });
+
+    modelCommentRepository.listTopLevel.mockResolvedValue(page([tombstoneRoot], 1));
+    modelCommentRepository.listReplies.mockImplementation(async (parentId: string) =>
+      parentId === 'dead-root' ? page([tombstoneReply], 1) : page([], 0),
+    );
+
+    const result = await query.execute('model-1', {});
+
+    expect(result.data).toHaveLength(0);
+  });
+
+  it('keeps a deleted top-level comment whose reply is a live comment, reporting the corrected count', async () => {
+    const { query, modelCommentRepository } = buildQuery();
+    const tombstoneRoot = makeEntity({ id: 'dead-root', content: null, deletedAt: new Date() });
+    const liveReply = makeEntity({ id: 'live-reply', parentId: 'dead-root' });
+    const tombstoneReply = makeEntity({
+      id: 'dead-reply',
+      parentId: 'dead-root',
+      content: null,
+      deletedAt: new Date(),
+    });
+
+    modelCommentRepository.listTopLevel.mockResolvedValue(page([tombstoneRoot], 1));
+    modelCommentRepository.listReplies.mockImplementation(async (parentId: string) =>
+      parentId === 'dead-root' ? page([liveReply, tombstoneReply], 2) : page([], 0),
+    );
+
+    const result = await query.execute('model-1', {});
+
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0]!.id).toBe('dead-root');
+    expect(result.data[0]!.replies!.data.map((c) => c.id)).toEqual(['live-reply']);
+    expect(result.data[0]!.replies!.count).toBe(1);
+  });
+
   it('drops a childless deleted reply from a parent’s embedded replies (nested, not just top-level)', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const root = makeEntity({ id: 'root' });
