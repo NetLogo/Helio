@@ -299,6 +299,27 @@ exports.Prisma.ModelDraftScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ModelCommentScalarFieldEnum = {
+  id: 'id',
+  legacyId: 'legacyId',
+  parentId: 'parentId',
+  userId: 'userId',
+  modelId: 'modelId',
+  versionNumber: 'versionNumber',
+  content: 'content',
+  likesCount: 'likesCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  editedAt: 'editedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.ModelCommentLikeScalarFieldEnum = {
+  modelCommentId: 'modelCommentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.EventScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -397,6 +418,8 @@ exports.Prisma.ModelName = {
   ModelLike: 'ModelLike',
   ModelInteraction: 'ModelInteraction',
   ModelDraft: 'ModelDraft',
+  ModelComment: 'ModelComment',
+  ModelCommentLike: 'ModelCommentLike',
   Event: 'Event'
 };
 
