@@ -31,6 +31,14 @@ Feature: Model Comments
     When "owner" replies "Cross-model reply" to comment "rootA" on "Model B"
     Then the response status should be 400
 
+  Scenario: A comment cannot be fetched through a different model's path
+    Given an authenticated user "owner"
+    And a public model "Model A" created by "owner"
+    And a public model "Model B" created by "owner"
+    And "owner" has commented "Root in A" on "Model A" as "rootA"
+    When "owner" gets comment "rootA" on "Model B"
+    Then the response status should be 404
+
   Scenario: A page of top-level comments embeds at most 2 replies per node
     Given an authenticated user "owner"
     And a public model "Popular" created by "owner"
