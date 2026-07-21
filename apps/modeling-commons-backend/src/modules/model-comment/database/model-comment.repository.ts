@@ -19,14 +19,14 @@ function toEntity(record: ModelCommentRecord): ModelCommentEntity {
 }
 
 // `sort` is a DTO-facing name (`likes`), not the Prisma column (`likesCount`);
-// this is the one place that reconciles the two, and direction is fixed per
-// field rather than caller-controlled (likes always desc, dates always asc
-// for chronological thread reading).
+// this is the one place that reconciles the two. Direction comes from the
+// caller-resolved `orderBy.param` (e.g. `newest` -> createdAt desc, `createdAt`
+// -> asc for chronological thread reading).
 function toOrderBy(orderBy: OrderBy): Prisma.ModelCommentOrderByWithRelationInput {
   if (orderBy.field === 'likes') {
-    return { likesCount: 'desc' };
+    return { likesCount: orderBy.param };
   }
-  return { [orderBy.field]: 'asc' };
+  return { [orderBy.field]: orderBy.param };
 }
 
 export default function modelCommentRepository({ db }: Dependencies): ModelCommentRepository {

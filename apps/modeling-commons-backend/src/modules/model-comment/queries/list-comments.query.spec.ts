@@ -73,6 +73,32 @@ describe('listCommentsQuery', () => {
     );
   });
 
+  it('maps sort=newest to a descending createdAt orderBy', async () => {
+    const { query, modelCommentRepository } = buildQuery();
+    modelCommentRepository.listTopLevel.mockResolvedValue(page([], 0));
+
+    await query.execute('model-1', { sort: 'newest' });
+
+    expect(modelCommentRepository.listTopLevel).toHaveBeenCalledWith(
+      'model-1',
+      expect.objectContaining({ orderBy: { field: 'createdAt', param: 'desc' } }),
+      undefined,
+    );
+  });
+
+  it('maps sort=createdAt to an ascending createdAt orderBy (oldest first)', async () => {
+    const { query, modelCommentRepository } = buildQuery();
+    modelCommentRepository.listTopLevel.mockResolvedValue(page([], 0));
+
+    await query.execute('model-1', { sort: 'createdAt' });
+
+    expect(modelCommentRepository.listTopLevel).toHaveBeenCalledWith(
+      'model-1',
+      expect.objectContaining({ orderBy: { field: 'createdAt', param: 'asc' } }),
+      undefined,
+    );
+  });
+
   it('passes viewerId through to listTopLevel/listReplies and the mapper (permissions/likedByMe)', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const root = makeEntity({ id: 'root-1', userId: 'user-1', likedByMe: true });
