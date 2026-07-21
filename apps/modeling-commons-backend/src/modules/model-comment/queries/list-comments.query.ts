@@ -34,6 +34,9 @@ export function commentOrderBy(sort?: ListCommentsQueryDto['sort']): OrderBy {
       return { field: 'createdAt', param: 'desc' };
     case 'createdAt':
       return { field: 'createdAt', param: 'asc' };
+    case 'likes': {
+      return { field: 'likes', param: 'desc' };
+    }
     default:
       return { field: 'likes', param: 'desc' };
   }
@@ -60,7 +63,11 @@ export async function expandCommentTree(
   repliesParams: PaginatedQueryParams,
 ): Promise<CommentResponseDto> {
   const dto = deps.modelCommentMapper.toResponse(entity, ctx);
-  const page = await deps.modelCommentRepository.listReplies(entity.id, repliesParams, ctx.viewerId);
+  const page = await deps.modelCommentRepository.listReplies(
+    entity.id,
+    repliesParams,
+    ctx.viewerId,
+  );
   if (page.count === 0) return dto;
 
   const nextDepth = depth + 1;
@@ -68,7 +75,7 @@ export async function expandCommentTree(
 
   if (nextDepth < COMMENT_TREE_DEFAULTS.maximumNested) {
     data = await Promise.all(
-      page.data.map((child) => expandCommentTree(deps, child, nextDepth, ctx, EMBED_PARAMS)),
+      page.data.map(async (child) => expandCommentTree(deps, child, nextDepth, ctx, EMBED_PARAMS)),
     );
   } else {
     const ids = page.data.map((child) => child.id);
@@ -106,7 +113,7 @@ export default function makeListCommentsQuery({
       const deps: CommentTreeDeps = { modelCommentRepository, modelCommentMapper };
 
       const roots = await Promise.all(
-        rootsPage.data.map((root) => expandCommentTree(deps, root, 0, ctx, EMBED_PARAMS)),
+        rootsPage.data.map(async (root) => expandCommentTree(deps, root, 0, ctx, EMBED_PARAMS)),
       );
 
       return paginate(roots, params, rootsPage.count);
