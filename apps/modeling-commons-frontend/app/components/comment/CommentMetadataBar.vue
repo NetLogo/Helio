@@ -2,7 +2,7 @@
   <div class="flex items-center gap-3">
 
     <NuxtLink v-if="author.url" :to="author.url" class="font-semibold">{{ author.name }}</NuxtLink>
-    <span v-else class="font-semibold">{{ author.name }}</span>
+    <span v-else class="font-medium">{{ author.name }}</span>
     <NuxtLink
       v-if="threadLink"
       :to="threadLink"
