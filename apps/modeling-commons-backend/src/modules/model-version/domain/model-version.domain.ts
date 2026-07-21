@@ -10,6 +10,7 @@ export default function modelVersionDomain() {
       description?: string;
       previewImageFileKey?: string | null;
       netlogoFileKey: string;
+      changeSummary?: string | null;
     }): ModelVersionEntity {
       return {
         modelId: props.modelId,
@@ -19,6 +20,7 @@ export default function modelVersionDomain() {
         previewImageFileKey: props.previewImageFileKey ?? null,
         netlogoFileKey: props.netlogoFileKey,
         netlogoVersion: null,
+        changeSummary: props.changeSummary ?? null,
         infoTab: null,
         createdAt: new Date(),
         finalizedAt: null,

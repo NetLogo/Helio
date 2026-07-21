@@ -18,6 +18,7 @@ function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionE
     previewImageFileKey: null,
     netlogoFileKey: 'files/key-1',
     netlogoVersion: null,
+    changeSummary: null,
     infoTab: null,
     createdAt: new Date(),
     finalizedAt: null,

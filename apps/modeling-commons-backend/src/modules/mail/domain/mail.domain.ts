@@ -1,5 +1,5 @@
 import env from '#src/config/env.ts';
-import { createRenderer, type EmailRenderer } from '@repo/emails';
+import { createRenderer, type EmailModel, type EmailRenderer } from '@repo/emails';
 
 let _renderer: EmailRenderer | null = null;
 function getRenderer(): EmailRenderer {
@@ -95,6 +95,48 @@ export default function mailDomain() {
     ) {
       return wrap(userEmail)(
         renderer.renderNotificationSummaryEmail({ userName, notifications, unsubscribeUrl }),
+      );
+    },
+
+    async createCommentedOnModelEmail(
+      userEmail: string,
+      userName: string,
+      commenterName: string,
+      model: EmailModel,
+      commentPreview: string,
+      commentUrl: string,
+      unsubscribeUrl: string,
+    ) {
+      return wrap(userEmail)(
+        renderer.renderCommentedOnModelEmail({
+          userName,
+          commenterName,
+          model,
+          commentPreview,
+          commentUrl,
+          unsubscribeUrl,
+        }),
+      );
+    },
+
+    async createRepliedToCommentEmail(
+      userEmail: string,
+      userName: string,
+      replierName: string,
+      model: EmailModel,
+      replyPreview: string,
+      commentUrl: string,
+      unsubscribeUrl: string,
+    ) {
+      return wrap(userEmail)(
+        renderer.renderRepliedToCommentEmail({
+          userName,
+          replierName,
+          model,
+          replyPreview,
+          commentUrl,
+          unsubscribeUrl,
+        }),
       );
     },
   };

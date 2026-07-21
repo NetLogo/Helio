@@ -89,6 +89,16 @@ export type ModelInteraction = $Result.DefaultSelection<Prisma.$ModelInteraction
  */
 export type ModelDraft = $Result.DefaultSelection<Prisma.$ModelDraftPayload>
 /**
+ * Model ModelComment
+ * 
+ */
+export type ModelComment = $Result.DefaultSelection<Prisma.$ModelCommentPayload>
+/**
+ * Model ModelCommentLike
+ * 
+ */
+export type ModelCommentLike = $Result.DefaultSelection<Prisma.$ModelCommentLikePayload>
+/**
  * Model Event
  * 
  */
@@ -460,6 +470,26 @@ export class PrismaClient<
     * ```
     */
   get modelDraft(): Prisma.ModelDraftDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.modelComment`: Exposes CRUD operations for the **ModelComment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ModelComments
+    * const modelComments = await prisma.modelComment.findMany()
+    * ```
+    */
+  get modelComment(): Prisma.ModelCommentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.modelCommentLike`: Exposes CRUD operations for the **ModelCommentLike** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ModelCommentLikes
+    * const modelCommentLikes = await prisma.modelCommentLike.findMany()
+    * ```
+    */
+  get modelCommentLike(): Prisma.ModelCommentLikeDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.event`: Exposes CRUD operations for the **Event** model.
@@ -919,6 +949,8 @@ export namespace Prisma {
     ModelLike: 'ModelLike',
     ModelInteraction: 'ModelInteraction',
     ModelDraft: 'ModelDraft',
+    ModelComment: 'ModelComment',
+    ModelCommentLike: 'ModelCommentLike',
     Event: 'Event'
   };
 
@@ -935,7 +967,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "modelLike" | "modelInteraction" | "modelDraft" | "event"
+      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "modelLike" | "modelInteraction" | "modelDraft" | "modelComment" | "modelCommentLike" | "event"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2049,6 +2081,154 @@ export namespace Prisma {
           }
         }
       }
+      ModelComment: {
+        payload: Prisma.$ModelCommentPayload<ExtArgs>
+        fields: Prisma.ModelCommentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ModelCommentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ModelCommentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>
+          }
+          findFirst: {
+            args: Prisma.ModelCommentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ModelCommentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>
+          }
+          findMany: {
+            args: Prisma.ModelCommentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>[]
+          }
+          create: {
+            args: Prisma.ModelCommentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>
+          }
+          createMany: {
+            args: Prisma.ModelCommentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ModelCommentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>[]
+          }
+          delete: {
+            args: Prisma.ModelCommentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>
+          }
+          update: {
+            args: Prisma.ModelCommentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>
+          }
+          deleteMany: {
+            args: Prisma.ModelCommentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ModelCommentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ModelCommentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>[]
+          }
+          upsert: {
+            args: Prisma.ModelCommentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentPayload>
+          }
+          aggregate: {
+            args: Prisma.ModelCommentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateModelComment>
+          }
+          groupBy: {
+            args: Prisma.ModelCommentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ModelCommentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ModelCommentCountArgs<ExtArgs>
+            result: $Utils.Optional<ModelCommentCountAggregateOutputType> | number
+          }
+        }
+      }
+      ModelCommentLike: {
+        payload: Prisma.$ModelCommentLikePayload<ExtArgs>
+        fields: Prisma.ModelCommentLikeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ModelCommentLikeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ModelCommentLikeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>
+          }
+          findFirst: {
+            args: Prisma.ModelCommentLikeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ModelCommentLikeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>
+          }
+          findMany: {
+            args: Prisma.ModelCommentLikeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>[]
+          }
+          create: {
+            args: Prisma.ModelCommentLikeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>
+          }
+          createMany: {
+            args: Prisma.ModelCommentLikeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ModelCommentLikeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>[]
+          }
+          delete: {
+            args: Prisma.ModelCommentLikeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>
+          }
+          update: {
+            args: Prisma.ModelCommentLikeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>
+          }
+          deleteMany: {
+            args: Prisma.ModelCommentLikeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ModelCommentLikeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ModelCommentLikeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>[]
+          }
+          upsert: {
+            args: Prisma.ModelCommentLikeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModelCommentLikePayload>
+          }
+          aggregate: {
+            args: Prisma.ModelCommentLikeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateModelCommentLike>
+          }
+          groupBy: {
+            args: Prisma.ModelCommentLikeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ModelCommentLikeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ModelCommentLikeCountArgs<ExtArgs>
+            result: $Utils.Optional<ModelCommentLikeCountAggregateOutputType> | number
+          }
+        }
+      }
       Event: {
         payload: Prisma.$EventPayload<ExtArgs>
         fields: Prisma.EventFieldRefs
@@ -2246,6 +2426,8 @@ export namespace Prisma {
     modelLike?: ModelLikeOmit
     modelInteraction?: ModelInteractionOmit
     modelDraft?: ModelDraftOmit
+    modelComment?: ModelCommentOmit
+    modelCommentLike?: ModelCommentLikeOmit
     event?: EventOmit
   }
 
@@ -2336,6 +2518,8 @@ export namespace Prisma {
     modelLikes: number
     modelInteractions: number
     modelDrafts: number
+    comments: number
+    commentLikes: number
     passkeys: number
   }
 
@@ -2349,6 +2533,8 @@ export namespace Prisma {
     modelLikes?: boolean | UserCountOutputTypeCountModelLikesArgs
     modelInteractions?: boolean | UserCountOutputTypeCountModelInteractionsArgs
     modelDrafts?: boolean | UserCountOutputTypeCountModelDraftsArgs
+    comments?: boolean | UserCountOutputTypeCountCommentsArgs
+    commentLikes?: boolean | UserCountOutputTypeCountCommentLikesArgs
     passkeys?: boolean | UserCountOutputTypeCountPasskeysArgs
   }
 
@@ -2429,6 +2615,20 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelCommentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCommentLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelCommentLikeWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountPasskeysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PasskeyWhereInput
   }
@@ -2447,6 +2647,7 @@ export namespace Prisma {
     likes: number
     interactions: number
     drafts: number
+    comments: number
   }
 
   export type ModelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2458,6 +2659,7 @@ export namespace Prisma {
     likes?: boolean | ModelCountOutputTypeCountLikesArgs
     interactions?: boolean | ModelCountOutputTypeCountInteractionsArgs
     drafts?: boolean | ModelCountOutputTypeCountDraftsArgs
+    comments?: boolean | ModelCountOutputTypeCountCommentsArgs
   }
 
   // Custom InputTypes
@@ -2525,6 +2727,13 @@ export namespace Prisma {
    */
   export type ModelCountOutputTypeCountDraftsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ModelDraftWhereInput
+  }
+
+  /**
+   * ModelCountOutputType without action
+   */
+  export type ModelCountOutputTypeCountCommentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelCommentWhereInput
   }
 
 
@@ -2605,6 +2814,46 @@ export namespace Prisma {
    */
   export type TagCountOutputTypeCountModelVersionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ModelVersionTagWhereInput
+  }
+
+
+  /**
+   * Count Type ModelCommentCountOutputType
+   */
+
+  export type ModelCommentCountOutputType = {
+    replies: number
+    likes: number
+  }
+
+  export type ModelCommentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    replies?: boolean | ModelCommentCountOutputTypeCountRepliesArgs
+    likes?: boolean | ModelCommentCountOutputTypeCountLikesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ModelCommentCountOutputType without action
+   */
+  export type ModelCommentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentCountOutputType
+     */
+    select?: ModelCommentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ModelCommentCountOutputType without action
+   */
+  export type ModelCommentCountOutputTypeCountRepliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelCommentWhereInput
+  }
+
+  /**
+   * ModelCommentCountOutputType without action
+   */
+  export type ModelCommentCountOutputTypeCountLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelCommentLikeWhereInput
   }
 
 
@@ -2951,6 +3200,8 @@ export namespace Prisma {
     modelLikes?: boolean | User$modelLikesArgs<ExtArgs>
     modelInteractions?: boolean | User$modelInteractionsArgs<ExtArgs>
     modelDrafts?: boolean | User$modelDraftsArgs<ExtArgs>
+    comments?: boolean | User$commentsArgs<ExtArgs>
+    commentLikes?: boolean | User$commentLikesArgs<ExtArgs>
     passkeys?: boolean | User$passkeysArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -3041,6 +3292,8 @@ export namespace Prisma {
     modelLikes?: boolean | User$modelLikesArgs<ExtArgs>
     modelInteractions?: boolean | User$modelInteractionsArgs<ExtArgs>
     modelDrafts?: boolean | User$modelDraftsArgs<ExtArgs>
+    comments?: boolean | User$commentsArgs<ExtArgs>
+    commentLikes?: boolean | User$commentLikesArgs<ExtArgs>
     passkeys?: boolean | User$passkeysArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -3059,6 +3312,8 @@ export namespace Prisma {
       modelLikes: Prisma.$ModelLikePayload<ExtArgs>[]
       modelInteractions: Prisma.$ModelInteractionPayload<ExtArgs>[]
       modelDrafts: Prisma.$ModelDraftPayload<ExtArgs>[]
+      comments: Prisma.$ModelCommentPayload<ExtArgs>[]
+      commentLikes: Prisma.$ModelCommentLikePayload<ExtArgs>[]
       passkeys: Prisma.$PasskeyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3487,6 +3742,8 @@ export namespace Prisma {
     modelLikes<T extends User$modelLikesArgs<ExtArgs> = {}>(args?: Subset<T, User$modelLikesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     modelInteractions<T extends User$modelInteractionsArgs<ExtArgs> = {}>(args?: Subset<T, User$modelInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     modelDrafts<T extends User$modelDraftsArgs<ExtArgs> = {}>(args?: Subset<T, User$modelDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    comments<T extends User$commentsArgs<ExtArgs> = {}>(args?: Subset<T, User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    commentLikes<T extends User$commentLikesArgs<ExtArgs> = {}>(args?: Subset<T, User$commentLikesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     passkeys<T extends User$passkeysArgs<ExtArgs> = {}>(args?: Subset<T, User$passkeysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasskeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4145,6 +4402,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ModelDraftScalarFieldEnum | ModelDraftScalarFieldEnum[]
+  }
+
+  /**
+   * User.comments
+   */
+  export type User$commentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    where?: ModelCommentWhereInput
+    orderBy?: ModelCommentOrderByWithRelationInput | ModelCommentOrderByWithRelationInput[]
+    cursor?: ModelCommentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelCommentScalarFieldEnum | ModelCommentScalarFieldEnum[]
+  }
+
+  /**
+   * User.commentLikes
+   */
+  export type User$commentLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    where?: ModelCommentLikeWhereInput
+    orderBy?: ModelCommentLikeOrderByWithRelationInput | ModelCommentLikeOrderByWithRelationInput[]
+    cursor?: ModelCommentLikeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelCommentLikeScalarFieldEnum | ModelCommentLikeScalarFieldEnum[]
   }
 
   /**
@@ -9068,6 +9373,7 @@ export namespace Prisma {
     likes?: boolean | Model$likesArgs<ExtArgs>
     interactions?: boolean | Model$interactionsArgs<ExtArgs>
     drafts?: boolean | Model$draftsArgs<ExtArgs>
+    comments?: boolean | Model$commentsArgs<ExtArgs>
     _count?: boolean | ModelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["model"]>
 
@@ -9144,6 +9450,7 @@ export namespace Prisma {
     likes?: boolean | Model$likesArgs<ExtArgs>
     interactions?: boolean | Model$interactionsArgs<ExtArgs>
     drafts?: boolean | Model$draftsArgs<ExtArgs>
+    comments?: boolean | Model$commentsArgs<ExtArgs>
     _count?: boolean | ModelCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ModelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9171,6 +9478,7 @@ export namespace Prisma {
       likes: Prisma.$ModelLikePayload<ExtArgs>[]
       interactions: Prisma.$ModelInteractionPayload<ExtArgs>[]
       drafts: Prisma.$ModelDraftPayload<ExtArgs>[]
+      comments: Prisma.$ModelCommentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9593,6 +9901,7 @@ export namespace Prisma {
     likes<T extends Model$likesArgs<ExtArgs> = {}>(args?: Subset<T, Model$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     interactions<T extends Model$interactionsArgs<ExtArgs> = {}>(args?: Subset<T, Model$interactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     drafts<T extends Model$draftsArgs<ExtArgs> = {}>(args?: Subset<T, Model$draftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    comments<T extends Model$commentsArgs<ExtArgs> = {}>(args?: Subset<T, Model$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10284,6 +10593,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ModelDraftScalarFieldEnum | ModelDraftScalarFieldEnum[]
+  }
+
+  /**
+   * Model.comments
+   */
+  export type Model$commentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    where?: ModelCommentWhereInput
+    orderBy?: ModelCommentOrderByWithRelationInput | ModelCommentOrderByWithRelationInput[]
+    cursor?: ModelCommentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelCommentScalarFieldEnum | ModelCommentScalarFieldEnum[]
   }
 
   /**
@@ -20459,6 +20792,2359 @@ export namespace Prisma {
 
 
   /**
+   * Model ModelComment
+   */
+
+  export type AggregateModelComment = {
+    _count: ModelCommentCountAggregateOutputType | null
+    _avg: ModelCommentAvgAggregateOutputType | null
+    _sum: ModelCommentSumAggregateOutputType | null
+    _min: ModelCommentMinAggregateOutputType | null
+    _max: ModelCommentMaxAggregateOutputType | null
+  }
+
+  export type ModelCommentAvgAggregateOutputType = {
+    legacyId: number | null
+    versionNumber: number | null
+    likesCount: number | null
+  }
+
+  export type ModelCommentSumAggregateOutputType = {
+    legacyId: number | null
+    versionNumber: number | null
+    likesCount: number | null
+  }
+
+  export type ModelCommentMinAggregateOutputType = {
+    id: string | null
+    legacyId: number | null
+    parentId: string | null
+    userId: string | null
+    modelId: string | null
+    versionNumber: number | null
+    content: string | null
+    likesCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    editedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type ModelCommentMaxAggregateOutputType = {
+    id: string | null
+    legacyId: number | null
+    parentId: string | null
+    userId: string | null
+    modelId: string | null
+    versionNumber: number | null
+    content: string | null
+    likesCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    editedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type ModelCommentCountAggregateOutputType = {
+    id: number
+    legacyId: number
+    parentId: number
+    userId: number
+    modelId: number
+    versionNumber: number
+    content: number
+    likesCount: number
+    createdAt: number
+    updatedAt: number
+    editedAt: number
+    deletedAt: number
+    _all: number
+  }
+
+
+  export type ModelCommentAvgAggregateInputType = {
+    legacyId?: true
+    versionNumber?: true
+    likesCount?: true
+  }
+
+  export type ModelCommentSumAggregateInputType = {
+    legacyId?: true
+    versionNumber?: true
+    likesCount?: true
+  }
+
+  export type ModelCommentMinAggregateInputType = {
+    id?: true
+    legacyId?: true
+    parentId?: true
+    userId?: true
+    modelId?: true
+    versionNumber?: true
+    content?: true
+    likesCount?: true
+    createdAt?: true
+    updatedAt?: true
+    editedAt?: true
+    deletedAt?: true
+  }
+
+  export type ModelCommentMaxAggregateInputType = {
+    id?: true
+    legacyId?: true
+    parentId?: true
+    userId?: true
+    modelId?: true
+    versionNumber?: true
+    content?: true
+    likesCount?: true
+    createdAt?: true
+    updatedAt?: true
+    editedAt?: true
+    deletedAt?: true
+  }
+
+  export type ModelCommentCountAggregateInputType = {
+    id?: true
+    legacyId?: true
+    parentId?: true
+    userId?: true
+    modelId?: true
+    versionNumber?: true
+    content?: true
+    likesCount?: true
+    createdAt?: true
+    updatedAt?: true
+    editedAt?: true
+    deletedAt?: true
+    _all?: true
+  }
+
+  export type ModelCommentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelComment to aggregate.
+     */
+    where?: ModelCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelComments to fetch.
+     */
+    orderBy?: ModelCommentOrderByWithRelationInput | ModelCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ModelCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ModelComments
+    **/
+    _count?: true | ModelCommentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ModelCommentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModelCommentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModelCommentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModelCommentMaxAggregateInputType
+  }
+
+  export type GetModelCommentAggregateType<T extends ModelCommentAggregateArgs> = {
+        [P in keyof T & keyof AggregateModelComment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateModelComment[P]>
+      : GetScalarType<T[P], AggregateModelComment[P]>
+  }
+
+
+
+
+  export type ModelCommentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelCommentWhereInput
+    orderBy?: ModelCommentOrderByWithAggregationInput | ModelCommentOrderByWithAggregationInput[]
+    by: ModelCommentScalarFieldEnum[] | ModelCommentScalarFieldEnum
+    having?: ModelCommentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ModelCommentCountAggregateInputType | true
+    _avg?: ModelCommentAvgAggregateInputType
+    _sum?: ModelCommentSumAggregateInputType
+    _min?: ModelCommentMinAggregateInputType
+    _max?: ModelCommentMaxAggregateInputType
+  }
+
+  export type ModelCommentGroupByOutputType = {
+    id: string
+    legacyId: number | null
+    parentId: string | null
+    userId: string | null
+    modelId: string
+    versionNumber: number | null
+    content: string | null
+    likesCount: number
+    createdAt: Date
+    updatedAt: Date
+    editedAt: Date | null
+    deletedAt: Date | null
+    _count: ModelCommentCountAggregateOutputType | null
+    _avg: ModelCommentAvgAggregateOutputType | null
+    _sum: ModelCommentSumAggregateOutputType | null
+    _min: ModelCommentMinAggregateOutputType | null
+    _max: ModelCommentMaxAggregateOutputType | null
+  }
+
+  type GetModelCommentGroupByPayload<T extends ModelCommentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ModelCommentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ModelCommentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ModelCommentGroupByOutputType[P]>
+            : GetScalarType<T[P], ModelCommentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ModelCommentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    legacyId?: boolean
+    parentId?: boolean
+    userId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
+    content?: boolean
+    likesCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    editedAt?: boolean
+    deletedAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelComment$userArgs<ExtArgs>
+    parent?: boolean | ModelComment$parentArgs<ExtArgs>
+    replies?: boolean | ModelComment$repliesArgs<ExtArgs>
+    likes?: boolean | ModelComment$likesArgs<ExtArgs>
+    _count?: boolean | ModelCommentCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["modelComment"]>
+
+  export type ModelCommentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    legacyId?: boolean
+    parentId?: boolean
+    userId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
+    content?: boolean
+    likesCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    editedAt?: boolean
+    deletedAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelComment$userArgs<ExtArgs>
+    parent?: boolean | ModelComment$parentArgs<ExtArgs>
+  }, ExtArgs["result"]["modelComment"]>
+
+  export type ModelCommentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    legacyId?: boolean
+    parentId?: boolean
+    userId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
+    content?: boolean
+    likesCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    editedAt?: boolean
+    deletedAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelComment$userArgs<ExtArgs>
+    parent?: boolean | ModelComment$parentArgs<ExtArgs>
+  }, ExtArgs["result"]["modelComment"]>
+
+  export type ModelCommentSelectScalar = {
+    id?: boolean
+    legacyId?: boolean
+    parentId?: boolean
+    userId?: boolean
+    modelId?: boolean
+    versionNumber?: boolean
+    content?: boolean
+    likesCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    editedAt?: boolean
+    deletedAt?: boolean
+  }
+
+  export type ModelCommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "legacyId" | "parentId" | "userId" | "modelId" | "versionNumber" | "content" | "likesCount" | "createdAt" | "updatedAt" | "editedAt" | "deletedAt", ExtArgs["result"]["modelComment"]>
+  export type ModelCommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelComment$userArgs<ExtArgs>
+    parent?: boolean | ModelComment$parentArgs<ExtArgs>
+    replies?: boolean | ModelComment$repliesArgs<ExtArgs>
+    likes?: boolean | ModelComment$likesArgs<ExtArgs>
+    _count?: boolean | ModelCommentCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ModelCommentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelComment$userArgs<ExtArgs>
+    parent?: boolean | ModelComment$parentArgs<ExtArgs>
+  }
+  export type ModelCommentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+    user?: boolean | ModelComment$userArgs<ExtArgs>
+    parent?: boolean | ModelComment$parentArgs<ExtArgs>
+  }
+
+  export type $ModelCommentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ModelComment"
+    objects: {
+      model: Prisma.$ModelPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs> | null
+      parent: Prisma.$ModelCommentPayload<ExtArgs> | null
+      replies: Prisma.$ModelCommentPayload<ExtArgs>[]
+      likes: Prisma.$ModelCommentLikePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      legacyId: number | null
+      parentId: string | null
+      userId: string | null
+      modelId: string
+      versionNumber: number | null
+      content: string | null
+      likesCount: number
+      createdAt: Date
+      updatedAt: Date
+      editedAt: Date | null
+      deletedAt: Date | null
+    }, ExtArgs["result"]["modelComment"]>
+    composites: {}
+  }
+
+  type ModelCommentGetPayload<S extends boolean | null | undefined | ModelCommentDefaultArgs> = $Result.GetResult<Prisma.$ModelCommentPayload, S>
+
+  type ModelCommentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ModelCommentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ModelCommentCountAggregateInputType | true
+    }
+
+  export interface ModelCommentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ModelComment'], meta: { name: 'ModelComment' } }
+    /**
+     * Find zero or one ModelComment that matches the filter.
+     * @param {ModelCommentFindUniqueArgs} args - Arguments to find a ModelComment
+     * @example
+     * // Get one ModelComment
+     * const modelComment = await prisma.modelComment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ModelCommentFindUniqueArgs>(args: SelectSubset<T, ModelCommentFindUniqueArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ModelComment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ModelCommentFindUniqueOrThrowArgs} args - Arguments to find a ModelComment
+     * @example
+     * // Get one ModelComment
+     * const modelComment = await prisma.modelComment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ModelCommentFindUniqueOrThrowArgs>(args: SelectSubset<T, ModelCommentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelComment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentFindFirstArgs} args - Arguments to find a ModelComment
+     * @example
+     * // Get one ModelComment
+     * const modelComment = await prisma.modelComment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ModelCommentFindFirstArgs>(args?: SelectSubset<T, ModelCommentFindFirstArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelComment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentFindFirstOrThrowArgs} args - Arguments to find a ModelComment
+     * @example
+     * // Get one ModelComment
+     * const modelComment = await prisma.modelComment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ModelCommentFindFirstOrThrowArgs>(args?: SelectSubset<T, ModelCommentFindFirstOrThrowArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ModelComments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModelComments
+     * const modelComments = await prisma.modelComment.findMany()
+     * 
+     * // Get first 10 ModelComments
+     * const modelComments = await prisma.modelComment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const modelCommentWithIdOnly = await prisma.modelComment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ModelCommentFindManyArgs>(args?: SelectSubset<T, ModelCommentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ModelComment.
+     * @param {ModelCommentCreateArgs} args - Arguments to create a ModelComment.
+     * @example
+     * // Create one ModelComment
+     * const ModelComment = await prisma.modelComment.create({
+     *   data: {
+     *     // ... data to create a ModelComment
+     *   }
+     * })
+     * 
+     */
+    create<T extends ModelCommentCreateArgs>(args: SelectSubset<T, ModelCommentCreateArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ModelComments.
+     * @param {ModelCommentCreateManyArgs} args - Arguments to create many ModelComments.
+     * @example
+     * // Create many ModelComments
+     * const modelComment = await prisma.modelComment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ModelCommentCreateManyArgs>(args?: SelectSubset<T, ModelCommentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ModelComments and returns the data saved in the database.
+     * @param {ModelCommentCreateManyAndReturnArgs} args - Arguments to create many ModelComments.
+     * @example
+     * // Create many ModelComments
+     * const modelComment = await prisma.modelComment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ModelComments and only return the `id`
+     * const modelCommentWithIdOnly = await prisma.modelComment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ModelCommentCreateManyAndReturnArgs>(args?: SelectSubset<T, ModelCommentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ModelComment.
+     * @param {ModelCommentDeleteArgs} args - Arguments to delete one ModelComment.
+     * @example
+     * // Delete one ModelComment
+     * const ModelComment = await prisma.modelComment.delete({
+     *   where: {
+     *     // ... filter to delete one ModelComment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ModelCommentDeleteArgs>(args: SelectSubset<T, ModelCommentDeleteArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ModelComment.
+     * @param {ModelCommentUpdateArgs} args - Arguments to update one ModelComment.
+     * @example
+     * // Update one ModelComment
+     * const modelComment = await prisma.modelComment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ModelCommentUpdateArgs>(args: SelectSubset<T, ModelCommentUpdateArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ModelComments.
+     * @param {ModelCommentDeleteManyArgs} args - Arguments to filter ModelComments to delete.
+     * @example
+     * // Delete a few ModelComments
+     * const { count } = await prisma.modelComment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ModelCommentDeleteManyArgs>(args?: SelectSubset<T, ModelCommentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelComments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModelComments
+     * const modelComment = await prisma.modelComment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ModelCommentUpdateManyArgs>(args: SelectSubset<T, ModelCommentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelComments and returns the data updated in the database.
+     * @param {ModelCommentUpdateManyAndReturnArgs} args - Arguments to update many ModelComments.
+     * @example
+     * // Update many ModelComments
+     * const modelComment = await prisma.modelComment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ModelComments and only return the `id`
+     * const modelCommentWithIdOnly = await prisma.modelComment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ModelCommentUpdateManyAndReturnArgs>(args: SelectSubset<T, ModelCommentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ModelComment.
+     * @param {ModelCommentUpsertArgs} args - Arguments to update or create a ModelComment.
+     * @example
+     * // Update or create a ModelComment
+     * const modelComment = await prisma.modelComment.upsert({
+     *   create: {
+     *     // ... data to create a ModelComment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModelComment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ModelCommentUpsertArgs>(args: SelectSubset<T, ModelCommentUpsertArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ModelComments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentCountArgs} args - Arguments to filter ModelComments to count.
+     * @example
+     * // Count the number of ModelComments
+     * const count = await prisma.modelComment.count({
+     *   where: {
+     *     // ... the filter for the ModelComments we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModelCommentCountArgs>(
+      args?: Subset<T, ModelCommentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ModelCommentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ModelComment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModelCommentAggregateArgs>(args: Subset<T, ModelCommentAggregateArgs>): Prisma.PrismaPromise<GetModelCommentAggregateType<T>>
+
+    /**
+     * Group by ModelComment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ModelCommentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ModelCommentGroupByArgs['orderBy'] }
+        : { orderBy?: ModelCommentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ModelCommentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModelCommentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ModelComment model
+   */
+  readonly fields: ModelCommentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ModelComment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ModelCommentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    model<T extends ModelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelDefaultArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends ModelComment$userArgs<ExtArgs> = {}>(args?: Subset<T, ModelComment$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    parent<T extends ModelComment$parentArgs<ExtArgs> = {}>(args?: Subset<T, ModelComment$parentArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    replies<T extends ModelComment$repliesArgs<ExtArgs> = {}>(args?: Subset<T, ModelComment$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    likes<T extends ModelComment$likesArgs<ExtArgs> = {}>(args?: Subset<T, ModelComment$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ModelComment model
+   */
+  interface ModelCommentFieldRefs {
+    readonly id: FieldRef<"ModelComment", 'String'>
+    readonly legacyId: FieldRef<"ModelComment", 'Int'>
+    readonly parentId: FieldRef<"ModelComment", 'String'>
+    readonly userId: FieldRef<"ModelComment", 'String'>
+    readonly modelId: FieldRef<"ModelComment", 'String'>
+    readonly versionNumber: FieldRef<"ModelComment", 'Int'>
+    readonly content: FieldRef<"ModelComment", 'String'>
+    readonly likesCount: FieldRef<"ModelComment", 'Int'>
+    readonly createdAt: FieldRef<"ModelComment", 'DateTime'>
+    readonly updatedAt: FieldRef<"ModelComment", 'DateTime'>
+    readonly editedAt: FieldRef<"ModelComment", 'DateTime'>
+    readonly deletedAt: FieldRef<"ModelComment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ModelComment findUnique
+   */
+  export type ModelCommentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelComment to fetch.
+     */
+    where: ModelCommentWhereUniqueInput
+  }
+
+  /**
+   * ModelComment findUniqueOrThrow
+   */
+  export type ModelCommentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelComment to fetch.
+     */
+    where: ModelCommentWhereUniqueInput
+  }
+
+  /**
+   * ModelComment findFirst
+   */
+  export type ModelCommentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelComment to fetch.
+     */
+    where?: ModelCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelComments to fetch.
+     */
+    orderBy?: ModelCommentOrderByWithRelationInput | ModelCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelComments.
+     */
+    cursor?: ModelCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelComments.
+     */
+    distinct?: ModelCommentScalarFieldEnum | ModelCommentScalarFieldEnum[]
+  }
+
+  /**
+   * ModelComment findFirstOrThrow
+   */
+  export type ModelCommentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelComment to fetch.
+     */
+    where?: ModelCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelComments to fetch.
+     */
+    orderBy?: ModelCommentOrderByWithRelationInput | ModelCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelComments.
+     */
+    cursor?: ModelCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelComments.
+     */
+    distinct?: ModelCommentScalarFieldEnum | ModelCommentScalarFieldEnum[]
+  }
+
+  /**
+   * ModelComment findMany
+   */
+  export type ModelCommentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelComments to fetch.
+     */
+    where?: ModelCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelComments to fetch.
+     */
+    orderBy?: ModelCommentOrderByWithRelationInput | ModelCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ModelComments.
+     */
+    cursor?: ModelCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelComments.
+     */
+    distinct?: ModelCommentScalarFieldEnum | ModelCommentScalarFieldEnum[]
+  }
+
+  /**
+   * ModelComment create
+   */
+  export type ModelCommentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ModelComment.
+     */
+    data: XOR<ModelCommentCreateInput, ModelCommentUncheckedCreateInput>
+  }
+
+  /**
+   * ModelComment createMany
+   */
+  export type ModelCommentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ModelComments.
+     */
+    data: ModelCommentCreateManyInput | ModelCommentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ModelComment createManyAndReturn
+   */
+  export type ModelCommentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * The data used to create many ModelComments.
+     */
+    data: ModelCommentCreateManyInput | ModelCommentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelComment update
+   */
+  export type ModelCommentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ModelComment.
+     */
+    data: XOR<ModelCommentUpdateInput, ModelCommentUncheckedUpdateInput>
+    /**
+     * Choose, which ModelComment to update.
+     */
+    where: ModelCommentWhereUniqueInput
+  }
+
+  /**
+   * ModelComment updateMany
+   */
+  export type ModelCommentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ModelComments.
+     */
+    data: XOR<ModelCommentUpdateManyMutationInput, ModelCommentUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelComments to update
+     */
+    where?: ModelCommentWhereInput
+    /**
+     * Limit how many ModelComments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelComment updateManyAndReturn
+   */
+  export type ModelCommentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * The data used to update ModelComments.
+     */
+    data: XOR<ModelCommentUpdateManyMutationInput, ModelCommentUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelComments to update
+     */
+    where?: ModelCommentWhereInput
+    /**
+     * Limit how many ModelComments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelComment upsert
+   */
+  export type ModelCommentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ModelComment to update in case it exists.
+     */
+    where: ModelCommentWhereUniqueInput
+    /**
+     * In case the ModelComment found by the `where` argument doesn't exist, create a new ModelComment with this data.
+     */
+    create: XOR<ModelCommentCreateInput, ModelCommentUncheckedCreateInput>
+    /**
+     * In case the ModelComment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ModelCommentUpdateInput, ModelCommentUncheckedUpdateInput>
+  }
+
+  /**
+   * ModelComment delete
+   */
+  export type ModelCommentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    /**
+     * Filter which ModelComment to delete.
+     */
+    where: ModelCommentWhereUniqueInput
+  }
+
+  /**
+   * ModelComment deleteMany
+   */
+  export type ModelCommentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelComments to delete
+     */
+    where?: ModelCommentWhereInput
+    /**
+     * Limit how many ModelComments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelComment.user
+   */
+  export type ModelComment$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ModelComment.parent
+   */
+  export type ModelComment$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    where?: ModelCommentWhereInput
+  }
+
+  /**
+   * ModelComment.replies
+   */
+  export type ModelComment$repliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+    where?: ModelCommentWhereInput
+    orderBy?: ModelCommentOrderByWithRelationInput | ModelCommentOrderByWithRelationInput[]
+    cursor?: ModelCommentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelCommentScalarFieldEnum | ModelCommentScalarFieldEnum[]
+  }
+
+  /**
+   * ModelComment.likes
+   */
+  export type ModelComment$likesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    where?: ModelCommentLikeWhereInput
+    orderBy?: ModelCommentLikeOrderByWithRelationInput | ModelCommentLikeOrderByWithRelationInput[]
+    cursor?: ModelCommentLikeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ModelCommentLikeScalarFieldEnum | ModelCommentLikeScalarFieldEnum[]
+  }
+
+  /**
+   * ModelComment without action
+   */
+  export type ModelCommentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelComment
+     */
+    select?: ModelCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelComment
+     */
+    omit?: ModelCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ModelCommentLike
+   */
+
+  export type AggregateModelCommentLike = {
+    _count: ModelCommentLikeCountAggregateOutputType | null
+    _min: ModelCommentLikeMinAggregateOutputType | null
+    _max: ModelCommentLikeMaxAggregateOutputType | null
+  }
+
+  export type ModelCommentLikeMinAggregateOutputType = {
+    modelCommentId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type ModelCommentLikeMaxAggregateOutputType = {
+    modelCommentId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type ModelCommentLikeCountAggregateOutputType = {
+    modelCommentId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ModelCommentLikeMinAggregateInputType = {
+    modelCommentId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type ModelCommentLikeMaxAggregateInputType = {
+    modelCommentId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type ModelCommentLikeCountAggregateInputType = {
+    modelCommentId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ModelCommentLikeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelCommentLike to aggregate.
+     */
+    where?: ModelCommentLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelCommentLikes to fetch.
+     */
+    orderBy?: ModelCommentLikeOrderByWithRelationInput | ModelCommentLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ModelCommentLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelCommentLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelCommentLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ModelCommentLikes
+    **/
+    _count?: true | ModelCommentLikeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModelCommentLikeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModelCommentLikeMaxAggregateInputType
+  }
+
+  export type GetModelCommentLikeAggregateType<T extends ModelCommentLikeAggregateArgs> = {
+        [P in keyof T & keyof AggregateModelCommentLike]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateModelCommentLike[P]>
+      : GetScalarType<T[P], AggregateModelCommentLike[P]>
+  }
+
+
+
+
+  export type ModelCommentLikeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModelCommentLikeWhereInput
+    orderBy?: ModelCommentLikeOrderByWithAggregationInput | ModelCommentLikeOrderByWithAggregationInput[]
+    by: ModelCommentLikeScalarFieldEnum[] | ModelCommentLikeScalarFieldEnum
+    having?: ModelCommentLikeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ModelCommentLikeCountAggregateInputType | true
+    _min?: ModelCommentLikeMinAggregateInputType
+    _max?: ModelCommentLikeMaxAggregateInputType
+  }
+
+  export type ModelCommentLikeGroupByOutputType = {
+    modelCommentId: string
+    userId: string
+    createdAt: Date
+    _count: ModelCommentLikeCountAggregateOutputType | null
+    _min: ModelCommentLikeMinAggregateOutputType | null
+    _max: ModelCommentLikeMaxAggregateOutputType | null
+  }
+
+  type GetModelCommentLikeGroupByPayload<T extends ModelCommentLikeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ModelCommentLikeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ModelCommentLikeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ModelCommentLikeGroupByOutputType[P]>
+            : GetScalarType<T[P], ModelCommentLikeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ModelCommentLikeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    modelCommentId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    modelComment?: boolean | ModelCommentDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["modelCommentLike"]>
+
+  export type ModelCommentLikeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    modelCommentId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    modelComment?: boolean | ModelCommentDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["modelCommentLike"]>
+
+  export type ModelCommentLikeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    modelCommentId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    modelComment?: boolean | ModelCommentDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["modelCommentLike"]>
+
+  export type ModelCommentLikeSelectScalar = {
+    modelCommentId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ModelCommentLikeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelCommentId" | "userId" | "createdAt", ExtArgs["result"]["modelCommentLike"]>
+  export type ModelCommentLikeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modelComment?: boolean | ModelCommentDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ModelCommentLikeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modelComment?: boolean | ModelCommentDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ModelCommentLikeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modelComment?: boolean | ModelCommentDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ModelCommentLikePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ModelCommentLike"
+    objects: {
+      modelComment: Prisma.$ModelCommentPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      modelCommentId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["modelCommentLike"]>
+    composites: {}
+  }
+
+  type ModelCommentLikeGetPayload<S extends boolean | null | undefined | ModelCommentLikeDefaultArgs> = $Result.GetResult<Prisma.$ModelCommentLikePayload, S>
+
+  type ModelCommentLikeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ModelCommentLikeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ModelCommentLikeCountAggregateInputType | true
+    }
+
+  export interface ModelCommentLikeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ModelCommentLike'], meta: { name: 'ModelCommentLike' } }
+    /**
+     * Find zero or one ModelCommentLike that matches the filter.
+     * @param {ModelCommentLikeFindUniqueArgs} args - Arguments to find a ModelCommentLike
+     * @example
+     * // Get one ModelCommentLike
+     * const modelCommentLike = await prisma.modelCommentLike.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ModelCommentLikeFindUniqueArgs>(args: SelectSubset<T, ModelCommentLikeFindUniqueArgs<ExtArgs>>): Prisma__ModelCommentLikeClient<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ModelCommentLike that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ModelCommentLikeFindUniqueOrThrowArgs} args - Arguments to find a ModelCommentLike
+     * @example
+     * // Get one ModelCommentLike
+     * const modelCommentLike = await prisma.modelCommentLike.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ModelCommentLikeFindUniqueOrThrowArgs>(args: SelectSubset<T, ModelCommentLikeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ModelCommentLikeClient<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelCommentLike that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentLikeFindFirstArgs} args - Arguments to find a ModelCommentLike
+     * @example
+     * // Get one ModelCommentLike
+     * const modelCommentLike = await prisma.modelCommentLike.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ModelCommentLikeFindFirstArgs>(args?: SelectSubset<T, ModelCommentLikeFindFirstArgs<ExtArgs>>): Prisma__ModelCommentLikeClient<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModelCommentLike that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentLikeFindFirstOrThrowArgs} args - Arguments to find a ModelCommentLike
+     * @example
+     * // Get one ModelCommentLike
+     * const modelCommentLike = await prisma.modelCommentLike.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ModelCommentLikeFindFirstOrThrowArgs>(args?: SelectSubset<T, ModelCommentLikeFindFirstOrThrowArgs<ExtArgs>>): Prisma__ModelCommentLikeClient<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ModelCommentLikes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentLikeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModelCommentLikes
+     * const modelCommentLikes = await prisma.modelCommentLike.findMany()
+     * 
+     * // Get first 10 ModelCommentLikes
+     * const modelCommentLikes = await prisma.modelCommentLike.findMany({ take: 10 })
+     * 
+     * // Only select the `modelCommentId`
+     * const modelCommentLikeWithModelCommentIdOnly = await prisma.modelCommentLike.findMany({ select: { modelCommentId: true } })
+     * 
+     */
+    findMany<T extends ModelCommentLikeFindManyArgs>(args?: SelectSubset<T, ModelCommentLikeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ModelCommentLike.
+     * @param {ModelCommentLikeCreateArgs} args - Arguments to create a ModelCommentLike.
+     * @example
+     * // Create one ModelCommentLike
+     * const ModelCommentLike = await prisma.modelCommentLike.create({
+     *   data: {
+     *     // ... data to create a ModelCommentLike
+     *   }
+     * })
+     * 
+     */
+    create<T extends ModelCommentLikeCreateArgs>(args: SelectSubset<T, ModelCommentLikeCreateArgs<ExtArgs>>): Prisma__ModelCommentLikeClient<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ModelCommentLikes.
+     * @param {ModelCommentLikeCreateManyArgs} args - Arguments to create many ModelCommentLikes.
+     * @example
+     * // Create many ModelCommentLikes
+     * const modelCommentLike = await prisma.modelCommentLike.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ModelCommentLikeCreateManyArgs>(args?: SelectSubset<T, ModelCommentLikeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ModelCommentLikes and returns the data saved in the database.
+     * @param {ModelCommentLikeCreateManyAndReturnArgs} args - Arguments to create many ModelCommentLikes.
+     * @example
+     * // Create many ModelCommentLikes
+     * const modelCommentLike = await prisma.modelCommentLike.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ModelCommentLikes and only return the `modelCommentId`
+     * const modelCommentLikeWithModelCommentIdOnly = await prisma.modelCommentLike.createManyAndReturn({
+     *   select: { modelCommentId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ModelCommentLikeCreateManyAndReturnArgs>(args?: SelectSubset<T, ModelCommentLikeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ModelCommentLike.
+     * @param {ModelCommentLikeDeleteArgs} args - Arguments to delete one ModelCommentLike.
+     * @example
+     * // Delete one ModelCommentLike
+     * const ModelCommentLike = await prisma.modelCommentLike.delete({
+     *   where: {
+     *     // ... filter to delete one ModelCommentLike
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ModelCommentLikeDeleteArgs>(args: SelectSubset<T, ModelCommentLikeDeleteArgs<ExtArgs>>): Prisma__ModelCommentLikeClient<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ModelCommentLike.
+     * @param {ModelCommentLikeUpdateArgs} args - Arguments to update one ModelCommentLike.
+     * @example
+     * // Update one ModelCommentLike
+     * const modelCommentLike = await prisma.modelCommentLike.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ModelCommentLikeUpdateArgs>(args: SelectSubset<T, ModelCommentLikeUpdateArgs<ExtArgs>>): Prisma__ModelCommentLikeClient<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ModelCommentLikes.
+     * @param {ModelCommentLikeDeleteManyArgs} args - Arguments to filter ModelCommentLikes to delete.
+     * @example
+     * // Delete a few ModelCommentLikes
+     * const { count } = await prisma.modelCommentLike.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ModelCommentLikeDeleteManyArgs>(args?: SelectSubset<T, ModelCommentLikeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelCommentLikes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentLikeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModelCommentLikes
+     * const modelCommentLike = await prisma.modelCommentLike.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ModelCommentLikeUpdateManyArgs>(args: SelectSubset<T, ModelCommentLikeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModelCommentLikes and returns the data updated in the database.
+     * @param {ModelCommentLikeUpdateManyAndReturnArgs} args - Arguments to update many ModelCommentLikes.
+     * @example
+     * // Update many ModelCommentLikes
+     * const modelCommentLike = await prisma.modelCommentLike.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ModelCommentLikes and only return the `modelCommentId`
+     * const modelCommentLikeWithModelCommentIdOnly = await prisma.modelCommentLike.updateManyAndReturn({
+     *   select: { modelCommentId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ModelCommentLikeUpdateManyAndReturnArgs>(args: SelectSubset<T, ModelCommentLikeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ModelCommentLike.
+     * @param {ModelCommentLikeUpsertArgs} args - Arguments to update or create a ModelCommentLike.
+     * @example
+     * // Update or create a ModelCommentLike
+     * const modelCommentLike = await prisma.modelCommentLike.upsert({
+     *   create: {
+     *     // ... data to create a ModelCommentLike
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModelCommentLike we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ModelCommentLikeUpsertArgs>(args: SelectSubset<T, ModelCommentLikeUpsertArgs<ExtArgs>>): Prisma__ModelCommentLikeClient<$Result.GetResult<Prisma.$ModelCommentLikePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ModelCommentLikes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentLikeCountArgs} args - Arguments to filter ModelCommentLikes to count.
+     * @example
+     * // Count the number of ModelCommentLikes
+     * const count = await prisma.modelCommentLike.count({
+     *   where: {
+     *     // ... the filter for the ModelCommentLikes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModelCommentLikeCountArgs>(
+      args?: Subset<T, ModelCommentLikeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ModelCommentLikeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ModelCommentLike.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentLikeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModelCommentLikeAggregateArgs>(args: Subset<T, ModelCommentLikeAggregateArgs>): Prisma.PrismaPromise<GetModelCommentLikeAggregateType<T>>
+
+    /**
+     * Group by ModelCommentLike.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModelCommentLikeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ModelCommentLikeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ModelCommentLikeGroupByArgs['orderBy'] }
+        : { orderBy?: ModelCommentLikeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ModelCommentLikeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModelCommentLikeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ModelCommentLike model
+   */
+  readonly fields: ModelCommentLikeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ModelCommentLike.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ModelCommentLikeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    modelComment<T extends ModelCommentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelCommentDefaultArgs<ExtArgs>>): Prisma__ModelCommentClient<$Result.GetResult<Prisma.$ModelCommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ModelCommentLike model
+   */
+  interface ModelCommentLikeFieldRefs {
+    readonly modelCommentId: FieldRef<"ModelCommentLike", 'String'>
+    readonly userId: FieldRef<"ModelCommentLike", 'String'>
+    readonly createdAt: FieldRef<"ModelCommentLike", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ModelCommentLike findUnique
+   */
+  export type ModelCommentLikeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelCommentLike to fetch.
+     */
+    where: ModelCommentLikeWhereUniqueInput
+  }
+
+  /**
+   * ModelCommentLike findUniqueOrThrow
+   */
+  export type ModelCommentLikeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelCommentLike to fetch.
+     */
+    where: ModelCommentLikeWhereUniqueInput
+  }
+
+  /**
+   * ModelCommentLike findFirst
+   */
+  export type ModelCommentLikeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelCommentLike to fetch.
+     */
+    where?: ModelCommentLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelCommentLikes to fetch.
+     */
+    orderBy?: ModelCommentLikeOrderByWithRelationInput | ModelCommentLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelCommentLikes.
+     */
+    cursor?: ModelCommentLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelCommentLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelCommentLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelCommentLikes.
+     */
+    distinct?: ModelCommentLikeScalarFieldEnum | ModelCommentLikeScalarFieldEnum[]
+  }
+
+  /**
+   * ModelCommentLike findFirstOrThrow
+   */
+  export type ModelCommentLikeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelCommentLike to fetch.
+     */
+    where?: ModelCommentLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelCommentLikes to fetch.
+     */
+    orderBy?: ModelCommentLikeOrderByWithRelationInput | ModelCommentLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModelCommentLikes.
+     */
+    cursor?: ModelCommentLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelCommentLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelCommentLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelCommentLikes.
+     */
+    distinct?: ModelCommentLikeScalarFieldEnum | ModelCommentLikeScalarFieldEnum[]
+  }
+
+  /**
+   * ModelCommentLike findMany
+   */
+  export type ModelCommentLikeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which ModelCommentLikes to fetch.
+     */
+    where?: ModelCommentLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModelCommentLikes to fetch.
+     */
+    orderBy?: ModelCommentLikeOrderByWithRelationInput | ModelCommentLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ModelCommentLikes.
+     */
+    cursor?: ModelCommentLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModelCommentLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModelCommentLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModelCommentLikes.
+     */
+    distinct?: ModelCommentLikeScalarFieldEnum | ModelCommentLikeScalarFieldEnum[]
+  }
+
+  /**
+   * ModelCommentLike create
+   */
+  export type ModelCommentLikeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ModelCommentLike.
+     */
+    data: XOR<ModelCommentLikeCreateInput, ModelCommentLikeUncheckedCreateInput>
+  }
+
+  /**
+   * ModelCommentLike createMany
+   */
+  export type ModelCommentLikeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ModelCommentLikes.
+     */
+    data: ModelCommentLikeCreateManyInput | ModelCommentLikeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ModelCommentLike createManyAndReturn
+   */
+  export type ModelCommentLikeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * The data used to create many ModelCommentLikes.
+     */
+    data: ModelCommentLikeCreateManyInput | ModelCommentLikeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelCommentLike update
+   */
+  export type ModelCommentLikeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ModelCommentLike.
+     */
+    data: XOR<ModelCommentLikeUpdateInput, ModelCommentLikeUncheckedUpdateInput>
+    /**
+     * Choose, which ModelCommentLike to update.
+     */
+    where: ModelCommentLikeWhereUniqueInput
+  }
+
+  /**
+   * ModelCommentLike updateMany
+   */
+  export type ModelCommentLikeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ModelCommentLikes.
+     */
+    data: XOR<ModelCommentLikeUpdateManyMutationInput, ModelCommentLikeUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelCommentLikes to update
+     */
+    where?: ModelCommentLikeWhereInput
+    /**
+     * Limit how many ModelCommentLikes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelCommentLike updateManyAndReturn
+   */
+  export type ModelCommentLikeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * The data used to update ModelCommentLikes.
+     */
+    data: XOR<ModelCommentLikeUpdateManyMutationInput, ModelCommentLikeUncheckedUpdateManyInput>
+    /**
+     * Filter which ModelCommentLikes to update
+     */
+    where?: ModelCommentLikeWhereInput
+    /**
+     * Limit how many ModelCommentLikes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ModelCommentLike upsert
+   */
+  export type ModelCommentLikeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ModelCommentLike to update in case it exists.
+     */
+    where: ModelCommentLikeWhereUniqueInput
+    /**
+     * In case the ModelCommentLike found by the `where` argument doesn't exist, create a new ModelCommentLike with this data.
+     */
+    create: XOR<ModelCommentLikeCreateInput, ModelCommentLikeUncheckedCreateInput>
+    /**
+     * In case the ModelCommentLike was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ModelCommentLikeUpdateInput, ModelCommentLikeUncheckedUpdateInput>
+  }
+
+  /**
+   * ModelCommentLike delete
+   */
+  export type ModelCommentLikeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+    /**
+     * Filter which ModelCommentLike to delete.
+     */
+    where: ModelCommentLikeWhereUniqueInput
+  }
+
+  /**
+   * ModelCommentLike deleteMany
+   */
+  export type ModelCommentLikeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModelCommentLikes to delete
+     */
+    where?: ModelCommentLikeWhereInput
+    /**
+     * Limit how many ModelCommentLikes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModelCommentLike without action
+   */
+  export type ModelCommentLikeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModelCommentLike
+     */
+    select?: ModelCommentLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModelCommentLike
+     */
+    omit?: ModelCommentLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ModelCommentLikeInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Event
    */
 
@@ -21794,6 +24480,33 @@ export namespace Prisma {
   export type ModelDraftScalarFieldEnum = (typeof ModelDraftScalarFieldEnum)[keyof typeof ModelDraftScalarFieldEnum]
 
 
+  export const ModelCommentScalarFieldEnum: {
+    id: 'id',
+    legacyId: 'legacyId',
+    parentId: 'parentId',
+    userId: 'userId',
+    modelId: 'modelId',
+    versionNumber: 'versionNumber',
+    content: 'content',
+    likesCount: 'likesCount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    editedAt: 'editedAt',
+    deletedAt: 'deletedAt'
+  };
+
+  export type ModelCommentScalarFieldEnum = (typeof ModelCommentScalarFieldEnum)[keyof typeof ModelCommentScalarFieldEnum]
+
+
+  export const ModelCommentLikeScalarFieldEnum: {
+    modelCommentId: 'modelCommentId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type ModelCommentLikeScalarFieldEnum = (typeof ModelCommentLikeScalarFieldEnum)[keyof typeof ModelCommentLikeScalarFieldEnum]
+
+
   export const EventScalarFieldEnum: {
     id: 'id',
     type: 'type',
@@ -22074,6 +24787,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeListRelationFilter
     modelInteractions?: ModelInteractionListRelationFilter
     modelDrafts?: ModelDraftListRelationFilter
+    comments?: ModelCommentListRelationFilter
+    commentLikes?: ModelCommentLikeListRelationFilter
     passkeys?: PasskeyListRelationFilter
   }
 
@@ -22109,6 +24824,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeOrderByRelationAggregateInput
     modelInteractions?: ModelInteractionOrderByRelationAggregateInput
     modelDrafts?: ModelDraftOrderByRelationAggregateInput
+    comments?: ModelCommentOrderByRelationAggregateInput
+    commentLikes?: ModelCommentLikeOrderByRelationAggregateInput
     passkeys?: PasskeyOrderByRelationAggregateInput
   }
 
@@ -22147,6 +24864,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeListRelationFilter
     modelInteractions?: ModelInteractionListRelationFilter
     modelDrafts?: ModelDraftListRelationFilter
+    comments?: ModelCommentListRelationFilter
+    commentLikes?: ModelCommentLikeListRelationFilter
     passkeys?: PasskeyListRelationFilter
   }, "id" | "email" | "legacyId">
 
@@ -22560,6 +25279,7 @@ export namespace Prisma {
     likes?: ModelLikeListRelationFilter
     interactions?: ModelInteractionListRelationFilter
     drafts?: ModelDraftListRelationFilter
+    comments?: ModelCommentListRelationFilter
   }
 
   export type ModelOrderByWithRelationInput = {
@@ -22589,6 +25309,7 @@ export namespace Prisma {
     likes?: ModelLikeOrderByRelationAggregateInput
     interactions?: ModelInteractionOrderByRelationAggregateInput
     drafts?: ModelDraftOrderByRelationAggregateInput
+    comments?: ModelCommentOrderByRelationAggregateInput
   }
 
   export type ModelWhereUniqueInput = Prisma.AtLeast<{
@@ -22622,6 +25343,7 @@ export namespace Prisma {
     likes?: ModelLikeListRelationFilter
     interactions?: ModelInteractionListRelationFilter
     drafts?: ModelDraftListRelationFilter
+    comments?: ModelCommentListRelationFilter
   }, "id" | "legacyId" | "id_latestVersionNumber">
 
   export type ModelOrderByWithAggregationInput = {
@@ -23273,6 +25995,159 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ModelDraft"> | Date | string
   }
 
+  export type ModelCommentWhereInput = {
+    AND?: ModelCommentWhereInput | ModelCommentWhereInput[]
+    OR?: ModelCommentWhereInput[]
+    NOT?: ModelCommentWhereInput | ModelCommentWhereInput[]
+    id?: StringFilter<"ModelComment"> | string
+    legacyId?: IntNullableFilter<"ModelComment"> | number | null
+    parentId?: StringNullableFilter<"ModelComment"> | string | null
+    userId?: StringNullableFilter<"ModelComment"> | string | null
+    modelId?: StringFilter<"ModelComment"> | string
+    versionNumber?: IntNullableFilter<"ModelComment"> | number | null
+    content?: StringNullableFilter<"ModelComment"> | string | null
+    likesCount?: IntFilter<"ModelComment"> | number
+    createdAt?: DateTimeFilter<"ModelComment"> | Date | string
+    updatedAt?: DateTimeFilter<"ModelComment"> | Date | string
+    editedAt?: DateTimeNullableFilter<"ModelComment"> | Date | string | null
+    deletedAt?: DateTimeNullableFilter<"ModelComment"> | Date | string | null
+    model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    parent?: XOR<ModelCommentNullableScalarRelationFilter, ModelCommentWhereInput> | null
+    replies?: ModelCommentListRelationFilter
+    likes?: ModelCommentLikeListRelationFilter
+  }
+
+  export type ModelCommentOrderByWithRelationInput = {
+    id?: SortOrder
+    legacyId?: SortOrderInput | SortOrder
+    parentId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrderInput | SortOrder
+    content?: SortOrderInput | SortOrder
+    likesCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    editedAt?: SortOrderInput | SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    model?: ModelOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    parent?: ModelCommentOrderByWithRelationInput
+    replies?: ModelCommentOrderByRelationAggregateInput
+    likes?: ModelCommentLikeOrderByRelationAggregateInput
+  }
+
+  export type ModelCommentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    legacyId?: number
+    AND?: ModelCommentWhereInput | ModelCommentWhereInput[]
+    OR?: ModelCommentWhereInput[]
+    NOT?: ModelCommentWhereInput | ModelCommentWhereInput[]
+    parentId?: StringNullableFilter<"ModelComment"> | string | null
+    userId?: StringNullableFilter<"ModelComment"> | string | null
+    modelId?: StringFilter<"ModelComment"> | string
+    versionNumber?: IntNullableFilter<"ModelComment"> | number | null
+    content?: StringNullableFilter<"ModelComment"> | string | null
+    likesCount?: IntFilter<"ModelComment"> | number
+    createdAt?: DateTimeFilter<"ModelComment"> | Date | string
+    updatedAt?: DateTimeFilter<"ModelComment"> | Date | string
+    editedAt?: DateTimeNullableFilter<"ModelComment"> | Date | string | null
+    deletedAt?: DateTimeNullableFilter<"ModelComment"> | Date | string | null
+    model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    parent?: XOR<ModelCommentNullableScalarRelationFilter, ModelCommentWhereInput> | null
+    replies?: ModelCommentListRelationFilter
+    likes?: ModelCommentLikeListRelationFilter
+  }, "id" | "legacyId">
+
+  export type ModelCommentOrderByWithAggregationInput = {
+    id?: SortOrder
+    legacyId?: SortOrderInput | SortOrder
+    parentId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrderInput | SortOrder
+    content?: SortOrderInput | SortOrder
+    likesCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    editedAt?: SortOrderInput | SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    _count?: ModelCommentCountOrderByAggregateInput
+    _avg?: ModelCommentAvgOrderByAggregateInput
+    _max?: ModelCommentMaxOrderByAggregateInput
+    _min?: ModelCommentMinOrderByAggregateInput
+    _sum?: ModelCommentSumOrderByAggregateInput
+  }
+
+  export type ModelCommentScalarWhereWithAggregatesInput = {
+    AND?: ModelCommentScalarWhereWithAggregatesInput | ModelCommentScalarWhereWithAggregatesInput[]
+    OR?: ModelCommentScalarWhereWithAggregatesInput[]
+    NOT?: ModelCommentScalarWhereWithAggregatesInput | ModelCommentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ModelComment"> | string
+    legacyId?: IntNullableWithAggregatesFilter<"ModelComment"> | number | null
+    parentId?: StringNullableWithAggregatesFilter<"ModelComment"> | string | null
+    userId?: StringNullableWithAggregatesFilter<"ModelComment"> | string | null
+    modelId?: StringWithAggregatesFilter<"ModelComment"> | string
+    versionNumber?: IntNullableWithAggregatesFilter<"ModelComment"> | number | null
+    content?: StringNullableWithAggregatesFilter<"ModelComment"> | string | null
+    likesCount?: IntWithAggregatesFilter<"ModelComment"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"ModelComment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ModelComment"> | Date | string
+    editedAt?: DateTimeNullableWithAggregatesFilter<"ModelComment"> | Date | string | null
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"ModelComment"> | Date | string | null
+  }
+
+  export type ModelCommentLikeWhereInput = {
+    AND?: ModelCommentLikeWhereInput | ModelCommentLikeWhereInput[]
+    OR?: ModelCommentLikeWhereInput[]
+    NOT?: ModelCommentLikeWhereInput | ModelCommentLikeWhereInput[]
+    modelCommentId?: StringFilter<"ModelCommentLike"> | string
+    userId?: StringFilter<"ModelCommentLike"> | string
+    createdAt?: DateTimeFilter<"ModelCommentLike"> | Date | string
+    modelComment?: XOR<ModelCommentScalarRelationFilter, ModelCommentWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ModelCommentLikeOrderByWithRelationInput = {
+    modelCommentId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    modelComment?: ModelCommentOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ModelCommentLikeWhereUniqueInput = Prisma.AtLeast<{
+    modelCommentId_userId?: ModelCommentLikeModelCommentIdUserIdCompoundUniqueInput
+    AND?: ModelCommentLikeWhereInput | ModelCommentLikeWhereInput[]
+    OR?: ModelCommentLikeWhereInput[]
+    NOT?: ModelCommentLikeWhereInput | ModelCommentLikeWhereInput[]
+    modelCommentId?: StringFilter<"ModelCommentLike"> | string
+    userId?: StringFilter<"ModelCommentLike"> | string
+    createdAt?: DateTimeFilter<"ModelCommentLike"> | Date | string
+    modelComment?: XOR<ModelCommentScalarRelationFilter, ModelCommentWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "modelCommentId_userId">
+
+  export type ModelCommentLikeOrderByWithAggregationInput = {
+    modelCommentId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: ModelCommentLikeCountOrderByAggregateInput
+    _max?: ModelCommentLikeMaxOrderByAggregateInput
+    _min?: ModelCommentLikeMinOrderByAggregateInput
+  }
+
+  export type ModelCommentLikeScalarWhereWithAggregatesInput = {
+    AND?: ModelCommentLikeScalarWhereWithAggregatesInput | ModelCommentLikeScalarWhereWithAggregatesInput[]
+    OR?: ModelCommentLikeScalarWhereWithAggregatesInput[]
+    NOT?: ModelCommentLikeScalarWhereWithAggregatesInput | ModelCommentLikeScalarWhereWithAggregatesInput[]
+    modelCommentId?: StringWithAggregatesFilter<"ModelCommentLike"> | string
+    userId?: StringWithAggregatesFilter<"ModelCommentLike"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ModelCommentLike"> | Date | string
+  }
+
   export type EventWhereInput = {
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
@@ -23375,6 +26250,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -23410,6 +26287,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -23445,6 +26324,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -23480,6 +26361,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -23941,6 +26824,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateInput = {
@@ -23967,6 +26851,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelUpdateInput = {
@@ -23992,6 +26877,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateInput = {
@@ -24018,6 +26904,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelCreateManyInput = {
@@ -24660,6 +27547,156 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModelCommentCreateInput = {
+    id?: string
+    legacyId?: number | null
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    model: ModelCreateNestedOneWithoutCommentsInput
+    user?: UserCreateNestedOneWithoutCommentsInput
+    parent?: ModelCommentCreateNestedOneWithoutRepliesInput
+    replies?: ModelCommentCreateNestedManyWithoutParentInput
+    likes?: ModelCommentLikeCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentUncheckedCreateInput = {
+    id?: string
+    legacyId?: number | null
+    parentId?: string | null
+    userId?: string | null
+    modelId: string
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    replies?: ModelCommentUncheckedCreateNestedManyWithoutParentInput
+    likes?: ModelCommentLikeUncheckedCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    model?: ModelUpdateOneRequiredWithoutCommentsNestedInput
+    user?: UserUpdateOneWithoutCommentsNestedInput
+    parent?: ModelCommentUpdateOneWithoutRepliesNestedInput
+    replies?: ModelCommentUpdateManyWithoutParentNestedInput
+    likes?: ModelCommentLikeUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replies?: ModelCommentUncheckedUpdateManyWithoutParentNestedInput
+    likes?: ModelCommentLikeUncheckedUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentCreateManyInput = {
+    id?: string
+    legacyId?: number | null
+    parentId?: string | null
+    userId?: string | null
+    modelId: string
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+  }
+
+  export type ModelCommentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ModelCommentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ModelCommentLikeCreateInput = {
+    createdAt?: Date | string
+    modelComment: ModelCommentCreateNestedOneWithoutLikesInput
+    user: UserCreateNestedOneWithoutCommentLikesInput
+  }
+
+  export type ModelCommentLikeUncheckedCreateInput = {
+    modelCommentId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelCommentLikeUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelComment?: ModelCommentUpdateOneRequiredWithoutLikesNestedInput
+    user?: UserUpdateOneRequiredWithoutCommentLikesNestedInput
+  }
+
+  export type ModelCommentLikeUncheckedUpdateInput = {
+    modelCommentId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelCommentLikeCreateManyInput = {
+    modelCommentId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelCommentLikeUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelCommentLikeUncheckedUpdateManyInput = {
+    modelCommentId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EventCreateInput = {
     id?: string
     type: string
@@ -24900,6 +27937,18 @@ export namespace Prisma {
     none?: ModelDraftWhereInput
   }
 
+  export type ModelCommentListRelationFilter = {
+    every?: ModelCommentWhereInput
+    some?: ModelCommentWhereInput
+    none?: ModelCommentWhereInput
+  }
+
+  export type ModelCommentLikeListRelationFilter = {
+    every?: ModelCommentLikeWhereInput
+    some?: ModelCommentLikeWhereInput
+    none?: ModelCommentLikeWhereInput
+  }
+
   export type PasskeyListRelationFilter = {
     every?: PasskeyWhereInput
     some?: PasskeyWhereInput
@@ -24944,6 +27993,14 @@ export namespace Prisma {
   }
 
   export type ModelDraftOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ModelCommentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ModelCommentLikeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -25975,6 +29032,96 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type ModelCommentNullableScalarRelationFilter = {
+    is?: ModelCommentWhereInput | null
+    isNot?: ModelCommentWhereInput | null
+  }
+
+  export type ModelCommentCountOrderByAggregateInput = {
+    id?: SortOrder
+    legacyId?: SortOrder
+    parentId?: SortOrder
+    userId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
+    content?: SortOrder
+    likesCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    editedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type ModelCommentAvgOrderByAggregateInput = {
+    legacyId?: SortOrder
+    versionNumber?: SortOrder
+    likesCount?: SortOrder
+  }
+
+  export type ModelCommentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    legacyId?: SortOrder
+    parentId?: SortOrder
+    userId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
+    content?: SortOrder
+    likesCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    editedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type ModelCommentMinOrderByAggregateInput = {
+    id?: SortOrder
+    legacyId?: SortOrder
+    parentId?: SortOrder
+    userId?: SortOrder
+    modelId?: SortOrder
+    versionNumber?: SortOrder
+    content?: SortOrder
+    likesCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    editedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type ModelCommentSumOrderByAggregateInput = {
+    legacyId?: SortOrder
+    versionNumber?: SortOrder
+    likesCount?: SortOrder
+  }
+
+  export type ModelCommentScalarRelationFilter = {
+    is?: ModelCommentWhereInput
+    isNot?: ModelCommentWhereInput
+  }
+
+  export type ModelCommentLikeModelCommentIdUserIdCompoundUniqueInput = {
+    modelCommentId: string
+    userId: string
+  }
+
+  export type ModelCommentLikeCountOrderByAggregateInput = {
+    modelCommentId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ModelCommentLikeMaxOrderByAggregateInput = {
+    modelCommentId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ModelCommentLikeMinOrderByAggregateInput = {
+    modelCommentId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type EventCountOrderByAggregateInput = {
     id?: SortOrder
     type?: SortOrder
@@ -26069,6 +29216,20 @@ export namespace Prisma {
     connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
   }
 
+  export type ModelCommentCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelCommentCreateWithoutUserInput, ModelCommentUncheckedCreateWithoutUserInput> | ModelCommentCreateWithoutUserInput[] | ModelCommentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutUserInput | ModelCommentCreateOrConnectWithoutUserInput[]
+    createMany?: ModelCommentCreateManyUserInputEnvelope
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+  }
+
+  export type ModelCommentLikeCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelCommentLikeCreateWithoutUserInput, ModelCommentLikeUncheckedCreateWithoutUserInput> | ModelCommentLikeCreateWithoutUserInput[] | ModelCommentLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelCommentLikeCreateOrConnectWithoutUserInput | ModelCommentLikeCreateOrConnectWithoutUserInput[]
+    createMany?: ModelCommentLikeCreateManyUserInputEnvelope
+    connect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+  }
+
   export type PasskeyCreateNestedManyWithoutUserInput = {
     create?: XOR<PasskeyCreateWithoutUserInput, PasskeyUncheckedCreateWithoutUserInput> | PasskeyCreateWithoutUserInput[] | PasskeyUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasskeyCreateOrConnectWithoutUserInput | PasskeyCreateOrConnectWithoutUserInput[]
@@ -26137,6 +29298,20 @@ export namespace Prisma {
     connectOrCreate?: ModelDraftCreateOrConnectWithoutUserInput | ModelDraftCreateOrConnectWithoutUserInput[]
     createMany?: ModelDraftCreateManyUserInputEnvelope
     connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+  }
+
+  export type ModelCommentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelCommentCreateWithoutUserInput, ModelCommentUncheckedCreateWithoutUserInput> | ModelCommentCreateWithoutUserInput[] | ModelCommentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutUserInput | ModelCommentCreateOrConnectWithoutUserInput[]
+    createMany?: ModelCommentCreateManyUserInputEnvelope
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+  }
+
+  export type ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ModelCommentLikeCreateWithoutUserInput, ModelCommentLikeUncheckedCreateWithoutUserInput> | ModelCommentLikeCreateWithoutUserInput[] | ModelCommentLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelCommentLikeCreateOrConnectWithoutUserInput | ModelCommentLikeCreateOrConnectWithoutUserInput[]
+    createMany?: ModelCommentLikeCreateManyUserInputEnvelope
+    connect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
   }
 
   export type PasskeyUncheckedCreateNestedManyWithoutUserInput = {
@@ -26312,6 +29487,34 @@ export namespace Prisma {
     deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
   }
 
+  export type ModelCommentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelCommentCreateWithoutUserInput, ModelCommentUncheckedCreateWithoutUserInput> | ModelCommentCreateWithoutUserInput[] | ModelCommentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutUserInput | ModelCommentCreateOrConnectWithoutUserInput[]
+    upsert?: ModelCommentUpsertWithWhereUniqueWithoutUserInput | ModelCommentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelCommentCreateManyUserInputEnvelope
+    set?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    disconnect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    delete?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    update?: ModelCommentUpdateWithWhereUniqueWithoutUserInput | ModelCommentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelCommentUpdateManyWithWhereWithoutUserInput | ModelCommentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelCommentScalarWhereInput | ModelCommentScalarWhereInput[]
+  }
+
+  export type ModelCommentLikeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelCommentLikeCreateWithoutUserInput, ModelCommentLikeUncheckedCreateWithoutUserInput> | ModelCommentLikeCreateWithoutUserInput[] | ModelCommentLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelCommentLikeCreateOrConnectWithoutUserInput | ModelCommentLikeCreateOrConnectWithoutUserInput[]
+    upsert?: ModelCommentLikeUpsertWithWhereUniqueWithoutUserInput | ModelCommentLikeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelCommentLikeCreateManyUserInputEnvelope
+    set?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    disconnect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    delete?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    connect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    update?: ModelCommentLikeUpdateWithWhereUniqueWithoutUserInput | ModelCommentLikeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelCommentLikeUpdateManyWithWhereWithoutUserInput | ModelCommentLikeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelCommentLikeScalarWhereInput | ModelCommentLikeScalarWhereInput[]
+  }
+
   export type PasskeyUpdateManyWithoutUserNestedInput = {
     create?: XOR<PasskeyCreateWithoutUserInput, PasskeyUncheckedCreateWithoutUserInput> | PasskeyCreateWithoutUserInput[] | PasskeyUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasskeyCreateOrConnectWithoutUserInput | PasskeyCreateOrConnectWithoutUserInput[]
@@ -26450,6 +29653,34 @@ export namespace Prisma {
     update?: ModelDraftUpdateWithWhereUniqueWithoutUserInput | ModelDraftUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ModelDraftUpdateManyWithWhereWithoutUserInput | ModelDraftUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
+  }
+
+  export type ModelCommentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelCommentCreateWithoutUserInput, ModelCommentUncheckedCreateWithoutUserInput> | ModelCommentCreateWithoutUserInput[] | ModelCommentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutUserInput | ModelCommentCreateOrConnectWithoutUserInput[]
+    upsert?: ModelCommentUpsertWithWhereUniqueWithoutUserInput | ModelCommentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelCommentCreateManyUserInputEnvelope
+    set?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    disconnect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    delete?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    update?: ModelCommentUpdateWithWhereUniqueWithoutUserInput | ModelCommentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelCommentUpdateManyWithWhereWithoutUserInput | ModelCommentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelCommentScalarWhereInput | ModelCommentScalarWhereInput[]
+  }
+
+  export type ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ModelCommentLikeCreateWithoutUserInput, ModelCommentLikeUncheckedCreateWithoutUserInput> | ModelCommentLikeCreateWithoutUserInput[] | ModelCommentLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ModelCommentLikeCreateOrConnectWithoutUserInput | ModelCommentLikeCreateOrConnectWithoutUserInput[]
+    upsert?: ModelCommentLikeUpsertWithWhereUniqueWithoutUserInput | ModelCommentLikeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ModelCommentLikeCreateManyUserInputEnvelope
+    set?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    disconnect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    delete?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    connect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    update?: ModelCommentLikeUpdateWithWhereUniqueWithoutUserInput | ModelCommentLikeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ModelCommentLikeUpdateManyWithWhereWithoutUserInput | ModelCommentLikeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ModelCommentLikeScalarWhereInput | ModelCommentLikeScalarWhereInput[]
   }
 
   export type PasskeyUncheckedUpdateManyWithoutUserNestedInput = {
@@ -26606,6 +29837,13 @@ export namespace Prisma {
     connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
   }
 
+  export type ModelCommentCreateNestedManyWithoutModelInput = {
+    create?: XOR<ModelCommentCreateWithoutModelInput, ModelCommentUncheckedCreateWithoutModelInput> | ModelCommentCreateWithoutModelInput[] | ModelCommentUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutModelInput | ModelCommentCreateOrConnectWithoutModelInput[]
+    createMany?: ModelCommentCreateManyModelInputEnvelope
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+  }
+
   export type ModelUncheckedCreateNestedManyWithoutParentModelInput = {
     create?: XOR<ModelCreateWithoutParentModelInput, ModelUncheckedCreateWithoutParentModelInput> | ModelCreateWithoutParentModelInput[] | ModelUncheckedCreateWithoutParentModelInput[]
     connectOrCreate?: ModelCreateOrConnectWithoutParentModelInput | ModelCreateOrConnectWithoutParentModelInput[]
@@ -26660,6 +29898,13 @@ export namespace Prisma {
     connectOrCreate?: ModelDraftCreateOrConnectWithoutModelInput | ModelDraftCreateOrConnectWithoutModelInput[]
     createMany?: ModelDraftCreateManyModelInputEnvelope
     connect?: ModelDraftWhereUniqueInput | ModelDraftWhereUniqueInput[]
+  }
+
+  export type ModelCommentUncheckedCreateNestedManyWithoutModelInput = {
+    create?: XOR<ModelCommentCreateWithoutModelInput, ModelCommentUncheckedCreateWithoutModelInput> | ModelCommentCreateWithoutModelInput[] | ModelCommentUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutModelInput | ModelCommentCreateOrConnectWithoutModelInput[]
+    createMany?: ModelCommentCreateManyModelInputEnvelope
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
   }
 
   export type EnumModelVisibilityFieldUpdateOperationsInput = {
@@ -26808,6 +30053,20 @@ export namespace Prisma {
     deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
   }
 
+  export type ModelCommentUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ModelCommentCreateWithoutModelInput, ModelCommentUncheckedCreateWithoutModelInput> | ModelCommentCreateWithoutModelInput[] | ModelCommentUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutModelInput | ModelCommentCreateOrConnectWithoutModelInput[]
+    upsert?: ModelCommentUpsertWithWhereUniqueWithoutModelInput | ModelCommentUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: ModelCommentCreateManyModelInputEnvelope
+    set?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    disconnect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    delete?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    update?: ModelCommentUpdateWithWhereUniqueWithoutModelInput | ModelCommentUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ModelCommentUpdateManyWithWhereWithoutModelInput | ModelCommentUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ModelCommentScalarWhereInput | ModelCommentScalarWhereInput[]
+  }
+
   export type ModelUncheckedUpdateManyWithoutParentModelNestedInput = {
     create?: XOR<ModelCreateWithoutParentModelInput, ModelUncheckedCreateWithoutParentModelInput> | ModelCreateWithoutParentModelInput[] | ModelUncheckedCreateWithoutParentModelInput[]
     connectOrCreate?: ModelCreateOrConnectWithoutParentModelInput | ModelCreateOrConnectWithoutParentModelInput[]
@@ -26918,6 +30177,20 @@ export namespace Prisma {
     update?: ModelDraftUpdateWithWhereUniqueWithoutModelInput | ModelDraftUpdateWithWhereUniqueWithoutModelInput[]
     updateMany?: ModelDraftUpdateManyWithWhereWithoutModelInput | ModelDraftUpdateManyWithWhereWithoutModelInput[]
     deleteMany?: ModelDraftScalarWhereInput | ModelDraftScalarWhereInput[]
+  }
+
+  export type ModelCommentUncheckedUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ModelCommentCreateWithoutModelInput, ModelCommentUncheckedCreateWithoutModelInput> | ModelCommentCreateWithoutModelInput[] | ModelCommentUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutModelInput | ModelCommentCreateOrConnectWithoutModelInput[]
+    upsert?: ModelCommentUpsertWithWhereUniqueWithoutModelInput | ModelCommentUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: ModelCommentCreateManyModelInputEnvelope
+    set?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    disconnect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    delete?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    update?: ModelCommentUpdateWithWhereUniqueWithoutModelInput | ModelCommentUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ModelCommentUpdateManyWithWhereWithoutModelInput | ModelCommentUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ModelCommentScalarWhereInput | ModelCommentScalarWhereInput[]
   }
 
   export type ModelCreateNestedOneWithoutVersionsInput = {
@@ -27350,6 +30623,164 @@ export namespace Prisma {
     delete?: ModelWhereInput | boolean
     connect?: ModelWhereUniqueInput
     update?: XOR<XOR<ModelUpdateToOneWithWhereWithoutDraftsInput, ModelUpdateWithoutDraftsInput>, ModelUncheckedUpdateWithoutDraftsInput>
+  }
+
+  export type ModelCreateNestedOneWithoutCommentsInput = {
+    create?: XOR<ModelCreateWithoutCommentsInput, ModelUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutCommentsInput
+    connect?: ModelWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCommentsInput = {
+    create?: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ModelCommentCreateNestedOneWithoutRepliesInput = {
+    create?: XOR<ModelCommentCreateWithoutRepliesInput, ModelCommentUncheckedCreateWithoutRepliesInput>
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutRepliesInput
+    connect?: ModelCommentWhereUniqueInput
+  }
+
+  export type ModelCommentCreateNestedManyWithoutParentInput = {
+    create?: XOR<ModelCommentCreateWithoutParentInput, ModelCommentUncheckedCreateWithoutParentInput> | ModelCommentCreateWithoutParentInput[] | ModelCommentUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutParentInput | ModelCommentCreateOrConnectWithoutParentInput[]
+    createMany?: ModelCommentCreateManyParentInputEnvelope
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+  }
+
+  export type ModelCommentLikeCreateNestedManyWithoutModelCommentInput = {
+    create?: XOR<ModelCommentLikeCreateWithoutModelCommentInput, ModelCommentLikeUncheckedCreateWithoutModelCommentInput> | ModelCommentLikeCreateWithoutModelCommentInput[] | ModelCommentLikeUncheckedCreateWithoutModelCommentInput[]
+    connectOrCreate?: ModelCommentLikeCreateOrConnectWithoutModelCommentInput | ModelCommentLikeCreateOrConnectWithoutModelCommentInput[]
+    createMany?: ModelCommentLikeCreateManyModelCommentInputEnvelope
+    connect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+  }
+
+  export type ModelCommentUncheckedCreateNestedManyWithoutParentInput = {
+    create?: XOR<ModelCommentCreateWithoutParentInput, ModelCommentUncheckedCreateWithoutParentInput> | ModelCommentCreateWithoutParentInput[] | ModelCommentUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutParentInput | ModelCommentCreateOrConnectWithoutParentInput[]
+    createMany?: ModelCommentCreateManyParentInputEnvelope
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+  }
+
+  export type ModelCommentLikeUncheckedCreateNestedManyWithoutModelCommentInput = {
+    create?: XOR<ModelCommentLikeCreateWithoutModelCommentInput, ModelCommentLikeUncheckedCreateWithoutModelCommentInput> | ModelCommentLikeCreateWithoutModelCommentInput[] | ModelCommentLikeUncheckedCreateWithoutModelCommentInput[]
+    connectOrCreate?: ModelCommentLikeCreateOrConnectWithoutModelCommentInput | ModelCommentLikeCreateOrConnectWithoutModelCommentInput[]
+    createMany?: ModelCommentLikeCreateManyModelCommentInputEnvelope
+    connect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+  }
+
+  export type ModelUpdateOneRequiredWithoutCommentsNestedInput = {
+    create?: XOR<ModelCreateWithoutCommentsInput, ModelUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutCommentsInput
+    upsert?: ModelUpsertWithoutCommentsInput
+    connect?: ModelWhereUniqueInput
+    update?: XOR<XOR<ModelUpdateToOneWithWhereWithoutCommentsInput, ModelUpdateWithoutCommentsInput>, ModelUncheckedUpdateWithoutCommentsInput>
+  }
+
+  export type UserUpdateOneWithoutCommentsNestedInput = {
+    create?: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommentsInput
+    upsert?: UserUpsertWithoutCommentsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommentsInput, UserUpdateWithoutCommentsInput>, UserUncheckedUpdateWithoutCommentsInput>
+  }
+
+  export type ModelCommentUpdateOneWithoutRepliesNestedInput = {
+    create?: XOR<ModelCommentCreateWithoutRepliesInput, ModelCommentUncheckedCreateWithoutRepliesInput>
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutRepliesInput
+    upsert?: ModelCommentUpsertWithoutRepliesInput
+    disconnect?: ModelCommentWhereInput | boolean
+    delete?: ModelCommentWhereInput | boolean
+    connect?: ModelCommentWhereUniqueInput
+    update?: XOR<XOR<ModelCommentUpdateToOneWithWhereWithoutRepliesInput, ModelCommentUpdateWithoutRepliesInput>, ModelCommentUncheckedUpdateWithoutRepliesInput>
+  }
+
+  export type ModelCommentUpdateManyWithoutParentNestedInput = {
+    create?: XOR<ModelCommentCreateWithoutParentInput, ModelCommentUncheckedCreateWithoutParentInput> | ModelCommentCreateWithoutParentInput[] | ModelCommentUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutParentInput | ModelCommentCreateOrConnectWithoutParentInput[]
+    upsert?: ModelCommentUpsertWithWhereUniqueWithoutParentInput | ModelCommentUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: ModelCommentCreateManyParentInputEnvelope
+    set?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    disconnect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    delete?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    update?: ModelCommentUpdateWithWhereUniqueWithoutParentInput | ModelCommentUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: ModelCommentUpdateManyWithWhereWithoutParentInput | ModelCommentUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: ModelCommentScalarWhereInput | ModelCommentScalarWhereInput[]
+  }
+
+  export type ModelCommentLikeUpdateManyWithoutModelCommentNestedInput = {
+    create?: XOR<ModelCommentLikeCreateWithoutModelCommentInput, ModelCommentLikeUncheckedCreateWithoutModelCommentInput> | ModelCommentLikeCreateWithoutModelCommentInput[] | ModelCommentLikeUncheckedCreateWithoutModelCommentInput[]
+    connectOrCreate?: ModelCommentLikeCreateOrConnectWithoutModelCommentInput | ModelCommentLikeCreateOrConnectWithoutModelCommentInput[]
+    upsert?: ModelCommentLikeUpsertWithWhereUniqueWithoutModelCommentInput | ModelCommentLikeUpsertWithWhereUniqueWithoutModelCommentInput[]
+    createMany?: ModelCommentLikeCreateManyModelCommentInputEnvelope
+    set?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    disconnect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    delete?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    connect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    update?: ModelCommentLikeUpdateWithWhereUniqueWithoutModelCommentInput | ModelCommentLikeUpdateWithWhereUniqueWithoutModelCommentInput[]
+    updateMany?: ModelCommentLikeUpdateManyWithWhereWithoutModelCommentInput | ModelCommentLikeUpdateManyWithWhereWithoutModelCommentInput[]
+    deleteMany?: ModelCommentLikeScalarWhereInput | ModelCommentLikeScalarWhereInput[]
+  }
+
+  export type ModelCommentUncheckedUpdateManyWithoutParentNestedInput = {
+    create?: XOR<ModelCommentCreateWithoutParentInput, ModelCommentUncheckedCreateWithoutParentInput> | ModelCommentCreateWithoutParentInput[] | ModelCommentUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutParentInput | ModelCommentCreateOrConnectWithoutParentInput[]
+    upsert?: ModelCommentUpsertWithWhereUniqueWithoutParentInput | ModelCommentUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: ModelCommentCreateManyParentInputEnvelope
+    set?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    disconnect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    delete?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    connect?: ModelCommentWhereUniqueInput | ModelCommentWhereUniqueInput[]
+    update?: ModelCommentUpdateWithWhereUniqueWithoutParentInput | ModelCommentUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: ModelCommentUpdateManyWithWhereWithoutParentInput | ModelCommentUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: ModelCommentScalarWhereInput | ModelCommentScalarWhereInput[]
+  }
+
+  export type ModelCommentLikeUncheckedUpdateManyWithoutModelCommentNestedInput = {
+    create?: XOR<ModelCommentLikeCreateWithoutModelCommentInput, ModelCommentLikeUncheckedCreateWithoutModelCommentInput> | ModelCommentLikeCreateWithoutModelCommentInput[] | ModelCommentLikeUncheckedCreateWithoutModelCommentInput[]
+    connectOrCreate?: ModelCommentLikeCreateOrConnectWithoutModelCommentInput | ModelCommentLikeCreateOrConnectWithoutModelCommentInput[]
+    upsert?: ModelCommentLikeUpsertWithWhereUniqueWithoutModelCommentInput | ModelCommentLikeUpsertWithWhereUniqueWithoutModelCommentInput[]
+    createMany?: ModelCommentLikeCreateManyModelCommentInputEnvelope
+    set?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    disconnect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    delete?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    connect?: ModelCommentLikeWhereUniqueInput | ModelCommentLikeWhereUniqueInput[]
+    update?: ModelCommentLikeUpdateWithWhereUniqueWithoutModelCommentInput | ModelCommentLikeUpdateWithWhereUniqueWithoutModelCommentInput[]
+    updateMany?: ModelCommentLikeUpdateManyWithWhereWithoutModelCommentInput | ModelCommentLikeUpdateManyWithWhereWithoutModelCommentInput[]
+    deleteMany?: ModelCommentLikeScalarWhereInput | ModelCommentLikeScalarWhereInput[]
+  }
+
+  export type ModelCommentCreateNestedOneWithoutLikesInput = {
+    create?: XOR<ModelCommentCreateWithoutLikesInput, ModelCommentUncheckedCreateWithoutLikesInput>
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutLikesInput
+    connect?: ModelCommentWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCommentLikesInput = {
+    create?: XOR<UserCreateWithoutCommentLikesInput, UserUncheckedCreateWithoutCommentLikesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommentLikesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ModelCommentUpdateOneRequiredWithoutLikesNestedInput = {
+    create?: XOR<ModelCommentCreateWithoutLikesInput, ModelCommentUncheckedCreateWithoutLikesInput>
+    connectOrCreate?: ModelCommentCreateOrConnectWithoutLikesInput
+    upsert?: ModelCommentUpsertWithoutLikesInput
+    connect?: ModelCommentWhereUniqueInput
+    update?: XOR<XOR<ModelCommentUpdateToOneWithWhereWithoutLikesInput, ModelCommentUpdateWithoutLikesInput>, ModelCommentUncheckedUpdateWithoutLikesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCommentLikesNestedInput = {
+    create?: XOR<UserCreateWithoutCommentLikesInput, UserUncheckedCreateWithoutCommentLikesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommentLikesInput
+    upsert?: UserUpsertWithoutCommentLikesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommentLikesInput, UserUpdateWithoutCommentLikesInput>, UserUncheckedUpdateWithoutCommentLikesInput>
   }
 
   export type UserCreateNestedOneWithoutEventsInput = {
@@ -28007,6 +31438,68 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ModelCommentCreateWithoutUserInput = {
+    id?: string
+    legacyId?: number | null
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    model: ModelCreateNestedOneWithoutCommentsInput
+    parent?: ModelCommentCreateNestedOneWithoutRepliesInput
+    replies?: ModelCommentCreateNestedManyWithoutParentInput
+    likes?: ModelCommentLikeCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentUncheckedCreateWithoutUserInput = {
+    id?: string
+    legacyId?: number | null
+    parentId?: string | null
+    modelId: string
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    replies?: ModelCommentUncheckedCreateNestedManyWithoutParentInput
+    likes?: ModelCommentLikeUncheckedCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentCreateOrConnectWithoutUserInput = {
+    where: ModelCommentWhereUniqueInput
+    create: XOR<ModelCommentCreateWithoutUserInput, ModelCommentUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelCommentCreateManyUserInputEnvelope = {
+    data: ModelCommentCreateManyUserInput | ModelCommentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ModelCommentLikeCreateWithoutUserInput = {
+    createdAt?: Date | string
+    modelComment: ModelCommentCreateNestedOneWithoutLikesInput
+  }
+
+  export type ModelCommentLikeUncheckedCreateWithoutUserInput = {
+    modelCommentId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelCommentLikeCreateOrConnectWithoutUserInput = {
+    where: ModelCommentLikeWhereUniqueInput
+    create: XOR<ModelCommentLikeCreateWithoutUserInput, ModelCommentLikeUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelCommentLikeCreateManyUserInputEnvelope = {
+    data: ModelCommentLikeCreateManyUserInput | ModelCommentLikeCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PasskeyCreateWithoutUserInput = {
     id?: string
     name?: string | null
@@ -28309,6 +31802,65 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ModelDraft"> | Date | string
   }
 
+  export type ModelCommentUpsertWithWhereUniqueWithoutUserInput = {
+    where: ModelCommentWhereUniqueInput
+    update: XOR<ModelCommentUpdateWithoutUserInput, ModelCommentUncheckedUpdateWithoutUserInput>
+    create: XOR<ModelCommentCreateWithoutUserInput, ModelCommentUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelCommentUpdateWithWhereUniqueWithoutUserInput = {
+    where: ModelCommentWhereUniqueInput
+    data: XOR<ModelCommentUpdateWithoutUserInput, ModelCommentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ModelCommentUpdateManyWithWhereWithoutUserInput = {
+    where: ModelCommentScalarWhereInput
+    data: XOR<ModelCommentUpdateManyMutationInput, ModelCommentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ModelCommentScalarWhereInput = {
+    AND?: ModelCommentScalarWhereInput | ModelCommentScalarWhereInput[]
+    OR?: ModelCommentScalarWhereInput[]
+    NOT?: ModelCommentScalarWhereInput | ModelCommentScalarWhereInput[]
+    id?: StringFilter<"ModelComment"> | string
+    legacyId?: IntNullableFilter<"ModelComment"> | number | null
+    parentId?: StringNullableFilter<"ModelComment"> | string | null
+    userId?: StringNullableFilter<"ModelComment"> | string | null
+    modelId?: StringFilter<"ModelComment"> | string
+    versionNumber?: IntNullableFilter<"ModelComment"> | number | null
+    content?: StringNullableFilter<"ModelComment"> | string | null
+    likesCount?: IntFilter<"ModelComment"> | number
+    createdAt?: DateTimeFilter<"ModelComment"> | Date | string
+    updatedAt?: DateTimeFilter<"ModelComment"> | Date | string
+    editedAt?: DateTimeNullableFilter<"ModelComment"> | Date | string | null
+    deletedAt?: DateTimeNullableFilter<"ModelComment"> | Date | string | null
+  }
+
+  export type ModelCommentLikeUpsertWithWhereUniqueWithoutUserInput = {
+    where: ModelCommentLikeWhereUniqueInput
+    update: XOR<ModelCommentLikeUpdateWithoutUserInput, ModelCommentLikeUncheckedUpdateWithoutUserInput>
+    create: XOR<ModelCommentLikeCreateWithoutUserInput, ModelCommentLikeUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModelCommentLikeUpdateWithWhereUniqueWithoutUserInput = {
+    where: ModelCommentLikeWhereUniqueInput
+    data: XOR<ModelCommentLikeUpdateWithoutUserInput, ModelCommentLikeUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ModelCommentLikeUpdateManyWithWhereWithoutUserInput = {
+    where: ModelCommentLikeScalarWhereInput
+    data: XOR<ModelCommentLikeUpdateManyMutationInput, ModelCommentLikeUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ModelCommentLikeScalarWhereInput = {
+    AND?: ModelCommentLikeScalarWhereInput | ModelCommentLikeScalarWhereInput[]
+    OR?: ModelCommentLikeScalarWhereInput[]
+    NOT?: ModelCommentLikeScalarWhereInput | ModelCommentLikeScalarWhereInput[]
+    modelCommentId?: StringFilter<"ModelCommentLike"> | string
+    userId?: StringFilter<"ModelCommentLike"> | string
+    createdAt?: DateTimeFilter<"ModelCommentLike"> | Date | string
+  }
+
   export type PasskeyUpsertWithWhereUniqueWithoutUserInput = {
     where: PasskeyWhereUniqueInput
     update: XOR<PasskeyUpdateWithoutUserInput, PasskeyUncheckedUpdateWithoutUserInput>
@@ -28373,6 +31925,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -28407,6 +31961,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -28457,6 +32013,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -28491,6 +32049,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -28525,6 +32085,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -28559,6 +32121,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -28609,6 +32173,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -28643,6 +32209,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -28677,6 +32245,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -28711,6 +32281,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -28761,6 +32333,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -28795,6 +32369,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -28830,6 +32406,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPasskeysInput = {
@@ -28864,6 +32442,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPasskeysInput = {
@@ -28914,6 +32494,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPasskeysInput = {
@@ -28948,6 +32530,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ModelVersionCreateWithoutLatestOfModelInput = {
@@ -29011,6 +32595,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutChildModelsInput = {
@@ -29036,6 +32621,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutChildModelsInput = {
@@ -29065,6 +32651,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutParentModelInput = {
@@ -29090,6 +32677,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutParentModelInput = {
@@ -29343,6 +32931,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ModelCommentCreateWithoutModelInput = {
+    id?: string
+    legacyId?: number | null
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    user?: UserCreateNestedOneWithoutCommentsInput
+    parent?: ModelCommentCreateNestedOneWithoutRepliesInput
+    replies?: ModelCommentCreateNestedManyWithoutParentInput
+    likes?: ModelCommentLikeCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentUncheckedCreateWithoutModelInput = {
+    id?: string
+    legacyId?: number | null
+    parentId?: string | null
+    userId?: string | null
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    replies?: ModelCommentUncheckedCreateNestedManyWithoutParentInput
+    likes?: ModelCommentLikeUncheckedCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentCreateOrConnectWithoutModelInput = {
+    where: ModelCommentWhereUniqueInput
+    create: XOR<ModelCommentCreateWithoutModelInput, ModelCommentUncheckedCreateWithoutModelInput>
+  }
+
+  export type ModelCommentCreateManyModelInputEnvelope = {
+    data: ModelCommentCreateManyModelInput | ModelCommentCreateManyModelInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ModelVersionUpsertWithoutLatestOfModelInput = {
     update: XOR<ModelVersionUpdateWithoutLatestOfModelInput, ModelVersionUncheckedUpdateWithoutLatestOfModelInput>
     create: XOR<ModelVersionCreateWithoutLatestOfModelInput, ModelVersionUncheckedCreateWithoutLatestOfModelInput>
@@ -29421,6 +33051,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutChildModelsInput = {
@@ -29446,6 +33077,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithWhereUniqueWithoutParentModelInput = {
@@ -29671,6 +33303,22 @@ export namespace Prisma {
     data: XOR<ModelDraftUpdateManyMutationInput, ModelDraftUncheckedUpdateManyWithoutModelInput>
   }
 
+  export type ModelCommentUpsertWithWhereUniqueWithoutModelInput = {
+    where: ModelCommentWhereUniqueInput
+    update: XOR<ModelCommentUpdateWithoutModelInput, ModelCommentUncheckedUpdateWithoutModelInput>
+    create: XOR<ModelCommentCreateWithoutModelInput, ModelCommentUncheckedCreateWithoutModelInput>
+  }
+
+  export type ModelCommentUpdateWithWhereUniqueWithoutModelInput = {
+    where: ModelCommentWhereUniqueInput
+    data: XOR<ModelCommentUpdateWithoutModelInput, ModelCommentUncheckedUpdateWithoutModelInput>
+  }
+
+  export type ModelCommentUpdateManyWithWhereWithoutModelInput = {
+    where: ModelCommentScalarWhereInput
+    data: XOR<ModelCommentUpdateManyMutationInput, ModelCommentUncheckedUpdateManyWithoutModelInput>
+  }
+
   export type ModelCreateWithoutVersionsInput = {
     legacyId?: number | null
     visibility?: $Enums.ModelVisibility
@@ -29693,6 +33341,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutVersionsInput = {
@@ -29718,6 +33367,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutVersionsInput = {
@@ -29747,6 +33397,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutLatestVersionInput = {
@@ -29771,6 +33422,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutLatestVersionInput = {
@@ -29800,6 +33452,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutParentVersionInput = {
@@ -29824,6 +33477,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutParentVersionInput = {
@@ -29914,6 +33568,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutVersionsInput = {
@@ -29939,6 +33594,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithoutLatestVersionInput = {
@@ -29974,6 +33630,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutLatestVersionInput = {
@@ -29998,6 +33655,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUpsertWithWhereUniqueWithoutParentVersionInput = {
@@ -30212,6 +33870,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutAdditionalFilesInput = {
@@ -30237,6 +33896,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutAdditionalFilesInput = {
@@ -30316,6 +33976,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutAdditionalFilesInput = {
@@ -30341,6 +34002,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelVersionUpsertWithoutTaggedAdditionalFilesInput = {
@@ -30447,6 +34109,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutAuthorsInput = {
@@ -30472,6 +34135,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutAuthorsInput = {
@@ -30510,6 +34174,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -30544,6 +34210,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -30585,6 +34253,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutAuthorsInput = {
@@ -30610,6 +34279,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutAuthoredModelsInput = {
@@ -30654,6 +34324,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -30688,6 +34360,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -30713,6 +34387,7 @@ export namespace Prisma {
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutPermissionsInput = {
@@ -30738,6 +34413,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutPermissionsInput = {
@@ -30776,6 +34452,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -30810,6 +34488,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -30851,6 +34531,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutPermissionsInput = {
@@ -30876,6 +34557,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutGrantedPermissionsInput = {
@@ -30920,6 +34602,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -30954,6 +34638,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -30979,6 +34665,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutLikesInput = {
@@ -31004,6 +34691,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutLikesInput = {
@@ -31042,6 +34730,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -31076,6 +34766,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -31117,6 +34809,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutLikesInput = {
@@ -31142,6 +34835,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutModelLikesInput = {
@@ -31186,6 +34880,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -31220,6 +34916,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -31245,6 +34943,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     drafts?: ModelDraftCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutInteractionsInput = {
@@ -31270,6 +34969,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutInteractionsInput = {
@@ -31308,6 +35008,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -31342,6 +35044,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -31383,6 +35087,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutInteractionsInput = {
@@ -31408,6 +35113,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type UserUpsertWithoutModelInteractionsInput = {
@@ -31452,6 +35158,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -31486,6 +35194,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -31520,6 +35230,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -31554,6 +35266,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutActorInput
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -31584,6 +35298,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    comments?: ModelCommentCreateNestedManyWithoutModelInput
   }
 
   export type ModelUncheckedCreateWithoutDraftsInput = {
@@ -31609,6 +35324,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type ModelCreateOrConnectWithoutDraftsInput = {
@@ -31658,6 +35374,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -31692,6 +35410,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutActorNestedInput
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -31728,6 +35448,7 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutDraftsInput = {
@@ -31753,6 +35474,699 @@ export namespace Prisma {
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
+  }
+
+  export type ModelCreateWithoutCommentsInput = {
+    legacyId?: number | null
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    latestVersion?: ModelVersionCreateNestedOneWithoutLatestOfModelInput
+    parentModel?: ModelCreateNestedOneWithoutChildModelsInput
+    childModels?: ModelCreateNestedManyWithoutParentModelInput
+    parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
+    versions?: ModelVersionCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelUncheckedCreateWithoutCommentsInput = {
+    id?: string
+    legacyId?: number | null
+    latestVersionNumber?: number | null
+    parentModelId?: string | null
+    parentVersionNumber?: number | null
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
+    versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelCreateOrConnectWithoutCommentsInput = {
+    where: ModelWhereUniqueInput
+    create: XOR<ModelCreateWithoutCommentsInput, ModelUncheckedCreateWithoutCommentsInput>
+  }
+
+  export type UserCreateWithoutCommentsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    verifications?: VerificationCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
+    events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCommentsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
+    events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCommentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
+  }
+
+  export type ModelCommentCreateWithoutRepliesInput = {
+    id?: string
+    legacyId?: number | null
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    model: ModelCreateNestedOneWithoutCommentsInput
+    user?: UserCreateNestedOneWithoutCommentsInput
+    parent?: ModelCommentCreateNestedOneWithoutRepliesInput
+    likes?: ModelCommentLikeCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentUncheckedCreateWithoutRepliesInput = {
+    id?: string
+    legacyId?: number | null
+    parentId?: string | null
+    userId?: string | null
+    modelId: string
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    likes?: ModelCommentLikeUncheckedCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentCreateOrConnectWithoutRepliesInput = {
+    where: ModelCommentWhereUniqueInput
+    create: XOR<ModelCommentCreateWithoutRepliesInput, ModelCommentUncheckedCreateWithoutRepliesInput>
+  }
+
+  export type ModelCommentCreateWithoutParentInput = {
+    id?: string
+    legacyId?: number | null
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    model: ModelCreateNestedOneWithoutCommentsInput
+    user?: UserCreateNestedOneWithoutCommentsInput
+    replies?: ModelCommentCreateNestedManyWithoutParentInput
+    likes?: ModelCommentLikeCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentUncheckedCreateWithoutParentInput = {
+    id?: string
+    legacyId?: number | null
+    userId?: string | null
+    modelId: string
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    replies?: ModelCommentUncheckedCreateNestedManyWithoutParentInput
+    likes?: ModelCommentLikeUncheckedCreateNestedManyWithoutModelCommentInput
+  }
+
+  export type ModelCommentCreateOrConnectWithoutParentInput = {
+    where: ModelCommentWhereUniqueInput
+    create: XOR<ModelCommentCreateWithoutParentInput, ModelCommentUncheckedCreateWithoutParentInput>
+  }
+
+  export type ModelCommentCreateManyParentInputEnvelope = {
+    data: ModelCommentCreateManyParentInput | ModelCommentCreateManyParentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ModelCommentLikeCreateWithoutModelCommentInput = {
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutCommentLikesInput
+  }
+
+  export type ModelCommentLikeUncheckedCreateWithoutModelCommentInput = {
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelCommentLikeCreateOrConnectWithoutModelCommentInput = {
+    where: ModelCommentLikeWhereUniqueInput
+    create: XOR<ModelCommentLikeCreateWithoutModelCommentInput, ModelCommentLikeUncheckedCreateWithoutModelCommentInput>
+  }
+
+  export type ModelCommentLikeCreateManyModelCommentInputEnvelope = {
+    data: ModelCommentLikeCreateManyModelCommentInput | ModelCommentLikeCreateManyModelCommentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ModelUpsertWithoutCommentsInput = {
+    update: XOR<ModelUpdateWithoutCommentsInput, ModelUncheckedUpdateWithoutCommentsInput>
+    create: XOR<ModelCreateWithoutCommentsInput, ModelUncheckedCreateWithoutCommentsInput>
+    where?: ModelWhereInput
+  }
+
+  export type ModelUpdateToOneWithWhereWithoutCommentsInput = {
+    where?: ModelWhereInput
+    data: XOR<ModelUpdateWithoutCommentsInput, ModelUncheckedUpdateWithoutCommentsInput>
+  }
+
+  export type ModelUpdateWithoutCommentsInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestVersion?: ModelVersionUpdateOneWithoutLatestOfModelNestedInput
+    parentModel?: ModelUpdateOneWithoutChildModelsNestedInput
+    childModels?: ModelUpdateManyWithoutParentModelNestedInput
+    parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
+    versions?: ModelVersionUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+  }
+
+  export type ModelUncheckedUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
+    versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+  }
+
+  export type UserUpsertWithoutCommentsInput = {
+    update: XOR<UserUpdateWithoutCommentsInput, UserUncheckedUpdateWithoutCommentsInput>
+    create: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCommentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCommentsInput, UserUncheckedUpdateWithoutCommentsInput>
+  }
+
+  export type UserUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ModelCommentUpsertWithoutRepliesInput = {
+    update: XOR<ModelCommentUpdateWithoutRepliesInput, ModelCommentUncheckedUpdateWithoutRepliesInput>
+    create: XOR<ModelCommentCreateWithoutRepliesInput, ModelCommentUncheckedCreateWithoutRepliesInput>
+    where?: ModelCommentWhereInput
+  }
+
+  export type ModelCommentUpdateToOneWithWhereWithoutRepliesInput = {
+    where?: ModelCommentWhereInput
+    data: XOR<ModelCommentUpdateWithoutRepliesInput, ModelCommentUncheckedUpdateWithoutRepliesInput>
+  }
+
+  export type ModelCommentUpdateWithoutRepliesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    model?: ModelUpdateOneRequiredWithoutCommentsNestedInput
+    user?: UserUpdateOneWithoutCommentsNestedInput
+    parent?: ModelCommentUpdateOneWithoutRepliesNestedInput
+    likes?: ModelCommentLikeUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateWithoutRepliesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    likes?: ModelCommentLikeUncheckedUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUpsertWithWhereUniqueWithoutParentInput = {
+    where: ModelCommentWhereUniqueInput
+    update: XOR<ModelCommentUpdateWithoutParentInput, ModelCommentUncheckedUpdateWithoutParentInput>
+    create: XOR<ModelCommentCreateWithoutParentInput, ModelCommentUncheckedCreateWithoutParentInput>
+  }
+
+  export type ModelCommentUpdateWithWhereUniqueWithoutParentInput = {
+    where: ModelCommentWhereUniqueInput
+    data: XOR<ModelCommentUpdateWithoutParentInput, ModelCommentUncheckedUpdateWithoutParentInput>
+  }
+
+  export type ModelCommentUpdateManyWithWhereWithoutParentInput = {
+    where: ModelCommentScalarWhereInput
+    data: XOR<ModelCommentUpdateManyMutationInput, ModelCommentUncheckedUpdateManyWithoutParentInput>
+  }
+
+  export type ModelCommentLikeUpsertWithWhereUniqueWithoutModelCommentInput = {
+    where: ModelCommentLikeWhereUniqueInput
+    update: XOR<ModelCommentLikeUpdateWithoutModelCommentInput, ModelCommentLikeUncheckedUpdateWithoutModelCommentInput>
+    create: XOR<ModelCommentLikeCreateWithoutModelCommentInput, ModelCommentLikeUncheckedCreateWithoutModelCommentInput>
+  }
+
+  export type ModelCommentLikeUpdateWithWhereUniqueWithoutModelCommentInput = {
+    where: ModelCommentLikeWhereUniqueInput
+    data: XOR<ModelCommentLikeUpdateWithoutModelCommentInput, ModelCommentLikeUncheckedUpdateWithoutModelCommentInput>
+  }
+
+  export type ModelCommentLikeUpdateManyWithWhereWithoutModelCommentInput = {
+    where: ModelCommentLikeScalarWhereInput
+    data: XOR<ModelCommentLikeUpdateManyMutationInput, ModelCommentLikeUncheckedUpdateManyWithoutModelCommentInput>
+  }
+
+  export type ModelCommentCreateWithoutLikesInput = {
+    id?: string
+    legacyId?: number | null
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    model: ModelCreateNestedOneWithoutCommentsInput
+    user?: UserCreateNestedOneWithoutCommentsInput
+    parent?: ModelCommentCreateNestedOneWithoutRepliesInput
+    replies?: ModelCommentCreateNestedManyWithoutParentInput
+  }
+
+  export type ModelCommentUncheckedCreateWithoutLikesInput = {
+    id?: string
+    legacyId?: number | null
+    parentId?: string | null
+    userId?: string | null
+    modelId: string
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+    replies?: ModelCommentUncheckedCreateNestedManyWithoutParentInput
+  }
+
+  export type ModelCommentCreateOrConnectWithoutLikesInput = {
+    where: ModelCommentWhereUniqueInput
+    create: XOR<ModelCommentCreateWithoutLikesInput, ModelCommentUncheckedCreateWithoutLikesInput>
+  }
+
+  export type UserCreateWithoutCommentLikesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    verifications?: VerificationCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionCreateNestedManyWithoutGranteeUserInput
+    events?: EventCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCommentLikesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemRole?: $Enums.SystemRole
+    userKind?: $Enums.UserKind
+    isProfilePublic?: boolean
+    deletedAt?: Date | string | null
+    bio?: string | null
+    country?: string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: Date | string | null
+    affiliation?: string | null
+    role?: string | null
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    onboardedAt?: Date | string | null
+    legacyId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
+    authoredModels?: ModelAuthorUncheckedCreateNestedManyWithoutUserInput
+    grantedPermissions?: ModelPermissionUncheckedCreateNestedManyWithoutGranteeUserInput
+    events?: EventUncheckedCreateNestedManyWithoutActorInput
+    modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
+    modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
+    modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCommentLikesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCommentLikesInput, UserUncheckedCreateWithoutCommentLikesInput>
+  }
+
+  export type ModelCommentUpsertWithoutLikesInput = {
+    update: XOR<ModelCommentUpdateWithoutLikesInput, ModelCommentUncheckedUpdateWithoutLikesInput>
+    create: XOR<ModelCommentCreateWithoutLikesInput, ModelCommentUncheckedCreateWithoutLikesInput>
+    where?: ModelCommentWhereInput
+  }
+
+  export type ModelCommentUpdateToOneWithWhereWithoutLikesInput = {
+    where?: ModelCommentWhereInput
+    data: XOR<ModelCommentUpdateWithoutLikesInput, ModelCommentUncheckedUpdateWithoutLikesInput>
+  }
+
+  export type ModelCommentUpdateWithoutLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    model?: ModelUpdateOneRequiredWithoutCommentsNestedInput
+    user?: UserUpdateOneWithoutCommentsNestedInput
+    parent?: ModelCommentUpdateOneWithoutRepliesNestedInput
+    replies?: ModelCommentUpdateManyWithoutParentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateWithoutLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replies?: ModelCommentUncheckedUpdateManyWithoutParentNestedInput
+  }
+
+  export type UserUpsertWithoutCommentLikesInput = {
+    update: XOR<UserUpdateWithoutCommentLikesInput, UserUncheckedUpdateWithoutCommentLikesInput>
+    create: XOR<UserCreateWithoutCommentLikesInput, UserUncheckedCreateWithoutCommentLikesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCommentLikesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCommentLikesInput, UserUncheckedUpdateWithoutCommentLikesInput>
+  }
+
+  export type UserUpdateWithoutCommentLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCommentLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemRole?: EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+    userKind?: EnumUserKindFieldUpdateOperationsInput | $Enums.UserKind
+    isProfilePublic?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableJsonNullValueInput | InputJsonValue
+    dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliation?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
+    authoredModels?: ModelAuthorUncheckedUpdateManyWithoutUserNestedInput
+    grantedPermissions?: ModelPermissionUncheckedUpdateManyWithoutGranteeUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutActorNestedInput
+    modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
+    modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
+    modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEventsInput = {
@@ -31786,6 +36200,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftCreateNestedManyWithoutUserInput
+    comments?: ModelCommentCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeCreateNestedManyWithoutUserInput
     passkeys?: PasskeyCreateNestedManyWithoutUserInput
   }
 
@@ -31820,6 +36236,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedCreateNestedManyWithoutUserInput
     modelInteractions?: ModelInteractionUncheckedCreateNestedManyWithoutUserInput
     modelDrafts?: ModelDraftUncheckedCreateNestedManyWithoutUserInput
+    comments?: ModelCommentUncheckedCreateNestedManyWithoutUserInput
+    commentLikes?: ModelCommentLikeUncheckedCreateNestedManyWithoutUserInput
     passkeys?: PasskeyUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -31870,6 +36288,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUpdateManyWithoutUserNestedInput
   }
 
@@ -31904,6 +36324,8 @@ export namespace Prisma {
     modelLikes?: ModelLikeUncheckedUpdateManyWithoutUserNestedInput
     modelInteractions?: ModelInteractionUncheckedUpdateManyWithoutUserNestedInput
     modelDrafts?: ModelDraftUncheckedUpdateManyWithoutUserNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentLikes?: ModelCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -31991,6 +36413,25 @@ export namespace Prisma {
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ModelCommentCreateManyUserInput = {
+    id?: string
+    legacyId?: number | null
+    parentId?: string | null
+    modelId: string
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+  }
+
+  export type ModelCommentLikeCreateManyUserInput = {
+    modelCommentId: string
+    createdAt?: Date | string
   }
 
   export type PasskeyCreateManyUserInput = {
@@ -32264,6 +36705,67 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModelCommentUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    model?: ModelUpdateOneRequiredWithoutCommentsNestedInput
+    parent?: ModelCommentUpdateOneWithoutRepliesNestedInput
+    replies?: ModelCommentUpdateManyWithoutParentNestedInput
+    likes?: ModelCommentLikeUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replies?: ModelCommentUncheckedUpdateManyWithoutParentNestedInput
+    likes?: ModelCommentLikeUncheckedUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ModelCommentLikeUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelComment?: ModelCommentUpdateOneRequiredWithoutLikesNestedInput
+  }
+
+  export type ModelCommentLikeUncheckedUpdateWithoutUserInput = {
+    modelCommentId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelCommentLikeUncheckedUpdateManyWithoutUserInput = {
+    modelCommentId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PasskeyUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32382,6 +36884,20 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ModelCommentCreateManyModelInput = {
+    id?: string
+    legacyId?: number | null
+    parentId?: string | null
+    userId?: string | null
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+  }
+
   export type ModelUpdateWithoutParentModelInput = {
     legacyId?: NullableIntFieldUpdateOperationsInput | number | null
     visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
@@ -32404,6 +36920,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutParentModelInput = {
@@ -32429,6 +36946,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateManyWithoutParentModelInput = {
@@ -32642,6 +37160,52 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModelCommentUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneWithoutCommentsNestedInput
+    parent?: ModelCommentUpdateOneWithoutRepliesNestedInput
+    replies?: ModelCommentUpdateManyWithoutParentNestedInput
+    likes?: ModelCommentLikeUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replies?: ModelCommentUncheckedUpdateManyWithoutParentNestedInput
+    likes?: ModelCommentLikeUncheckedUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateManyWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type ModelCreateManyParentVersionInput = {
     id?: string
     legacyId?: number | null
@@ -32692,6 +37256,7 @@ export namespace Prisma {
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateWithoutParentVersionInput = {
@@ -32716,6 +37281,7 @@ export namespace Prisma {
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
     drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+    comments?: ModelCommentUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type ModelUncheckedUpdateManyWithoutParentVersionInput = {
@@ -32791,6 +37357,86 @@ export namespace Prisma {
   export type ModelVersionTagUncheckedUpdateManyWithoutTagInput = {
     modelId?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelCommentCreateManyParentInput = {
+    id?: string
+    legacyId?: number | null
+    userId?: string | null
+    modelId: string
+    versionNumber?: number | null
+    content?: string | null
+    likesCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    editedAt?: Date | string | null
+    deletedAt?: Date | string | null
+  }
+
+  export type ModelCommentLikeCreateManyModelCommentInput = {
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type ModelCommentUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    model?: ModelUpdateOneRequiredWithoutCommentsNestedInput
+    user?: UserUpdateOneWithoutCommentsNestedInput
+    replies?: ModelCommentUpdateManyWithoutParentNestedInput
+    likes?: ModelCommentLikeUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replies?: ModelCommentUncheckedUpdateManyWithoutParentNestedInput
+    likes?: ModelCommentLikeUncheckedUpdateManyWithoutModelCommentNestedInput
+  }
+
+  export type ModelCommentUncheckedUpdateManyWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: StringFieldUpdateOperationsInput | string
+    versionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    likesCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ModelCommentLikeUpdateWithoutModelCommentInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCommentLikesNestedInput
+  }
+
+  export type ModelCommentLikeUncheckedUpdateWithoutModelCommentInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModelCommentLikeUncheckedUpdateManyWithoutModelCommentInput = {
+    userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

@@ -4,6 +4,8 @@ import { seedId, seededRandom } from './id.js';
 import { AssetUploader, loadNlogox, fakeNlogox, textAsset, type NlogoxAsset } from './assets.js';
 import {
   isRealFile,
+  type CommentSeed,
+  type CommentThreadSeed,
   type DraftSeed,
   type ModelFileSeed,
   type ModelSeed,
@@ -434,6 +436,74 @@ function buildEvents(models: LoadedModel[], users: IdMap) {
   }
 
   return events;
+}
+
+export async function loadComments(
+  threads: CommentThreadSeed[],
+  users: IdMap,
+  modelIds: IdMap,
+): Promise<{ comments: number; likes: number }> {
+  const HOUR = DAY / 24;
+  let commentCount = 0;
+  const likeRows: Array<{ modelCommentId: string; userId: string; createdAt: Date }> = [];
+
+  async function upsertNode(node: CommentSeed, modelId: string, parentId: string | null) {
+    const id = seedId('comment', node.key);
+    const createdAt = daysAgo(node.createdDaysAgo ?? 30);
+    const deleted = node.deleted ?? false;
+    const likers = deleted ? [] : (node.likedBy ?? []);
+
+    // Reconcile the mutable fields on rerun so manifest edits propagate; the
+    // parent link and createdAt are fixed on first insert.
+    const mutable = {
+      content: deleted ? null : node.content,
+      likesCount: likers.length,
+      editedAt: !deleted && node.edited ? new Date(createdAt.getTime() + HOUR) : null,
+      deletedAt: deleted ? new Date(createdAt.getTime() + 2 * HOUR) : null,
+    };
+
+    await prisma.modelComment.upsert({
+      where: { id },
+      update: mutable,
+      create: {
+        id,
+        legacyId: node.legacyId ?? null,
+        parentId,
+        userId: mustGet(users, node.user, 'comment author'),
+        modelId,
+        versionNumber: node.versionNumber ?? null,
+        createdAt,
+        ...mutable,
+      },
+    });
+    commentCount += 1;
+
+    const likeRng = seededRandom(`comment-likes:${node.key}`);
+    for (const userKey of likers) {
+      likeRows.push({
+        modelCommentId: id,
+        userId: mustGet(users, userKey, 'comment liker'),
+        createdAt: new Date(createdAt.getTime() + Math.floor(likeRng() * DAY)),
+      });
+    }
+
+    for (const reply of node.replies ?? []) {
+      await upsertNode(reply, modelId, id);
+    }
+  }
+
+  for (const thread of threads) {
+    const modelId = mustGet(modelIds, thread.model, 'comment model');
+    for (const c of thread.comments) {
+      await upsertNode(c, modelId, null);
+    }
+  }
+
+  if (likeRows.length) {
+    await prisma.modelCommentLike.createMany({ data: likeRows, skipDuplicates: true });
+  }
+
+  return { comments: commentCount, likes: likeRows.length };
 }
 
 export async function loadDrafts(

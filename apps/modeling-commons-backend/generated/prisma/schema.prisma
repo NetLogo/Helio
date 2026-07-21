@@ -87,6 +87,8 @@ model User {
   modelLikes         ModelLike[]
   modelInteractions  ModelInteraction[]
   modelDrafts        ModelDraft[]
+  comments           ModelComment[]
+  commentLikes       ModelCommentLike[]
 
   // Better Auth Admin plugin
   role       String?
@@ -201,6 +203,7 @@ model Model {
   likes           ModelLike[]
   interactions    ModelInteraction[]
   drafts          ModelDraft[]
+  comments        ModelComment[]
 
   @@unique([id, latestVersionNumber])
   @@index([parentModelId])
@@ -355,6 +358,48 @@ model ModelDraft {
 
   @@index([userId])
   @@index([modelId])
+}
+
+model ModelComment {
+  id       String @id @default(uuid())
+  legacyId Int?   @unique
+
+  parentId String?
+  userId   String?
+
+  modelId       String
+  versionNumber Int?
+
+  content    String? @db.Text
+  likesCount Int     @default(0)
+
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  editedAt  DateTime? @db.Timestamptz(3)
+  deletedAt DateTime? @db.Timestamptz(3)
+
+  model   Model          @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  user    User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  parent  ModelComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies ModelComment[] @relation("CommentReplies")
+
+  likes ModelCommentLike[]
+
+  @@index([modelId, parentId, createdAt])
+  @@index([parentId])
+  @@index([userId])
+}
+
+model ModelCommentLike {
+  modelCommentId String
+  userId         String
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+
+  modelComment ModelComment @relation(fields: [modelCommentId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([modelCommentId, userId])
+  @@index([userId])
 }
 
 model Event {

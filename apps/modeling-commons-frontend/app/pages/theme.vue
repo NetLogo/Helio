@@ -235,17 +235,10 @@
       <h3>Theme</h3>
       <Loader />
       <FallbackThumbnail />
-      <SparkleButtonWrapper>
-        <UButton
-          variant="outline"
-          color="primary"
-          size="md"
-          square
-          icon="i-lucide-moon"
-          class="w-fit"
-          >Night</UButton
-        >
-      </SparkleButtonWrapper>
+    </section>
+     <section class="flex gap-15 flex-col mt-10">
+      <h3>Comments</h3>
+      <CommentsPanel :comments="[commentsFixtures.deepThread, commentsFixtures.longComment]" :pagination="{ count: 12, lastPage: 1 }"/>
     </section>
   </UContainer>
 </template>
@@ -254,6 +247,8 @@
 if (!import.meta.dev) {
   navigateTo("/");
 }
+
+const commentsFixtures = await import("@/components/comment/fixtures");
 
 const USD = ref("USD");
 const TRUE = ref(true);

@@ -41,6 +41,7 @@ GITIGNORE_*/**/*
 .env.local
 .env.development
 .env.production
+.env.prod
 
 apps/modeling-commons-backend/prisma/archive-output
 apps/modeling-commons-backend/prisma/avatars
