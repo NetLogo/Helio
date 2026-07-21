@@ -44,7 +44,11 @@ describe('modelCommentService', () => {
   const modelAuthorRepository = mockModelAuthorRepository();
   const userRepository = mockUserRepository();
   const mailService = { sendMail: vi.fn() };
-  const mailDomain = { createNotificationEmail: vi.fn() };
+  const mailDomain = {
+    createCommentedOnModelEmail: vi.fn(),
+    createRepliedToCommentEmail: vi.fn(),
+  };
+  const getModelCardQuery = { execute: vi.fn() };
   const transactionManager = mockTransactionManager();
   const domain = modelCommentDomain();
   const logger = { warn: vi.fn(), error: vi.fn(), info: vi.fn() };
@@ -56,6 +60,7 @@ describe('modelCommentService', () => {
     eventRepository,
     modelAuthorRepository,
     userRepository,
+    getModelCardQuery,
     mailService,
     mailDomain,
     logger,
@@ -63,12 +68,13 @@ describe('modelCommentService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mailDomain.createNotificationEmail.mockResolvedValue({
-      from: 'a@b.com',
-      to: 'x@y.com',
-      subject: 'subj',
-      html: '<p/>',
-      text: 'p',
+    const rendered = { from: 'a@b.com', to: 'x@y.com', subject: 'subj', html: '<p/>', text: 'p' };
+    mailDomain.createCommentedOnModelEmail.mockResolvedValue(rendered);
+    mailDomain.createRepliedToCommentEmail.mockResolvedValue(rendered);
+    getModelCardQuery.execute.mockResolvedValue({
+      latestVersion: { title: 'My Model' },
+      previewImageUrl: null,
+      authors: [],
     });
     mailService.sendMail.mockResolvedValue(undefined);
   });
@@ -103,7 +109,8 @@ describe('modelCommentService', () => {
       await flushMicrotasks();
 
       expect(userRepository.findOneById).toHaveBeenCalledWith('author-1');
-      expect(userRepository.findOneById).not.toHaveBeenCalledWith('commenter-1');
+      expect(mailDomain.createCommentedOnModelEmail).toHaveBeenCalledOnce();
+      expect(mailDomain.createRepliedToCommentEmail).not.toHaveBeenCalled();
       expect(mailService.sendMail).toHaveBeenCalledOnce();
     });
 

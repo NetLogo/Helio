@@ -4,6 +4,12 @@ import type {
   CommentAuthCaller,
   ModelCommentEntity,
 } from '#src/modules/model-comment/domain/model-comment.types.ts';
+import type { EmailModel } from '@repo/emails';
+
+function truncatePreview(text: string, max = 280): string {
+  const trimmed = text.trim();
+  return trimmed.length > max ? `${trimmed.slice(0, max - 1)}…` : trimmed;
+}
 
 export type CreateCommentInput = {
   modelId: string;
@@ -39,38 +45,95 @@ export default function makeModelCommentService({
   eventRepository,
   modelAuthorRepository,
   userRepository,
+  getModelCardQuery,
   mailService,
   mailDomain,
   logger,
 }: Dependencies) {
-  // No dedicated "new comment" template yet (plan §15 item 5 is polish); until a
-  // real unsubscribe/preferences endpoint exists, point at the support inbox.
+  // A real unsubscribe/preferences endpoint doesn't exist yet, so links point at
+  // the support inbox.
+  async function buildEmailModel(modelId: string): Promise<EmailModel> {
+    const fallback: EmailModel = { name: 'a model', url: `${env.product.website}/models/${modelId}` };
+    try {
+      const card = await getModelCardQuery.execute(modelId);
+      return {
+        name: card.latestVersion?.title ?? fallback.name,
+        url: fallback.url,
+        imageUrl: card.previewImageUrl ?? undefined,
+        authorName: card.authors[0]?.userName ?? undefined,
+      };
+    } catch (error) {
+      logger.error({
+        name: 'ModelCommentService',
+        message: 'Failed to load model card for a comment email',
+        error,
+      });
+      return fallback;
+    }
+  }
+
   async function notifyOnNewComment(entity: ModelCommentEntity, parent?: ModelCommentEntity) {
     try {
+      const unsubscribeUrl = `mailto:${env.product.supportEmail}`;
+      const commentUrl = `${env.product.website}/models/${entity.modelId}/comments/${entity.id}`;
+      const preview = truncatePreview(entity.content ?? '');
+
+      const commenter = entity.userId ? await userRepository.findOneById(entity.userId) : null;
+      const commenterName = commenter?.name ?? 'Someone';
+      const model = await buildEmailModel(entity.modelId);
+
+      // A reply notifies the parent's author with "replied to your comment". Model
+      // authors get "commented on your model" — minus the commenter and minus the
+      // parent author, who already received the more specific reply email.
+      const parentAuthorId =
+        parent?.userId && parent.userId !== entity.userId ? parent.userId : null;
+
       const authors = await modelAuthorRepository.findAllByModel(entity.modelId);
-      const recipientIds = new Set(authors.map((author) => author.userId));
-      if (parent?.userId && parent.userId !== entity.userId) {
-        recipientIds.add(parent.userId);
+      const modelAuthorIds = new Set(authors.map((author) => author.userId));
+      if (entity.userId) modelAuthorIds.delete(entity.userId);
+      if (parentAuthorId) modelAuthorIds.delete(parentAuthorId);
+
+      const jobs: Array<Promise<void>> = [];
+
+      if (parentAuthorId) {
+        jobs.push(
+          (async () => {
+            const recipient = await userRepository.findOneById(parentAuthorId);
+            if (!recipient?.email) return;
+            const content = await mailDomain.createRepliedToCommentEmail(
+              recipient.email,
+              recipient.name ?? 'there',
+              commenterName,
+              model,
+              preview,
+              commentUrl,
+              unsubscribeUrl,
+            );
+            await mailService.sendMail(content);
+          })(),
+        );
       }
-      if (entity.userId) {
-        recipientIds.delete(entity.userId);
+
+      for (const recipientId of modelAuthorIds) {
+        jobs.push(
+          (async () => {
+            const recipient = await userRepository.findOneById(recipientId);
+            if (!recipient?.email) return;
+            const content = await mailDomain.createCommentedOnModelEmail(
+              recipient.email,
+              recipient.name ?? 'there',
+              commenterName,
+              model,
+              preview,
+              commentUrl,
+              unsubscribeUrl,
+            );
+            await mailService.sendMail(content);
+          })(),
+        );
       }
 
-      const results = await Promise.allSettled(
-        Array.from(recipientIds).map(async (recipientId) => {
-          const recipient = await userRepository.findOneById(recipientId);
-          if (!recipient?.email) return;
-
-          const content = await mailDomain.createNotificationEmail(
-            recipient.email,
-            recipient.name ?? 'there',
-            'Someone commented on a model you are involved with.',
-            `mailto:${env.product.supportEmail}`,
-          );
-          await mailService.sendMail(content);
-        }),
-      );
-
+      const results = await Promise.allSettled(jobs);
       for (const result of results) {
         if (result.status === 'rejected') {
           logger.error({
