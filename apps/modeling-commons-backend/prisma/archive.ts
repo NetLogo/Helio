@@ -105,6 +105,20 @@ const oldPool = new pg.Pool({ connectionString: OLD_URL, max: 4 });
 const adapter = new PrismaPg({ connectionString: NEW_URL, max: 4 });
 const prisma = new PrismaClient({ adapter });
 
+// Legacy `postings` (Rails DiscussionController) → ModelComment. Q&A columns
+// (`is_question` / `answered_at`) and the legacy `title` are intentionally not
+// selected: ModelComment has no home for them (Q&A dropped permanently).
+type OldPosting = {
+  id: number;
+  person_id: number | null;
+  node_id: number | null;
+  parent_id: number | null;
+  body: string | null;
+  deleted_at: Date | null;
+  created_at: Date | null;
+  updated_at: Date | null;
+};
+
 const report = {
   users: { migrated: 0, skipped_existing: 0, deduped_email: 0, null_email: 0 },
   tags: { migrated: 0, skipped_existing: 0 },
@@ -114,6 +128,12 @@ const report = {
   attachments: { migrated: 0, skipped_orphan: 0, previews_attached: 0 },
   taggings: { migrated: 0, skipped_orphan: 0 },
   interactions: { views: 0, runs: 0, downloads: 0 },
+  comments: {
+    migrated: 0,
+    skipped_existing: 0,
+    skipped_orphan_model: 0,
+    skipped_orphan_parent: 0,
+  },
   errors: [] as string[],
 };
 
@@ -142,6 +162,9 @@ async function main() {
   console.log('→ Migrating model_views/runs/downloads → ModelInteraction');
   await migrateInteractions(modelIdMap, userIdMap);
 
+  console.log('→ Migrating postings → ModelComment');
+  await migrateLegacyComments(modelIdMap, userIdMap);
+
   console.log('→ Writing manifest + report');
   await writeFile(path.join(OUTPUT_DIR, 'report.json'), JSON.stringify(report, null, 2));
 
@@ -164,6 +187,8 @@ async function wipeTarget() {
       "ModelAuthor",
       "ModelPermission",
       "ModelLike",
+      "ModelCommentLike",
+      "ModelComment",
       "ModelInteraction",
       "ModelDraft",
       "Event",
@@ -634,6 +659,89 @@ async function migrateInteractions(
       },
     );
     console.log(`  ${table}: ${count} rows`);
+  }
+}
+
+async function migrateLegacyComments(
+  modelIdMap: Map<number, string>,
+  userIdMap: Map<number, string>,
+) {
+  // Idempotency: probe ModelComment rows already imported (legacyId set).
+  const existing = await prisma.modelComment.findMany({
+    where: { legacyId: { not: null } },
+    select: { id: true, legacyId: true },
+  });
+  const idMap = new Map<number, string>(); // legacy posting id → ModelComment uuid
+  for (const c of existing) {
+    if (c.legacyId !== null) idMap.set(c.legacyId, c.id);
+  }
+
+  // Pass 1: insert every posting as a top-level comment; parent links resolved in
+  // pass 2 once all uuids exist. Soft-deleted postings come in as tombstones
+  // (content nulled, deletedAt preserved). A posting whose model wasn't migrated
+  // (spam-excluded or never imported) is skipped.
+  await streamRows<OldPosting>(
+    `SELECT id, person_id, node_id, parent_id, body,
+            deleted_at, created_at, updated_at
+     FROM postings
+     ORDER BY id ASC`,
+    async (batch) => {
+      const rows: Prisma.ModelCommentCreateManyInput[] = [];
+      for (const p of batch) {
+        if (idMap.has(p.id)) {
+          report.comments.skipped_existing++;
+          continue;
+        }
+        const modelUuid = p.node_id ? modelIdMap.get(p.node_id) : undefined;
+        if (!modelUuid) {
+          report.comments.skipped_orphan_model++;
+          continue;
+        }
+
+        const userUuid = p.person_id ? (userIdMap.get(p.person_id) ?? null) : null;
+        const isDeleted = p.deleted_at !== null;
+        const createdAt = p.created_at ?? new Date(0);
+        const id = randomUUID();
+
+        rows.push({
+          id,
+          legacyId: p.id,
+          modelId: modelUuid,
+          userId: userUuid,
+          parentId: null, // pass 2 sets this
+          versionNumber: null,
+          content: isDeleted ? null : p.body,
+          likesCount: 0,
+          createdAt,
+          updatedAt: p.updated_at ?? createdAt,
+          editedAt: null,
+          deletedAt: p.deleted_at,
+        });
+        idMap.set(p.id, id);
+      }
+      if (rows.length > 0) {
+        await prisma.modelComment.createMany({ data: rows, skipDuplicates: true });
+        report.comments.migrated += rows.length;
+      }
+    },
+  );
+
+  // Pass 2: resolve parent links. Idempotent — re-running rewrites the same uuid.
+  // A reply whose parent was skipped (orphan model) stays top-level.
+  const { rows: parented } = await oldPool.query<{ id: number; parent_id: number | null }>(
+    `SELECT id, parent_id FROM postings WHERE parent_id IS NOT NULL`,
+  );
+  for (const p of parented) {
+    const childUuid = idMap.get(p.id);
+    const parentUuid = p.parent_id ? (idMap.get(p.parent_id) ?? null) : null;
+    if (!childUuid || !parentUuid) {
+      report.comments.skipped_orphan_parent++;
+      continue;
+    }
+    await prisma.modelComment.update({
+      where: { id: childUuid },
+      data: { parentId: parentUuid },
+    });
   }
 }
 
