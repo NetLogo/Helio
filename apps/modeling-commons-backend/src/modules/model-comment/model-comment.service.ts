@@ -182,13 +182,17 @@ export default function makeModelCommentService({
       const comment = await loadForModel(modelId, commentId);
       modelCommentDomain.assertNotDeleted(comment);
 
-      await transactionManager.run((ctx) => modelCommentRepository.addLikeTx(ctx, commentId, userId));
+      await transactionManager.run(async (ctx) =>
+        modelCommentRepository.addLikeTx(ctx, commentId, userId),
+      );
     },
 
     async unlike({ modelId, commentId, userId }: CommentLikeInput): Promise<void> {
       await loadForModel(modelId, commentId);
 
-      await transactionManager.run((ctx) => modelCommentRepository.removeLikeTx(ctx, commentId, userId));
+      await transactionManager.run(async (ctx) =>
+        modelCommentRepository.removeLikeTx(ctx, commentId, userId),
+      );
     },
   };
 }
