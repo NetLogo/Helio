@@ -662,6 +662,22 @@ async function migrateInteractions(
   }
 }
 
+// Legacy bodies were stored HTML-escaped for a renderer that emitted HTML
+// (`<`→`&lt;`, `>`→`&rt;` — a non-standard entity baked into the old Rails app),
+// with Windows CRLF line endings. The new frontend renders plaintext, so decode
+// the entities and normalize newlines to LF on import.
+function decodeLegacyBody(body: string | null): string | null {
+  if (body === null) return null;
+  return body
+    .replace(/&lt;/g, '<')
+    .replace(/&rt;/g, '>')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&') // last, so decoded text can't form new entities
+    .replace(/\r\n?/g, '\n');
+}
+
 async function migrateLegacyComments(
   modelIdMap: Map<number, string>,
   userIdMap: Map<number, string>,
@@ -710,7 +726,7 @@ async function migrateLegacyComments(
           userId: userUuid,
           parentId: null, // pass 2 sets this
           versionNumber: null,
-          content: isDeleted ? null : p.body,
+          content: isDeleted ? null : decodeLegacyBody(p.body),
           likesCount: 0,
           createdAt,
           updatedAt: p.updated_at ?? createdAt,
