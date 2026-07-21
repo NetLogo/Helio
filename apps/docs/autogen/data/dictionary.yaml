@@ -1898,6 +1898,19 @@ entries:
 
       examples:
         - code: exp *number*
+  - id: export
+    entry_categories:
+      - title: Keyword
+        id: keywords
+    data:
+      syntax:
+        - name: export
+          since: "7.1"
+      description: |+
+        Make the given names available for importing. This command is only
+        valid in an NLS file. See [[import|import]] for more information.
+      examples:
+        - code: export [ *names* ]
   - id: export-cmds
     entry_categories:
       - title: Input/Output
