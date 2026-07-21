@@ -19,6 +19,8 @@
       :rows="1"
       :class="{ collapsed: collapsed }"
       :placeholder="placeholder"
+      :disabled="pending"
+      :autofocus="autofocus"
       :ui="{
         base: 'scrollbar-hidden resize-none hover:bg-transparent focus:bg-transparent focus:ring-0 focus:outline-none',
       }"
@@ -36,6 +38,7 @@
       square
       icon="lucide:x"
       color="neutral"
+      :disabled="pending"
       class="self-end rounded-full transition-all duration-200"
       :class="{
         'scale-0': collapsed,
@@ -50,6 +53,8 @@
       square
       :icon="submitIcon"
       :color="submitColor"
+      :loading="pending"
+      :disabled="pending"
       class="self-end rounded-full transition-all duration-200"
       :class="{
         'scale-0': collapsed,
@@ -71,12 +76,16 @@ const props = withDefaults(
     target?: string;
     initialText?: string;
     isEditing?: boolean;
+    pending?: boolean;
+    autofocus?: boolean;
   }>(),
   {
     id: undefined,
     target: undefined,
     initialText: "",
     isEditing: false,
+    pending: false,
+    autofocus: false,
   },
 );
 
@@ -106,7 +115,7 @@ const placeholder = computed(() => {
 // Clearing is parent-owned: text must survive a rejected submission, so the
 // parent calls clear() only once it accepts the submit.
 const handleSubmit = () => {
-  if (!comment.value.trim()) return;
+  if (props.pending || !comment.value.trim()) return;
   emit("submit", comment.value);
 };
 

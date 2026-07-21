@@ -2,11 +2,18 @@
   <div class="flex flex-col gap-3">
     <ConfirmDeleteCommentDialog
       v-model:open="deleteOpen"
-      :deleting="deleting"
+      :deleting="pending"
       @confirm="handleDelete"
       @cancel="cleanupDeleteEvent"
     />
-    <CommentInput v-if="!readOnly" ref="composer" class="mb-5" @submit="handleCreate" @cancel="handleCancel" />
+    <CommentInput
+      v-if="!readOnly"
+      ref="composer"
+      class="mb-5"
+      :pending="pending"
+      @submit="handleCreate"
+      @cancel="handleCancel"
+    />
     <CommentView
       v-for="comment in comments"
       :key="comment.id"
@@ -17,6 +24,8 @@
       :parent-has-see-more-replies="parentHasSeeMoreReplies"
       :read-only="readOnly"
       :highlighted-comment-id="highlightedCommentId"
+      :pending="pending"
+      :submit-token="submitToken"
       @reply="emit('reply', $event)"
       @edit="emit('edit', $event)"
       @like="emit('like', $event)"
@@ -50,6 +59,8 @@ const props = withDefaults(defineProps<CommentsPanelProps>(), {
   isNested: false,
   parentHasSeeMoreReplies: false,
   readOnly: false,
+  pending: false,
+  submitToken: 0,
 });
 
 const emit = defineEmits<{
@@ -65,39 +76,35 @@ const emit = defineEmits<{
   "highlight-dismiss": [];
 }>();
 
-const toast = useToast();
-
+// The composer keeps the user's text until a submission actually succeeds, so a
+// rejected create is not silently lost. It clears only when `submitToken`
+// advances past the value captured at submit time.
 const composer = ref<{ clear: () => void } | null>(null);
+const creating = ref(false);
+let createToken = 0;
 const handleCreate = (content: string) => {
   emit("create", { content });
-  composer.value?.clear();
+  createToken = props.submitToken;
+  creating.value = true;
 };
 const handleCancel = () => {
   composer.value?.clear();
 };
 
+watch(
+  () => props.submitToken,
+  (token) => {
+    if (creating.value && token !== createToken) {
+      creating.value = false;
+      composer.value?.clear();
+    }
+  },
+);
+
 const deleteOpen = ref(false);
-const deleting = ref(false);
 const deleteTarget = ref<string | null>(null);
 const handleDelete = () => {
-  deleting.value = true;
-
-  try {
-    if (deleteTarget.value) {
-      emit("delete", { commentId: deleteTarget.value });
-    }
-
-    toast.add({
-      title: "Comment deleted",
-      description: "The comment has been successfully deleted.",
-      color: "success",
-      icon: "lucide:message-circle",
-    });
-  } finally {
-    deleteOpen.value = false;
-    deleting.value = false;
-    cleanupDeleteEvent();
-  }
+  if (deleteTarget.value) emit("delete", { commentId: deleteTarget.value });
 };
 const confirmDelete = (event: { commentId: string }) => {
   deleteTarget.value = event.commentId;
@@ -106,6 +113,19 @@ const confirmDelete = (event: { commentId: string }) => {
 const cleanupDeleteEvent = () => {
   deleteTarget.value = null;
 };
+
+// Close the dialog and drop the failure latch once each submission settles.
+watch(
+  () => props.pending,
+  (now, was) => {
+    if (!was || now) return;
+    if (deleteOpen.value) {
+      deleteOpen.value = false;
+      cleanupDeleteEvent();
+    }
+    if (creating.value && props.submitToken === createToken) creating.value = false;
+  },
+);
 
 const remainingComments = computed(() => remainingCommentCount(props.comments, props.pagination));
 const loadMoreComments = () => {

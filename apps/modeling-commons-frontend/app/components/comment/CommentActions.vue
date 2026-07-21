@@ -6,6 +6,7 @@
       color="neutral"
       :icon="likedByMe ? 'fa6-solid:heart' : 'fa6-regular:heart'"
       :class="{ 'text-red-600': likedByMe }"
+      :disabled="pending"
       title="Like"
       @click="$emit('like')"
     >
@@ -16,6 +17,7 @@
       size="xs"
       icon="lucide:message-circle"
       color="neutral"
+      :disabled="pending"
       title="Reply"
       @click="$emit('reply')"
     >
@@ -26,6 +28,7 @@
       :items="dropdownActions"
       :content="{
         align: 'end',
+        onCloseAutoFocus: keepFocusForOpenedInput,
       }"
     >
       <UButton
@@ -33,6 +36,7 @@
         size="xs"
         icon="lucide:ellipsis-vertical"
         color="neutral"
+        :disabled="pending"
         title="More actions"
       />
     </UDropdownMenu>
@@ -47,6 +51,7 @@ const props = defineProps<{
   likedByMe?: boolean;
   canEdit?: boolean;
   canDelete?: boolean;
+  pending?: boolean;
 }>();
 
 const emits = defineEmits<{
@@ -56,11 +61,29 @@ const emits = defineEmits<{
   delete: [];
 }>();
 
+// Selecting "Edit" opens an autofocusing input. Reka returns focus to the menu
+// trigger when it closes, which would immediately blur that input — so for the
+// edit path we prevent the menu's close-auto-focus and let the input keep focus.
+// Escape / click-away / Delete still restore focus to the trigger normally.
+const openingInput = ref(false);
+const keepFocusForOpenedInput = (event: Event) => {
+  if (!openingInput.value) return;
+  openingInput.value = false;
+  event.preventDefault();
+};
+
 const dropdownActions = computed<Array<DropdownMenuItem>>(() => {
   const actions: DropdownMenuItem[] = [];
 
   if (props.canEdit) {
-    actions.push({ label: "Edit", icon: "lucide:square-pen", onSelect: () => emits("edit") });
+    actions.push({
+      label: "Edit",
+      icon: "lucide:square-pen",
+      onSelect: () => {
+        openingInput.value = true;
+        emits("edit");
+      },
+    });
   }
   if (props.canDelete) {
     actions.push({

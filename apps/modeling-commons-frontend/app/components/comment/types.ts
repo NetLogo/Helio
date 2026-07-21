@@ -33,6 +33,7 @@ export type Comment = {
   content: string;
   createdAt: string;
   edited?: boolean;
+  deleted?: boolean;
   likes: number;
   likedByMe?: boolean;
   replies?: Array<Comment>;
@@ -53,6 +54,11 @@ export type CommentViewSettings = {
   isLastSibling?: boolean;
   readOnly?: boolean;
   highlightedCommentId?: string;
+  // A submission (create/reply/edit/delete) is in flight: inputs and actions
+  // render disabled. `submitToken` ticks once per successful submission so an
+  // open input knows to close/clear itself.
+  pending?: boolean;
+  submitToken?: number;
 };
 
 export type CommentViewProps = {

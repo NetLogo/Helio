@@ -17,7 +17,13 @@
       <CommentSpineEraser v-if="isNested && isLastSibling && !parentHasSeeMoreReplies" />
 
       <!-- Avatar as anchor -->
-      <NuxtLink v-if="comment.author.url" :to="comment.author.url" class="contents">
+      <UAvatar
+        v-if="comment.deleted"
+        icon="material-symbols:person"
+        size="lg"
+        class="self-start my-1 text-gray-400 bg-gray-100"
+      />
+      <NuxtLink v-else-if="comment.author.url" :to="comment.author.url" class="contents">
         <UAvatar
           :src="comment.author.image"
           :alt="comment.author.name"
@@ -47,40 +53,62 @@
       />
 
       <template v-if="!isCollapsed">
-        <CommentInput
-          v-if="isEditing"
-          :id="`edit-${comment.id}`"
-          :initial-text="comment.content"
-          :target="parentAuthorName"
-          is-editing
-          @cancel="closeEditMode"
-          @submit="submitCommentEdit"
-        />
-        <div v-else class="leading-7 text-gray-800">
+        <Transition
+          enter-active-class="transition-opacity duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+        >
+          <CommentInput
+            v-if="isEditing"
+            :id="`edit-${comment.id}`"
+            :initial-text="comment.content"
+            :target="parentAuthorName"
+            :pending="pending"
+            autofocus
+            is-editing
+            @cancel="closeEditMode"
+            @submit="submitCommentEdit"
+          />
+        </Transition>
+        <div
+          v-if="!isEditing"
+          class="leading-7"
+          :class="comment.deleted ? 'text-gray-400 italic text-sm pb-2' : 'text-gray-800'"
+        >
           <CommentTextRepresentation :text="comment.content" />
         </div>
 
         <CommentActions
+          v-if="!comment.deleted"
           class="mb-2"
           :likes="comment.likes"
           :reply-count="comment.replyPagination?.count ?? 0"
           :liked-by-me="comment.likedByMe ?? false"
           :can-edit="comment.permissions?.canEdit ?? false"
           :can-delete="comment.permissions?.canDelete ?? false"
+          :pending="pending"
           @reply="toggleReplyInput"
           @edit="toggleEditMode"
           @like="handleLike"
           @delete="handleDelete"
         />
 
-        <div v-if="isReplyInputVisible" class="mt-3 mb-5">
-          <CommentInput
-            :id="`reply-to-${comment.id}`"
-            :target="comment.author.name"
-            @cancel="closeReplyInput"
-            @submit="submitCommentReply"
-          />
-        </div>
+        <Transition
+          enter-active-class="transition-opacity duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+        >
+          <div v-if="isReplyInputVisible" class="mt-3 mb-5">
+            <CommentInput
+              :id="`reply-to-${comment.id}`"
+              :target="comment.author.name"
+              :pending="pending"
+              autofocus
+              @cancel="closeReplyInput"
+              @submit="submitCommentReply"
+            />
+          </div>
+        </Transition>
 
         <!-- Replies -->
         <div v-if="hasVisibleReplies" class="relative w-full">
@@ -96,6 +124,8 @@
             :is-last-sibling="index === shownReplies.length - 1"
             :read-only="readOnly"
             :highlighted-comment-id="highlightedCommentId"
+            :pending="pending"
+            :submit-token="submitToken"
             @reply="emit('reply', $event)"
             @edit="emit('edit', $event)"
             @like="emit('like', $event)"
@@ -188,30 +218,18 @@ const handleFocusOut = () => {
   if (isHighlighted.value) emit("highlight-dismiss");
 };
 
-const revealedCount = ref(props.maximumShownRepliesPerLevel);
-
-const shownReplies = computed(() =>
-  commentTree.visibleReplies(props.comment, revealedCount.value),
-);
+const shownReplies = computed(() => props.comment.replies ?? []);
 
 const remainingReplies = computed(() =>
-  commentTree.remainingReplyCount(props.comment, revealedCount.value, props.maximumNested),
+  commentTree.remainingReplyCount(props.comment, props.maximumNested),
 );
 
 const hasVisibleReplies = computed(() =>
   commentTree.hasVisibleReplies(props.comment, props.maximumNested),
 );
-const hasSpine = computed(() =>
-  commentTree.hasSpine(props.comment, revealedCount.value, props.maximumNested),
-);
+const hasSpine = computed(() => commentTree.hasSpine(props.comment, props.maximumNested));
 
-const handleSeeMoreReplies = () => {
-  if (commentTree.hiddenLoadedReplyCount(props.comment, revealedCount.value) > 0) {
-    revealedCount.value = (props.comment.replies ?? []).length;
-    return;
-  }
-  emit("load", { commentId: props.comment.id });
-};
+const handleSeeMoreReplies = () => emit("load", { commentId: props.comment.id });
 
 const atNestingLimit = computed(() => props.maximumNested <= 0);
 const threadLink = computed(() =>
@@ -262,15 +280,48 @@ const toggleEditMode = () => {
   isEditing.value = true;
 };
 
+// An open reply/edit input stays mounted and disabled while its submission is
+// in flight, then closes only once `submitToken` advances (success). A failure
+// leaves the input open with the user's text so they can retry.
+const replySubmitting = ref(false);
+const editSubmitting = ref(false);
+let replyToken = 0;
+let editToken = 0;
+
 const submitCommentEdit = (newContent: string) => {
   emit("edit", { commentId: props.comment.id, content: newContent });
-  closeEditMode();
+  editToken = props.submitToken ?? 0;
+  editSubmitting.value = true;
 };
 
 const submitCommentReply = (replyContent: string) => {
   emit("reply", { commentId: props.comment.id, content: replyContent });
-  closeReplyInput();
+  replyToken = props.submitToken ?? 0;
+  replySubmitting.value = true;
 };
+
+watch(
+  () => props.submitToken,
+  (token) => {
+    if (replySubmitting.value && token !== replyToken) {
+      replySubmitting.value = false;
+      closeReplyInput();
+    }
+    if (editSubmitting.value && token !== editToken) {
+      editSubmitting.value = false;
+      closeEditMode();
+    }
+  },
+);
+
+watch(
+  () => props.pending,
+  (now, was) => {
+    if (!was || now) return;
+    if (replySubmitting.value && (props.submitToken ?? 0) === replyToken) replySubmitting.value = false;
+    if (editSubmitting.value && (props.submitToken ?? 0) === editToken) editSubmitting.value = false;
+  },
+);
 
 const handleLike = () => {
   emit("write");

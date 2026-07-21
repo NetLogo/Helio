@@ -56,7 +56,8 @@ describe("continue-thread link at the nesting limit", () => {
   });
 
   it("keeps the see-more button and shows no link above the limit", async () => {
-    const wrapper = await mountCommentView(longComment, { maximumShownRepliesPerLevel: 1 });
+    const partiallyLoaded = { ...longComment, replyPagination: { count: 5, lastPage: 1 } };
+    const wrapper = await mountCommentView(partiallyLoaded, { maximumShownRepliesPerLevel: 1 });
 
     expect(wrapper.findComponent(CommentSeeMore).exists()).toBe(true);
     expect(continueLinks(wrapper)).toHaveLength(0);
