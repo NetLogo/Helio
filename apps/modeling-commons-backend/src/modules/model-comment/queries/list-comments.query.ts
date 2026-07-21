@@ -29,8 +29,14 @@ export const EMBED_PARAMS: PaginatedQueryParams = {
 };
 
 export function commentOrderBy(sort?: ListCommentsQueryDto['sort']): OrderBy {
-  const field = sort ?? 'likes';
-  return { field, param: field === 'likes' ? 'desc' : 'asc' };
+  switch (sort ?? 'likes') {
+    case 'newest':
+      return { field: 'createdAt', param: 'desc' };
+    case 'createdAt':
+      return { field: 'createdAt', param: 'asc' };
+    default:
+      return { field: 'likes', param: 'desc' };
+  }
 }
 
 type CommentTreeDeps = {
