@@ -111,14 +111,16 @@ Feature: Model Comments
     And comment "mine" in the response should have property "content" equal to "Updated text"
     And comment "mine" in the response should have property "edited" equal to "true"
 
-  Scenario: Deleting a comment with no replies removes it entirely
+  Scenario: Deleting a comment with no replies leaves a tombstone
     Given an authenticated user "owner"
     And a public model "Deletable" created by "owner"
     And "owner" has commented "Delete me" on "Deletable" as "solo"
     When "owner" deletes comment "solo" on "Deletable"
     Then the response status should be 204
     When "owner" lists comments on "Deletable"
-    Then comment "solo" should not appear in the response
+    Then comment "solo" should appear in the response
+    And comment "solo" in the response should have property "deleted" equal to "true"
+    And comment "solo" in the response should have property "content" equal to "[deleted]"
 
   Scenario: Deleting a comment with replies leaves a tombstone
     Given an authenticated user "owner"
