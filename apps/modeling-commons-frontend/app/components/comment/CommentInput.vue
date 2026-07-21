@@ -15,6 +15,7 @@
     />
     <UTextarea
       :id="props.id"
+      ref="textarea"
       v-model="comment"
       :rows="1"
       :class="{ collapsed: collapsed }"
@@ -123,7 +124,12 @@ const clear = () => {
   comment.value = "";
 };
 
-defineExpose({ clear });
+const textarea = useTemplateRef("textarea");
+const focusInput = () => {
+  textarea.value?.textareaRef?.focus();
+};
+
+defineExpose({ clear, focus: focusInput });
 
 const submitIcon = computed(() => (props.isEditing ? "lucide:arrow-right" : "lucide:arrow-up"));
 const submitColor = computed(() => (props.isEditing ? "secondary" : "primary"));

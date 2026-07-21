@@ -20,6 +20,7 @@
     />
     <CommentsPanel
       v-else
+      ref="panel"
       :comments="comments"
       :pagination="pagination"
       :read-only="isReadOnly"
@@ -90,10 +91,13 @@ const isLoading = computed(() => status.value === "pending" || status.value === 
 
 const user = useUser();
 const isReadOnly = computed(() => props.readOnly || !user.value.isLoggedIn);
+const panel = useTemplateRef("panel");
 const handleWriteAttempt = () => {
   if (!user.value.isLoggedIn) {
     showRequiresLoginToast("participate in discussions");
+    return;
   }
+  panel.value?.focusComposer();
 };
 
 const route = useRoute();

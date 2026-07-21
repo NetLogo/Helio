@@ -79,7 +79,7 @@ const emit = defineEmits<{
 // The composer keeps the user's text until a submission actually succeeds, so a
 // rejected create is not silently lost. It clears only when `submitToken`
 // advances past the value captured at submit time.
-const composer = ref<{ clear: () => void } | null>(null);
+const composer = ref<{ clear: () => void; focus: () => void } | null>(null);
 const creating = ref(false);
 let createToken = 0;
 const handleCreate = (content: string) => {
@@ -90,6 +90,13 @@ const handleCreate = (content: string) => {
 const handleCancel = () => {
   composer.value?.clear();
 };
+
+// The composer only exists when not read-only; focusComposer is a no-op otherwise.
+const focusComposer = () => {
+  composer.value?.focus();
+};
+
+defineExpose({ focusComposer });
 
 watch(
   () => props.submitToken,
