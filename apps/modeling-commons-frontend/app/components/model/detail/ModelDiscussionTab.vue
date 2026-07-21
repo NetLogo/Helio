@@ -28,9 +28,10 @@ defineProps<{
 type SortOption = { label: string; value: CommentSort };
 
 const sortOptions: Array<SortOption> = [
-  { label: "Oldest", value: "createdAt" },
   { label: "Most liked", value: "likes" },
+  { label: "Most recent", value: "newest" },
+  { label: "Oldest", value: "createdAt" },
 ];
 
-const selectedSort = ref<SortOption>({ label: "Oldest", value: "createdAt" });
+const selectedSort = ref<SortOption>({ label: "Most liked", value: "likes" });
 </script>
