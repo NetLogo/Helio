@@ -30,6 +30,6 @@ describe("ModelDiscussionTab", () => {
     const wrapper = await mount();
     const section = wrapper.getComponent(CommentsSectionStub);
     expect(section.props("modelId")).toBe("model-1");
-    expect(section.props("sort")).toBe("createdAt");
+    expect(section.props("sort")).toBe("likes");
   });
 });
