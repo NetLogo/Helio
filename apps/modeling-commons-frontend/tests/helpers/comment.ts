@@ -173,6 +173,9 @@ export function installCommentFetchMock(config: FetchMockConfig = {}) {
   fetchCallLog = [];
   let createSeq = 0;
   const trees = [...fixtureComments, deepThread];
+  // Created comments are read back by id (the confirmed-insert flow), so the
+  // mock has to serve what a POST just minted.
+  const created = new Map<string, ApiComment>();
 
   const mock = vi.fn(async (input: string, init?: RequestInit) => {
     const method = init?.method ?? "GET";
@@ -187,12 +190,28 @@ export function installCommentFetchMock(config: FetchMockConfig = {}) {
     if (method === "DELETE") return new Response(null, { status: 204 });
     if (method === "POST" && path.endsWith("/like")) return new Response(null, { status: 204 });
     if (method === "POST" && path.endsWith("/comments")) {
-      return jsonResponse({ id: `server-${++createSeq}` }, 201);
+      const id = `server-${++createSeq}`;
+      const modelId = path.match(/\/models\/([^/]+)\/comments/)?.[1] ?? "model-demo";
+      created.set(id, {
+        id,
+        modelId,
+        parentId: body?.parentId,
+        author: { id: "user-ada", name: "Ada Lovelace", image: "" },
+        content: body?.content ?? "",
+        createdAt: "2024-01-01T00:00:00.000Z",
+        likes: 0,
+        likedByMe: false,
+        permissions: { canEdit: true, canDelete: true },
+      });
+      return jsonResponse({ id }, 201);
     }
 
     const threadMatch = path.match(/\/comments\/([^/]+)$/);
     if (method === "GET" && threadMatch) {
-      const root = findCommentById(trees, threadMatch[1]!);
+      const id = threadMatch[1]!;
+      const fresh = created.get(id);
+      if (fresh) return jsonResponse(fresh);
+      const root = findCommentById(trees, id);
       if (!root) return new Response(null, { status: 404 });
       return jsonResponse(toApiComment(root));
     }

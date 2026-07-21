@@ -99,6 +99,7 @@ describe("CommentView interactions", () => {
     const input = wrapper.findComponent(CommentInput);
     expect(input.exists()).toBe(true);
     expect(input.props("target")).toBe(shortComment.author.name);
+    expect(input.props("autofocus")).toBe(true);
 
     input.vm.$emit("submit", "A brand new reply");
     await nextTick();
@@ -106,6 +107,12 @@ describe("CommentView interactions", () => {
     expect(wrapper.emitted("reply")).toEqual([
       [{ commentId: shortComment.id, content: "A brand new reply" }],
     ]);
+    // Stays open (pending) until the submission succeeds; closes when the
+    // submit token advances.
+    expect(wrapper.findComponent(CommentInput).exists()).toBe(true);
+
+    await wrapper.setProps({ submitToken: 1 });
+    await nextTick();
     expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
   });
 
@@ -119,6 +126,7 @@ describe("CommentView interactions", () => {
     expect(input.exists()).toBe(true);
     expect(input.props("initialText")).toBe(editedComment.content);
     expect(input.props("isEditing")).toBe(true);
+    expect(input.props("autofocus")).toBe(true);
 
     input.vm.$emit("submit", "Updated content");
     await nextTick();
@@ -126,6 +134,11 @@ describe("CommentView interactions", () => {
     expect(wrapper.emitted("edit")).toEqual([
       [{ commentId: editedComment.id, content: "Updated content" }],
     ]);
+    // The edit input stays open (pending) until the submit token advances.
+    expect(wrapper.findComponent(CommentInput).exists()).toBe(true);
+
+    await wrapper.setProps({ submitToken: 1 });
+    await nextTick();
     expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
   });
 
@@ -165,6 +178,32 @@ describe("CommentView interactions", () => {
 
     nested!.vm.$emit("delete", { commentId: "3" });
     expect(wrapper.emitted("delete")).toEqual([[{ commentId: "3" }]]);
+  });
+});
+
+describe("CommentView deleted tombstones", () => {
+  const tombstone = {
+    ...shortComment,
+    deleted: true,
+    content: "[deleted]",
+    author: { name: "[deleted]", image: "", url: undefined },
+    permissions: undefined,
+    likedByMe: undefined,
+  };
+
+  it("renders a neutral placeholder avatar instead of the author initial", async () => {
+    const wrapper = await mountCommentView(tombstone);
+
+    const avatar = wrapper.findComponent(UAvatar);
+    expect(avatar.props("src")).toBeFalsy();
+    // No profile link, and never the "[" initial derived from "[deleted]".
+    expect(avatar.element.closest("a")).toBeNull();
+    expect(avatar.text()).not.toContain("[");
+  });
+
+  it("hides the action bar on a tombstone", async () => {
+    const wrapper = await mountCommentView(tombstone);
+    expect(wrapper.findComponent(CommentActions).exists()).toBe(false);
   });
 });
 

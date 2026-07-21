@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from "vue";
 import type { Comment, CommentAuthor, CommentPagination } from "~/components/comment/types";
 
-export type CommentSort = "createdAt" | "likes";
+export type CommentSort = "createdAt" | "newest" | "likes";
 
 type CommentsSource = { modelId: string; commentId?: string };
 
@@ -78,6 +78,7 @@ export function mapApiComment(dto: ApiComment): Comment {
     content: dto.content,
     createdAt: dto.createdAt,
     edited: dto.edited,
+    deleted: dto.deleted,
     likes: dto.likes,
     likedByMe: dto.likedByMe ?? false,
     permissions: dto.permissions,
@@ -90,6 +91,20 @@ export function commentsApiBase(): string {
   return useRuntimeConfig().public.apiBase as string;
 }
 
+// Raw `fetch` with `credentials: "include"` only sends the session cookie in
+// the browser. During SSR there is no cookie jar, so the backend would resolve
+// these reads as anonymous — losing per-viewer `permissions` and `likedByMe`.
+// Forward the incoming request's cookie header on the server, mirroring the
+// openapi-fetch server client in `useApi`.
+function commentFetchInit(): RequestInit {
+  const init: RequestInit = { credentials: "include" };
+  if (import.meta.server) {
+    const cookie = useRequestHeaders(["cookie"]).cookie;
+    if (cookie) init.headers = { cookie };
+  }
+  return init;
+}
+
 function buildQuery(query: CommentQuery): string {
   const params = new URLSearchParams();
   if (query.page !== undefined) params.set("page", String(query.page));
@@ -100,7 +115,7 @@ function buildQuery(query: CommentQuery): string {
 }
 
 async function commentGet<T>(base: string, path: string, query: CommentQuery): Promise<T> {
-  const response = await fetch(`${base}${path}${buildQuery(query)}`, { credentials: "include" });
+  const response = await fetch(`${base}${path}${buildQuery(query)}`, commentFetchInit());
   if (!response.ok) throw new Error(`GET ${path} failed with ${response.status}`);
   return (await response.json()) as T;
 }
@@ -124,7 +139,7 @@ export async function fetchComment(
 ): Promise<Comment | null> {
   const response = await fetch(
     `${base}/api/v1/models/${modelId}/comments/${commentId}${buildQuery(query)}`,
-    { credentials: "include" },
+    commentFetchInit(),
   );
   if (response.status === 404) return null;
   if (!response.ok) throw new Error(`GET comment ${commentId} failed with ${response.status}`);
@@ -148,12 +163,12 @@ export default function useComments(
   sort?: MaybeRefOrGetter<CommentSort | undefined>,
 ) {
   const resolved = computed(() => toValue(source));
-  const resolvedSort = computed(() => toValue(sort));
+  const resolvedSort = computed<CommentSort>(() => toValue(sort) ?? "likes");
   const key = computed(() => {
     const value = resolved.value;
     return value.commentId
       ? `comments:thread:${value.modelId}:${value.commentId}`
-      : `comments:model:${value.modelId}:${resolvedSort.value ?? "createdAt"}`;
+      : `comments:model:${value.modelId}:${resolvedSort.value}`;
   });
 
   const { data, status, error, refresh } = useAsyncData<CommentsPayload>(

@@ -176,55 +176,106 @@ describe("CommentsSection highlight", () => {
   });
 });
 
-describe("CommentsSection optimistic mutations", () => {
-  it("prepends a created comment and swaps in the server id", async () => {
+describe("CommentsSection submission mutations", () => {
+  // Submissions never touch the tree optimistically. create/reply confirm by
+  // reading the new comment back by id and inserting it; edit/delete refetch.
+  // `useAsyncData` caches by key across mounts, so assert a refetch as a delta
+  // in list GETs.
+  function listGets() {
+    return calls("GET").filter((call) => new URL(call.url).pathname.endsWith("/comments"));
+  }
+
+  function fetchedById(id: string) {
+    return calls("GET").some((call) => new URL(call.url).pathname.endsWith(`/comments/${id}`));
+  }
+
+  it("posts a created comment, confirms it by id, and prepends it", async () => {
     const wrapper = await mountCommentsSection({ modelId: "model-1" });
+    const listBefore = listGets().length;
 
     await emitFromPanel(wrapper, "create", { content: "Fresh take" });
 
-    const comments = panelComments(wrapper);
-    expect(comments).toHaveLength(fixtureComments.length + 1);
-    expect(comments[0]).toMatchObject({
-      id: "server-1",
-      content: "Fresh take",
-      likes: 0,
-      author: { name: "Ada Lovelace" },
-      permissions: { canEdit: true, canDelete: true },
-    });
-    expect(panelPagination(wrapper).count).toBe(fixtureComments.length + 1);
-
     const post = calls("POST").find((call) => call.url.endsWith("/comments"));
     expect(post?.body).toEqual({ content: "Fresh take" });
+
+    const comments = panelComments(wrapper);
+    expect(comments[0]).toMatchObject({ id: "server-1", content: "Fresh take" });
+    expect(comments).toHaveLength(fixtureComments.length + 1);
+    expect(panelPagination(wrapper).count).toBe(fixtureComments.length + 1);
+
+    // Read back by id, not a list refetch (which "most liked" could bury).
+    expect(fetchedById("server-1")).toBe(true);
+    expect(listGets().length).toBe(listBefore);
   });
 
-  it("inserts a reply into the target comment and bumps its reply count", async () => {
+  it("posts a reply, confirms it by id, and inserts it under the parent", async () => {
     const wrapper = await mountCommentsSection({ modelId: "model-1" });
 
     await emitFromPanel(wrapper, "reply", { commentId: "1", content: "Replying here" });
 
+    const post = calls("POST").find((call) => call.url.endsWith("/comments"));
+    expect(post?.body).toEqual({ content: "Replying here", parentId: "1" });
+
     const parent = findCommentById(panelComments(wrapper), "1");
     expect(parent?.replies?.[0]).toMatchObject({ id: "server-1", content: "Replying here" });
     expect(parent?.replyPagination?.count).toBe(3);
-    expect(panelPagination(wrapper).count).toBe(fixtureComments.length);
-
-    const post = calls("POST").find((call) => call.url.endsWith("/comments"));
-    expect(post?.body).toEqual({ content: "Replying here", parentId: "1" });
+    expect(fetchedById("server-1")).toBe(true);
   });
 
-  it("edits a comment's content, marks it edited, and PATCHes it", async () => {
+  it("PATCHes an edited comment and refetches", async () => {
     const wrapper = await mountCommentsSection({ modelId: "model-1" });
+    const before = listGets().length;
 
     await emitFromPanel(wrapper, "edit", { commentId: "5", content: "Nicer." });
-
-    const edited = findCommentById(panelComments(wrapper), "5");
-    expect(edited?.content).toBe("Nicer.");
-    expect(edited?.edited).toBe(true);
 
     const patch = calls("PATCH")[0];
     expect(patch?.url).toContain("/comments/5");
     expect(patch?.body).toEqual({ content: "Nicer." });
+    expect(listGets().length).toBe(before + 1);
   });
 
+  it("DELETEs a comment, refetches, and confirms with a toast", async () => {
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+    const before = listGets().length;
+
+    await emitFromPanel(wrapper, "delete", { commentId: "5" });
+
+    expect(calls("DELETE").some((call) => call.url.endsWith("/comments/5"))).toBe(true);
+    expect(listGets().length).toBe(before + 1);
+    expect(toastAddMock).toHaveBeenCalledWith(
+      expect.objectContaining({ title: "Comment deleted" }),
+    );
+  });
+
+  it("toasts and does not refetch when a submission fails", async () => {
+    installCommentFetchMock({
+      fail: ({ method, path }) => method === "POST" && path.endsWith("/comments"),
+    });
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+    const before = listGets().length;
+
+    await emitFromPanel(wrapper, "create", { content: "Doomed" });
+
+    expect(panelComments(wrapper)).toHaveLength(fixtureComments.length);
+    expect(listGets().length).toBe(before);
+    expect(toastAddMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("posts successive submissions without wedging", async () => {
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+
+    await emitFromPanel(wrapper, "create", { content: "First" });
+    await emitFromPanel(wrapper, "reply", { commentId: "7", content: "Second" });
+
+    const posts = calls("POST").filter((call) => call.url.endsWith("/comments"));
+    expect(posts.map((post) => post.body)).toEqual([
+      { content: "First" },
+      { content: "Second", parentId: "7" },
+    ]);
+  });
+});
+
+describe("CommentsSection optimistic likes", () => {
   it("applies like and unlike to the target comment and hits the like endpoint", async () => {
     const wrapper = await mountCommentsSection({ modelId: "model-1" });
 
@@ -239,78 +290,17 @@ describe("CommentsSection optimistic mutations", () => {
     expect(calls("DELETE").some((call) => call.url.endsWith("/comments/5/like"))).toBe(true);
   });
 
-  it("removes a deleted top-level comment, decrements pagination, and DELETEs it", async () => {
-    const wrapper = await mountCommentsSection({ modelId: "model-1" });
-
-    await emitFromPanel(wrapper, "delete", { commentId: "5" });
-
-    expect(findCommentById(panelComments(wrapper), "5")).toBeNull();
-    expect(panelComments(wrapper)).toHaveLength(fixtureComments.length - 1);
-    expect(panelPagination(wrapper).count).toBe(fixtureComments.length - 1);
-    expect(calls("DELETE").some((call) => call.url.endsWith("/comments/5"))).toBe(true);
-  });
-
-  it("removes a nested comment and decrements only its parent's reply count", async () => {
-    const wrapper = await mountCommentsSection({ modelId: "model-1" });
-
-    await emitFromPanel(wrapper, "delete", { commentId: "2" });
-
-    const comments = panelComments(wrapper);
-    expect(findCommentById(comments, "2")).toBeNull();
-    expect(findCommentById(comments, "1")?.replyPagination?.count).toBe(1);
-    expect(comments).toHaveLength(fixtureComments.length);
-    expect(panelPagination(wrapper).count).toBe(fixtureComments.length);
-  });
-
-  it("rolls back and toasts when the persist call fails", async () => {
-    installCommentFetchMock({
-      fail: ({ method, path }) => method === "POST" && path.endsWith("/comments"),
-    });
-    const wrapper = await mountCommentsSection({ modelId: "model-1" });
-
-    await emitFromPanel(wrapper, "create", { content: "Doomed" });
-
-    expect(panelComments(wrapper)).toHaveLength(fixtureComments.length);
-    expect(findCommentById(panelComments(wrapper), "server-1")).toBeNull();
-    expect(toastAddMock).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not wedge after consecutive mutations", async () => {
+  it("reseeds optimistic likes from the server when the source changes", async () => {
     const wrapper = await mountCommentsSection({ modelId: "model-1" });
 
     await emitFromPanel(wrapper, "like", { commentId: "5" });
-    await emitFromPanel(wrapper, "like", { commentId: "7" });
-    await emitFromPanel(wrapper, "create", { content: "Still responsive" });
-
-    const comments = panelComments(wrapper);
-    expect(findCommentById(comments, "5")?.likes).toBe(2);
-    expect(findCommentById(comments, "7")?.likes).toBe(8);
-    expect(comments[0]?.content).toBe("Still responsive");
-  });
-
-  it("assigns distinct server ids to successive creations", async () => {
-    const wrapper = await mountCommentsSection({ modelId: "model-1" });
-
-    await emitFromPanel(wrapper, "create", { content: "First" });
-    await emitFromPanel(wrapper, "reply", { commentId: "7", content: "Second" });
-
-    const comments = panelComments(wrapper);
-    expect(comments[0]?.id).toBe("server-1");
-    expect(findCommentById(comments, "7")?.replies?.[0]?.id).toBe("server-2");
-  });
-
-  it("resets local optimistic state when the source changes", async () => {
-    const wrapper = await mountCommentsSection({ modelId: "model-1" });
-
-    await emitFromPanel(wrapper, "create", { content: "Ephemeral" });
-    expect(panelComments(wrapper)).toHaveLength(fixtureComments.length + 1);
+    expect(findCommentById(panelComments(wrapper), "5")?.likes).toBe(2);
 
     await wrapper.setProps({ modelId: "model-2" });
     await flushPromises();
     await nextTick();
 
-    expect(panelComments(wrapper)).toHaveLength(fixtureComments.length);
-    expect(findCommentById(panelComments(wrapper), "server-1")).toBeNull();
+    expect(findCommentById(panelComments(wrapper), "5")?.likes).toBe(1);
   });
 });
 

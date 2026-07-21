@@ -1,39 +1,26 @@
 import type { Comment, CommentPagination } from "./types";
 
-export function visibleReplies(comment: Comment, revealedCount: number): Array<Comment> {
-  return (comment.replies ?? []).slice(0, revealedCount);
-}
-
-export function hiddenLoadedReplyCount(comment: Comment, revealedCount: number): number {
-  return Math.max(0, (comment.replies ?? []).length - revealedCount);
-}
-
 export function serverRemainingReplyCount(comment: Comment): number {
   const totalReplies = comment.replyPagination?.count ?? 0;
   return Math.max(0, totalReplies - (comment.replies ?? []).length);
 }
 
 // At the nesting limit the full pagination count feeds the continue-thread
-// link; at visible depths see-more first reveals locally loaded replies and
-// only then reports the server remainder (which a click turns into a `load`).
-export function remainingReplyCount(
-  comment: Comment,
-  revealedCount: number,
-  maximumNested: number,
-): number {
+// link; at visible depths every loaded reply is shown, so the remainder is
+// simply what the server still holds (a see-more click turns it into a `load`).
+export function remainingReplyCount(comment: Comment, maximumNested: number): number {
   if (maximumNested <= 0) return comment.replyPagination?.count ?? 0;
-  const hiddenLoaded = hiddenLoadedReplyCount(comment, revealedCount);
-  return hiddenLoaded > 0 ? hiddenLoaded : serverRemainingReplyCount(comment);
+  return serverRemainingReplyCount(comment);
 }
 
 export function hasVisibleReplies(comment: Comment, maximumNested: number): boolean {
   return maximumNested > 0 && (comment.replies ?? []).length > 0;
 }
 
-export function hasSpine(comment: Comment, revealedCount: number, maximumNested: number): boolean {
+export function hasSpine(comment: Comment, maximumNested: number): boolean {
   return (
     hasVisibleReplies(comment, maximumNested) ||
-    remainingReplyCount(comment, revealedCount, maximumNested) > 0
+    remainingReplyCount(comment, maximumNested) > 0
   );
 }
 

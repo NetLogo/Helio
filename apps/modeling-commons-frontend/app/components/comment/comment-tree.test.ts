@@ -3,14 +3,12 @@ import {
   findCommentById,
   hasSpine,
   hasVisibleReplies,
-  hiddenLoadedReplyCount,
   insertReply,
   remainingCommentCount,
   remainingReplyCount,
   removeCommentById,
   serverRemainingReplyCount,
   updateCommentById,
-  visibleReplies,
 } from "./comment-tree";
 import { deepThread, editedComment, longComment, noRepliesComment, shortComment } from "./fixtures";
 import type { Comment, CommentsPanelProps } from "./types";
@@ -18,66 +16,21 @@ import type { Comment, CommentsPanelProps } from "./types";
 const withoutReplies: Comment = { ...shortComment, replies: undefined };
 const withoutPagination: Comment = { ...longComment, replyPagination: undefined };
 
-describe("visibleReplies", () => {
-  it("returns the first N replies", () => {
-    expect(visibleReplies(deepThread, 2).map((reply) => reply.id)).toEqual(["101", "111"]);
-  });
-
-  it("returns all replies when the limit exceeds them", () => {
-    expect(visibleReplies(longComment, 5)).toHaveLength(2);
-  });
-
-  it("returns no replies at a limit of zero", () => {
-    expect(visibleReplies(longComment, 0)).toEqual([]);
-  });
-
-  it("falls back to an empty list when replies are missing", () => {
-    expect(visibleReplies(withoutReplies, 3)).toEqual([]);
-  });
-});
-
 const partiallyLoaded: Comment = { ...longComment, replyPagination: { count: 5, lastPage: 1 } };
 
 describe("remainingReplyCount", () => {
-  it("counts hidden loaded replies first at visible depths", () => {
-    expect(remainingReplyCount(longComment, 0, 4)).toBe(2);
-    expect(remainingReplyCount(longComment, 1, 4)).toBe(1);
-  });
-
-  it("reports the server remainder once all loaded replies are revealed", () => {
-    expect(remainingReplyCount(partiallyLoaded, 1, 4)).toBe(1);
-    expect(remainingReplyCount(partiallyLoaded, 2, 4)).toBe(3);
-  });
-
-  it("is zero when everything loaded is revealed and the server has no more", () => {
-    expect(remainingReplyCount(longComment, 2, 4)).toBe(0);
+  it("reports the server remainder at visible depths", () => {
+    expect(remainingReplyCount(longComment, 4)).toBe(0);
+    expect(remainingReplyCount(partiallyLoaded, 4)).toBe(3);
   });
 
   it("reports the full pagination count at the nesting limit for the continue-thread link", () => {
-    expect(remainingReplyCount(longComment, 0, 0)).toBe(2);
-    expect(remainingReplyCount(longComment, 2, 0)).toBe(2);
+    expect(remainingReplyCount(longComment, 0)).toBe(2);
+    expect(remainingReplyCount(partiallyLoaded, 0)).toBe(5);
   });
 
-  it("clamps at zero when more replies are revealed than counted", () => {
-    expect(remainingReplyCount(longComment, 3, 4)).toBe(0);
-  });
-
-  it("still offers loaded replies for reveal when pagination is missing", () => {
-    expect(remainingReplyCount(withoutPagination, 0, 4)).toBe(2);
-    expect(remainingReplyCount(withoutPagination, 2, 4)).toBe(0);
-  });
-});
-
-describe("hiddenLoadedReplyCount", () => {
-  it("counts loaded replies beyond the revealed window", () => {
-    expect(hiddenLoadedReplyCount(longComment, 0)).toBe(2);
-    expect(hiddenLoadedReplyCount(longComment, 1)).toBe(1);
-    expect(hiddenLoadedReplyCount(longComment, 2)).toBe(0);
-  });
-
-  it("clamps at zero and tolerates missing replies", () => {
-    expect(hiddenLoadedReplyCount(longComment, 5)).toBe(0);
-    expect(hiddenLoadedReplyCount(withoutReplies, 0)).toBe(0);
+  it("clamps at zero when replies are fully loaded or pagination is missing", () => {
+    expect(remainingReplyCount(withoutPagination, 4)).toBe(0);
   });
 });
 
@@ -109,15 +62,15 @@ describe("hasVisibleReplies", () => {
 
 describe("hasSpine", () => {
   it("is true when replies are visible", () => {
-    expect(hasSpine(longComment, 2, 4)).toBe(true);
+    expect(hasSpine(longComment, 4)).toBe(true);
   });
 
-  it("is true at the nesting limit when hidden replies remain", () => {
-    expect(hasSpine(longComment, 0, 0)).toBe(true);
+  it("is true at the nesting limit when the server still holds replies", () => {
+    expect(hasSpine(longComment, 0)).toBe(true);
   });
 
   it("is false for a comment without replies", () => {
-    expect(hasSpine(shortComment, 0, 4)).toBe(false);
+    expect(hasSpine(shortComment, 4)).toBe(false);
   });
 });
 

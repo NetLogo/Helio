@@ -50,9 +50,10 @@ describe("CommentsPanel bugs", () => {
     expect(loadMore, "expected a load-more button showing the 9-comment remainder").toBeDefined();
   });
 
-  // handleDelete closes the dialog and resets `deleting` in a
-  // finally, so the dialog cannot get stuck open or permanently loading.
-  it("closes the delete dialog and resets the loading state after confirm", async () => {
+  // Confirming emits delete and reflects the parent's `pending` as the dialog's
+  // loading state; the dialog closes once the delete round-trip settles
+  // (pending returns to false).
+  it("closes the delete dialog once the delete settles", async () => {
     const wrapper = await mountCommentsPanel(flatComments);
     wrapper.findComponent(CommentView).vm.$emit("delete", { commentId: shortComment.id });
     await nextTick();
@@ -62,16 +63,23 @@ describe("CommentsPanel bugs", () => {
 
     dialog.vm.$emit("confirm");
     await nextTick();
-    await nextTick();
+    expect(wrapper.emitted("delete")).toEqual([[{ commentId: shortComment.id }]]);
 
+    // Parent drives the delete: pending flips on, then off when it settles.
+    await wrapper.setProps({ pending: true });
+    await nextTick();
+    expect(dialog.props("deleting")).toBe(true);
+
+    await wrapper.setProps({ pending: false });
+    await nextTick();
     expect(dialog.props("open")).toBe(false);
     expect(dialog.props("deleting")).toBe(false);
   });
 
-  // CommentInput no longer clears itself on submit; the panel
-  // clears its top-level composer only after emitting create. (Restore-on-failure
-  // lands with the backend at the CommentsSection runOptimistic seam.)
-  it("clears the top-level composer after emitting create", async () => {
+  // The composer holds the user's text until a submission actually succeeds, so
+  // a rejected create is not silently lost. It clears only once the submit token
+  // advances past its value at submit time.
+  it("clears the top-level composer only after a successful create", async () => {
     const wrapper = await mountCommentsPanel(flatComments);
 
     const textarea = wrapper.find("textarea");
@@ -79,6 +87,11 @@ describe("CommentsPanel bugs", () => {
     await textarea.trigger("keydown", { key: "Enter" });
 
     expect(wrapper.emitted("create")).toEqual([[{ content: "A fresh top-level comment" }]]);
+    // Still holds the text while the create is in flight.
+    expect((textarea.element as HTMLTextAreaElement).value).toBe("A fresh top-level comment");
+
+    await wrapper.setProps({ submitToken: 1 });
+    await nextTick();
     expect((textarea.element as HTMLTextAreaElement).value).toBe("");
   });
 });
@@ -159,37 +172,19 @@ describe("CommentView bugs", () => {
     expect(wrapper.emitted("load")).toEqual([[{ commentId: longComment.id }]]);
   });
 
-  // BUG-8 residual (fixed): see-more first reveals locally loaded replies that
-  // maximumShownRepliesPerLevel hid — it must not emit `load` for them.
-  it("reveals hidden loaded replies on see-more without emitting load", async () => {
-    const wrapper = await mountCommentView(longComment, { maximumShownRepliesPerLevel: 1 });
-
-    expect(wrapper.text()).not.toContain("Short one.");
-    const seeMore = wrapper.findComponent(CommentSeeMore);
-    expect(seeMore.props("replyCount")).toBe(1);
-
-    seeMore.vm.$emit("see-more-replies");
-    await nextTick();
-
-    expect(wrapper.emitted("load")).toBeUndefined();
-    expect(wrapper.text()).toContain("Short one.");
-    expect(wrapper.findComponent(CommentSeeMore).exists()).toBe(false);
-  });
-
-  // BUG-8 residual (fixed): after the reveal, see-more counts only the server
-  // remainder and a further click emits `load`.
-  it("shows the server remainder after revealing and emits load on the next click", async () => {
+  // Every loaded reply renders immediately: maximumShownRepliesPerLevel bounds
+  // how many the server embeds, not what the client hides. See-more therefore
+  // reflects only the server remainder, and a click fetches the next page.
+  it("shows all loaded replies and offers only the server remainder", async () => {
     const partiallyLoaded = { ...longComment, replyPagination: { count: 5, lastPage: 1 } };
     const wrapper = await mountCommentView(partiallyLoaded, { maximumShownRepliesPerLevel: 1 });
 
-    const seeMore = wrapper.findComponent(CommentSeeMore);
-    expect(seeMore.props("replyCount")).toBe(1);
-    seeMore.vm.$emit("see-more-replies");
-    await nextTick();
+    expect(wrapper.text()).toContain("Short one.");
 
-    const afterReveal = wrapper.findComponent(CommentSeeMore);
-    expect(afterReveal.props("replyCount")).toBe(3);
-    afterReveal.vm.$emit("see-more-replies");
+    const seeMore = wrapper.findComponent(CommentSeeMore);
+    expect(seeMore.props("replyCount")).toBe(3);
+
+    seeMore.vm.$emit("see-more-replies");
     await nextTick();
 
     expect(wrapper.emitted("load")).toEqual([[{ commentId: partiallyLoaded.id }]]);
