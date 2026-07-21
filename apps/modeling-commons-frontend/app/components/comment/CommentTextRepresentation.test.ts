@@ -45,6 +45,14 @@ describe("CommentTextRepresentation", () => {
     expect(wrapper.find("a").exists()).toBe(false);
   });
 
+  it("preserves newlines in the rendered text", async () => {
+    const wrapper = await mountText("line one\nline two\n\nline four");
+
+    const paragraph = wrapper.find("p");
+    expect(paragraph.classes()).toContain("whitespace-pre-wrap");
+    expect(paragraph.element.textContent).toBe("line one\nline two\n\nline four");
+  });
+
   it("linkifies multiple URLs independently", async () => {
     const wrapper = await mountText("First https://a.example.com then https://b.example.com done");
 
