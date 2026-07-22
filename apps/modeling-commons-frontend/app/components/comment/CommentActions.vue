@@ -4,13 +4,26 @@
       variant="ghost"
       size="xs"
       color="neutral"
-      :icon="likedByMe ? 'fa6-solid:heart' : 'fa6-regular:heart'"
       :class="{ 'text-red-600': likedByMe }"
       class="tabular-nums"
       :disabled="pending"
       title="Like"
       @click="$emit('like')"
     >
+      <template #leading>
+        <span class="relative inline-block size-4">
+          <UIcon
+            name="fa6-regular:heart"
+            class="absolute inset-0 size-full transition-opacity duration-150"
+            :class="likedByMe ? 'opacity-0' : 'opacity-100'"
+          />
+          <UIcon
+            name="fa6-solid:heart"
+            class="absolute inset-0 size-full transition-opacity duration-150"
+            :class="likedByMe ? 'opacity-100' : 'opacity-0'"
+          />
+        </span>
+      </template>
       {{ likes }}
     </UButton>
     <UButton
