@@ -6,6 +6,7 @@
       color="neutral"
       :icon="likedByMe ? 'fa6-solid:heart' : 'fa6-regular:heart'"
       :class="{ 'text-red-600': likedByMe }"
+      class="tabular-nums"
       :disabled="pending"
       title="Like"
       @click="$emit('like')"
@@ -21,7 +22,7 @@
       title="Reply"
       @click="$emit('reply')"
     >
-      <span>Reply <span v-if="replyCount" class="text-xs text-muted align-middle">({{  replyCount }})</span></span>
+      <span>Reply <span v-if="replyCount" class="text-xs text-muted align-middle tabular-nums">({{  replyCount }})</span></span>
     </UButton>
     <UDropdownMenu
       v-if="dropdownActions.length > 0"
