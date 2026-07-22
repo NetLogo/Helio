@@ -195,10 +195,6 @@ export default defineNuxtConfig({
   icon: {
     provider: "server",
     serverBundle: "local",
-    clientBundle: {
-      scan: true,
-      icons: ["fa6-solid:heart", "fa6-regular:heart"],
-    },
   },
 
   components: [
