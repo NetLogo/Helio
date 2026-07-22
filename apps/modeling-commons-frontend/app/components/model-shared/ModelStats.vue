@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center gap-3 text-sm text-toned">
+  <div class="flex items-center gap-3 text-sm text-toned tabular-nums">
     <StatView
       v-if="likes !== undefined"
       icon="i-lucide-thumbs-up"
