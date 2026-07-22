@@ -3,8 +3,8 @@ import { useApi } from "~/composables/api/useApi";
 export type ConnectionStatus = "online" | "offline";
 
 const INTERVAL_MS: Record<ConnectionStatus, number> = {
-  online: 30_000,
-  offline: 5_000,
+  online: 120_000,
+  offline: 15_000,
 };
 
 const REQUEST_TIMEOUT_MS = 4_000;
@@ -41,7 +41,10 @@ async function pingHealth(): Promise<boolean> {
   try {
     const { response, error } = await (
       api as unknown as {
-        GET: (path: string, init: { signal: AbortSignal }) => Promise<{
+        GET: (
+          path: string,
+          init: { signal: AbortSignal },
+        ) => Promise<{
           response?: Response;
           error?: unknown;
         }>;
