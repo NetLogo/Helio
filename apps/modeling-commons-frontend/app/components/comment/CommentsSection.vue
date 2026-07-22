@@ -44,7 +44,7 @@
       title="Looks like there are no comments yet."
       description="Be the first to start the discussion."
     >
-      <UButton color="primary" variant="outline" size="sm" @click="handleWriteAttempt"> Write a comment </UButton>
+      <UButton color="primary" variant="outline" size="sm" @click="handleFocusComposer"> Write a comment </UButton>
     </Empty>
   </template>
 </template>
@@ -97,6 +97,11 @@ const handleWriteAttempt = () => {
     showRequiresLoginToast("participate in discussions");
     return;
   }
+};
+
+const handleFocusComposer = () => {
+  handleWriteAttempt();
+  if (!user.value.isLoggedIn) return;
   panel.value?.focusComposer();
 };
 
