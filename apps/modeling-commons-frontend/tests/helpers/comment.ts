@@ -121,8 +121,18 @@ type ApiComment = {
   replies?: { count: number; limit: number; page: number; data: Array<ApiComment> };
 };
 
-export function toApiComment(comment: Comment): ApiComment {
+const SERVER_REPLY_EMBED_LIMIT = 2;
+const SERVER_DEFAULT_LIMIT = 20;
+
+type RepliesPageParams = { page: number; limit: number };
+
+export function toApiComment(
+  comment: Comment,
+  repliesPage: RepliesPageParams = { page: 0, limit: SERVER_REPLY_EMBED_LIMIT },
+): ApiComment {
   const replies = comment.replies ?? [];
+  const count = Math.max(comment.replyPagination?.count ?? 0, replies.length);
+  const offset = repliesPage.page * repliesPage.limit;
   return {
     id: comment.id,
     modelId: comment.modelId ?? "model-demo",
@@ -138,12 +148,14 @@ export function toApiComment(comment: Comment): ApiComment {
     likes: comment.likes,
     likedByMe: comment.likedByMe ?? false,
     permissions: comment.permissions,
-    replies: replies.length
+    replies: count
       ? {
-          count: comment.replyPagination?.count ?? replies.length,
-          limit: 2,
-          page: 0,
-          data: replies.map(toApiComment),
+          count,
+          limit: repliesPage.limit,
+          page: repliesPage.page,
+          data: replies
+            .slice(offset, offset + repliesPage.limit)
+            .map((reply) => toApiComment(reply)),
         }
       : undefined,
   };
@@ -166,13 +178,15 @@ export function commentFetchCalls(): Array<FetchCall> {
 
 type FetchMockConfig = {
   listCount?: number;
+  roots?: Array<Comment>;
   fail?: (ctx: { method: string; path: string }) => boolean;
 };
 
 export function installCommentFetchMock(config: FetchMockConfig = {}) {
   fetchCallLog = [];
   let createSeq = 0;
-  const trees = [...fixtureComments, deepThread];
+  const roots = config.roots ?? fixtureComments;
+  const trees = [...roots, deepThread];
   // Created comments are read back by id (the confirmed-insert flow), so the
   // mock has to serve what a POST just minted.
   const created = new Map<string, ApiComment>();
@@ -213,11 +227,16 @@ export function installCommentFetchMock(config: FetchMockConfig = {}) {
       if (fresh) return jsonResponse(fresh);
       const root = findCommentById(trees, id);
       if (!root) return new Response(null, { status: 404 });
-      return jsonResponse(toApiComment(root));
+      return jsonResponse(
+        toApiComment(root, {
+          page: Number(url.searchParams.get("page") ?? 0),
+          limit: Number(url.searchParams.get("limit") ?? SERVER_DEFAULT_LIMIT),
+        }),
+      );
     }
 
     if (method === "GET") {
-      const data = fixtureComments.map(toApiComment);
+      const data = roots.map((root) => toApiComment(root));
       return jsonResponse({
         count: config.listCount ?? data.length,
         limit: 20,
