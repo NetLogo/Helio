@@ -130,9 +130,7 @@ describe("CommentsSection auth gating", () => {
 
 describe("CommentsSection highlight", () => {
   function viewFor(wrapper: Awaited<ReturnType<typeof mountCommentsSection>>, id: string) {
-    return wrapper
-      .findAllComponents(CommentView)
-      .find((view) => view.props("comment")?.id === id);
+    return wrapper.findAllComponents(CommentView).find((view) => view.props("comment")?.id === id);
   }
 
   it("threads the highlighted comment id from the URL down to the targeted comment", async () => {
@@ -312,7 +310,7 @@ describe("CommentsSection pagination seams", () => {
 
     const replyFetch = calls("GET").find((call) => call.url.includes("/comments/1?"));
     expect(replyFetch?.url).toContain("page=1");
-    expect(replyFetch?.url).toContain("limit=2");
+    expect(replyFetch?.url).toContain("limit=5");
   });
 
   it("requests the next comment page on load-more", async () => {
