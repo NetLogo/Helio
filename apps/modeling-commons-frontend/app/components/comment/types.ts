@@ -43,7 +43,7 @@ export type Comment = {
 
 export const COMMENT_TREE_DEFAULTS = {
   maximumNested: 3,
-  maximumShownRepliesPerLevel: 2,
+  maximumShownRepliesPerLevel: 5,
 } as const;
 
 export type CommentViewSettings = {
