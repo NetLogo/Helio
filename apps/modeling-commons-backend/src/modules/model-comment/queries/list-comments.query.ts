@@ -16,10 +16,7 @@ import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
 
 const EMBED_LIMIT = COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel;
 
-// Deeper levels never honor a caller-supplied sort — a reply thread reads
-// chronologically regardless of how the top-level page (or, for `get-comment`,
-// the root's own reply page) is sorted.
-const EMBED_ORDER_BY: OrderBy = { field: 'createdAt', param: 'asc' };
+export const EMBED_ORDER_BY: OrderBy = { field: 'createdAt', param: 'asc' };
 
 export const EMBED_PARAMS: PaginatedQueryParams = {
   limit: EMBED_LIMIT,
@@ -47,14 +44,6 @@ type CommentTreeDeps = {
   modelCommentMapper: Dependencies['modelCommentMapper'];
 };
 
-// Bounded BFS shared by `list-comments` (a page of roots) and `get-comment`
-// (one re-rooted comment): recurse up to `COMMENT_TREE_DEFAULTS.maximumNested`
-// levels, embedding at most `maximumShownRepliesPerLevel` replies per node.
-// The deepest expanded level's own children aren't fetched, only counted
-// (`countRepliesByParent`), so the UI can offer "continue this thread (N)".
-// Soft-deleted nodes are always kept and render as `[deleted]` tombstones via
-// the mapper, so `page.count` (the raw DB total for this node's replies) is
-// reported as-is.
 export async function expandCommentTree(
   deps: CommentTreeDeps,
   entity: ModelCommentEntity,
@@ -104,9 +93,6 @@ export default function makeListCommentsQuery({
       query: ListCommentsQueryDto,
       ctx: CommentResponseCtx = {},
     ): Promise<Paginated<CommentResponseDto>> {
-      // Spread `query` rather than naming `limit`/`page` explicitly: `paginatedQueryBase`
-      // only fills in its defaults for an *absent* key, not an explicit `undefined` value
-      // (its own final spread re-overwrites the default in that case).
       const params = paginatedQueryBase({ ...query, orderBy: commentOrderBy(query.sort) });
 
       const rootsPage = await modelCommentRepository.listTopLevel(modelId, params, ctx.viewerId);

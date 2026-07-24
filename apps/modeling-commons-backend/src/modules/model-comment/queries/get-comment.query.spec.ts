@@ -3,8 +3,14 @@ import makeGetCommentQuery from '#src/modules/model-comment/queries/get-comment.
 import modelCommentMapper from '#src/modules/model-comment/model-comment.mapper.ts';
 import { mockModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.mock.ts';
 import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
-import type { ModelCommentEntity } from '#src/modules/model-comment/domain/model-comment.types.ts';
-import type { Paginated } from '#src/shared/db/repository.port.ts';
+import {
+  COMMENT_TREE_DEFAULTS,
+  type ModelCommentEntity,
+} from '#src/modules/model-comment/domain/model-comment.types.ts';
+import { EMBED_ORDER_BY } from '#src/modules/model-comment/queries/list-comments.query.ts';
+import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
+
+const EMBED_LIMIT = COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel;
 
 function makeEntity(overrides: Partial<ModelCommentEntity> = {}): ModelCommentEntity {
   return {
@@ -86,18 +92,57 @@ describe('getCommentQuery', () => {
     );
   });
 
-  it('maps sort=likes to a descending likesCount orderBy for the root reply page', async () => {
+  it('reads the root reply page chronologically, like every embedded reply page', async () => {
     const { query, modelCommentRepository } = buildQuery();
     modelCommentRepository.findById.mockResolvedValue(makeEntity({ id: 'target-1' }));
     modelCommentRepository.listReplies.mockResolvedValue(page([], 0));
 
-    await query.execute('target-1', { sort: 'likes' });
+    await query.execute('target-1', {});
 
     expect(modelCommentRepository.listReplies).toHaveBeenCalledWith(
       'target-1',
-      expect.objectContaining({ orderBy: { field: 'likes', param: 'desc' } }),
+      expect.objectContaining({ orderBy: EMBED_ORDER_BY }),
       undefined,
     );
+  });
+
+  it('continues an embedded reply page: page 1 at the embed limit yields what page 0 omitted', async () => {
+    const { query, modelCommentRepository } = buildQuery();
+    const target = makeEntity({ id: 'target-1' });
+    const replies = ['reply-1', 'reply-2', 'reply-3'].map((id, index) =>
+      makeEntity({
+        id,
+        parentId: 'target-1',
+        likesCount: index * 5,
+        createdAt: new Date(Date.UTC(2026, 0, index + 1)),
+      }),
+    );
+
+    modelCommentRepository.findById.mockResolvedValue(target);
+    modelCommentRepository.listReplies.mockImplementation(
+      async (parentId: string, params: PaginatedQueryParams) => {
+        if (parentId !== 'target-1') return page([], 0);
+        const sorted = [...replies].sort((a, b) =>
+          params.orderBy?.field === 'likes'
+            ? b.likesCount - a.likesCount
+            : a.createdAt.getTime() - b.createdAt.getTime(),
+        );
+        const offset = params.offset ?? 0;
+        return page(
+          sorted.slice(offset, offset + (params.limit ?? 20)),
+          replies.length,
+          params.limit,
+          params.page,
+        );
+      },
+    );
+
+    const first = await query.execute('target-1', { page: 0, limit: EMBED_LIMIT });
+    const second = await query.execute('target-1', { page: 1, limit: EMBED_LIMIT });
+
+    expect(first.replies!.data.map((reply) => reply.id)).toEqual(['reply-1', 'reply-2']);
+    expect(second.replies!.data.map((reply) => reply.id)).toEqual(['reply-3']);
+    expect(second.replies!.count).toBe(3);
   });
 
   it('passes viewerId through to findById/listReplies and the mapper', async () => {

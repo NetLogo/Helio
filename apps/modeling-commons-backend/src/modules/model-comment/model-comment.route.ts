@@ -22,6 +22,10 @@ import {
   type ListCommentsQueryDto,
 } from '#src/modules/model-comment/dtos/list-comments.query.dto.ts';
 import {
+  getCommentQueryDtoSchema,
+  type GetCommentQueryDto,
+} from '#src/modules/model-comment/dtos/get-comment.query.dto.ts';
+import {
   commentResponseDtoSchema,
   commentResponseRefSchema,
 } from '#src/modules/model-comment/dtos/comment.response.dto.ts';
@@ -75,12 +79,12 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.get<{ Params: ModelCommentDetailParams; Querystring: ListCommentsQueryDto }>(
+  fastify.get<{ Params: ModelCommentDetailParams; Querystring: GetCommentQueryDto }>(
     '/v1/models/:id/comments/:commentId',
     {
       schema: {
         params: modelCommentDetailParamsSchema,
-        querystring: listCommentsQueryDtoSchema,
+        querystring: getCommentQueryDtoSchema,
         response: { 200: commentResponseRefSchema },
         tags: ['Comment'],
       },
