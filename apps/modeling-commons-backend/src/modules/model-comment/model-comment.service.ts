@@ -53,7 +53,10 @@ export default function makeModelCommentService({
   // A real unsubscribe/preferences endpoint doesn't exist yet, so links point at
   // the support inbox.
   async function buildEmailModel(modelId: string): Promise<EmailModel> {
-    const fallback: EmailModel = { name: 'a model', url: `${env.product.website}/models/${modelId}` };
+    const fallback: EmailModel = {
+      name: 'a model',
+      url: `${env.product.website}/models/${modelId}`,
+    };
     try {
       const card = await getModelCardQuery.execute(modelId);
       return {
@@ -75,7 +78,15 @@ export default function makeModelCommentService({
   async function notifyOnNewComment(entity: ModelCommentEntity, parent?: ModelCommentEntity) {
     try {
       const unsubscribeUrl = `mailto:${env.product.supportEmail}`;
-      const commentUrl = `${env.product.website}/models/${entity.modelId}/comments/${entity.id}`;
+      // A reply's own deep link opens it detached from the exchange it belongs to,
+      // so the thread opens one level up and the new comment is highlighted inside it.
+      const threadCommentId = parent?.id ?? entity.id;
+      const threadUrl = new URL(
+        `/models/${entity.modelId}/comments/${threadCommentId}`,
+        env.product.website,
+      );
+      threadUrl.searchParams.set('highlightedCommentId', entity.id);
+      const commentUrl = threadUrl.toString();
       const preview = truncatePreview(entity.content ?? '');
 
       const commenter = entity.userId ? await userRepository.findOneById(entity.userId) : null;
