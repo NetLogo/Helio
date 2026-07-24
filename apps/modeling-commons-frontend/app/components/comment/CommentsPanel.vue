@@ -19,7 +19,6 @@
       :key="comment.id"
       :comment="comment"
       :maximum-nested="maximumNested"
-      :maximum-shown-replies-per-level="maximumShownRepliesPerLevel"
       :is-nested="isNested"
       :parent-has-see-more-replies="parentHasSeeMoreReplies"
       :read-only="readOnly"
@@ -50,12 +49,11 @@
 
 <script lang="ts" setup>
 import { remainingCommentCount } from "./comment-tree";
-import { COMMENT_TREE_DEFAULTS } from "./types";
+import { COMMENT_VIEW_DEFAULTS } from "./types";
 import type { CommentPagination, CommentsPanelProps } from "./types";
 
 const props = withDefaults(defineProps<CommentsPanelProps>(), {
-  maximumNested: COMMENT_TREE_DEFAULTS.maximumNested,
-  maximumShownRepliesPerLevel: COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel,
+  maximumNested: COMMENT_VIEW_DEFAULTS.maximumNested,
   isNested: false,
   parentHasSeeMoreReplies: false,
   readOnly: false,

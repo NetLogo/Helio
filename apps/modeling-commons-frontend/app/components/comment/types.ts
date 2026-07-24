@@ -42,14 +42,14 @@ export type Comment = {
   permissions?: CommentPermissions;
 };
 
-export const COMMENT_TREE_DEFAULTS = {
+// How deep the tree renders before it offers a "continue this thread" link.
+// Purely a display bound: page sizes are the server's to decide.
+export const COMMENT_VIEW_DEFAULTS = {
   maximumNested: 3,
-  maximumShownRepliesPerLevel: 5,
 } as const;
 
 export type CommentViewSettings = {
   maximumNested?: number;
-  maximumShownRepliesPerLevel?: number;
   isNested?: boolean;
   parentHasSeeMoreReplies?: boolean;
   isLastSibling?: boolean;
