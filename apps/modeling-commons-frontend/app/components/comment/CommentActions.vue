@@ -33,6 +33,7 @@
       color="neutral"
       :disabled="pending"
       title="Reply"
+      class="whitespace-nowrap"
       @click="$emit('reply')"
     >
       <span>Reply <span v-if="replyCount" class="text-xs text-muted align-middle tabular-nums">({{  replyCount }})</span></span>
