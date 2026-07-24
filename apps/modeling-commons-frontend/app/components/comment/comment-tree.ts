@@ -1,5 +1,12 @@
 import type { Comment, CommentPagination } from "./types";
 
+// `lastPage: null` means nothing has been loaded yet, so the next page to ask
+// for is 0 rather than 1.
+export function nextPageToLoad(pagination?: CommentPagination): number {
+  const loaded = pagination?.lastPage;
+  return loaded === null || loaded === undefined ? 0 : loaded + 1;
+}
+
 export function serverRemainingReplyCount(comment: Comment): number {
   const totalReplies = comment.replyPagination?.count ?? 0;
   return Math.max(0, totalReplies - (comment.replies ?? []).length);
@@ -72,7 +79,8 @@ export function insertReply(
     ...parent,
     replies: [reply, ...(parent.replies ?? [])],
     replyPagination: {
-      lastPage: parent.replyPagination?.lastPage ?? 0,
+      ...parent.replyPagination,
+      lastPage: parent.replyPagination?.lastPage ?? null,
       count: (parent.replyPagination?.count ?? 0) + 1,
     },
   }));

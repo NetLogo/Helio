@@ -21,7 +21,7 @@ describe("useComments with a modelId source", () => {
     expect(comments.value.map((comment) => comment.id)).toEqual(
       fixtureComments.map((comment) => comment.id),
     );
-    expect(pagination.value).toEqual({ count: fixtureComments.length, lastPage: 0 });
+    expect(pagination.value).toEqual({ count: fixtureComments.length, limit: 20, lastPage: 0 });
     expect(status.value).toBe("success");
     expect(error.value).toBeFalsy();
   });
@@ -51,12 +51,23 @@ describe("useComments with a modelId source", () => {
     expect(listCall?.url).toContain("sort=likes");
   });
 
+  it("keeps the server's reply page size and marks a counted-but-unloaded page", async () => {
+    const counted = { ...fixtureComments[0]!, id: "c-1", replies: [], replyPagination: { count: 4, lastPage: null } };
+    installCommentFetchMock({ roots: [counted] });
+    const { comments, refresh } = useComments({ modelId: "m-counted" });
+    await refresh();
+
+    const root = comments.value[0]!;
+    expect(root.replies).toEqual([]);
+    expect(root.replyPagination).toEqual({ count: 4, limit: 2, lastPage: null });
+  });
+
   it("returns an empty payload for an empty modelId without fetching", async () => {
     const { comments, pagination, refresh } = useComments({ modelId: "" });
     await refresh();
 
     expect(comments.value).toEqual([]);
-    expect(pagination.value).toEqual({ count: 0, lastPage: 0 });
+    expect(pagination.value).toEqual({ count: 0, lastPage: null });
     expect(commentFetchCalls()).toHaveLength(0);
   });
 });
@@ -88,7 +99,7 @@ describe("useComments with a commentId source", () => {
     await refresh();
 
     expect(comments.value).toEqual([]);
-    expect(pagination.value).toEqual({ count: 0, lastPage: 0 });
+    expect(pagination.value).toEqual({ count: 0, lastPage: null });
     expect(status.value).toBe("success");
   });
 });

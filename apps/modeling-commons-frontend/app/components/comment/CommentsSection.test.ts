@@ -68,7 +68,11 @@ describe("CommentsSection sources", () => {
     expect(comments.map((comment) => comment.id)).toEqual(
       fixtureComments.map((comment) => comment.id),
     );
-    expect(panelPagination(wrapper)).toEqual({ count: fixtureComments.length, lastPage: 0 });
+    expect(panelPagination(wrapper)).toEqual({
+      count: fixtureComments.length,
+      limit: 20,
+      lastPage: 0,
+    });
   });
 
   it("renders a single thread rooted at the given commentId", async () => {
@@ -91,7 +95,7 @@ describe("CommentsSection sources", () => {
     const wrapper = await mountCommentsSection({ modelId: "model-1", commentId: "does-not-exist" });
 
     expect(panelComments(wrapper)).toEqual([]);
-    expect(panelPagination(wrapper)).toEqual({ count: 0, lastPage: 0 });
+    expect(panelPagination(wrapper)).toEqual({ count: 0, lastPage: null });
   });
 
   it("renders nothing when no modelId is given", async () => {
@@ -303,14 +307,78 @@ describe("CommentsSection optimistic likes", () => {
 });
 
 describe("CommentsSection pagination seams", () => {
-  it("requests the next reply page for a comment on load", async () => {
+  // The server decides the reply page size; the client echoes it back so the
+  // next page starts where the embedded one ended. Sending a size of its own
+  // makes the server skip rows (offset is page * limit) and the click appends
+  // nothing.
+  function replyStub(id: string): Comment {
+    return {
+      id,
+      modelId: "model-1",
+      parentId: "900",
+      author: { name: "Jane Doe", image: "" },
+      content: `Reply ${id}`,
+      createdAt: "2024-03-11T16:02:00",
+      likes: 0,
+      likedByMe: false,
+      replies: [],
+      replyPagination: { count: 0, lastPage: null },
+    };
+  }
+
+  const threeReplies: Comment = {
+    id: "900",
+    modelId: "model-1",
+    author: { name: "Omar Ibrahim", image: "" },
+    content: "A root with more replies than the server embeds",
+    createdAt: "2024-03-11T15:30:00",
+    likes: 0,
+    likedByMe: false,
+    replies: ["901", "902", "903"].map(replyStub),
+    replyPagination: { count: 3, lastPage: null },
+  };
+
+  const countedOnly: Comment = {
+    ...threeReplies,
+    id: "910",
+    replies: [],
+    replyPagination: { count: 2, lastPage: null },
+  };
+
+  it("requests the next reply page at the page size the server used", async () => {
     const wrapper = await mountCommentsSection({ modelId: "model-1" });
 
     await emitFromPanel(wrapper, "load", { commentId: "1" });
 
     const replyFetch = calls("GET").find((call) => call.url.includes("/comments/1?"));
     expect(replyFetch?.url).toContain("page=1");
-    expect(replyFetch?.url).toContain("limit=5");
+    expect(replyFetch?.url).toContain("limit=2");
+  });
+
+  it("appends the replies the embedded page left out", async () => {
+    installCommentFetchMock({ roots: [threeReplies] });
+    const wrapper = await mountCommentsSection({ modelId: "model-900" });
+
+    const before = findCommentById(panelComments(wrapper), "900");
+    expect(before?.replies?.map((reply) => reply.id)).toEqual(["901", "902"]);
+    expect(before?.replyPagination?.count).toBe(3);
+
+    await emitFromPanel(wrapper, "load", { commentId: "900" });
+
+    const after = findCommentById(panelComments(wrapper), "900");
+    expect(after?.replies?.map((reply) => reply.id)).toEqual(["901", "902", "903"]);
+  });
+
+  it("starts at page 0 for a comment whose replies were counted but never loaded", async () => {
+    installCommentFetchMock({ roots: [countedOnly] });
+    const wrapper = await mountCommentsSection({ modelId: "model-910" });
+
+    expect(findCommentById(panelComments(wrapper), "910")?.replies).toEqual([]);
+
+    await emitFromPanel(wrapper, "load", { commentId: "910" });
+
+    const replyFetch = calls("GET").find((call) => call.url.includes("/comments/910?"));
+    expect(replyFetch?.url).toContain("page=0");
   });
 
   it("requests the next comment page on load-more", async () => {

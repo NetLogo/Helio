@@ -202,7 +202,7 @@ describe("insertReply", () => {
     const bare = makeComment("bare", { replies: undefined, replyPagination: undefined });
     const next = insertReply([bare], "bare", makeComment("local-3"));
     expect(next[0]?.replies).toHaveLength(1);
-    expect(next[0]?.replyPagination).toEqual({ count: 1, lastPage: 0 });
+    expect(next[0]?.replyPagination).toEqual({ count: 1, lastPage: null });
   });
 
   it("returns the same array reference when the parent is not found", () => {

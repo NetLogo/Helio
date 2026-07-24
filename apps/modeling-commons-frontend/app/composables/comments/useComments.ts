@@ -10,9 +10,12 @@ type CommentsPayload = {
   pagination: CommentPagination;
 };
 
-type CommentQuery = {
+type ReplyPageQuery = {
   page?: number;
   limit?: number;
+};
+
+type CommentQuery = ReplyPageQuery & {
   sort?: CommentSort;
 };
 
@@ -49,16 +52,23 @@ type ApiPaginated = {
   data: Array<ApiComment>;
 };
 
+const emptyPagination = (): CommentPagination => ({ count: 0, lastPage: null });
+
 const emptyPayload = (): CommentsPayload => ({
   comments: [],
-  pagination: { count: 0, lastPage: 0 },
+  pagination: emptyPagination(),
 });
 
-// `lastPage` carries the last page index actually loaded (backend pages are
-// 0-indexed); the pagination helpers derive "load N more" from `count` minus
-// the number of items already in hand.
+// A page that carried no rows loaded nothing, whatever index the server stamped
+// on it: a comment at the nesting limit reports its reply `count` with an empty
+// `data`, and paging it has to start at 0. The pagination helpers derive
+// "load N more" from `count` minus the number of items already in hand.
 function toPagination(page: ApiRepliesPage | ApiPaginated): CommentPagination {
-  return { count: page.count, lastPage: page.page };
+  return {
+    count: page.count,
+    limit: page.limit,
+    lastPage: page.data.length > 0 ? page.page : null,
+  };
 }
 
 function mapAuthor(author: ApiCommentAuthor): CommentAuthor {
@@ -83,7 +93,7 @@ export function mapApiComment(dto: ApiComment): Comment {
     likedByMe: dto.likedByMe ?? false,
     permissions: dto.permissions,
     replies: dto.replies ? dto.replies.data.map(mapApiComment) : [],
-    replyPagination: dto.replies ? toPagination(dto.replies) : { count: 0, lastPage: 0 },
+    replyPagination: dto.replies ? toPagination(dto.replies) : emptyPagination(),
   };
 }
 
@@ -91,11 +101,6 @@ export function commentsApiBase(): string {
   return useRuntimeConfig().public.apiBase as string;
 }
 
-// Raw `fetch` with `credentials: "include"` only sends the session cookie in
-// the browser. During SSR there is no cookie jar, so the backend would resolve
-// these reads as anonymous — losing per-viewer `permissions` and `likedByMe`.
-// Forward the incoming request's cookie header on the server, mirroring the
-// openapi-fetch server client in `useApi`.
 function commentFetchInit(): RequestInit {
   const init: RequestInit = { credentials: "include" };
   if (import.meta.server) {
@@ -135,7 +140,7 @@ export async function fetchComment(
   base: string,
   modelId: string,
   commentId: string,
-  query: CommentQuery,
+  query: ReplyPageQuery,
 ): Promise<Comment | null> {
   const response = await fetch(
     `${base}/api/v1/models/${modelId}/comments/${commentId}${buildQuery(query)}`,
@@ -151,7 +156,7 @@ async function fetchComments(source: CommentsSource, sort?: CommentSort): Promis
   const base = commentsApiBase();
 
   if (source.commentId) {
-    const root = await fetchComment(base, source.modelId, source.commentId, { sort });
+    const root = await fetchComment(base, source.modelId, source.commentId, {});
     return root ? { comments: [root], pagination: { count: 1, lastPage: 0 } } : emptyPayload();
   }
 
@@ -178,9 +183,7 @@ export default function useComments(
   );
 
   const comments = computed(() => data.value?.comments ?? []);
-  const pagination = computed<CommentPagination>(
-    () => data.value?.pagination ?? { count: 0, lastPage: 0 },
-  );
+  const pagination = computed<CommentPagination>(() => data.value?.pagination ?? emptyPagination());
 
   return { comments, pagination, status, error, refresh };
 }

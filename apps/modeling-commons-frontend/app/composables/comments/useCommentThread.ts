@@ -1,6 +1,10 @@
 import type { MaybeRefOrGetter } from "vue";
-import { findCommentById, insertReply, updateCommentById } from "~/components/comment/comment-tree";
-import { COMMENT_TREE_DEFAULTS } from "~/components/comment/types";
+import {
+  findCommentById,
+  insertReply,
+  nextPageToLoad,
+  updateCommentById,
+} from "~/components/comment/comment-tree";
 import type { Comment, CommentPagination } from "~/components/comment/types";
 import useComments, { commentsApiBase, fetchComment, fetchModelComments } from "./useComments";
 import type { CommentSort, CommentsPayload, CommentsSource } from "./useComments";
@@ -10,21 +14,6 @@ type UseCommentThreadOptions = {
   sort?: MaybeRefOrGetter<CommentSort | undefined>;
 };
 
-// Owns the rendered view of a comment thread. `useComments` reads through
-// `useAsyncData`, whose `data` is a shared, key-cached ref — so mutating it in
-// place would leak across remounts. We keep a component-owned `local` copy,
-// reseeded from the source on every genuine refetch, and mutate only that.
-//
-// Likes are optimistic (instant feedback, cheap to roll back). Submissions
-// (create/reply/edit/delete) are not: they never touch the tree speculatively
-// and they disable their input while in flight (`pending`). On success:
-//   - create/reply confirm by fetching the just-created comment by id and
-//     inserting it, so it stays visible regardless of the active sort (a full
-//     refetch by "most liked" could bury a brand-new comment off the page).
-//   - edit/delete refetch, so the thread reflects canonical server state —
-//     edit flags and `[deleted]` tombstones.
-// `submitToken` ticks once per successful submission so the originating input
-// can close/clear; a failure leaves it open with the user's text intact.
 export default function useCommentThread(options: UseCommentThreadOptions) {
   const {
     comments: sourceComments,
@@ -42,7 +31,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
 
   const local = reactive<CommentsPayload>({
     comments: [],
-    pagination: { count: 0, lastPage: 0 },
+    pagination: { count: 0, lastPage: null },
   });
 
   watch(
@@ -180,18 +169,17 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     );
   };
 
-  // Replies always read chronologically, so paging a node's replies keeps the
-  // default (createdAt) order rather than the top-level sort.
   const loadReplies = async ({ commentId }: { commentId: string }) => {
     if (busy.value || pending.value || !modelId.value) return;
     const target = findCommentById(local.comments, commentId);
     if (!target) return;
     busy.value = true;
     try {
-      const nextPage = (target.replyPagination?.lastPage ?? 0) + 1;
+      const loaded = target.replyPagination;
+      const nextPage = nextPageToLoad(loaded);
       const root = await fetchComment(apiBase, modelId.value, commentId, {
         page: nextPage,
-        limit: COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel,
+        limit: loaded?.limit,
       });
       if (!root) return;
       const fetched = root.replies ?? [];
@@ -203,6 +191,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
           replies: [...(comment.replies ?? []), ...added],
           replyPagination: {
             count: root.replyPagination?.count ?? comment.replyPagination?.count ?? 0,
+            limit: root.replyPagination?.limit ?? comment.replyPagination?.limit,
             lastPage: nextPage,
           },
         };
@@ -219,7 +208,8 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     busy.value = true;
     try {
       const next = await fetchModelComments(apiBase, modelId.value, {
-        page: current.lastPage + 1,
+        page: nextPageToLoad(current),
+        limit: current.limit,
         sort: toValue(options.sort),
       });
       const seen = new Set(local.comments.map((comment) => comment.id));
