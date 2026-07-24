@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import env from '#src/config/env.ts';
 import makeModelCommentService from '#src/modules/model-comment/model-comment.service.ts';
 import modelCommentDomain from '#src/modules/model-comment/domain/model-comment.domain.ts';
 import {
@@ -130,6 +131,57 @@ describe('modelCommentService', () => {
       const insertedEntity = modelCommentRepository.insertTx.mock.calls[0]![1];
       expect(insertedEntity.versionNumber).toBeNull();
       expect(insertedEntity.parentId).toBe('parent-1');
+    });
+
+    it('opens a reply notification on the parent thread with the reply highlighted', async () => {
+      const parent = makeComment({ id: 'parent-1', modelId: 'model-1', userId: 'author-1' });
+      modelCommentRepository.findById.mockResolvedValue(parent);
+      modelAuthorRepository.findAllByModel.mockResolvedValue([
+        { modelId: 'model-1', userId: 'owner-1', role: 'owner' },
+      ]);
+      userRepository.findOneById.mockImplementation(async (id: string) => ({
+        id,
+        email: `${id}@x.com`,
+        name: id,
+      }));
+
+      const { id: replyId } = await service.create({
+        modelId: 'model-1',
+        userId: 'commenter-1',
+        parentId: 'parent-1',
+        content: 'a reply',
+      });
+
+      await flushMicrotasks();
+
+      const replyUrl = new URL(mailDomain.createRepliedToCommentEmail.mock.calls[0]![5]);
+      expect(replyUrl.pathname).toBe('/models/model-1/comments/parent-1');
+      expect(replyUrl.searchParams.get('highlightedCommentId')).toBe(replyId);
+      expect(mailDomain.createCommentedOnModelEmail.mock.calls[0]![5]).toBe(replyUrl.toString());
+    });
+
+    it('opens a top-level comment notification on the comment itself', async () => {
+      modelAuthorRepository.findAllByModel.mockResolvedValue([
+        { modelId: 'model-1', userId: 'author-1', role: 'owner' },
+      ]);
+      userRepository.findOneById.mockResolvedValue({
+        id: 'author-1',
+        email: 'author@x.com',
+        name: 'Author',
+      });
+
+      const { id } = await service.create({
+        modelId: 'model-1',
+        userId: 'commenter-1',
+        content: 'hello world',
+      });
+
+      await flushMicrotasks();
+
+      const url = new URL(mailDomain.createCommentedOnModelEmail.mock.calls[0]![5]);
+      expect(url.origin).toBe(new URL(env.product.website).origin);
+      expect(url.pathname).toBe(`/models/model-1/comments/${id}`);
+      expect(url.searchParams.get('highlightedCommentId')).toBe(id);
     });
 
     it('throws ParentCommentMismatchError when the parent belongs to a different model', async () => {
