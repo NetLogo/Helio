@@ -160,6 +160,34 @@ When(
 );
 
 When(
+  'an anonymous viewer lists comments on {string}',
+  async function (this: ICustomWorld, modelTitle: string) {
+    const modelId = getModels(this.context).get(modelTitle)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models/${modelId}/comments`,
+    });
+  },
+);
+
+Given(
+  '{string} has replied {int} times to comment {string} as {string}',
+  async function (
+    this: ICustomWorld,
+    actorName: string,
+    count: number,
+    parentLabel: string,
+    label: string,
+  ) {
+    const parent = getComments(this.context).get(parentLabel)!;
+    for (let i = 1; i <= count; i++) {
+      const childLabel = `${label}-${i}`;
+      await seedComment.call(this, actorName, childLabel, parent.modelId, childLabel, parent.id);
+    }
+  },
+);
+
+When(
   '{string} gets comment {string} on {string}',
   async function (this: ICustomWorld, actorName: string, label: string, modelTitle: string) {
     const actor = getUsers(this.context).get(actorName)!;
@@ -304,6 +332,30 @@ Then(
     assert.ok(node, `Expected comment "${label}" to appear in the response`);
     const replies = node!['replies'] as { data?: unknown[] } | undefined;
     assert.strictEqual(replies?.data?.length, expected);
+  },
+);
+
+Then(
+  /^comment "([^"]+)" embedded replies should be exactly (.+)$/,
+  function (this: ICustomWorld, label: string, rawLabels: string) {
+    const expectedLabels = rawLabels.split(',').map((part) => part.trim().replace(/^"|"$/g, ''));
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const node = findCommentNode(body, commentId.call(this, label));
+    assert.ok(node, `Expected comment "${label}" to appear in the response`);
+    const replies = node!['replies'] as { data?: { id: string }[] } | undefined;
+    const actualIds = (replies?.data ?? []).map((reply) => reply.id);
+    const expectedIds = expectedLabels.map((expectedLabel) => commentId.call(this, expectedLabel));
+    assert.deepStrictEqual(actualIds, expectedIds);
+  },
+);
+
+Then(
+  'comment {string} should not report likedByMe',
+  function (this: ICustomWorld, label: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const node = findCommentNode(body, commentId.call(this, label));
+    assert.ok(node, `Expected comment "${label}" to appear in the response`);
+    assert.ok(!('likedByMe' in node!), `Expected comment "${label}" to not report likedByMe`);
   },
 );
 

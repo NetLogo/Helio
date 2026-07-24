@@ -198,6 +198,61 @@ Feature: Model Comments
     Then the response status should be 201
     And no mail should have been sent
 
+  Scenario: Sibling parents at the same level are limited independently
+    Given an authenticated user "owner"
+    And a public model "Siblings" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented "Root" on "Siblings" as "root"
+    And "commenter" has replied "Branch A" to comment "root" as "a"
+    And "commenter" has replied "Branch B" to comment "root" as "b"
+    And "commenter" has replied 5 times to comment "a" as "a-child"
+    And "commenter" has replied 1 times to comment "b" as "b-child"
+    When "commenter" lists comments on "Siblings"
+    Then the response status should be 200
+    And comment "a" should have replies count 5
+    And comment "a" should have 2 embedded replies
+    And comment "b" should have replies count 1
+    And comment "b" should have 1 embedded replies
+
+  Scenario: Paging a re-rooted thread past its last reply still reports the total
+    Given an authenticated user "owner"
+    And a public model "Past End" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented "Root" on "Past End" as "root"
+    And "commenter" has replied 3 times to comment "root" as "reply"
+    When "commenter" gets comment "root" on "Past End" with page 5 and limit 2
+    Then the response status should be 200
+    And comment "root" should have replies count 3
+    And comment "root" should have 0 embedded replies
+
+  Scenario: Embedded replies are ordered oldest first
+    Given an authenticated user "owner"
+    And a public model "Ordered" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented "Root" on "Ordered" as "root"
+    And "commenter" has replied "First" to comment "root" as "r1"
+    And "commenter" has replied "Second" to comment "root" as "r2"
+    When "commenter" lists comments on "Ordered"
+    Then the response status should be 200
+    And comment "root" embedded replies should be exactly "r1", "r2"
+
+  Scenario: A nested reply carries the viewer's like state and its author
+    Given an authenticated user "owner"
+    And a public model "Nested Likes" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented "Root" on "Nested Likes" as "root"
+    And "commenter" has replied "Deep reply" to comment "root" as "deep"
+    And an authenticated user "fan"
+    When "fan" likes comment "deep" on "Nested Likes"
+    Then the response status should be 204
+    When "fan" lists comments on "Nested Likes"
+    Then comment "deep" in the response should have property "likes" equal to "1"
+    And comment "deep" in the response should have property "likedByMe" equal to "true"
+    When an anonymous viewer lists comments on "Nested Likes"
+    Then the response status should be 200
+    And comment "deep" in the response should have property "likes" equal to "1"
+    And comment "deep" should not report likedByMe
+
   Scenario: Comment lifecycle events are audited but likes are not
     Given an authenticated admin user "admin"
     And a public model "Audited Comments" created by "admin"
