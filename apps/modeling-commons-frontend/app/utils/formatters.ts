@@ -20,6 +20,25 @@ export function formatRelativeDate(dateStr: string): string {
   return "just now";
 }
 
+export function formatShortRelativeDate(relDateStr: string): string {
+  const changes = {
+    year: "y",
+    month: "mo",
+    week: "w",
+    day: "d",
+    hour: "h",
+    minute: "m",
+  };
+  const relativeDate = formatRelativeDate(relDateStr);
+  const depluralize = (str: string) => str.replace(/s ago$/, " ago");
+  for (const [long, short] of Object.entries(changes)) {
+    if (relativeDate.includes(long)) {
+      return depluralize(relativeDate.replace(` ${long}`, short));
+    }
+  }
+  return relativeDate;
+}
+
 export function formatDate(dateStr: string | Date): string {
   return new Date(dateStr).toLocaleDateString("en-US", {
     month: "long",

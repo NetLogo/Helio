@@ -40,7 +40,7 @@
       icon="lucide:x"
       color="neutral"
       :disabled="pending"
-      class="self-end rounded-full transition-all duration-200"
+      class="hidden sm:block self-end rounded-full transition-all duration-200"
       :class="{
         'scale-0': collapsed,
         'scale-100': !collapsed,

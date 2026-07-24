@@ -53,7 +53,7 @@ const segments = computed(() =>
 
 
 <template>
-  <p class="whitespace-pre-wrap break-words"><template v-for="(seg, i) in segments" :key="i"><a
+  <p class="whitespace-pre-wrap wrap-break-word text-pretty"><template v-for="(seg, i) in segments" :key="i"><a
         v-if="seg.href"
         :href="seg.href"
         target="_blank"
