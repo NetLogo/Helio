@@ -122,8 +122,7 @@
             :comment="reply"
             :parent-author-name="comment.author.name"
             :maximum-nested="maximumNested - 1"
-            :maximum-shown-replies-per-level="maximumShownRepliesPerLevel"
-            is-nested
+              is-nested
             :parent-has-see-more-replies="remainingReplies > 0"
             :is-last-sibling="index === shownReplies.length - 1"
             :read-only="readOnly"
@@ -146,7 +145,7 @@
           v-if="remainingReplies > 0 && (!atNestingLimit || threadLink)"
           class="text-sm text-gray-500 hover:text-gray-700 cursor-pointer transition-colors duration-200 relative"
         >
-          <CommentSpineEraser class="left-0 -translate-x-11 top-0 w-6 block h-10" />
+          <CommentSpineEraser class="left-0 -translate-x-11 top-0 w-6 block h-14" />
 
           <CommentElbowSvg
             class="absolute top-0 -translate-y-1/2 -left-9 translate-x-0.5 text-gray-300"
@@ -176,12 +175,11 @@
 
 <script lang="ts" setup>
 import * as commentTree from "./comment-tree";
-import { COMMENT_TREE_DEFAULTS } from "./types";
+import { COMMENT_VIEW_DEFAULTS } from "./types";
 import type { CommentViewProps } from "./types";
 
 const props = withDefaults(defineProps<CommentViewProps>(), {
-  maximumNested: COMMENT_TREE_DEFAULTS.maximumNested,
-  maximumShownRepliesPerLevel: COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel,
+  maximumNested: COMMENT_VIEW_DEFAULTS.maximumNested,
   isNested: false,
   parentHasSeeMoreReplies: false,
   isLastSibling: false,

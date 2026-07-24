@@ -44,10 +44,7 @@ describe("continue-thread link at the nesting limit", () => {
   });
 
   it("renders a thread link per branch that hits the limit", async () => {
-    const wrapper = await mountCommentView(deepThread, {
-      maximumNested: 1,
-      maximumShownRepliesPerLevel: 5,
-    });
+    const wrapper = await mountCommentView(deepThread, { maximumNested: 1 });
 
     const hrefs = continueLinks(wrapper).map((link) => link.attributes("href"));
     expect(hrefs).toContain(`/models/${DEMO_MODEL_ID}/comments/101`);
@@ -57,7 +54,7 @@ describe("continue-thread link at the nesting limit", () => {
 
   it("keeps the see-more button and shows no link above the limit", async () => {
     const partiallyLoaded = { ...longComment, replyPagination: { count: 5, lastPage: 1 } };
-    const wrapper = await mountCommentView(partiallyLoaded, { maximumShownRepliesPerLevel: 1 });
+    const wrapper = await mountCommentView(partiallyLoaded);
 
     expect(wrapper.findComponent(CommentSeeMore).exists()).toBe(true);
     expect(continueLinks(wrapper)).toHaveLength(0);

@@ -109,16 +109,16 @@ describe("CommentsSection bugs", () => {
 });
 
 describe("CommentView bugs", () => {
-  // the recursive <CommentView> render must pass
-  // maximum-shown-replies-per-level down so every depth uses the configured value.
-  it("propagates maximumShownRepliesPerLevel to nested reply levels", async () => {
-    const wrapper = await mountCommentView(deepThread, { maximumShownRepliesPerLevel: 1 });
+  // Each recursion level renders one step shallower, so the nesting bound
+  // reaches every depth.
+  it("narrows the nesting bound one level per recursion", async () => {
+    const wrapper = await mountCommentView(deepThread, { maximumNested: 3 });
 
     const nested = wrapper
       .findAllComponents(CommentView)
       .find((view) => view.props("comment")?.id === "101");
     expect(nested).toBeDefined();
-    expect(nested!.props("maximumShownRepliesPerLevel")).toBe(1);
+    expect(nested!.props("maximumNested")).toBe(2);
   });
 
   // `write` fires only on genuine write attempts — closing or
@@ -160,7 +160,7 @@ describe("CommentView bugs", () => {
   // companion test is retired — the @click wiring it proved no longer exists.)
   it("emits load when CommentSeeMore fires its declared see-more-replies event", async () => {
     const partiallyLoaded = { ...longComment, replyPagination: { count: 5, lastPage: 1 } };
-    const wrapper = await mountCommentView(partiallyLoaded, { maximumShownRepliesPerLevel: 2 });
+    const wrapper = await mountCommentView(partiallyLoaded);
 
     const seeMore = wrapper.findComponent(CommentSeeMore);
     expect(seeMore.exists()).toBe(true);
@@ -172,12 +172,12 @@ describe("CommentView bugs", () => {
     expect(wrapper.emitted("load")).toEqual([[{ commentId: longComment.id }]]);
   });
 
-  // Every loaded reply renders immediately: maximumShownRepliesPerLevel bounds
-  // how many the server embeds, not what the client hides. See-more therefore
-  // reflects only the server remainder, and a click fetches the next page.
+  // Every loaded reply renders immediately: the server bounds how many it
+  // embeds, the client hides none. See-more therefore reflects only the server
+  // remainder, and a click fetches the next page.
   it("shows all loaded replies and offers only the server remainder", async () => {
     const partiallyLoaded = { ...longComment, replyPagination: { count: 5, lastPage: 1 } };
-    const wrapper = await mountCommentView(partiallyLoaded, { maximumShownRepliesPerLevel: 1 });
+    const wrapper = await mountCommentView(partiallyLoaded);
 
     expect(wrapper.text()).toContain("Short one.");
 
