@@ -3,11 +3,15 @@
     ref="rootEl"
     :data-comment-id="comment.id"
     class="flex gap-4 group/reply"
-    :class="isHighlighted ? 'rounded-lg bg-primary/5 ring-2 ring-primary/30 outline-none p-2 -m-2' : undefined"
+    :class="isHighlighted ? 'rounded-lg bg-royal-blue-lightest ring-2 ring-primary/30 px-2 -mx-2 outline-none' : undefined"
     :tabindex="isHighlighted ? -1 : undefined"
+    :style="{
+      '--background': isHighlighted ? 'var(--color-royal-blue-lightest)' : undefined,
+    }"
     @focusout="handleFocusOut"
   >
     <div class="relative">
+
       <!-- Spine and its parts -->
       <CommentElbowSvg
         v-if="isNested"
@@ -111,7 +115,7 @@
         </Transition>
 
         <!-- Replies -->
-        <div v-if="hasVisibleReplies" class="relative w-full">
+        <div v-if="hasVisibleReplies" class="relative w-full space-y-2">
           <CommentView
             v-for="(reply, index) in shownReplies"
             :key="reply.id"
