@@ -8,12 +8,16 @@ import AccountInactiveEmail from './templates/1-Account/AccountInactive.js';
 import AccountDeletedEmail from './templates/1-Account/AcctionDeleted.js';
 import NotificationEmail from './templates/2-Notifications/NotificationEmail.js';
 import NotificationSummaryEmail from './templates/2-Notifications/NotificationSummaryEmail.js';
+import CommentedOnModelEmail from './templates/3-ModelingCommons/CommentedOnModelEmail.js';
+import RepliedToCommentEmail from './templates/3-ModelingCommons/RepliedToCommentEmail.js';
 import { PasswordResetEmail } from './templates/PasswordResetEmail.js';
 import { VerifyEmail } from './templates/VerifyEmail.js';
 import { WelcomeEmail } from './templates/WelcomeEmail.js';
+import type { EmailModel } from './components/ModelCard.js';
 import type { Branding } from './types/branding.js';
 
 export type { Branding } from './types/branding.js';
+export type { EmailModel } from './components/ModelCard.js';
 
 export interface RenderedEmail {
   subject: string;
@@ -189,6 +193,42 @@ export function createRenderer({ branding }: CreateRendererOptions) {
       );
       return {
         subject: `Your ${branding.productName} Notification Summary`,
+        html,
+        text,
+      };
+    },
+
+    async renderCommentedOnModelEmail(args: {
+      userName: string;
+      commenterName: string;
+      model: EmailModel;
+      commentPreview: string;
+      commentUrl: string;
+      unsubscribeUrl: string;
+    }): Promise<RenderedEmail> {
+      const { html, text } = await renderBoth(
+        <CommentedOnModelEmail branding={branding} {...args} />,
+      );
+      return {
+        subject: `${args.commenterName} commented on your model "${args.model.name}"`,
+        html,
+        text,
+      };
+    },
+
+    async renderRepliedToCommentEmail(args: {
+      userName: string;
+      replierName: string;
+      model: EmailModel;
+      replyPreview: string;
+      commentUrl: string;
+      unsubscribeUrl: string;
+    }): Promise<RenderedEmail> {
+      const { html, text } = await renderBoth(
+        <RepliedToCommentEmail branding={branding} {...args} />,
+      );
+      return {
+        subject: `${args.replierName} replied to your comment`,
         html,
         text,
       };

@@ -112,6 +112,29 @@ export interface ModelSeed {
   popularity?: PopularitySeed;
 }
 
+export interface CommentSeed {
+  /** Stable slug used to derive the comment id and link replies to parents. */
+  key: string;
+  legacyId?: number;
+  /** Author user key. Retained even when `deleted` (the read layer hides it). */
+  user: string;
+  content: string;
+  /** Scopes the comment to a specific model version; omit for general discussion. */
+  versionNumber?: number;
+  edited?: boolean;
+  /** Soft-delete tombstone: content is nulled and `deletedAt` set. */
+  deleted?: boolean;
+  likedBy?: string[];
+  createdDaysAgo?: number;
+  replies?: CommentSeed[];
+}
+
+export interface CommentThreadSeed {
+  /** Model key the thread hangs off. */
+  model: string;
+  comments: CommentSeed[];
+}
+
 export interface DraftSeed {
   key: string;
   user: string;
