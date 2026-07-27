@@ -47,6 +47,16 @@ export function formatDate(dateStr: string | Date): string {
   });
 }
 
+export function formatTimestamp(dateStr: string | Date): string {
+  return new Date(dateStr).toLocaleString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export function getVisibilityIcon(visibility: string): string {
   switch (visibility) {
     case "public":
