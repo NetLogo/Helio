@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import type { PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import { buildModelWhere, buildModelOrderBy, sortKeyToCountColumn } from './model.search.ts';
 

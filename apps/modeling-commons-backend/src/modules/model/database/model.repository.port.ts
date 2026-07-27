@@ -1,6 +1,6 @@
 import type { Model, ModelInteractionKind, Prisma } from '#prisma/index';
 import type { ModelCardRecord } from '#src/modules/model/database/model.card.record.ts';
-import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
 import type {
   Paginated,

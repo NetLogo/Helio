@@ -1,5 +1,5 @@
 import type { Model } from '#prisma/index';
-import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
 import type { Paginated } from '#src/shared/db/repository.port.ts';
 

@@ -6,6 +6,12 @@ import { sortQueryRequestDtoSchema } from '#src/shared/api/sort-query.request.dt
 import { visibilitySchema } from '#src/modules/model/shared/enums.ts';
 import { dateRangeQueryRequestDtoSchema } from '#src/shared/api/date-range-query.request.dto.ts';
 import type { ModelActionMap } from '#src/shared/permissions/model-access.actions.ts';
+import type {
+  CreateModelProps,
+  ModelSearchFilters,
+  ModelSortBy,
+  UpdateModelProps,
+} from '#src/modules/model/domain/model.types.ts';
 
 export const createModelRequestDtoSchema = Type.Object({
   title: Type.String({
@@ -76,8 +82,6 @@ export const modelSearchQuerySchema = Type.Intersect([
   }),
 ]);
 
-export type ModelSortBy = Static<typeof modelSortBySchema>;
-
 export const modelResponseDtoSchema = Type.Intersect([
   baseResponseDtoSchema,
   Type.Object({
@@ -131,7 +135,20 @@ export type UpdateModelRequestDto = Static<typeof updateModelRequestDtoSchema>;
 export type ModelPermissionsDto = Static<typeof modelPermissionsDtoSchema>;
 export type ModelResponseDto = Static<typeof modelResponseDtoSchema>;
 
-export type CreateModelProps = CreateModelRequestDto;
-export type UpdateModelProps = UpdateModelRequestDto;
-export type ModelSearchFilters = Omit<ModelSearchQuery, 'limit' | 'page'>;
 export type ModelVariant = Static<typeof modelCardVariantSchema>;
+
+// The domain owns these shapes; the schemas above are their HTTP surface. Asserting mutual
+// assignability here keeps a schema edit from silently drifting away from the domain type.
+type _SameShape<A, B> = A extends B ? (B extends A ? true : never) : never;
+
+const _assertCreatePropsMatch: _SameShape<CreateModelRequestDto, CreateModelProps> = true;
+const _assertUpdatePropsMatch: _SameShape<UpdateModelRequestDto, UpdateModelProps> = true;
+const _assertSortByMatches: _SameShape<Static<typeof modelSortBySchema>, ModelSortBy> = true;
+const _assertSearchFiltersMatch: _SameShape<
+  Omit<ModelSearchQuery, 'limit' | 'page'>,
+  ModelSearchFilters
+> = true;
+void _assertCreatePropsMatch;
+void _assertUpdatePropsMatch;
+void _assertSortByMatches;
+void _assertSearchFiltersMatch;

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { Model } from '#prisma/index';
-import type { CreateModelProps } from '#src/modules/model/dtos/model.dto.ts';
+import type { CreateModelProps } from '#src/modules/model/domain/model.types.ts';
 import { ModelAlreadyDeletedError } from '#src/modules/model/domain/model.errors.ts';
 
 export default function modelDomain() {

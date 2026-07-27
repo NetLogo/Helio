@@ -1,6 +1,6 @@
 import type { Model } from '#prisma/index';
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
-import type { UpdateModelProps } from '#src/modules/model/dtos/model.dto.ts';
+import type { UpdateModelProps } from '#src/modules/model/domain/model.types.ts';
 
 export default function makeModelService({
   transactionManager,
