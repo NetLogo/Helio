@@ -299,6 +299,22 @@ describe('userNotificationService handleEvent', () => {
       expect(mailService.sendMailAsync).not.toHaveBeenCalled();
     });
 
+    it('still writes the ledger row when only the in-app channel is off, so a retry cannot resend', async () => {
+      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+        makeRecord({ category: 'comment.on_your_model', email: true, inApp: false }),
+      ]);
+      const service = build([makeNotifier([makeIntent()])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.insertTx).toHaveBeenCalledTimes(1);
+      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
+      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledWith(
+        'notification-1',
+        expect.any(Date),
+      );
+    });
+
     it.each([
       ['a missing recipient', undefined],
       ['a soft-deleted recipient', makeUserRecord({ deletedAt: new Date('2026-01-02') })],
