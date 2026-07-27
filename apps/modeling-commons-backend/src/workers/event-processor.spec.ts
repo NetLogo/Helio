@@ -20,6 +20,7 @@ vi.mock('pg-boss', () => ({
 
 import { startEventProcessor } from '#src/workers/event-processor.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
+import rules from '#src/config/rules.ts';
 
 const logger = {
   info: vi.fn(),
@@ -27,6 +28,10 @@ const logger = {
   error: vi.fn(),
   warn: vi.fn(),
 } as unknown as FastifyBaseLogger;
+
+function makeEventDispatcherService(): { dispatch: ReturnType<typeof vi.fn> } {
+  return { dispatch: vi.fn().mockResolvedValue(undefined) };
+}
 
 describe('startEventProcessor', () => {
   beforeEach(() => {
@@ -42,6 +47,9 @@ describe('startEventProcessor', () => {
       eventRepository: eventRepository as unknown as Parameters<
         typeof startEventProcessor
       >[0]['eventRepository'],
+      eventDispatcherService: makeEventDispatcherService() as unknown as Parameters<
+        typeof startEventProcessor
+      >[0]['eventDispatcherService'],
       logger,
     });
 
@@ -51,24 +59,82 @@ describe('startEventProcessor', () => {
     expect(boss).toBe(bossInstance);
   });
 
-  it('marks each unprocessed event as processed when the handler runs', async () => {
+  it('fetches within the configured batch size and attempt ceiling', async () => {
     const eventRepository = mockEventRepository();
-    eventRepository.findUnprocessed.mockResolvedValue([{ id: 'event-1' }, { id: 'event-2' }]);
-    eventRepository.markProcessed.mockResolvedValue(undefined);
+    eventRepository.findUnprocessed.mockResolvedValue([]);
 
     await startEventProcessor({
       connectionString: 'postgres://test',
       eventRepository: eventRepository as unknown as Parameters<
         typeof startEventProcessor
       >[0]['eventRepository'],
+      eventDispatcherService: makeEventDispatcherService() as unknown as Parameters<
+        typeof startEventProcessor
+      >[0]['eventDispatcherService'],
       logger,
     });
 
     const handler = bossInstance.work.mock.calls[0]![1] as () => Promise<void>;
     await handler();
 
-    expect(eventRepository.findUnprocessed).toHaveBeenCalledWith(50);
+    expect(eventRepository.findUnprocessed).toHaveBeenCalledWith(
+      rules.limits.notification.eventBatchSize,
+      rules.limits.notification.maxEventAttempts,
+    );
+  });
+
+  it('dispatches each unprocessed event, then marks it processed', async () => {
+    const eventRepository = mockEventRepository();
+    eventRepository.findUnprocessed.mockResolvedValue([{ id: 'event-1' }, { id: 'event-2' }]);
+    eventRepository.markProcessed.mockResolvedValue(undefined);
+    const eventDispatcherService = makeEventDispatcherService();
+
+    await startEventProcessor({
+      connectionString: 'postgres://test',
+      eventRepository: eventRepository as unknown as Parameters<
+        typeof startEventProcessor
+      >[0]['eventRepository'],
+      eventDispatcherService: eventDispatcherService as unknown as Parameters<
+        typeof startEventProcessor
+      >[0]['eventDispatcherService'],
+      logger,
+    });
+
+    const handler = bossInstance.work.mock.calls[0]![1] as () => Promise<void>;
+    await handler();
+
+    expect(eventDispatcherService.dispatch).toHaveBeenNthCalledWith(1, { id: 'event-1' });
+    expect(eventDispatcherService.dispatch).toHaveBeenNthCalledWith(2, { id: 'event-2' });
     expect(eventRepository.markProcessed).toHaveBeenNthCalledWith(1, 'event-1');
     expect(eventRepository.markProcessed).toHaveBeenNthCalledWith(2, 'event-2');
+    expect(eventRepository.markFailed).not.toHaveBeenCalled();
+  });
+
+  it('marks a failed dispatch and keeps processing the rest of the batch', async () => {
+    const eventRepository = mockEventRepository();
+    eventRepository.findUnprocessed.mockResolvedValue([{ id: 'event-1' }, { id: 'event-2' }]);
+    eventRepository.markProcessed.mockResolvedValue(undefined);
+    eventRepository.markFailed.mockResolvedValue(undefined);
+    const error = new Error('subscriber exploded');
+    const eventDispatcherService = makeEventDispatcherService();
+    eventDispatcherService.dispatch.mockRejectedValueOnce(error).mockResolvedValueOnce(undefined);
+
+    await startEventProcessor({
+      connectionString: 'postgres://test',
+      eventRepository: eventRepository as unknown as Parameters<
+        typeof startEventProcessor
+      >[0]['eventRepository'],
+      eventDispatcherService: eventDispatcherService as unknown as Parameters<
+        typeof startEventProcessor
+      >[0]['eventDispatcherService'],
+      logger,
+    });
+
+    const handler = bossInstance.work.mock.calls[0]![1] as () => Promise<void>;
+    await handler();
+
+    expect(eventRepository.markFailed).toHaveBeenCalledWith('event-1', error);
+    expect(eventRepository.markProcessed).not.toHaveBeenCalledWith('event-1');
+    expect(eventRepository.markProcessed).toHaveBeenCalledWith('event-2');
   });
 });
