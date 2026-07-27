@@ -387,7 +387,7 @@ model ModelComment {
   likes   ModelCommentLike[]
 
   @@index([modelId, parentId, createdAt])
-  @@index([parentId])
+  @@index([parentId, createdAt])
   @@index([userId])
 }
 
