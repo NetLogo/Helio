@@ -225,6 +225,61 @@ describe('listCommentsQuery', () => {
     expect(modelCommentRepository.listRepliesByParents).toHaveBeenCalledTimes(3);
   });
 
+  it('does not truncate the dense worst-case tree at the real maxNodes (cap inert on normal traffic)', async () => {
+    const { query, modelCommentRepository } = buildQuery();
+
+    // Mirrors the sizing arithmetic recorded next to rules.limits.comment.tree.maxNodes:
+    // 20 roots, 2-wide fan-out, 3 embedded levels -> 20 + 40 + 80 + 160 = 300 nodes, well
+    // under the real 1,000 budget. Output must be shaped exactly like the pre-cap traversal.
+    const byParent = new Map<string, Array<ModelCommentEntity>>();
+    const buildLevel = (parentIds: Array<string>): Array<ModelCommentEntity> => {
+      const children: Array<ModelCommentEntity> = [];
+      for (const parentId of parentIds) {
+        const kids = [
+          makeEntity({ id: `${parentId}-0`, parentId }),
+          makeEntity({ id: `${parentId}-1`, parentId }),
+        ];
+        byParent.set(parentId, kids);
+        children.push(...kids);
+      }
+      return children;
+    };
+
+    const roots = Array.from({ length: 20 }, (_, i) => makeEntity({ id: `root-${i}` }));
+    const level0 = buildLevel(roots.map((r) => r.id));
+    const level1 = buildLevel(level0.map((c) => c.id));
+    buildLevel(level1.map((c) => c.id));
+
+    modelCommentRepository.listTopLevel.mockResolvedValue(page(roots, roots.length, 20, 0));
+    modelCommentRepository.listRepliesByParents.mockImplementation(
+      async (parentIds: Array<string>) =>
+        pages(
+          parentIds
+            .filter((id) => byParent.has(id))
+            .map((id) => [id, page(byParent.get(id)!, 2, 2, 0)] as const),
+        ),
+    );
+    modelCommentRepository.countRepliesByParent.mockResolvedValue(new Map());
+
+    const result = await query.execute('model-1', {});
+
+    expect(modelCommentRepository.listRepliesByParents).toHaveBeenCalledTimes(3);
+    expect(modelCommentRepository.countRepliesByParent).toHaveBeenCalledTimes(1);
+    expect(result.data).toHaveLength(20);
+    for (const rootDto of result.data) {
+      expect(rootDto.replies!.data).toHaveLength(2);
+      for (const child of rootDto.replies!.data) {
+        expect(child.replies!.data).toHaveLength(2);
+        for (const grandchild of child.replies!.data) {
+          expect(grandchild.replies!.data).toHaveLength(2);
+          for (const leaf of grandchild.replies!.data) {
+            expect(leaf.replies).toBeUndefined();
+          }
+        }
+      }
+    }
+  });
+
   it('keeps a childless deleted top-level comment in the page as a tombstone', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const live = makeEntity({ id: 'live-root' });

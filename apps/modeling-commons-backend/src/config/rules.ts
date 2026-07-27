@@ -166,6 +166,13 @@ const rules = {
 
     comment: {
       content: { min: 1, max: 10_000 } as MinMax,
+      // Hard ceiling on nodes materialized per tree request. maximumShownRepliesPerLevel ^
+      // maximumNested is unbounded fan-out on paper; this is the backstop, not a target.
+      // At the default limit=20 the dense worst case is 20 + 40 + 80 + 160 = 300, well clear.
+      // At the schema-legal maximum limit=100 it is 1,500, so a fully-dense 100-root page
+      // truncates its deepest level and reports counts there instead - the intended
+      // degradation. Retune knowingly if this bites real threads.
+      tree: { maxNodes: 1_000 },
     },
   },
   mime: {
