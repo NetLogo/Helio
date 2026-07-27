@@ -29,6 +29,38 @@ function toOrderBy(orderBy: OrderBy): Prisma.ModelCommentOrderByWithRelationInpu
   return { [orderBy.field]: orderBy.param };
 }
 
+// Whitelist mirroring toOrderBy above, but for the raw window query below: only
+// these constant Prisma.Sql fragments can reach the ORDER BY clause, so no
+// caller-controlled string ever reaches SQL. "id" ASC breaks ties deterministically
+// at the ROW_NUMBER() cutoff, where a non-unique sort key would otherwise be flaky.
+export function toRawOrderBy(orderBy: OrderBy): Prisma.Sql {
+  const column = orderBy.field === 'likes' ? Prisma.sql`"likesCount"` : Prisma.sql`"createdAt"`;
+  const direction = orderBy.param === 'desc' ? Prisma.sql`DESC` : Prisma.sql`ASC`;
+  return Prisma.sql`${column} ${direction}, "id" ASC`;
+}
+
+// Split out from listRepliesByParents so the compiled Prisma.Sql (.sql / .values) can be
+// asserted in a unit test without a DB connection - Prisma.sql compiles standalone.
+export function buildListRepliesByParentsQuery(
+  parentIds: Array<string>,
+  params: PaginatedQueryParams,
+): Prisma.Sql {
+  const offset = Number(params.offset);
+  const limit = Number(params.limit);
+  return Prisma.sql`
+    WITH ranked AS (
+      SELECT "id", "parentId",
+             ROW_NUMBER() OVER (PARTITION BY "parentId" ORDER BY ${toRawOrderBy(params.orderBy)}) AS rn,
+             COUNT(*)     OVER (PARTITION BY "parentId")                                          AS total
+      FROM "ModelComment"
+      WHERE "parentId" IN (${Prisma.join(parentIds)})
+    )
+    SELECT "id", "parentId", rn, total FROM ranked
+    WHERE rn = 1 OR (rn > ${offset} AND rn <= ${offset + limit})
+    ORDER BY "parentId", rn
+  `;
+}
+
 export default function modelCommentRepository({ db }: Dependencies): ModelCommentRepository {
   return {
     async findById(id: string, viewerId?: string): Promise<ModelCommentEntity | undefined> {
@@ -97,6 +129,46 @@ export default function modelCommentRepository({ db }: Dependencies): ModelComme
       });
       for (const group of groups) {
         if (group.parentId) result.set(group.parentId, group._count._all);
+      }
+      return result;
+    },
+
+    // Prisma has no per-group LIMIT, and fetching every reply of every parent to slice in
+    // JS is the unbounded materialization this method exists to avoid. The window function
+    // is the only way to cap rows per parent in one round trip. Raw SQL only picks row ids;
+    // hydration goes through Prisma + modelCommentInclude(viewerId) below, so this path
+    // cannot drift from findById / listTopLevel and viewerId never reaches the raw query.
+    async listRepliesByParents(
+      parentIds: Array<string>,
+      params: PaginatedQueryParams,
+      viewerId?: string,
+    ): Promise<Map<string, Paginated<ModelCommentEntity>>> {
+      const result = new Map<string, Paginated<ModelCommentEntity>>();
+      if (parentIds.length === 0) return result;
+
+      const offset = Number(params.offset);
+
+      const rows = await db.$queryRaw<Array<{ id: string; parentId: string; rn: bigint; total: bigint }>>(
+        buildListRepliesByParentsQuery(parentIds, params),
+      );
+
+      const records = await db.modelComment.findMany({
+        where: { id: { in: rows.map((row) => row.id) } },
+        include: modelCommentInclude(viewerId),
+      });
+      const byId = new Map(records.map((record) => [record.id, toEntity(record)]));
+
+      for (const row of rows) {
+        let page = result.get(row.parentId);
+        if (!page) {
+          page = { count: Number(row.total), limit: params.limit, page: params.page, data: [] };
+          result.set(row.parentId, page);
+        }
+        // Rank 1 is fetched unconditionally so a parent whose window sits past the end of
+        // its replies still reports a truthful total; drop it from `data` here.
+        if (Number(row.rn) <= offset) continue;
+        const entity = byId.get(row.id);
+        if (entity) page.data.push(entity);
       }
       return result;
     },

@@ -23,6 +23,14 @@ export interface ModelCommentRepository {
   // Batch total-reply counts (for nodes we embed but don't expand at the depth limit).
   countRepliesByParent: (parentIds: Array<string>) => Promise<Map<string, number>>;
 
+  // Top-L replies for many parents in one pass, keyed by parentId.
+  // Parents with no replies are absent from the map (same convention as countRepliesByParent).
+  listRepliesByParents: (
+    parentIds: Array<string>,
+    params: PaginatedQueryParams,
+    viewerId?: string,
+  ) => Promise<Map<string, Paginated<ModelCommentEntity>>>;
+
   insertTx: (ctx: TransactionContext, entity: ModelCommentEntity) => Promise<void>;
   updateContentTx: (
     ctx: TransactionContext,
