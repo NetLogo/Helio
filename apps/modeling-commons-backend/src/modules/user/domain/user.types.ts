@@ -1,6 +1,7 @@
-import type { SystemRole, UserKind, UserRecord } from '../database/user.record.ts';
+import type { User } from '#prisma/index';
+import type { SystemRole, UserKind } from '#src/modules/user/shared/enums.ts';
 
-export type UserEntity = UserRecord & {
+export type UserEntity = User & {
   onboardedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
