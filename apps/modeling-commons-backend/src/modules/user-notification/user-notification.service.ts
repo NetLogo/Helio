@@ -158,8 +158,6 @@ export function createUserNotificationService(
   };
 }
 
-// No notifier is registered yet - dispatch is a no-op end to end until a producing
-// module (e.g. model-comment) adds one via `createUserNotificationService`.
 export default function makeUserNotificationService(deps: Dependencies) {
-  return createUserNotificationService([], deps);
+  return createUserNotificationService([deps.modelCommentNotifier], deps);
 }

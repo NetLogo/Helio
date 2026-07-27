@@ -9,10 +9,6 @@ interface CommentRef {
   modelId: string;
 }
 
-interface MailCall {
-  to: string;
-}
-
 function getUsers(context: Record<string, unknown>): Map<string, TestUser> {
   if (!context['users']) context['users'] = new Map<string, TestUser>();
   return context['users'] as Map<string, TestUser>;
@@ -388,77 +384,6 @@ Then(
     assert.ok(!('likedByMe' in node!), `Expected comment "${label}" to not report likedByMe`);
   },
 );
-
-// --- Mail capture -----------------------------------------------------------
-// The comment service fires `notifyOnNewComment` fire-and-forget (`void`) after
-// the write transaction commits, so the HTTP response can return before mail
-// dispatch runs. Rather than sending through a real SMTP/Mailpit round trip,
-// `mailService.sendMailAsync` (a DI singleton) is monkey-patched with a capturing
-// stub, and mail assertions poll briefly for the expected number of calls.
-
-function installMailSpy(server: FastifyInstance): MailCall[] {
-  const calls: MailCall[] = [];
-  const mailService = server.diContainer.cradle.mailService as {
-    sendMailAsync: (content: unknown) => Promise<void>;
-  };
-  mailService.sendMailAsync = (content: unknown) => {
-    const { to } = content as { to?: string };
-    calls.push({ to: to ?? '' });
-    return Promise.resolve();
-  };
-  return calls;
-}
-
-async function waitForMailCalls(calls: MailCall[], expected: number, timeoutMs = 3000): Promise<void> {
-  const start = Date.now();
-  while (calls.length < expected && Date.now() - start < timeoutMs) {
-    await new Promise((resolve) => setTimeout(resolve, 25));
-  }
-}
-
-Given('mail delivery is captured', function (this: ICustomWorld) {
-  this.context['mailCalls'] = installMailSpy(this.server);
-});
-
-Then(
-  'mail should have been sent to {int} recipients',
-  async function (this: ICustomWorld, count: number) {
-    const calls = this.context['mailCalls'] as MailCall[];
-    await waitForMailCalls(calls, count);
-    assert.strictEqual(calls.length, count);
-  },
-);
-
-Then(
-  'mail should have been sent to {string}',
-  function (this: ICustomWorld, actorName: string) {
-    const calls = this.context['mailCalls'] as MailCall[];
-    const actor = getUsers(this.context).get(actorName)!;
-    assert.ok(
-      calls.some((call) => call.to === actor.email),
-      `Expected an email to be sent to ${actor.email}`,
-    );
-  },
-);
-
-Then(
-  'mail should not have been sent to {string}',
-  function (this: ICustomWorld, actorName: string) {
-    const calls = this.context['mailCalls'] as MailCall[];
-    const actor = getUsers(this.context).get(actorName)!;
-    assert.ok(
-      !calls.some((call) => call.to === actor.email),
-      `Expected no email to be sent to ${actor.email}`,
-    );
-  },
-);
-
-Then('no mail should have been sent', async function (this: ICustomWorld) {
-  // Give the fire-and-forget notifier a brief window before asserting absence.
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  const calls = this.context['mailCalls'] as MailCall[];
-  assert.strictEqual(calls.length, 0);
-});
 
 // --- Comment repository call counter -----------------------------------------
 // Pins the level-batched traversal: shape assertions alone can't distinguish a

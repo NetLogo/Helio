@@ -46,3 +46,38 @@ Feature: Notification Preferences
     When "bob" gets their notification preferences
     Then the response status should be 200
     And every category should be unchanged from before
+
+  Scenario: Commenting notifies other authors but never the commenter
+    Given an authenticated user "owner"
+    And a public model "Notify Model" created by "owner"
+    And an authenticated user "contributor"
+    And "owner" has added "contributor" as a contributor to "Notify Model"
+    And an authenticated user "commenter"
+    And mail delivery is captured
+    When "commenter" comments "Great work!" on "Notify Model"
+    Then the response status should be 201
+    When the event processor queue is triggered
+    Then mail should have been sent to 2 recipients
+    And mail should have been sent to "owner"
+    And mail should have been sent to "contributor"
+    And mail should not have been sent to "commenter"
+
+  Scenario: Commenting on your own model does not notify yourself
+    Given an authenticated user "owner"
+    And a public model "Solo Model" created by "owner"
+    And mail delivery is captured
+    When "owner" comments "Talking to myself" on "Solo Model"
+    Then the response status should be 201
+    When the event processor queue is triggered
+    Then no mail should have been sent
+
+  Scenario: A recipient who opted out of the category receives nothing
+    Given an authenticated user "owner"
+    And a public model "Muted Model" created by "owner"
+    And "owner" opts out of category "comment.on_your_model"
+    And an authenticated user "commenter"
+    And mail delivery is captured
+    When "commenter" comments "Anyone home?" on "Muted Model"
+    Then the response status should be 201
+    When the event processor queue is triggered
+    Then no mail should have been sent

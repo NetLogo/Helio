@@ -1,5 +1,6 @@
 import assert from 'node:assert';
-import { Then, When } from '@cucumber/cucumber';
+import { Given, Then, When } from '@cucumber/cucumber';
+import type { FastifyInstance } from 'fastify';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
@@ -62,6 +63,19 @@ When(
       method: 'PATCH',
       url: '/api/v1/me/notification-preferences',
       payload: { preferences: [{ category, email: false }] },
+      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+Given(
+  '{string} opts out of category {string}',
+  async function (this: ICustomWorld, name: string, category: string) {
+    const user = getUsers(this.context).get(name)!;
+    await this.server.inject({
+      method: 'PATCH',
+      url: '/api/v1/me/notification-preferences',
+      payload: { preferences: [{ category, email: false, inApp: false }] },
       headers: { cookie: user.cookie, 'content-type': 'application/json' },
     });
   },
@@ -145,4 +159,93 @@ Then('every category should be unchanged from before', function (this: ICustomWo
     assert.strictEqual(afterEntry.email, beforeEntry.email);
     assert.strictEqual(afterEntry.inApp, beforeEntry.inApp);
   }
+});
+
+interface MailCall {
+  to: string;
+}
+
+interface EventRow {
+  processedAt: Date | null;
+}
+
+interface PrismaCradle {
+  prisma: {
+    event: {
+      findFirst: (args: {
+        where: { type: string };
+        orderBy: { createdAt: 'desc' };
+      }) => Promise<EventRow | null>;
+    };
+  };
+}
+
+function installMailSpy(server: FastifyInstance): MailCall[] {
+  const calls: MailCall[] = [];
+  const mailService = server.diContainer.cradle.mailService as {
+    sendMailAsync: (content: unknown) => Promise<void>;
+  };
+  mailService.sendMailAsync = (content: unknown) => {
+    const { to } = content as { to?: string };
+    calls.push({ to: to ?? '' });
+    return Promise.resolve();
+  };
+  return calls;
+}
+
+async function waitForCommentEventProcessed(
+  server: FastifyInstance,
+  timeoutMs = 70000,
+): Promise<void> {
+  const { prisma } = server.diContainer.cradle as unknown as PrismaCradle;
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const event = await prisma.event.findFirst({
+      where: { type: 'model_comment.created' },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (event?.processedAt) return;
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+  throw new Error(`model_comment.created event was not processed within ${timeoutMs}ms`);
+}
+
+Given('mail delivery is captured', function (this: ICustomWorld) {
+  this.context['mailCalls'] = installMailSpy(this.server);
+});
+
+Then(
+  'mail should have been sent to {int} recipients',
+  async function (this: ICustomWorld, count: number) {
+    await waitForCommentEventProcessed(this.server);
+    const calls = this.context['mailCalls'] as MailCall[];
+    assert.strictEqual(calls.length, count);
+  },
+);
+
+Then('mail should have been sent to {string}', function (this: ICustomWorld, actorName: string) {
+  const calls = this.context['mailCalls'] as MailCall[];
+  const actor = getUsers(this.context).get(actorName)!;
+  assert.ok(
+    calls.some((call) => call.to === actor.email),
+    `Expected an email to be sent to ${actor.email}`,
+  );
+});
+
+Then(
+  'mail should not have been sent to {string}',
+  function (this: ICustomWorld, actorName: string) {
+    const calls = this.context['mailCalls'] as MailCall[];
+    const actor = getUsers(this.context).get(actorName)!;
+    assert.ok(
+      !calls.some((call) => call.to === actor.email),
+      `Expected no email to be sent to ${actor.email}`,
+    );
+  },
+);
+
+Then('no mail should have been sent', async function (this: ICustomWorld) {
+  await waitForCommentEventProcessed(this.server);
+  const calls = this.context['mailCalls'] as MailCall[];
+  assert.strictEqual(calls.length, 0);
 });
