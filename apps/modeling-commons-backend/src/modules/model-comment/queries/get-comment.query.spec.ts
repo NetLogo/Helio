@@ -7,7 +7,7 @@ import {
   COMMENT_TREE_DEFAULTS,
   type ModelCommentEntity,
 } from '#src/modules/model-comment/domain/model-comment.types.ts';
-import { EMBED_ORDER_BY } from '#src/modules/model-comment/queries/list-comments.query.ts';
+import { EMBED_ORDER_BY, EMBED_PARAMS } from '#src/modules/model-comment/queries/list-comments.query.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 
 const EMBED_LIMIT = COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel;
@@ -36,6 +36,10 @@ function page<T>(data: Array<T>, count: number, limit = 20, pageNum = 0): Pagina
   return { data, count, limit, page: pageNum };
 }
 
+function pages<T>(entries: Array<[string, Paginated<T>]>): Map<string, Paginated<T>> {
+  return new Map(entries);
+}
+
 function buildQuery() {
   const modelCommentRepository = mockModelCommentRepository();
   const mapper = modelCommentMapper();
@@ -60,8 +64,11 @@ describe('getCommentQuery', () => {
     const reply = makeEntity({ id: 'reply-1', parentId: 'target-1' });
 
     modelCommentRepository.findById.mockResolvedValue(target);
-    modelCommentRepository.listReplies.mockImplementation(async (parentId: string) =>
-      parentId === 'target-1' ? page([reply], 1, 20, 0) : page([], 0),
+    modelCommentRepository.listRepliesByParents.mockImplementation(
+      async (parentIds: Array<string>) =>
+        parentIds.includes('target-1')
+          ? pages([['target-1', page([reply], 1, 20, 0)]])
+          : pages([]),
     );
 
     const result = await query.execute('target-1', {});
@@ -69,8 +76,8 @@ describe('getCommentQuery', () => {
     expect(result.id).toBe('target-1');
     expect(result.replies!.count).toBe(1);
     expect(result.replies!.data[0]!.id).toBe('reply-1');
-    expect(modelCommentRepository.listReplies).toHaveBeenCalledWith(
-      'target-1',
+    expect(modelCommentRepository.listRepliesByParents).toHaveBeenCalledWith(
+      ['target-1'],
       expect.objectContaining({ limit: 20, page: 0 }),
       undefined,
     );
@@ -81,12 +88,12 @@ describe('getCommentQuery', () => {
     const target = makeEntity({ id: 'target-1' });
 
     modelCommentRepository.findById.mockResolvedValue(target);
-    modelCommentRepository.listReplies.mockResolvedValue(page([], 0, 5, 2));
+    modelCommentRepository.listRepliesByParents.mockResolvedValue(pages([]));
 
     await query.execute('target-1', { page: 2, limit: 5 });
 
-    expect(modelCommentRepository.listReplies).toHaveBeenCalledWith(
-      'target-1',
+    expect(modelCommentRepository.listRepliesByParents).toHaveBeenCalledWith(
+      ['target-1'],
       expect.objectContaining({ limit: 5, page: 2, offset: 10 }),
       undefined,
     );
@@ -95,12 +102,12 @@ describe('getCommentQuery', () => {
   it('reads the root reply page chronologically, like every embedded reply page', async () => {
     const { query, modelCommentRepository } = buildQuery();
     modelCommentRepository.findById.mockResolvedValue(makeEntity({ id: 'target-1' }));
-    modelCommentRepository.listReplies.mockResolvedValue(page([], 0));
+    modelCommentRepository.listRepliesByParents.mockResolvedValue(pages([]));
 
     await query.execute('target-1', {});
 
-    expect(modelCommentRepository.listReplies).toHaveBeenCalledWith(
-      'target-1',
+    expect(modelCommentRepository.listRepliesByParents).toHaveBeenCalledWith(
+      ['target-1'],
       expect.objectContaining({ orderBy: EMBED_ORDER_BY }),
       undefined,
     );
@@ -119,21 +126,26 @@ describe('getCommentQuery', () => {
     );
 
     modelCommentRepository.findById.mockResolvedValue(target);
-    modelCommentRepository.listReplies.mockImplementation(
-      async (parentId: string, params: PaginatedQueryParams) => {
-        if (parentId !== 'target-1') return page([], 0);
+    modelCommentRepository.listRepliesByParents.mockImplementation(
+      async (parentIds: Array<string>, params: PaginatedQueryParams) => {
+        if (!parentIds.includes('target-1')) return pages([]);
         const sorted = [...replies].sort((a, b) =>
           params.orderBy?.field === 'likes'
             ? b.likesCount - a.likesCount
             : a.createdAt.getTime() - b.createdAt.getTime(),
         );
         const offset = params.offset ?? 0;
-        return page(
-          sorted.slice(offset, offset + (params.limit ?? 20)),
-          replies.length,
-          params.limit,
-          params.page,
-        );
+        return pages([
+          [
+            'target-1',
+            page(
+              sorted.slice(offset, offset + (params.limit ?? 20)),
+              replies.length,
+              params.limit,
+              params.page,
+            ),
+          ],
+        ]);
       },
     );
 
@@ -145,17 +157,17 @@ describe('getCommentQuery', () => {
     expect(second.replies!.count).toBe(3);
   });
 
-  it('passes viewerId through to findById/listReplies and the mapper', async () => {
+  it('passes viewerId through to findById/listRepliesByParents and the mapper', async () => {
     const { query, modelCommentRepository } = buildQuery();
     const target = makeEntity({ id: 'target-1', userId: 'user-1' });
     modelCommentRepository.findById.mockResolvedValue(target);
-    modelCommentRepository.listReplies.mockResolvedValue(page([], 0));
+    modelCommentRepository.listRepliesByParents.mockResolvedValue(pages([]));
 
     const result = await query.execute('target-1', {}, { viewerId: 'user-1' });
 
     expect(modelCommentRepository.findById).toHaveBeenCalledWith('target-1', 'user-1');
-    expect(modelCommentRepository.listReplies).toHaveBeenCalledWith(
-      'target-1',
+    expect(modelCommentRepository.listRepliesByParents).toHaveBeenCalledWith(
+      ['target-1'],
       expect.anything(),
       'user-1',
     );
@@ -179,11 +191,17 @@ describe('getCommentQuery', () => {
     });
 
     modelCommentRepository.findById.mockResolvedValue(target);
-    modelCommentRepository.listReplies.mockImplementation(async (parentId: string) => {
-      if (parentId === 'target-1') return page([tombstoneChild], 1, 20, 0);
-      if (parentId === 'dead-child') return page([tombstoneGrandchild], 1);
-      return page([], 0);
-    });
+    modelCommentRepository.listRepliesByParents.mockImplementation(
+      async (parentIds: Array<string>) => {
+        if (parentIds.includes('target-1')) {
+          return pages([['target-1', page([tombstoneChild], 1, 20, 0)]]);
+        }
+        if (parentIds.includes('dead-child')) {
+          return pages([['dead-child', page([tombstoneGrandchild], 1)]]);
+        }
+        return pages([]);
+      },
+    );
 
     const result = await query.execute('target-1', {});
 
@@ -200,21 +218,51 @@ describe('getCommentQuery', () => {
     const grandchild2 = makeEntity({ id: 'gc-2', parentId: 'child-1' });
 
     modelCommentRepository.findById.mockResolvedValue(target);
-    modelCommentRepository.listReplies.mockImplementation(async (parentId: string) => {
-      if (parentId === 'target-1') return page([child], 1, 20, 0);
-      if (parentId === 'child-1') return page([grandchild1, grandchild2], 3, 2, 0); // 3 total, 2 embedded
-      return page([], 0);
-    });
+    modelCommentRepository.listRepliesByParents.mockImplementation(
+      async (parentIds: Array<string>) => {
+        if (parentIds.includes('target-1')) {
+          return pages([['target-1', page([child], 1, 20, 0)]]);
+        }
+        if (parentIds.includes('child-1')) {
+          return pages([['child-1', page([grandchild1, grandchild2], 3, 2, 0)]]); // 3 total, 2 embedded
+        }
+        return pages([]);
+      },
+    );
 
     const result = await query.execute('target-1', {});
 
     const childDto = result.replies!.data[0]!;
     expect(childDto.replies!.count).toBe(3);
     expect(childDto.replies!.data.map((c) => c.id)).toEqual(['gc-1', 'gc-2']);
-    expect(modelCommentRepository.listReplies).toHaveBeenCalledWith(
-      'child-1',
+    expect(modelCommentRepository.listRepliesByParents).toHaveBeenCalledWith(
+      ['child-1'],
       expect.objectContaining({ limit: 2 }),
       undefined,
     );
+  });
+
+  it('sends the caller’s limit/page to level 0 and EMBED_PARAMS to level 1+', async () => {
+    const { query, modelCommentRepository } = buildQuery();
+    const target = makeEntity({ id: 'target-1' });
+    const child = makeEntity({ id: 'child-1', parentId: 'target-1' });
+
+    modelCommentRepository.findById.mockResolvedValue(target);
+    modelCommentRepository.listRepliesByParents.mockImplementation(
+      async (parentIds: Array<string>) =>
+        parentIds.includes('target-1')
+          ? pages([['target-1', page([child], 1, 7, 3)]])
+          : pages([]),
+    );
+
+    await query.execute('target-1', { page: 3, limit: 7 });
+
+    const calls = modelCommentRepository.listRepliesByParents.mock.calls;
+    expect(calls[0]).toEqual([
+      ['target-1'],
+      expect.objectContaining({ limit: 7, page: 3 }),
+      undefined,
+    ]);
+    expect(calls[1]).toEqual([['child-1'], EMBED_PARAMS, undefined]);
   });
 });

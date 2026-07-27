@@ -8,7 +8,6 @@ export function mockModelCommentRepository(): {
     findById: vi.fn(),
     findByIdTx: vi.fn(),
     listTopLevel: vi.fn(),
-    listReplies: vi.fn(),
     countRepliesByParent: vi.fn(),
     listRepliesByParents: vi.fn(),
     insertTx: vi.fn(),

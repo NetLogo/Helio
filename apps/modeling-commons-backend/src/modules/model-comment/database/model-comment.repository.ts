@@ -99,25 +99,6 @@ export default function modelCommentRepository({ db }: Dependencies): ModelComme
       return paginate(records.map(toEntity), params, count);
     },
 
-    async listReplies(
-      parentId: string,
-      params: PaginatedQueryParams,
-      viewerId?: string,
-    ): Promise<Paginated<ModelCommentEntity>> {
-      const where = { parentId };
-      const [count, records] = await Promise.all([
-        db.modelComment.count({ where }),
-        db.modelComment.findMany({
-          where,
-          include: modelCommentInclude(viewerId),
-          orderBy: toOrderBy(params.orderBy),
-          skip: params.offset,
-          take: params.limit,
-        }),
-      ]);
-      return paginate(records.map(toEntity), params, count);
-    },
-
     async countRepliesByParent(parentIds: Array<string>): Promise<Map<string, number>> {
       const result = new Map<string, number>();
       if (parentIds.length === 0) return result;

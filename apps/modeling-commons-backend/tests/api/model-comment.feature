@@ -277,3 +277,30 @@ Feature: Model Comments
     Then the response status should be 204
     When "admin" lists admin events with resourceType "model"
     Then the response body property "data" should have length 4
+
+  Scenario: Listing a wide thread issues one batched reply query per level
+    Given an authenticated user "owner"
+    And a public model "Wide" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented 6 times on "Wide" as "root"
+    And "commenter" has replied 2 times to comment "root-1" as "r1-child"
+    And "commenter" has replied 2 times to comment "root-2" as "r2-child"
+    And comment repository calls are counted
+    When "commenter" lists comments on "Wide"
+    Then the response status should be 200
+    And "listRepliesByParents" should have been called 3 times
+    And "countRepliesByParent" should have been called 1 times
+    And "listRepliesByParents" call 1 should have received 6 parent ids
+
+  Scenario: Reply query count does not grow with page size
+    Given an authenticated user "owner"
+    And a public model "Constant" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented 10 times on "Constant" as "root"
+    And "commenter" has replied 2 times to comment "root-1" as "child"
+    And comment repository calls are counted
+    When "commenter" lists comments on "Constant" with limit 2
+    Then "listRepliesByParents" should have been called 3 times
+    Given comment repository call counts are reset
+    When "commenter" lists comments on "Constant" with limit 10
+    Then "listRepliesByParents" should have been called 3 times

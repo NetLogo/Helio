@@ -13,13 +13,6 @@ export interface ModelCommentRepository {
     viewerId?: string,
   ) => Promise<Paginated<ModelCommentEntity>>;
 
-  // One page of a single parent's direct replies.
-  listReplies: (
-    parentId: string,
-    params: PaginatedQueryParams,
-    viewerId?: string,
-  ) => Promise<Paginated<ModelCommentEntity>>;
-
   // Batch total-reply counts (for nodes we embed but don't expand at the depth limit).
   countRepliesByParent: (parentIds: Array<string>) => Promise<Map<string, number>>;
 
