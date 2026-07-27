@@ -29,7 +29,8 @@ export default function makeGetCommentQuery({
         ctx,
         repliesParams,
       );
-      return result!;
+      if (!result) throw new CommentNotFoundError(commentId);
+      return result;
     },
   };
 }
