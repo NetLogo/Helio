@@ -7,7 +7,7 @@ import type {
   ModelInteractionCounts,
   ModelRepository,
 } from '#src/modules/model/database/model.repository.port.ts';
-import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 import {
