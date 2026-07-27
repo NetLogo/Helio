@@ -232,6 +232,18 @@ describe('userNotificationService handleEvent', () => {
       expect(userRepository.findOneById).not.toHaveBeenCalled();
     });
 
+    it('still delivers a healthy notifier\'s intents when another notifier throws, then rethrows', async () => {
+      const healthy = makeNotifier([makeIntent()]);
+      const broken = makeNotifier([]);
+      (broken.resolve as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('notifier down'));
+      const service = build([broken, healthy]);
+
+      await expect(service.handleEvent(makeEvent())).rejects.toThrow(AggregateError);
+
+      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
+      expect(logger.error).toHaveBeenCalled();
+    });
+
     it('inserts a ledger row and sends mail for a fully opted-in recipient', async () => {
       const intent = makeIntent();
       const service = build([makeNotifier([intent])]);
