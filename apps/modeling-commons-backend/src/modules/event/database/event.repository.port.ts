@@ -3,9 +3,12 @@ import type { EventSearchFilters } from '#src/modules/event/domain/event.types.t
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export type KnownEvents =
+  | 'model.created'
   | 'model.deleted'
   | 'model.liked'
   | 'model.unliked'
+  | 'model.version.created'
+  | 'model.version.updated'
   | 'model_additional_file.added'
   | 'model_additional_file.deleted'
   | 'model_author.added'
