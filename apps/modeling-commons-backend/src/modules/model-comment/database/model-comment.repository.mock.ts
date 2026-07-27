@@ -10,6 +10,7 @@ export function mockModelCommentRepository(): {
     listTopLevel: vi.fn(),
     listReplies: vi.fn(),
     countRepliesByParent: vi.fn(),
+    listRepliesByParents: vi.fn(),
     insertTx: vi.fn(),
     updateContentTx: vi.fn(),
     softDeleteTx: vi.fn(),
