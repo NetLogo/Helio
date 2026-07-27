@@ -46,23 +46,19 @@ export function createUserNotificationService(
 
     if (!resolved.email && !resolved.inApp) return;
 
-    let notificationId: string | undefined;
-    if (resolved.inApp) {
-      const inserted = await transactionManager.run(async (ctx) =>
-        userNotificationRepository.insertTx(ctx, {
-          recipientId: recipient.id,
-          eventId: event.id,
-          category: intent.category,
-          title: intent.title,
-          body: intent.body,
-          url: intent.url,
-        }),
-      );
-      // Undefined means an earlier pass already delivered this (eventId, recipientId,
-      // category) - do not resend.
-      if (!inserted) return;
-      notificationId = inserted.id;
-    }
+    // The row is the delivery ledger, not the feed entry, so it is written even when
+    // `inApp` is off - its unique key is what stops a retried event resending the email.
+    const inserted = await transactionManager.run(async (ctx) =>
+      userNotificationRepository.insertTx(ctx, {
+        recipientId: recipient.id,
+        eventId: event.id,
+        category: intent.category,
+        title: intent.title,
+        body: intent.body,
+        url: intent.url,
+      }),
+    );
+    if (!inserted) return;
 
     if (!resolved.email) return;
 
@@ -72,7 +68,7 @@ export function createUserNotificationService(
         links,
       );
       await mailService.sendMailAsync(content);
-      if (notificationId) await userNotificationRepository.markEmailSent(notificationId, new Date());
+      await userNotificationRepository.markEmailSent(inserted.id, new Date());
     } catch (error) {
       logger.error({
         name: 'UserNotificationService',
