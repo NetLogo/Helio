@@ -7,10 +7,11 @@
       v-if="threadLink"
       :to="threadLink"
       class="text-xs text-gray-500 hover:text-gray-700 hover:underline transition-colors truncate"
+      :title="formatTimestamp(createdAt)"
     >
       {{ formatShortRelativeDate(createdAt) }}
     </NuxtLink>
-    <span v-else class="text-xs text-gray-500">{{ formatShortRelativeDate(createdAt) }}</span>
+    <span v-else class="text-xs text-gray-500" :title="formatTimestamp(createdAt)">{{ formatShortRelativeDate(createdAt) }}</span>
     <span v-if="edited" class="text-xs text-gray-500">(edited)</span>
     <UButton
       v-if="collapsible"
