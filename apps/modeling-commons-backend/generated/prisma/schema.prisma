@@ -81,14 +81,16 @@ model User {
   verifications Verification[]
 
   // Domain relations
-  authoredModels     ModelAuthor[]
-  grantedPermissions ModelPermission[]
-  events             Event[]
-  modelLikes         ModelLike[]
-  modelInteractions  ModelInteraction[]
-  modelDrafts        ModelDraft[]
-  comments           ModelComment[]
-  commentLikes       ModelCommentLike[]
+  authoredModels          ModelAuthor[]
+  grantedPermissions      ModelPermission[]
+  events                  Event[]
+  modelLikes              ModelLike[]
+  modelInteractions       ModelInteraction[]
+  modelDrafts             ModelDraft[]
+  comments                ModelComment[]
+  commentLikes            ModelCommentLike[]
+  notifications           UserNotification[]
+  notificationPreferences UserNotificationPreference[]
 
   // Better Auth Admin plugin
   role       String?
@@ -411,11 +413,47 @@ model Event {
   payload      Json
   createdAt    DateTime  @default(now())
   processedAt  DateTime?
+  attempts     Int       @default(0)
+  lastError    String?   @db.Text
 
   actor User @relation(fields: [actorId], references: [id])
+
+  notifications UserNotification[]
 
   @@index([actorId])
   @@index([resourceType, resourceId])
   @@index([type])
   @@index([processedAt])
+}
+
+model UserNotification {
+  id          String    @id @default(uuid())
+  recipientId String
+  eventId     String
+  category    String
+  title       String
+  body        String    @db.Text
+  url         String
+  emailSentAt DateTime? @db.Timestamptz(3)
+  readAt      DateTime? @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+
+  recipient User  @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, recipientId, category])
+  @@index([recipientId, readAt, createdAt])
+}
+
+model UserNotificationPreference {
+  id        String   @id @default(uuid())
+  userId    String
+  category  String
+  email     Boolean
+  inApp     Boolean
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category])
 }
