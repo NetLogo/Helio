@@ -44,43 +44,70 @@ type CommentTreeDeps = {
   modelCommentMapper: Dependencies['modelCommentMapper'];
 };
 
-export async function expandCommentTree(
+// Breadth-first: one batched `listRepliesByParents` call per level instead of
+// one `listReplies` call per node. `rootRepliesParams` applies to `roots`'
+// own replies (level 0) only; every deeper level embeds at `EMBED_PARAMS` -
+// this is the one asymmetry get-comment relies on (its caller-controlled
+// limit/page paginate the re-rooted comment's direct replies, not the whole tree).
+export async function expandCommentForest(
   deps: CommentTreeDeps,
-  entity: ModelCommentEntity,
-  depth: number,
+  roots: Array<ModelCommentEntity>,
   ctx: CommentResponseCtx,
-  repliesParams: PaginatedQueryParams,
-): Promise<CommentResponseDto> {
-  const dto = deps.modelCommentMapper.toResponse(entity, ctx);
-  const page = await deps.modelCommentRepository.listReplies(
-    entity.id,
-    repliesParams,
-    ctx.viewerId,
-  );
-  if (page.count === 0) return dto;
+  rootRepliesParams: PaginatedQueryParams,
+): Promise<Array<CommentResponseDto>> {
+  const dtoById = new Map<string, CommentResponseDto>();
+  const attach = (entity: ModelCommentEntity): CommentResponseDto => {
+    const dto = deps.modelCommentMapper.toResponse(entity, ctx);
+    dtoById.set(entity.id, dto);
+    return dto;
+  };
 
-  const nextDepth = depth + 1;
-  let data: Array<CommentResponseDto>;
+  const rootDtos = roots.map(attach);
+  let frontier = roots;
+  let params = rootRepliesParams;
 
-  if (nextDepth < COMMENT_TREE_DEFAULTS.maximumNested) {
-    data = await Promise.all(
-      page.data.map(async (child) => expandCommentTree(deps, child, nextDepth, ctx, EMBED_PARAMS)),
+  const countOnly = async (nodes: Array<ModelCommentEntity>, at: PaginatedQueryParams) => {
+    const counts = await deps.modelCommentRepository.countRepliesByParent(
+      nodes.map((node) => node.id),
     );
-  } else {
-    const ids = page.data.map((child) => child.id);
-    const counts = await deps.modelCommentRepository.countRepliesByParent(ids);
-    data = page.data.map((child) => {
-      const childDto = deps.modelCommentMapper.toResponse(child, ctx);
-      const count = counts.get(child.id) ?? 0;
+    for (const node of nodes) {
+      const count = counts.get(node.id) ?? 0;
       if (count > 0) {
-        childDto.replies = { count, limit: EMBED_LIMIT, page: 0, data: [] };
+        dtoById.get(node.id)!.replies = { count, limit: at.limit, page: at.page, data: [] };
       }
-      return childDto;
-    });
+    }
+  };
+
+  // Every iteration issues its batched query, even once the frontier has emptied out -
+  // listRepliesByParents/countRepliesByParent both no-op on an empty id list without
+  // touching the DB, and always running exactly `maximumNested` levels keeps the
+  // per-level query count constant regardless of how shallow a given thread is.
+  for (let level = 0; level < COMMENT_TREE_DEFAULTS.maximumNested; level++) {
+    const pages = await deps.modelCommentRepository.listRepliesByParents(
+      frontier.map((node) => node.id),
+      params,
+      ctx.viewerId,
+    );
+
+    const next: Array<ModelCommentEntity> = [];
+    for (const parent of frontier) {
+      const page = pages.get(parent.id);
+      if (!page) continue;
+      dtoById.get(parent.id)!.replies = {
+        count: page.count,
+        limit: page.limit,
+        page: page.page,
+        data: page.data.map(attach),
+      };
+      next.push(...page.data);
+    }
+
+    frontier = next;
+    params = EMBED_PARAMS;
   }
 
-  dto.replies = { count: page.count, limit: page.limit, page: page.page, data };
-  return dto;
+  await countOnly(frontier, params);
+  return rootDtos;
 }
 
 export default function makeListCommentsQuery({
@@ -98,9 +125,7 @@ export default function makeListCommentsQuery({
       const rootsPage = await modelCommentRepository.listTopLevel(modelId, params, ctx.viewerId);
       const deps: CommentTreeDeps = { modelCommentRepository, modelCommentMapper };
 
-      const roots = await Promise.all(
-        rootsPage.data.map(async (root) => expandCommentTree(deps, root, 0, ctx, EMBED_PARAMS)),
-      );
+      const roots = await expandCommentForest(deps, rootsPage.data, ctx, EMBED_PARAMS);
 
       return paginate(roots, params, rootsPage.count);
     },

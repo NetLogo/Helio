@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { Given, Then, When } from '@cucumber/cucumber';
+import { After, Given, Then, When } from '@cucumber/cucumber';
 import type { FastifyInstance } from 'fastify';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import { type TestUser } from '../support/auth-helper.ts';
@@ -113,6 +113,23 @@ Given(
   },
 );
 
+Given(
+  '{string} has commented {int} times on {string} as {string}',
+  async function (
+    this: ICustomWorld,
+    actorName: string,
+    count: number,
+    modelTitle: string,
+    label: string,
+  ) {
+    const modelId = getModels(this.context).get(modelTitle)!;
+    for (let i = 1; i <= count; i++) {
+      const rootLabel = `${label}-${i}`;
+      await seedComment.call(this, actorName, rootLabel, modelId, rootLabel);
+    }
+  },
+);
+
 When(
   '{string} replies {string} to comment {string} on {string}',
   async function (
@@ -154,6 +171,19 @@ When(
     this.context.latestResponse = await this.server.inject({
       method: 'GET',
       url: `/api/v1/models/${modelId}/comments`,
+      headers: { cookie: actor.cookie },
+    });
+  },
+);
+
+When(
+  '{string} lists comments on {string} with limit {int}',
+  async function (this: ICustomWorld, actorName: string, modelTitle: string, limit: number) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/models/${modelId}/comments?limit=${limit}`,
       headers: { cookie: actor.cookie },
     });
   },
@@ -427,4 +457,105 @@ Then('no mail should have been sent', async function (this: ICustomWorld) {
   await new Promise((resolve) => setTimeout(resolve, 200));
   const calls = this.context['mailCalls'] as MailCall[];
   assert.strictEqual(calls.length, 0);
+});
+
+// --- Comment repository call counter -----------------------------------------
+// Pins the level-batched traversal: shape assertions alone can't distinguish a
+// per-node fan-out from a per-level batch, since both produce the same response
+// body. `modelCommentRepository` (a DI singleton, same pattern as the mail spy
+// above) is monkey-patched with counting wrappers around its batched read
+// methods; the After hook below restores the originals so the spy can't leak
+// into scenarios that never asked for it.
+
+type CountedRepoMethod = 'listRepliesByParents' | 'countRepliesByParent';
+
+interface RepoCall {
+  parentIdsLength: number;
+}
+
+interface RepoCounterSpy {
+  calls: Record<CountedRepoMethod, RepoCall[]>;
+  restore: () => void;
+}
+
+const COUNTED_REPO_METHODS: Array<CountedRepoMethod> = [
+  'listRepliesByParents',
+  'countRepliesByParent',
+];
+
+function installCommentRepoCounter(server: FastifyInstance): RepoCounterSpy {
+  const repo = server.diContainer.cradle.modelCommentRepository as Record<
+    CountedRepoMethod,
+    (...args: Array<unknown>) => unknown
+  >;
+  const calls: Record<CountedRepoMethod, RepoCall[]> = {
+    listRepliesByParents: [],
+    countRepliesByParent: [],
+  };
+  const originals = new Map<CountedRepoMethod, (...args: Array<unknown>) => unknown>();
+
+  for (const method of COUNTED_REPO_METHODS) {
+    const original = repo[method].bind(repo);
+    originals.set(method, original);
+    repo[method] = (...args: Array<unknown>) => {
+      const parentIds = args[0] as Array<string>;
+      calls[method].push({ parentIdsLength: parentIds.length });
+      return original(...args);
+    };
+  }
+
+  return {
+    calls,
+    restore: () => {
+      for (const [method, original] of originals) {
+        repo[method] = original;
+      }
+    },
+  };
+}
+
+function getRepoCounterSpy(context: Record<string, unknown>): RepoCounterSpy {
+  return context['commentRepoSpy'] as RepoCounterSpy;
+}
+
+Given('comment repository calls are counted', function (this: ICustomWorld) {
+  this.context['commentRepoSpy'] = installCommentRepoCounter(this.server);
+});
+
+Given('comment repository call counts are reset', function (this: ICustomWorld) {
+  const spy = getRepoCounterSpy(this.context);
+  for (const method of COUNTED_REPO_METHODS) {
+    spy.calls[method].length = 0;
+  }
+});
+
+Then(
+  '{string} should have been called {int} times',
+  function (this: ICustomWorld, method: string, expected: number) {
+    const spy = getRepoCounterSpy(this.context);
+    const calls = spy.calls[method as CountedRepoMethod];
+    assert.ok(calls, `Unknown counted repository method "${method}"`);
+    assert.strictEqual(
+      calls.length,
+      expected,
+      `Expected "${method}" to have been called ${expected} times, got ${calls.length}`,
+    );
+  },
+);
+
+Then(
+  '{string} call {int} should have received {int} parent ids',
+  function (this: ICustomWorld, method: string, callNumber: number, expected: number) {
+    const spy = getRepoCounterSpy(this.context);
+    const calls = spy.calls[method as CountedRepoMethod];
+    assert.ok(calls, `Unknown counted repository method "${method}"`);
+    const call = calls[callNumber - 1];
+    assert.ok(call, `Expected "${method}" call ${callNumber} to have been made`);
+    assert.strictEqual(call.parentIdsLength, expected);
+  },
+);
+
+After(function (this: ICustomWorld) {
+  const spy = this.context['commentRepoSpy'] as RepoCounterSpy | undefined;
+  spy?.restore();
 });

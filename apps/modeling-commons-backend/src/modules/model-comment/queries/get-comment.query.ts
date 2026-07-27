@@ -4,7 +4,7 @@ import type { GetCommentQueryDto } from '#src/modules/model-comment/dtos/get-com
 import type { CommentResponseCtx } from '#src/modules/model-comment/model-comment.mapper.ts';
 import {
   EMBED_ORDER_BY,
-  expandCommentTree,
+  expandCommentForest,
 } from '#src/modules/model-comment/queries/list-comments.query.ts';
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
 
@@ -23,13 +23,13 @@ export default function makeGetCommentQuery({
 
       const repliesParams = paginatedQueryBase({ ...query, orderBy: EMBED_ORDER_BY });
 
-      return expandCommentTree(
+      const [result] = await expandCommentForest(
         { modelCommentRepository, modelCommentMapper },
-        target,
-        0,
+        [target],
         ctx,
         repliesParams,
       );
+      return result!;
     },
   };
 }
