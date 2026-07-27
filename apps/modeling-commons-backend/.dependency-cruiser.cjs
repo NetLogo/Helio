@@ -7,6 +7,7 @@ const applicationLayerPaths = [
   '\\.service\\.ts$',
   '\\.handler\\.ts$',
   '\\.event-handler\\.ts$',
+  '\\.notifier\\.ts$',
 ];
 
 const infrastructureLayerPaths = ['infrastructure', 'infra', 'database', 'repository'];
