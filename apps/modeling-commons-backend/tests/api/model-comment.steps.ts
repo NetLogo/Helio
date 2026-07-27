@@ -393,17 +393,18 @@ Then(
 // The comment service fires `notifyOnNewComment` fire-and-forget (`void`) after
 // the write transaction commits, so the HTTP response can return before mail
 // dispatch runs. Rather than sending through a real SMTP/Mailpit round trip,
-// `mailService.sendMail` (a DI singleton) is monkey-patched with a capturing
+// `mailService.sendMailAsync` (a DI singleton) is monkey-patched with a capturing
 // stub, and mail assertions poll briefly for the expected number of calls.
 
 function installMailSpy(server: FastifyInstance): MailCall[] {
   const calls: MailCall[] = [];
   const mailService = server.diContainer.cradle.mailService as {
-    sendMail: (content: unknown) => void;
+    sendMailAsync: (content: unknown) => Promise<void>;
   };
-  mailService.sendMail = (content: unknown) => {
+  mailService.sendMailAsync = (content: unknown) => {
     const { to } = content as { to?: string };
     calls.push({ to: to ?? '' });
+    return Promise.resolve();
   };
   return calls;
 }

@@ -44,7 +44,7 @@ describe('modelCommentService', () => {
   const eventRepository = mockEventRepository();
   const modelAuthorRepository = mockModelAuthorRepository();
   const userRepository = mockUserRepository();
-  const mailService = { sendMail: vi.fn() };
+  const mailService = { sendMailAsync: vi.fn() };
   const mailDomain = {
     createCommentedOnModelEmail: vi.fn(),
     createRepliedToCommentEmail: vi.fn(),
@@ -77,7 +77,7 @@ describe('modelCommentService', () => {
       previewImageUrl: null,
       authors: [],
     });
-    mailService.sendMail.mockResolvedValue(undefined);
+    mailService.sendMailAsync.mockResolvedValue(undefined);
   });
 
   describe('create', () => {
@@ -112,7 +112,7 @@ describe('modelCommentService', () => {
       expect(userRepository.findOneById).toHaveBeenCalledWith('author-1');
       expect(mailDomain.createCommentedOnModelEmail).toHaveBeenCalledOnce();
       expect(mailDomain.createRepliedToCommentEmail).not.toHaveBeenCalled();
-      expect(mailService.sendMail).toHaveBeenCalledOnce();
+      expect(mailService.sendMailAsync).toHaveBeenCalledOnce();
     });
 
     it('drops versionNumber on a reply', async () => {
@@ -215,7 +215,7 @@ describe('modelCommentService', () => {
         { modelId: 'model-1', userId: 'author-1', role: 'owner' },
       ]);
       userRepository.findOneById.mockResolvedValue({ id: 'author-1', email: 'author@x.com', name: 'Author' });
-      mailService.sendMail.mockRejectedValue(new Error('smtp down'));
+      mailService.sendMailAsync.mockRejectedValue(new Error('smtp down'));
 
       await expect(
         service.create({ modelId: 'model-1', userId: 'commenter-1', content: 'hello' }),

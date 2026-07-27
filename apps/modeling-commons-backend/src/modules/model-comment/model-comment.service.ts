@@ -120,7 +120,7 @@ export default function makeModelCommentService({
               commentUrl,
               unsubscribeUrl,
             );
-            await mailService.sendMail(content);
+            await mailService.sendMailAsync(content);
           })(),
         );
       }
@@ -139,7 +139,7 @@ export default function makeModelCommentService({
               commentUrl,
               unsubscribeUrl,
             );
-            await mailService.sendMail(content);
+            await mailService.sendMailAsync(content);
           })(),
         );
       }
