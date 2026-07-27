@@ -399,9 +399,9 @@ Then(
 function installMailSpy(server: FastifyInstance): MailCall[] {
   const calls: MailCall[] = [];
   const mailService = server.diContainer.cradle.mailService as {
-    sendMail: (content: unknown) => Promise<void>;
+    sendMail: (content: unknown) => void;
   };
-  mailService.sendMail = async (content: unknown) => {
+  mailService.sendMail = (content: unknown) => {
     const { to } = content as { to?: string };
     calls.push({ to: to ?? '' });
   };
