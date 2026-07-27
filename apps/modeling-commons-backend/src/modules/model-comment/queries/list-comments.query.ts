@@ -46,10 +46,7 @@ type CommentTreeDeps = {
 };
 
 // Breadth-first: one batched `listRepliesByParents` call per level instead of
-// one `listReplies` call per node. `rootRepliesParams` applies to `roots`'
-// own replies (level 0) only; every deeper level embeds at `EMBED_PARAMS` -
-// this is the one asymmetry get-comment relies on (its caller-controlled
-// limit/page paginate the re-rooted comment's direct replies, not the whole tree).
+// one `listReplies` call per node.
 export async function expandCommentForest(
   deps: CommentTreeDeps,
   roots: Array<ModelCommentEntity>,
@@ -73,24 +70,15 @@ export async function expandCommentForest(
       nodes.map((node) => node.id),
     );
     for (const node of nodes) {
+      const dto = dtoById.get(node.id);
       const count = counts.get(node.id) ?? 0;
-      if (count > 0) {
-        dtoById.get(node.id)!.replies = { count, limit: at.limit, page: at.page, data: [] };
+      if (dto && count > 0) {
+        dto.replies = { count, limit: at.limit, page: at.page, data: [] };
       }
     }
   };
 
-  // Every iteration issues its batched query, even once the frontier has emptied out -
-  // listRepliesByParents/countRepliesByParent both no-op on an empty id list without
-  // touching the DB, and always running exactly `maximumNested` levels keeps the
-  // per-level query count constant regardless of how shallow a given thread is.
   for (let level = 0; level < COMMENT_TREE_DEFAULTS.maximumNested; level++) {
-    // Worst case this level could add is frontier.length * params.limit nodes; refuse to
-    // start it if that would blow the budget, and degrade to counts instead. This is false
-    // whenever the frontier is empty and budget >= 0 (always true on normal traffic - budget
-    // is only ever decremented by a level's actual yield, which cannot exceed the worst case
-    // that already cleared this same check), so it stays inert on shallow threads and never
-    // substitutes for the unconditional maximumNested-level walk above.
     if (frontier.length * params.limit > budget) {
       await countOnly(frontier, params);
       frontier = [];
@@ -106,8 +94,9 @@ export async function expandCommentForest(
     const next: Array<ModelCommentEntity> = [];
     for (const parent of frontier) {
       const page = pages.get(parent.id);
-      if (!page) continue;
-      dtoById.get(parent.id)!.replies = {
+      const dto = dtoById.get(parent.id);
+      if (!page || !dto) continue;
+      dto.replies = {
         count: page.count,
         limit: page.limit,
         page: page.page,
