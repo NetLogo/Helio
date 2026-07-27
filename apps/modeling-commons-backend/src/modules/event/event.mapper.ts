@@ -15,6 +15,8 @@ export default function eventMapper(): Mapper<DomainEvent, EventRecord, EventRes
         payload: record.payload,
         createdAt: new Date(record.createdAt),
         processedAt: record.processedAt ? new Date(record.processedAt) : null,
+        attempts: record.attempts,
+        lastError: record.lastError,
       };
     },
 
@@ -41,6 +43,8 @@ export default function eventMapper(): Mapper<DomainEvent, EventRecord, EventRes
         payload: entity.payload,
         createdAt: entity.createdAt,
         processedAt: entity.processedAt,
+        attempts: entity.attempts,
+        lastError: entity.lastError,
       };
     },
   };

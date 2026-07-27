@@ -23,9 +23,12 @@ export default function eventRepository({ db }: Dependencies): EventRepositoryPo
       });
     },
 
-    async findUnprocessed(limit: number): Promise<Array<EventRecord>> {
+    async findUnprocessed(limit: number, maxAttempts?: number): Promise<Array<EventRecord>> {
       const records = await db.event.findMany({
-        where: { processedAt: null },
+        where: {
+          processedAt: null,
+          ...(maxAttempts === undefined ? {} : { attempts: { lt: maxAttempts } }),
+        },
         orderBy: { createdAt: 'asc' },
         take: limit,
       });
@@ -36,6 +39,16 @@ export default function eventRepository({ db }: Dependencies): EventRepositoryPo
       await db.event.update({
         where: { id },
         data: { processedAt: new Date() },
+      });
+    },
+
+    async markFailed(id: string, error: unknown): Promise<void> {
+      await db.event.update({
+        where: { id },
+        data: {
+          attempts: { increment: 1 },
+          lastError: error instanceof Error ? error.message : String(error),
+        },
       });
     },
 
