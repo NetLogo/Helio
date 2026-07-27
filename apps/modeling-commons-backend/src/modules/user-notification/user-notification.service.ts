@@ -91,10 +91,21 @@ export function createUserNotificationService(
       const applicable = notifiers.filter((notifier) => notifier.eventTypes.includes(event.type));
       if (applicable.length === 0) return;
 
-      const intents = (
-        await Promise.all(applicable.map(async (notifier) => notifier.resolve(event)))
-      ).flat();
-      if (intents.length === 0) return;
+      const resolutions = await Promise.allSettled(
+        applicable.map(async (notifier) => notifier.resolve(event)),
+      );
+      const intents = resolutions
+        .filter((result) => result.status === 'fulfilled')
+        .flatMap((result) => result.value);
+      const failedResolutions = resolutions.filter((result) => result.status === 'rejected');
+
+      for (const failure of failedResolutions) {
+        logger.error({
+          name: 'UserNotificationService',
+          message: 'A notifier failed to resolve intents',
+          error: failure.reason,
+        });
+      }
 
       const links: NotificationLinks = {
         unsubscribeUrl: `mailto:${env.product.supportEmail}`,
@@ -103,6 +114,13 @@ export function createUserNotificationService(
 
       for (const intent of intents) {
         await deliver(event, intent, links);
+      }
+
+      if (failedResolutions.length > 0) {
+        throw new AggregateError(
+          failedResolutions.map((failure) => failure.reason as unknown),
+          'One or more notifiers failed to resolve intents',
+        );
       }
     },
 
