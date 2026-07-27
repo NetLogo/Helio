@@ -7,6 +7,8 @@ export type DomainEvent = {
   payload: Record<string, unknown>;
   createdAt: Date;
   processedAt: Date | null;
+  attempts: number;
+  lastError: string | null;
 };
 
 export type EventSearchFilters = {

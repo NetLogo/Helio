@@ -14,6 +14,8 @@ function makeRecord(overrides: Partial<EventRecord> = {}): EventRecord {
     payload: { draftId: 'd1' },
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     processedAt: null,
+    attempts: 0,
+    lastError: null,
     ...overrides,
   };
 }
