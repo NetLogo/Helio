@@ -1,3 +1,4 @@
+import rules from '#src/config/rules.ts';
 import {
   COMMENT_TREE_DEFAULTS,
   type ModelCommentEntity,
@@ -65,6 +66,7 @@ export async function expandCommentForest(
   const rootDtos = roots.map(attach);
   let frontier = roots;
   let params = rootRepliesParams;
+  let budget = rules.limits.comment.tree.maxNodes - roots.length;
 
   const countOnly = async (nodes: Array<ModelCommentEntity>, at: PaginatedQueryParams) => {
     const counts = await deps.modelCommentRepository.countRepliesByParent(
@@ -83,6 +85,18 @@ export async function expandCommentForest(
   // touching the DB, and always running exactly `maximumNested` levels keeps the
   // per-level query count constant regardless of how shallow a given thread is.
   for (let level = 0; level < COMMENT_TREE_DEFAULTS.maximumNested; level++) {
+    // Worst case this level could add is frontier.length * params.limit nodes; refuse to
+    // start it if that would blow the budget, and degrade to counts instead. This is false
+    // whenever the frontier is empty and budget >= 0 (always true on normal traffic - budget
+    // is only ever decremented by a level's actual yield, which cannot exceed the worst case
+    // that already cleared this same check), so it stays inert on shallow threads and never
+    // substitutes for the unconditional maximumNested-level walk above.
+    if (frontier.length * params.limit > budget) {
+      await countOnly(frontier, params);
+      frontier = [];
+      break;
+    }
+
     const pages = await deps.modelCommentRepository.listRepliesByParents(
       frontier.map((node) => node.id),
       params,
@@ -102,6 +116,7 @@ export async function expandCommentForest(
       next.push(...page.data);
     }
 
+    budget -= next.length;
     frontier = next;
     params = EMBED_PARAMS;
   }
