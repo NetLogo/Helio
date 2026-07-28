@@ -37,39 +37,45 @@ export function createUserNotificationService(
     intent: NotificationIntent,
     links: NotificationLinks,
   ): Promise<void> {
-    const recipient = await userRepository.findOneById(intent.recipientUserId);
-    if (!recipient || recipient.deletedAt || recipient.banned || !recipient.email) return;
-
-    const preferences = await notificationPreferenceRepository.findAllByUser(recipient.id);
-    const override = preferences.find((preference) => preference.category === intent.category);
-    const resolved = userNotificationDomain.resolvePreference(intent.category, override);
-
-    if (!resolved.email && !resolved.inApp) return;
-
-    // The row is the delivery ledger, not the feed entry, so it is written even when
-    // `inApp` is off - its unique key is what stops a retried event resending the email.
-    const inserted = await transactionManager.run(async (ctx) =>
-      userNotificationRepository.insertTx(ctx, {
-        recipientId: recipient.id,
-        eventId: event.id,
-        category: intent.category,
-        title: intent.title,
-        body: intent.body,
-        url: intent.url,
-      }),
-    );
-    if (!inserted) return;
-
-    if (!resolved.email) return;
-
     try {
+      const recipient = userNotificationDomain.assertRecipientEligible(
+        await userRepository.findOneById(intent.recipientUserId),
+        intent.recipientUserId,
+      );
+
+      const preferences = await notificationPreferenceRepository.findAllByUser(recipient.id);
+      const override = preferences.find((preference) => preference.category === intent.category);
+      const resolved = userNotificationDomain.resolvePreference(intent.category, override);
+      userNotificationDomain.assertChannelsEnabled(resolved, recipient.id, intent.category);
+
+      // The row is the delivery ledger, not the feed entry, so it is written even when
+      // `inApp` is off - its unique key is what stops a retried event resending the email.
+      const inserted = await transactionManager.run(async (ctx) =>
+        userNotificationRepository.insertTx(ctx, {
+          recipientId: recipient.id,
+          eventId: event.id,
+          category: intent.category,
+          title: intent.title,
+          body: intent.body,
+          url: intent.url,
+        }),
+      );
+      const insertedNotificationId = userNotificationDomain.assertEmailDeliverable(
+        inserted?.id,
+        resolved,
+        event.id,
+        recipient.id,
+        intent.category,
+      );
+
       const content = await intent.buildEmail(
         { id: recipient.id, email: recipient.email, name: recipient.name },
         links,
       );
       await mailService.sendMailAsync(content);
-      await userNotificationRepository.markEmailSent(inserted.id, new Date());
+      await userNotificationRepository.markEmailSent(insertedNotificationId, new Date());
     } catch (error) {
+      if (userNotificationDomain.isSkippableDeliveryError(error)) return;
       logger.error({
         name: 'UserNotificationService',
         message: 'Failed to send a notification email',

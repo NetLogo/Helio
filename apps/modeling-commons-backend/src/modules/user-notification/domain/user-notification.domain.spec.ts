@@ -1,7 +1,45 @@
 import { describe, it, expect } from 'vitest';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import {
+  NotificationAlreadyDeliveredError,
+  NotificationSuppressedError,
+  RecipientBannedError,
+  RecipientDeletedError,
+  RecipientEmailDisabledError,
+  RecipientEmailNotFoundError,
+  RecipientNotFoundError,
+} from '#src/modules/user-notification/domain/user-notification.errors.ts';
+import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
 
 const domain = userNotificationDomain();
+
+function makeUser(overrides: Partial<UserEntity> = {}): UserEntity {
+  return {
+    id: 'user-1',
+    name: 'Test User',
+    email: 'test@example.com',
+    emailVerified: true,
+    image: null,
+    systemRole: 'user',
+    userKind: 'researcher',
+    isProfilePublic: true,
+    onboardedAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    deletedAt: null,
+    banned: null,
+    banReason: null,
+    banExpires: null,
+    bio: null,
+    country: null,
+    socialLinks: null,
+    dob: null,
+    affiliation: null,
+    role: null,
+    legacyId: null,
+    ...overrides,
+  };
+}
 
 describe('userNotificationDomain', () => {
   describe('categories', () => {
@@ -58,6 +96,121 @@ describe('userNotificationDomain', () => {
         email: defaults.email,
         inApp: !defaults.inApp,
       });
+    });
+  });
+
+  describe('assertRecipientEligible', () => {
+    it('returns the recipient with a narrowed, non-null email when eligible', () => {
+      const user = makeUser({ id: 'recipient-1', email: 'recipient@example.com' });
+      expect(domain.assertRecipientEligible(user, 'recipient-1')).toEqual(user);
+    });
+
+    it('throws RecipientNotFoundError when the recipient does not exist', () => {
+      expect(() => domain.assertRecipientEligible(undefined, 'missing-1')).toThrow(
+        RecipientNotFoundError,
+      );
+    });
+
+    it('throws RecipientDeletedError for a soft-deleted recipient', () => {
+      const user = makeUser({ deletedAt: new Date('2026-01-01') });
+      expect(() => domain.assertRecipientEligible(user, user.id)).toThrow(RecipientDeletedError);
+    });
+
+    it('throws RecipientBannedError for a banned recipient', () => {
+      const user = makeUser({ banned: true });
+      expect(() => domain.assertRecipientEligible(user, user.id)).toThrow(RecipientBannedError);
+    });
+
+    it('throws RecipientEmailNotFoundError when the recipient has no email', () => {
+      const user = makeUser({ email: null });
+      expect(() => domain.assertRecipientEligible(user, user.id)).toThrow(
+        RecipientEmailNotFoundError,
+      );
+    });
+  });
+
+  describe('assertChannelsEnabled', () => {
+    it('throws NotificationSuppressedError when both channels are off', () => {
+      expect(() =>
+        domain.assertChannelsEnabled(
+          { email: false, inApp: false },
+          'recipient-1',
+          'comment.on_your_model',
+        ),
+      ).toThrow(NotificationSuppressedError);
+    });
+
+    it('does not throw when at least one channel is on', () => {
+      expect(() =>
+        domain.assertChannelsEnabled(
+          { email: true, inApp: false },
+          'recipient-1',
+          'comment.on_your_model',
+        ),
+      ).not.toThrow();
+      expect(() =>
+        domain.assertChannelsEnabled(
+          { email: false, inApp: true },
+          'recipient-1',
+          'comment.on_your_model',
+        ),
+      ).not.toThrow();
+    });
+  });
+
+  describe('assertEmailDeliverable', () => {
+    it('returns the notification id when email is enabled and the ledger row was newly inserted', () => {
+      expect(
+        domain.assertEmailDeliverable(
+          'notification-1',
+          { email: true, inApp: true },
+          'event-1',
+          'recipient-1',
+          'comment.on_your_model',
+        ),
+      ).toBe('notification-1');
+    });
+
+    it('throws NotificationAlreadyDeliveredError when the ledger row already existed', () => {
+      expect(() =>
+        domain.assertEmailDeliverable(
+          undefined,
+          { email: true, inApp: true },
+          'event-1',
+          'recipient-1',
+          'comment.on_your_model',
+        ),
+      ).toThrow(NotificationAlreadyDeliveredError);
+    });
+
+    it('throws RecipientEmailDisabledError when the email channel is off', () => {
+      expect(() =>
+        domain.assertEmailDeliverable(
+          'notification-1',
+          { email: false, inApp: true },
+          'event-1',
+          'recipient-1',
+          'comment.on_your_model',
+        ),
+      ).toThrow(RecipientEmailDisabledError);
+    });
+  });
+
+  describe('isSkippableDeliveryError', () => {
+    it.each([
+      new RecipientNotFoundError('recipient-1'),
+      new RecipientDeletedError('recipient-1'),
+      new RecipientBannedError('recipient-1'),
+      new RecipientEmailNotFoundError('recipient-1'),
+      new NotificationSuppressedError('recipient-1', 'comment.on_your_model'),
+      new RecipientEmailDisabledError('recipient-1', 'comment.on_your_model'),
+      new NotificationAlreadyDeliveredError('event-1', 'recipient-1'),
+    ])('treats %s as a skippable delivery error', (error) => {
+      expect(domain.isSkippableDeliveryError(error)).toBe(true);
+    });
+
+    it('does not treat an unrelated error as skippable', () => {
+      expect(domain.isSkippableDeliveryError(new Error('SMTP unreachable'))).toBe(false);
     });
   });
 });
