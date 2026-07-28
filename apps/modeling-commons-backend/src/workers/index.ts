@@ -12,7 +12,7 @@ export async function startWorkers(fastify: FastifyInstance): Promise<void> {
     return;
   }
 
-  const { eventRepository, eventDispatcherService, modelDraftService } =
+  const { eventRepository, eventDispatcherService, eventQueueNotifier, modelDraftService } =
     fastify.diContainer.cradle;
   const connectionString = env.db.url;
 
@@ -21,6 +21,7 @@ export async function startWorkers(fastify: FastifyInstance): Promise<void> {
       connectionString,
       eventRepository,
       eventDispatcherService,
+      eventQueueNotifier,
       logger: fastify.log,
     }),
     startModelDraftJanitor({ connectionString, modelDraftService, logger: fastify.log }),
