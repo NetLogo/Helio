@@ -11,6 +11,12 @@ export class UnknownCategoryError extends ArgumentInvalidException {
   }
 }
 
+export class NotificationNotFoundError extends NotFoundException {
+  constructor(notificationId: string) {
+    super(`Notification ${notificationId} not found`);
+  }
+}
+
 export class RecipientNotFoundError extends NotFoundException {
   constructor(recipientId: string) {
     super(`Recipient ${recipientId} not found`);

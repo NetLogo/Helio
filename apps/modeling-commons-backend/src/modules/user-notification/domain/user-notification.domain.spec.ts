@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
 import {
   NotificationAlreadyDeliveredError,
+  NotificationNotFoundError,
   NotificationSuppressedError,
   RecipientBannedError,
   RecipientDeletedError,
@@ -211,6 +212,68 @@ describe('userNotificationDomain', () => {
 
     it('does not treat an unrelated error as skippable', () => {
       expect(domain.isSkippableDeliveryError(new Error('SMTP unreachable'))).toBe(false);
+    });
+  });
+});
+
+describe('userNotificationDomain feed helpers', () => {
+  describe('inAppEnabledCategories', () => {
+    it('falls back to the catalog defaults when the user has no overrides', () => {
+      expect(domain.inAppEnabledCategories([])).toEqual(
+        domain.categories.filter((info) => info.defaults.inApp).map((info) => info.category),
+      );
+    });
+
+    it('drops a category the user muted in-app', () => {
+      const result = domain.inAppEnabledCategories([
+        { category: 'comment.on_your_model', inApp: false },
+      ]);
+
+      expect(result).not.toContain('comment.on_your_model');
+    });
+
+    it('adds a category the user opted into against a default of off', () => {
+      const result = domain.inAppEnabledCategories([
+        { category: 'general.daily_digest', inApp: true },
+      ]);
+
+      expect(result).toContain('general.daily_digest');
+    });
+
+    it('ignores an override that only touches the email channel', () => {
+      const result = domain.inAppEnabledCategories([
+        { category: 'comment.on_your_model', email: false },
+      ]);
+
+      expect(result).toContain('comment.on_your_model');
+    });
+  });
+
+  describe('assertOwnedByRecipient', () => {
+    it('accepts a notification addressed to the caller', () => {
+      expect(() =>
+        domain.assertOwnedByRecipient(
+          { id: 'notification-1', recipientId: 'user-1' },
+          'notification-1',
+          'user-1',
+        ),
+      ).not.toThrow();
+    });
+
+    it('rejects a missing notification', () => {
+      expect(() =>
+        domain.assertOwnedByRecipient(undefined, 'notification-1', 'user-1'),
+      ).toThrow(NotificationNotFoundError);
+    });
+
+    it('rejects a notification addressed to someone else', () => {
+      expect(() =>
+        domain.assertOwnedByRecipient(
+          { id: 'notification-1', recipientId: 'other-user' },
+          'notification-1',
+          'user-1',
+        ),
+      ).toThrow(NotificationNotFoundError);
     });
   });
 });

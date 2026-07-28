@@ -1,6 +1,7 @@
 import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
 import {
   NotificationAlreadyDeliveredError,
+  NotificationNotFoundError,
   NotificationSuppressedError,
   RecipientBannedError,
   RecipientDeletedError,
@@ -48,6 +49,17 @@ const categories: Array<NotificationCategoryInfo> = (
   Object.keys(catalog) as Array<NotificationCategory>
 ).map((category) => ({ category, ...catalog[category] }));
 
+function resolveChannels(
+  category: NotificationCategory,
+  override?: Partial<NotificationChannels> | null,
+): NotificationChannels {
+  const defaults = catalog[category].defaults;
+  return {
+    email: override?.email ?? defaults.email,
+    inApp: override?.inApp ?? defaults.inApp,
+  };
+}
+
 export default function userNotificationDomain() {
   return {
     categories,
@@ -56,15 +68,29 @@ export default function userNotificationDomain() {
       return value in catalog;
     },
 
-    resolvePreference(
-      category: NotificationCategory,
-      override?: Partial<NotificationChannels> | null,
-    ): NotificationChannels {
-      const defaults = catalog[category].defaults;
-      return {
-        email: override?.email ?? defaults.email,
-        inApp: override?.inApp ?? defaults.inApp,
-      };
+    resolvePreference: resolveChannels,
+
+    inAppEnabledCategories(
+      overrides: ReadonlyArray<Partial<NotificationChannels> & { category: string }>,
+    ): Array<NotificationCategory> {
+      const overrideByCategory = new Map(
+        overrides.map((override) => [override.category, override] as const),
+      );
+      return categories
+        .filter(
+          (info) => resolveChannels(info.category, overrideByCategory.get(info.category)).inApp,
+        )
+        .map((info) => info.category);
+    },
+
+    assertOwnedByRecipient(
+      notification: { id: string; recipientId: string } | undefined,
+      notificationId: string,
+      recipientId: string,
+    ): void {
+      if (notification?.recipientId !== recipientId) {
+        throw new NotificationNotFoundError(notificationId);
+      }
     },
 
     assertRecipientEligible(
@@ -88,8 +114,6 @@ export default function userNotificationDomain() {
       }
     },
 
-    // Combines the dedupe guard (was this event/recipient/category already delivered?) and
-    // the email-channel check into the single decision that gates sending mail.
     assertEmailDeliverable(
       insertedNotificationId: string | undefined,
       resolved: NotificationChannels,
@@ -97,7 +121,8 @@ export default function userNotificationDomain() {
       recipientId: string,
       category: NotificationCategory,
     ): string {
-      if (!insertedNotificationId) throw new NotificationAlreadyDeliveredError(eventId, recipientId);
+      if (!insertedNotificationId)
+        throw new NotificationAlreadyDeliveredError(eventId, recipientId);
       if (!resolved.email) throw new RecipientEmailDisabledError(recipientId, category);
       return insertedNotificationId;
     },
