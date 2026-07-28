@@ -3,7 +3,10 @@ import makeUserNotificationService, {
   createUserNotificationService,
 } from '#src/modules/user-notification/user-notification.service.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
-import { UnknownCategoryError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
+import {
+  NotificationNotFoundError,
+  UnknownCategoryError,
+} from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import { mockNotificationPreferenceRepository } from '#src/modules/user-notification/database/notification-preference.repository.mock.ts';
 import { mockUserNotificationRepository } from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
 import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
@@ -374,5 +377,58 @@ describe('userNotificationService handleEvent', () => {
       expect(allowedIntent.buildEmail).toHaveBeenCalledTimes(1);
       expect(blockedIntent.buildEmail).not.toHaveBeenCalled();
     });
+  });
+});
+
+describe('userNotificationService markRead', () => {
+  const userNotificationRepository = mockUserNotificationRepository();
+  const domain = userNotificationDomain();
+
+  const service = makeUserNotificationService({
+    userNotificationRepository,
+    userNotificationDomain: domain,
+  } as never);
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('stamps readAt on a notification the caller owns', async () => {
+    userNotificationRepository.findOneById.mockResolvedValue(makeInsertedNotification());
+
+    await service.markRead('recipient-1', 'notification-1');
+
+    expect(userNotificationRepository.markRead).toHaveBeenCalledWith(
+      'notification-1',
+      expect.any(Date),
+    );
+  });
+
+  it('leaves an already-read notification untouched', async () => {
+    userNotificationRepository.findOneById.mockResolvedValue(
+      makeInsertedNotification({ readAt: new Date('2026-01-02') }),
+    );
+
+    await service.markRead('recipient-1', 'notification-1');
+
+    expect(userNotificationRepository.markRead).not.toHaveBeenCalled();
+  });
+
+  it('rejects a notification that does not exist', async () => {
+    userNotificationRepository.findOneById.mockResolvedValue(undefined);
+
+    await expect(service.markRead('recipient-1', 'missing')).rejects.toThrow(
+      NotificationNotFoundError,
+    );
+    expect(userNotificationRepository.markRead).not.toHaveBeenCalled();
+  });
+
+  it("refuses to read another user's notification and does not leak that it exists", async () => {
+    userNotificationRepository.findOneById.mockResolvedValue(makeInsertedNotification());
+
+    await expect(service.markRead('someone-else', 'notification-1')).rejects.toThrow(
+      NotificationNotFoundError,
+    );
+    expect(userNotificationRepository.markRead).not.toHaveBeenCalled();
   });
 });
