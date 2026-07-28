@@ -8,7 +8,12 @@ import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 
-export default function eventRepository({ db }: Dependencies): EventRepositoryPort {
+export default function eventRepository({
+  db,
+  eventQueueNotifier,
+}: Dependencies): EventRepositoryPort {
+  const nudged = new WeakSet<TransactionContext>();
+
   return {
     async insert(ctx: TransactionContext, params: InsertEventParams): Promise<void> {
       const client = resolveTransaction(ctx);
@@ -21,6 +26,10 @@ export default function eventRepository({ db }: Dependencies): EventRepositoryPo
           payload: params.payload,
         },
       });
+
+      if (nudged.has(ctx)) return;
+      nudged.add(ctx);
+      ctx.onCommit(async () => eventQueueNotifier.nudge());
     },
 
     async findUnprocessed(limit: number, maxAttempts?: number): Promise<Array<EventRecord>> {
