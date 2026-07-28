@@ -126,6 +126,19 @@ Feature: Notification Preferences and Feed
     Then the response status should be 200
     And the notification feed should contain 0 notifications
 
+  Scenario: A new comment nudges the event processor instead of waiting for the cron
+    Given an authenticated user "owner"
+    And a public model "Nudge Model" created by "owner"
+    And an authenticated user "commenter"
+    And the event queue nudge is captured
+    When "commenter" comments "No cron, please" on "Nudge Model"
+    Then the response status should be 201
+    And the event queue should have been nudged
+    When the comment notification arrives within 20 seconds
+    And "owner" lists their notifications
+    Then the response status should be 200
+    And the notification feed should contain 1 notification
+
   Scenario: Reading the notification feed requires authentication
     When an anonymous viewer lists notifications
     Then the response status should be 401

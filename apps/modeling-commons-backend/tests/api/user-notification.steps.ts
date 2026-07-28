@@ -369,3 +369,32 @@ Then('the first feed notification should be read', function (this: ICustomWorld)
   const first = firstFeedNotification(this.context);
   assert.ok(first.readAt, 'expected the notification to carry a readAt timestamp');
 });
+
+interface NudgeSpy {
+  calls: number;
+}
+
+Given('the event queue nudge is captured', function (this: ICustomWorld) {
+  const notifier = this.server.diContainer.cradle.eventQueueNotifier as {
+    nudge: () => Promise<void>;
+  };
+  const spy: NudgeSpy = { calls: 0 };
+  const original = notifier.nudge.bind(notifier);
+  notifier.nudge = async () => {
+    spy.calls += 1;
+    await original();
+  };
+  this.context['nudgeSpy'] = spy;
+});
+
+Then('the event queue should have been nudged', function (this: ICustomWorld) {
+  const spy = this.context['nudgeSpy'] as NudgeSpy;
+  assert.ok(spy.calls > 0, 'expected the comment write to nudge the event processor');
+});
+
+When(
+  'the comment notification arrives within {int} seconds',
+  async function (this: ICustomWorld, seconds: number) {
+    await waitForCommentEventProcessed(this.server, seconds * 1000);
+  },
+);
