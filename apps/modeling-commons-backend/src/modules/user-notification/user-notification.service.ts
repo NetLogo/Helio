@@ -126,6 +126,14 @@ export function createUserNotificationService(
       }
     },
 
+    async markRead(userId: string, notificationId: string): Promise<void> {
+      const notification = await userNotificationRepository.findOneById(notificationId);
+      userNotificationDomain.assertOwnedByRecipient(notification, notificationId, userId);
+      if (notification?.readAt) return;
+
+      await userNotificationRepository.markRead(notificationId, new Date());
+    },
+
     async updatePreferences(
       userId: string,
       preferences: Array<UpdatePreferenceInput>,
