@@ -12,6 +12,9 @@ declare global {
     getNotificationPreferencesQuery: ReturnType<
       typeof import('#src/modules/user-notification/queries/get-notification-preferences.query.ts').default
     >;
+    listUserNotificationsQuery: ReturnType<
+      typeof import('#src/modules/user-notification/queries/list-user-notifications.query.ts').default
+    >;
     userNotificationService: ReturnType<
       typeof import('#src/modules/user-notification/user-notification.service.ts').default
     >;
