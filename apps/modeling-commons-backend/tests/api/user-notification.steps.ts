@@ -1,6 +1,8 @@
 import assert from 'node:assert';
 import { Given, Then, When } from '@cucumber/cucumber';
+import { PgBoss } from 'pg-boss';
 import type { FastifyInstance } from 'fastify';
+import env from '#src/config/env.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
@@ -248,4 +250,122 @@ Then('no mail should have been sent', async function (this: ICustomWorld) {
   await waitForCommentEventProcessed(this.server);
   const calls = this.context['mailCalls'] as MailCall[];
   assert.strictEqual(calls.length, 0);
+});
+
+interface FeedNotification {
+  id: string;
+  category: string;
+  title: string;
+  body: string;
+  url: string;
+  createdAt: string;
+  readAt: string | null;
+}
+
+interface NotificationFeed {
+  count: number;
+  limit: number;
+  page: number;
+  data: Array<FeedNotification>;
+  unreadCount: number;
+}
+
+function getFeed(context: Record<string, unknown>): NotificationFeed {
+  return JSON.parse((context['latestResponse'] as { body: string }).body) as NotificationFeed;
+}
+
+function firstFeedNotification(context: Record<string, unknown>): FeedNotification {
+  const feed = context['notificationFeed'] as NotificationFeed | undefined;
+  assert.ok(feed, 'no notification feed has been read yet');
+  const first = feed.data[0];
+  assert.ok(first, 'the notification feed is empty');
+  return first;
+}
+
+Given(
+  '{string} mutes the in-app channel for category {string}',
+  async function (this: ICustomWorld, name: string, category: string) {
+    const user = getUsers(this.context).get(name)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'PATCH',
+      url: '/api/v1/me/notification-preferences',
+      payload: { preferences: [{ category, inApp: false }] },
+      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+When('the comment notification has been delivered', async function (this: ICustomWorld) {
+  const boss = new PgBoss(env.db.url);
+  await boss.start();
+  try {
+    await boss.send('process-events', {});
+  } finally {
+    await boss.stop({ graceful: false });
+  }
+  await waitForCommentEventProcessed(this.server);
+});
+
+When('{string} lists their notifications', async function (this: ICustomWorld, name: string) {
+  const user = getUsers(this.context).get(name)!;
+  this.context.latestResponse = await this.server.inject({
+    method: 'GET',
+    url: '/api/v1/me/notifications',
+    headers: { cookie: user.cookie },
+  });
+  if (this.context.latestResponse.statusCode === 200) {
+    this.context['notificationFeed'] = getFeed(this.context);
+  }
+});
+
+When('an anonymous viewer lists notifications', async function (this: ICustomWorld) {
+  this.context.latestResponse = await this.server.inject({
+    method: 'GET',
+    url: '/api/v1/me/notifications',
+  });
+});
+
+When(
+  '{string} marks the first feed notification read',
+  async function (this: ICustomWorld, name: string) {
+    const user = getUsers(this.context).get(name)!;
+    const notification = firstFeedNotification(this.context);
+    this.context.latestResponse = await this.server.inject({
+      method: 'PATCH',
+      url: `/api/v1/me/notifications/${notification.id}/read`,
+      headers: { cookie: user.cookie },
+    });
+  },
+);
+
+Then(
+  'the notification feed should contain {int} notification(s)',
+  function (this: ICustomWorld, expected: number) {
+    const feed = getFeed(this.context);
+    assert.strictEqual(feed.data.length, expected);
+    assert.strictEqual(feed.count, expected);
+  },
+);
+
+Then(
+  'the notification feed should report {int} unread',
+  function (this: ICustomWorld, expected: number) {
+    assert.strictEqual(getFeed(this.context).unreadCount, expected);
+  },
+);
+
+Then(
+  'the first feed notification should have category {string}',
+  function (this: ICustomWorld, category: string) {
+    assert.strictEqual(firstFeedNotification(this.context).category, category);
+  },
+);
+
+Then('the first feed notification should be unread', function (this: ICustomWorld) {
+  assert.strictEqual(firstFeedNotification(this.context).readAt, null);
+});
+
+Then('the first feed notification should be read', function (this: ICustomWorld) {
+  const first = firstFeedNotification(this.context);
+  assert.ok(first.readAt, 'expected the notification to carry a readAt timestamp');
 });
