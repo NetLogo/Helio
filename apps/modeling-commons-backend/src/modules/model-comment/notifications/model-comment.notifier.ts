@@ -1,5 +1,4 @@
 import env from '#src/config/env.ts';
-import rules from '#src/config/rules.ts';
 import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type {
@@ -7,11 +6,7 @@ import type {
   Notifier,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type { EmailModel } from '@repo/emails';
-
-function truncatePreview(text: string, max = rules.limits.notification.previewLength): string {
-  const trimmed = text.trim();
-  return trimmed.length > max ? `${trimmed.slice(0, max - 1)}…` : trimmed;
-}
+import { truncatePreview } from '#src/shared/utils/formatters.ts';
 
 export default function makeModelCommentNotifier({
   modelCommentRepository,
