@@ -1,7 +1,7 @@
-Feature: Notification Preferences
+Feature: Notification Preferences and Feed
   As a signed-in user
-  I want to read and change my notification preferences
-  So that I control what I get notified about
+  I want to read and change my notification preferences and read my in-app feed
+  So that I control what I get notified about and can catch up on it in the app
 
   Scenario: A user with no stored preferences sees the catalog defaults
     Given an authenticated user "reader"
@@ -70,6 +70,65 @@ Feature: Notification Preferences
     Then the response status should be 201
     When the event processor queue is triggered
     Then no mail should have been sent
+
+  Scenario: A comment lands in the recipient's in-app feed
+    Given an authenticated user "owner"
+    And a public model "Feed Model" created by "owner"
+    And an authenticated user "commenter"
+    When "commenter" comments "Nice model!" on "Feed Model"
+    Then the response status should be 201
+    When the comment notification has been delivered
+    And "owner" lists their notifications
+    Then the response status should be 200
+    And the notification feed should contain 1 notification
+    And the notification feed should report 1 unread
+    And the first feed notification should have category "comment.on_your_model"
+    And the first feed notification should be unread
+
+  Scenario: Marking a notification read clears it from the unread count
+    Given an authenticated user "owner"
+    And a public model "Read Model" created by "owner"
+    And an authenticated user "commenter"
+    When "commenter" comments "Ping" on "Read Model"
+    Then the response status should be 201
+    When the comment notification has been delivered
+    And "owner" lists their notifications
+    And "owner" marks the first feed notification read
+    Then the response status should be 204
+    When "owner" lists their notifications
+    Then the notification feed should report 0 unread
+    And the first feed notification should be read
+
+  Scenario: A user cannot mark another user's notification read
+    Given an authenticated user "owner"
+    And a public model "Guarded Model" created by "owner"
+    And an authenticated user "commenter"
+    When "commenter" comments "Hello" on "Guarded Model"
+    Then the response status should be 201
+    When the comment notification has been delivered
+    And "owner" lists their notifications
+    And "commenter" marks the first feed notification read
+    Then the response status should be 404
+    When "owner" lists their notifications
+    Then the notification feed should report 1 unread
+
+  Scenario: A category muted in-app is delivered by email but stays out of the feed
+    Given an authenticated user "owner"
+    And a public model "Quiet Model" created by "owner"
+    And "owner" mutes the in-app channel for category "comment.on_your_model"
+    And an authenticated user "commenter"
+    And mail delivery is captured
+    When "commenter" comments "Still emailed" on "Quiet Model"
+    Then the response status should be 201
+    When the event processor queue is triggered
+    Then mail should have been sent to 1 recipients
+    When "owner" lists their notifications
+    Then the response status should be 200
+    And the notification feed should contain 0 notifications
+
+  Scenario: Reading the notification feed requires authentication
+    When an anonymous viewer lists notifications
+    Then the response status should be 401
 
   Scenario: A recipient who opted out of the category receives nothing
     Given an authenticated user "owner"
