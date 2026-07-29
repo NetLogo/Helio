@@ -47,7 +47,7 @@ function makeEvent(overrides: Partial<EventRecord> = {}): EventRecord {
 }
 
 const recipient: NotificationRecipient = { id: 'author-1', email: 'author@x.com', name: 'Author' };
-const links: NotificationLinks = {
+const emailLinks: NotificationLinks = {
   unsubscribeUrl: 'mailto:support@example.test',
   preferencesUrl: 'https://example.test/settings/notifications',
 };
@@ -82,7 +82,11 @@ describe('modelCommentNotifier', () => {
       previewImageUrl: null,
       authors: [],
     });
-    userRepository.findOneById.mockResolvedValue({ id: 'commenter-1', name: 'Commenter' });
+    userRepository.findOneById.mockResolvedValue({
+      id: 'commenter-1',
+      name: 'Commenter',
+      image: 'https://cdn.example.test/avatars/commenter-1.png',
+    });
     modelCommentRepository.findById.mockResolvedValue(makeComment());
   });
 
@@ -110,9 +114,52 @@ describe('modelCommentNotifier', () => {
     expect(intents[0]!.recipientUserId).toBe('author-1');
     expect(intents[0]!.category).toBe('comment.on_your_model');
 
-    await intents[0]!.buildEmail(recipient, links);
+    await intents[0]!.buildEmail(recipient, emailLinks);
     expect(mailDomain.createCommentedOnModelEmail).toHaveBeenCalledOnce();
     expect(mailDomain.createRepliedToCommentEmail).not.toHaveBeenCalled();
+  });
+
+  it('references the commenter and the model on every intent', async () => {
+    const parent = makeComment({ id: 'parent-1', modelId: 'model-1', userId: 'author-1' });
+    const reply = makeComment({ id: 'reply-1', userId: 'commenter-1', parentId: 'parent-1' });
+    modelCommentRepository.findById.mockImplementation(async (id: string) =>
+      id === 'reply-1' ? reply : id === 'parent-1' ? parent : undefined,
+    );
+    modelAuthorRepository.findAllByModel.mockResolvedValue([
+      { modelId: 'model-1', userId: 'owner-1', role: 'owner' },
+    ]);
+
+    const intents = await notifier.resolve(
+      makeEvent({ payload: { commentId: 'reply-1', parentId: 'parent-1' } }),
+    );
+
+    expect(intents).toHaveLength(2);
+    for (const intent of intents) {
+      expect(intent.actorUserId).toBe('commenter-1');
+      expect(intent.target).toEqual({ type: 'model', id: 'model-1' });
+    }
+  });
+
+  it('stores no image url on the intent, so the feed resolves it live', async () => {
+    modelAuthorRepository.findAllByModel.mockResolvedValue([
+      { modelId: 'model-1', userId: 'author-1', role: 'owner' },
+    ]);
+
+    const [intent] = await notifier.resolve(makeEvent());
+
+    expect(JSON.stringify(intent)).not.toContain('cdn.example.test');
+  });
+
+  it('leaves the actor unset for a comment with no author', async () => {
+    modelCommentRepository.findById.mockResolvedValue(makeComment({ userId: null }));
+    modelAuthorRepository.findAllByModel.mockResolvedValue([
+      { modelId: 'model-1', userId: 'author-1', role: 'owner' },
+    ]);
+
+    const intents = await notifier.resolve(makeEvent());
+
+    expect(intents[0]!.actorUserId).toBeUndefined();
+    expect(intents[0]!.target).toEqual({ type: 'model', id: 'model-1' });
   });
 
   it('calls getModelCardQuery.execute once per event, not once per recipient', async () => {
@@ -152,8 +199,8 @@ describe('modelCommentNotifier', () => {
     expect(replyIntent.recipientUserId).toBe('author-1');
     expect(modelIntent.recipientUserId).toBe('owner-1');
 
-    await replyIntent.buildEmail({ id: 'author-1', email: 'author-1@x.com', name: 'Author' }, links);
-    await modelIntent.buildEmail({ id: 'owner-1', email: 'owner-1@x.com', name: 'Owner' }, links);
+    await replyIntent.buildEmail({ id: 'author-1', email: 'author-1@x.com', name: 'Author' }, emailLinks);
+    await modelIntent.buildEmail({ id: 'owner-1', email: 'owner-1@x.com', name: 'Owner' }, emailLinks);
 
     const replyUrl = new URL(mailDomain.createRepliedToCommentEmail.mock.calls[0]![5]);
     expect(replyUrl.pathname).toBe('/models/model-1/comments/parent-1');
@@ -168,7 +215,7 @@ describe('modelCommentNotifier', () => {
     ]);
 
     const intents = await notifier.resolve(makeEvent());
-    await intents[0]!.buildEmail(recipient, links);
+    await intents[0]!.buildEmail(recipient, emailLinks);
 
     const url = new URL(mailDomain.createCommentedOnModelEmail.mock.calls[0]![5]);
     expect(url.origin).toBe(new URL(env.product.website).origin);
@@ -183,7 +230,7 @@ describe('modelCommentNotifier', () => {
     getModelCardQuery.execute.mockRejectedValue(new Error('card query down'));
 
     const intents = await notifier.resolve(makeEvent());
-    await intents[0]!.buildEmail(recipient, links);
+    await intents[0]!.buildEmail(recipient, emailLinks);
 
     expect(mailDomain.createCommentedOnModelEmail).toHaveBeenCalledWith(
       recipient.email,
@@ -192,7 +239,7 @@ describe('modelCommentNotifier', () => {
       expect.objectContaining({ name: 'a model' }),
       expect.any(String),
       expect.any(String),
-      links.unsubscribeUrl,
+      emailLinks.unsubscribeUrl,
     );
     expect(logger.error).toHaveBeenCalled();
   });

@@ -84,6 +84,8 @@ Feature: Notification Preferences and Feed
     And the notification feed should report 1 unread
     And the first feed notification should have category "comment.on_your_model"
     And the first feed notification should be unread
+    And the first feed notification should link its actor to "commenter"
+    And the first feed notification should target the model it was left on
 
   Scenario: Marking a notification read clears it from the unread count
     Given an authenticated user "owner"

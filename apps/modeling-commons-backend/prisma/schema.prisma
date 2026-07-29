@@ -450,16 +450,19 @@ model Event {
 }
 
 model UserNotification {
-  id          String    @id @default(uuid())
-  recipientId String
-  eventId     String
-  category    String
-  title       String
-  body        String    @db.Text
-  url         String
-  emailSentAt DateTime? @db.Timestamptz(3)
-  readAt      DateTime? @db.Timestamptz(3)
-  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  id            String    @id @default(uuid())
+  recipientId   String
+  eventId       String
+  category      String
+  title         String
+  body          String    @db.Text
+  url           String
+  actorUserId   String?
+  targetType    String?
+  targetId      String?
+  emailSentAt   DateTime? @db.Timestamptz(3)
+  readAt        DateTime? @db.Timestamptz(3)
+  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
 
   recipient User  @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)

@@ -9,6 +9,22 @@ export const NOTIFICATION_CATEGORIES = [
 
 export type NotificationCategory = (typeof NOTIFICATION_CATEGORIES)[number];
 
+export const NOTIFICATION_TARGET_TYPES = ['model'] as const;
+
+export type NotificationTargetType = (typeof NOTIFICATION_TARGET_TYPES)[number];
+
+export type NotificationTargetRef = { type: NotificationTargetType; id: string };
+
+// What the feed renders once a stored reference is resolved. Title and body are frozen
+// at delivery time, but identity is read live, so a renamed model, a new avatar or a
+// deleted account is reflected the next time the feed is opened.
+export type NotificationSubject = { thumbnailUrl: string | null; url: string };
+
+export type ResolvedNotificationSubjects = {
+  actor: NotificationSubject | null;
+  target: NotificationSubject | null;
+};
+
 export type NotificationChannels = {
   email: boolean;
   inApp: boolean;
@@ -37,6 +53,9 @@ export type NotificationIntent = {
   title: string;
   body: string;
   url: string;
+  // References, not URLs: the feed resolves them on read so identity stays current.
+  actorUserId?: string;
+  target?: NotificationTargetRef;
   buildEmail: (recipient: NotificationRecipient, links: NotificationLinks) => Promise<Mail.Options>;
 };
 

@@ -258,6 +258,8 @@ interface FeedNotification {
   title: string;
   body: string;
   url: string;
+  actor: { thumbnailUrl: string | null; url: string } | null;
+  target: { thumbnailUrl: string | null; url: string } | null;
   createdAt: string;
   readAt: string | null;
 }
@@ -358,6 +360,28 @@ Then(
   'the first feed notification should have category {string}',
   function (this: ICustomWorld, category: string) {
     assert.strictEqual(firstFeedNotification(this.context).category, category);
+  },
+);
+
+Then(
+  'the first feed notification should link its actor to {string}',
+  function (this: ICustomWorld, name: string) {
+    const user = getUsers(this.context).get(name)!;
+    const { actor } = firstFeedNotification(this.context);
+    assert.ok(actor, 'expected the notification to carry an actor');
+    assert.match(actor.url, new RegExp(`/users/${user.id}$`));
+    // Test users are created without an avatar, so the slot is linkable but imageless.
+    // The url is derived on read from the stored reference, never persisted.
+    assert.strictEqual(actor.thumbnailUrl, null);
+  },
+);
+
+Then(
+  'the first feed notification should target the model it was left on',
+  function (this: ICustomWorld) {
+    const { target } = firstFeedNotification(this.context);
+    assert.ok(target, 'expected the notification to carry a target');
+    assert.match(target.url, /\/models\/[^/]+$/);
   },
 );
 

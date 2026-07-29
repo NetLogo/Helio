@@ -5,6 +5,7 @@ import {
 } from '#src/modules/model/database/model.card.record.ts';
 import type {
   ModelInteractionCounts,
+  ModelPreviewKeyRecord,
   ModelRepository,
 } from '#src/modules/model/database/model.repository.port.ts';
 import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
@@ -142,6 +143,27 @@ export default function modelRepository({
         where: { id: modelId, deletedAt: null },
         ...modelCardArgs,
       });
+    },
+
+    // One correlated read for a whole page of models; the full card is far too much
+    // to load when all a caller wants is the latest version's thumbnail.
+    async findLatestPreviewKeys(modelIds: Array<string>): Promise<Array<ModelPreviewKeyRecord>> {
+      if (modelIds.length === 0) return [];
+      const records = await db.model.findMany({
+        where: { id: { in: modelIds }, deletedAt: null },
+        select: {
+          id: true,
+          versions: {
+            orderBy: { versionNumber: 'desc' },
+            take: 1,
+            select: { previewImageFileKey: true },
+          },
+        },
+      });
+      return records.map((record) => ({
+        id: record.id,
+        previewImageFileKey: record.versions[0]?.previewImageFileKey ?? null,
+      }));
     },
 
     async findChildren(modelId: string, params: PaginatedQueryParams): Promise<Paginated<Model>> {

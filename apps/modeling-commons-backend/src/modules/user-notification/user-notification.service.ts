@@ -1,4 +1,4 @@
-import env from '#src/config/env.ts';
+import links from '#src/config/links.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import { UnknownCategoryError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import type {
@@ -35,7 +35,7 @@ export function createUserNotificationService(
   async function deliver(
     event: EventRecord,
     intent: NotificationIntent,
-    links: NotificationLinks,
+    emailLinks: NotificationLinks,
   ): Promise<void> {
     try {
       const recipient = userNotificationDomain.assertRecipientEligible(
@@ -58,6 +58,9 @@ export function createUserNotificationService(
           title: intent.title,
           body: intent.body,
           url: intent.url,
+          actorUserId: intent.actorUserId ?? null,
+          targetType: intent.target?.type ?? null,
+          targetId: intent.target?.id ?? null,
         }),
       );
       const insertedNotificationId = userNotificationDomain.assertEmailDeliverable(
@@ -70,7 +73,7 @@ export function createUserNotificationService(
 
       const content = await intent.buildEmail(
         { id: recipient.id, email: recipient.email, name: recipient.name },
-        links,
+        emailLinks,
       );
       await mailService.sendMailAsync(content);
       await userNotificationRepository.markEmailSent(insertedNotificationId, new Date());
@@ -109,13 +112,13 @@ export function createUserNotificationService(
         });
       }
 
-      const links: NotificationLinks = {
-        unsubscribeUrl: `mailto:${env.product.supportEmail}`,
-        preferencesUrl: `${env.product.website}/settings/notifications`,
+      const emailLinks: NotificationLinks = {
+        unsubscribeUrl: links.support(),
+        preferencesUrl: links.notificationPreferences(),
       };
 
       for (const intent of intents) {
-        await deliver(event, intent, links);
+        await deliver(event, intent, emailLinks);
       }
 
       if (failedResolutions.length > 0) {

@@ -6796,6 +6796,16 @@ export interface paths {
                                 body: string;
                                 /** Format: uri */
                                 url: string;
+                                actor: {
+                                    thumbnailUrl: string | null;
+                                    /** Format: uri */
+                                    url: string;
+                                } | null;
+                                target: {
+                                    thumbnailUrl: string | null;
+                                    /** Format: uri */
+                                    url: string;
+                                } | null;
                                 /** Format: date-time */
                                 createdAt: string;
                                 readAt: string | null;

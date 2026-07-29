@@ -1,4 +1,7 @@
-import type { UserRepository } from '#src/modules/user/database/user.repository.port.ts';
+import type {
+  UserAvatarRecord,
+  UserRepository,
+} from '#src/modules/user/database/user.repository.port.ts';
 import type { UserEntity, UserSearchFilters } from '#src/modules/user/domain/user.types.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
@@ -23,6 +26,16 @@ export default function userRepository({
     async findByIdIncludeDeleted(id: string): Promise<UserEntity | undefined> {
       const record = await db.user.findUnique({ where: { id } });
       return record ? userMapper.toDomain(record as unknown as UserRecord) : undefined;
+    },
+
+    // Deleted users are dropped rather than returned imageless, so callers stop
+    // linking to a profile that no longer exists.
+    async findAvatarsByIds(ids: Array<string>): Promise<Array<UserAvatarRecord>> {
+      if (ids.length === 0) return [];
+      return db.user.findMany({
+        where: { id: { in: ids }, deletedAt: null },
+        select: { id: true, image: true },
+      });
     },
 
     async softDelete(ctx: TransactionContext, id: string): Promise<void> {

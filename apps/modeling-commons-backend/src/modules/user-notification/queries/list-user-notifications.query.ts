@@ -7,6 +7,7 @@ export default function makeListUserNotificationsQuery({
   notificationPreferenceRepository,
   userNotificationDomain,
   userNotificationMapper,
+  resolveNotificationSubjectsQuery,
 }: Dependencies) {
   return {
     async execute(
@@ -34,11 +35,18 @@ export default function makeListUserNotificationsQuery({
         userNotificationRepository.countUnread(userId, categories),
       ]);
 
+      const subjects = await resolveNotificationSubjectsQuery.execute(page.data);
+
       return {
         count: page.count,
         limit: page.limit,
         page: page.page,
-        data: page.data.map((record) => userNotificationMapper.toResponse(record)),
+        data: page.data.map((record) =>
+          userNotificationMapper.toResponse(
+            record,
+            subjects.get(record.id) ?? { actor: null, target: null },
+          ),
+        ),
         unreadCount,
       };
     },

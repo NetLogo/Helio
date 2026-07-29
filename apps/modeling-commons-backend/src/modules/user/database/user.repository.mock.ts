@@ -10,6 +10,7 @@ export function mockUserRepository(): { [K in keyof UserRepository]: ReturnType<
     update: vi.fn(),
     delete: vi.fn(),
     findByIdIncludeDeleted: vi.fn(),
+    findAvatarsByIds: vi.fn(),
     softDelete: vi.fn(),
     updateFields: vi.fn(),
     search: vi.fn(),

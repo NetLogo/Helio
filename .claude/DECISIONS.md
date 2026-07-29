@@ -211,3 +211,25 @@ Critical, non-obvious decisions made while working in this repo. Newest first.
 3. **A read receipt is not an audit event.** `userNotificationService.markRead` does a single `update` outside `transactionManager`/the outbox, like `markEmailSent`. Routing it through the event table would feed the event processor its own noise for zero audit value. It is idempotent: an already-read row is a no-op.
 4. **Mark-read 404s on someone else's notification** rather than 403 (`assertOwnedByRecipient` → `NotificationNotFoundError` for both missing and not-owned), so the endpoint doesn't confirm that an id exists.
 5. **`NOTIFICATION_CATEGORIES` is the const tuple behind `NotificationCategory`**, and the response DTO's `category` is `Type.Enum(NOTIFICATION_CATEGORIES)` — typebox v1.1.x's `Type.Enum` takes a readonly value tuple and infers the literal union, so the catalog stays the single source of truth. (`Type.Union([...arr.map(Type.Literal)])` does *not* infer — it widens to `never`.)
+
+## 2026-07-29 — A notification stores an actor and a target as references, resolved live
+
+**Context:** `apps/modeling-commons-backend/src/modules/user-notification`. The feed rendered title/body/url only, so every entry looked alike in the bell menu. Adding imagery raised two questions: how many subjects an entry has, and what to persist. It went through three shapes in one day, all pre-merge: a single `thumbnailUrl` + `thumbnailKind` discriminator, then two named slots holding snapshotted URLs, then two slots holding *references* resolved on read. This entry records where it landed.
+
+**Decisions:**
+1. **Freeze what was said, resolve what something is.** `title` and `body` stay snapshotted at delivery time — they are the historical statement, and a comment edited later shouldn't rewrite the notification that announced it. Identity is the opposite: an avatar, a model preview and a profile link should be current, so the row stores `actorUserId`/`targetType`/`targetId` and the feed resolves them per page. This also means a deleted user or model stops rendering instead of leaving a dead thumbnail behind forever — a snapshot has no way to notice.
+2. **Resolution is server-side, not an endpoint the frontend calls.** Letting the client fetch each subject would mean up to two extra requests per row (~40 per page) against a menu that polls, each with its own loading state. `resolveNotificationSubjectsQuery` does two batched reads for the whole page — `userRepository.findAvatarsByIds` and `modelRepository.findLatestPreviewKeys` — regardless of page size, and the response DTO is unchanged, so the frontend component didn't move.
+3. **Two named slots, no kind discriminator.** *Who acted* and *what they acted on* are different things the UI places differently, and the slot itself carries the shape (round avatar vs. resource thumbnail).
+4. **A resolved subject is `{ thumbnailUrl, url }`, both from live data.** The url comes from `links.user`/`links.model`, never persisted. A record that resolves but has no image yields a linkable subject with `thumbnailUrl: null`; a reference that no longer resolves yields `null` for the whole slot. `findAvatarsByIds` filters out soft-deleted users and `findLatestPreviewKeys` filters out deleted models, so deletion propagates by omission.
+5. **`findLatestPreviewKeys` is a narrow read, not `findCard`.** The card loads versions, authors, tags and counts per model; the feed needs one nullable file key. It uses a single correlated `findMany` with `take: 1` on versions.
+6. **Emails keep their own snapshot.** `buildEmail` still resolves the model card at send time and embeds the image in the message — an email is a frozen document that cannot re-resolve anything after it leaves. Only the in-app feed is live.
+
+## 2026-07-29 — Web app URLs are built in `src/config/links.ts`
+
+**Context:** `apps/modeling-commons-backend`. Frontend URLs were interpolated at each call site (`${env.product.website}/models/${id}`, a hand-built `new URL` for comment threads, `/settings/notifications` inline in the notification service). Adding actor/target links would have spread that further.
+
+**Decisions:**
+1. **One module owns every user-facing link**, sitting beside `env.ts` and `rules.ts` and importing from `env`. Call sites use `links.model(id)`, `links.modelComment(modelId, threadId, highlightId?)`, `links.user(id)`, `links.notificationPreferences()`, `links.support()`. A frontend route change is now one edit.
+2. **These are web app routes, not this API's routes** — hence `links.ts` rather than `routes.ts`, which would collide with the Fastify `*.route.ts` convention.
+3. **The base is concatenated, not resolved.** `new URL(path, base)` silently discards a path prefix on `PRODUCT_WEBSITE`; the builder trims a trailing slash and concatenates instead, mirroring `fileService`'s `publicBaseUrl` handling. Path segments are `encodeURIComponent`'d so an id can't alter the path.
+4. **`NotificationLinks` locals were renamed to `emailLinks`.** The unsubscribe/preferences pair passed into `buildEmail` shadowed the new module import; `no-shadow` catches it.

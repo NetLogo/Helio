@@ -25914,6 +25914,9 @@ export namespace Prisma {
     title: string | null
     body: string | null
     url: string | null
+    actorUserId: string | null
+    targetType: string | null
+    targetId: string | null
     emailSentAt: Date | null
     readAt: Date | null
     createdAt: Date | null
@@ -25927,6 +25930,9 @@ export namespace Prisma {
     title: string | null
     body: string | null
     url: string | null
+    actorUserId: string | null
+    targetType: string | null
+    targetId: string | null
     emailSentAt: Date | null
     readAt: Date | null
     createdAt: Date | null
@@ -25940,6 +25946,9 @@ export namespace Prisma {
     title: number
     body: number
     url: number
+    actorUserId: number
+    targetType: number
+    targetId: number
     emailSentAt: number
     readAt: number
     createdAt: number
@@ -25955,6 +25964,9 @@ export namespace Prisma {
     title?: true
     body?: true
     url?: true
+    actorUserId?: true
+    targetType?: true
+    targetId?: true
     emailSentAt?: true
     readAt?: true
     createdAt?: true
@@ -25968,6 +25980,9 @@ export namespace Prisma {
     title?: true
     body?: true
     url?: true
+    actorUserId?: true
+    targetType?: true
+    targetId?: true
     emailSentAt?: true
     readAt?: true
     createdAt?: true
@@ -25981,6 +25996,9 @@ export namespace Prisma {
     title?: true
     body?: true
     url?: true
+    actorUserId?: true
+    targetType?: true
+    targetId?: true
     emailSentAt?: true
     readAt?: true
     createdAt?: true
@@ -26067,6 +26085,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId: string | null
+    targetType: string | null
+    targetId: string | null
     emailSentAt: Date | null
     readAt: Date | null
     createdAt: Date
@@ -26097,6 +26118,9 @@ export namespace Prisma {
     title?: boolean
     body?: boolean
     url?: boolean
+    actorUserId?: boolean
+    targetType?: boolean
+    targetId?: boolean
     emailSentAt?: boolean
     readAt?: boolean
     createdAt?: boolean
@@ -26112,6 +26136,9 @@ export namespace Prisma {
     title?: boolean
     body?: boolean
     url?: boolean
+    actorUserId?: boolean
+    targetType?: boolean
+    targetId?: boolean
     emailSentAt?: boolean
     readAt?: boolean
     createdAt?: boolean
@@ -26127,6 +26154,9 @@ export namespace Prisma {
     title?: boolean
     body?: boolean
     url?: boolean
+    actorUserId?: boolean
+    targetType?: boolean
+    targetId?: boolean
     emailSentAt?: boolean
     readAt?: boolean
     createdAt?: boolean
@@ -26142,12 +26172,15 @@ export namespace Prisma {
     title?: boolean
     body?: boolean
     url?: boolean
+    actorUserId?: boolean
+    targetType?: boolean
+    targetId?: boolean
     emailSentAt?: boolean
     readAt?: boolean
     createdAt?: boolean
   }
 
-  export type UserNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipientId" | "eventId" | "category" | "title" | "body" | "url" | "emailSentAt" | "readAt" | "createdAt", ExtArgs["result"]["userNotification"]>
+  export type UserNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipientId" | "eventId" | "category" | "title" | "body" | "url" | "actorUserId" | "targetType" | "targetId" | "emailSentAt" | "readAt" | "createdAt", ExtArgs["result"]["userNotification"]>
   export type UserNotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     recipient?: boolean | UserDefaultArgs<ExtArgs>
     event?: boolean | EventDefaultArgs<ExtArgs>
@@ -26175,6 +26208,9 @@ export namespace Prisma {
       title: string
       body: string
       url: string
+      actorUserId: string | null
+      targetType: string | null
+      targetId: string | null
       emailSentAt: Date | null
       readAt: Date | null
       createdAt: Date
@@ -26610,6 +26646,9 @@ export namespace Prisma {
     readonly title: FieldRef<"UserNotification", 'String'>
     readonly body: FieldRef<"UserNotification", 'String'>
     readonly url: FieldRef<"UserNotification", 'String'>
+    readonly actorUserId: FieldRef<"UserNotification", 'String'>
+    readonly targetType: FieldRef<"UserNotification", 'String'>
+    readonly targetId: FieldRef<"UserNotification", 'String'>
     readonly emailSentAt: FieldRef<"UserNotification", 'DateTime'>
     readonly readAt: FieldRef<"UserNotification", 'DateTime'>
     readonly createdAt: FieldRef<"UserNotification", 'DateTime'>
@@ -28412,6 +28451,9 @@ export namespace Prisma {
     title: 'title',
     body: 'body',
     url: 'url',
+    actorUserId: 'actorUserId',
+    targetType: 'targetType',
+    targetId: 'targetId',
     emailSentAt: 'emailSentAt',
     readAt: 'readAt',
     createdAt: 'createdAt'
@@ -30241,6 +30283,9 @@ export namespace Prisma {
     title?: StringFilter<"UserNotification"> | string
     body?: StringFilter<"UserNotification"> | string
     url?: StringFilter<"UserNotification"> | string
+    actorUserId?: StringNullableFilter<"UserNotification"> | string | null
+    targetType?: StringNullableFilter<"UserNotification"> | string | null
+    targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
@@ -30256,6 +30301,9 @@ export namespace Prisma {
     title?: SortOrder
     body?: SortOrder
     url?: SortOrder
+    actorUserId?: SortOrderInput | SortOrder
+    targetType?: SortOrderInput | SortOrder
+    targetId?: SortOrderInput | SortOrder
     emailSentAt?: SortOrderInput | SortOrder
     readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -30275,6 +30323,9 @@ export namespace Prisma {
     title?: StringFilter<"UserNotification"> | string
     body?: StringFilter<"UserNotification"> | string
     url?: StringFilter<"UserNotification"> | string
+    actorUserId?: StringNullableFilter<"UserNotification"> | string | null
+    targetType?: StringNullableFilter<"UserNotification"> | string | null
+    targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
@@ -30290,6 +30341,9 @@ export namespace Prisma {
     title?: SortOrder
     body?: SortOrder
     url?: SortOrder
+    actorUserId?: SortOrderInput | SortOrder
+    targetType?: SortOrderInput | SortOrder
+    targetId?: SortOrderInput | SortOrder
     emailSentAt?: SortOrderInput | SortOrder
     readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -30309,6 +30363,9 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"UserNotification"> | string
     body?: StringWithAggregatesFilter<"UserNotification"> | string
     url?: StringWithAggregatesFilter<"UserNotification"> | string
+    actorUserId?: StringNullableWithAggregatesFilter<"UserNotification"> | string | null
+    targetType?: StringNullableWithAggregatesFilter<"UserNotification"> | string | null
+    targetId?: StringNullableWithAggregatesFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableWithAggregatesFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableWithAggregatesFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"UserNotification"> | Date | string
@@ -32049,6 +32106,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -32064,6 +32124,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -32075,6 +32138,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32090,6 +32156,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32103,6 +32172,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -32114,6 +32186,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32127,6 +32202,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33681,6 +33759,9 @@ export namespace Prisma {
     title?: SortOrder
     body?: SortOrder
     url?: SortOrder
+    actorUserId?: SortOrder
+    targetType?: SortOrder
+    targetId?: SortOrder
     emailSentAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
@@ -33694,6 +33775,9 @@ export namespace Prisma {
     title?: SortOrder
     body?: SortOrder
     url?: SortOrder
+    actorUserId?: SortOrder
+    targetType?: SortOrder
+    targetId?: SortOrder
     emailSentAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
@@ -33707,6 +33791,9 @@ export namespace Prisma {
     title?: SortOrder
     body?: SortOrder
     url?: SortOrder
+    actorUserId?: SortOrder
+    targetType?: SortOrder
+    targetId?: SortOrder
     emailSentAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
@@ -36329,6 +36416,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -36342,6 +36432,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -36774,6 +36867,9 @@ export namespace Prisma {
     title?: StringFilter<"UserNotification"> | string
     body?: StringFilter<"UserNotification"> | string
     url?: StringFilter<"UserNotification"> | string
+    actorUserId?: StringNullableFilter<"UserNotification"> | string | null
+    targetType?: StringNullableFilter<"UserNotification"> | string | null
+    targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
@@ -41518,6 +41614,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -41531,6 +41630,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -42168,6 +42270,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -42530,6 +42635,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42543,6 +42651,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42555,6 +42666,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43313,6 +43427,9 @@ export namespace Prisma {
     title: string
     body: string
     url: string
+    actorUserId?: string | null
+    targetType?: string | null
+    targetId?: string | null
     emailSentAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -43324,6 +43441,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43337,6 +43457,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43349,6 +43472,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

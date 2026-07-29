@@ -1,8 +1,9 @@
-import env from '#src/config/env.ts';
+import links from '#src/config/links.ts';
 import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type {
   NotificationIntent,
+  NotificationTargetRef,
   Notifier,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type { EmailModel } from '@repo/emails';
@@ -19,7 +20,7 @@ export default function makeModelCommentNotifier({
   async function buildEmailModel(modelId: string): Promise<EmailModel> {
     const fallback: EmailModel = {
       name: 'a model',
-      url: `${env.product.website}/models/${modelId}`,
+      url: links.model(modelId),
     };
     try {
       const card = await getModelCardQuery.execute(modelId);
@@ -54,17 +55,15 @@ export default function makeModelCommentNotifier({
       // A reply's own deep link opens it detached from the exchange it belongs to,
       // so the thread opens one level up and the new comment is highlighted inside it.
       const threadCommentId = parent?.id ?? entity.id;
-      const threadUrl = new URL(
-        `/models/${entity.modelId}/comments/${threadCommentId}`,
-        env.product.website,
-      );
-      threadUrl.searchParams.set('highlightedCommentId', entity.id);
-      const commentUrl = threadUrl.toString();
+      const commentUrl = links.modelComment(entity.modelId, threadCommentId, entity.id);
       const preview = truncatePreview(entity.content ?? '');
 
       const commenter = entity.userId ? await userRepository.findOneById(entity.userId) : null;
       const commenterName = commenter?.name ?? 'Someone';
       const model = await buildEmailModel(entity.modelId);
+
+      const actorUserId = commenter?.id;
+      const target: NotificationTargetRef = { type: 'model', id: entity.modelId };
 
       // A reply notifies the parent's author with "replied to your comment". Model
       // authors get "commented on your model" - minus the commenter and minus the
@@ -86,7 +85,9 @@ export default function makeModelCommentNotifier({
           title: `${commenterName} replied to your comment`,
           body: preview,
           url: commentUrl,
-          buildEmail: async (recipient, links) =>
+          actorUserId,
+          target,
+          buildEmail: async (recipient, emailLinks) =>
             mailDomain.createRepliedToCommentEmail(
               recipient.email,
               recipient.name ?? 'there',
@@ -94,7 +95,7 @@ export default function makeModelCommentNotifier({
               model,
               preview,
               commentUrl,
-              links.unsubscribeUrl,
+              emailLinks.unsubscribeUrl,
             ),
         });
       }
@@ -106,7 +107,9 @@ export default function makeModelCommentNotifier({
           title: `${commenterName} commented on your model`,
           body: preview,
           url: commentUrl,
-          buildEmail: async (recipient, links) =>
+          actorUserId,
+          target,
+          buildEmail: async (recipient, emailLinks) =>
             mailDomain.createCommentedOnModelEmail(
               recipient.email,
               recipient.name ?? 'there',
@@ -114,7 +117,7 @@ export default function makeModelCommentNotifier({
               model,
               preview,
               commentUrl,
-              links.unsubscribeUrl,
+              emailLinks.unsubscribeUrl,
             ),
         });
       }

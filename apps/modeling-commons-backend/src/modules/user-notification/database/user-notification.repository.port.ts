@@ -13,6 +13,9 @@ export type InsertUserNotificationParams = {
   title: string;
   body: string;
   url: string;
+  actorUserId?: string | null;
+  targetType?: string | null;
+  targetId?: string | null;
 };
 
 export interface UserNotificationRepositoryPort {

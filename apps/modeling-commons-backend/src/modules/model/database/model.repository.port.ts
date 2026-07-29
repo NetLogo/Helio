@@ -9,6 +9,8 @@ import type {
 } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
+export type ModelPreviewKeyRecord = { id: string; previewImageFileKey: string | null };
+
 export type ModelInteractionCounts = {
   view: number;
   run: number;
@@ -37,6 +39,7 @@ export interface ModelRepository extends RepositoryPort<Model> {
   findInteractionCounts: (modelId: string) => Promise<ModelInteractionCounts | null>;
   findChildren: (modelId: string, params: PaginatedQueryParams) => Promise<Paginated<Model>>;
   findCard: (modelId: string) => Promise<ModelCardRecord | null>;
+  findLatestPreviewKeys: (modelIds: Array<string>) => Promise<Array<ModelPreviewKeyRecord>>;
   insertTx: (ctx: TransactionContext, entity: Model) => Promise<void>;
   updateFields: (
     ctx: TransactionContext,

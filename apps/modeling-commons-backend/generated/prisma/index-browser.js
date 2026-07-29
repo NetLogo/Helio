@@ -353,6 +353,9 @@ exports.Prisma.UserNotificationScalarFieldEnum = {
   title: 'title',
   body: 'body',
   url: 'url',
+  actorUserId: 'actorUserId',
+  targetType: 'targetType',
+  targetId: 'targetId',
   emailSentAt: 'emailSentAt',
   readAt: 'readAt',
   createdAt: 'createdAt'

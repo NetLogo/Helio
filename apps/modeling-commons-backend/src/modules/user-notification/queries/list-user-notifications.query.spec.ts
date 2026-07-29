@@ -30,6 +30,9 @@ function makeNotification(overrides: Partial<UserNotificationRecord> = {}): User
     title: 'New comment',
     body: 'Someone commented on your model',
     url: 'https://example.test/models/model-1',
+    actorUserId: 'commenter-1',
+    targetType: 'model',
+    targetId: 'model-1',
     emailSentAt: null,
     readAt: null,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
@@ -42,15 +45,32 @@ describe('listUserNotificationsQuery', () => {
   const userNotificationRepository = mockUserNotificationRepository();
   const domain = userNotificationDomain();
 
+  const resolveNotificationSubjectsQuery = { execute: vi.fn() };
+
   const query = makeListUserNotificationsQuery({
     userNotificationRepository,
     notificationPreferenceRepository,
     userNotificationDomain: domain,
     userNotificationMapper: userNotificationMapper(),
+    resolveNotificationSubjectsQuery,
   } as never);
+
+  const resolvedSubjects = {
+    actor: {
+      thumbnailUrl: 'https://cdn.example.test/avatars/commenter-1.png',
+      url: 'https://example.test/users/commenter-1',
+    },
+    target: {
+      thumbnailUrl: 'https://cdn.example.test/previews/model-1.png',
+      url: 'https://example.test/models/model-1',
+    },
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    resolveNotificationSubjectsQuery.execute.mockResolvedValue(
+      new Map([['notification-1', resolvedSubjects]]),
+    );
     notificationPreferenceRepository.findAllByUser.mockResolvedValue([]);
     userNotificationRepository.findAllByRecipient.mockResolvedValue({
       count: 1,
@@ -76,11 +96,45 @@ describe('listUserNotificationsQuery', () => {
           title: 'New comment',
           body: 'Someone commented on your model',
           url: 'https://example.test/models/model-1',
+          actor: {
+            thumbnailUrl: 'https://cdn.example.test/avatars/commenter-1.png',
+            url: 'https://example.test/users/commenter-1',
+          },
+          target: {
+            thumbnailUrl: 'https://cdn.example.test/previews/model-1.png',
+            url: 'https://example.test/models/model-1',
+          },
           createdAt: '2026-01-01T00:00:00.000Z',
           readAt: null,
         },
       ],
     });
+  });
+
+  it('resolves subjects from the page it just read, not from the stored row', async () => {
+    await query.execute('user-1', {});
+
+    const [records] = resolveNotificationSubjectsQuery.execute.mock.calls[0]!;
+    expect(records).toEqual([expect.objectContaining({ id: 'notification-1' })]);
+    expect(resolveNotificationSubjectsQuery.execute).toHaveBeenCalledOnce();
+  });
+
+  it('serialises a notification whose references no longer resolve as nulls', async () => {
+    resolveNotificationSubjectsQuery.execute.mockResolvedValue(
+      new Map([['notification-1', { actor: null, target: null }]]),
+    );
+
+    const result = await query.execute('user-1', {});
+
+    expect(result.data[0]).toMatchObject({ actor: null, target: null });
+  });
+
+  it('falls back to nulls when the resolver returns nothing for a row', async () => {
+    resolveNotificationSubjectsQuery.execute.mockResolvedValue(new Map());
+
+    const result = await query.execute('user-1', {});
+
+    expect(result.data[0]).toMatchObject({ actor: null, target: null });
   });
 
   it('restricts the feed to the categories whose inApp channel is on', async () => {

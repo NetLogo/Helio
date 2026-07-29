@@ -172,6 +172,9 @@ function makeInsertedNotification(
     title: 'New comment',
     body: 'Someone commented on your model',
     url: 'https://example.test/models/model-1',
+    actorUserId: null,
+    targetType: null,
+    targetId: null,
     emailSentAt: null,
     readAt: null,
     createdAt: new Date('2026-01-01'),
@@ -272,6 +275,48 @@ describe('userNotificationService handleEvent', () => {
       expect(userNotificationRepository.markEmailSent).toHaveBeenCalledWith(
         'notification-1',
         expect.any(Date),
+      );
+    });
+
+    it('stores the references an intent carries, not resolved urls', async () => {
+      const intent = makeIntent({
+        actorUserId: 'commenter-1',
+        target: { type: 'model', id: 'model-1' },
+      });
+      const service = build([makeNotifier([intent])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          actorUserId: 'commenter-1',
+          targetType: 'model',
+          targetId: 'model-1',
+        }),
+      );
+    });
+
+    it('writes null columns for an intent that references neither', async () => {
+      const service = build([makeNotifier([makeIntent()])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ actorUserId: null, targetType: null, targetId: null }),
+      );
+    });
+
+    it('stores a target reference for an intent with no actor', async () => {
+      const intent = makeIntent({ target: { type: 'model', id: 'model-1' } });
+      const service = build([makeNotifier([intent])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ actorUserId: null, targetType: 'model', targetId: 'model-1' }),
       );
     });
 
