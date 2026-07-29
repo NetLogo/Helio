@@ -1,10 +1,10 @@
 <template>
   <div :class="'text-center px-8 py-16 flex flex-col items-center justify-center'">
     <UIcon :name="icon" class="size-14 text-dimmed mx-auto mb-4" />
-    <h2 class="text-toned">
+    <h2 class="text-xl sm:text-2xl text-toned">
       {{ title }}
     </h2>
-    <p v-if="message" class="text-sm sm:text-md text-muted mt-1 max-w-md line-clamp-6 text-pretty">
+    <p v-if="message" class="px-4 text-sm sm:text-md text-muted mt-1 max-w-md line-clamp-6 text-pretty">
       {{ message }}
     </p>
     <div v-if="$slots.default" class="mt-4">
