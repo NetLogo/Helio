@@ -4,7 +4,7 @@
     <h2 class="text-xl sm:text-2xl text-toned">
       {{ title }}
     </h2>
-    <p v-if="message" class="px-4 text-sm sm:text-md text-muted mt-1 max-w-md line-clamp-6 text-pretty">
+    <p v-if="message" class="px-4 sm:px-2 text-sm text-muted mt-1 max-w-md line-clamp-6 text-pretty">
       {{ message }}
     </p>
     <div v-if="$slots.default" class="mt-4">
