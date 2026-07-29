@@ -174,6 +174,12 @@ const rules = {
       // degradation. Retune knowingly if this bites real threads.
       tree: { maxNodes: 1_000 },
     },
+
+    notification: {
+      eventBatchSize: 50,
+      maxEventAttempts: 5,
+      previewLength: 280,
+    },
   },
   mime: {
     deniedTypes: [
