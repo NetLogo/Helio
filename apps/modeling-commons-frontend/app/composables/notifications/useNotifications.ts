@@ -2,14 +2,13 @@ import {
   fetchNotifications,
   pollNotifications,
   POLL_INTERVAL_ACTIVE_MS,
+  IDLE_TIMEOUT_MS,
+  MIN_POLL_GAP_MS,
+  MAX_BACKOFF_FACTOR,
   type Notification,
 } from "@/components/notifications/shared";
 
 import { createSharedComposable } from "@vueuse/core";
-
-const IDLE_TIMEOUT_MS = 5 * 60_000;
-const MIN_POLL_GAP_MS = 5_000;
-const MAX_BACKOFF_FACTOR = 8;
 
 function useNotificationsImpl() {
   const api = useApi();
@@ -68,7 +67,7 @@ function useNotificationsImpl() {
     try {
       const res = await pollNotifications(new Date(lastPolled.value));
       unreadCount.value = res.unreadCount;
-      lastPolled.value = startedAt; // window START — avoids dropping in-flight arrivals
+      lastPolled.value = startedAt;
       aggregate(res.data);
       failures.value = 0;
       pollError.value = null;

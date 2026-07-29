@@ -43,7 +43,7 @@
         variant="solid"
         color="primary"
       />
-      <NotificationsMenu
+      <Notifications
         v-if="user.isLoggedIn"
       />
       <UDropdownMenu v-if="user.isLoggedIn" :items="userDropdownItems" :content="{ align: 'end' }">
