@@ -1,6 +1,6 @@
 import type { Model, ModelInteractionKind, Prisma } from '#prisma/index';
 import type { ModelCardRecord } from '#src/modules/model/database/model.card.record.ts';
-import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
 import type {
   Paginated,
@@ -8,6 +8,8 @@ import type {
   RepositoryPort,
 } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+
+export type ModelPreviewKeyRecord = { id: string; previewImageFileKey: string | null };
 
 export type ModelInteractionCounts = {
   view: number;
@@ -37,6 +39,7 @@ export interface ModelRepository extends RepositoryPort<Model> {
   findInteractionCounts: (modelId: string) => Promise<ModelInteractionCounts | null>;
   findChildren: (modelId: string, params: PaginatedQueryParams) => Promise<Paginated<Model>>;
   findCard: (modelId: string) => Promise<ModelCardRecord | null>;
+  findLatestPreviewKeys: (modelIds: Array<string>) => Promise<Array<ModelPreviewKeyRecord>>;
   insertTx: (ctx: TransactionContext, entity: Model) => Promise<void>;
   updateFields: (
     ctx: TransactionContext,

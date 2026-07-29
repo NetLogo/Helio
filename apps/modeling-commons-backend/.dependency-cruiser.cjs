@@ -7,6 +7,7 @@ const applicationLayerPaths = [
   '\\.service\\.ts$',
   '\\.handler\\.ts$',
   '\\.event-handler\\.ts$',
+  '\\.notifier\\.ts$',
 ];
 
 const infrastructureLayerPaths = ['infrastructure', 'infra', 'database', 'repository'];
@@ -152,7 +153,7 @@ module.exports = {
         'in your package.json.',
       from: {},
       to: {
-        pathNot: ['ajv'],
+        pathNot: ['ajv', 'fast-json-stringify'],
         dependencyTypes: ['npm-no-pkg', 'npm-unknown'],
       },
     },

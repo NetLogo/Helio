@@ -7,8 +7,11 @@ import type {
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import type { SystemRole, UserKind } from './user.record.ts';
 
+export type UserAvatarRecord = { id: string; image: string | null };
+
 export interface UserRepository extends RepositoryPort<UserEntity> {
   findByIdIncludeDeleted: (id: string) => Promise<UserEntity | undefined>;
+  findAvatarsByIds: (ids: Array<string>) => Promise<Array<UserAvatarRecord>>;
   softDelete: (ctx: TransactionContext, id: string) => Promise<void>;
   updateFields: (
     ctx: TransactionContext,

@@ -1,5 +1,5 @@
 import type { Prisma } from '#prisma/index';
-import type { ModelSearchFilters, ModelSortBy } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters, ModelSortBy } from '#src/modules/model/domain/model.types.ts';
 import dateRangeQueryArgs from '#src/shared/db/date-range-query.args.ts';
 import type { PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 

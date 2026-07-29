@@ -8,6 +8,7 @@ export function mockEventRepository(): {
     insert: vi.fn(),
     findUnprocessed: vi.fn(),
     markProcessed: vi.fn(),
+    markFailed: vi.fn(),
     search: vi.fn(),
   };
 }

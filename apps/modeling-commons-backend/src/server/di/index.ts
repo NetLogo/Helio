@@ -17,26 +17,13 @@ export async function di(fastify: FastifyInstance): Promise<void> {
     [
       path.join(
         import.meta.dirname,
-        '../../modules/**/*.{repository,mapper,service,domain,query,storage}.{js,ts}',
+        '../../modules/**/*.{repository,mapper,service,domain,query,storage,notifier}.{js,ts}',
       ),
     ],
     {
       formatName,
       esModules: true,
       resolverOptions: {
-        register: asFunction,
-        lifetime: Lifetime.SINGLETON,
-      },
-    },
-  );
-
-  await diContainer.loadModules(
-    [path.join(import.meta.dirname, '../../modules/**/*.{handler,event-handler}.{js,ts}')],
-    {
-      formatName,
-      esModules: true,
-      resolverOptions: {
-        asyncInit: 'init',
         register: asFunction,
         lifetime: Lifetime.SINGLETON,
       },

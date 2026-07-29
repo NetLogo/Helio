@@ -3,9 +3,12 @@ import type { EventSearchFilters } from '#src/modules/event/domain/event.types.t
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export type KnownEvents =
+  | 'model.created'
   | 'model.deleted'
   | 'model.liked'
   | 'model.unliked'
+  | 'model.version.created'
+  | 'model.version.updated'
   | 'model_additional_file.added'
   | 'model_additional_file.deleted'
   | 'model_author.added'
@@ -32,6 +35,8 @@ export type EventRecord = {
   payload: Record<string, unknown>;
   createdAt: Date;
   processedAt: Date | null;
+  attempts: number;
+  lastError: string | null;
 };
 
 export type InsertEventParams = {
@@ -44,8 +49,11 @@ export type InsertEventParams = {
 
 export interface EventRepositoryPort {
   insert: (ctx: TransactionContext, params: InsertEventParams) => Promise<void>;
-  findUnprocessed: (limit: number) => Promise<Array<EventRecord>>;
+  // `maxAttempts` caps how often a poison event is retried; omitting it selects regardless of
+  // how many times dispatch has already failed.
+  findUnprocessed: (limit: number, maxAttempts?: number) => Promise<Array<EventRecord>>;
   markProcessed: (id: string) => Promise<void>;
+  markFailed: (id: string, error: unknown) => Promise<void>;
   search: (
     filters: EventSearchFilters,
     params: PaginatedQueryParams,

@@ -8,7 +8,12 @@ import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 
-export default function eventRepository({ db }: Dependencies): EventRepositoryPort {
+export default function eventRepository({
+  db,
+  eventQueueNotifier,
+}: Dependencies): EventRepositoryPort {
+  const nudged = new WeakSet<TransactionContext>();
+
   return {
     async insert(ctx: TransactionContext, params: InsertEventParams): Promise<void> {
       const client = resolveTransaction(ctx);
@@ -21,11 +26,18 @@ export default function eventRepository({ db }: Dependencies): EventRepositoryPo
           payload: params.payload,
         },
       });
+
+      if (nudged.has(ctx)) return;
+      nudged.add(ctx);
+      ctx.onCommit(async () => eventQueueNotifier.nudge());
     },
 
-    async findUnprocessed(limit: number): Promise<Array<EventRecord>> {
+    async findUnprocessed(limit: number, maxAttempts?: number): Promise<Array<EventRecord>> {
       const records = await db.event.findMany({
-        where: { processedAt: null },
+        where: {
+          processedAt: null,
+          ...(maxAttempts === undefined ? {} : { attempts: { lt: maxAttempts } }),
+        },
         orderBy: { createdAt: 'asc' },
         take: limit,
       });
@@ -36,6 +48,16 @@ export default function eventRepository({ db }: Dependencies): EventRepositoryPo
       await db.event.update({
         where: { id },
         data: { processedAt: new Date() },
+      });
+    },
+
+    async markFailed(id: string, error: unknown): Promise<void> {
+      await db.event.update({
+        where: { id },
+        data: {
+          attempts: { increment: 1 },
+          lastError: error instanceof Error ? error.message : String(error),
+        },
       });
     },
 

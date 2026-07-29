@@ -3,7 +3,14 @@ import type { TransactionContext, TransactionManager } from '#src/shared/db/tran
 export function mockTransactionManager(): TransactionManager {
   return {
     async run<T>(fn: (ctx: TransactionContext) => Promise<T>): Promise<T> {
-      return fn({} as TransactionContext);
+      const afterCommit: Array<() => Promise<void> | void> = [];
+      const ctx = {
+        onCommit: (task: () => Promise<void> | void) => afterCommit.push(task),
+      } as unknown as TransactionContext;
+
+      const result = await fn(ctx);
+      for (const task of afterCommit) await task();
+      return result;
     },
   };
 }

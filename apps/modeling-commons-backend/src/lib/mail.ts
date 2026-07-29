@@ -25,7 +25,7 @@ const transport: SMTPTransport.Options | undefined = {
     : { ignoreTLS: true }),
 };
 
-let transporter: Transporter;
+let transporter: Transporter<SMTPTransport.SentMessageInfo>;
 
 try {
   transporter = createTransport(transport, defaults);
