@@ -8,6 +8,6 @@
       "#prisma/*": ["./generated/prisma/*"]
     }
   },
-  "include": ["src", "tests"],
+  "include": ["src", "tests", "prisma/lib", "prisma/archive.ts", "prisma/patch.ts"],
   "exclude": ["**/*.k6.ts"]
 }
