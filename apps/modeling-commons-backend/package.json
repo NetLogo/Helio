@@ -38,6 +38,7 @@
     "db:migrate:dev": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:seed:archive": "sh -c 'PRISMA_SEED_FILE=archive.ts yarn run db:seed'",
+    "db:patch": "tsx prisma/patch.ts",
     "db:reset": "prisma migrate reset --force",
     "deps:validate": "depcruise src --config .dependency-cruiser.cjs --output-type err-long",
     "deps:graph": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > doc/dependency-graph.svg"
