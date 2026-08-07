@@ -88,6 +88,14 @@ The script stops instead of guessing when:
   on create, so `archive.ts` stamped every migrated row with the migration time and
   legacy `updated_at` was never preserved. Writing it now would leave a handful of
   rows inconsistent with the other ~4,700.
+- **`dob` is pinned to UTC midnight.** pg reads a `date` as _local_ midnight while
+  Prisma stores `@db.Date` from the _UTC_ calendar day, so the two only agree at a
+  zero or negative UTC offset. `archive.ts` had no such pinning, so if the original
+  migration ran east of UTC every migrated `dob` is a day early. This machine is
+  `-0500` and the rehearsal round-trips `1815-12-10` unchanged. Confirm against
+  production before assuming, e.g. compare a few `User.dob` values to
+  `people.birthdate` for the same `legacyId`; a backfill is only needed if they
+  differ.
 - **`ModelInteraction` is out of scope.** `archive.ts` migrated zero interactions, the
   table has no `legacyId` and no unique constraint (so `skipDuplicates` is a no-op),
   and `diffdb.sh` skips the source tables. Re-running that phase would duplicate
