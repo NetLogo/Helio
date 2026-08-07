@@ -67,7 +67,9 @@ The script stops instead of guessing when:
 - new versions are not the chronologically newest, which would break the
   `created_at` ordering `versionNumber` encodes;
 - a non-preview attachment was modified in place — `ModelAdditionalFile` carries no
-  `legacyId`, so the matching row cannot be identified with confidence.
+  `legacyId`, so the matching row cannot be identified with confidence;
+- a deleted attachment matches more than one `ModelAdditionalFile` row (same
+  filename, or a null `created_at`), where picking one could delete the wrong file.
 
 ## Decisions
 
