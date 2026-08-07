@@ -96,3 +96,8 @@ INSERT INTO tags (id, name, person_id, created_at, updated_at) VALUES
   (203, 'chemistry', 5, '2026-03-05 10:00:00', '2026-03-05 10:00:00');
 INSERT INTO tagged_nodes (id, node_id, tag_id, person_id, comment, created_at, updated_at) VALUES
   (304, 14, 203, 5, '', '2026-03-05 10:00:00', '2026-03-05 10:00:00');
+
+-- 17. an existing version edited in place
+UPDATE versions SET description = 'Corrected upload',
+                    contents = 'code@#$#@#$#@ui@#$#@#$#@wolf info v2@#$#@#$#@shapes@#$#@#$#@NetLogo 5.0.5'
+ WHERE id = 100;

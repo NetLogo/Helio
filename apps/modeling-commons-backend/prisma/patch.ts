@@ -420,6 +420,9 @@ async function planTags(diffs: Map<PatchableTable, TableDiff>, plan: Plan, ctx: 
       legacyId: row.id,
       name: optionalString(row.deletedRow ?? {}, 'name') ?? '?',
     });
+    // Stop it resolving, or a tagging in the same diff would be created and then
+    // cascade-deleted, and verification would report a misleading failure.
+    ctx.tagIdByLegacyId.delete(row.id);
   }
 }
 
@@ -696,7 +699,7 @@ async function planVersions(diffs: Map<PatchableTable, TableDiff>, plan: Plan, c
         modelId,
         versionNumber,
         legacyVersionId: v.id,
-        data: buildVersionCreate(plan, modelId, node, v, versionNumber),
+        data: stageVersion(plan, buildVersionCreate(modelId, node, v, versionNumber), v),
         contributorUserId: ctx.userIdByLegacyId.get(v.person_id) ?? null,
         // archive.ts keeps a node's tags and preview on its latest version
         // only, and the app reads them from there. Move them onto the new
@@ -731,24 +734,35 @@ async function planVersions(diffs: Map<PatchableTable, TableDiff>, plan: Plan, c
     const node = (await ctx.legacy.nodesByIds([v.node_id]))[0];
     if (!node) continue;
     const versionNumber = position + 1;
-    const created = buildVersionCreate(plan, modelId, node, v, versionNumber);
+    const created = buildVersionCreate(modelId, node, v, versionNumber);
 
-    plan.versions.update.push({
-      legacyVersionId: v.id,
-      modelId,
-      versionNumber,
-      data: {
-        description: created.description,
-        netlogoFileKey: created.netlogoFileKey,
-        netlogoVersion: created.netlogoVersion,
-        infoTab: created.infoTab,
-      },
+    const current = await prisma.modelVersion.findUnique({
+      where: { modelId_versionNumber: { modelId, versionNumber } },
+      select: { description: true, netlogoFileKey: true, netlogoVersion: true, infoTab: true },
     });
+    const data = changedFields(current ?? {}, {
+      description: created.description,
+      netlogoFileKey: created.netlogoFileKey,
+      netlogoVersion: created.netlogoVersion,
+      infoTab: created.infoTab,
+    });
+
+    if (Object.keys(data).length === 0) {
+      plan.notes.push(`version ${v.id} is already up to date in the target; nothing to do`);
+      continue;
+    }
+
+    stageVersion(plan, created, v);
+    plan.versions.update.push({ legacyVersionId: v.id, modelId, versionNumber, data });
   }
 }
 
+/**
+ * Derives the object key from the legacy version id rather than a fresh random
+ * one, so re-running lands on the same object instead of uploading a duplicate
+ * and repointing the row at it.
+ */
 function buildVersionCreate(
-  plan: Plan,
   modelId: string,
   node: LegacyNode,
   v: LegacyVersion,
@@ -758,10 +772,9 @@ function buildVersionCreate(
   const key = buildVersionFileKey(
     modelId,
     v.created_at ?? node.created_at ?? new Date(),
-    randomUUID(),
+    derivedUuid('version', v.id),
     `${node.name}.${format}`,
   );
-  plan.files.push({ key, body: Buffer.from(v.contents, 'utf8') });
 
   const { netlogoVersion, infoTab } = parseNetlogoContents(v.contents, format);
   return {
@@ -775,6 +788,15 @@ function buildVersionCreate(
     createdAt: v.created_at ?? new Date(),
     finalizedAt: v.created_at ?? null,
   };
+}
+
+function stageVersion(
+  plan: Plan,
+  data: Prisma.ModelVersionUncheckedCreateInput,
+  v: LegacyVersion,
+): Prisma.ModelVersionUncheckedCreateInput {
+  plan.files.push({ key: data.netlogoFileKey, body: Buffer.from(v.contents, 'utf8') });
+  return data;
 }
 
 async function planAdditionalFilesAndPreviews(
@@ -833,6 +855,12 @@ async function planAdditionalFilesAndPreviews(
     if (!modelId) continue;
 
     const existing = await findAdditionalFile(modelId, a.filename, a.created_at);
+    if (existing === 'ambiguous') {
+      plan.notes.push(
+        `attachment ${a.id} (${a.filename}) matches more than one existing row; assuming already present`,
+      );
+      continue;
+    }
     if (existing) {
       plan.notes.push(`attachment ${a.id} already present as ${existing.id}; nothing to do`);
       continue;
@@ -875,6 +903,13 @@ async function planAdditionalFilesAndPreviews(
       continue;
     }
     const match = await findAdditionalFile(modelId, filename, optionalDate(deleted, 'created_at'));
+    if (match === 'ambiguous') {
+      plan.blockers.push(
+        `deleted attachment ${row.id} (${filename}) on node ${nodeId} matches more than one ` +
+          `ModelAdditionalFile row. That table carries no legacyId, so deleting one would be a guess.`,
+      );
+      continue;
+    }
     if (!match) {
       plan.notes.push(
         `deleted attachment ${row.id} (${filename}) has no row in the target; already gone`,
@@ -957,23 +992,33 @@ async function planAdditionalFilesAndPreviews(
  */
 function samePreviewObject(a: string | null, b: string | null): boolean {
   if (a === null || b === null) return a === b;
-  const strip = (key: string) => key.replace(/\/[0-9a-f-]{36}\//i, '/');
+  const strip = (key: string) => key.replace(/\/[0-9a-f-]{36}\//gi, '/');
   return strip(a) === strip(b);
 }
 
-async function findAdditionalFile(modelId: string, filename: string, createdAt: Date | null) {
+/**
+ * ModelAdditionalFile carries no legacy id, so a row is located by its filename
+ * and creation time. Returns 'ambiguous' rather than picking one when that pair
+ * does not single a row out — deleting the wrong attachment is unrecoverable.
+ */
+async function findAdditionalFile(
+  modelId: string,
+  filename: string,
+  createdAt: Date | null,
+): Promise<{ id: string; fileKey: string } | 'ambiguous' | null> {
   const candidates = await prisma.modelAdditionalFile.findMany({
     where: { modelId },
     select: { id: true, fileKey: true, createdAt: true },
   });
   const suffix = `/${sanitizeFilename(filename)}`;
-  return (
-    candidates.find(
-      (c) =>
-        c.fileKey.endsWith(suffix) &&
-        (createdAt === null || c.createdAt.getTime() === createdAt.getTime()),
-    ) ?? null
+  const matches = candidates.filter(
+    (c) =>
+      c.fileKey.endsWith(suffix) &&
+      (createdAt === null || c.createdAt.getTime() === createdAt.getTime()),
   );
+  if (matches.length === 0) return null;
+  if (matches.length > 1) return 'ambiguous';
+  return matches[0]!;
 }
 
 async function latestVersionNumberAfterAppends(plan: Plan, modelId: string): Promise<number> {
@@ -1436,6 +1481,19 @@ function buildExpectations(plan: Plan): Expectation[] {
         modelId: a.modelId,
         versionNumber: a.versionNumber,
         tagId,
+        nodeLegacyId: a.nodeLegacyId,
+      });
+    }
+    // Only assert the carried preview when no resync supersedes it, or the two
+    // expectations would contradict each other.
+    if (
+      !plan.previews.some((p) => p.modelId === a.modelId && p.versionNumber === a.versionNumber)
+    ) {
+      out.push({
+        kind: 'preview',
+        modelId: a.modelId,
+        versionNumber: a.versionNumber,
+        key: a.carryPreviewImageFileKey,
         nodeLegacyId: a.nodeLegacyId,
       });
     }
