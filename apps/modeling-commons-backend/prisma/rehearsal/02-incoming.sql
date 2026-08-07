@@ -60,6 +60,10 @@ INSERT INTO spam_warnings (id, person_id, node_id, created_at, updated_at) VALUE
   (500, 1, 16, '2026-02-04 10:00:00', '2026-02-04 10:00:00'),
   (501, 2, 16, '2026-02-05 10:00:00', '2026-02-05 10:00:00');
 
+-- 8. a new version on an already-migrated node, by a different author, whose
+--    only preview is deleted in the same batch: the appended version must not
+--    inherit a preview that no longer exists
+DELETE FROM attachments WHERE id = 404;
 -- 8. a new version on an already-migrated node, by a different author
 INSERT INTO versions (id, node_id, person_id, description, contents, created_at, updated_at) VALUES
   (106, 11, 3, 'Tuned parameters', 'code@#$#@#$#@ui@#$#@#$#@ant info v2@#$#@#$#@shapes@#$#@#$#@NetLogo 6.2.0', '2026-03-01 10:00:00', '2026-03-01 10:00:00');

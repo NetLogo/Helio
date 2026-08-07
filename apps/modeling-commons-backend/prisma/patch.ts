@@ -912,11 +912,20 @@ async function planAdditionalFilesAndPreviews(
         )
       : null;
 
-    const current = await prisma.modelVersion.findUnique({
-      where: { modelId_versionNumber: { modelId, versionNumber } },
-      select: { previewImageFileKey: true },
-    });
-    const alreadyPointsThere = samePreviewObject(current?.previewImageFileKey ?? null, key);
+    // When a version is being appended, the version this resync targets does not
+    // exist in the database yet; what it will hold is whatever the append
+    // carries forward. Comparing against the database would read null and wrongly
+    // conclude a cleared preview is already applied.
+    const append = plan.versions.append.filter((a) => a.modelId === modelId).at(-1);
+    const currentKey = append
+      ? append.carryPreviewImageFileKey
+      : ((
+          await prisma.modelVersion.findUnique({
+            where: { modelId_versionNumber: { modelId, versionNumber } },
+            select: { previewImageFileKey: true },
+          })
+        )?.previewImageFileKey ?? null);
+    const alreadyPointsThere = samePreviewObject(currentKey, key);
 
     if (alreadyPointsThere && !(winner && changedIds.has(winner.id))) {
       plan.notes.push(
@@ -929,6 +938,7 @@ async function planAdditionalFilesAndPreviews(
     if (winner && key) plan.files.push({ key, body: winner.contents });
     if (alreadyPointsThere) continue; // bytes restaged, but the row is already right
 
+    if (append) append.carryPreviewImageFileKey = null; // this resync supersedes it
     plan.previews.push({
       nodeLegacyId: nodeId,
       modelId,
