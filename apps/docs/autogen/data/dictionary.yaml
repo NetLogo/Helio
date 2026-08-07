@@ -1908,7 +1908,7 @@ entries:
           since: "7.1"
       description: |+
         Make the given names available for importing. This command is only
-        valid in an NLS file. See [[import|import]] for more information.
+        valid in an NLM file. See [[import|import]] for more information.
       examples:
         - code: export [ *names* ]
   - id: export-cmds
@@ -3531,7 +3531,7 @@ entries:
           since: "7.1"
       description: |+
         Make the procedures in the given module available for use in the
-        current file. The file name of the module file (with the `.nls` suffix)
+        current file. The file name of the module file (with the `.nlm` suffix)
         must be a valid NetLogo name, so there can be no space in the name.
 
         For example:
