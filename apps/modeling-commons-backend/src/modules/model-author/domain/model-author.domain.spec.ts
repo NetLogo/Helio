@@ -21,7 +21,7 @@ describe('modelAuthorDomain', () => {
   describe('assertIsOwner', () => {
     it('passes for owner', () => {
       expect(() =>
-        domain.assertIsOwner({ modelId: 'm1', userId: 'u1', role: 'owner', createdAt: new Date() }),
+        domain.assertIsOwner({ modelId: 'm1', userId: 'u1', role: 'owner', collaboratorType: null, createdAt: new Date() }),
       ).not.toThrow();
     });
 
@@ -31,6 +31,7 @@ describe('modelAuthorDomain', () => {
           modelId: 'm1',
           userId: 'u1',
           role: 'contributor',
+          collaboratorType: null,
           createdAt: new Date(),
         }),
       ).toThrow(NotOwnerError);
@@ -44,6 +45,7 @@ describe('modelAuthorDomain', () => {
           modelId: 'm1',
           userId: 'u1',
           role: 'contributor',
+          collaboratorType: null,
           createdAt: new Date(),
         }),
       ).not.toThrow();
@@ -55,6 +57,7 @@ describe('modelAuthorDomain', () => {
           modelId: 'm1',
           userId: 'u1',
           role: 'owner',
+          collaboratorType: null,
           createdAt: new Date(),
         }),
       ).toThrow(CannotRemoveOwnerError);

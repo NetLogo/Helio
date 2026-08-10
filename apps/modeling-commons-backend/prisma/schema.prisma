@@ -196,6 +196,7 @@ model Model {
 
   versions        ModelVersion[]  @relation("ModelVersions")
   authors         ModelAuthor[]
+  nonMemberContributors NonMemberContributor[]
   permissions     ModelPermission[]
   additionalFiles ModelAdditionalFile[]
   likes           ModelLike[]
@@ -279,6 +280,8 @@ model ModelAuthor {
   modelId   String
   userId    String
   role      AuthorRole
+  // Legacy collaborator_types.name, kept for provenance. Nothing reads it.
+  collaboratorType String?
   createdAt DateTime @default(now())
 
   model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
@@ -286,6 +289,25 @@ model ModelAuthor {
 
   @@id ([modelId, userId])
   @@index([userId])
+}
+
+// Legacy non_member_collaborators joined onto non_member_collaborations: people
+// credited on a model who never held an account. Archival only, no business logic
+// reads this table.
+model NonMemberContributor {
+  id               String   @id @default(uuid())
+  legacyId         Int      @unique
+  modelId          String
+  email            String?
+  name             String?
+  collaboratorType String?
+  addedByUserId    String?
+  createdAt        DateTime @default(now())
+
+  model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@index([modelId])
+  @@index([email])
 }
 
 model ModelPermission {

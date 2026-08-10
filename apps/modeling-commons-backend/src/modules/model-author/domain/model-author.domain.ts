@@ -14,6 +14,7 @@ export default function modelAuthorDomain() {
         modelId,
         userId,
         role,
+        collaboratorType: null,
         createdAt: new Date(),
       };
     },
