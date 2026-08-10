@@ -4,12 +4,12 @@
  * write path ever fails to bump a counter (the log stays the source of truth).
  *
  * Usage:
- *   DATABASE_URL=<targetDB> tsx ./prisma/recompute-interaction-counts.ts
+ *   DATABASE_URL=<targetDB> tsx ./prisma/actions/recompute-interaction-counts.ts
  */
 
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../generated/prisma/client.js';
+import { PrismaClient } from '#prisma/index';
 
 const adapter = new PrismaPg({ connectionString: process.env['DATABASE_URL']! });
 const prisma = new PrismaClient({ adapter });
