@@ -1,4 +1,4 @@
-import type { Prisma } from '../../generated/prisma/client.js';
+import type { Prisma } from '../../../generated/prisma/client.js';
 import { buildAttachmentFileKey, buildPreviewFileKey, buildVersionFileKey } from './file-keys.ts';
 import type { LegacyAttachment, LegacyNode, LegacyTagging, LegacyVersion } from './legacy.ts';
 import { getNlogoFileExtension, parseNetlogoContents } from './nlogo.ts';

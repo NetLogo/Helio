@@ -36,7 +36,7 @@ INSERT INTO people (id, email_address, first_name, last_name, created_at, update
 UPDATE people SET biography = 'Rewritten bio.', url = 'https://ada.example/new',
                   updated_at = '2026-01-03 10:00:00' WHERE id = 1;
 
--- 4. a password reset: nothing archive.ts maps, so only updated_at moves
+-- 4. a password reset: nothing initial-import.ts maps, so only updated_at moves
 UPDATE people SET password = 'new-digest', updated_at = '2026-01-04 10:00:00' WHERE id = 2;
 
 -- 5. a new model with a version, a preview and a tag
@@ -47,11 +47,11 @@ INSERT INTO versions (id, node_id, person_id, description, contents, created_at,
 INSERT INTO attachments (id, node_id, person_id, description, contents, filename, content_type, created_at, updated_at) VALUES
   (405, 14, 5, 'Preview', '\x89504e470d0a1a0a04', 'flocking.png', 'preview', '2026-02-01 10:00:00', '2026-02-01 10:00:00');
 
--- 6. a node with no versions: archive.ts skips these, so the patch must too
+-- 6. a node with no versions: initial-import.ts skips these, so the patch must too
 INSERT INTO nodes (id, name, created_at, updated_at, visibility_id) VALUES
   (15, 'Empty Draft', '2026-02-02 10:00:00', '2026-02-02 10:00:00', 1);
 
--- 7. a node with two spam warnings: excluded, as archive.ts excludes it
+-- 7. a node with two spam warnings: excluded, as initial-import.ts excludes it
 INSERT INTO nodes (id, name, created_at, updated_at, visibility_id) VALUES
   (16, 'Buy Cheap Pills', '2026-02-03 10:00:00', '2026-02-03 10:00:00', 1);
 INSERT INTO versions (id, node_id, person_id, description, contents, created_at, updated_at) VALUES

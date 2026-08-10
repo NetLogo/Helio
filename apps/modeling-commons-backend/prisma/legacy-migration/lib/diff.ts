@@ -1,7 +1,7 @@
 import { parseCsv } from './csv.ts';
 
 /**
- * Reads the CSVs produced by prisma/diffdb.sh. Each file is `side,id,detail`
+ * Reads the CSVs produced by prisma/legacy-migration/diffdb.sh. Each file is `side,id,detail`
  * where `detail` is row_to_json for new/deleted rows and a human-readable
  * `col: [old] -> [new]` summary for modified rows.
  *
@@ -119,7 +119,7 @@ export function optionalString(row: Record<string, unknown>, key: string): strin
 /**
  * Legacy timestamps are `timestamp without time zone`, which node-postgres reads
  * as local time. Parse json copies the same way, or deleted rows would land in a
- * different instant than the rows archive.ts wrote from the same source.
+ * different instant than the rows initial-import.ts wrote from the same source.
  */
 export function optionalDate(row: Record<string, unknown>, key: string): Date | null {
   const value = row[key];

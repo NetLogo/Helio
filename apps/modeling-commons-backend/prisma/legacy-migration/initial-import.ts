@@ -15,13 +15,14 @@
  *
  * Re-running skips already-migrated rows but does NOT pick up changes to them,
  * nor new versions/attachments/tags on an already-migrated node. Use
- * prisma/patch.ts for that.
+ * apply-diff.ts for that.
  *
  * File extraction goes to local disk; an external uploader pushes to S3 later.
  *
  * Usage:
  *   DATABASE_URL=<targetDB> yarn run db:migrate:dev
- *   DATABASE_URL=<targetDB> PRISMA_SEED_FILE=archive.ts yarn run db:seed
+ *   DATABASE_URL=<targetDB> yarn run db:legacy:import
+ *   DATABASE_URL=<targetDB> yarn run db:legacy:patch
  */
 
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -29,7 +30,7 @@ import { randomUUID } from 'node:crypto';
 import { copyFile as fsCopyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { Prisma, PrismaClient } from '../generated/prisma/client.js';
+import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import { buildAvatarFileKey } from './lib/file-keys.ts';
 import {
   LegacyDatabase,
@@ -54,8 +55,8 @@ const OLD_URL =
   'postgresql://admin:test@127.0.0.1:5432/nlcommons_production';
 const OLD_SCHEMA = process.env['LEGACY_SCHEMA'] ?? 'public';
 const NEW_URL = required('DATABASE_URL');
-const AVATARS_DIR = path.join('.', 'prisma', 'avatars');
-const OUTPUT_DIR = process.env['OUTPUT_DIR'] ?? './prisma/archive-output';
+const AVATARS_DIR = path.join('.', 'prisma', 'legacy-migration', 'avatars');
+const OUTPUT_DIR = process.env['OUTPUT_DIR'] ?? './prisma/legacy-migration/output/archive';
 const FILES_DIR = path.join(OUTPUT_DIR, 'files');
 const BATCH = parseInt(process.env['BATCH_SIZE'] ?? '500', 10);
 const WIPE_TARGET = process.env['WIPE_TARGET'] === 'true';

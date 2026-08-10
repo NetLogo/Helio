@@ -11,7 +11,7 @@ import {
 const HEADER = 'side,id,detail\n';
 
 describe('isPatchableTable', () => {
-  test('accepts the six tables archive.ts migrates', () => {
+  test('accepts the six tables initial-import.ts migrates', () => {
     for (const t of ['people', 'nodes', 'versions', 'tags', 'tagged_nodes', 'attachments']) {
       expect(isPatchableTable(t)).toBe(true);
     }

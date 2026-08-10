@@ -1,4 +1,4 @@
--- Legacy Rails schema subset (the tables archive.ts reads), seeded with the
+-- Legacy Rails schema subset (the tables initial-import.ts reads), seeded with the
 -- "already migrated" snapshot.
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
@@ -53,7 +53,7 @@ CREATE TABLE spam_warnings (
     created_at timestamp, updated_at timestamp
 );
 
--- archive.ts reads these in its last phase; empty is enough.
+-- initial-import.ts reads these in its last phase; empty is enough.
 CREATE TABLE model_views (logged_at timestamp, ip_address text, node_id integer, person_id integer);
 CREATE TABLE model_runs (logged_at timestamp, ip_address text, node_id integer, person_id integer);
 CREATE TABLE model_downloads (logged_at timestamp, ip_address text, node_id integer, person_id integer);

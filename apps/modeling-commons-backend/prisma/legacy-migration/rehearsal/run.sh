@@ -35,28 +35,28 @@ done
 step "3. archive the baseline into the patch target (what production looks like today)"
 rm -rf "$WORK/out-archive"
 DATABASE_URL="$BASE/$PATCHED_DB" LEGACY_DATABASE_URL="$BASE/$LEGACY_DB" LEGACY_SCHEMA=public \
-  OUTPUT_DIR="$WORK/out-archive" npx tsx prisma/archive.ts | tail -3
+  OUTPUT_DIR="$WORK/out-archive" npx tsx prisma/legacy-migration/initial-import.ts | tail -3
 
 step "4. diff baseline against the fresh dump"
 rm -rf "$DIFF_DIR"
-LEGACY_DB="$LEGACY_DB" DIFF_DIR="$DIFF_DIR" ./prisma/diffdb.sh
+LEGACY_DB="$LEGACY_DB" DIFF_DIR="$DIFF_DIR" ./prisma/legacy-migration/diffdb.sh
 
 step "5. dry run"
 DATABASE_URL="$BASE/$PATCHED_DB" LEGACY_DATABASE_URL="$BASE/$LEGACY_DB" LEGACY_SCHEMA=incoming \
-  DIFF_DIR="$DIFF_DIR" OUTPUT_DIR="$WORK/out-patch" npx tsx prisma/patch.ts
+  DIFF_DIR="$DIFF_DIR" OUTPUT_DIR="$WORK/out-patch" npx tsx prisma/legacy-migration/apply-diff.ts
 
 step "6. apply"
 DATABASE_URL="$BASE/$PATCHED_DB" LEGACY_DATABASE_URL="$BASE/$LEGACY_DB" LEGACY_SCHEMA=incoming \
-  DIFF_DIR="$DIFF_DIR" OUTPUT_DIR="$WORK/out-patch" npx tsx prisma/patch.ts --apply --skip-upload
+  DIFF_DIR="$DIFF_DIR" OUTPUT_DIR="$WORK/out-patch" npx tsx prisma/legacy-migration/apply-diff.ts --apply --skip-upload
 
 step "7. archive the fresh dump into a second target, from scratch"
 rm -rf "$WORK/out-fresh"
 DATABASE_URL="$BASE/$FRESH_DB" LEGACY_DATABASE_URL="$BASE/$LEGACY_DB" LEGACY_SCHEMA=incoming \
-  OUTPUT_DIR="$WORK/out-fresh" npx tsx prisma/archive.ts | tail -3
+  OUTPUT_DIR="$WORK/out-fresh" npx tsx prisma/legacy-migration/initial-import.ts | tail -3
 
 step "8. compare"
-DATABASE_URL="$BASE/$PATCHED_DB" npx tsx prisma/rehearsal/dump.ts > "$WORK/patched.json"
-DATABASE_URL="$BASE/$FRESH_DB"   npx tsx prisma/rehearsal/dump.ts > "$WORK/fresh.json"
+DATABASE_URL="$BASE/$PATCHED_DB" npx tsx prisma/legacy-migration/rehearsal/dump.ts > "$WORK/patched.json"
+DATABASE_URL="$BASE/$FRESH_DB"   npx tsx prisma/legacy-migration/rehearsal/dump.ts > "$WORK/fresh.json"
 
 # A soft-deleted model is by design absent from an archive of the new snapshot,
 # so assert it separately and compare everything else.

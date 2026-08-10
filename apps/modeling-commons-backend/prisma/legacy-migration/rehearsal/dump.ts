@@ -1,6 +1,6 @@
 /** Canonical, uuid-free dump of a target DB so two of them can be compared. */
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../../generated/prisma/client.js';
+import { PrismaClient } from '../../../generated/prisma/client.js';
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env['DATABASE_URL']! }),

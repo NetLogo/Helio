@@ -1,10 +1,10 @@
 /**
  * In-place patch of an already-archived target DB.
  *
- * archive.ts is a one-shot import: re-running it skips anything that already
+ * initial-import.ts is a one-shot import: re-running it skips anything that already
  * carries a legacyId, so it cannot see edits, deletions, or new children of an
  * already-migrated node. This script closes that gap from the diff that
- * prisma/diffdb.sh produces between the migrated snapshot and a fresh dump.
+ * prisma/legacy-migration/diffdb.sh produces between the migrated snapshot and a fresh dump.
  *
  * It never reads or writes the `id` column of an existing row. Everything is
  * addressed by legacyId (User/Model/Tag) or derived from it.
@@ -14,10 +14,10 @@
  * expectations manifest that --verify-only replays against the database.
  *
  * Usage:
- *   ./prisma/diffdb.sh                 # writes ~/dbdiff/*.csv
- *   yarn run db:patch                  # dry run: plan only, no writes
- *   yarn run db:patch --apply          # stage files, upload, apply, verify
- *   yarn run db:patch --verify-only    # re-check the last applied patch
+ *   ./prisma/legacy-migration/diffdb.sh       # writes ~/dbdiff/*.csv
+ *   yarn run db:legacy:patch                  # dry run: plan only, no writes
+ *   yarn run db:legacy:patch --apply          # stage files, upload, apply, verify
+ *   yarn run db:legacy:patch --verify-only    # re-check the last applied patch
  */
 
 import { HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
@@ -28,7 +28,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
-import { Prisma, PrismaClient } from '../generated/prisma/client.js';
+import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import {
   isPatchableTable,
   optionalDate,
@@ -75,10 +75,10 @@ const VERIFY_ONLY = process.argv.includes('--verify-only');
 const SKIP_UPLOAD = process.argv.includes('--skip-upload');
 
 const DIFF_DIR = process.env['DIFF_DIR'] ?? path.join(homedir(), 'dbdiff');
-const OUTPUT_DIR = process.env['OUTPUT_DIR'] ?? './prisma/patch-output';
+const OUTPUT_DIR = process.env['OUTPUT_DIR'] ?? './prisma/legacy-migration/output/patch';
 const FILES_DIR = path.join(OUTPUT_DIR, 'files');
 const MANIFEST_PATH = path.join(OUTPUT_DIR, 'patch-manifest.json');
-const AVATARS_DIR = path.join('.', 'prisma', 'avatars');
+const AVATARS_DIR = path.join('.', 'prisma', 'legacy-migration', 'avatars');
 const LEGACY_SCHEMA = process.env['LEGACY_SCHEMA'] ?? 'incoming';
 const TXN_TIMEOUT_MS = parseInt(process.env['PATCH_TXN_TIMEOUT_MS'] ?? '300000', 10);
 
@@ -123,7 +123,7 @@ type Plan = {
       contributorUserId: string | null;
       carryTagIds: string[];
       carryPreviewImageFileKey: string | null;
-      /** Version that stops being latest; archive.ts keeps tags and the preview
+      /** Version that stops being latest; initial-import.ts keeps tags and the preview
        *  on the latest version only, so they move rather than being copied. */
       vacatedVersionNumber: number | null;
     }>;
@@ -274,7 +274,9 @@ async function loadDiffs(): Promise<Map<PatchableTable, TableDiff>> {
   }
 
   if (ignored.length > 0) {
-    console.log('→ Ignored, because archive.ts never mapped these tables into the new schema:');
+    console.log(
+      '→ Ignored, because initial-import.ts never mapped these tables into the new schema:',
+    );
     console.log(`    ${ignored.join(', ')}\n`);
   }
   return diffs;
@@ -357,7 +359,7 @@ async function planTags(diffs: Map<PatchableTable, TableDiff>, plan: Plan, ctx: 
     }
     const name = normalizeTagName(t.name);
     if (!name) {
-      plan.notes.push(`tag ${t.id} has a blank name; skipped, as archive.ts does`);
+      plan.notes.push(`tag ${t.id} has a blank name; skipped, as initial-import.ts does`);
       continue;
     }
     const existingId = ctx.tagIdByName.get(name);
@@ -559,7 +561,7 @@ async function planNewModels(diffs: Map<PatchableTable, TableDiff>, plan: Plan, 
       continue;
     }
     if (spamNodeIds.has(node.id)) {
-      plan.notes.push(`node ${node.id} has >=2 spam warnings; skipped, as archive.ts does`);
+      plan.notes.push(`node ${node.id} has >=2 spam warnings; skipped, as initial-import.ts does`);
       continue;
     }
 
@@ -569,7 +571,7 @@ async function planNewModels(diffs: Map<PatchableTable, TableDiff>, plan: Plan, 
       ctx.legacy.taggingsForNode(node.id),
     ]);
     if (versions.length === 0) {
-      plan.notes.push(`node ${node.id} has no versions; skipped, as archive.ts does`);
+      plan.notes.push(`node ${node.id} has no versions; skipped, as initial-import.ts does`);
       continue;
     }
 
@@ -701,7 +703,7 @@ async function planVersions(diffs: Map<PatchableTable, TableDiff>, plan: Plan, c
         legacyVersionId: v.id,
         data: stageVersion(plan, buildVersionCreate(modelId, node, v, versionNumber), v),
         contributorUserId: ctx.userIdByLegacyId.get(v.person_id) ?? null,
-        // archive.ts keeps a node's tags and preview on its latest version
+        // initial-import.ts keeps a node's tags and preview on its latest version
         // only, and the app reads them from there. Move them onto the new
         // latest so the result matches a fresh archive of the same snapshot.
         carryTagIds: isLast ? carryTagIds : [],
@@ -1084,7 +1086,7 @@ async function planTaggings(diffs: Map<PatchableTable, TableDiff>, plan: Plan, c
 
 /**
  * `updatedAt` is carried by Prisma's @updatedAt, which overrides any value
- * supplied on create — so archive.ts stamped every migrated row with the
+ * supplied on create — so initial-import.ts stamped every migrated row with the
  * migration time and legacy `updated_at` was never preserved. Writing it here
  * would leave a handful of rows inconsistent with the rest, so it is left alone.
  */
@@ -1112,7 +1114,7 @@ async function planModelUpdates(
       createdAt: node.created_at ?? current.createdAt,
     });
 
-    // archive.ts titles every version with the node name, so a rename fans out.
+    // initial-import.ts titles every version with the node name, so a rename fans out.
     const staleTitles = await prisma.modelVersion.count({
       where: { modelId, title: { not: node.name } },
     });

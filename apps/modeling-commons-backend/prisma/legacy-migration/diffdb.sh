@@ -5,15 +5,15 @@
 # Each CSV is `side,id,detail` where side is new | modified | deleted. `detail`
 # is row_to_json for new/deleted rows and a `col: [old] -> [new]` summary for
 # modified ones. The `contents` columns of versions and attachments are replaced
-# with an md5 digest so the diff stays small; prisma/patch.ts re-reads the real
+# with an md5 digest so the diff stays small; prisma/legacy-migration/apply-diff.ts re-reads the real
 # bytes from the `incoming` schema.
 #
-# Tables in SKIP feed ModelInteraction, which archive.ts never populated and
+# Tables in SKIP feed ModelInteraction, which initial-import.ts never populated and
 # which has no dedupe key, so their diffs are not actionable.
 #
 # Connection comes from the standard PG* env vars (PGHOST, PGPORT, PGUSER, ...).
 #
-# Usage: LEGACY_DB=nlcommons_current DIFF_DIR=~/dbdiff ./prisma/diffdb.sh
+# Usage: LEGACY_DB=nlcommons_current DIFF_DIR=~/dbdiff ./prisma/legacy-migration/diffdb.sh
 set -euo pipefail
 
 DB="${LEGACY_DB:-nlcommons_current}"

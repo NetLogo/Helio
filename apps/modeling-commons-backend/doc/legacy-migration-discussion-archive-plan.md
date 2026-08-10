@@ -106,7 +106,7 @@ src/modules/legacy-discussion/
 Deliberately minimal:
 
 - **No `domain/`.** This module has no domain logic — the data is frozen. The mapper handles the tombstone projection.
-- **No `<module>.service.ts`.** No writes from the request path. The bulk importer lives in `prisma/archive.ts` (see §6) and is the only writer.
+- **No `<module>.service.ts`.** No writes from the request path. The bulk importer lives in `prisma/legacy-migration/initial-import.ts` (see §6) and is the only writer.
 - **No `patches/`.** Same reason.
 - **One query** (`list-legacy-postings`) is enough; deep-link `get-legacy-posting` is in Open Questions.
 
@@ -184,7 +184,7 @@ Notes:
 - **No POST / PATCH** anywhere. Surface-area discipline: the archive is data, not a feature.
 - The list route piggybacks on `resolveModel('read')` instead of layering its own visibility logic. If you can't see the model, you can't see its archive. Anonymous viewers can read archives on public/unlisted models, same as they can read the model itself.
 
-## 7. Importer (extends `prisma/archive.ts`)
+## 7. Importer (extends `prisma/legacy-migration/initial-import.ts`)
 
 The bulk import is a new step in the existing seed script, called from `main()` after `migrateNodes` so `modelIdMap` and `userIdMap` are in scope:
 
@@ -293,7 +293,7 @@ Idempotency:
 - Re-running the seed picks up new legacy rows (none expected — legacy DB is frozen — but the script supports it). Existing rows are skipped via the `legacyId` probe in pass 1; pass 2's update is no-op-safe (same parent uuid).
 - `WIPE_TARGET=true` already truncates the right cascade; add `"LegacyModelPosting"` to the truncate list in `wipeTarget`.
 
-Report counters to add to the existing `report` object in `archive.ts`:
+Report counters to add to the existing `report` object in `initial-import.ts`:
 
 ```ts
 legacyPostings: {
@@ -371,7 +371,7 @@ Awilix auto-loads by filename. No service to register.
 
 ### Importer
 
-- **`prisma/archive.legacy-postings.spec.ts`** (heavy; gated behind an integration flag because it touches the legacy DB)
+- **`prisma/legacy-migration/legacy-postings.spec.ts`** (heavy; gated behind an integration flag because it touches the legacy DB)
   - Seed a small `postings` fixture in a test legacy DB; run the import step; assert row counts, parent links, tombstone bodies, orphan-skip behavior.
   - Re-run the import; assert `skipped_existing` increments and no duplicates appear.
 
@@ -400,13 +400,13 @@ Awilix auto-loads by filename. No service to register.
 ## 13. Sequencing
 
 - **No dependency on `[[legacy-migration-discussion-plan]] / model-comment` landing first.** This module is independent.
-- **Does depend on `prisma/archive.ts` Users/Models import** for the `userIdMap` / `modelIdMap`. Already in place — postings just get a new step downstream of those.
+- **Does depend on `prisma/legacy-migration/initial-import.ts` Users/Models import** for the `userIdMap` / `modelIdMap`. Already in place — postings just get a new step downstream of those.
 - Land order, if both this plan and `model-comment` are picked up: either order is fine; they don't touch each other.
 
 ## 14. References
 
 - Legacy schema: `/Users/pas6148/Documents/netlogo/modelingcommons/db/schema.rb` (lines 240–259 — `postings` table).
 - Legacy model: `/Users/pas6148/Documents/netlogo/modelingcommons/app/models/posting.rb`.
-- Existing importer: `apps/modeling-commons-backend/prisma/archive.ts` (extends in §7).
+- Existing importer: `apps/modeling-commons-backend/prisma/legacy-migration/initial-import.ts` (extends in §7).
 - Mirror module shape: `src/modules/model-author/` (smallest existing module skeleton).
 - Cross-link: [[legacy-migration-discussion-plan]] (the active comment system).
