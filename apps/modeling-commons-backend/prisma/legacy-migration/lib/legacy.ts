@@ -58,6 +58,30 @@ export type LegacyAttachment = {
   created_at: Date | null;
 };
 
+export type LegacyCollaboration = {
+  id: number;
+  person_id: number | null;
+  node_id: number | null;
+  collaborator_type_id: number | null;
+  created_at: Date | null;
+};
+
+export type LegacyNonMemberCollaboration = {
+  id: number;
+  non_member_collaborator_id: number | null;
+  node_id: number | null;
+  collaborator_type_id: number | null;
+  person_id: number;
+  email: string | null;
+  name: string | null;
+  created_at: Date | null;
+};
+
+export type LegacyCollaboratorType = {
+  id: number;
+  name: string | null;
+};
+
 export const PERSON_COLUMNS = `id, email_address, first_name, last_name, administrator,
        avatar_file_name, avatar_updated_at, birthdate, country_name, url, biography,
        created_at, updated_at`;
@@ -121,6 +145,35 @@ export class LegacyDatabase {
   async allTags(): Promise<LegacyTag[]> {
     const { rows } = await this.pool.query<LegacyTag>(
       `SELECT ${TAG_COLUMNS} FROM ${this.table('tags')} ORDER BY id ASC`,
+    );
+    return rows;
+  }
+
+  async allCollaboratorTypes(): Promise<LegacyCollaboratorType[]> {
+    const { rows } = await this.pool.query<LegacyCollaboratorType>(
+      `SELECT id, name FROM ${this.table('collaborator_types')} ORDER BY id ASC`,
+    );
+    return rows;
+  }
+
+  async allCollaborations(): Promise<LegacyCollaboration[]> {
+    const { rows } = await this.pool.query<LegacyCollaboration>(
+      `SELECT id, person_id, node_id, collaborator_type_id, created_at
+       FROM ${this.table('collaborations')}
+       ORDER BY id ASC`,
+    );
+    return rows;
+  }
+
+  /** Joined so a contributor's identity travels with the row that credits it. */
+  async allNonMemberCollaborations(): Promise<LegacyNonMemberCollaboration[]> {
+    const { rows } = await this.pool.query<LegacyNonMemberCollaboration>(
+      `SELECT c.id, c.non_member_collaborator_id, c.node_id, c.collaborator_type_id,
+              c.person_id, c.created_at, p.email, p.name
+       FROM ${this.table('non_member_collaborations')} c
+       LEFT JOIN ${this.table('non_member_collaborators')} p
+              ON p.id = c.non_member_collaborator_id
+       ORDER BY c.id ASC`,
     );
     return rows;
   }
