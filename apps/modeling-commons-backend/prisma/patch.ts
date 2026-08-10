@@ -882,6 +882,7 @@ async function planAdditionalFilesAndPreviews(
         modelId,
         taggedVersionNumber: await latestVersionNumberAfterAppends(plan, modelId),
         fileKey: key,
+        kind: 'additional',
         createdAt: a.created_at ?? new Date(),
       },
     });

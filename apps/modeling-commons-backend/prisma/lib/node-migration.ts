@@ -190,6 +190,7 @@ export async function createModelFromNode(
         modelId: modelUuid,
         taggedVersionNumber: latestVersionNumber,
         fileKey: relKey,
+        kind: 'additional',
         createdAt: a.created_at ?? deps.now(),
       },
     });

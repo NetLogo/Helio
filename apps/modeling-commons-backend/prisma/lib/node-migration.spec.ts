@@ -296,6 +296,7 @@ describe('createModelFromNode', () => {
       id: 'uuid-2',
       modelId: MODEL_UUID,
       taggedVersionNumber: 1,
+      kind: 'additional',
       createdAt: attachments[0]!.created_at,
     });
     expect(file.fileKey).toBe(
