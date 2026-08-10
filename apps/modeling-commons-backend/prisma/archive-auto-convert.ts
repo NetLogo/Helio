@@ -3,7 +3,7 @@ import 'dotenv/config';
 import path from 'node:path';
 import fs from 'fs/promises';
 
-import { parseNlogo, parseNlogox } from './netlogo-utils.ts';
+import { parseNlogo, parseNlogox } from './lib/nlogo.ts';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { Dirent } from 'node:fs';
 
