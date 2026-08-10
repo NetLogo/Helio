@@ -154,6 +154,7 @@ jobs:
 
   deploy-staging:
     needs: test
+    if: github.ref == 'refs/heads/staging/modeling-commons'
     uses: ./.github/workflows/build-and-push-modeling-commons.yml
     with:
       environment: modeling-commons-staging
