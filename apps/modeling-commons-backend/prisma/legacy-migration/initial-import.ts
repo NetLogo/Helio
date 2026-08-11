@@ -381,13 +381,17 @@ async function migrateInteractions(
   modelIdMap: Map<number, string>,
   userIdMap: Map<number, string>,
 ) {
-  const sources: Array<{ table: string; kind: 'view' | 'run' | 'download' }> = [
-    { table: 'model_views', kind: 'view' },
-    { table: 'model_runs', kind: 'run' },
-    { table: 'model_downloads', kind: 'download' },
+  const sources: Array<{
+    table: string;
+    kind: 'view' | 'run' | 'download';
+    counter: keyof typeof report.interactions;
+  }> = [
+    { table: 'model_views', kind: 'view', counter: 'views' },
+    { table: 'model_runs', kind: 'run', counter: 'runs' },
+    { table: 'model_downloads', kind: 'download', counter: 'downloads' },
   ];
 
-  for (const { table, kind } of sources) {
+  for (const { table, kind, counter } of sources) {
     let count = 0;
     await legacy.streamRows<OldEvent>(
       `SELECT logged_at, ip_address, node_id, person_id FROM ${legacy.table(table)}`,
@@ -413,6 +417,7 @@ async function migrateInteractions(
         }
       },
     );
+    report.interactions[counter] = count;
     console.log(`  ${table}: ${count} rows`);
   }
 }

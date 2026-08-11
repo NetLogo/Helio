@@ -8,8 +8,9 @@
 # with an md5 digest so the diff stays small; prisma/legacy-migration/apply-diff.ts re-reads the real
 # bytes from the `incoming` schema.
 #
-# Tables in SKIP feed ModelInteraction, which initial-import.ts never populated and
-# which has no dedupe key, so their diffs are not actionable.
+# Tables in SKIP feed ModelInteraction. initial-import.ts does populate it — over
+# six million rows on the production snapshot — but the table has no dedupe key,
+# so their diffs are not actionable and interaction drift stays invisible here.
 #
 # Connection comes from the standard PG* env vars (PGHOST, PGPORT, PGUSER, ...).
 #
