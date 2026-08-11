@@ -30,6 +30,18 @@
         <UCard class="ring-0 border-0 md:px-5 md:py-3 flex-1 h-fit shrink-0">
           <div class="flex items-center justify-between mb-6 gap-4">
             <h4 class="m-0">{{ title }}</h4>
+            <UTooltip v-if="isEdit" text="Revert changes">
+              <UButton
+                variant="ghost"
+                color="neutral"
+                icon="i-mdi-restore"
+                aria-label="Revert changes"
+                data-testid="revert-changes"
+                :disabled="publishing || reverting || !isDirty"
+                :loading="reverting"
+                @click="onRevert"
+              />
+            </UTooltip>
           </div>
 
           <UForm :state="formState">
@@ -75,16 +87,15 @@
               :is-edit="isEdit"
               :publishing="publishing"
               :hydrating="hydrating"
-              :reverting="reverting"
               :deleting-model="deletingModel"
-              :is-dirty="isDirty"
               :draft-id="draftId"
               :save-status-label="saveStatusLabel"
               :submit-label="submitLabel"
               :discard-label="discardLabel"
+              :is-last-step="isLastStep"
               @delete="confirmDelete = true"
-              @revert="onRevert"
               @discard="onDiscard"
+              @next="goToNextStep"
               @submit="onSubmit"
             />
           </UForm>
@@ -185,21 +196,31 @@ const reverting = ref(false);
 const confirmDelete = ref(false);
 const confirmDiscard = ref(false);
 
+const stepperItems = [
+  { slot: "details", icon: "i-lucide-file-text", title: "Add Details" },
+  { slot: "files", icon: "i-lucide-file-up", title: "Add Files" },
+  { slot: "permissions", icon: "i-lucide-lock", title: "Set Permissions" },
+] satisfies Array<StepperItem>;
+
 const isEdit = computed(() => props.mode === "edit");
 const isSeedingDraft = computed(() => Boolean(props.initialDraftId || props.seedModelId));
 const loadingDraft = computed(
   () => isSeedingDraft.value && (initializing.value || hydrating.value),
 );
 const showPicker = computed(() => !isEdit.value && !hasPrimaryFile.value);
-const submitLabel = computed(() => "Publish");
+// Editing an existing model is a save surface, not a wizard: its steps are
+// freely navigable sections, so the primary action always publishes there.
+const isLastStep = computed(
+  () => isEdit.value || stepIndex.value >= stepperItems.length - 1,
+);
+const submitLabel = computed(() => (isLastStep.value ? "Publish" : "Next"));
 const discardLabel = computed(() => (isEdit.value ? "Discard edits" : "Discard draft"));
 const willCreateNewVersion = computed(() => primaryFileChanged.value || modelFilesAdded.value);
 
-const stepperItems = [
-  { slot: "details", icon: "i-lucide-file-text", title: "Add Details" },
-  { slot: "files", icon: "i-lucide-file-up", title: "Add Files" },
-  { slot: "permissions", icon: "i-lucide-lock", title: "Set Permissions" },
-] satisfies Array<StepperItem>;
+function goToNextStep(): void {
+  if (isLastStep.value) return;
+  stepIndex.value += 1;
+}
 
 onMounted(() => {
   void init();

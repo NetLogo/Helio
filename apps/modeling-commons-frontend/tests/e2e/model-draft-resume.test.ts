@@ -75,11 +75,21 @@ describe("models: draft resume journey", async () => {
         await resumeItem.click();
 
         await page.waitForURL(/\/models\/upload\?draft=/, { timeout: 30_000 });
-        // The resumed editor hydrates the draft before showing the stepper; wait
-        // for the Publish button to be ready, then publish.
-        const publish = page.getByRole("button", { name: "Publish" });
-        await publish.waitFor({ state: "visible", timeout: 30_000 });
-        await publish.click();
+        // The resumed editor hydrates the draft before showing the stepper, and
+        // opens on the first step. The primary action reads "Next" and advances
+        // until the last step, where it becomes "Publish". Reka can swallow a
+        // click that lands before the trigger is interactive, so step forward in
+        // a retry loop until the action offers to publish.
+        const primary = page.locator('[data-testid="draft-primary-action"]');
+        await primary.waitFor({ state: "visible", timeout: 30_000 });
+        const stepDeadline = Date.now() + 30_000;
+        while (Date.now() < stepDeadline) {
+          if ((await primary.innerText()).includes("Publish")) break;
+          await primary.click().catch(() => undefined);
+          await page.waitForTimeout(250);
+        }
+        await expect.poll(() => primary.innerText(), { timeout: 15_000 }).toContain("Publish");
+        await primary.click();
         // Publish navigates to the new model's detail page (/models/<id>, which
         // canonicalizes to /models/<slug>/<id>); just not back to /upload.
         await page.waitForURL(
