@@ -1,25 +1,16 @@
 #!/usr/bin/env bash
-# Diffs the migrated legacy snapshot (schema `public`) against a fresh dump of
-# the same database (schema `incoming`) and writes one CSV per changed table.
+# Diffs the migrated snapshot (`public`) against a fresh dump (`incoming`), one CSV
+# per changed table as `side,id,detail`. versions/attachments `contents` are md5'd
+# to keep it small, so apply-diff.ts re-reads the real bytes. SKIP drops tables no
+# patch can act on; small unpatchable ones stay in and get listed as ignored.
 #
-# Each CSV is `side,id,detail` where side is new | modified | deleted. `detail`
-# is row_to_json for new/deleted rows and a `col: [old] -> [new]` summary for
-# modified ones. The `contents` columns of versions and attachments are replaced
-# with an md5 digest so the diff stays small; prisma/legacy-migration/apply-diff.ts re-reads the real
-# bytes from the `incoming` schema.
-#
-# Tables in SKIP feed ModelInteraction. initial-import.ts does populate it — over
-# six million rows on the production snapshot — but the table has no dedupe key,
-# so their diffs are not actionable and interaction drift stays invisible here.
-#
-# Connection comes from the standard PG* env vars (PGHOST, PGPORT, PGUSER, ...).
-#
+# Connection comes from the standard PG* env vars.
 # Usage: LEGACY_DB=nlcommons_current DIFF_DIR=~/dbdiff ./prisma/legacy-migration/diffdb.sh
 set -euo pipefail
 
 DB="${LEGACY_DB:-nlcommons_current}"
 OUT="${DIFF_DIR:-$HOME/dbdiff}"
-SKIP="logged_actions model_views model_view_counts model_downloads"
+SKIP="logged_actions model_views model_view_counts model_downloads sessions ip_locations"
 mkdir -p "$OUT"
 
 hash_cols_for() {
