@@ -1,5 +1,6 @@
 <template>
   <div class="grid gap-6">
+    <LegacyAccountNoticeDialog :next="nextPath" />
     <UAuthForm
       :fields="fields"
       :schema="schema"

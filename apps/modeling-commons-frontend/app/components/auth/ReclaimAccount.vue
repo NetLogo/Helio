@@ -22,8 +22,5 @@ const props = defineProps<{
   next?: string;
 }>();
 
-const resetPasswordLink = computed(() => {
-  const nextPath = getSafeNextPath(props.next);
-  return `${authRoutes.resetPassword}?next=${encodeURIComponent(nextPath)}`;
-});
+const resetPasswordLink = computed(() => getResetPasswordLink(props.next));
 </script>

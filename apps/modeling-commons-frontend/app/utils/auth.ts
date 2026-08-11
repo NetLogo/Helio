@@ -53,3 +53,8 @@ export function getPasskeyPromptUrl(next?: unknown) {
   const safeNext = getSafeNextPath(next);
   return `${authRoutes.passkey}?next=${encodeURIComponent(safeNext)}`;
 }
+
+export function getResetPasswordLink(next?: unknown) {
+  const safeNext = getSafeNextPath(next);
+  return `${authRoutes.resetPassword}?next=${encodeURIComponent(safeNext)}`;
+}
