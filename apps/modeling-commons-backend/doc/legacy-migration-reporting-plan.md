@@ -72,7 +72,7 @@ enum ReportStatus {
 }
 
 model Report {
-  id              String              @id @default(uuid())
+  id              String              @id @default(nanoid())
   resourceType    ReportResourceType
   resourceId      String
   reporterUserId  String
@@ -216,7 +216,7 @@ export default function reportDomain() {
         throw new EmptyReasonError();
       }
       return {
-        id: crypto.randomUUID(),
+        id: newId(),
         ...props,
         status: 'open',
         resolverUserId: null,
@@ -438,7 +438,7 @@ export const submitReportRequestDtoSchema = Type.Object({
     Type.Literal('user'),
     Type.Literal('comment'),
   ]),
-  resourceId: Type.String({ format: 'uuid' }),
+  resourceId: idSchema(),
   kind: Type.Union([
     Type.Literal('spam'),
     Type.Literal('abuse'),
@@ -484,14 +484,14 @@ export type ListReportsQueryDto = Static<typeof listReportsQuerySchema>;
 
 ```ts
 export const reportResponseDtoSchema = Type.Object({
-  id:             Type.String({ format: 'uuid' }),
+  id:             idSchema(),
   resourceType:   Type.String(),                                       // enum string
-  resourceId:     Type.String({ format: 'uuid' }),
-  reporterUserId: Type.String({ format: 'uuid' }),
+  resourceId:     idSchema(),
+  reporterUserId: idSchema(),
   kind:           Type.String(),
   reason:         Type.String(),
   status:         Type.String(),
-  resolverUserId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
+  resolverUserId: Type.Union([idSchema(), Type.Null()]),
   resolverNote:   Type.Union([Type.String(), Type.Null()]),
   createdAt:      Type.String({ format: 'date-time' }),
   resolvedAt:     Type.Union([Type.String({ format: 'date-time' }), Type.Null()]),
@@ -625,7 +625,7 @@ following `model-author.feature` style:
 - `POST /v1/reports` requires auth (401 anonymous).
 - `POST /v1/reports` against a real model returns 201 + id.
 - Second `POST` same reporter+resource returns 409.
-- `POST` against a non-existent UUID returns 404.
+- `POST` against a non-existent id returns 404.
 - `GET /v1/admin/reports` returns 403 for non-admin user, 200 for admin,
   paginated.
 - Filter combinations: `?status=open`, `?resourceType=model&kind=spam`,

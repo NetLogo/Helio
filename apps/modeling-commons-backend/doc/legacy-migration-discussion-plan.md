@@ -23,7 +23,7 @@ One Prisma migration: add the `ModelComment` table, plus the back-relations on
 
 ```prisma
 model ModelComment {
-  id              String   @id @default(uuid())
+  id              String   @id @default(nanoid())
   modelId         String
   userId          String?           // null when author was hard-deleted (FK SetNull)
   parentCommentId String?           // null = top-level
@@ -113,7 +113,7 @@ which the service handles directly. Add `patches/` only if a future feature
 (same pattern as `model-author`). The domain factory exposes:
 
 - `createComment({ modelId, userId, parentCommentId?, body }): ModelCommentEntity`
-  — assigns `id` (uuid), `createdAt = updatedAt = now`, `deletedAt = null`.
+  assigns `id` (`newId()`), `createdAt = updatedAt = now`, `deletedAt = null`.
   Validates `body` length (1..10_000, trimmed) and throws
   `CommentBodyInvalidError` on failure. **Does not** sanitize or escape — body
   is stored as raw markdown.
@@ -201,7 +201,7 @@ mock pattern verbatim.
 import { Type, type Static } from 'typebox';
 
 export const createCommentRequestDtoSchema = Type.Object({
-  parentCommentId: Type.Optional(Type.String({ format: 'uuid' })),
+  parentCommentId: Type.Optional(idSchema()),
   body: Type.String({ minLength: 1, maxLength: 10_000 }),
 });
 export type CreateCommentRequestDto = Static<typeof createCommentRequestDtoSchema>;
@@ -223,16 +223,16 @@ tree can keep deleted nodes as structural placeholders.
 
 ```ts
 export const commentAuthorDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   name: Type.Union([Type.String(), Type.Null()]),
   image: Type.Union([Type.String(), Type.Null()]),
 });
 
 export const commentResponseDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  modelId: Type.String({ format: 'uuid' }),
-  userId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
-  parentCommentId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
+  id: idSchema(),
+  modelId: idSchema(),
+  userId: Type.Union([idSchema(), Type.Null()]),
+  parentCommentId: Type.Union([idSchema(), Type.Null()]),
   body: Type.Union([Type.String(), Type.Null()]),
   deletedAt: Type.Union([Type.String(), Type.Null()]),
   createdAt: Type.String(),
@@ -566,7 +566,7 @@ mapped user id. That's a separate import script, out of scope here.
 
 ### Integration (`tests/integration/comment.test.ts`)
 
-- POST `/v1/models/:id/comments` returns 201 + valid uuid; unauthenticated
+- POST `/v1/models/:id/comments` returns 201 + valid id; unauthenticated
   returns 401; reading a private model the caller can't see returns 404 (from
   `resolveModel`).
 - POST a reply with `parentCommentId` from a different model returns 400.

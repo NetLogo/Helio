@@ -326,7 +326,7 @@ export type RevertVersionRequestDto = Static<typeof revertVersionRequestDtoSchem
 
 // dtos/revert-version.response.dto.ts
 export const revertVersionResponseDtoSchema = Type.Object({
-  modelId: Type.String({ format: 'uuid' }),
+  modelId: idSchema(),
   versionNumber: Type.Integer({ minimum: 1 }),
 });
 export type RevertVersionResponseDto = Static<typeof revertVersionResponseDtoSchema>;

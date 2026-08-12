@@ -21,10 +21,10 @@ Source table: `postings` in `nlcommons_production` (Rails). Columns confirmed ag
 
 | Legacy column     | New column / treatment                                                        |
 |-------------------|--------------------------------------------------------------------------------|
-| `id`              | `legacyId` (Int, `@unique`). New row gets a uuid `id`.                          |
+| `id`              | `legacyId` (Int, `@unique`). New row gets a NanoID `id`.                        |
 | `person_id`       | `userId` resolved via `User.legacyId` map. `null` if author wasn't migrated.    |
 | `node_id`         | `modelId` resolved via `Model.legacyId` map. **Posting skipped if unresolved** (orphaned: model was spam-excluded or never migrated). |
-| `parent_id`       | `parentLegacyPostingId` resolved via two-pass uuid map.                         |
+| `parent_id`       | `parentLegacyPostingId` resolved via two-pass id map.                          |
 | `title`           | `title` (nullable; legacy default was `'(No title)'`).                          |
 | `body`            | `body`. **Nulled if `deleted_at IS NOT NULL`** — no recoverable body for tombstones. Stored as-is; legacy did `gsub!('<', '&lt;')`, so values may already be HTML-escaped. Frontend treats as preformatted text. |
 | `is_question`     | `isQuestion` (bool).                                                            |
@@ -41,7 +41,7 @@ One Prisma migration. Adds `LegacyModelPosting` + two back-relations.
 
 ```prisma
 model LegacyModelPosting {
-  id                     String   @id @default(uuid())
+  id                     String   @id @default(nanoid())
   legacyId               Int      @unique
   modelId                String
   userId                 String?
@@ -139,16 +139,16 @@ Tombstone-friendly. `body`/`userId`/`author` all nullable so the frontend render
 
 ```ts
 export const legacyPostingAuthorDtoSchema = Type.Object({
-  id: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),     // null when unmapped
+  id: Type.Union([idSchema(), Type.Null()]),                           // null when unmapped
   displayName: Type.Union([Type.String(), Type.Null()]),               // legacyAuthorName fallback
   image: Type.Union([Type.String(), Type.Null()]),
 });
 
 export const legacyPostingDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   legacyId: Type.Integer(),
-  modelId: Type.String({ format: 'uuid' }),
-  parentLegacyPostingId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
+  modelId: idSchema(),
+  parentLegacyPostingId: Type.Union([idSchema(), Type.Null()]),
 
   title: Type.Union([Type.String(), Type.Null()]),
   body: Type.Union([Type.String(), Type.Null()]),  // null on tombstones
@@ -163,7 +163,7 @@ export const legacyPostingDtoSchema = Type.Object({
 });
 
 export const legacyPostingListResponseDtoSchema = Type.Object({
-  modelId: Type.String({ format: 'uuid' }),
+  modelId: idSchema(),
   postings: Type.Array(legacyPostingDtoSchema),
 });
 ```
@@ -220,9 +220,9 @@ async function migrateLegacyPostings(
 
   // 3. Two-pass import to resolve parent links.
   //    Pass 1: insert every posting with parentLegacyPostingId = null.
-  //    Pass 2: update parent links once all uuid mappings exist.
+  //    Pass 2: update parent links once all id mappings exist.
 
-  const idMap = new Map<number, string>(seenLegacyId); // legacy posting id → new uuid
+  const idMap = new Map<number, string>(seenLegacyId); // legacy posting id → new id
 
   await streamRows<OldPosting>(
     `SELECT id, person_id, node_id, parent_id, title, body,
@@ -237,19 +237,19 @@ async function migrateLegacyPostings(
           continue;
         }
         if (!p.node_id) { report.legacyPostings.skipped_orphan_model++; continue; }
-        const modelUuid = modelIdMap.get(p.node_id);
-        if (!modelUuid) { report.legacyPostings.skipped_orphan_model++; continue; }
+        const modelId = modelIdMap.get(p.node_id);
+        if (!modelId) { report.legacyPostings.skipped_orphan_model++; continue; }
 
-        const userUuid = p.person_id ? userIdMap.get(p.person_id) ?? null : null;
+        const userId = p.person_id ? userIdMap.get(p.person_id) ?? null : null;
         const authorName = p.person_id ? legacyAuthorName.get(p.person_id) ?? null : null;
 
         const isDeleted = p.deleted_at !== null;
-        const id = randomUUID();
+        const id = newId();
         rows.push({
           id,
           legacyId: p.id,
-          modelId: modelUuid,
-          userId: userUuid,
+          modelId,
+          userId,
           legacyAuthorName: authorName,
           parentLegacyPostingId: null, // pass 2 sets this
           title: p.title,
@@ -274,15 +274,15 @@ async function migrateLegacyPostings(
     `SELECT id, parent_id FROM postings WHERE parent_id IS NOT NULL`,
   );
   for (const p of parented) {
-    const childUuid = idMap.get(p.id);
-    const parentUuid = p.parent_id ? idMap.get(p.parent_id) ?? null : null;
-    if (!childUuid || !parentUuid) {
+    const childId = idMap.get(p.id);
+    const parentId = p.parent_id ? idMap.get(p.parent_id) ?? null : null;
+    if (!childId || !parentId) {
       report.legacyPostings.skipped_orphan_parent++;
       continue;
     }
     await prisma.legacyModelPosting.update({
-      where: { id: childUuid },
-      data: { parentLegacyPostingId: parentUuid },
+      where: { id: childId },
+      data: { parentLegacyPostingId: parentId },
     });
   }
 }
@@ -290,7 +290,7 @@ async function migrateLegacyPostings(
 
 Idempotency:
 
-- Re-running the seed picks up new legacy rows (none expected — legacy DB is frozen — but the script supports it). Existing rows are skipped via the `legacyId` probe in pass 1; pass 2's update is no-op-safe (same parent uuid).
+- Re-running the seed picks up new legacy rows (none expected: legacy DB is frozen, but the script supports it). Existing rows are skipped via the `legacyId` probe in pass 1; pass 2's update is no-op-safe (same parent id).
 - `WIPE_TARGET=true` already truncates the right cascade; add `"LegacyModelPosting"` to the truncate list in `wipeTarget`.
 
 Report counters to add to the existing `report` object in `initial-import.ts`:
