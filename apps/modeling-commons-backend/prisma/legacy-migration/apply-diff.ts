@@ -48,6 +48,7 @@ import {
   storagePathHash,
   sanitizeFilename,
 } from './lib/file-keys.ts';
+import { samePreviewObject } from './lib/preview-key.ts';
 import {
   LegacyDatabase,
   type LegacyNode,
@@ -985,18 +986,6 @@ async function planAdditionalFilesAndPreviews(
       sourceAttachmentId: winner?.id ?? null,
     });
   }
-}
-
-/**
- * The random id segment of a file key is a nonce; what identifies a preview
- * object is its model, date partition and filename. createModelFromNode mints
- * a random nonce while the resync derives one from the legacy attachment id,
- * so compare the two without it.
- */
-function samePreviewObject(a: string | null, b: string | null): boolean {
-  if (a === null || b === null) return a === b;
-  const strip = (key: string) => key.replace(/\/[0-9a-f-]{36}\//gi, '/');
-  return strip(a) === strip(b);
 }
 
 /**
