@@ -13,7 +13,8 @@ const { userState } = vi.hoisted(() => ({
 
 mockNuxtImport("useUser", () => () => computed(() => userState.current));
 
-const noticeTitle = "Your old account is still here";
+const noticeTitle = "Old accounts are not lost";
+const dismissLabel = "I didn't have an old account";
 
 function renderedText() {
   return document.body.textContent ?? "";
@@ -76,7 +77,7 @@ describe("LegacyAccountNoticeDialog", () => {
     const dismissButton = document
       .querySelectorAll("button")
       .values()
-      .find((button) => button.textContent?.includes("Maybe later"));
+      .find((button) => button.textContent?.includes(dismissLabel));
 
     expect(dismissButton).toBeDefined();
     dismissButton!.click();

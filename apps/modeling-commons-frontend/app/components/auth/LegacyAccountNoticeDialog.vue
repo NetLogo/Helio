@@ -14,24 +14,25 @@
             <UIcon name="i-lucide-key-round" class="size-5 text-primary" />
           </div>
           <div class="space-y-1">
-            <h6 class="font-semibold text-highlighted">Your old account is still here</h6>
+            <h6 class="font-semibold text-highlighted">Old accounts are not lost</h6>
             <p class="text-sm text-muted">
               Accounts from the previous modelingcommons.org site came across to this new
-              version. Passwords did not, so reset yours to get back in.
+              version. Passwords did not, but we can email you a link to set up a new one.
             </p>
           </div>
         </div>
 
+        <p class="text-xs text-muted">
+          Not sure if you had one? Try reclaiming it. We will email a link if we find an account
+          for your address.
+        </p>
+
         <div class="flex justify-end gap-2">
-          <UButton variant="ghost" color="neutral" @click="dismiss">Maybe later</UButton>
-          <UButton
-            variant="solid"
-            color="primary"
-            icon="i-lucide-key-round"
-            :to="resetPasswordLink"
-            @click="dismiss"
-          >
-            Reset password
+          <UButton variant="ghost" color="neutral" @click="dismiss">
+            I didn't have an old account
+          </UButton>
+          <UButton variant="solid" color="primary" :to="resetPasswordLink" @click="dismiss">
+            Reclaim account
           </UButton>
         </div>
       </div>
