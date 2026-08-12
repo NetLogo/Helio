@@ -54,7 +54,7 @@ enum ModelFileKind {
 // Better Auth core tables
 
 model User {
-  id            String   @id @default(uuid())
+  id            String   @id @default(nanoid())
   name          String?
   email         String?  @unique
   emailVerified Boolean  @default(false)
@@ -103,7 +103,7 @@ model User {
 }
 
 model Account {
-  id                    String    @id @default(uuid())
+  id                    String    @id @default(nanoid())
   userId                String
   accountId             String
   providerId            String
@@ -123,7 +123,7 @@ model Account {
 }
 
 model Session {
-  id        String   @id @default(uuid())
+  id        String   @id @default(nanoid())
   userId    String
   expiresAt DateTime
   token     String   @unique
@@ -141,7 +141,7 @@ model Session {
 }
 
 model Verification {
-  id         String    @id @default(uuid())
+  id         String    @id @default(nanoid())
   identifier String
   value      String
   expiresAt  DateTime
@@ -155,7 +155,7 @@ model Verification {
 }
 
 model Passkey {
-  id           String    @id @default(uuid())
+  id           String    @id @default(nanoid())
   name         String?
   publicKey    String
   userId       String
@@ -173,7 +173,7 @@ model Passkey {
 // Domain models
 
 model Model {
-  id                  String          @id @default(uuid())
+  id                  String          @id @default(nanoid())
   legacyId            Int?            @unique
   latestVersionNumber Int?
   parentModelId       String?
@@ -251,7 +251,7 @@ model ModelVersionTag {
 }
 
 model ModelAdditionalFile {
-  id                  String        @id @default(uuid())
+  id                  String        @id @default(nanoid())
   modelId             String
   taggedVersionNumber Int
   fileKey             String
@@ -266,7 +266,7 @@ model ModelAdditionalFile {
 }
 
 model Tag {
-  id          String   @id @default(uuid())
+  id          String   @id @default(nanoid())
   legacyId    Int?     @unique
   name        String   @unique
   displayName String?
@@ -294,7 +294,7 @@ model ModelAuthor {
 // credited on a model who never held an account. Archival only, no business logic
 // reads this table.
 model NonMemberContributor {
-  id               String   @id @default(uuid())
+  id               String   @id @default(nanoid())
   legacyId         Int      @unique
   modelId          String
   email            String?
@@ -310,7 +310,7 @@ model NonMemberContributor {
 }
 
 model ModelPermission {
-  id              String          @id @default(uuid())
+  id              String          @id @default(nanoid())
   modelId         String
   granteeUserId   String?
   permissionLevel PermissionLevel
@@ -338,7 +338,7 @@ model ModelLike {
 }
 
 model ModelInteraction {
-  id            String               @id @default(uuid())
+  id            String               @id @default(nanoid())
   modelId       String
   versionNumber Int?
   kind          ModelInteractionKind
@@ -362,7 +362,7 @@ model ModelInteraction {
 }
 
 model ModelDraft {
-  id     String @id @default(cuid())
+  id     String @id @default(nanoid())
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -380,7 +380,7 @@ model ModelDraft {
 }
 
 model Event {
-  id           String    @id @default(uuid())
+  id           String    @id @default(nanoid())
   type         String
   actorId      String
   resourceType String

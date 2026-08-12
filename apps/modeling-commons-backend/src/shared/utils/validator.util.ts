@@ -1,5 +1,6 @@
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
+import { ID_PATTERN } from './id.ts';
 
 // `.default` is needed because Ajv and ajv-formats are CJS packages.
 // Under `"module": "NodeNext"`, TypeScript resolves the default import as
@@ -21,3 +22,5 @@ export const ajv = addFormats.default(new Ajv.default({}), [
   'relative-json-pointer',
   'regex',
 ]);
+
+ajv.addFormat('nanoid', new RegExp(ID_PATTERN));
