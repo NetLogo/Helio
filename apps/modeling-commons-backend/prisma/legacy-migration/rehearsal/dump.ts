@@ -1,13 +1,17 @@
-/** Canonical, uuid-free dump of a target DB so two of them can be compared. */
+/**
+ * Canonical dump of a target DB, with the random id segments of every storage
+ * key normalised out, so two dumps of logically identical data diff cleanly.
+ * See lib/normalize-key.ts for exactly what gets collapsed.
+ */
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../../../generated/prisma/client.js';
+import { normalizeKey } from '../lib/normalize-key.ts';
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env['DATABASE_URL']! }),
 });
 
-const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
-const norm = (key: string | null) => (key === null ? null : key.replace(UUID, '<uuid>'));
+const norm = (key: string | null) => (key === null ? null : normalizeKey(key));
 // A version file keeps the node name it was uploaded under; renaming a node in
 // the legacy app does not move objects in storage, so the trailing filename can
 // legitimately differ from a from-scratch archive. Compare the path only.
