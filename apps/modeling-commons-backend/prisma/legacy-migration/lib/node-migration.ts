@@ -89,7 +89,7 @@ export function buildAttachmentMetadata(
 
 export async function createModelFromNode(
   tx: ModelWriter,
-  modelUuid: string,
+  modelId: string,
   tree: NodeTree,
   deps: NodeMigrationDeps,
 ): Promise<NodeMigrationResult> {
@@ -112,7 +112,7 @@ export async function createModelFromNode(
 
   await tx.model.create({
     data: {
-      id: modelUuid,
+      id: modelId,
       legacyId: node.id,
       visibility: mapVisibility(node.visibility_id),
       isEndorsed: false,
@@ -124,53 +124,53 @@ export async function createModelFromNode(
   let versionNumber = 0;
   for (const v of versions) {
     versionNumber++;
-    await writeVersion(tx, modelUuid, node, v, versionNumber, deps);
+    await writeVersion(tx, modelId, node, v, versionNumber, deps);
     result.versions++;
   }
   const latestVersionNumber = versionNumber;
   result.latestVersionNumber = latestVersionNumber;
 
-  await tx.model.update({ where: { id: modelUuid }, data: { latestVersionNumber } });
+  await tx.model.update({ where: { id: modelId }, data: { latestVersionNumber } });
 
   const seenAuthors = new Set<string>();
-  const ownerUuid = deps.userIdByLegacyId.get(firstVersion.person_id);
-  if (ownerUuid) {
+  const ownerId = deps.userIdByLegacyId.get(firstVersion.person_id);
+  if (ownerId) {
     await tx.modelAuthor.create({
       data: {
-        modelId: modelUuid,
-        userId: ownerUuid,
+        modelId,
+        userId: ownerId,
         role: 'owner',
         createdAt: firstVersion.created_at ?? deps.now(),
       },
     });
-    seenAuthors.add(ownerUuid);
+    seenAuthors.add(ownerId);
     result.owners++;
   }
   for (const v of versions.slice(1)) {
-    const uuid = deps.userIdByLegacyId.get(v.person_id);
-    if (!uuid || seenAuthors.has(uuid)) continue;
+    const contributorId = deps.userIdByLegacyId.get(v.person_id);
+    if (!contributorId || seenAuthors.has(contributorId)) continue;
     await tx.modelAuthor.create({
       data: {
-        modelId: modelUuid,
-        userId: uuid,
+        modelId,
+        userId: contributorId,
         role: 'contributor',
         createdAt: v.created_at ?? deps.now(),
       },
     });
-    seenAuthors.add(uuid);
+    seenAuthors.add(contributorId);
     result.contributors++;
   }
 
   for (const a of attachments) {
-    const fileUuid = deps.newId();
+    const fileId = deps.newId();
     const dateForPath = a.created_at ?? node.created_at ?? deps.now();
 
     if (a.content_type === 'preview') {
-      const relKey = buildPreviewFileKey(modelUuid, dateForPath, fileUuid, a.filename);
+      const relKey = buildPreviewFileKey(modelId, dateForPath, fileId, a.filename);
       await deps.writeFile(relKey, a.contents);
       await tx.modelVersion.update({
         where: {
-          modelId_versionNumber: { modelId: modelUuid, versionNumber: latestVersionNumber },
+          modelId_versionNumber: { modelId, versionNumber: latestVersionNumber },
         },
         data: { previewImageFileKey: relKey },
       });
@@ -178,7 +178,7 @@ export async function createModelFromNode(
       continue;
     }
 
-    const relKey = buildAttachmentFileKey(modelUuid, dateForPath, fileUuid, a.filename);
+    const relKey = buildAttachmentFileKey(modelId, dateForPath, fileId, a.filename);
     await deps.writeFile(relKey, a.contents);
     await deps.writeFile(
       `${relKey}.metadata.json`,
@@ -186,8 +186,8 @@ export async function createModelFromNode(
     );
     await tx.modelAdditionalFile.create({
       data: {
-        id: fileUuid,
-        modelId: modelUuid,
+        id: fileId,
+        modelId,
         taggedVersionNumber: latestVersionNumber,
         fileKey: relKey,
         kind: 'additional',
@@ -199,19 +199,19 @@ export async function createModelFromNode(
 
   const seenTags = new Set<string>();
   for (const tg of taggings) {
-    const tagUuid = deps.tagIdByLegacyId.get(tg.tag_id);
-    if (!tagUuid) {
+    const tagId = deps.tagIdByLegacyId.get(tg.tag_id);
+    if (!tagId) {
       result.skippedOrphanTaggings++;
       continue;
     }
-    if (seenTags.has(tagUuid)) continue;
-    seenTags.add(tagUuid);
+    if (seenTags.has(tagId)) continue;
+    seenTags.add(tagId);
 
     await tx.modelVersionTag.create({
       data: {
-        modelId: modelUuid,
+        modelId,
         versionNumber: latestVersionNumber,
-        tagId: tagUuid,
+        tagId,
         createdAt: tg.created_at ?? deps.now(),
       },
     });
@@ -223,7 +223,7 @@ export async function createModelFromNode(
 
 async function writeVersion(
   tx: ModelWriter,
-  modelUuid: string,
+  modelId: string,
   node: LegacyNode,
   v: LegacyVersion,
   versionNumber: number,
@@ -232,7 +232,7 @@ async function writeVersion(
   const dateForPath = v.created_at ?? node.created_at ?? deps.now();
   const format = getNlogoFileExtension(v.contents);
   const relKey = buildVersionFileKey(
-    modelUuid,
+    modelId,
     dateForPath,
     deps.newId(),
     `${node.name}.${format}`,
@@ -244,7 +244,7 @@ async function writeVersion(
 
   await tx.modelVersion.create({
     data: {
-      modelId: modelUuid,
+      modelId,
       versionNumber,
       title: node.name,
       description: v.description || null,

@@ -8,8 +8,8 @@ import {
 } from './collaborators.ts';
 import type { LegacyCollaboration, LegacyNonMemberCollaboration } from './legacy.ts';
 
-const MODEL = 'model-uuid-1';
-const USER = 'user-uuid-1';
+const MODEL = 'model-id-1';
+const USER = 'user-id-1';
 const CREATED = new Date('2013-05-01T00:00:00Z');
 
 const TYPES = buildTypeNameById([

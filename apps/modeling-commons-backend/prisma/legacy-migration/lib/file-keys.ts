@@ -36,42 +36,42 @@ export function getAccessPrefix(access: AccessPolicy): string {
 }
 
 export function buildVersionFileKey(
-  modelUuid: string,
+  modelId: string,
   d: Date,
-  fileUuid: string,
+  fileId: string,
   filename: string = 'file',
   accessPolicy: AccessPolicy = 'private',
 ): string {
   const { y, m, day } = dateParts(d);
-  return `${getAccessPrefix(accessPolicy)}/models/${modelUuid}/versions/${y}/${m}/${day}/${fileUuid}/${sanitizeFilename(filename)}`;
+  return `${getAccessPrefix(accessPolicy)}/models/${modelId}/versions/${y}/${m}/${day}/${fileId}/${sanitizeFilename(filename)}`;
 }
 
 export function buildPreviewFileKey(
-  modelUuid: string,
+  modelId: string,
   d: Date,
-  fileUuid: string,
+  fileId: string,
   filename: string = 'file',
 ): string {
   const { y, m, day } = dateParts(d);
-  return `${getAccessPrefix('public-read')}/models/${modelUuid}/preview-images/${y}/${m}/${day}/${fileUuid}/${sanitizeFilename(filename)}`;
+  return `${getAccessPrefix('public-read')}/models/${modelId}/preview-images/${y}/${m}/${day}/${fileId}/${sanitizeFilename(filename)}`;
 }
 
 export function buildAttachmentFileKey(
-  modelUuid: string,
+  modelId: string,
   d: Date,
-  fileUuid: string,
+  fileId: string,
   filename: string = 'file',
 ): string {
   const { y, m, day } = dateParts(d);
-  return `${getAccessPrefix('private')}/models/${modelUuid}/additionalFiles/${y}/${m}/${day}/${fileUuid}/${sanitizeFilename(filename)}`;
+  return `${getAccessPrefix('private')}/models/${modelId}/additionalFiles/${y}/${m}/${day}/${fileId}/${sanitizeFilename(filename)}`;
 }
 
 export function buildAvatarFileKey(
-  userUuid: string,
+  userId: string,
   d: Date,
-  fileUuid: string,
+  fileId: string,
   filename: string = 'file',
 ): string {
   const { y, m, day } = dateParts(d);
-  return `${getAccessPrefix('public-read')}/avatars/${userUuid}/${y}/${m}/${day}/${fileUuid}/${sanitizeFilename(filename)}`;
+  return `${getAccessPrefix('public-read')}/avatars/${userId}/${y}/${m}/${day}/${fileId}/${sanitizeFilename(filename)}`;
 }

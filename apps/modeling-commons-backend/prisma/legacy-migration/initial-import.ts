@@ -4,8 +4,8 @@
  * Source: nlcommons_production (Rails app, integer ids, tables: people, nodes,
  *         versions, tags, tagged_nodes, attachments, spam_warnings,
  *         permission_settings).
- * Target: new Prisma schema (UUIDs, Model/ModelVersion split, Better Auth users,
- *         file storage by key).
+ * Target: new Prisma schema (NanoID ids, Model/ModelVersion split, Better Auth
+ *         users, file storage by key).
  *
  * Idempotent via legacyId columns on User/Model/Tag — with one exception:
  * migrateInteractions has no dedupe key (ModelInteraction carries no legacyId
@@ -287,8 +287,8 @@ function aliasDuplicateTagNames(
     if (map.has(t.id)) continue;
     const n = normalizeTagName(t.name);
     if (!n) continue;
-    const winnerUuid = map.get(nameWinner.get(n)?.id ?? -1);
-    if (winnerUuid) map.set(t.id, winnerUuid);
+    const winnerId = map.get(nameWinner.get(n)?.id ?? -1);
+    if (winnerId) map.set(t.id, winnerId);
   }
 }
 
@@ -333,14 +333,14 @@ async function migrateNodes(
           legacy.taggingsForNode(node.id),
         ]);
 
-        const modelUuid = newId();
-        modelIdMap.set(node.id, modelUuid);
+        const modelId = newId();
+        modelIdMap.set(node.id, modelId);
 
         await prisma.$transaction(
           async (tx) => {
             const counts = await createModelFromNode(
               tx,
-              modelUuid,
+              modelId,
               { node, versions, attachments, taggings },
               {
                 writeFile: writeLocalFile,
@@ -400,11 +400,11 @@ async function migrateInteractions(
         const rows: Prisma.ModelInteractionCreateManyInput[] = [];
         for (const e of batch) {
           if (!e.node_id) continue;
-          const modelUuid = modelIdMap.get(e.node_id);
-          if (!modelUuid) continue; // node was spam-skipped or dropped
+          const modelId = modelIdMap.get(e.node_id);
+          if (!modelId) continue; // node was spam-skipped or dropped
           rows.push({
             id: newId(),
-            modelId: modelUuid,
+            modelId,
             kind,
             userId: e.person_id ? (userIdMap.get(e.person_id) ?? null) : null,
             ipHash: hashIp(e.ip_address, IP_HASH_SALT),

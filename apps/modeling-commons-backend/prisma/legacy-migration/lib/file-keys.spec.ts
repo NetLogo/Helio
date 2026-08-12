@@ -103,7 +103,7 @@ describe('key builders', () => {
     );
   });
 
-  test('avatar keys are public-read and keyed by user uuid', () => {
+  test('avatar keys are public-read and keyed by user id', () => {
     expect(buildAvatarFileKey(MODEL, DATE, FILE, 'avatar')).toBe(
       `files/public/uploads/avatars/${MODEL}/2011/02/18/${FILE}/avatar`,
     );

@@ -868,8 +868,8 @@ async function planAdditionalFilesAndPreviews(
       continue;
     }
 
-    const fileUuid = newId();
-    const key = buildAttachmentFileKey(modelId, a.created_at ?? new Date(), fileUuid, a.filename);
+    const fileId = newId();
+    const key = buildAttachmentFileKey(modelId, a.created_at ?? new Date(), fileId, a.filename);
     plan.files.push({ key, body: a.contents });
     plan.files.push({
       key: `${key}.metadata.json`,
@@ -880,7 +880,7 @@ async function planAdditionalFilesAndPreviews(
       legacyAttachmentId: a.id,
       nodeLegacyId: a.node_id,
       data: {
-        id: fileUuid,
+        id: fileId,
         modelId,
         taggedVersionNumber: await latestVersionNumberAfterAppends(plan, modelId),
         fileKey: key,
@@ -988,10 +988,10 @@ async function planAdditionalFilesAndPreviews(
 }
 
 /**
- * The uuid segment of a file key is a nonce; what identifies a preview object is
- * its model, date partition and filename. createModelFromNode mints a random
- * nonce while the resync derives one from the legacy attachment id, so compare
- * the two without it.
+ * The random id segment of a file key is a nonce; what identifies a preview
+ * object is its model, date partition and filename. createModelFromNode mints
+ * a random nonce while the resync derives one from the legacy attachment id,
+ * so compare the two without it.
  */
 function samePreviewObject(a: string | null, b: string | null): boolean {
   if (a === null || b === null) return a === b;

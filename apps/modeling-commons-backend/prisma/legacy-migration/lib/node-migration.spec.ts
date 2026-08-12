@@ -7,7 +7,7 @@ import {
 } from './node-migration.ts';
 import type { LegacyAttachment, LegacyNode, LegacyTagging, LegacyVersion } from './legacy.ts';
 
-const MODEL_UUID = '00000000-0000-4000-8000-000000000000';
+const MODEL_ID = '00000000-0000-4000-8000-000000000000';
 const NOW = new Date('2030-01-01T00:00:00.000Z');
 const SEP = '@#$#@#$#@';
 
@@ -44,7 +44,7 @@ function deps(overrides: Partial<Parameters<typeof createModelFromNode>[3]> = {}
       writeFile: async (relKey: string, contents: Buffer) => {
         written.set(relKey, contents);
       },
-      newId: () => `uuid-${++counter}`,
+      newId: () => `id-${++counter}`,
       now: () => NOW,
       userIdByLegacyId: new Map<number, string>([
         [10, 'user-10'],
@@ -123,16 +123,16 @@ describe('createModelFromNode', () => {
   test('refuses a node with no versions', async () => {
     const { tx } = recordingWriter();
     await expect(
-      createModelFromNode(tx, MODEL_UUID, tree({ versions: [] }), deps().value),
+      createModelFromNode(tx, MODEL_ID, tree({ versions: [] }), deps().value),
     ).rejects.toThrow(/no versions/i);
   });
 
-  test('creates the model keyed on the legacy node id, never touching the uuid of anything else', async () => {
+  test('creates the model keyed on the legacy node id, never touching the id of anything else', async () => {
     const { tx, dataFor } = recordingWriter();
-    await createModelFromNode(tx, MODEL_UUID, tree(), deps().value);
+    await createModelFromNode(tx, MODEL_ID, tree(), deps().value);
 
     expect(dataFor('model.create')[0]).toEqual({
-      id: MODEL_UUID,
+      id: MODEL_ID,
       legacyId: 7921,
       visibility: 'public',
       isEndorsed: false,
@@ -144,7 +144,7 @@ describe('createModelFromNode', () => {
   test('falls back through created_at then now for missing timestamps', async () => {
     const { tx, dataFor } = recordingWriter();
     const bare = { ...node, created_at: null, updated_at: null };
-    await createModelFromNode(tx, MODEL_UUID, tree({ node: bare }), deps().value);
+    await createModelFromNode(tx, MODEL_ID, tree({ node: bare }), deps().value);
 
     expect(dataFor('model.create')[0]).toMatchObject({ createdAt: NOW, updatedAt: NOW });
   });
@@ -156,7 +156,7 @@ describe('createModelFromNode', () => {
       version({ id: 2, created_at: new Date('2021-01-01T00:00:00.000Z') }),
       version({ id: 3, created_at: new Date('2022-01-01T00:00:00.000Z') }),
     ];
-    const result = await createModelFromNode(tx, MODEL_UUID, tree({ versions }), deps().value);
+    const result = await createModelFromNode(tx, MODEL_ID, tree({ versions }), deps().value);
 
     expect(
       dataFor('modelVersion.create').map((d) => (d as { versionNumber: number }).versionNumber),
@@ -168,10 +168,10 @@ describe('createModelFromNode', () => {
 
   test('titles every version with the node name and parses metadata out of the contents', async () => {
     const { tx, dataFor } = recordingWriter();
-    await createModelFromNode(tx, MODEL_UUID, tree(), deps().value);
+    await createModelFromNode(tx, MODEL_ID, tree(), deps().value);
 
     expect(dataFor('modelVersion.create')[0]).toMatchObject({
-      modelId: MODEL_UUID,
+      modelId: MODEL_ID,
       versionNumber: 1,
       title: 'Wolf Sheep',
       description: 'Initial upload',
@@ -185,7 +185,7 @@ describe('createModelFromNode', () => {
     const { tx, dataFor } = recordingWriter();
     await createModelFromNode(
       tx,
-      MODEL_UUID,
+      MODEL_ID,
       tree({ versions: [version({ description: '' })] }),
       deps().value,
     );
@@ -196,10 +196,10 @@ describe('createModelFromNode', () => {
   test('writes the version file under a key derived from the node name and detected format', async () => {
     const { tx, dataFor } = recordingWriter();
     const d = deps();
-    await createModelFromNode(tx, MODEL_UUID, tree(), d.value);
+    await createModelFromNode(tx, MODEL_ID, tree(), d.value);
 
     const key = (dataFor('modelVersion.create')[0] as { netlogoFileKey: string }).netlogoFileKey;
-    expect(key).toBe(`uploads/models/${MODEL_UUID}/versions/2020/05/04/uuid-1/Wolf Sheep.nlogo`);
+    expect(key).toBe(`uploads/models/${MODEL_ID}/versions/2020/05/04/id-1/Wolf Sheep.nlogo`);
     expect(d.written.get(key)?.toString('utf8')).toBe(nlogo());
   });
 
@@ -210,12 +210,12 @@ describe('createModelFromNode', () => {
       version({ id: 2, person_id: 11 }),
       version({ id: 3, person_id: 10 }),
     ];
-    const result = await createModelFromNode(tx, MODEL_UUID, tree({ versions }), deps().value);
+    const result = await createModelFromNode(tx, MODEL_ID, tree({ versions }), deps().value);
 
     expect(dataFor('modelAuthor.create')).toEqual([
-      { modelId: MODEL_UUID, userId: 'user-10', role: 'owner', createdAt: versions[0]!.created_at },
+      { modelId: MODEL_ID, userId: 'user-10', role: 'owner', createdAt: versions[0]!.created_at },
       {
-        modelId: MODEL_UUID,
+        modelId: MODEL_ID,
         userId: 'user-11',
         role: 'contributor',
         createdAt: versions[1]!.created_at,
@@ -228,12 +228,12 @@ describe('createModelFromNode', () => {
   test('an unmapped author is dropped rather than failing the node', async () => {
     const { tx, dataFor } = recordingWriter();
     const versions = [version({ id: 1, person_id: 999 }), version({ id: 2, person_id: 11 })];
-    const result = await createModelFromNode(tx, MODEL_UUID, tree({ versions }), deps().value);
+    const result = await createModelFromNode(tx, MODEL_ID, tree({ versions }), deps().value);
 
     expect(result.owners).toBe(0);
     expect(dataFor('modelAuthor.create')).toEqual([
       {
-        modelId: MODEL_UUID,
+        modelId: MODEL_ID,
         userId: 'user-11',
         role: 'contributor',
         createdAt: versions[1]!.created_at,
@@ -253,7 +253,7 @@ describe('createModelFromNode', () => {
     ];
     const result = await createModelFromNode(
       tx,
-      MODEL_UUID,
+      MODEL_ID,
       tree({ versions, attachments }),
       deps().value,
     );
@@ -261,7 +261,7 @@ describe('createModelFromNode', () => {
     const updates = calls.filter((c) => c.method === 'modelVersion.update');
     expect(updates).toHaveLength(2);
     expect(updates.at(-1)!.args).toMatchObject({
-      where: { modelId_versionNumber: { modelId: MODEL_UUID, versionNumber: 2 } },
+      where: { modelId_versionNumber: { modelId: MODEL_ID, versionNumber: 2 } },
     });
     expect(
       (updates.at(-1)!.args as { data: { previewImageFileKey: string } }).data.previewImageFileKey,
@@ -273,19 +273,19 @@ describe('createModelFromNode', () => {
   test('preview keys are public-read', async () => {
     const { tx, calls } = recordingWriter();
     const attachments = [attachment({ id: 5, content_type: 'preview', filename: 'p.png' })];
-    await createModelFromNode(tx, MODEL_UUID, tree({ attachments }), deps().value);
+    await createModelFromNode(tx, MODEL_ID, tree({ attachments }), deps().value);
 
     const update = calls.find((c) => c.method === 'modelVersion.update')!;
     expect(
       (update.args as { data: { previewImageFileKey: string } }).data.previewImageFileKey,
-    ).toBe(`files/public/uploads/models/${MODEL_UUID}/preview-images/2020/07/01/uuid-2/p.png`);
+    ).toBe(`files/public/uploads/models/${MODEL_ID}/preview-images/2020/07/01/id-2/p.png`);
   });
 
   test('non-preview attachments become additional files tagged to the latest version, with a metadata sidecar', async () => {
     const { tx, dataFor } = recordingWriter();
     const d = deps();
     const attachments = [attachment({ id: 5, filename: 'CTRNN.nls', content_type: 'extension' })];
-    const result = await createModelFromNode(tx, MODEL_UUID, tree({ attachments }), d.value);
+    const result = await createModelFromNode(tx, MODEL_ID, tree({ attachments }), d.value);
 
     const file = dataFor('modelAdditionalFile.create')[0] as {
       id: string;
@@ -293,14 +293,14 @@ describe('createModelFromNode', () => {
       taggedVersionNumber: number;
     };
     expect(file).toMatchObject({
-      id: 'uuid-2',
-      modelId: MODEL_UUID,
+      id: 'id-2',
+      modelId: MODEL_ID,
       taggedVersionNumber: 1,
       kind: 'additional',
       createdAt: attachments[0]!.created_at,
     });
     expect(file.fileKey).toBe(
-      `uploads/models/${MODEL_UUID}/additionalFiles/2020/07/01/uuid-2/CTRNN.nls`,
+      `uploads/models/${MODEL_ID}/additionalFiles/2020/07/01/id-2/CTRNN.nls`,
     );
     expect(d.written.get(file.fileKey)?.toString()).toBe('hello');
     expect(JSON.parse(d.written.get(`${file.fileKey}.metadata.json`)!.toString())).toEqual({
@@ -326,20 +326,20 @@ describe('createModelFromNode', () => {
     ];
     const result = await createModelFromNode(
       tx,
-      MODEL_UUID,
+      MODEL_ID,
       tree({ versions, taggings }),
       deps().value,
     );
 
     expect(dataFor('modelVersionTag.create')).toEqual([
       {
-        modelId: MODEL_UUID,
+        modelId: MODEL_ID,
         versionNumber: 2,
         tagId: 'tag-100',
         createdAt: taggings[0]!.created_at,
       },
       {
-        modelId: MODEL_UUID,
+        modelId: MODEL_ID,
         versionNumber: 2,
         tagId: 'tag-101',
         createdAt: taggings[2]!.created_at,

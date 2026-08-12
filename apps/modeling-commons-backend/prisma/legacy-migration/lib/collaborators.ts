@@ -10,7 +10,7 @@ export type CollaboratorContext = {
   userIdByLegacyId: ReadonlyMap<number, string>;
   modelIdByLegacyId: ReadonlyMap<number, string>;
   typeNameById: ReadonlyMap<number, string>;
-  /** Keyed `${modelUuid}\0${userUuid}` — the ModelAuthor rows already in the target. */
+  /** Keyed `${modelId}\0${userId}` — the ModelAuthor rows already in the target. */
   existingAuthors: ReadonlyMap<string, ExistingAuthor>;
   existingNonMemberLegacyIds: ReadonlySet<number>;
 };
