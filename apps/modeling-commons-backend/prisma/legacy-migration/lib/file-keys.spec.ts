@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import {
   buildAttachmentFileKey,
-  derivedUuid,
+  storagePathHash,
   buildAvatarFileKey,
   buildPreviewFileKey,
   buildVersionFileKey,
@@ -38,28 +38,33 @@ describe('sanitizeFilename', () => {
   });
 });
 
-describe('derivedUuid', () => {
+describe('storagePathHash', () => {
   test('is stable for the same namespace and id', () => {
-    expect(derivedUuid('preview', 4986)).toBe(derivedUuid('preview', 4986));
+    expect(storagePathHash('preview', 4986)).toBe(storagePathHash('preview', 4986));
   });
 
   test('differs by id and by namespace', () => {
-    expect(derivedUuid('preview', 4986)).not.toBe(derivedUuid('preview', 4987));
-    expect(derivedUuid('preview', 4986)).not.toBe(derivedUuid('attachment', 4986));
+    expect(storagePathHash('preview', 4986)).not.toBe(storagePathHash('preview', 4987));
+    expect(storagePathHash('preview', 4986)).not.toBe(storagePathHash('attachment', 4986));
   });
 
   test('is a well-formed v4-shaped uuid', () => {
-    expect(derivedUuid('preview', 1)).toMatch(
+    expect(storagePathHash('preview', 1)).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
     );
   });
 
   test('holds the shape across many ids', () => {
     for (let i = 0; i < 200; i++) {
-      expect(derivedUuid('preview', i)).toMatch(
+      expect(storagePathHash('preview', i)).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
       );
     }
+  });
+
+  test('pins the exact output for known inputs, so a future sweep cannot silently change it', () => {
+    expect(storagePathHash('version', 1)).toBe('fb60fd65-f24f-42c7-bb9f-9c794f021ae4');
+    expect(storagePathHash('preview', 4986)).toBe('6817b950-1dca-4c97-aee6-5fafbb910a24');
   });
 });
 

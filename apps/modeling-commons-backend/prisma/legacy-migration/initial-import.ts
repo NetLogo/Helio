@@ -26,10 +26,10 @@
  */
 
 import { PrismaPg } from '@prisma/adapter-pg';
-import { randomUUID } from 'node:crypto';
 import { copyFile as fsCopyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { newId } from '#src/shared/utils/id.ts';
 import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import { buildAvatarFileKey } from './lib/file-keys.ts';
 import {
@@ -172,7 +172,7 @@ async function migrateUsers(): Promise<Map<number, string>> {
           continue;
         }
 
-        const id = randomUUID();
+        const id = newId();
         const rawEmail = normalizeEmail(p.email_address);
         let email: string | null = null;
         if (rawEmail) {
@@ -190,7 +190,7 @@ async function migrateUsers(): Promise<Map<number, string>> {
           const avatarKey = buildAvatarFileKey(
             id,
             p.avatar_updated_at ?? new Date(),
-            randomUUID(),
+            newId(),
             'avatar',
           );
           imageUrl = `cdn.modelingcommons.org/modeling-commons/${avatarKey}`;
@@ -258,7 +258,7 @@ async function migrateTags(): Promise<Map<number, string>> {
     if (!n) continue;
     if (nameWinner.get(n)?.id !== t.id) continue;
 
-    const id = randomUUID();
+    const id = newId();
     toCreate.push({
       id,
       legacyId: t.id,
@@ -333,7 +333,7 @@ async function migrateNodes(
           legacy.taggingsForNode(node.id),
         ]);
 
-        const modelUuid = randomUUID();
+        const modelUuid = newId();
         modelIdMap.set(node.id, modelUuid);
 
         await prisma.$transaction(
@@ -344,7 +344,7 @@ async function migrateNodes(
               { node, versions, attachments, taggings },
               {
                 writeFile: writeLocalFile,
-                newUuid: randomUUID,
+                newId,
                 now: () => new Date(),
                 userIdByLegacyId: userIdMap,
                 tagIdByLegacyId: tagIdMap,
@@ -403,7 +403,7 @@ async function migrateInteractions(
           const modelUuid = modelIdMap.get(e.node_id);
           if (!modelUuid) continue; // node was spam-skipped or dropped
           rows.push({
-            id: randomUUID(),
+            id: newId(),
             modelId: modelUuid,
             kind,
             userId: e.person_id ? (userIdMap.get(e.person_id) ?? null) : null,

@@ -23,11 +23,11 @@
 import { HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
-import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
+import { newId } from '#src/shared/utils/id.ts';
 import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import {
   isPatchableTable,
@@ -45,7 +45,7 @@ import {
   buildAvatarFileKey,
   buildPreviewFileKey,
   buildVersionFileKey,
-  derivedUuid,
+  storagePathHash,
   sanitizeFilename,
 } from './lib/file-keys.ts';
 import {
@@ -373,7 +373,7 @@ async function planTags(diffs: Map<PatchableTable, TableDiff>, plan: Plan, ctx: 
       ctx.tagIdByLegacyId.set(t.id, existingId);
       continue;
     }
-    const id = randomUUID();
+    const id = newId();
     plan.tags.create.push({
       id,
       legacyId: t.id,
@@ -442,7 +442,7 @@ async function planUsers(diffs: Map<PatchableTable, TableDiff>, plan: Plan, ctx:
       plan.notes.push(`person ${p.id} already present in target; nothing to do`);
       continue;
     }
-    const id = randomUUID();
+    const id = newId();
     plan.users.create.push({
       id,
       legacyId: p.id,
@@ -538,7 +538,7 @@ async function claimEmail(
 
 async function stageAvatar(p: LegacyPerson, userId: string, plan: Plan): Promise<string | null> {
   if (!p.avatar_file_name) return null;
-  const key = buildAvatarFileKey(userId, p.avatar_updated_at ?? new Date(), randomUUID(), 'avatar');
+  const key = buildAvatarFileKey(userId, p.avatar_updated_at ?? new Date(), newId(), 'avatar');
   const source = path.join(AVATARS_DIR, `${p.id}`, 'original', p.avatar_file_name);
   try {
     plan.files.push({ key, body: await readFile(source) });
@@ -575,7 +575,7 @@ async function planNewModels(diffs: Map<PatchableTable, TableDiff>, plan: Plan, 
       continue;
     }
 
-    const modelId = randomUUID();
+    const modelId = newId();
     const tree: NodeTree = { node, versions, attachments, taggings };
     const ops: RecordedOp[] = [];
 
@@ -585,7 +585,7 @@ async function planNewModels(diffs: Map<PatchableTable, TableDiff>, plan: Plan, 
       writeFile: async (key, body) => {
         plan.files.push({ key, body });
       },
-      newUuid: randomUUID,
+      newId,
       now: () => new Date(),
       userIdByLegacyId: ctx.userIdByLegacyId,
       tagIdByLegacyId: ctx.tagIdByLegacyId,
@@ -774,7 +774,7 @@ function buildVersionCreate(
   const key = buildVersionFileKey(
     modelId,
     v.created_at ?? node.created_at ?? new Date(),
-    derivedUuid('version', v.id),
+    storagePathHash('version', v.id),
     `${node.name}.${format}`,
   );
 
@@ -868,7 +868,7 @@ async function planAdditionalFilesAndPreviews(
       continue;
     }
 
-    const fileUuid = randomUUID();
+    const fileUuid = newId();
     const key = buildAttachmentFileKey(modelId, a.created_at ?? new Date(), fileUuid, a.filename);
     plan.files.push({ key, body: a.contents });
     plan.files.push({
@@ -945,7 +945,7 @@ async function planAdditionalFilesAndPreviews(
       ? buildPreviewFileKey(
           modelId,
           winner.created_at ?? new Date(),
-          derivedUuid('preview', winner.id),
+          storagePathHash('preview', winner.id),
           winner.filename,
         )
       : null;

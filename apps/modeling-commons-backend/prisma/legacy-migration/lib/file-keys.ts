@@ -3,10 +3,12 @@ import { createHash } from 'node:crypto';
 export type AccessPolicy = 'public-read' | 'private';
 
 /**
- * A stable stand-in for randomUUID, so re-deriving a key for the same legacy row
- * yields the same object rather than a fresh copy on every run.
+ * Frozen storage-path format, not an identifier: the incremental sync must
+ * re-derive the same S3 object key for the same legacy row on every run, and
+ * that determinism predates the NanoID migration. This is a deliberate
+ * exception to the repo-wide NanoID rule; do not change its output.
  */
-export function derivedUuid(namespace: string, id: number | string): string {
+export function storagePathHash(namespace: string, id: number | string): string {
   const hex = createHash('sha256').update(`${namespace}:${id}`).digest('hex');
   const version = `4${hex.slice(13, 16)}`;
   const variant = ((parseInt(hex.slice(16, 17), 16) & 0x3) | 0x8).toString(16) + hex.slice(17, 20);

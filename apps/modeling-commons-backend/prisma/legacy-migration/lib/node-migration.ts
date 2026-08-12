@@ -40,7 +40,7 @@ export type NodeTree = {
 
 export type NodeMigrationDeps = {
   writeFile: (relKey: string, contents: Buffer) => Promise<void>;
-  newUuid: () => string;
+  newId: () => string;
   now: () => Date;
   userIdByLegacyId: ReadonlyMap<number, string>;
   tagIdByLegacyId: ReadonlyMap<number, string>;
@@ -162,7 +162,7 @@ export async function createModelFromNode(
   }
 
   for (const a of attachments) {
-    const fileUuid = deps.newUuid();
+    const fileUuid = deps.newId();
     const dateForPath = a.created_at ?? node.created_at ?? deps.now();
 
     if (a.content_type === 'preview') {
@@ -234,7 +234,7 @@ async function writeVersion(
   const relKey = buildVersionFileKey(
     modelUuid,
     dateForPath,
-    deps.newUuid(),
+    deps.newId(),
     `${node.name}.${format}`,
   );
 

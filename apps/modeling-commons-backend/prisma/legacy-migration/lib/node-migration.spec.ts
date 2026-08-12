@@ -44,7 +44,7 @@ function deps(overrides: Partial<Parameters<typeof createModelFromNode>[3]> = {}
       writeFile: async (relKey: string, contents: Buffer) => {
         written.set(relKey, contents);
       },
-      newUuid: () => `uuid-${++counter}`,
+      newId: () => `uuid-${++counter}`,
       now: () => NOW,
       userIdByLegacyId: new Map<number, string>([
         [10, 'user-10'],
