@@ -1,26 +1,31 @@
 import { createHash } from 'node:crypto';
+import { ID_LENGTH } from '#src/shared/utils/id.ts';
 
 const SEED_NAMESPACE = 'modeling-commons:seed';
+const NANOID_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
 
 /**
- * Deterministic, UUID-shaped id derived from a stable natural key.
+ * Deterministic, NanoID-shaped id derived from a stable natural key.
  *
  * The same parts always produce the same id, so every record can be upserted
  * by id and the whole seed is idempotent across runs - no fragile call-order
- * counters. Output is a valid v5-style UUID (version + variant bits set).
+ * counters. The natural key is hashed with SHA-256, then each of the first
+ * ID_LENGTH digest bytes is mapped into the 64-character NanoID alphabet via
+ * `byte & 63`; 64 divides 256 evenly, so the mapping is uniform with no
+ * modulo bias.
  *
- *   seedId('user', 'alice')        => 'a1b2...'
- *   seedId('model', 'wolf-sheep')  => 'c3d4...'
+ *   seedId('user', 'alice')        => '23KwZwy1vmaMPfUEY8US9'
+ *   seedId('model', 'wolf-sheep')  => 'UpmQcV8NL5fWuiU_FxxHE'
  */
 export function seedId(...parts: Array<string | number>): string {
   const name = `${SEED_NAMESPACE}:${parts.join(':')}`;
-  const bytes = createHash('sha1').update(name).digest().subarray(0, 16);
+  const bytes = createHash('sha256').update(name).digest().subarray(0, ID_LENGTH);
 
-  bytes[6] = (bytes[6]! & 0x0f) | 0x50; // version 5
-  bytes[8] = (bytes[8]! & 0x3f) | 0x80; // RFC 4122 variant
-
-  const hex = Buffer.from(bytes).toString('hex');
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  let id = '';
+  for (const byte of bytes) {
+    id += NANOID_ALPHABET[byte & 63];
+  }
+  return id;
 }
 
 /**
