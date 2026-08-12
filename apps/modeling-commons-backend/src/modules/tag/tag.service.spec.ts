@@ -33,30 +33,50 @@ describe('tagService', () => {
   });
 
   describe('findByIdOrName', () => {
-    it('finds by UUID', async () => {
-      const tag = { id: '550e8400-e29b-41d4-a716-446655440000', name: 'test' };
+    const nanoId = 'V1StGXR8Z5jdHi6BmyT8C';
+
+    it('finds by id', async () => {
+      const tag = { id: nanoId, name: 'test' };
       tagRepository.findOneById.mockResolvedValue(tag);
 
-      const result = await service.findByIdOrName('550e8400-e29b-41d4-a716-446655440000');
+      const result = await service.findByIdOrName(nanoId);
 
       expect(result).toBe(tag);
-      expect(tagRepository.findOneById).toHaveBeenCalled();
+      expect(tagRepository.findOneById).toHaveBeenCalledWith(nanoId);
+      expect(tagRepository.findByNameInsensitive).not.toHaveBeenCalled();
     });
 
-    it('finds by name when not UUID', async () => {
+    it('finds by name when id lookup misses', async () => {
       const tag = { id: 't1', name: 'ecology' };
+      tagRepository.findOneById.mockResolvedValue(undefined);
       tagRepository.findByNameInsensitive.mockResolvedValue(tag);
 
       const result = await service.findByIdOrName('ecology');
 
       expect(result).toBe(tag);
+      expect(tagRepository.findOneById).toHaveBeenCalledWith('ecology');
       expect(tagRepository.findByNameInsensitive).toHaveBeenCalledWith('ecology');
     });
 
-    it('throws TagNotFoundError when not found', async () => {
+    it('finds a tag whose name is NanoID-shaped, by name', async () => {
+      const tag = { id: 't2', name: nanoId };
+      tagRepository.findOneById.mockResolvedValue(undefined);
+      tagRepository.findByNameInsensitive.mockResolvedValue(tag);
+
+      const result = await service.findByIdOrName(nanoId);
+
+      expect(result).toBe(tag);
+      expect(tagRepository.findOneById).toHaveBeenCalledWith(nanoId);
+      expect(tagRepository.findByNameInsensitive).toHaveBeenCalledWith(nanoId);
+    });
+
+    it('throws TagNotFoundError when neither lookup matches, querying at most twice', async () => {
+      tagRepository.findOneById.mockResolvedValue(undefined);
       tagRepository.findByNameInsensitive.mockResolvedValue(undefined);
 
       await expect(service.findByIdOrName('missing')).rejects.toThrow(TagNotFoundError);
+      expect(tagRepository.findOneById).toHaveBeenCalledTimes(1);
+      expect(tagRepository.findByNameInsensitive).toHaveBeenCalledTimes(1);
     });
   });
 
