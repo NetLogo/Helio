@@ -23,7 +23,7 @@ Feature: User Management
     Then the response status should be 204
 
   Scenario: Update profile requires authentication
-    When I send a PATCH request to "/api/v1/users/00000000-0000-0000-0000-000000000000" with body:
+    When I send a PATCH request to "/api/v1/users/AAAAAAAAAAAAAAAAAAAAA" with body:
       | userKind | student |
     Then the response status should be 401
 
