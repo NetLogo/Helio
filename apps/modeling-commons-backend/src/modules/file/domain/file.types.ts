@@ -1,5 +1,6 @@
 import Schema from 'typebox/schema';
 import Type, { type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 import { FileNotFoundError } from './file.errors.ts';
 
 export const PUBLIC_PREFIX = 'files/public';
@@ -8,7 +9,7 @@ export type FileAccess = 'public-read' | 'private';
 
 export const fileMetadata = Type.Object({
   filename: Type.String(),
-  userId: Type.Optional(Type.String({ format: 'uuid' })),
+  userId: Type.Optional(idSchema()),
   createdAt: Type.String({
     format: 'date-time',
     description: 'ISO string of the file creation date',

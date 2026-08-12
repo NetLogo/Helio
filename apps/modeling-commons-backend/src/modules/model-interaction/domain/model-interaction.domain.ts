@@ -1,9 +1,9 @@
-import crypto from 'node:crypto';
 import type {
   ModelInteractionEntity,
   ModelInteractionKind,
 } from '#src/modules/model-interaction/domain/model-interaction.types.ts';
 import type { ClientContext } from '#src/shared/http/client-context.ts';
+import { newId } from '#src/shared/utils/id.ts';
 
 export default function modelInteractionDomain() {
   return {
@@ -14,7 +14,7 @@ export default function modelInteractionDomain() {
       versionNumber: number | null,
     ): ModelInteractionEntity {
       return {
-        id: crypto.randomUUID(),
+        id: newId(),
         modelId,
         versionNumber,
         kind,

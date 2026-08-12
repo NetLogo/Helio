@@ -1,7 +1,8 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const eventResponseDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   type: Type.String(),
   actorId: Type.String(),
   resourceType: Type.String(),

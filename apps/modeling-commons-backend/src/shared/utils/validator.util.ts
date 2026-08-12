@@ -16,7 +16,6 @@ export const ajv = addFormats.default(new Ajv.default({}), [
   'ipv6',
   'uri',
   'uri-reference',
-  'uuid',
   'uri-template',
   'json-pointer',
   'relative-json-pointer',

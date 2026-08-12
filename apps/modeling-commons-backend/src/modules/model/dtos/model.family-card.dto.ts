@@ -1,14 +1,15 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const modelFamilySummarySchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   title: Type.String(),
   description: Type.Union([Type.String(), Type.Null()]),
   visibility: Type.String(),
   isEndorsed: Type.Boolean(),
   createdAt: Type.String({ format: 'date-time' }),
   latestVersionNumber: Type.Union([Type.Integer(), Type.Null()]),
-  parentModelId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
+  parentModelId: Type.Union([idSchema(), Type.Null()]),
   parentVersionNumber: Type.Union([Type.Integer(), Type.Null()]),
   authorName: Type.Union([Type.String(), Type.Null()]),
   versionCount: Type.Integer(),

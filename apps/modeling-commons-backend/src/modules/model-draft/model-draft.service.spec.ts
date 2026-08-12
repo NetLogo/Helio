@@ -18,6 +18,7 @@ import { mockModelVersionTagRepository } from '#src/modules/model-version-tag/da
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
 import type { DraftDataV1 } from '#src/modules/model-draft/schemas/v1.ts';
 import type { Model } from '#prisma/index';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
 
 function makeDraft(data: DraftDataV1 = {}, overrides: Partial<ModelDraftEntity> = {}): ModelDraftEntity {
   return {
@@ -289,7 +290,7 @@ describe('modelDraftService', () => {
       });
 
       expect(result.role).toBe('attachment');
-      expect(result.id).toMatch(/^[0-9a-f-]{36}$/);
+      expect(result.id).toMatch(new RegExp(ID_PATTERN));
       const next = modelDraftRepository.updateDataTx.mock.calls[0]![3] as DraftDataV1;
       expect(next.attachments).toHaveLength(1);
       expect(next.attachments![0]!.s3Key).toBe('staging/user-1/draft-1/att.csv');

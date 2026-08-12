@@ -1,6 +1,6 @@
 import { InvalidTagNameError } from '#src/modules/tag/domain/tag.errors.ts';
 import type { CreateTagProps, TagEntity } from '#src/modules/tag/domain/tag.types.ts';
-import { randomUUID } from 'node:crypto';
+import { newId } from '#src/shared/utils/id.ts';
 
 const TAG_NAME_PATTERN = /^([\w\-]+:)?[\w\- ]+$/;
 const TAG_NAME_MAX_LENGTH = 100;
@@ -40,7 +40,7 @@ export default function tagDomain() {
     createTag(props: CreateTagProps): TagEntity {
       const name = this.validateName(props.name);
       return {
-        id: randomUUID(),
+        id: newId(),
         name: name.toLowerCase(),
         createdAt: new Date(),
         displayName: this.getDisplayName(name, props.displayName),

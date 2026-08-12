@@ -3,9 +3,13 @@ import { describe, it, expect } from 'vitest';
 
 import { ajv } from '#src/shared/utils/validator.util.ts';
 
-import { ID_LENGTH, ID_PATTERN, newId, idSchema } from '#src/shared/utils/id.ts';
+import { ID_LENGTH, ID_PATTERN, ID_EXAMPLE, newId, idSchema } from '#src/shared/utils/id.ts';
 
 describe('id format and schema', () => {
+  it('ID_EXAMPLE matches ID_PATTERN', () => {
+    expect(ID_EXAMPLE).toMatch(new RegExp(ID_PATTERN));
+  });
+
   it('ID_PATTERN generates a valid regex pattern', () => {
     const regex = new RegExp(ID_PATTERN);
     expect(regex.test('A1b2C3d4E5f6G7h8I9j0K')).toBe(true); // valid ID

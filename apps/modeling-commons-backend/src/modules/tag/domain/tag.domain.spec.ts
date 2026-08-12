@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import tagDomain from '#src/modules/tag/domain/tag.domain.ts';
 import { InvalidTagNameError } from '#src/modules/tag/domain/tag.errors.ts';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
 
 const domain = tagDomain();
 
@@ -27,7 +28,7 @@ describe('tagDomain', () => {
     it('creates tag entity', () => {
       const tag = domain.createTag({ name: 'ecology' });
 
-      expect(tag.id).toBeTypeOf('string');
+      expect(tag.id).toMatch(new RegExp(ID_PATTERN));
       expect(tag.name).toBe('ecology');
     });
   });

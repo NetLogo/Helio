@@ -7,7 +7,7 @@ import {
   PutObjectCommand,
 } from '#src/shared/storage/index.ts';
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
-import { randomUUID } from 'node:crypto';
+import { nanoid } from 'nanoid';
 
 export default function makeModelDraftStorage({ storage, bucket, fileDomain }: Dependencies) {
   function stagingPrefix(userId: string, draftId: string): string {
@@ -27,7 +27,7 @@ export default function makeModelDraftStorage({ storage, bucket, fileDomain }: D
     const prefix = isPublic
       ? publicStagingPrefix(userId, draftId)
       : stagingPrefix(userId, draftId);
-    return `${prefix}${randomUUID()}-${sanitizeFilename(filename)}`;
+    return `${prefix}${nanoid(10)}-${sanitizeFilename(filename)}`;
   }
 
   async function deletePrefix(prefix: string): Promise<void> {

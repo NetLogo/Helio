@@ -89,15 +89,15 @@ describe('createStorageKey', () => {
   test('includes normalized path, UTC date segments, id prefix, and sanitized filename', () => {
     const key = createStorageKey('my model.png', 'uploads/models');
 
-    expect(key).toMatch(/^uploads\/models\/2026\/04\/17\/[a-f0-9]{8}\/my_model\.png$/);
+    expect(key).toMatch(/^uploads\/models\/2026\/04\/17\/[A-Za-z0-9_-]{10}\/my_model\.png$/);
   });
 
   test('normalizes leading and trailing slashes in path', () => {
     const key1 = createStorageKey('file.txt', '/uploads/models/');
     const key2 = createStorageKey('file.txt', '///uploads/models///');
 
-    expect(key1).toMatch(/^uploads\/models\/2026\/04\/17\/[a-f0-9]{8}\/file\.txt$/);
-    expect(key2).toMatch(/^uploads\/models\/2026\/04\/17\/[a-f0-9]{8}\/file\.txt$/);
+    expect(key1).toMatch(/^uploads\/models\/2026\/04\/17\/[A-Za-z0-9_-]{10}\/file\.txt$/);
+    expect(key2).toMatch(/^uploads\/models\/2026\/04\/17\/[A-Za-z0-9_-]{10}\/file\.txt$/);
     expect(key1).not.toContain('//');
     expect(key2).not.toContain('//');
   });
@@ -105,15 +105,15 @@ describe('createStorageKey', () => {
   test('omits the leading path segment when path is empty', () => {
     const key = createStorageKey('file.txt', '');
 
-    expect(key).toMatch(/^2026\/04\/17\/[a-f0-9]{8}\/file\.txt$/);
+    expect(key).toMatch(/^2026\/04\/17\/[A-Za-z0-9_-]{10}\/file\.txt$/);
   });
 
   test('sanitizes the filename portion', () => {
     const key = createStorageKey('../../etc/passwd', 'uploads');
 
-    expect(key).toMatch(/^uploads\/2026\/04\/17\/[a-f0-9]{8}\//);
+    expect(key).toMatch(/^uploads\/2026\/04\/17\/[A-Za-z0-9_-]{10}\//);
 
-    const filenamePart = key.replace(/^uploads\/2026\/04\/17\/[a-f0-9]{8}\//, '');
+    const filenamePart = key.replace(/^uploads\/2026\/04\/17\/[A-Za-z0-9_-]{10}\//, '');
     expect(filenamePart).toBe('__.._etc_passwd');
     expect(filenamePart).toMatch(/^[A-Za-z0-9._-]+$/);
   });
@@ -125,14 +125,22 @@ describe('createStorageKey', () => {
     expect(first).not.toBe(second);
   });
 
+  test('produces 10_000 unique keys within the same day-prefix', () => {
+    const keys = new Set<string>();
+    for (let i = 0; i < 10_000; i++) {
+      keys.add(createStorageKey('file.txt', 'uploads'));
+    }
+    expect(keys.size).toBe(10_000);
+  });
+
   test('produces a valid key shape even with malformed inputs', () => {
     const key = createStorageKey('..\n..\npasswd', '///uploads//');
 
-    expect(key).toMatch(/^uploads\/2026\/04\/17\/[a-f0-9]{8}\//);
+    expect(key).toMatch(/^uploads\/2026\/04\/17\/[A-Za-z0-9_-]{10}\//);
     expect(key).not.toContain('//');
     expect(key).not.toContain('\\');
 
-    const filenamePart = key.replace(/^uploads\/2026\/04\/17\/[a-f0-9]{8}\//, '');
+    const filenamePart = key.replace(/^uploads\/2026\/04\/17\/[A-Za-z0-9_-]{10}\//, '');
     expect(filenamePart).toMatch(/^[A-Za-z0-9._-]+$/);
   });
 });

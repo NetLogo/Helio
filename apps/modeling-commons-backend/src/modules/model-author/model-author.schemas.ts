@@ -1,29 +1,30 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 
 export const modelAuthorParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
 });
 export type ModelAuthorParams = Static<typeof modelAuthorParamsSchema>;
 
 export const modelAuthorUserParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  userId: Type.String({ format: 'uuid' }),
+  id: idSchema(),
+  userId: idSchema(),
 });
 export type ModelAuthorUserParams = Static<typeof modelAuthorUserParamsSchema>;
 
 export const addContributorRequestDtoSchema = Type.Object({
-  userId: Type.String({ format: 'uuid', description: 'User to add as contributor' }),
+  userId: idSchema('User to add as contributor'),
 });
 export type AddContributorRequestDto = Static<typeof addContributorRequestDtoSchema>;
 
 export const transferOwnershipRequestDtoSchema = Type.Object({
-  newOwnerId: Type.String({ format: 'uuid', description: 'New owner user id' }),
+  newOwnerId: idSchema('New owner user id'),
 });
 export type TransferOwnershipRequestDto = Static<typeof transferOwnershipRequestDtoSchema>;
 
 export const userIdParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
 });
 export type UserIdParams = Static<typeof userIdParamsSchema>;
 

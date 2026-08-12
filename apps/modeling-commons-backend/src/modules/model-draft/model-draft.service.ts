@@ -33,7 +33,8 @@ import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
 import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
 import { CopyObjectCommand, HeadObjectCommand } from '#src/shared/storage/index.ts';
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
-import { randomUUID } from 'node:crypto';
+import { newId } from '#src/shared/utils/id.ts';
+import { nanoid } from 'nanoid';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
@@ -88,7 +89,7 @@ export default function makeModelDraftService({
     const prefix = isPublic
       ? `${PUBLIC_PREFIX}/staging/${userId}/${draftId}/`
       : `staging/${userId}/${draftId}/`;
-    return `${prefix}${randomUUID()}-${sanitizeFilename(filename)}`;
+    return `${prefix}${nanoid(10)}-${sanitizeFilename(filename)}`;
   }
 
   function filenameFromKey(key: string): string {
@@ -238,7 +239,7 @@ export default function makeModelDraftService({
           filename,
         });
         return {
-          id: randomUUID(),
+          id: newId(),
           s3Key: copy.s3Key,
           filename,
           sizeBytes: copy.sizeBytes,
@@ -368,7 +369,7 @@ export default function makeModelDraftService({
       }
 
       const kind: ModelFileKind = role === 'model-file' ? 'model' : 'additional';
-      const attachment: DraftFileV1 = { id: randomUUID(), ...meta, kind };
+      const attachment: DraftFileV1 = { id: newId(), ...meta, kind };
       next.attachments = [...(data.attachments ?? []), attachment];
       await persistData(draft, next);
       return { id: attachment.id, role, ...meta };

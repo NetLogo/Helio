@@ -1,4 +1,5 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 import { visibilitySchema } from '#src/modules/model/shared/enums.ts';
 
 export const DRAFT_SCHEMA_VERSION_V1 = 1 as const;
@@ -9,7 +10,7 @@ export const modelFileKindSchema = Type.Union([
 ]);
 
 export const draftFileV1Schema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   s3Key: Type.String(),
   filename: Type.String(),
   sizeBytes: Type.Integer({ minimum: 0 }),

@@ -1,10 +1,11 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 import { paginatedResponseBaseSchema } from '#src/shared/api/paginated.response.base.ts';
 import { draftDataV1Schema } from '#src/modules/model-draft/schemas/v1.ts';
 import { visibilitySchema } from '#src/modules/model/shared/enums.ts';
 
 export const createDraftRequestDtoSchema = Type.Object({
-  modelId: Type.Optional(Type.String({ format: 'uuid' })),
+  modelId: Type.Optional(idSchema()),
 });
 
 export const patchDraftRequestDtoSchema = Type.Partial(
@@ -17,7 +18,7 @@ export const patchDraftRequestDtoSchema = Type.Partial(
 );
 
 export const draftIdParamsSchema = Type.Object({
-  id: Type.String(),
+  id: idSchema(),
 });
 
 export const draftFileParamsSchema = Type.Object({
@@ -33,7 +34,7 @@ export const draftFileRoleSchema = Type.Union([
 ]);
 
 export const modelDraftResponseDtoSchema = Type.Object({
-  id: Type.String(),
+  id: idSchema(),
   userId: Type.String(),
   modelId: Type.Union([Type.String(), Type.Null()]),
   schemaVersion: Type.Integer(),
@@ -55,7 +56,7 @@ export const draftFileUploadFieldsSchema = Type.Object({
 });
 
 export const draftFileUploadResponseSchema = Type.Object({
-  id: Type.Optional(Type.String({ format: 'uuid' })),
+  id: Type.Optional(idSchema()),
   role: draftFileRoleSchema,
   s3Key: Type.String(),
   filename: Type.String(),
