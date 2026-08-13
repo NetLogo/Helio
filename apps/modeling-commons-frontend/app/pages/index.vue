@@ -83,13 +83,13 @@
       </Error>
 
       <div v-else-if="data" class="flex flex-col gap-25">
-        <template v-for="(section, idx) in visibleSections" :key="section.key">
+        <template v-for="section in visibleSections" :key="section.key">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <section
               class="space-y-6"
               :class="{
-                'col-span-3': idx === 1,
-                'col-span-4': idx !== 1,
+                'col-span-3': section.hasSidebar,
+                'col-span-4': !section.hasSidebar,
               }"
             >
               <div class="flex items-center justify-between">
@@ -110,15 +110,20 @@
               <div
                 class="grid grid-cols-1 sm:grid-cols-2 gap-8"
                 :class="{
-                  'lg:grid-cols-3': idx === 1,
-                  'lg:grid-cols-4': idx !== 1,
+                  'lg:grid-cols-3': section.hasSidebar,
+                  'lg:grid-cols-4': !section.hasSidebar,
                 }"
               >
-                <ModelCard v-for="card in section.cards" :key="card.model.id" :card="card" />
+                <template v-if="section.pending">
+                  <ModelCardSkeleton v-for="j in section.query.limit ?? 4" :key="j" />
+                </template>
+                <template v-else>
+                  <ModelCard v-for="card in section.cards" :key="card.model.id" :card="card" />
+                </template>
               </div>
             </section>
             <!-- @extract -->
-            <section v-if="idx === 1" class="space-y-6 h-full col-span-1 mb-20">
+            <section v-if="section.hasSidebar" class="space-y-6 h-full col-span-1 mb-20">
               <div>
                 <h5 class="tracking-tight">Trending Tags</h5>
                 <p class="text-sm text-muted mt-1">(in the past 2 weeks)</p>
@@ -157,10 +162,13 @@
 import NetlogoLogo from "@repo/vue-ui/assets/brands/NetLogoOrgLogo.svg?url";
 import {
   homeFeedPath,
+  homeRecentPath,
+  homeRecentSection,
   homeSections,
   type HomeFeed,
   type HomeModelCard,
   type HomePopularTag,
+  type HomeRecentFeed,
 } from "~~/shared/home";
 
 const meta = useWebsite();
@@ -178,12 +186,28 @@ const { data, error, status, refresh } = await useAsyncData<HomeFeed>("home-feed
   $fetch<HomeFeed>(homeFeedPath),
 );
 
+// Recents carry a much shorter TTL than the rest of the feed, so they load on
+// their own and never block the sections around them.
+const { data: recent, status: recentStatus } = useAsyncData<HomeRecentFeed>(
+  "home-recent",
+  () => $fetch<HomeRecentFeed>(homeRecentPath),
+  { lazy: true },
+);
+
 const feedTags = computed<HomePopularTag[]>(() => data.value?.tags ?? []);
 
 const visibleSections = computed(() =>
   homeSections
-    .map((s) => ({ ...s, cards: data.value?.sections[s.key] ?? [] }))
-    .filter((s) => s.cards.length > 0),
+    .map((s) => {
+      const isRecent = s.key === homeRecentSection.key;
+      return {
+        ...s,
+        cards: isRecent ? (recent.value?.cards ?? []) : (data.value?.sections[s.key] ?? []),
+        pending: isRecent && recentStatus.value === "pending",
+        hasSidebar: isRecent,
+      };
+    })
+    .filter((s) => s.cards.length > 0 || s.pending),
 );
 
 const MARQUEE_COLS = 3;
@@ -191,10 +215,13 @@ const MARQUEE_COLS = 3;
 const randomSeed = useState("seed", () => Math.random());
 const rand = ref(mulberry32(randomSeed.value));
 const marqueeColumns = computed(() => {
-  // Flatten all section cards with their section metadata
-  const allCards = visibleSections.value.flatMap((section) =>
-    section.cards.map((card) => ({ card, sectionTitle: section.title, kind: "model" as const })),
-  );
+  // Recents are excluded: they arrive after the feed, and folding them in later
+  // would reshuffle every column under the reader.
+  const allCards = visibleSections.value
+    .filter((section) => section.key !== homeRecentSection.key)
+    .flatMap((section) =>
+      section.cards.map((card) => ({ card, sectionTitle: section.title, kind: "model" as const })),
+    );
 
   const tagsCards = feedTags.value.map((entry) => ({
     kind: "tag" as const,

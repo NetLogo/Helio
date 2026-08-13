@@ -26,46 +26,68 @@ export interface HomeSection {
   viewAllTo: string;
 }
 
+const featured: HomeSection = {
+  key: "featured",
+  title: "Featured Models",
+  subtitle: "Community-endorsed simulations",
+  query: { limit: 8, isEndorsed: true },
+  viewAllTo: "/featured-models",
+};
+
+const mostViewed: HomeSection = {
+  key: "most-viewed",
+  title: "Most Viewed Models",
+  subtitle: "What the community keeps coming back to",
+  query: { limit: 6, sortBy: "views" },
+  viewAllTo: "/models?sortBy=views",
+};
+
+const mostDownloaded: HomeSection = {
+  key: "most-downloaded",
+  title: "Most Downloaded Models",
+  subtitle: "Top picks people are taking offline",
+  query: { limit: 4, sortBy: "downloads" },
+  viewAllTo: "/models?sortBy=downloads",
+};
+
+const mostLiked: HomeSection = {
+  key: "most-liked",
+  title: "Most Liked Models",
+  subtitle: "Crowd favorites",
+  query: { limit: 4, sortBy: "likes" },
+  viewAllTo: "/models?sortBy=likes",
+};
+
+// Recents go stale far faster than the rest of the feed, so they are fetched
+// and cached on their own rather than riding the long-lived feed TTL.
+export const homeRecentSection: HomeSection = {
+  key: "recent",
+  title: "Recent Models",
+  subtitle: "Latest uploads from the community",
+  query: { limit: 8 },
+  viewAllTo: "/new-models",
+};
+
+// Render order. `homeFeedSections` is the subset the shared feed fetches.
 export const homeSections: HomeSection[] = [
-  {
-    key: "featured",
-    title: "Featured Models",
-    subtitle: "Community-endorsed simulations",
-    query: { limit: 8, isEndorsed: true },
-    viewAllTo: "/featured-models",
-  },
-  {
-    key: "recent",
-    title: "Recent Models",
-    subtitle: "Latest uploads from the community",
-    query: { limit: 8 },
-    viewAllTo: "/new-models",
-  },
-  {
-    key: "most-viewed",
-    title: "Most Viewed Models",
-    subtitle: "What the community keeps coming back to",
-    query: { limit: 6, sortBy: "views" },
-    viewAllTo: "/models?sortBy=views",
-  },
-  {
-    key: "most-downloaded",
-    title: "Most Downloaded Models",
-    subtitle: "Top picks people are taking offline",
-    query: { limit: 4, sortBy: "downloads" },
-    viewAllTo: "/models?sortBy=downloads",
-  },
-  {
-    key: "most-liked",
-    title: "Most Liked Models",
-    subtitle: "Crowd favorites",
-    query: { limit: 4, sortBy: "likes" },
-    viewAllTo: "/models?sortBy=likes",
-  },
+  featured,
+  homeRecentSection,
+  mostViewed,
+  mostDownloaded,
+  mostLiked,
 ];
+
+export const homeFeedSections: HomeSection[] = [featured, mostViewed, mostDownloaded, mostLiked];
 
 export const homeTagsLimit = 6;
 export const homeTagsWindowDays = 14;
 
 export const homeFeedPath = "/_data/home";
 export const homeFeedMaxAgeSeconds = 60 * 45;
+
+export const homeRecentPath = "/_data/home-recent";
+export const homeRecentMaxAgeSeconds = 60;
+
+export interface HomeRecentFeed {
+  cards: HomeModelCard[];
+}

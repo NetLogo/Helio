@@ -1,6 +1,6 @@
 import {
   homeFeedMaxAgeSeconds,
-  homeSections,
+  homeFeedSections,
   homeTagsLimit,
   homeTagsWindowDays,
   type HomeFeed,
@@ -21,7 +21,7 @@ export default defineCachedEventHandler(
 
     const [sections, tags] = await Promise.all([
       Promise.all(
-        homeSections.map(async (section) => {
+        homeFeedSections.map(async (section) => {
           const response = await $fetch<{ data: HomeModelCard[] }>(
             `${apiBase}/api/v1/models/card`,
             { query: section.query },
