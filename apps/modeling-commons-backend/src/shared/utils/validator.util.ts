@@ -22,4 +22,11 @@ export const ajv = addFormats.default(new Ajv.default({}), [
   'regex',
 ]);
 
-ajv.addFormat('nanoid', new RegExp(ID_PATTERN));
+// Fastify compiles route schemas with its own Ajv instance, not the one above,
+// so both must be given the format. Anything that validates an idSchema has to
+// call this or it fails at boot with `unknown format "nanoid"`.
+export function addIdFormat(instance: InstanceType<typeof Ajv.default>): void {
+  instance.addFormat('nanoid', new RegExp(ID_PATTERN));
+}
+
+addIdFormat(ajv);

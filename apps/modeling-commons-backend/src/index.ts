@@ -4,6 +4,7 @@ import server from '#src/server/index.ts';
 import { prisma } from '#src/shared/db/prisma.client.ts';
 import { newId } from '#src/shared/utils/id.ts';
 import { validateRequestId } from '#src/shared/utils/validate-request-id.ts';
+import { addIdFormat } from '#src/shared/utils/validator.util.ts';
 import Fastify from 'fastify';
 
 async function init(): Promise<void> {
@@ -28,6 +29,7 @@ async function init(): Promise<void> {
       customOptions: {
         keywords: ['example'],
       },
+      onCreate: addIdFormat,
     },
     trustProxy: env.trustProxy.maxHops,
   });
