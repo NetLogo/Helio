@@ -12,7 +12,10 @@ if (usingPerfProfile) {
 }
 
 const baseConfig = {
-  import: ['tests/support/**/*.ts', 'tests/**/*.steps.ts'],
+  // Vitest specs may sit beside their subject in tests/support. Importing one
+  // as cucumber support code runs describe() outside a test runner and kills
+  // the whole run before any scenario starts.
+  import: ['tests/support/**/!(*.spec).ts', 'tests/**/*.steps.ts'],
   paths: ['tests/**/*.feature'],
   format: [
     'json:reports/cucumber-report.json',
