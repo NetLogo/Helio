@@ -24,6 +24,8 @@ export interface HomeSection {
   subtitle: string;
   query: ModelCardQuery;
   viewAllTo: string;
+  // Fetched by its own endpoint on its own TTL rather than by the shared feed.
+  deferred?: boolean;
 }
 
 const featured: HomeSection = {
@@ -66,9 +68,10 @@ export const homeRecentSection: HomeSection = {
   subtitle: "Latest uploads from the community",
   query: { limit: 8 },
   viewAllTo: "/new-models",
+  deferred: true,
 };
 
-// Render order. `homeFeedSections` is the subset the shared feed fetches.
+// Render order.
 export const homeSections: HomeSection[] = [
   featured,
   homeRecentSection,
@@ -77,7 +80,9 @@ export const homeSections: HomeSection[] = [
   mostLiked,
 ];
 
-export const homeFeedSections: HomeSection[] = [featured, mostViewed, mostDownloaded, mostLiked];
+// Derived, not hand-listed: a section added above is fetched by the shared feed
+// unless it declares its own endpoint, so the two can never drift apart.
+export const homeFeedSections: HomeSection[] = homeSections.filter((s) => !s.deferred);
 
 export const homeTagsLimit = 6;
 export const homeTagsWindowDays = 14;

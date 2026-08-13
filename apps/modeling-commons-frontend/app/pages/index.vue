@@ -163,7 +163,6 @@ import NetlogoLogo from "@repo/vue-ui/assets/brands/NetLogoOrgLogo.svg?url";
 import {
   homeFeedPath,
   homeRecentPath,
-  homeRecentSection,
   homeSections,
   type HomeFeed,
   type HomeModelCard,
@@ -198,15 +197,12 @@ const feedTags = computed<HomePopularTag[]>(() => data.value?.tags ?? []);
 
 const visibleSections = computed(() =>
   homeSections
-    .map((s) => {
-      const isRecent = s.key === homeRecentSection.key;
-      return {
-        ...s,
-        cards: isRecent ? (recent.value?.cards ?? []) : (data.value?.sections[s.key] ?? []),
-        pending: isRecent && recentStatus.value === "pending",
-        hasSidebar: isRecent,
-      };
-    })
+    .map((s) => ({
+      ...s,
+      cards: s.deferred ? (recent.value?.cards ?? []) : (data.value?.sections?.[s.key] ?? []),
+      pending: Boolean(s.deferred) && recentStatus.value === "pending",
+      hasSidebar: Boolean(s.deferred),
+    }))
     .filter((s) => s.cards.length > 0 || s.pending),
 );
 
@@ -215,10 +211,10 @@ const MARQUEE_COLS = 3;
 const randomSeed = useState("seed", () => Math.random());
 const rand = ref(mulberry32(randomSeed.value));
 const marqueeColumns = computed(() => {
-  // Recents are excluded: they arrive after the feed, and folding them in later
-  // would reshuffle every column under the reader.
+  // Deferred sections are excluded: they arrive after the feed, and folding them
+  // in later would reshuffle every column under the reader.
   const allCards = visibleSections.value
-    .filter((section) => section.key !== homeRecentSection.key)
+    .filter((section) => !section.deferred)
     .flatMap((section) =>
       section.cards.map((card) => ({ card, sectionTitle: section.title, kind: "model" as const })),
     );
