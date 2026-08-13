@@ -8,21 +8,27 @@
  *     row id, or the frozen `storagePathHash` output, which deliberately
  *     keeps that same shape
  *
- * Known path words (`models`, `versions`, `preview-images`, ...) and date
- * segments never share these exact lengths, so they pass through untouched.
- * Matches are anchored to segment boundaries and exact lengths so a
- * legitimate path component or filename is never mistaken for an id.
+ * Two restrictions keep real filenames out of this. Ids only ever appear as
+ * non-final path segments, so the bare match requires a following slash: a
+ * 10- or 21-character extensionless filename is not an id. And the fused
+ * prefix only exists in staging keys, so it is only stripped when the path is
+ * actually staging-shaped. Without that gate a filename like
+ * `wolf-sheep-predation.nlogo` normalises to `<id>-predation.nlogo`, because
+ * `wolf-sheep` is ten characters followed by a hyphen.
  */
 const HYPHENATED_HEX_SEGMENT = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 const NANOID21_SEGMENT = '[A-Za-z0-9_-]{21}';
 const NANOID10_SEGMENT = '[A-Za-z0-9_-]{10}';
 
 const BARE_ID = new RegExp(
-  `(^|/)(?:${HYPHENATED_HEX_SEGMENT}|${NANOID21_SEGMENT}|${NANOID10_SEGMENT})(?=/|$)`,
+  `(^|/)(?:${HYPHENATED_HEX_SEGMENT}|${NANOID21_SEGMENT}|${NANOID10_SEGMENT})(?=/)`,
   'gi',
 );
 const FUSED_ID_PREFIX = new RegExp(`(^|/)${NANOID10_SEGMENT}(?=-)`, 'g');
 
 export function normalizeKey(key: string): string {
-  return key.replace(BARE_ID, '$1<id>').replace(FUSED_ID_PREFIX, '$1<id>');
+  const normalized = key.replace(BARE_ID, '$1<id>');
+
+  const isStagingKey = key.split('/').slice(0, -1).includes('staging');
+  return isStagingKey ? normalized.replace(FUSED_ID_PREFIX, '$1<id>') : normalized;
 }

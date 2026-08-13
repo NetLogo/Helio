@@ -58,3 +58,27 @@ describe('normalizeKey', () => {
     expect(normalizeKey(a)).not.toBe(normalizeKey(b));
   });
 });
+
+describe('normalizeKey does not eat real filenames', () => {
+  it('leaves a hyphenated filename whose first ten characters precede a dash', () => {
+    const key = 'uploads/models/m/preview-images/2020/07/01/AbCdEfGhIj/wolf-sheep-predation.nlogo';
+    expect(normalizeKey(key)).toBe('uploads/models/m/preview-images/2020/07/01/<id>/wolf-sheep-predation.nlogo');
+  });
+
+  it('keeps two different filenames distinguishable under the same id segment', () => {
+    const base = 'uploads/models/m/additionalFiles/2020/07/01/AbCdEfGhIj/';
+    expect(normalizeKey(`${base}wolf-sheep-predation.nlogo`)).not.toBe(
+      normalizeKey(`${base}Xy1Z_aBcDe-predation.nlogo`),
+    );
+  });
+
+  it('leaves an extensionless final segment of id length alone', () => {
+    expect(normalizeKey('uploads/models/m/files/2020/07/01/AbCdEfGhIj/abcdefghij')).toBe(
+      'uploads/models/m/files/2020/07/01/<id>/abcdefghij',
+    );
+  });
+
+  it('still strips the fused prefix inside a staging key', () => {
+    expect(normalizeKey('staging/u/d/AbCdEfGhIj-wolf-sheep.nlogox')).toBe('staging/u/d/<id>-wolf-sheep.nlogox');
+  });
+});
