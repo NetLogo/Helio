@@ -124,23 +124,18 @@
                 <p class="text-sm text-muted mt-1">(in the past 2 weeks)</p>
               </div>
               <UCard variant="soft">
-                <div v-if="tagsSummary?.data" class="flex flex-col gap-8 h-full">
+                <div v-if="feedTags.length" class="flex flex-col gap-8 h-full">
                   <TagCard
-                    v-for="$data in tagsSummary?.data"
-                    :key="$data.tag.id"
-                    :name="$data.tag.displayName"
-                    :description="`tagged ${$data.modelCount} times`"
+                    v-for="entry in feedTags"
+                    :key="entry.tag.id"
+                    :name="entry.tag.name"
+                    :display-name="entry.tag.displayName"
+                    :description="`tagged ${pluralizeWithCount(entry.modelCount, 'time')}`"
                   />
 
                   <UButton variant="link" size="sm" class="w-full mt-4" to="/tags">
                     See all tags
                   </UButton>
-                </div>
-                <div v-else-if="tagsStatus === 'pending'" class="flex flex-col gap-8 h-full">
-                  <TagCardSkeleton v-for="i in 6" :key="i" />
-                </div>
-                <div v-else-if="tagsError" class="text-center py-8">
-                  <Error :error="tagsError" title="Something went wrong" />
                 </div>
               </UCard>
             </section>
@@ -159,18 +154,14 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelCard } from "~/composables/model/useModelCard";
 import NetlogoLogo from "@repo/vue-ui/assets/brands/NetLogoOrgLogo.svg?url";
-
-type SortBy = "recent" | "views" | "downloads" | "runs" | "likes";
-
-interface SectionConfig {
-  key: string;
-  title: string;
-  subtitle: string;
-  query: QueryParams<"GET", "/api/v1/models/card">;
-  viewAllTo: string;
-}
+import {
+  homeFeedPath,
+  homeSections,
+  type HomeFeed,
+  type HomeModelCard,
+  type HomePopularTag,
+} from "~~/shared/home";
 
 const meta = useWebsite();
 
@@ -181,75 +172,17 @@ useSeoMeta({
   ogDescription: meta.value.description,
 });
 
-const sectionConfigs: SectionConfig[] = [
-  {
-    key: "featured",
-    title: "Featured Models",
-    subtitle: "Community-endorsed simulations",
-    query: { limit: 8, isEndorsed: true },
-    viewAllTo: "/featured-models",
-  },
-  {
-    key: "recent",
-    title: "Recent Models",
-    subtitle: "Latest uploads from the community",
-    query: { limit: 8 },
-    viewAllTo: "/new-models",
-  },
-  {
-    key: "most-viewed",
-    title: "Most Viewed Models",
-    subtitle: "What the community keeps coming back to",
-    query: { limit: 6, sortBy: "views" satisfies SortBy },
-    viewAllTo: "/models?sortBy=views",
-  },
-  {
-    key: "most-downloaded",
-    title: "Most Downloaded Models",
-    subtitle: "Top picks people are taking offline",
-    query: { limit: 4, sortBy: "downloads" satisfies SortBy },
-    viewAllTo: "/models?sortBy=downloads",
-  },
-  {
-    key: "most-liked",
-    title: "Most Liked Models",
-    subtitle: "Crowd favorites",
-    query: { limit: 4, sortBy: "likes" satisfies SortBy },
-    viewAllTo: "/models?sortBy=likes",
-  },
-];
-
-const api = useApi();
-const { data, error, status, refresh } = await useAsyncData<Record<string, ModelCard[]>>(
-  "home-models",
-  async () => {
-    const responses = await Promise.all(
-      sectionConfigs.map((s) => api.GET("/api/v1/models/card", { params: { query: s.query } })),
-    );
-
-    return Object.fromEntries(
-      sectionConfigs
-        .map((s, i) => [s.key, (responses[i]?.data?.data ?? []) as ModelCard[]] as const)
-        .filter(([, cards]) => cards.length > 0),
-    );
-  },
+// Every section here is public and identical for all visitors, so the queries
+// are collapsed into one server-cached feed instead of six per-request calls.
+const { data, error, status, refresh } = await useAsyncData<HomeFeed>("home-feed", () =>
+  $fetch<HomeFeed>(homeFeedPath),
 );
 
-const TWO_WEEKS_MS = 1000 * 60 * 60 * 24 * 14;
-const {
-  data: tagsSummary,
-  error: tagsError,
-  status: tagsStatus,
-} = await useAsyncData("home-tags-summary", () => {
-  return getPopularTagsSummary(api, {
-    pagination: { limit: 6 },
-    date: { fromDate: new Date(Date.now() - TWO_WEEKS_MS) }, // past 2 weeks
-  });
-});
+const feedTags = computed<HomePopularTag[]>(() => data.value?.tags ?? []);
 
 const visibleSections = computed(() =>
-  sectionConfigs
-    .map((s) => ({ ...s, cards: data.value?.[s.key] ?? [] }))
+  homeSections
+    .map((s) => ({ ...s, cards: data.value?.sections[s.key] ?? [] }))
     .filter((s) => s.cards.length > 0),
 );
 
@@ -263,23 +196,21 @@ const marqueeColumns = computed(() => {
     section.cards.map((card) => ({ card, sectionTitle: section.title, kind: "model" as const })),
   );
 
-  const tagsCards = tagsSummary.value?.data.map((tagData: TagsSummary["data"][number]) => ({
+  const tagsCards = feedTags.value.map((entry) => ({
     kind: "tag" as const,
-    tag: tagData.tag,
-    description: `tagged ${tagData.modelCount} times`,
+    tag: entry.tag,
+    description: `tagged ${pluralizeWithCount(entry.modelCount, "time")}`,
   }));
 
   // Round-robin distribute across columns
   const cols: Array<
     Array<
-      | { card: ModelCard; sectionTitle: string; kind: "model" }
-      | { kind: "tag"; tag: TagsSummary["data"][number]["tag"]; description: string }
+      | { card: HomeModelCard; sectionTitle: string; kind: "model" }
+      | { kind: "tag"; tag: HomePopularTag["tag"]; description: string }
     >
   > = Array.from({ length: MARQUEE_COLS }, () => []);
 
-  const mixedCards = (tagsCards ? [...allCards, ...tagsCards] : allCards).sort(
-    () => rand.value() - 0.5,
-  ); // Shuffle to mix tags and models
+  const mixedCards = [...allCards, ...tagsCards].sort(() => rand.value() - 0.5); // Shuffle to mix tags and models
 
   mixedCards.forEach((item, i) => {
     cols[i % MARQUEE_COLS]!.push(item);
