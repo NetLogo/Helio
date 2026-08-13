@@ -35,11 +35,11 @@ import { CopyObjectCommand, HeadObjectCommand } from '#src/shared/storage/index.
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
 import { newId } from '#src/shared/utils/id.ts';
 import { nanoid } from 'nanoid';
+import { STAGING_KEY_RANDOM_SEGMENT_LENGTH } from './model-draft.storage.ts';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
 
-const STAGING_KEY_RANDOM_SEGMENT_LENGTH = 10;
 const LEGACY_UUID_PREFIX_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i;
 
