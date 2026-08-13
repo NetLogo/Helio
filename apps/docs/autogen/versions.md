@@ -7,91 +7,123 @@ For help running models made in old versions, see the
 
 #### Table of Contents
 
-## Version 7.1.0-internal1 (July 2026)
+## Version 7.1.0-alpha1 (August 2026)
 
-### Major New Features
+### Biggest new feature
 
-  * A module system  
-  * Improved Code tab editor, with better auto-complete and syntax highlighting  
-  * Improved Info tab (e.g. LaTeX, videos, more image formats)  
-  * Better macOS installation UX  
-  * Auto-converter service  
-  * BehaviorSpace runs in a separate process, preventing memory leaks from sustained use  
+* NetLogo modules
+  * Modules (`.nlm` files) can now be used to export procedures with the `export` keyword
+  * In the current implementation, only procedures may be declared within modules, and they may not refer to anything that was defined in the main Code tab
+  * Modules and the main Code tab can import procedures from `my-module.nlm` with the code `import [ that-specific-procedure ] from my-module`
+  * More information can be found [here](https://github.com/NetLogo/Helio/commit/435e5feb0bb22eade3e16037322af439efe9db8c)
+  * The models “Discrete Event Mousetrap” and “Distribution Center Discrete Event Simulator” also provide examples of the system in action
+
+### Major new features and changes
+
+* Improved Code Tab
+  * The code completion functionality now gives smarter recommendations and appears without needing to invoke a key combination. This functionality can be disabled in the application preferences.
+  * Dynamically generated terms (e.g., specific breed names) will now get syntax highlighted
+* Improved Info tab
+  * Now supports LaTeX, as well as embedded videos and images
+* NetLogo can now be installed on macOS simply by dragging the icon into the `Applications` folder in the installer
+* There is now an online service for automatically updating old models to the latest version of NetLogo, which can be found [here](https://convert.netlogo.org/)
+  * The new online system covers more cases than the in-app auto-converter can
+* BehaviorSpace Improvements
+  * BehaviorSpace runs in a separate process, preventing memory leaks from sustained use
   * BehaviorSpace displays in a separate window, allowing usage and editing of the model while experiments are running
-
-### New Features
-
-  * `.nls` files are now forbidden to take on names that would be invalid NetLogo variable names  
-    * The “Distribution Center Discrete Event Simulator” and “Discrete Event Mousetrap” models now demonstrate the usage of the new module system  
-  * Updated to Java 21  
-  * The NW extension is has a compatible equivalent in NetLogo Web, and has added primitives `save-to-string` and `load-from-string`  
-  * Ability to set model name for display in NetLogo Web (in View/model settings)  
-  * `.nls` files can be renamed within NetLogo by right-clicking their tab in the list  
-  * Command Center input can now consist of more than one line of code  
-  * Command Center input is now saved, per model, across NetLogo sessions  
-  * Improved command line interface for launching NetLogo (now much clearer about errors and available options)  
-  * The "internal error" dialog now provides a simple button for directly reporting errors to the NetLogo team  
-  * Improved experience for editing NetLogo files with a third-party editors  
-    * After turning on the "Enable remote commands" preference, NetLogo can receive commands from external sources  
-    * Code and Info tab contents are always bounded by newlines and `CDATA` tags  
-  * Monitor widgets now have a "Copy text" option in their right-click menu  
-  * BehaviorSpace can now be given an upper limit of how much memory to allocate to the process  
+  * BehaviorSpace can now be given an upper limit of how much memory to allocate to the process
   * The BehaviorSpace "Run" dialog now allows specifying desired behavior for when errors occur: Ignore them, abort the errored run, or abort the entire experiment
+
+### NetLogo Web Changes
+
+* The GIS extension now works in NetLogo Web and provides `load-dataset-from-string`, `store-dataset-to-string`, and `store-dataset-to-strings` primitives that provide a NetLogo Web-compatible way of reading and writing GIS data without needing to access the file system.
+* The NW extension now works in NetLogo Web and provides `load-from-string` and `save-to-string` primitives that provide a NetLogo Web-compatible way of reading and writing network data without needing to access the file system.
+* Ability to set model name for display in NetLogo Web (in View/Model settings)
+
+### Minor Features and Changes
+
+* NetLogo once again ships with a copy of the user manual in the form of static HTML files, and will open those when “Quick Help” is used without an internet connection
+* Monitor widgets now have a "Copy text" option in their right-click menu
+* Command Center input can now consist of more than one line of code with the standard Shift+Enter/Shift+Return key combination
+* Command Center input is now saved, per model, across NetLogo sessions
+* Improved experience for editing NetLogo files with third-party editors
+  * After turning on the "Enable remote commands" preference, NetLogo can receive commands from external sources
+  * Code and Info tab contents are always bounded by newlines and `CDATA` tags
+* Improved command-line interface for launching NetLogo (now much clearer about errors and available options)
+* The Models Library dialog once again has folder and file icons for distinguishing the different types of entries
+* `.nls` files are now forbidden to take on names that would be invalid NetLogo variable names
+  * The “Distribution Center Discrete Event Simulator” and “Discrete Event Mousetrap” models now demonstrate the usage of the new module system
+* `.nls` files can be renamed within NetLogo by right-clicking their tab in the list
+* The "internal error" dialog now provides a simple button for directly reporting errors to the NetLogo team
+* Updated to Java 21
+* While the Scaladocs for the NetLogo API (e.g. for the Controlling API or authoring NetLogo extensions) will still be available on our website, they will no longer be distributed with each installation of NetLogo
 
 ### Bugs Fixed
 
-  * NetLogo language  
-    * Improved error messages when a string or number is provided as a global variable name  
-  * Widgets  
-    * "Forever" buttons with "Disable until ticks start" enabled will now stop when `clear-ticks` is called  
-    * For display text of some particular widths, ellipses were wrongly being shown when creating new widgets  
-    * Plot widgets now reset the scroll level of plot pen editors after the dialog is closed  
-    * Plot pen editors now instantly recompile when you click away from them  
-    * Sliders now handle it more gracefully when widget editor fields are invalid-but-compilable  
-    * Note widgets were showing excessive whitespace on when, when set to render Markdown  
-    * Output widgets now do a better job of importing long content with `import-world`  
-    * Output widgets now crop the text on a line-by-line basis  
-    * Reduced visual artifacts on some rounded borders  
-  * View  
-    * Drawings could previously be duplicated when combining world wrapping with large pen sizes   
-  * Command Center  
-    * Fixed a case where the font style was changing when zoomed  
-    * The "command history" button was not matching the look and feel of the rest of the NetLogo 7 UI  
-  * Code tab  
-    * Error text can not be selected and copied  
-    * Missing characters (e.g. CJK characters) are now shown in a fallback font when the current font does not define them  
-  * Extensions  
-    * Fixed a crash with `vid:camera-select` on Windows, when no camera was selected  
-  * BehaviorSpace  
-    * The error messages about invalid world dimensions have been improved  
-  * HubNet  
-    * After importing a HubNet client interface via "File → Import → Import HubNet Client Interface", the widgets can now be edited properly  
-    * Client view widget height now updates correctly when set in the "Edit" dialog  
-  * Auto-converter  
-    * NetLogo will now suggest using our external model-converter service, when opening an old model  
-    * Now knows how to remove the old `hubnet-set-client-interface` primitive  
-    * Will now run `movie-`/`vid` conversions, even if only `movie-set-frame-rate` is used in the model  
-    * Avoids producing syntactically invalid code when doing conversions  
-    * Can now relocate declarations that were defined in now-invalid places  
-    * Can now run on code in monitor widgets, even if that code is not wrapped in parentheses  
-    * Will not add extra parentheses around code in monitor widgets  
-    * Can now handle conflicting breed names  
-    * Can convert from the old `breed [ xs ]` syntax  
-    * Can install extensions automatically, when needed  
-  * Miscellaneous  
-    * The "Reload model on external changes" preference was leaving watch services running unnecessarily  
-    * The "Extension Manager samples" section of the Models Library is now far more organized and navigable  
-    * Uninstalling an in-use extension will no longer produce internal errors  
-    * File icons were not being set properly on Linux  
-    * Reduced display of redundant announcement banners  
-    * The "About" dialog's text can now be selected and copied  
-    * The "About" dialog no longer shows a text input caret after being clicked  
-    * Loading an autosave from an old version of NetLogo could lead to an unwanted and unnecessary "Save as" dialog  
-    * "Undo" and "redo" options were presented differently in the Code tab from how they are in the Interface tab  
-    * Error dialog now points people to the newer URL for downloading the latest NetLogo  
-    * The error message when loading a model from version of NetLogo that is simply old no longer claims that the version is unknown  
-    * The Info tab "Help" links are now valid again  
-    * The Extension Manager now does a better job of handling registries of extensions from multiple different versions
+* NetLogo language
+  * Improved error messages when a string or number is provided as a global variable name
+* Widgets
+  * "Forever" buttons with "Disable until ticks start" enabled will now stop when `clear-ticks` is called
+  * For display text of some particular widths, ellipses were wrongly being shown when creating new widgets
+  * Plot widgets now reset the scroll level of plot pen editors after the dialog is closed
+  * Plot pen editors now instantly recompile when you click away from them
+  * Sliders now handle when widget editor fields are invalid-but-compilable more gracefully
+  * Note widgets were showing excessive whitespace in margins when set to render Markdown
+  * Output widgets now do a better job of importing long content with `import-world`
+  * Output widgets now crop the text on a line-by-line basis
+  * Reduced visual artifacts on some rounded borders
+* View
+  * Drawings could previously be duplicated when combining world wrapping with large pen sizes
+* Command Center
+  * Fixed a case where the font style was changing when zoomed
+  * The "command history" button now matches the look and feel of the rest of the NetLogo 7 UI
+* Code tab
+  * Error text can now be selected and copied
+  * Missing characters (e.g., CJK characters) are now shown in a fallback font when the current font does not define them
+* Extensions
+  * Fixed a crash with `vid:camera-select` on Windows when no camera was selected
+  * Fixed an “in-use” error when opening multiple models in a row that use the `vid` extension
+* BehaviorSpace
+  * The error messages about invalid world dimensions have been improved
+* HubNet
+  * After importing a HubNet client interface via "File → Import → Import HubNet Client Interface", the widgets can now be edited properly
+  * Client view widget height now updates correctly when set in the "Edit" dialog
+* NetLogo will now suggest using our [external model-converter service](https://convert.netlogo.org/), when opening a model created in a version earlier than 6.0.0
+* Auto-converter within NetLogo Desktop
+  * Now knows how to remove the old `hubnet-set-client-interface` primitive
+  * Will now run `movie-`/`vid` conversions, even if only `movie-set-frame-rate` is used in the model
+  * Avoids producing syntactically invalid code when doing conversions
+  * Can now relocate declarations that were defined in now-invalid places
+  * Can now run on code in monitor widgets, even if that code is not wrapped in parentheses
+  * Will not add extra parentheses around code in monitor widgets
+  * Can now handle conflicting breed names
+  * Can convert from the old `breed \[ xs \]` syntax
+  * Can install extensions automatically, when needed
+* Miscellaneous
+  * The "Reload model on external changes" preference no longer leaves watch services running unnecessarily
+  * The "Extension Manager samples" section of the Models Library is now far more organized and navigable
+  * Uninstalling an in-use extension will no longer produce internal errors
+  * Application icons were not being set properly on Linux
+  * Reduced display of redundant announcement banners
+  * The "About" dialog's text can now be selected and copied
+  * The "About" dialog no longer shows a text input caret after being clicked
+  * Loading an autosave from an old version of NetLogo used to sometimes lead to an unwanted and unnecessary "Save as" dialog
+  * "Undo" and "redo" options were presented differently in the Code tab from how they are in the Interface tab
+  * Error dialog now points people to the newer URL for downloading the latest NetLogo
+  * The error message when loading a model from a version of NetLogo that is simply old no longer claims that the version is unknown
+  * The Info tab "Help" links are now valid again
+  * The Extension Manager now does a better job of handling registries of extensions from multiple different versions
+
+## Models Library Changes
+
+### New Sample Models
+
+* CA 1D General
+
+### Sample Model Changes
+
+* Distribution Center Discrete Event Simulator, Discrete Event Mousetrap: These models now use the new module system instead of `__includes`
+* Bidding Market: Monitors no longer error when there are no agents, and instead simply display “\<no agents\>”
 
 ## Version 7.0.4 (April 2026)
 
