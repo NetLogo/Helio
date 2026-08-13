@@ -164,7 +164,15 @@ export default defineNuxtConfig({
     experimental: { nativeSqlite: true },
     database: {
       type: "sqlite",
-      filename: ":memory:",
+      // Not ":memory:". Nuxt Content rewrites that filename to `{ name: "memory" }`,
+      // and db0's connectors only take their in-memory branch when the name is
+      // still ":memory:", so it silently becomes a file at `./.data/memory.sqlite`.
+      // Relative to the process CWD, which is a root-owned WORKDIR in the image
+      // while the process runs unprivileged, so the mkdir fails and every content
+      // query throws. Needs an absolute path that is writable both in the
+      // container and on a dev machine running the e2e suite in server mode.
+      // -- Omar Ibrahim, Aug 13 26
+      filename: "/tmp/contents.sqlite",
     },
   },
 
