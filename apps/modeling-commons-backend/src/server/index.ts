@@ -74,6 +74,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
   await fastify.register(AutoLoad, {
     dir: path.join(import.meta.dirname, 'plugins'),
     dirNameRoutePrefix: false,
+    ignorePattern: /\.spec\.ts$/,
   });
 
   // Configure Dependency Injection
