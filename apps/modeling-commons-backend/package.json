@@ -40,6 +40,7 @@
     "db:legacy:import": "sh -c 'PRISMA_SEED_FILE=legacy-migration/initial-import.ts yarn run db:seed'",
     "db:legacy:patch": "tsx prisma/legacy-migration/apply-diff.ts",
     "db:legacy:collaborators": "tsx prisma/legacy-migration/backfill-collaborators.ts",
+    "db:ids:migrate": "tsx --env-file-if-exists=.env prisma/id-migration/migrate-ids.ts",
     "db:reset": "prisma migrate reset --force",
     "deps:validate": "depcruise src --config .dependency-cruiser.cjs --output-type err-long",
     "deps:graph": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > doc/dependency-graph.svg"
