@@ -1,6 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import useTags from "~/composables/tag/useTags";
+import usePopularTags from "~/composables/tag/usePopularTags";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState } = vi.hoisted(() => ({
@@ -34,5 +35,20 @@ describe("useTags", () => {
     const query = lastQuery("/api/v1/tags");
     expect(query.page).toBe(0);
     expect(query).not.toHaveProperty("offset");
+  });
+});
+
+describe("usePopularTags", () => {
+  it("requests /api/v1/tags/popular with the configured limit and page", async () => {
+    apiState.current!.GET.mockResolvedValue(
+      apiResult.ok({ count: 0, limit: 24, page: 0, data: [] }),
+    );
+
+    usePopularTags(24);
+    await vi.waitFor(() => expect(apiState.current!.GET).toHaveBeenCalled());
+
+    const query = lastQuery("/api/v1/tags/popular");
+    expect(query.limit).toBe(24);
+    expect(query.page).toBe(0);
   });
 });

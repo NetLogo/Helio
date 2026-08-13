@@ -13,6 +13,7 @@ const PAGES: Array<{ path: string; identity: RegExp }> = [
   { path: "/models", identity: /Explore Models/i },
   { path: "/featured-models", identity: /Featured Models/i },
   { path: "/new-models", identity: /New Models/i },
+  { path: "/tags", identity: /Models by Tag/i },
   { path: "/login", identity: /Log In|Welcome back/i },
   { path: "/signup", identity: /Sign Up/i },
   { path: "/reset-password", identity: /Reset password/i },
