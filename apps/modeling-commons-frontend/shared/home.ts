@@ -68,4 +68,4 @@ export const homeTagsLimit = 6;
 export const homeTagsWindowDays = 14;
 
 export const homeFeedPath = "/_data/home";
-export const homeFeedMaxAgeSeconds = 60 * 10;
+export const homeFeedMaxAgeSeconds = 60 * 45;
