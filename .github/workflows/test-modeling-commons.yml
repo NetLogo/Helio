@@ -63,6 +63,14 @@ jobs:
           restore-keys: |
             node-modules-${{ runner.os }}-
 
+      - name: Assert the beta host is gone
+        run: |
+          if git grep -In "beta\.modelingcommons" -- \
+               ':!doc/' ':!*/doc/' ':!.ongoing/' ':!*/.ongoing/'; then
+            echo "::error::The retired beta host appears at the paths above. The app is served from www.modelingcommons.org; only doc/ and .ongoing/ may still mention it."
+            exit 1
+          fi
+
       - name: Install dependencies
         run: yarn run init
         env:
