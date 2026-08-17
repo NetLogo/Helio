@@ -22,7 +22,7 @@ services:
       timeout: 3s
       retries: 5
     volumes:
-      - /tmp/com.netlogo.modeling-commons/postgresql:/var/lib/postgresql
+      - ${XDG_DATA_HOME:-$HOME/.local/share}/com.netlogo.modeling-commons/postgresql:/var/lib/postgresql
 
   seaweedfs:
     image: chrislusf/seaweedfs:4.27
@@ -33,7 +33,7 @@ services:
       - 8888:8888   # filer
       - 8333:8333   # S3
     volumes:
-      - /tmp/com.netlogo.modeling-commons/seaweedfs/data:/data
+      - ${XDG_DATA_HOME:-$HOME/.local/share}/com.netlogo.modeling-commons/seaweedfs/data:/data
       - ./docker/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8888/"]
@@ -56,7 +56,7 @@ services:
       timeout: 3s
       retries: 5
     volumes:
-      - /tmp/com.netlogo.modeling-commons/redis/data:/data
+      - ${XDG_DATA_HOME:-$HOME/.local/share}/com.netlogo.modeling-commons/redis/data:/data
 
   mailpit:
     image: axllent/mailpit:latest
@@ -69,7 +69,7 @@ services:
       timeout: 3s
       retries: 5
     volumes:
-      - /tmp/com.netlogo.modeling-commons/mailpit:/data
+      - ${XDG_DATA_HOME:-$HOME/.local/share}/com.netlogo.modeling-commons/mailpit:/data
     environment:
       MP_DATABASE: /data/mailpit.db
     networks:
@@ -86,7 +86,7 @@ services:
   #   ports:
   #     - "9010:8080"
   #   volumes:
-  #     - /tmp/com.netlogo.modeling-commons/galapagos:/opt/galapagos
+  #     - ${XDG_DATA_HOME:-$HOME/.local/share}/com.netlogo.modeling-commons/galapagos:/opt/galapagos
   #   extra_hosts:
   #     - "host.docker.internal:host-gateway"
 
