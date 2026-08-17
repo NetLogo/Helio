@@ -22,6 +22,7 @@
     "svc:full": "docker-compose -f docker-compose.dev.yml --profile optional up",
     "svc:down": "docker-compose -f docker-compose.dev.yml down",
     "generate:types": "bash scripts/generate-types.sh",
+    "sweep": "tsx --env-file-if-exists=.env scripts/sweep.ts",
     "test": "yarn run test:unit && yarn run test:e2e",
     "test:coverage": "vitest run --coverage",
     "test:unit": "vitest run",
