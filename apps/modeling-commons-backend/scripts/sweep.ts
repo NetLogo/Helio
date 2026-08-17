@@ -305,9 +305,10 @@ async function paginate(baseUrl: string, path: string, limit = 50): Promise<stri
   const first = `${path}${sep}limit=${limit}&page=1`;
   const res = await fetch(`${baseUrl}${first}`);
   if (!res.ok) return [first];
-  const body = (await res.json()) as { total?: number; meta?: { total?: number } };
-  const total = body.total ?? body.meta?.total ?? 0;
-  const pages = Math.max(1, Math.ceil(total / limit));
+  // `count` is the field name in shared/api/paginated.response.base.ts. Reading
+  // `total` silently yields undefined and collapses every walk to page 1.
+  const body = (await res.json()) as { count?: number };
+  const pages = Math.max(1, Math.ceil((body.count ?? 0) / limit));
   return Array.from({ length: pages }, (_, i) => `${path}${sep}limit=${limit}&page=${i + 1}`);
 }
 
