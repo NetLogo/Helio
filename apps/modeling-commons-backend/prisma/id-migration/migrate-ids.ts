@@ -21,6 +21,7 @@ import {
   type IdColumn,
   type TextColumn,
 } from './lib/catalog.ts';
+import { mapInsertStatements } from './lib/map-insert.ts';
 import { isCurrentId, remapJson, remapString } from './lib/rewrite.ts';
 import {
   copyObjects,
@@ -130,14 +131,9 @@ async function buildMap(
   }
 
   if (persist && fresh.length > 0) {
-    const values = fresh
-      .map((_, index) => `($${index * 3 + 1}, $${index * 3 + 2}, $${index * 3 + 3})`)
-      .join(', ');
-    await db.$executeRawUnsafe(
-      `INSERT INTO ${quote(MAP_TABLE)} (table_name, old_id, new_id) VALUES ${values}
-       ON CONFLICT (table_name, old_id) DO NOTHING`,
-      ...fresh.flatMap((row) => [row.table_name, row.old_id, row.new_id]),
-    );
+    for (const { sql, params } of mapInsertStatements(quote(MAP_TABLE), fresh)) {
+      await db.$executeRawUnsafe(sql, ...params);
+    }
   }
 
   return { map, pending };
