@@ -14,7 +14,8 @@
  *
  * Usage:
  *   yarn sweep [--only=api|web|storage|legacy] [--base-url=…] [--web-url=…]
- *              [--public-base=…] [--sample=N] [--concurrency=N] [--fail-fast]
+ *              [--public-base=…] [--sample=N] [--concurrency=N] [--page-size=N]
+ *              [--fail-fast]
  */
 
 import 'dotenv/config';
@@ -50,6 +51,10 @@ type Options = {
 
 const ALL_COHORTS: Cohort[] = ['api', 'web', 'storage', 'legacy'];
 
+// Page size used when walking paginated collections. Overridable with
+// --page-size so the multi-page path is exercisable against small datasets.
+let PAGE_SIZE = 50;
+
 /**
  * Every GET path in the OpenAPI document must be either expanded by
  * `buildApiChecks` or listed here with a reason. An unlisted, unexpanded path
@@ -78,6 +83,8 @@ function parseArgs(argv: string[]): Options {
 
   const sample = get('sample');
   const concurrency = get('concurrency');
+  const pageSize = get('page-size');
+  if (pageSize) PAGE_SIZE = Number(pageSize);
 
   return {
     cohorts,
@@ -300,7 +307,7 @@ async function enumerate(prisma: PrismaClient, sample: number | null): Promise<E
  * `limit`, so the page count is known after the first request; every page is
  * then requested, not just page 1.
  */
-async function paginate(baseUrl: string, path: string, limit = 50): Promise<string[]> {
+async function paginate(baseUrl: string, path: string, limit = PAGE_SIZE): Promise<string[]> {
   const sep = path.includes('?') ? '&' : '?';
   const first = `${path}${sep}limit=${limit}&page=1`;
   const res = await fetch(`${baseUrl}${first}`);

@@ -34,14 +34,26 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 APP="$(cd "$HERE/../.." && pwd)"
 cd "$APP"
 
-# Values already exported win, so production runs can pass connection strings
-# without an .env file present.
+# Values already exported win. Sourcing the file would instead overwrite them,
+# which silently retargets the whole run at whatever the local .env names: an
+# operator who exports a production DATABASE_URL would have it replaced by the
+# development one and never be told. Only unset names are filled in.
 ENV_FILE="${ENV_FILE:-$APP/.env}"
 if [ -f "$ENV_FILE" ]; then
-  set -a
-  # shellcheck disable=SC1090
-  . "$ENV_FILE"
-  set +a
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in ''|'#'*) continue ;; esac
+    key="${line%%=*}"
+    value="${line#*=}"
+    case "$key" in *[!A-Za-z0-9_]*|'') continue ;; esac
+    # Strip one layer of surrounding quotes, as dotenv does.
+    case "$value" in
+      \"*\") value="${value#\"}"; value="${value%\"}" ;;
+      \'*\') value="${value#\'}"; value="${value%\'}" ;;
+    esac
+    if [ -z "${!key:-}" ]; then
+      export "$key=$value"
+    fi
+  done < "$ENV_FILE"
 fi
 
 ONGOING="${ONGOING_DIR:-$APP/.ongoing/promote-to-prod}"
