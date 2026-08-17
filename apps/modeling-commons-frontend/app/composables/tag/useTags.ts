@@ -15,7 +15,7 @@ export default function useTags() {
     count,
   } = useApiPagination(key, async (page: number) => {
     const { data, error } = await GET("/api/v1/tags", {
-      params: { query: { limit: 20, offset: (page - 1) * 20, q: debouncedQuery.value } },
+      params: { query: { limit: 20, page, q: debouncedQuery.value } },
     });
 
     const parsed = handleApiError(data, error, "fetching tags");

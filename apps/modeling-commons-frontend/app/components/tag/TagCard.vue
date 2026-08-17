@@ -31,7 +31,7 @@ import { createTagPath } from "~/utils/formatters";
 const props = defineProps<{
   name: string;
   displayName?: string;
-  description: string;
+  description?: string;
 }>();
 
 const label = computed(() =>
