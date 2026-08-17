@@ -2,7 +2,10 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '#prisma/client';
 import { newId } from '#src/shared/utils/id.ts';
 import { createInterface } from 'node:readline/promises';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { createWriteStream } from 'node:fs';
+import { mkdir } from 'node:fs/promises';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import path from 'node:path';
 import {
   assertMappedTables,
@@ -21,6 +24,7 @@ import {
   type IdColumn,
   type TextColumn,
 } from './lib/catalog.ts';
+import { mapJsonChunks } from './lib/map-file.ts';
 import { mapInsertStatements } from './lib/map-insert.ts';
 import { isCurrentId, remapJson, remapString } from './lib/rewrite.ts';
 import {
@@ -450,7 +454,7 @@ async function report(
 async function writeMapFile(map: ReadonlyMap<string, string>, label: string): Promise<void> {
   await mkdir(OUTPUT_DIR, { recursive: true });
   const file = path.join(OUTPUT_DIR, `id-map-${label}-${Date.now()}.json`);
-  await writeFile(file, JSON.stringify(Object.fromEntries(map), null, 2));
+  await pipeline(Readable.from(mapJsonChunks(map)), createWriteStream(file));
   console.log(`Map written to ${path.relative(process.cwd(), file)}`);
 }
 
