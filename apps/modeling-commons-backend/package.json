@@ -28,6 +28,7 @@
     "test:unit": "vitest run",
     "test:e2e": "sh -c 'FASTIFY_AUTOLOAD_TYPESCRIPT=1 cucumber-js --exit'",
     "test:e2e:perf": "sh -c 'FASTIFY_AUTOLOAD_TYPESCRIPT=1 cucumber-js --profile perf --exit'",
+    "test:e2e:data": "sh -c 'FASTIFY_AUTOLOAD_TYPESCRIPT=1 DATA_INTEGRITY_GUARD=1 cucumber-js --profile dataIntegrity --exit'",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit",

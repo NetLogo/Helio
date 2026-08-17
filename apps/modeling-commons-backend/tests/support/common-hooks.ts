@@ -45,7 +45,27 @@ Before(async function (this: ICustomWorld, hookParam: ITestCaseHookParameter) {
   if (isTimingEnabled()) {
     setActiveScenario(scenarioCase.name);
   }
+});
+
+// Truncation is scoped by tag so that it is unreachable from the
+// @data-integrity cohort, which runs against populated environments including
+// production. Keeping it in a separate hook means a tagging mistake cannot
+// silently reintroduce it: the two hooks' tag expressions are complements.
+Before({ tags: 'not @data-integrity' }, async function (this: ICustomWorld) {
   await cleanDatabase(this.server);
+});
+
+Before({ tags: '@data-integrity' }, async function (this: ICustomWorld) {
+  const { prisma } = this.server.diContainer.cradle as {
+    prisma: { model: { count: () => Promise<number> }; user: { count: () => Promise<number> } };
+  };
+  const [models, users] = await Promise.all([prisma.model.count(), prisma.user.count()]);
+  if (models === 0 && users === 0) {
+    throw new Error(
+      'no data to check: the @data-integrity cohort asserts invariants over an existing dataset, ' +
+        'and an empty database would pass every one of them vacuously. Point DATABASE_URL at a populated environment.',
+    );
+  }
 });
 
 After(async function (this: ICustomWorld, hookParam: ITestCaseHookParameter) {
