@@ -4,6 +4,7 @@ import type {
 } from '#src/modules/model-author/domain/model-author.types.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
 
 export interface ModelAuthorRepository {
   findByCompositeKey: (modelId: string, userId: string) => Promise<ModelAuthorEntity | undefined>;
@@ -12,6 +13,7 @@ export interface ModelAuthorRepository {
   findModelsByUser: (
     userId: string,
     params: PaginatedQueryParams,
+    viewer: ViewerContext | null,
   ) => Promise<Paginated<ModelAuthorEntity>>;
   insertTx: (ctx: TransactionContext, entity: ModelAuthorEntity) => Promise<void>;
   updateRoleTx: (

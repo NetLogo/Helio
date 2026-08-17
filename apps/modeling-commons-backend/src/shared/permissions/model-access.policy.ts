@@ -1,11 +1,11 @@
 import { meetsLevel } from '#src/modules/model-permission/domain/permission.types.ts';
 import type { AccessLevel, PolicyContext, ViewerContext } from './model-access.types.ts';
 
-function viewerIsActive(viewer: ViewerContext | null): viewer is ViewerContext {
+export function viewerIsActive(viewer: ViewerContext | null): viewer is ViewerContext {
   return viewer !== null && !viewer.banned && viewer.deletedAt === null;
 }
 
-function viewerIsGlobalAdmin(viewer: ViewerContext | null): boolean {
+export function viewerIsGlobalAdmin(viewer: ViewerContext | null): boolean {
   return viewerIsActive(viewer) && viewer.systemRole === 'admin';
 }
 

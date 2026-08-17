@@ -10,6 +10,7 @@
 import assert from 'node:assert/strict';
 import { HeadObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Then, When } from '@cucumber/cucumber';
+import { readableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
 import { ID_PATTERN } from '#src/shared/utils/id.ts';
 import type { ICustomWorld } from '../../support/custom-world.ts';
 
@@ -297,12 +298,13 @@ Then(
     for (const u of users) {
       const res = await get(this, `/api/v1/users/${u.id}/models?limit=1&page=1`);
       assert.equal(res.statusCode, 200, `user ${u.id} models returned ${res.statusCode}`);
-      // The route counts authorship rows, unfiltered by visibility or deletion
-      // (`modelAuthorRepository.findModelsByUser`). Mirror that, or this
-      // asserts a policy the route never claimed rather than the invariant
-      // that its count matches its own source table.
+      // The cohort calls the route anonymously, so the count it reports is the
+      // authorship rows whose model an anonymous viewer may read. Reuse the
+      // same filter the route uses rather than restating the rule here.
       const count = (JSON.parse(res.body) as { count?: number }).count ?? 0;
-      const expected = await db(this).modelAuthor.count({ where: { userId: u.id } });
+      const expected = await db(this).modelAuthor.count({
+        where: { userId: u.id, model: readableModelFilter(null) },
+      });
       assert.equal(
         count,
         expected,
