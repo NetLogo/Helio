@@ -2501,7 +2501,7 @@ entries:
         - code: file-write *value*
   - id: filter
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
       - title: List
         id: listsgroup
@@ -2512,7 +2512,7 @@ entries:
       description: |+
         Reports a list containing only those items of *list* for which
          the reporter reports true -- in other words, the items satisfying the
-         given condition. *reporter* may be an anonymous reporter or the
+         given condition. *reporter* may be an arrow reporter or the
          name of a reporter.
 
         ```
@@ -2524,7 +2524,7 @@ entries:
         => ["hi" "everyone"]
         ```
 
-        See also [[map|map]], [[reduce|reduce]], [[-> (anonymous procedure)|arrow]].
+        See also [[map|map]], [[reduce|reduce]], [[-> (arrow procedure)|arrow]].
 
       examples:
         - code: filter *reporter* *list*
@@ -2615,7 +2615,7 @@ entries:
         url: images/turtle.webp
   - id: foreach
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
       - title: List
         id: listsgroup
@@ -2624,7 +2624,7 @@ entries:
         - name: foreach
           since: "1.3"
       description: |+
-        With a single list, runs the command for each item of *list*. *command* may be the name of a command, or an anonymous command
+        With a single list, runs the command for each item of *list*. *command* may be the name of a command, or an arrow command
          created with [[->|arrow]].
 
         ```
@@ -2657,7 +2657,7 @@ entries:
         ;; turtle 2 moves forward 4 patches
         ```
 
-        See also [[map|map]], [[-> (anonymous procedure)|arrow]].
+        See also [[map|map]], [[-> (arrow procedure)|arrow]].
 
       examples:
         - code: foreach *list* *command*
@@ -3977,7 +3977,7 @@ entries:
         - code: int *number*
   - id: is-of-type
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
       - title: Link-related
         id: linkgroup
@@ -3996,8 +3996,8 @@ entries:
     primitive_aliases:
       - category_id: anonymousproceduresgroup
         aliases:
-          - is-anonymous-command?
-          - is-anonymous-reporter?
+          - is-arrow-command?
+          - is-arrow-reporter?
       - category_id: linkgroup
         aliases:
           - is-directed-link?
@@ -4033,9 +4033,9 @@ entries:
           since: 1.2.1
         - name: is-agentset?
           since: 1.2.1
-        - name: is-anonymous-command?
+        - name: is-arrow-command?
           since: "6.0"
-        - name: is-anonymous-reporter?
+        - name: is-arrow-reporter?
           since: "6.0"
         - name: is-boolean?
           since: 1.2.1
@@ -4067,8 +4067,8 @@ entries:
       examples:
         - code: is-agent? *value*
         - code: is-agentset? *value*
-        - code: is-anonymous-command? *value*
-        - code: is-anonymous-reporter? *value*
+        - code: is-arrow-command? *value*
+        - code: is-arrow-reporter? *value*
         - code: is-boolean? *value*
         - code: is-<breed>? *value*
         - code: is-<link-breed>? *value*
@@ -4756,7 +4756,7 @@ entries:
         - code: lput *value list*
   - id: map
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
       - title: List
         id: listsgroup
@@ -4766,7 +4766,7 @@ entries:
           since: "1.3"
       description: |+
         With a single *list*, the given reporter is run for each item in
-         the list, and a list of the results is collected and reported. *reporter* may be an anonymous reporter or the name of a reporter.
+         the list, and a list of the results is collected and reported. *reporter* may be an arrow reporter or the name of a reporter.
 
         ```
         show map round [1.1 2.2 2.7]
@@ -4789,7 +4789,7 @@ entries:
         => [true false true]
         ```
 
-        See also [[foreach|foreach]], [[-> (anonymous procedure)|arrow]].
+        See also [[foreach|foreach]], [[-> (arrow procedure)|arrow]].
 
       examples:
         - code: map *reporter* *list*
@@ -5458,7 +5458,7 @@ entries:
         - code: n-of *size* *list*
   - id: n-values
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
       - title: List
         id: listsgroup
@@ -5468,7 +5468,7 @@ entries:
           since: "2.0"
       description: |+
         Reports a list of length *size* containing values computed
-         by repeatedly running the reporter. *reporter* may be an anonymous
+         by repeatedly running the reporter. *reporter* may be an arrow
          reporter or the name of a reporter.
 
         If the reporter accepts inputs, the input will be the number of the
@@ -5488,7 +5488,7 @@ entries:
         => [0 1 4 9 16]
         ```
 
-        See also [[reduce|reduce]], [[filter|filter]], [[-> (anonymous procedure)|arrow]], [[range|range]].
+        See also [[reduce|reduce]], [[filter|filter]], [[-> (arrow procedure)|arrow]], [[range|range]].
 
       examples:
         - code: n-values *size* *reporter*
@@ -7017,7 +7017,7 @@ entries:
         - code: read-from-string *string*
   - id: reduce
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
     data:
       syntax:
@@ -7027,7 +7027,7 @@ entries:
         Reduces a list from left to right using the given reporter, resulting
          in a single value. This means, for example, that `reduce
          [ [a b] -> a + b] [1 2 3 4]`is equivalent to *(((1 + 2) + 3) + 4)*. If *list* has a single item, that item is reported. It is an
-         error to reduce an empty list. *reporter* may be an anonymous
+         error to reduce an empty list. *reporter* may be an arrow
          reporter or the name of a reporter.
 
         The first input passed to the reporter is the result so far, and the
@@ -7086,7 +7086,7 @@ entries:
         => 57
         ```
 
-        See also [[filter|filter]], [[-> (anonymous procedure|arrow]].
+        See also [[filter|filter]], [[-> (arrow procedure|arrow]].
 
       examples:
         - code: reduce *reporter* *list*
@@ -7482,7 +7482,7 @@ entries:
         - code: round *number*
   - id: run
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
       - title: Control Flow and Logic
         id: controlgroup
@@ -7493,10 +7493,10 @@ entries:
         - name: runresult
           since: "1.3"
       description: |+
-        The `run` form expects the name of a command, an anonymous command,
+        The `run` form expects the name of a command, an arrow command,
          or a string containing commands. This agent then runs them.
 
-        The `runresult` form expects the name of a reporter, an anonymous reporter,
+        The `runresult` form expects the name of a reporter, an arrow reporter,
          or a string containing a reporter. This agent runs it and reports the result.
 
         Note that you can't use `run` to define or redefine
@@ -7505,17 +7505,17 @@ entries:
          are cached by NetLogo and thus using `run` on the same
          string over and over is much faster than running different strings.
          The first run, though, will be many times slower than
-         running the same code directly, or in an anonymous command.
+         running the same code directly, or in an arrow command.
 
-        Anonymous procedures are recommended over strings whenever possible.
+        Arrow procedures are recommended over strings whenever possible.
          (An example of when you must use strings is if you accept pieces
          of code from the user of your model.)
 
-        Anonymous procedures may freely read and/or set local variables
+        Arrow procedures may freely read and/or set local variables
          and procedure inputs. Trying to do the same with strings may
          or may not work and should not be relied on.
 
-        When using anonymous procedures, you can provide them with inputs,
+        When using arrow procedures, you can provide them with inputs,
          if you surround the entire call with parentheses. For example:
 
         ```
@@ -7526,7 +7526,7 @@ entries:
         ;; adds 10 and 5
         ```
 
-        See also [[foreach|foreach]], [[-> (anonymous procedure)|arrow]].
+        See also [[foreach|foreach]], [[-> (arrow procedure)|arrow]].
 
       examples:
         - code: run *command*
@@ -8333,7 +8333,7 @@ entries:
         - code: sort *agentset*
   - id: sort-by
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
       - title: Agentset
         id: agentsetgroup
@@ -8346,7 +8346,7 @@ entries:
       description: |+
         If the input is a list, reports a new list containing the same
          items as the input list, in a sorted order defined by the boolean
-         reporter. *reporter* may be an anonymous reporter or
+         reporter. *reporter* may be an arrow reporter or
          the name of a reporter.
 
         The two inputs to *reporter* are the values being compared.
@@ -8369,7 +8369,7 @@ entries:
         => ["Doc" "Happy" "Grumpy"]
         ```
 
-        See also [[sort|sort]], [[sort-on|sort-on]], [[-> (anonymous procedure)|arrow]].
+        See also [[sort|sort]], [[sort-on|sort-on]], [[-> (arrow procedure)|arrow]].
 
       examples:
         - code: sort-by *reporter* *list*
@@ -10212,27 +10212,27 @@ entries:
         url: images/turtle.webp
   - id: arrow
     entry_categories:
-      - title: Anonymous Procedures
+      - title: Arrow Procedures
         id: anonproceduresgroup
     primitive_aliases:
       - category_id: anonproceduresgroup
         aliases:
-          - "-> (anonymous procedure)"
+          - "-> (arrow procedure)"
     data:
       syntax:
         - name: ->
           since: "6.0"
       description: |+
-        Creates and reports an anonymous procedure - a command or reporter
+        Creates and reports an arrow procedure - a command or reporter
          - depending on the input. Within *commands* or *reporter* the listed *args* may be used just as you would use `let` or procedure variables.
          The variable names in *args* have the same restrictions
          as variable names of commands and reporters. In addition, they must not match the name of
          any let or procedure variable in their procedure.
 
-        Anonymous procedures are commonly used with the primitives [[foreach|foreach]], [[map|map]], [[reduce|reduce]], [[filter|filter]], [[sort-by|sort-by]], and [[n-values|n-values]]. See
+        Arrow procedures are commonly used with the primitives [[foreach|foreach]], [[map|map]], [[reduce|reduce]], [[filter|filter]], [[sort-by|sort-by]], and [[n-values|n-values]]. See
          those entries for example usage.
 
-        See the [Anonymous Procedures section](/programming#anonymous-procedures) of the
+        See the [Arrow Procedures section](/programming#arrow-procedures) of the
          Programming Guide for details.
 
       examples:

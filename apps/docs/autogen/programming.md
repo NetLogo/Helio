@@ -1095,15 +1095,15 @@ end</pre>
   example in Logo you could write `[see spot run]` (a list of words), but in
   NetLogo you must write `"see spot run"` (a string) or `["see" "spot" "run"]`
   (a list of strings) instead.
-- NetLogo's [[run]] command works on anonymous procedures and strings, not lists
+- NetLogo's [[run]] command works on arrow procedures and strings, not lists
   (since we have no "word" data type), and does not permit the definition or
   redefinition of procedures.
 - Control structures such as [[if]] and [[while]] are special forms, not
   ordinary functions. You can't define your own special forms, so you can't
   define your own control structures. (You can do something similar using
-  anonymous procedures, but you must use the `->`, `run`, and `runresult`
+  arrow procedures, but you must use the `->`, `run`, and `runresult`
   primitives for that, you cannot make them implicit.)
-- Anonymous procedures (aka function values or lambda) are true lexically-scoped
+- Arrow procedures (aka function values or lambda) are true lexically-scoped
   closures. This feature is available in NetLogo and in modern Lisps, but not in
   standard Logo.
 
@@ -1229,62 +1229,62 @@ also that a model like this cannot be used with BehaviorSpace.
 At present, NetLogo has no way for one forever button to start another. Buttons
 are only started when you press them.
 
-### Anonymous procedures
+### Arrow procedures
 
-Anonymous procedures let you store code to be run later. Just like regular
-NetLogo procedures, an anonymous procedures can be either a command (anonymous
-command) or a reporter (anonymous reporter).
+Arrow procedures let you store code to be run later. Just like regular
+NetLogo procedures, an arrow procedures can be either a command (arrow
+command) or a reporter (arrow reporter).
 
-Anonymous procedures are values, which means they may be passed as input,
+Arrow procedures are values, which means they may be passed as input,
 reported as a result, or stored in a variable.
 
-An anonymous procedure might be run once, multiple times, or not at all.
+An arrow procedure might be run once, multiple times, or not at all.
 
-In other programming languages anonymous procedures are known as first-class
+In other programming languages arrow procedures are known as first-class
 functions, closures, or lambda.
 
-#### Anonymous procedure primitives
+#### Arrow procedure primitives
 
-Primitives specific to anonymous procedures are `->`, `is-anonymous-command?`,
-and `is-anonymous-reporter?`.
+Primitives specific to arrow procedures are `->`, `is-arrow-command?`,
+and `is-arrow-reporter?`.
 
-The `->` creates an anonymous procedure. The anonymous procedure it reports
+The `->` creates an arrow procedure. The arrow procedure it reports
 might be a command or a reporter, depending on what kind of block you pass it.
-For example `[ -> fd 1 ]` reports an anonymous command, because `fd` is a
-command, while `[ -> count turtles ]` reports an anonymous reporter, because
+For example `[ -> fd 1 ]` reports an arrow command, because `fd` is a
+command, while `[ -> count turtles ]` reports an arrow reporter, because
 `count` is a reporter.
 
-These primitives require anonymous procedures as input: `foreach`, `map`,
+These primitives require arrow procedures as input: `foreach`, `map`,
 `reduce`, `filter`, `n-values`, `sort-by`. When calling these primitives, using
-an `->` is optional if your anonymous procedure contains a single primitive
+an `->` is optional if your arrow procedure contains a single primitive
 which has requires no more inputs than are are provided by the primitive. For
 example one may write simply `foreach mylist print` instead of
 `foreach mylist [ [x] -> print x ]`, though the latter is also accepted.
-Depending on the anonymous procedure, various parts of the anonymous procedure
+Depending on the arrow procedure, various parts of the arrow procedure
 syntax can be omitted. For a summary of optional syntax, see
 [the table below](#what-is-optional).
 
-The `run` command accepts anonymous commands as well as strings.
+The `run` command accepts arrow commands as well as strings.
 
-The `runresult` reporter accepts anonymous reporters as well as strings.
+The `runresult` reporter accepts arrow reporters as well as strings.
 
-`run` and `runresult` allow passing inputs to an anonymous procedure. As with
+`run` and `runresult` allow passing inputs to an arrow procedure. As with
 all primitives accepting varying number of inputs, the whole call must be
-surrounded with parentheses, so for example `(run my-anonymous-command 5)` or
-`(runresult my-anonymous-reporter "foo" 2)`. When not passing input, no
+surrounded with parentheses, so for example `(run my-arrow-command 5)` or
+`(runresult my-arrow-reporter "foo" 2)`. When not passing input, no
 parentheses are required.
 
-#### Anonymous procedure inputs
+#### Arrow procedure inputs
 
-An anonymous procedure may take zero or more inputs. The inputs are referenced
-the variables declared before the arrow. For instance, in the anonymous reporter
+An arrow procedure may take zero or more inputs. The inputs are referenced
+the variables declared before the arrow. For instance, in the arrow reporter
 `[ [a b] -> a + b ]`, `a` and `b` are inputs.
 
-#### Anonymous procedures and strings
+#### Arrow procedures and strings
 
-Creating and running anonymous procedures is fast. To use `run` or `runresult`
+Creating and running arrow procedures is fast. To use `run` or `runresult`
 on a new string for the first time is about 100x slower than running an
-anonymous procedure. Modelers should normally use anonymous procedures instead
+arrow procedure. Modelers should normally use arrow procedures instead
 of running strings, except when running strings entered by the user.
 
 #### Concise syntax
@@ -1312,9 +1312,9 @@ In older NetLogo versions (4 and earlier), these had to be written:
     foreach [1 2 3 4] [ print ? ]
     ;; prints 1 through 4
 
-#### Anonymous procedures as closures
+#### Arrow procedures as closures
 
-Anonymous procedures are "closures"; that means they capture or "close over" the
+Arrow procedures are "closures"; that means they capture or "close over" the
 bindings (not just the current values) of local variables and procedure inputs.
 They do not capture agent variables and do not capture the identity (or even the
 agent type) of the current agent.
@@ -1322,12 +1322,12 @@ agent type) of the current agent.
 #### Nonlocal exits
 
 The `stop` and `report` commands exit from the dynamically enclosing procedure,
-not the enclosing anonymous procedure. (This is backward-compatible with older
+not the enclosing arrow procedure. (This is backward-compatible with older
 NetLogo versions.)
 
-#### Anonymous procedures and extensions
+#### Arrow procedures and extensions
 
-The extensions API supports writing primitives that accept anonymous procedures
+The extensions API supports writing primitives that accept arrow procedures
 as input. Write us for sample code.
 
 #### Limitations
@@ -1335,42 +1335,42 @@ as input. Write us for sample code.
 We hope to address at least some of the following limitations in future NetLogo
 versions:
 
-- `import-world` does not support anonymous procedures.
-- Anonymous procedures can't be variadic (accept a varying number of inputs).
-- Anonymous reporters can't contain commands, only a single reporter expression.
+- `import-world` does not support arrow procedures.
+- Arrow procedures can't be variadic (accept a varying number of inputs).
+- Arrow reporters can't contain commands, only a single reporter expression.
   So for example you must use `ifelse-value` not `if`, and you don't use
   `report` at all. If your code is too complex to be written as one reporter,
   you'll need to move the code to a separate reporter procedure, and then call
-  that procedure from your anonymous reporter, passing it any needed inputs.
-- Anonymous procedures are not interchangeable with command blocks and reporter
-  blocks. Only the primitives listed above accept anonymous procedures as input.
+  that procedure from your arrow reporter, passing it any needed inputs.
+- Arrow procedures are not interchangeable with command blocks and reporter
+  blocks. Only the primitives listed above accept arrow procedures as input.
   Control primitives such as `ifelse` and `while` and agent primitives such as
-  `of` and `with` don't accept anonymous procedures. So for example if I have an
-  anonymous reporter `let r [ -> if random 2 == 0 ]` and two anonymous commands
+  `of` and `with` don't accept arrow procedures. So for example if I have an
+  arrow reporter `let r [ -> if random 2 == 0 ]` and two arrow commands
   `let c1 [ -> tick ]` and `let c2 [ -> stop ]`, I can't write `ifelse r c1 c2`,
   I must write `ifelse runresult r [ run c1 ] [ run c2 ]`.
 - The concise syntax where `->` may be omitted is only available to primitives
   and extension primitives, not ordinary procedures. So for example if I have a
-  procedure `p` that accepts an anonymous procedure as input, it must be called
+  procedure `p` that accepts an arrow procedure as input, it must be called
   as e.g. `p [ -> ...  ]` not `p [ ... ]`.
 
 #### What is Optional?
 
-There are several different ways of writing anonymous procedures which allow
-users to omit part or all of the anonymous procedure syntax. These are
+There are several different ways of writing arrow procedures which allow
+users to omit part or all of the arrow procedure syntax. These are
 summarized in the table below.
 
 <table class="line-border anon-procedure-table">
 <thead>
 <tr>
-  <th scope="col">What is the anonymous procedure like?</th>
+  <th scope="col">What is the arrow procedure like?</th>
   <th scope="col">What can be left out?</th>
   <th scope="col">Examples</th>
 </tr>
 </thead>
 <tbody>
   <tr>
-    <td>The anonymous procedure is a single primitive</td>
+    <td>The arrow procedure is a single primitive</td>
     <td>
       <ul>
         <li>input names</li>
@@ -1389,7 +1389,7 @@ summarized in the table below.
     </td>
   </tr>
   <tr>
-    <td>The anonymous procedure takes no inputs</td>
+    <td>The arrow procedure takes no inputs</td>
     <td>
       <ul>
         <li>input names</li>
@@ -1404,7 +1404,7 @@ summarized in the table below.
     </td>
   </tr>
   <tr>
-    <td>The anonymous procedure has zero or one input(s)</td>
+    <td>The arrow procedure has zero or one input(s)</td>
     <td>
       <ul>
         <li>brackets around input names</li>
@@ -1420,7 +1420,7 @@ summarized in the table below.
     </td>
   </tr>
   <tr>
-    <td>Anonymous procedure takes more than one input</td>
+    <td>Arrow procedure takes more than one input</td>
     <td>
       <ul>
         <li>nothing</li>
@@ -1437,7 +1437,7 @@ summarized in the table below.
 </table>
 
 **Note**: brackets around input names were **always required** in NetLogo 6.0.0.
-If you copy and paste code into NetLogo 6.0.0 using anonymous procedures with
+If you copy and paste code into NetLogo 6.0.0 using arrow procedures with
 unbracketed input names, the code will not compile until you add the brackets.
 
 #### Code example
@@ -2104,7 +2104,7 @@ reporter comes first, like this:
     ;; prints [1 2 3]
 
 [[map]] reports a list containing the results of applying the reporter to each
-item in the input list. Again, use the variable named in the anonymous procedure
+item in the input list. Again, use the variable named in the arrow procedure
 (`x` in the examples below) to refer to the current item in the list.
 
 Here are a couple more examples of [[map]]:
@@ -2123,8 +2123,8 @@ other technique such as a loop using [[repeat]] or [[while]], or a recursive
 procedure.
 
 The blocks of code we're giving to `map` and `foreach` in these examples are
-actually **anonymous procedures**. Anonymous procedures are explained in more
-detail in [Anonymous procedures](#anonymous-procedures), below.
+actually **arrow procedures**. Arrow procedures are explained in more
+detail in [Arrow procedures](#arrow-procedures), below.
 
 **Varying number of inputs**
 
