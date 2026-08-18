@@ -708,9 +708,9 @@ experiment setups directly using XML.
 
 #### How to use it
 
-Run NetLogo using the `NetLogo_Console` app with the `--headless` command line argument.
+Run NetLogo using the `NetLogo Console` app with the `--headless` command line argument.
 This is found in the root directory of your NetLogo installation. The
-`NetLogo_Console` script supports the following arguments:
+`NetLogo Console` script supports the following arguments:
 
 - `--headless`: Enable headless mode to run a BehaviorSpace experiment (required, will
 open the graphical interface otherwise).
@@ -746,8 +746,8 @@ Note that prior to NetLogo 6.3.0 the directions were to use `netlogo-headless.sh
 system to run BehaviorSpace experiments.  The `netlogo-headless.sh` script is still
 included with NetLogo and can still be used as before, which might be preferrable in
 server environments where the installed Java version is strictly controlled.  But the
-recommended method for on a personal computer is to use the `NetLogo_Console
---headless` app.  Because `NetLogo_Console` uses the Java that comes bundled with NetLogo it
+recommended method for on a personal computer is to use the `NetLogo\ Console
+--headless` app.  Because `NetLogo Console` uses the Java that comes bundled with NetLogo it
 requires no extra software installation or configuration.
 
 #### Examples
@@ -755,7 +755,7 @@ requires no extra software installation or configuration.
 It is easiest if you create your experiment setup ahead of time in the GUI, so
 it is saved as part of the model. To run an experiment setup saved in a model,
 here is an example command line, run from the NetLogo {{version}} installation
-folder so the paths to the `NetLogo_Console` app and `Wolf Sheep Simple 5.nlogo`
+folder so the paths to the `NetLogo Console` app and `Wolf Sheep Simple 5.nlogo`
 model are correct.
 
 The below commands should work as-is in a terminal on macOS and Linux.  On Windows in the
@@ -763,7 +763,7 @@ Command Prompt you can use `^` instead of `\` to break the command across multip
 or just put the command on a single line.
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --model "models/IABM Textbook/chapter 4/Wolf Sheep Simple 5.nlogo" \
   --experiment "Wolf Sheep Simple model analysis" \
   --table -
@@ -787,7 +787,7 @@ it a name.)
 Here's another example that shows some additional, optional arguments:
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --model "models/IABM Textbook/chapter 4/Wolf Sheep Simple 5.nlogo" \
   --experiment "Wolf Sheep Simple model analysis" \
   --max-pxcor 5 \
@@ -810,7 +810,7 @@ file.
 Yet another example:
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --model "models/IABM Textbook/chapter 4/Wolf Sheep Simple 5.nlogo" \
   --experiment "Wolf Sheep Simple model analysis" \
   --table wsp5-table-output.csv \
@@ -855,7 +855,7 @@ is to create an experiment using BehaviorSpace in the NetLogo GUI and use the
  **Export ** option.
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --model "models/IABM Textbook/chapter 4/Wolf Sheep Simple 5.nlogo" \
   --setup-file ~/my-wsp-setups.xml \
   --experiment "My WSP Exploration"
@@ -868,7 +868,7 @@ In order to run a NetLogo 3D experiment, run headless with the `--3D` argument,
 for example:
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --3D \
   --model "models/3D/Sample Models/GasLab/GasLab Free Gas 3D.nlogo3d" \
   --experiment "100 runs" \
