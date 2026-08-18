@@ -158,7 +158,7 @@ forkModel({ sourceModelId, sourceVersionNumber, callerId, body }):
      If missing -> VersionNotFoundError(sourceModelId, sourceVersionNumber)
      If source.finalizedAt is null -> CannotForkDraftVersionError
 
-  3. Generate newModelId = randomUUID()
+  3. Generate newModelId = newId()
      Generate newFileKey via the same util used by ModelVersionService.create
      (today that's fileService.upload which delegates to createStorageKey under
      `uploads/models/${newModelId}/versions`). For the copy path we want a key
@@ -251,7 +251,7 @@ createForkedModel(props: {
 }
 ```
 
-Note that the patch passes a pre-generated `id` so the same UUID can be used for the S3 path prefix *before* the row exists. `createModel` generates internally; `createForkedModel` accepts externally. Keep both; they have different contracts on purpose.
+Note that the patch passes a pre-generated `id` so the same NanoID can be used for the S3 path prefix *before* the row exists. `createModel` generates internally; `createForkedModel` accepts externally. Keep both; they have different contracts on purpose.
 
 ### `createVersion` extension
 
@@ -327,7 +327,7 @@ End-to-end against a real DB and the test S3 stub (whatever the existing integra
 1. Seed a model owned by user A with one finalized version (title `'Original'`, description `'...'`, an info tab, a netlogo version, a stored `.nlogox`).
 2. Sign in as user B.
 3. `POST /v1/models/:id/versions/1/fork` with empty body.
-4. Assert: 201 and body `{ id: <uuid> }`.
+4. Assert: 201 and body `{ id: <nanoid> }`.
 5. Fetch the new model: `parentModelId = A's model id`, `parentVersionNumber = 1`, `visibility = 'private'`, `latestVersionNumber = 1`.
 6. Fetch the new version: `title = 'Original (fork)'`, `description = 'same'`, `infoTab = same`, `netlogoVersion = same`, `previewImage` bytes equal, `netlogoFileKey != source key` and resolves via S3 (HEAD ok).
 7. Query `ModelAuthor`: exactly one row, `userId = B`, `role = 'owner'`.

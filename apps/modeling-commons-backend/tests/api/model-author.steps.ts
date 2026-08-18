@@ -105,3 +105,22 @@ When(
     });
   },
 );
+
+When(
+  '{string} lists models by user {string}',
+  async function (this: ICustomWorld, actorName: string, subjectName: string) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const subject = getUsers(this.context).get(subjectName)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `/api/v1/users/${subject.id}/models`,
+      headers: { cookie: actor.cookie },
+    });
+  },
+);
+
+Given('the model {string} has been deleted', async function (this: ICustomWorld, title: string) {
+  const modelId = getModels(this.context).get(title)!;
+  const { prisma } = this.server.diContainer.cradle;
+  await prisma.model.update({ where: { id: modelId }, data: { deletedAt: new Date() } });
+});

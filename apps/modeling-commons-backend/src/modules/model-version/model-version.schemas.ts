@@ -1,4 +1,5 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 
 export const createVersionRequestDtoSchema = Type.Object({
@@ -14,7 +15,7 @@ export const updateCurrentVersionRequestDtoSchema = Type.Object({
 export type UpdateCurrentVersionRequestDto = Static<typeof updateCurrentVersionRequestDtoSchema>;
 
 export const versionParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   version: Type.Integer({ minimum: 1 }),
 });
 export type VersionParams = Static<typeof versionParamsSchema>;
@@ -22,6 +23,6 @@ export type VersionParams = Static<typeof versionParamsSchema>;
 export const versionListQuerySchema = Type.Intersect([
   paginatedQueryRequestDtoSchema,
   Type.Object({
-    id: Type.Optional(Type.String({ format: 'uuid' })),
+    id: Type.Optional(idSchema()),
   }),
 ]);

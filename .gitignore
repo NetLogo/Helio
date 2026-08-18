@@ -42,6 +42,6 @@ GITIGNORE_*/**/*
 .env.development
 .env.production
 
-apps/modeling-commons-backend/prisma/archive-output
-apps/modeling-commons-backend/prisma/avatars
+apps/modeling-commons-backend/prisma/legacy-migration/output
+apps/modeling-commons-backend/prisma/legacy-migration/avatars
 .nuxt

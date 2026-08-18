@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import permissionDomain from '#src/modules/model-permission/domain/permission.domain.ts';
 import { meetsLevel } from '#src/modules/model-permission/domain/permission.types.ts';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
 
 const domain = permissionDomain();
 
@@ -9,7 +10,7 @@ describe('permissionDomain', () => {
     it('creates permission entity', () => {
       const perm = domain.createPermission('model-1', 'user-2', 'write');
 
-      expect(perm.id).toBeTypeOf('string');
+      expect(perm.id).toMatch(new RegExp(ID_PATTERN));
       expect(perm.modelId).toBe('model-1');
       expect(perm.granteeUserId).toBe('user-2');
       expect(perm.permissionLevel).toBe('write');

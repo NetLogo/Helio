@@ -1,9 +1,10 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const modelVersionTagResponseDtoSchema = Type.Object({
-  modelId: Type.String({ format: 'uuid' }),
+  modelId: idSchema(),
   versionNumber: Type.Integer(),
-  tagId: Type.String({ format: 'uuid' }),
+  tagId: idSchema(),
   tagName: Type.String(),
   createdAt: Type.String({ format: 'date-time' }),
 });

@@ -2,9 +2,10 @@ import { env } from '#src/config/index.ts';
 import { checkServicesHealth } from '#src/server/healthcheck.ts';
 import server from '#src/server/index.ts';
 import { prisma } from '#src/shared/db/prisma.client.ts';
+import { newId } from '#src/shared/utils/id.ts';
+import { validateRequestId } from '#src/shared/utils/validate-request-id.ts';
+import { addIdFormat } from '#src/shared/utils/validator.util.ts';
 import Fastify from 'fastify';
-import { randomUUID } from 'node:crypto';
-import { validateUUIDv4 } from './shared/utils/validateUUIDv4.ts';
 
 async function init(): Promise<void> {
   const fastify = Fastify({
@@ -15,10 +16,10 @@ async function init(): Promise<void> {
     genReqId: (req) => {
       // header best practice: don't use "x-"
       // https://www.rfc-editor.org/info/rfc6648 and keep it lowercase
-      if (validateUUIDv4(req.headers['request-id'] as string)) {
+      if (validateRequestId(req.headers['request-id'] as string)) {
         return req.headers['request-id'] as string;
       } else {
-        return randomUUID();
+        return newId();
       }
     },
     routerOptions: {
@@ -28,6 +29,7 @@ async function init(): Promise<void> {
       customOptions: {
         keywords: ['example'],
       },
+      onCreate: addIdFormat,
     },
     trustProxy: env.trustProxy.maxHops,
   });

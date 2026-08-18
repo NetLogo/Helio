@@ -69,6 +69,11 @@ export type Tag = $Result.DefaultSelection<Prisma.$TagPayload>
  */
 export type ModelAuthor = $Result.DefaultSelection<Prisma.$ModelAuthorPayload>
 /**
+ * Model NonMemberContributor
+ * 
+ */
+export type NonMemberContributor = $Result.DefaultSelection<Prisma.$NonMemberContributorPayload>
+/**
  * Model ModelPermission
  * 
  */
@@ -420,6 +425,16 @@ export class PrismaClient<
     * ```
     */
   get modelAuthor(): Prisma.ModelAuthorDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.nonMemberContributor`: Exposes CRUD operations for the **NonMemberContributor** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more NonMemberContributors
+    * const nonMemberContributors = await prisma.nonMemberContributor.findMany()
+    * ```
+    */
+  get nonMemberContributor(): Prisma.NonMemberContributorDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.modelPermission`: Exposes CRUD operations for the **ModelPermission** model.
@@ -915,6 +930,7 @@ export namespace Prisma {
     ModelAdditionalFile: 'ModelAdditionalFile',
     Tag: 'Tag',
     ModelAuthor: 'ModelAuthor',
+    NonMemberContributor: 'NonMemberContributor',
     ModelPermission: 'ModelPermission',
     ModelLike: 'ModelLike',
     ModelInteraction: 'ModelInteraction',
@@ -935,7 +951,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "modelPermission" | "modelLike" | "modelInteraction" | "modelDraft" | "event"
+      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "nonMemberContributor" | "modelPermission" | "modelLike" | "modelInteraction" | "modelDraft" | "event"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1753,6 +1769,80 @@ export namespace Prisma {
           }
         }
       }
+      NonMemberContributor: {
+        payload: Prisma.$NonMemberContributorPayload<ExtArgs>
+        fields: Prisma.NonMemberContributorFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NonMemberContributorFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NonMemberContributorFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>
+          }
+          findFirst: {
+            args: Prisma.NonMemberContributorFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NonMemberContributorFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>
+          }
+          findMany: {
+            args: Prisma.NonMemberContributorFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>[]
+          }
+          create: {
+            args: Prisma.NonMemberContributorCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>
+          }
+          createMany: {
+            args: Prisma.NonMemberContributorCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NonMemberContributorCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>[]
+          }
+          delete: {
+            args: Prisma.NonMemberContributorDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>
+          }
+          update: {
+            args: Prisma.NonMemberContributorUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>
+          }
+          deleteMany: {
+            args: Prisma.NonMemberContributorDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NonMemberContributorUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NonMemberContributorUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>[]
+          }
+          upsert: {
+            args: Prisma.NonMemberContributorUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NonMemberContributorPayload>
+          }
+          aggregate: {
+            args: Prisma.NonMemberContributorAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNonMemberContributor>
+          }
+          groupBy: {
+            args: Prisma.NonMemberContributorGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NonMemberContributorGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NonMemberContributorCountArgs<ExtArgs>
+            result: $Utils.Optional<NonMemberContributorCountAggregateOutputType> | number
+          }
+        }
+      }
       ModelPermission: {
         payload: Prisma.$ModelPermissionPayload<ExtArgs>
         fields: Prisma.ModelPermissionFieldRefs
@@ -2242,6 +2332,7 @@ export namespace Prisma {
     modelAdditionalFile?: ModelAdditionalFileOmit
     tag?: TagOmit
     modelAuthor?: ModelAuthorOmit
+    nonMemberContributor?: NonMemberContributorOmit
     modelPermission?: ModelPermissionOmit
     modelLike?: ModelLikeOmit
     modelInteraction?: ModelInteractionOmit
@@ -2442,6 +2533,7 @@ export namespace Prisma {
     childModels: number
     versions: number
     authors: number
+    nonMemberContributors: number
     permissions: number
     additionalFiles: number
     likes: number
@@ -2453,6 +2545,7 @@ export namespace Prisma {
     childModels?: boolean | ModelCountOutputTypeCountChildModelsArgs
     versions?: boolean | ModelCountOutputTypeCountVersionsArgs
     authors?: boolean | ModelCountOutputTypeCountAuthorsArgs
+    nonMemberContributors?: boolean | ModelCountOutputTypeCountNonMemberContributorsArgs
     permissions?: boolean | ModelCountOutputTypeCountPermissionsArgs
     additionalFiles?: boolean | ModelCountOutputTypeCountAdditionalFilesArgs
     likes?: boolean | ModelCountOutputTypeCountLikesArgs
@@ -2490,6 +2583,13 @@ export namespace Prisma {
    */
   export type ModelCountOutputTypeCountAuthorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ModelAuthorWhereInput
+  }
+
+  /**
+   * ModelCountOutputType without action
+   */
+  export type ModelCountOutputTypeCountNonMemberContributorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NonMemberContributorWhereInput
   }
 
   /**
@@ -9063,6 +9163,7 @@ export namespace Prisma {
     parentVersion?: boolean | Model$parentVersionArgs<ExtArgs>
     versions?: boolean | Model$versionsArgs<ExtArgs>
     authors?: boolean | Model$authorsArgs<ExtArgs>
+    nonMemberContributors?: boolean | Model$nonMemberContributorsArgs<ExtArgs>
     permissions?: boolean | Model$permissionsArgs<ExtArgs>
     additionalFiles?: boolean | Model$additionalFilesArgs<ExtArgs>
     likes?: boolean | Model$likesArgs<ExtArgs>
@@ -9139,6 +9240,7 @@ export namespace Prisma {
     parentVersion?: boolean | Model$parentVersionArgs<ExtArgs>
     versions?: boolean | Model$versionsArgs<ExtArgs>
     authors?: boolean | Model$authorsArgs<ExtArgs>
+    nonMemberContributors?: boolean | Model$nonMemberContributorsArgs<ExtArgs>
     permissions?: boolean | Model$permissionsArgs<ExtArgs>
     additionalFiles?: boolean | Model$additionalFilesArgs<ExtArgs>
     likes?: boolean | Model$likesArgs<ExtArgs>
@@ -9166,6 +9268,7 @@ export namespace Prisma {
       parentVersion: Prisma.$ModelVersionPayload<ExtArgs> | null
       versions: Prisma.$ModelVersionPayload<ExtArgs>[]
       authors: Prisma.$ModelAuthorPayload<ExtArgs>[]
+      nonMemberContributors: Prisma.$NonMemberContributorPayload<ExtArgs>[]
       permissions: Prisma.$ModelPermissionPayload<ExtArgs>[]
       additionalFiles: Prisma.$ModelAdditionalFilePayload<ExtArgs>[]
       likes: Prisma.$ModelLikePayload<ExtArgs>[]
@@ -9588,6 +9691,7 @@ export namespace Prisma {
     parentVersion<T extends Model$parentVersionArgs<ExtArgs> = {}>(args?: Subset<T, Model$parentVersionArgs<ExtArgs>>): Prisma__ModelVersionClient<$Result.GetResult<Prisma.$ModelVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     versions<T extends Model$versionsArgs<ExtArgs> = {}>(args?: Subset<T, Model$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     authors<T extends Model$authorsArgs<ExtArgs> = {}>(args?: Subset<T, Model$authorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelAuthorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    nonMemberContributors<T extends Model$nonMemberContributorsArgs<ExtArgs> = {}>(args?: Subset<T, Model$nonMemberContributorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     permissions<T extends Model$permissionsArgs<ExtArgs> = {}>(args?: Subset<T, Model$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     additionalFiles<T extends Model$additionalFilesArgs<ExtArgs> = {}>(args?: Subset<T, Model$additionalFilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelAdditionalFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     likes<T extends Model$likesArgs<ExtArgs> = {}>(args?: Subset<T, Model$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -10164,6 +10268,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ModelAuthorScalarFieldEnum | ModelAuthorScalarFieldEnum[]
+  }
+
+  /**
+   * Model.nonMemberContributors
+   */
+  export type Model$nonMemberContributorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    where?: NonMemberContributorWhereInput
+    orderBy?: NonMemberContributorOrderByWithRelationInput | NonMemberContributorOrderByWithRelationInput[]
+    cursor?: NonMemberContributorWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NonMemberContributorScalarFieldEnum | NonMemberContributorScalarFieldEnum[]
   }
 
   /**
@@ -14922,6 +15050,7 @@ export namespace Prisma {
     modelId: string | null
     userId: string | null
     role: $Enums.AuthorRole | null
+    collaboratorType: string | null
     createdAt: Date | null
   }
 
@@ -14929,6 +15058,7 @@ export namespace Prisma {
     modelId: string | null
     userId: string | null
     role: $Enums.AuthorRole | null
+    collaboratorType: string | null
     createdAt: Date | null
   }
 
@@ -14936,6 +15066,7 @@ export namespace Prisma {
     modelId: number
     userId: number
     role: number
+    collaboratorType: number
     createdAt: number
     _all: number
   }
@@ -14945,6 +15076,7 @@ export namespace Prisma {
     modelId?: true
     userId?: true
     role?: true
+    collaboratorType?: true
     createdAt?: true
   }
 
@@ -14952,6 +15084,7 @@ export namespace Prisma {
     modelId?: true
     userId?: true
     role?: true
+    collaboratorType?: true
     createdAt?: true
   }
 
@@ -14959,6 +15092,7 @@ export namespace Prisma {
     modelId?: true
     userId?: true
     role?: true
+    collaboratorType?: true
     createdAt?: true
     _all?: true
   }
@@ -15039,6 +15173,7 @@ export namespace Prisma {
     modelId: string
     userId: string
     role: $Enums.AuthorRole
+    collaboratorType: string | null
     createdAt: Date
     _count: ModelAuthorCountAggregateOutputType | null
     _min: ModelAuthorMinAggregateOutputType | null
@@ -15063,6 +15198,7 @@ export namespace Prisma {
     modelId?: boolean
     userId?: boolean
     role?: boolean
+    collaboratorType?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15072,6 +15208,7 @@ export namespace Prisma {
     modelId?: boolean
     userId?: boolean
     role?: boolean
+    collaboratorType?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15081,6 +15218,7 @@ export namespace Prisma {
     modelId?: boolean
     userId?: boolean
     role?: boolean
+    collaboratorType?: boolean
     createdAt?: boolean
     model?: boolean | ModelDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15090,10 +15228,11 @@ export namespace Prisma {
     modelId?: boolean
     userId?: boolean
     role?: boolean
+    collaboratorType?: boolean
     createdAt?: boolean
   }
 
-  export type ModelAuthorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "userId" | "role" | "createdAt", ExtArgs["result"]["modelAuthor"]>
+  export type ModelAuthorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"modelId" | "userId" | "role" | "collaboratorType" | "createdAt", ExtArgs["result"]["modelAuthor"]>
   export type ModelAuthorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | ModelDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15117,6 +15256,7 @@ export namespace Prisma {
       modelId: string
       userId: string
       role: $Enums.AuthorRole
+      collaboratorType: string | null
       createdAt: Date
     }, ExtArgs["result"]["modelAuthor"]>
     composites: {}
@@ -15546,6 +15686,7 @@ export namespace Prisma {
     readonly modelId: FieldRef<"ModelAuthor", 'String'>
     readonly userId: FieldRef<"ModelAuthor", 'String'>
     readonly role: FieldRef<"ModelAuthor", 'AuthorRole'>
+    readonly collaboratorType: FieldRef<"ModelAuthor", 'String'>
     readonly createdAt: FieldRef<"ModelAuthor", 'DateTime'>
   }
     
@@ -15963,6 +16104,1142 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ModelAuthorInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model NonMemberContributor
+   */
+
+  export type AggregateNonMemberContributor = {
+    _count: NonMemberContributorCountAggregateOutputType | null
+    _avg: NonMemberContributorAvgAggregateOutputType | null
+    _sum: NonMemberContributorSumAggregateOutputType | null
+    _min: NonMemberContributorMinAggregateOutputType | null
+    _max: NonMemberContributorMaxAggregateOutputType | null
+  }
+
+  export type NonMemberContributorAvgAggregateOutputType = {
+    legacyId: number | null
+  }
+
+  export type NonMemberContributorSumAggregateOutputType = {
+    legacyId: number | null
+  }
+
+  export type NonMemberContributorMinAggregateOutputType = {
+    id: string | null
+    legacyId: number | null
+    modelId: string | null
+    email: string | null
+    name: string | null
+    collaboratorType: string | null
+    addedByUserId: string | null
+    createdAt: Date | null
+  }
+
+  export type NonMemberContributorMaxAggregateOutputType = {
+    id: string | null
+    legacyId: number | null
+    modelId: string | null
+    email: string | null
+    name: string | null
+    collaboratorType: string | null
+    addedByUserId: string | null
+    createdAt: Date | null
+  }
+
+  export type NonMemberContributorCountAggregateOutputType = {
+    id: number
+    legacyId: number
+    modelId: number
+    email: number
+    name: number
+    collaboratorType: number
+    addedByUserId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type NonMemberContributorAvgAggregateInputType = {
+    legacyId?: true
+  }
+
+  export type NonMemberContributorSumAggregateInputType = {
+    legacyId?: true
+  }
+
+  export type NonMemberContributorMinAggregateInputType = {
+    id?: true
+    legacyId?: true
+    modelId?: true
+    email?: true
+    name?: true
+    collaboratorType?: true
+    addedByUserId?: true
+    createdAt?: true
+  }
+
+  export type NonMemberContributorMaxAggregateInputType = {
+    id?: true
+    legacyId?: true
+    modelId?: true
+    email?: true
+    name?: true
+    collaboratorType?: true
+    addedByUserId?: true
+    createdAt?: true
+  }
+
+  export type NonMemberContributorCountAggregateInputType = {
+    id?: true
+    legacyId?: true
+    modelId?: true
+    email?: true
+    name?: true
+    collaboratorType?: true
+    addedByUserId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type NonMemberContributorAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NonMemberContributor to aggregate.
+     */
+    where?: NonMemberContributorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NonMemberContributors to fetch.
+     */
+    orderBy?: NonMemberContributorOrderByWithRelationInput | NonMemberContributorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NonMemberContributorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NonMemberContributors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NonMemberContributors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned NonMemberContributors
+    **/
+    _count?: true | NonMemberContributorCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: NonMemberContributorAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: NonMemberContributorSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NonMemberContributorMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NonMemberContributorMaxAggregateInputType
+  }
+
+  export type GetNonMemberContributorAggregateType<T extends NonMemberContributorAggregateArgs> = {
+        [P in keyof T & keyof AggregateNonMemberContributor]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNonMemberContributor[P]>
+      : GetScalarType<T[P], AggregateNonMemberContributor[P]>
+  }
+
+
+
+
+  export type NonMemberContributorGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NonMemberContributorWhereInput
+    orderBy?: NonMemberContributorOrderByWithAggregationInput | NonMemberContributorOrderByWithAggregationInput[]
+    by: NonMemberContributorScalarFieldEnum[] | NonMemberContributorScalarFieldEnum
+    having?: NonMemberContributorScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NonMemberContributorCountAggregateInputType | true
+    _avg?: NonMemberContributorAvgAggregateInputType
+    _sum?: NonMemberContributorSumAggregateInputType
+    _min?: NonMemberContributorMinAggregateInputType
+    _max?: NonMemberContributorMaxAggregateInputType
+  }
+
+  export type NonMemberContributorGroupByOutputType = {
+    id: string
+    legacyId: number
+    modelId: string
+    email: string | null
+    name: string | null
+    collaboratorType: string | null
+    addedByUserId: string | null
+    createdAt: Date
+    _count: NonMemberContributorCountAggregateOutputType | null
+    _avg: NonMemberContributorAvgAggregateOutputType | null
+    _sum: NonMemberContributorSumAggregateOutputType | null
+    _min: NonMemberContributorMinAggregateOutputType | null
+    _max: NonMemberContributorMaxAggregateOutputType | null
+  }
+
+  type GetNonMemberContributorGroupByPayload<T extends NonMemberContributorGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NonMemberContributorGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NonMemberContributorGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NonMemberContributorGroupByOutputType[P]>
+            : GetScalarType<T[P], NonMemberContributorGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NonMemberContributorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    legacyId?: boolean
+    modelId?: boolean
+    email?: boolean
+    name?: boolean
+    collaboratorType?: boolean
+    addedByUserId?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["nonMemberContributor"]>
+
+  export type NonMemberContributorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    legacyId?: boolean
+    modelId?: boolean
+    email?: boolean
+    name?: boolean
+    collaboratorType?: boolean
+    addedByUserId?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["nonMemberContributor"]>
+
+  export type NonMemberContributorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    legacyId?: boolean
+    modelId?: boolean
+    email?: boolean
+    name?: boolean
+    collaboratorType?: boolean
+    addedByUserId?: boolean
+    createdAt?: boolean
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["nonMemberContributor"]>
+
+  export type NonMemberContributorSelectScalar = {
+    id?: boolean
+    legacyId?: boolean
+    modelId?: boolean
+    email?: boolean
+    name?: boolean
+    collaboratorType?: boolean
+    addedByUserId?: boolean
+    createdAt?: boolean
+  }
+
+  export type NonMemberContributorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "legacyId" | "modelId" | "email" | "name" | "collaboratorType" | "addedByUserId" | "createdAt", ExtArgs["result"]["nonMemberContributor"]>
+  export type NonMemberContributorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+  }
+  export type NonMemberContributorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+  }
+  export type NonMemberContributorIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    model?: boolean | ModelDefaultArgs<ExtArgs>
+  }
+
+  export type $NonMemberContributorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "NonMemberContributor"
+    objects: {
+      model: Prisma.$ModelPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      legacyId: number
+      modelId: string
+      email: string | null
+      name: string | null
+      collaboratorType: string | null
+      addedByUserId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["nonMemberContributor"]>
+    composites: {}
+  }
+
+  type NonMemberContributorGetPayload<S extends boolean | null | undefined | NonMemberContributorDefaultArgs> = $Result.GetResult<Prisma.$NonMemberContributorPayload, S>
+
+  type NonMemberContributorCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NonMemberContributorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NonMemberContributorCountAggregateInputType | true
+    }
+
+  export interface NonMemberContributorDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['NonMemberContributor'], meta: { name: 'NonMemberContributor' } }
+    /**
+     * Find zero or one NonMemberContributor that matches the filter.
+     * @param {NonMemberContributorFindUniqueArgs} args - Arguments to find a NonMemberContributor
+     * @example
+     * // Get one NonMemberContributor
+     * const nonMemberContributor = await prisma.nonMemberContributor.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NonMemberContributorFindUniqueArgs>(args: SelectSubset<T, NonMemberContributorFindUniqueArgs<ExtArgs>>): Prisma__NonMemberContributorClient<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one NonMemberContributor that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NonMemberContributorFindUniqueOrThrowArgs} args - Arguments to find a NonMemberContributor
+     * @example
+     * // Get one NonMemberContributor
+     * const nonMemberContributor = await prisma.nonMemberContributor.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NonMemberContributorFindUniqueOrThrowArgs>(args: SelectSubset<T, NonMemberContributorFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NonMemberContributorClient<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NonMemberContributor that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NonMemberContributorFindFirstArgs} args - Arguments to find a NonMemberContributor
+     * @example
+     * // Get one NonMemberContributor
+     * const nonMemberContributor = await prisma.nonMemberContributor.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NonMemberContributorFindFirstArgs>(args?: SelectSubset<T, NonMemberContributorFindFirstArgs<ExtArgs>>): Prisma__NonMemberContributorClient<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NonMemberContributor that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NonMemberContributorFindFirstOrThrowArgs} args - Arguments to find a NonMemberContributor
+     * @example
+     * // Get one NonMemberContributor
+     * const nonMemberContributor = await prisma.nonMemberContributor.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NonMemberContributorFindFirstOrThrowArgs>(args?: SelectSubset<T, NonMemberContributorFindFirstOrThrowArgs<ExtArgs>>): Prisma__NonMemberContributorClient<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more NonMemberContributors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NonMemberContributorFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all NonMemberContributors
+     * const nonMemberContributors = await prisma.nonMemberContributor.findMany()
+     * 
+     * // Get first 10 NonMemberContributors
+     * const nonMemberContributors = await prisma.nonMemberContributor.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const nonMemberContributorWithIdOnly = await prisma.nonMemberContributor.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NonMemberContributorFindManyArgs>(args?: SelectSubset<T, NonMemberContributorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a NonMemberContributor.
+     * @param {NonMemberContributorCreateArgs} args - Arguments to create a NonMemberContributor.
+     * @example
+     * // Create one NonMemberContributor
+     * const NonMemberContributor = await prisma.nonMemberContributor.create({
+     *   data: {
+     *     // ... data to create a NonMemberContributor
+     *   }
+     * })
+     * 
+     */
+    create<T extends NonMemberContributorCreateArgs>(args: SelectSubset<T, NonMemberContributorCreateArgs<ExtArgs>>): Prisma__NonMemberContributorClient<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many NonMemberContributors.
+     * @param {NonMemberContributorCreateManyArgs} args - Arguments to create many NonMemberContributors.
+     * @example
+     * // Create many NonMemberContributors
+     * const nonMemberContributor = await prisma.nonMemberContributor.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NonMemberContributorCreateManyArgs>(args?: SelectSubset<T, NonMemberContributorCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many NonMemberContributors and returns the data saved in the database.
+     * @param {NonMemberContributorCreateManyAndReturnArgs} args - Arguments to create many NonMemberContributors.
+     * @example
+     * // Create many NonMemberContributors
+     * const nonMemberContributor = await prisma.nonMemberContributor.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many NonMemberContributors and only return the `id`
+     * const nonMemberContributorWithIdOnly = await prisma.nonMemberContributor.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NonMemberContributorCreateManyAndReturnArgs>(args?: SelectSubset<T, NonMemberContributorCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a NonMemberContributor.
+     * @param {NonMemberContributorDeleteArgs} args - Arguments to delete one NonMemberContributor.
+     * @example
+     * // Delete one NonMemberContributor
+     * const NonMemberContributor = await prisma.nonMemberContributor.delete({
+     *   where: {
+     *     // ... filter to delete one NonMemberContributor
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NonMemberContributorDeleteArgs>(args: SelectSubset<T, NonMemberContributorDeleteArgs<ExtArgs>>): Prisma__NonMemberContributorClient<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one NonMemberContributor.
+     * @param {NonMemberContributorUpdateArgs} args - Arguments to update one NonMemberContributor.
+     * @example
+     * // Update one NonMemberContributor
+     * const nonMemberContributor = await prisma.nonMemberContributor.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NonMemberContributorUpdateArgs>(args: SelectSubset<T, NonMemberContributorUpdateArgs<ExtArgs>>): Prisma__NonMemberContributorClient<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more NonMemberContributors.
+     * @param {NonMemberContributorDeleteManyArgs} args - Arguments to filter NonMemberContributors to delete.
+     * @example
+     * // Delete a few NonMemberContributors
+     * const { count } = await prisma.nonMemberContributor.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NonMemberContributorDeleteManyArgs>(args?: SelectSubset<T, NonMemberContributorDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NonMemberContributors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NonMemberContributorUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many NonMemberContributors
+     * const nonMemberContributor = await prisma.nonMemberContributor.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NonMemberContributorUpdateManyArgs>(args: SelectSubset<T, NonMemberContributorUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NonMemberContributors and returns the data updated in the database.
+     * @param {NonMemberContributorUpdateManyAndReturnArgs} args - Arguments to update many NonMemberContributors.
+     * @example
+     * // Update many NonMemberContributors
+     * const nonMemberContributor = await prisma.nonMemberContributor.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more NonMemberContributors and only return the `id`
+     * const nonMemberContributorWithIdOnly = await prisma.nonMemberContributor.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NonMemberContributorUpdateManyAndReturnArgs>(args: SelectSubset<T, NonMemberContributorUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one NonMemberContributor.
+     * @param {NonMemberContributorUpsertArgs} args - Arguments to update or create a NonMemberContributor.
+     * @example
+     * // Update or create a NonMemberContributor
+     * const nonMemberContributor = await prisma.nonMemberContributor.upsert({
+     *   create: {
+     *     // ... data to create a NonMemberContributor
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the NonMemberContributor we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NonMemberContributorUpsertArgs>(args: SelectSubset<T, NonMemberContributorUpsertArgs<ExtArgs>>): Prisma__NonMemberContributorClient<$Result.GetResult<Prisma.$NonMemberContributorPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of NonMemberContributors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NonMemberContributorCountArgs} args - Arguments to filter NonMemberContributors to count.
+     * @example
+     * // Count the number of NonMemberContributors
+     * const count = await prisma.nonMemberContributor.count({
+     *   where: {
+     *     // ... the filter for the NonMemberContributors we want to count
+     *   }
+     * })
+    **/
+    count<T extends NonMemberContributorCountArgs>(
+      args?: Subset<T, NonMemberContributorCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NonMemberContributorCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a NonMemberContributor.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NonMemberContributorAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NonMemberContributorAggregateArgs>(args: Subset<T, NonMemberContributorAggregateArgs>): Prisma.PrismaPromise<GetNonMemberContributorAggregateType<T>>
+
+    /**
+     * Group by NonMemberContributor.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NonMemberContributorGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NonMemberContributorGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NonMemberContributorGroupByArgs['orderBy'] }
+        : { orderBy?: NonMemberContributorGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NonMemberContributorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNonMemberContributorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the NonMemberContributor model
+   */
+  readonly fields: NonMemberContributorFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for NonMemberContributor.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NonMemberContributorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    model<T extends ModelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ModelDefaultArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the NonMemberContributor model
+   */
+  interface NonMemberContributorFieldRefs {
+    readonly id: FieldRef<"NonMemberContributor", 'String'>
+    readonly legacyId: FieldRef<"NonMemberContributor", 'Int'>
+    readonly modelId: FieldRef<"NonMemberContributor", 'String'>
+    readonly email: FieldRef<"NonMemberContributor", 'String'>
+    readonly name: FieldRef<"NonMemberContributor", 'String'>
+    readonly collaboratorType: FieldRef<"NonMemberContributor", 'String'>
+    readonly addedByUserId: FieldRef<"NonMemberContributor", 'String'>
+    readonly createdAt: FieldRef<"NonMemberContributor", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * NonMemberContributor findUnique
+   */
+  export type NonMemberContributorFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * Filter, which NonMemberContributor to fetch.
+     */
+    where: NonMemberContributorWhereUniqueInput
+  }
+
+  /**
+   * NonMemberContributor findUniqueOrThrow
+   */
+  export type NonMemberContributorFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * Filter, which NonMemberContributor to fetch.
+     */
+    where: NonMemberContributorWhereUniqueInput
+  }
+
+  /**
+   * NonMemberContributor findFirst
+   */
+  export type NonMemberContributorFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * Filter, which NonMemberContributor to fetch.
+     */
+    where?: NonMemberContributorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NonMemberContributors to fetch.
+     */
+    orderBy?: NonMemberContributorOrderByWithRelationInput | NonMemberContributorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NonMemberContributors.
+     */
+    cursor?: NonMemberContributorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NonMemberContributors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NonMemberContributors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NonMemberContributors.
+     */
+    distinct?: NonMemberContributorScalarFieldEnum | NonMemberContributorScalarFieldEnum[]
+  }
+
+  /**
+   * NonMemberContributor findFirstOrThrow
+   */
+  export type NonMemberContributorFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * Filter, which NonMemberContributor to fetch.
+     */
+    where?: NonMemberContributorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NonMemberContributors to fetch.
+     */
+    orderBy?: NonMemberContributorOrderByWithRelationInput | NonMemberContributorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NonMemberContributors.
+     */
+    cursor?: NonMemberContributorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NonMemberContributors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NonMemberContributors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NonMemberContributors.
+     */
+    distinct?: NonMemberContributorScalarFieldEnum | NonMemberContributorScalarFieldEnum[]
+  }
+
+  /**
+   * NonMemberContributor findMany
+   */
+  export type NonMemberContributorFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * Filter, which NonMemberContributors to fetch.
+     */
+    where?: NonMemberContributorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NonMemberContributors to fetch.
+     */
+    orderBy?: NonMemberContributorOrderByWithRelationInput | NonMemberContributorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing NonMemberContributors.
+     */
+    cursor?: NonMemberContributorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NonMemberContributors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NonMemberContributors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NonMemberContributors.
+     */
+    distinct?: NonMemberContributorScalarFieldEnum | NonMemberContributorScalarFieldEnum[]
+  }
+
+  /**
+   * NonMemberContributor create
+   */
+  export type NonMemberContributorCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * The data needed to create a NonMemberContributor.
+     */
+    data: XOR<NonMemberContributorCreateInput, NonMemberContributorUncheckedCreateInput>
+  }
+
+  /**
+   * NonMemberContributor createMany
+   */
+  export type NonMemberContributorCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many NonMemberContributors.
+     */
+    data: NonMemberContributorCreateManyInput | NonMemberContributorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NonMemberContributor createManyAndReturn
+   */
+  export type NonMemberContributorCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * The data used to create many NonMemberContributors.
+     */
+    data: NonMemberContributorCreateManyInput | NonMemberContributorCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NonMemberContributor update
+   */
+  export type NonMemberContributorUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * The data needed to update a NonMemberContributor.
+     */
+    data: XOR<NonMemberContributorUpdateInput, NonMemberContributorUncheckedUpdateInput>
+    /**
+     * Choose, which NonMemberContributor to update.
+     */
+    where: NonMemberContributorWhereUniqueInput
+  }
+
+  /**
+   * NonMemberContributor updateMany
+   */
+  export type NonMemberContributorUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update NonMemberContributors.
+     */
+    data: XOR<NonMemberContributorUpdateManyMutationInput, NonMemberContributorUncheckedUpdateManyInput>
+    /**
+     * Filter which NonMemberContributors to update
+     */
+    where?: NonMemberContributorWhereInput
+    /**
+     * Limit how many NonMemberContributors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * NonMemberContributor updateManyAndReturn
+   */
+  export type NonMemberContributorUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * The data used to update NonMemberContributors.
+     */
+    data: XOR<NonMemberContributorUpdateManyMutationInput, NonMemberContributorUncheckedUpdateManyInput>
+    /**
+     * Filter which NonMemberContributors to update
+     */
+    where?: NonMemberContributorWhereInput
+    /**
+     * Limit how many NonMemberContributors to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NonMemberContributor upsert
+   */
+  export type NonMemberContributorUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * The filter to search for the NonMemberContributor to update in case it exists.
+     */
+    where: NonMemberContributorWhereUniqueInput
+    /**
+     * In case the NonMemberContributor found by the `where` argument doesn't exist, create a new NonMemberContributor with this data.
+     */
+    create: XOR<NonMemberContributorCreateInput, NonMemberContributorUncheckedCreateInput>
+    /**
+     * In case the NonMemberContributor was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NonMemberContributorUpdateInput, NonMemberContributorUncheckedUpdateInput>
+  }
+
+  /**
+   * NonMemberContributor delete
+   */
+  export type NonMemberContributorDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
+    /**
+     * Filter which NonMemberContributor to delete.
+     */
+    where: NonMemberContributorWhereUniqueInput
+  }
+
+  /**
+   * NonMemberContributor deleteMany
+   */
+  export type NonMemberContributorDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NonMemberContributors to delete
+     */
+    where?: NonMemberContributorWhereInput
+    /**
+     * Limit how many NonMemberContributors to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * NonMemberContributor without action
+   */
+  export type NonMemberContributorDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NonMemberContributor
+     */
+    select?: NonMemberContributorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NonMemberContributor
+     */
+    omit?: NonMemberContributorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NonMemberContributorInclude<ExtArgs> | null
   }
 
 
@@ -21737,10 +23014,25 @@ export namespace Prisma {
     modelId: 'modelId',
     userId: 'userId',
     role: 'role',
+    collaboratorType: 'collaboratorType',
     createdAt: 'createdAt'
   };
 
   export type ModelAuthorScalarFieldEnum = (typeof ModelAuthorScalarFieldEnum)[keyof typeof ModelAuthorScalarFieldEnum]
+
+
+  export const NonMemberContributorScalarFieldEnum: {
+    id: 'id',
+    legacyId: 'legacyId',
+    modelId: 'modelId',
+    email: 'email',
+    name: 'name',
+    collaboratorType: 'collaboratorType',
+    addedByUserId: 'addedByUserId',
+    createdAt: 'createdAt'
+  };
+
+  export type NonMemberContributorScalarFieldEnum = (typeof NonMemberContributorScalarFieldEnum)[keyof typeof NonMemberContributorScalarFieldEnum]
 
 
   export const ModelPermissionScalarFieldEnum: {
@@ -22555,6 +23847,7 @@ export namespace Prisma {
     parentVersion?: XOR<ModelVersionNullableScalarRelationFilter, ModelVersionWhereInput> | null
     versions?: ModelVersionListRelationFilter
     authors?: ModelAuthorListRelationFilter
+    nonMemberContributors?: NonMemberContributorListRelationFilter
     permissions?: ModelPermissionListRelationFilter
     additionalFiles?: ModelAdditionalFileListRelationFilter
     likes?: ModelLikeListRelationFilter
@@ -22584,6 +23877,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionOrderByWithRelationInput
     versions?: ModelVersionOrderByRelationAggregateInput
     authors?: ModelAuthorOrderByRelationAggregateInput
+    nonMemberContributors?: NonMemberContributorOrderByRelationAggregateInput
     permissions?: ModelPermissionOrderByRelationAggregateInput
     additionalFiles?: ModelAdditionalFileOrderByRelationAggregateInput
     likes?: ModelLikeOrderByRelationAggregateInput
@@ -22617,6 +23911,7 @@ export namespace Prisma {
     parentVersion?: XOR<ModelVersionNullableScalarRelationFilter, ModelVersionWhereInput> | null
     versions?: ModelVersionListRelationFilter
     authors?: ModelAuthorListRelationFilter
+    nonMemberContributors?: NonMemberContributorListRelationFilter
     permissions?: ModelPermissionListRelationFilter
     additionalFiles?: ModelAdditionalFileListRelationFilter
     likes?: ModelLikeListRelationFilter
@@ -22953,6 +24248,7 @@ export namespace Prisma {
     modelId?: StringFilter<"ModelAuthor"> | string
     userId?: StringFilter<"ModelAuthor"> | string
     role?: EnumAuthorRoleFilter<"ModelAuthor"> | $Enums.AuthorRole
+    collaboratorType?: StringNullableFilter<"ModelAuthor"> | string | null
     createdAt?: DateTimeFilter<"ModelAuthor"> | Date | string
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -22962,6 +24258,7 @@ export namespace Prisma {
     modelId?: SortOrder
     userId?: SortOrder
     role?: SortOrder
+    collaboratorType?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     model?: ModelOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
@@ -22975,6 +24272,7 @@ export namespace Prisma {
     modelId?: StringFilter<"ModelAuthor"> | string
     userId?: StringFilter<"ModelAuthor"> | string
     role?: EnumAuthorRoleFilter<"ModelAuthor"> | $Enums.AuthorRole
+    collaboratorType?: StringNullableFilter<"ModelAuthor"> | string | null
     createdAt?: DateTimeFilter<"ModelAuthor"> | Date | string
     model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -22984,6 +24282,7 @@ export namespace Prisma {
     modelId?: SortOrder
     userId?: SortOrder
     role?: SortOrder
+    collaboratorType?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ModelAuthorCountOrderByAggregateInput
     _max?: ModelAuthorMaxOrderByAggregateInput
@@ -22997,7 +24296,80 @@ export namespace Prisma {
     modelId?: StringWithAggregatesFilter<"ModelAuthor"> | string
     userId?: StringWithAggregatesFilter<"ModelAuthor"> | string
     role?: EnumAuthorRoleWithAggregatesFilter<"ModelAuthor"> | $Enums.AuthorRole
+    collaboratorType?: StringNullableWithAggregatesFilter<"ModelAuthor"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ModelAuthor"> | Date | string
+  }
+
+  export type NonMemberContributorWhereInput = {
+    AND?: NonMemberContributorWhereInput | NonMemberContributorWhereInput[]
+    OR?: NonMemberContributorWhereInput[]
+    NOT?: NonMemberContributorWhereInput | NonMemberContributorWhereInput[]
+    id?: StringFilter<"NonMemberContributor"> | string
+    legacyId?: IntFilter<"NonMemberContributor"> | number
+    modelId?: StringFilter<"NonMemberContributor"> | string
+    email?: StringNullableFilter<"NonMemberContributor"> | string | null
+    name?: StringNullableFilter<"NonMemberContributor"> | string | null
+    collaboratorType?: StringNullableFilter<"NonMemberContributor"> | string | null
+    addedByUserId?: StringNullableFilter<"NonMemberContributor"> | string | null
+    createdAt?: DateTimeFilter<"NonMemberContributor"> | Date | string
+    model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
+  }
+
+  export type NonMemberContributorOrderByWithRelationInput = {
+    id?: SortOrder
+    legacyId?: SortOrder
+    modelId?: SortOrder
+    email?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
+    collaboratorType?: SortOrderInput | SortOrder
+    addedByUserId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    model?: ModelOrderByWithRelationInput
+  }
+
+  export type NonMemberContributorWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    legacyId?: number
+    AND?: NonMemberContributorWhereInput | NonMemberContributorWhereInput[]
+    OR?: NonMemberContributorWhereInput[]
+    NOT?: NonMemberContributorWhereInput | NonMemberContributorWhereInput[]
+    modelId?: StringFilter<"NonMemberContributor"> | string
+    email?: StringNullableFilter<"NonMemberContributor"> | string | null
+    name?: StringNullableFilter<"NonMemberContributor"> | string | null
+    collaboratorType?: StringNullableFilter<"NonMemberContributor"> | string | null
+    addedByUserId?: StringNullableFilter<"NonMemberContributor"> | string | null
+    createdAt?: DateTimeFilter<"NonMemberContributor"> | Date | string
+    model?: XOR<ModelScalarRelationFilter, ModelWhereInput>
+  }, "id" | "legacyId">
+
+  export type NonMemberContributorOrderByWithAggregationInput = {
+    id?: SortOrder
+    legacyId?: SortOrder
+    modelId?: SortOrder
+    email?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
+    collaboratorType?: SortOrderInput | SortOrder
+    addedByUserId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: NonMemberContributorCountOrderByAggregateInput
+    _avg?: NonMemberContributorAvgOrderByAggregateInput
+    _max?: NonMemberContributorMaxOrderByAggregateInput
+    _min?: NonMemberContributorMinOrderByAggregateInput
+    _sum?: NonMemberContributorSumOrderByAggregateInput
+  }
+
+  export type NonMemberContributorScalarWhereWithAggregatesInput = {
+    AND?: NonMemberContributorScalarWhereWithAggregatesInput | NonMemberContributorScalarWhereWithAggregatesInput[]
+    OR?: NonMemberContributorScalarWhereWithAggregatesInput[]
+    NOT?: NonMemberContributorScalarWhereWithAggregatesInput | NonMemberContributorScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"NonMemberContributor"> | string
+    legacyId?: IntWithAggregatesFilter<"NonMemberContributor"> | number
+    modelId?: StringWithAggregatesFilter<"NonMemberContributor"> | string
+    email?: StringNullableWithAggregatesFilter<"NonMemberContributor"> | string | null
+    name?: StringNullableWithAggregatesFilter<"NonMemberContributor"> | string | null
+    collaboratorType?: StringNullableWithAggregatesFilter<"NonMemberContributor"> | string | null
+    addedByUserId?: StringNullableWithAggregatesFilter<"NonMemberContributor"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"NonMemberContributor"> | Date | string
   }
 
   export type ModelPermissionWhereInput = {
@@ -23936,6 +25308,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -23962,6 +25335,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -23987,6 +25361,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -24013,6 +25388,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
@@ -24350,6 +25726,7 @@ export namespace Prisma {
 
   export type ModelAuthorCreateInput = {
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
     createdAt?: Date | string
     model: ModelCreateNestedOneWithoutAuthorsInput
     user: UserCreateNestedOneWithoutAuthoredModelsInput
@@ -24359,11 +25736,13 @@ export namespace Prisma {
     modelId: string
     userId: string
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
     createdAt?: Date | string
   }
 
   export type ModelAuthorUpdateInput = {
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     model?: ModelUpdateOneRequiredWithoutAuthorsNestedInput
     user?: UserUpdateOneRequiredWithoutAuthoredModelsNestedInput
@@ -24373,6 +25752,7 @@ export namespace Prisma {
     modelId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24380,11 +25760,13 @@ export namespace Prisma {
     modelId: string
     userId: string
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
     createdAt?: Date | string
   }
 
   export type ModelAuthorUpdateManyMutationInput = {
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24392,6 +25774,83 @@ export namespace Prisma {
     modelId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NonMemberContributorCreateInput = {
+    id?: string
+    legacyId: number
+    email?: string | null
+    name?: string | null
+    collaboratorType?: string | null
+    addedByUserId?: string | null
+    createdAt?: Date | string
+    model: ModelCreateNestedOneWithoutNonMemberContributorsInput
+  }
+
+  export type NonMemberContributorUncheckedCreateInput = {
+    id?: string
+    legacyId: number
+    modelId: string
+    email?: string | null
+    name?: string | null
+    collaboratorType?: string | null
+    addedByUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type NonMemberContributorUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: IntFieldUpdateOperationsInput | number
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    model?: ModelUpdateOneRequiredWithoutNonMemberContributorsNestedInput
+  }
+
+  export type NonMemberContributorUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: IntFieldUpdateOperationsInput | number
+    modelId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NonMemberContributorCreateManyInput = {
+    id?: string
+    legacyId: number
+    modelId: string
+    email?: string | null
+    name?: string | null
+    collaboratorType?: string | null
+    addedByUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type NonMemberContributorUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: IntFieldUpdateOperationsInput | number
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NonMemberContributorUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: IntFieldUpdateOperationsInput | number
+    modelId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25404,6 +26863,12 @@ export namespace Prisma {
     none?: ModelVersionWhereInput
   }
 
+  export type NonMemberContributorListRelationFilter = {
+    every?: NonMemberContributorWhereInput
+    some?: NonMemberContributorWhereInput
+    none?: NonMemberContributorWhereInput
+  }
+
   export type ModelAdditionalFileListRelationFilter = {
     every?: ModelAdditionalFileWhereInput
     some?: ModelAdditionalFileWhereInput
@@ -25415,6 +26880,10 @@ export namespace Prisma {
   }
 
   export type ModelVersionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NonMemberContributorOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -25726,6 +27195,7 @@ export namespace Prisma {
     modelId?: SortOrder
     userId?: SortOrder
     role?: SortOrder
+    collaboratorType?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -25733,6 +27203,7 @@ export namespace Prisma {
     modelId?: SortOrder
     userId?: SortOrder
     role?: SortOrder
+    collaboratorType?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -25740,6 +27211,7 @@ export namespace Prisma {
     modelId?: SortOrder
     userId?: SortOrder
     role?: SortOrder
+    collaboratorType?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -25751,6 +27223,47 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAuthorRoleFilter<$PrismaModel>
     _max?: NestedEnumAuthorRoleFilter<$PrismaModel>
+  }
+
+  export type NonMemberContributorCountOrderByAggregateInput = {
+    id?: SortOrder
+    legacyId?: SortOrder
+    modelId?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    collaboratorType?: SortOrder
+    addedByUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type NonMemberContributorAvgOrderByAggregateInput = {
+    legacyId?: SortOrder
+  }
+
+  export type NonMemberContributorMaxOrderByAggregateInput = {
+    id?: SortOrder
+    legacyId?: SortOrder
+    modelId?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    collaboratorType?: SortOrder
+    addedByUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type NonMemberContributorMinOrderByAggregateInput = {
+    id?: SortOrder
+    legacyId?: SortOrder
+    modelId?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    collaboratorType?: SortOrder
+    addedByUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type NonMemberContributorSumOrderByAggregateInput = {
+    legacyId?: SortOrder
   }
 
   export type EnumPermissionLevelFilter<$PrismaModel = never> = {
@@ -26571,6 +28084,13 @@ export namespace Prisma {
     connect?: ModelAuthorWhereUniqueInput | ModelAuthorWhereUniqueInput[]
   }
 
+  export type NonMemberContributorCreateNestedManyWithoutModelInput = {
+    create?: XOR<NonMemberContributorCreateWithoutModelInput, NonMemberContributorUncheckedCreateWithoutModelInput> | NonMemberContributorCreateWithoutModelInput[] | NonMemberContributorUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: NonMemberContributorCreateOrConnectWithoutModelInput | NonMemberContributorCreateOrConnectWithoutModelInput[]
+    createMany?: NonMemberContributorCreateManyModelInputEnvelope
+    connect?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+  }
+
   export type ModelPermissionCreateNestedManyWithoutModelInput = {
     create?: XOR<ModelPermissionCreateWithoutModelInput, ModelPermissionUncheckedCreateWithoutModelInput> | ModelPermissionCreateWithoutModelInput[] | ModelPermissionUncheckedCreateWithoutModelInput[]
     connectOrCreate?: ModelPermissionCreateOrConnectWithoutModelInput | ModelPermissionCreateOrConnectWithoutModelInput[]
@@ -26625,6 +28145,13 @@ export namespace Prisma {
     connectOrCreate?: ModelAuthorCreateOrConnectWithoutModelInput | ModelAuthorCreateOrConnectWithoutModelInput[]
     createMany?: ModelAuthorCreateManyModelInputEnvelope
     connect?: ModelAuthorWhereUniqueInput | ModelAuthorWhereUniqueInput[]
+  }
+
+  export type NonMemberContributorUncheckedCreateNestedManyWithoutModelInput = {
+    create?: XOR<NonMemberContributorCreateWithoutModelInput, NonMemberContributorUncheckedCreateWithoutModelInput> | NonMemberContributorCreateWithoutModelInput[] | NonMemberContributorUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: NonMemberContributorCreateOrConnectWithoutModelInput | NonMemberContributorCreateOrConnectWithoutModelInput[]
+    createMany?: NonMemberContributorCreateManyModelInputEnvelope
+    connect?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
   }
 
   export type ModelPermissionUncheckedCreateNestedManyWithoutModelInput = {
@@ -26738,6 +28265,20 @@ export namespace Prisma {
     deleteMany?: ModelAuthorScalarWhereInput | ModelAuthorScalarWhereInput[]
   }
 
+  export type NonMemberContributorUpdateManyWithoutModelNestedInput = {
+    create?: XOR<NonMemberContributorCreateWithoutModelInput, NonMemberContributorUncheckedCreateWithoutModelInput> | NonMemberContributorCreateWithoutModelInput[] | NonMemberContributorUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: NonMemberContributorCreateOrConnectWithoutModelInput | NonMemberContributorCreateOrConnectWithoutModelInput[]
+    upsert?: NonMemberContributorUpsertWithWhereUniqueWithoutModelInput | NonMemberContributorUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: NonMemberContributorCreateManyModelInputEnvelope
+    set?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+    disconnect?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+    delete?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+    connect?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+    update?: NonMemberContributorUpdateWithWhereUniqueWithoutModelInput | NonMemberContributorUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: NonMemberContributorUpdateManyWithWhereWithoutModelInput | NonMemberContributorUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: NonMemberContributorScalarWhereInput | NonMemberContributorScalarWhereInput[]
+  }
+
   export type ModelPermissionUpdateManyWithoutModelNestedInput = {
     create?: XOR<ModelPermissionCreateWithoutModelInput, ModelPermissionUncheckedCreateWithoutModelInput> | ModelPermissionCreateWithoutModelInput[] | ModelPermissionUncheckedCreateWithoutModelInput[]
     connectOrCreate?: ModelPermissionCreateOrConnectWithoutModelInput | ModelPermissionCreateOrConnectWithoutModelInput[]
@@ -26848,6 +28389,20 @@ export namespace Prisma {
     update?: ModelAuthorUpdateWithWhereUniqueWithoutModelInput | ModelAuthorUpdateWithWhereUniqueWithoutModelInput[]
     updateMany?: ModelAuthorUpdateManyWithWhereWithoutModelInput | ModelAuthorUpdateManyWithWhereWithoutModelInput[]
     deleteMany?: ModelAuthorScalarWhereInput | ModelAuthorScalarWhereInput[]
+  }
+
+  export type NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput = {
+    create?: XOR<NonMemberContributorCreateWithoutModelInput, NonMemberContributorUncheckedCreateWithoutModelInput> | NonMemberContributorCreateWithoutModelInput[] | NonMemberContributorUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: NonMemberContributorCreateOrConnectWithoutModelInput | NonMemberContributorCreateOrConnectWithoutModelInput[]
+    upsert?: NonMemberContributorUpsertWithWhereUniqueWithoutModelInput | NonMemberContributorUpsertWithWhereUniqueWithoutModelInput[]
+    createMany?: NonMemberContributorCreateManyModelInputEnvelope
+    set?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+    disconnect?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+    delete?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+    connect?: NonMemberContributorWhereUniqueInput | NonMemberContributorWhereUniqueInput[]
+    update?: NonMemberContributorUpdateWithWhereUniqueWithoutModelInput | NonMemberContributorUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: NonMemberContributorUpdateManyWithWhereWithoutModelInput | NonMemberContributorUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: NonMemberContributorScalarWhereInput | NonMemberContributorScalarWhereInput[]
   }
 
   export type ModelPermissionUncheckedUpdateManyWithoutModelNestedInput = {
@@ -27224,6 +28779,20 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutAuthoredModelsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuthoredModelsInput, UserUpdateWithoutAuthoredModelsInput>, UserUncheckedUpdateWithoutAuthoredModelsInput>
+  }
+
+  export type ModelCreateNestedOneWithoutNonMemberContributorsInput = {
+    create?: XOR<ModelCreateWithoutNonMemberContributorsInput, ModelUncheckedCreateWithoutNonMemberContributorsInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutNonMemberContributorsInput
+    connect?: ModelWhereUniqueInput
+  }
+
+  export type ModelUpdateOneRequiredWithoutNonMemberContributorsNestedInput = {
+    create?: XOR<ModelCreateWithoutNonMemberContributorsInput, ModelUncheckedCreateWithoutNonMemberContributorsInput>
+    connectOrCreate?: ModelCreateOrConnectWithoutNonMemberContributorsInput
+    upsert?: ModelUpsertWithoutNonMemberContributorsInput
+    connect?: ModelWhereUniqueInput
+    update?: XOR<XOR<ModelUpdateToOneWithWhereWithoutNonMemberContributorsInput, ModelUpdateWithoutNonMemberContributorsInput>, ModelUncheckedUpdateWithoutNonMemberContributorsInput>
   }
 
   export type ModelCreateNestedOneWithoutPermissionsInput = {
@@ -27847,6 +29416,7 @@ export namespace Prisma {
 
   export type ModelAuthorCreateWithoutUserInput = {
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
     createdAt?: Date | string
     model: ModelCreateNestedOneWithoutAuthorsInput
   }
@@ -27854,6 +29424,7 @@ export namespace Prisma {
   export type ModelAuthorUncheckedCreateWithoutUserInput = {
     modelId: string
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
     createdAt?: Date | string
   }
 
@@ -28161,6 +29732,7 @@ export namespace Prisma {
     modelId?: StringFilter<"ModelAuthor"> | string
     userId?: StringFilter<"ModelAuthor"> | string
     role?: EnumAuthorRoleFilter<"ModelAuthor"> | $Enums.AuthorRole
+    collaboratorType?: StringNullableFilter<"ModelAuthor"> | string | null
     createdAt?: DateTimeFilter<"ModelAuthor"> | Date | string
   }
 
@@ -29006,6 +30578,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -29031,6 +30604,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -29060,6 +30634,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -29085,6 +30660,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -29187,6 +30763,7 @@ export namespace Prisma {
 
   export type ModelAuthorCreateWithoutModelInput = {
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutAuthoredModelsInput
   }
@@ -29194,6 +30771,7 @@ export namespace Prisma {
   export type ModelAuthorUncheckedCreateWithoutModelInput = {
     userId: string
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
     createdAt?: Date | string
   }
 
@@ -29204,6 +30782,36 @@ export namespace Prisma {
 
   export type ModelAuthorCreateManyModelInputEnvelope = {
     data: ModelAuthorCreateManyModelInput | ModelAuthorCreateManyModelInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type NonMemberContributorCreateWithoutModelInput = {
+    id?: string
+    legacyId: number
+    email?: string | null
+    name?: string | null
+    collaboratorType?: string | null
+    addedByUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type NonMemberContributorUncheckedCreateWithoutModelInput = {
+    id?: string
+    legacyId: number
+    email?: string | null
+    name?: string | null
+    collaboratorType?: string | null
+    addedByUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type NonMemberContributorCreateOrConnectWithoutModelInput = {
+    where: NonMemberContributorWhereUniqueInput
+    create: XOR<NonMemberContributorCreateWithoutModelInput, NonMemberContributorUncheckedCreateWithoutModelInput>
+  }
+
+  export type NonMemberContributorCreateManyModelInputEnvelope = {
+    data: NonMemberContributorCreateManyModelInput | NonMemberContributorCreateManyModelInput[]
     skipDuplicates?: boolean
   }
 
@@ -29416,6 +31024,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -29441,6 +31050,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
@@ -29579,6 +31189,36 @@ export namespace Prisma {
     data: XOR<ModelAuthorUpdateManyMutationInput, ModelAuthorUncheckedUpdateManyWithoutModelInput>
   }
 
+  export type NonMemberContributorUpsertWithWhereUniqueWithoutModelInput = {
+    where: NonMemberContributorWhereUniqueInput
+    update: XOR<NonMemberContributorUpdateWithoutModelInput, NonMemberContributorUncheckedUpdateWithoutModelInput>
+    create: XOR<NonMemberContributorCreateWithoutModelInput, NonMemberContributorUncheckedCreateWithoutModelInput>
+  }
+
+  export type NonMemberContributorUpdateWithWhereUniqueWithoutModelInput = {
+    where: NonMemberContributorWhereUniqueInput
+    data: XOR<NonMemberContributorUpdateWithoutModelInput, NonMemberContributorUncheckedUpdateWithoutModelInput>
+  }
+
+  export type NonMemberContributorUpdateManyWithWhereWithoutModelInput = {
+    where: NonMemberContributorScalarWhereInput
+    data: XOR<NonMemberContributorUpdateManyMutationInput, NonMemberContributorUncheckedUpdateManyWithoutModelInput>
+  }
+
+  export type NonMemberContributorScalarWhereInput = {
+    AND?: NonMemberContributorScalarWhereInput | NonMemberContributorScalarWhereInput[]
+    OR?: NonMemberContributorScalarWhereInput[]
+    NOT?: NonMemberContributorScalarWhereInput | NonMemberContributorScalarWhereInput[]
+    id?: StringFilter<"NonMemberContributor"> | string
+    legacyId?: IntFilter<"NonMemberContributor"> | number
+    modelId?: StringFilter<"NonMemberContributor"> | string
+    email?: StringNullableFilter<"NonMemberContributor"> | string | null
+    name?: StringNullableFilter<"NonMemberContributor"> | string | null
+    collaboratorType?: StringNullableFilter<"NonMemberContributor"> | string | null
+    addedByUserId?: StringNullableFilter<"NonMemberContributor"> | string | null
+    createdAt?: DateTimeFilter<"NonMemberContributor"> | Date | string
+  }
+
   export type ModelPermissionUpsertWithWhereUniqueWithoutModelInput = {
     where: ModelPermissionWhereUniqueInput
     update: XOR<ModelPermissionUpdateWithoutModelInput, ModelPermissionUncheckedUpdateWithoutModelInput>
@@ -29688,6 +31328,7 @@ export namespace Prisma {
     childModels?: ModelCreateNestedManyWithoutParentModelInput
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -29713,6 +31354,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -29742,6 +31384,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -29766,6 +31409,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -29795,6 +31439,7 @@ export namespace Prisma {
     childModels?: ModelCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -29819,6 +31464,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -29909,6 +31555,7 @@ export namespace Prisma {
     childModels?: ModelUpdateManyWithoutParentModelNestedInput
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -29934,6 +31581,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
@@ -29969,6 +31617,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -29993,6 +31642,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
@@ -30208,6 +31858,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
@@ -30233,6 +31884,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
@@ -30312,6 +31964,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
@@ -30337,6 +31990,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
@@ -30442,6 +32096,7 @@ export namespace Prisma {
     childModels?: ModelCreateNestedManyWithoutParentModelInput
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -30467,6 +32122,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -30580,6 +32236,7 @@ export namespace Prisma {
     childModels?: ModelUpdateManyWithoutParentModelNestedInput
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -30605,6 +32262,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
@@ -30691,6 +32349,124 @@ export namespace Prisma {
     passkeys?: PasskeyUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type ModelCreateWithoutNonMemberContributorsInput = {
+    legacyId?: number | null
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    latestVersion?: ModelVersionCreateNestedOneWithoutLatestOfModelInput
+    parentModel?: ModelCreateNestedOneWithoutChildModelsInput
+    childModels?: ModelCreateNestedManyWithoutParentModelInput
+    parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
+    versions?: ModelVersionCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
+    likes?: ModelLikeCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelUncheckedCreateWithoutNonMemberContributorsInput = {
+    id?: string
+    legacyId?: number | null
+    latestVersionNumber?: number | null
+    parentModelId?: string | null
+    parentVersionNumber?: number | null
+    visibility?: $Enums.ModelVisibility
+    isEndorsed?: boolean
+    isLibraryModel?: boolean
+    viewCount?: number
+    runCount?: number
+    downloadCount?: number
+    shareCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
+    versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
+    authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
+    additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
+    likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
+    interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
+    drafts?: ModelDraftUncheckedCreateNestedManyWithoutModelInput
+  }
+
+  export type ModelCreateOrConnectWithoutNonMemberContributorsInput = {
+    where: ModelWhereUniqueInput
+    create: XOR<ModelCreateWithoutNonMemberContributorsInput, ModelUncheckedCreateWithoutNonMemberContributorsInput>
+  }
+
+  export type ModelUpsertWithoutNonMemberContributorsInput = {
+    update: XOR<ModelUpdateWithoutNonMemberContributorsInput, ModelUncheckedUpdateWithoutNonMemberContributorsInput>
+    create: XOR<ModelCreateWithoutNonMemberContributorsInput, ModelUncheckedCreateWithoutNonMemberContributorsInput>
+    where?: ModelWhereInput
+  }
+
+  export type ModelUpdateToOneWithWhereWithoutNonMemberContributorsInput = {
+    where?: ModelWhereInput
+    data: XOR<ModelUpdateWithoutNonMemberContributorsInput, ModelUncheckedUpdateWithoutNonMemberContributorsInput>
+  }
+
+  export type ModelUpdateWithoutNonMemberContributorsInput = {
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestVersion?: ModelVersionUpdateOneWithoutLatestOfModelNestedInput
+    parentModel?: ModelUpdateOneWithoutChildModelsNestedInput
+    childModels?: ModelUpdateManyWithoutParentModelNestedInput
+    parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
+    versions?: ModelVersionUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUpdateManyWithoutModelNestedInput
+  }
+
+  export type ModelUncheckedUpdateWithoutNonMemberContributorsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: NullableIntFieldUpdateOperationsInput | number | null
+    latestVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    parentModelId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentVersionNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    visibility?: EnumModelVisibilityFieldUpdateOperationsInput | $Enums.ModelVisibility
+    isEndorsed?: BoolFieldUpdateOperationsInput | boolean
+    isLibraryModel?: BoolFieldUpdateOperationsInput | boolean
+    viewCount?: IntFieldUpdateOperationsInput | number
+    runCount?: IntFieldUpdateOperationsInput | number
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    shareCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
+    versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
+    authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
+    additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
+    likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
+    interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
+    drafts?: ModelDraftUncheckedUpdateManyWithoutModelNestedInput
+  }
+
   export type ModelCreateWithoutPermissionsInput = {
     legacyId?: number | null
     visibility?: $Enums.ModelVisibility
@@ -30709,6 +32485,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
@@ -30734,6 +32511,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
@@ -30847,6 +32625,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
@@ -30872,6 +32651,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
@@ -30975,6 +32755,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionCreateNestedManyWithoutModelInput
@@ -31000,6 +32781,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     interactions?: ModelInteractionUncheckedCreateNestedManyWithoutModelInput
@@ -31113,6 +32895,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUpdateManyWithoutModelNestedInput
@@ -31138,6 +32921,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     interactions?: ModelInteractionUncheckedUpdateManyWithoutModelNestedInput
@@ -31241,6 +33025,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -31266,6 +33051,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -31379,6 +33165,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -31404,6 +33191,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
@@ -31580,6 +33368,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionCreateNestedOneWithoutParentOfModelsInput
     versions?: ModelVersionCreateNestedManyWithoutModelInput
     authors?: ModelAuthorCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileCreateNestedManyWithoutModelInput
     likes?: ModelLikeCreateNestedManyWithoutModelInput
@@ -31605,6 +33394,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedCreateNestedManyWithoutParentModelInput
     versions?: ModelVersionUncheckedCreateNestedManyWithoutModelInput
     authors?: ModelAuthorUncheckedCreateNestedManyWithoutModelInput
+    nonMemberContributors?: NonMemberContributorUncheckedCreateNestedManyWithoutModelInput
     permissions?: ModelPermissionUncheckedCreateNestedManyWithoutModelInput
     additionalFiles?: ModelAdditionalFileUncheckedCreateNestedManyWithoutModelInput
     likes?: ModelLikeUncheckedCreateNestedManyWithoutModelInput
@@ -31724,6 +33514,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -31749,6 +33540,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
@@ -31945,6 +33737,7 @@ export namespace Prisma {
   export type ModelAuthorCreateManyUserInput = {
     modelId: string
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
     createdAt?: Date | string
   }
 
@@ -32113,6 +33906,7 @@ export namespace Prisma {
 
   export type ModelAuthorUpdateWithoutUserInput = {
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     model?: ModelUpdateOneRequiredWithoutAuthorsNestedInput
   }
@@ -32120,12 +33914,14 @@ export namespace Prisma {
   export type ModelAuthorUncheckedUpdateWithoutUserInput = {
     modelId?: StringFieldUpdateOperationsInput | string
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelAuthorUncheckedUpdateManyWithoutUserInput = {
     modelId?: StringFieldUpdateOperationsInput | string
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -32336,6 +34132,17 @@ export namespace Prisma {
   export type ModelAuthorCreateManyModelInput = {
     userId: string
     role: $Enums.AuthorRole
+    collaboratorType?: string | null
+    createdAt?: Date | string
+  }
+
+  export type NonMemberContributorCreateManyModelInput = {
+    id?: string
+    legacyId: number
+    email?: string | null
+    name?: string | null
+    collaboratorType?: string | null
+    addedByUserId?: string | null
     createdAt?: Date | string
   }
 
@@ -32399,6 +34206,7 @@ export namespace Prisma {
     parentVersion?: ModelVersionUpdateOneWithoutParentOfModelsNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -32424,6 +34232,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput
@@ -32497,6 +34306,7 @@ export namespace Prisma {
 
   export type ModelAuthorUpdateWithoutModelInput = {
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutAuthoredModelsNestedInput
   }
@@ -32504,12 +34314,44 @@ export namespace Prisma {
   export type ModelAuthorUncheckedUpdateWithoutModelInput = {
     userId?: StringFieldUpdateOperationsInput | string
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ModelAuthorUncheckedUpdateManyWithoutModelInput = {
     userId?: StringFieldUpdateOperationsInput | string
     role?: EnumAuthorRoleFieldUpdateOperationsInput | $Enums.AuthorRole
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NonMemberContributorUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: IntFieldUpdateOperationsInput | number
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NonMemberContributorUncheckedUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: IntFieldUpdateOperationsInput | number
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NonMemberContributorUncheckedUpdateManyWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legacyId?: IntFieldUpdateOperationsInput | number
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    collaboratorType?: NullableStringFieldUpdateOperationsInput | string | null
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -32687,6 +34529,7 @@ export namespace Prisma {
     childModels?: ModelUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUpdateManyWithoutModelNestedInput
@@ -32711,6 +34554,7 @@ export namespace Prisma {
     childModels?: ModelUncheckedUpdateManyWithoutParentModelNestedInput
     versions?: ModelVersionUncheckedUpdateManyWithoutModelNestedInput
     authors?: ModelAuthorUncheckedUpdateManyWithoutModelNestedInput
+    nonMemberContributors?: NonMemberContributorUncheckedUpdateManyWithoutModelNestedInput
     permissions?: ModelPermissionUncheckedUpdateManyWithoutModelNestedInput
     additionalFiles?: ModelAdditionalFileUncheckedUpdateManyWithoutModelNestedInput
     likes?: ModelLikeUncheckedUpdateManyWithoutModelNestedInput

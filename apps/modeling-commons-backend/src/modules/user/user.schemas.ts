@@ -1,8 +1,9 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
 
 export const userIdParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
 });
 export type UserIdParams = Static<typeof userIdParamsSchema>;
 

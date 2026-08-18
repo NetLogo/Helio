@@ -1,4 +1,5 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 import { baseResponseDtoSchema } from '#src/shared/api/response.base.ts';
 import { paginatedResponseBaseSchema } from '#src/shared/api/paginated.response.base.ts';
 import { paginatedQueryRequestDtoSchema } from '#src/shared/api/paginated-query.request.dto.ts';
@@ -15,7 +16,7 @@ export const createModelRequestDtoSchema = Type.Object({
   }),
   description: Type.Optional(Type.String({ description: 'Model description', maxLength: 10000 })),
   visibility: Type.Optional(visibilitySchema),
-  parentModelId: Type.Optional(Type.String({ format: 'uuid' })),
+  parentModelId: Type.Optional(idSchema()),
   parentVersionNumber: Type.Optional(Type.Integer({ minimum: 1 })),
 });
 
@@ -24,7 +25,7 @@ export const updateModelRequestDtoSchema = Type.Object({
 });
 
 export const modelIdParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
 });
 
 export const modelLegacyIdParamsSchema = Type.Object({
@@ -32,7 +33,7 @@ export const modelLegacyIdParamsSchema = Type.Object({
 });
 
 export const modelVersionParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   version: Type.Integer({ minimum: 1 }),
 });
 
@@ -65,9 +66,9 @@ export const modelSearchQuerySchema = Type.Intersect([
     tags: Type.Optional(
       Type.Array(Type.String(), { description: 'Filter models by tag', default: [] }),
     ),
-    authorId: Type.Optional(Type.String({ format: 'uuid' })),
+    authorId: Type.Optional(idSchema()),
     authorRoles: Type.Optional(Type.Array(Type.Enum(['owner', 'contributor']))),
-    parentModelId: Type.Optional(Type.String({ format: 'uuid' })),
+    parentModelId: Type.Optional(idSchema()),
     isEndorsed: Type.Optional(Type.Boolean()),
     isLibraryModel: Type.Optional(Type.Boolean()),
     keyword: Type.Optional(Type.String()),
@@ -82,7 +83,7 @@ export const modelResponseDtoSchema = Type.Intersect([
   baseResponseDtoSchema,
   Type.Object({
     latestVersionNumber: Type.Union([Type.Integer(), Type.Null()]),
-    parentModelId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
+    parentModelId: Type.Union([idSchema(), Type.Null()]),
     parentVersionNumber: Type.Union([Type.Integer(), Type.Null()]),
     visibility: visibilitySchema,
     isEndorsed: Type.Boolean(),

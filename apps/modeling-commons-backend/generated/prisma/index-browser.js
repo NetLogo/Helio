@@ -257,6 +257,18 @@ exports.Prisma.ModelAuthorScalarFieldEnum = {
   modelId: 'modelId',
   userId: 'userId',
   role: 'role',
+  collaboratorType: 'collaboratorType',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.NonMemberContributorScalarFieldEnum = {
+  id: 'id',
+  legacyId: 'legacyId',
+  modelId: 'modelId',
+  email: 'email',
+  name: 'name',
+  collaboratorType: 'collaboratorType',
+  addedByUserId: 'addedByUserId',
   createdAt: 'createdAt'
 };
 
@@ -393,6 +405,7 @@ exports.Prisma.ModelName = {
   ModelAdditionalFile: 'ModelAdditionalFile',
   Tag: 'Tag',
   ModelAuthor: 'ModelAuthor',
+  NonMemberContributor: 'NonMemberContributor',
   ModelPermission: 'ModelPermission',
   ModelLike: 'ModelLike',
   ModelInteraction: 'ModelInteraction',

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { s3, bucket } from './providers.js';
 
-const seedFilesPath = path.join(import.meta.dirname, '..', 'seed-files');
+const seedFilesPath = path.join(import.meta.dirname, 'files');
 
 const MIME_BY_EXT: Record<string, string> = {
   '.png': 'image/png',
@@ -60,7 +60,7 @@ function loadPreview(previewFilename: string): PreviewAsset {
   };
 }
 
-/** Load a real `.nlogox` file shipped in `seed-files/`, with its Info tab + optional preview. */
+/** Load a real `.nlogox` file shipped in `seed/files/`, with its Info tab + optional preview. */
 export function loadNlogox(filename: string, previewFilename?: string): NlogoxAsset {
   const filepath = path.join(seedFilesPath, filename);
   const content = fs.readFileSync(filepath, 'utf-8');

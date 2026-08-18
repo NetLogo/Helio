@@ -15,16 +15,6 @@
         Delete
       </UButton>
       <UButton
-        v-if="isEdit"
-        variant="outline"
-        color="neutral"
-        :disabled="publishing || reverting || !isDirty"
-        :loading="reverting"
-        @click="emit('revert')"
-      >
-        Revert
-      </UButton>
-      <UButton
         variant="outline"
         color="neutral"
         :disabled="publishing || !draftId"
@@ -37,7 +27,8 @@
         :disabled="publishing || hydrating"
         variant="solid"
         color="primary"
-        @click="emit('submit')"
+        data-testid="draft-primary-action"
+        @click="onPrimaryAction"
       >
         {{ submitLabel }}
       </UButton>
@@ -46,26 +37,33 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     isEdit: boolean;
     publishing: boolean;
     hydrating?: boolean;
-    reverting: boolean;
     deletingModel: boolean;
-    isDirty: boolean;
     draftId: string | null | undefined;
     saveStatusLabel: string;
     submitLabel: string;
     discardLabel: string;
+    isLastStep?: boolean;
   }>(),
-  { hydrating: false },
+  { hydrating: false, isLastStep: true },
 );
 
 const emit = defineEmits<{
   delete: [];
-  revert: [];
   discard: [];
+  next: [];
   submit: [];
 }>();
+
+function onPrimaryAction(): void {
+  if (props.isLastStep) {
+    emit("submit");
+    return;
+  }
+  emit("next");
+}
 </script>

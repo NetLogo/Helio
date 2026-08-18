@@ -1,11 +1,8 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const tagResponseDtoSchema = Type.Object({
-  id: Type.String({
-    format: 'uuid',
-    example: '2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231',
-    description: 'Tag id',
-  }),
+  id: idSchema('Tag id'),
   name: Type.String({ example: 'climate', description: 'Tag name' }),
   displayName: Type.String({
     example: 'Climate',

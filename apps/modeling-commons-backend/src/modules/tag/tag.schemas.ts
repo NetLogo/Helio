@@ -24,7 +24,7 @@ export type PopularTagsQuery = Static<typeof popularTagsQuerySchema>;
 
 export const tagIdOrNameParamsSchema = Type.Object({
   idOrName: Type.String({
-    description: 'Tag UUID or case-insensitive name',
+    description: 'Tag id or case-insensitive name',
     minLength: 1,
   }),
 });

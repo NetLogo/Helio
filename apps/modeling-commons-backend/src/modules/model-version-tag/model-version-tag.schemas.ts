@@ -1,4 +1,5 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const addTagRequestDtoSchema = Type.Object({
   name: Type.String({
@@ -10,13 +11,13 @@ export const addTagRequestDtoSchema = Type.Object({
 export type AddTagRequestDto = Static<typeof addTagRequestDtoSchema>;
 
 export const removeTagParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  tagId: Type.String({ format: 'uuid' }),
+  id: idSchema(),
+  tagId: idSchema(),
 });
 export type RemoveTagParams = Static<typeof removeTagParamsSchema>;
 
 export const versionTagsParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   version: Type.Integer({ minimum: 1 }),
 });
 export type VersionTagsParams = Static<typeof versionTagsParamsSchema>;

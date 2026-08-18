@@ -3,6 +3,7 @@ import {
   authRoutes,
   getEmailVerificationCallbackUrl,
   getPasskeyPromptUrl,
+  getResetPasswordLink,
   getResetPasswordRedirectUrl,
   getSafeNextPath,
 } from "./auth";
@@ -71,6 +72,20 @@ describe("getPasskeyPromptUrl", () => {
   it("falls back to the default safe path for invalid next values", () => {
     expect(getPasskeyPromptUrl("//evil")).toBe(
       `${authRoutes.passkey}?next=${encodeURIComponent(authRoutes.models)}`,
+    );
+  });
+});
+
+describe("getResetPasswordLink", () => {
+  it("URL-encodes the next path", () => {
+    expect(getResetPasswordLink("/models/foo bar")).toBe(
+      `${authRoutes.resetPassword}?next=${encodeURIComponent("/models/foo bar")}`,
+    );
+  });
+
+  it("falls back to the default safe path for invalid next values", () => {
+    expect(getResetPasswordLink("//evil")).toBe(
+      `${authRoutes.resetPassword}?next=${encodeURIComponent(authRoutes.models)}`,
     );
   });
 });

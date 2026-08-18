@@ -1,6 +1,7 @@
 import type { Model } from '#prisma/index';
 import modelDomain from '#src/modules/model/domain/model.domain.ts';
 import { ModelAlreadyDeletedError } from '#src/modules/model/domain/model.errors.ts';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
 import { describe, expect, it } from 'vitest';
 
 const domain = modelDomain();
@@ -31,7 +32,7 @@ describe('modelDomain', () => {
     it('creates model with defaults', () => {
       const model = domain.createModel({ title: 'Test' });
 
-      expect(model.id).toBeTypeOf('string');
+      expect(model.id).toMatch(new RegExp(ID_PATTERN));
       expect(model.visibility).toBe('public');
       expect(model.isEndorsed).toBe(false);
       expect(model.deletedAt).toBeNull();

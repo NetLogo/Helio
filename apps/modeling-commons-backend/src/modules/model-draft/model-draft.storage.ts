@@ -7,7 +7,12 @@ import {
   PutObjectCommand,
 } from '#src/shared/storage/index.ts';
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
-import { randomUUID } from 'node:crypto';
+import { nanoid } from 'nanoid';
+
+// Staging keys fuse this random prefix with the filename in one segment, so
+// filenameFromKey has to strip exactly this many characters plus the dash.
+// Both producers of the shape must use it or the reader mangles filenames.
+export const STAGING_KEY_RANDOM_SEGMENT_LENGTH = 10;
 
 export default function makeModelDraftStorage({ storage, bucket, fileDomain }: Dependencies) {
   function stagingPrefix(userId: string, draftId: string): string {
@@ -27,7 +32,7 @@ export default function makeModelDraftStorage({ storage, bucket, fileDomain }: D
     const prefix = isPublic
       ? publicStagingPrefix(userId, draftId)
       : stagingPrefix(userId, draftId);
-    return `${prefix}${randomUUID()}-${sanitizeFilename(filename)}`;
+    return `${prefix}${nanoid(STAGING_KEY_RANDOM_SEGMENT_LENGTH)}-${sanitizeFilename(filename)}`;
   }
 
   async function deletePrefix(prefix: string): Promise<void> {

@@ -65,6 +65,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
 <template>
   <div>
+    <LegacyAccountNoticeDialog :next="nextPath" />
     <UAuthForm
       ref="authform"
       :fields="fields"

@@ -1,6 +1,6 @@
-import { randomUUID } from 'node:crypto';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
 import { ModelDraftAccessDeniedError } from '#src/modules/model-draft/domain/model-draft.errors.ts';
+import { newId } from '#src/shared/utils/id.ts';
 
 export default function modelDraftDomain() {
   return {
@@ -12,7 +12,7 @@ export default function modelDraftDomain() {
     }): ModelDraftEntity {
       const now = new Date();
       return {
-        id: randomUUID(),
+        id: newId(),
         userId: props.userId,
         modelId: props.modelId ?? null,
         schemaVersion: props.schemaVersion,

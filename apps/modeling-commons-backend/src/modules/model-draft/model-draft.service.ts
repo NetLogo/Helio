@@ -33,10 +33,15 @@ import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
 import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
 import { CopyObjectCommand, HeadObjectCommand } from '#src/shared/storage/index.ts';
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
-import { randomUUID } from 'node:crypto';
+import { newId } from '#src/shared/utils/id.ts';
+import { nanoid } from 'nanoid';
+import { STAGING_KEY_RANDOM_SEGMENT_LENGTH } from './model-draft.storage.ts';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
+
+const LEGACY_UUID_PREFIX_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i;
 
 export default function makeModelDraftService({
   transactionManager,
@@ -88,13 +93,32 @@ export default function makeModelDraftService({
     const prefix = isPublic
       ? `${PUBLIC_PREFIX}/staging/${userId}/${draftId}/`
       : `staging/${userId}/${draftId}/`;
-    return `${prefix}${randomUUID()}-${sanitizeFilename(filename)}`;
+    return `${prefix}${nanoid(STAGING_KEY_RANDOM_SEGMENT_LENGTH)}-${sanitizeFilename(filename)}`;
   }
 
+  // Three key shapes can reach here. createStorageKey puts the random segment
+  // in its own path directory, so the last segment is already the bare
+  // filename - no prefix to strip. Legacy keys (pre-nanoid-migration) and
+  // stagingKey both join the random segment and the filename with a dash in
+  // one segment, so we strip a matching fixed-length prefix: the canonical
+  // UUID shape for legacy keys, or STAGING_KEY_RANDOM_SEGMENT_LENGTH chars for
+  // staging keys. The nanoid alphabet includes '-', so we only attempt the
+  // staging-key strip when the path is actually staging-shaped; otherwise a
+  // dash inside an ordinary filename could be mistaken for the boundary.
   function filenameFromKey(key: string): string {
-    const last = key.split('/').pop() ?? key;
-    // S3 keys we emit are `${uuid}-${sanitizedFilename}`. Slice past the 36-char uuid + '-'.
-    return last.length > 37 ? last.slice(37) : last;
+    const segments = key.split('/');
+    const last = segments.pop() ?? key;
+
+    const uuidMatch = last.match(LEGACY_UUID_PREFIX_PATTERN);
+    if (uuidMatch) return last.slice(uuidMatch[0].length);
+
+    const isStagingKey = segments.includes('staging');
+    const stagingPrefixLength = STAGING_KEY_RANDOM_SEGMENT_LENGTH + 1;
+    if (isStagingKey && last[STAGING_KEY_RANDOM_SEGMENT_LENGTH] === '-') {
+      return last.slice(stagingPrefixLength);
+    }
+
+    return last;
   }
 
   function setEqual(a: Array<string>, b: Array<string>): boolean {
@@ -238,7 +262,7 @@ export default function makeModelDraftService({
           filename,
         });
         return {
-          id: randomUUID(),
+          id: newId(),
           s3Key: copy.s3Key,
           filename,
           sizeBytes: copy.sizeBytes,
@@ -368,7 +392,7 @@ export default function makeModelDraftService({
       }
 
       const kind: ModelFileKind = role === 'model-file' ? 'model' : 'additional';
-      const attachment: DraftFileV1 = { id: randomUUID(), ...meta, kind };
+      const attachment: DraftFileV1 = { id: newId(), ...meta, kind };
       next.attachments = [...(data.attachments ?? []), attachment];
       await persistData(draft, next);
       return { id: attachment.id, role, ...meta };

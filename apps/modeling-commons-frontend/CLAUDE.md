@@ -60,7 +60,7 @@ When a parent passes server data and the child mutates a derived view of it (e.g
 
 ## Testing
 
-- Upload/edit interaction logic lives in `tests/nuxt/composables/*` (`vitest --project=nuxt`) with `useApi` mocked via `tests/helpers/mockApi` (`makeApiClientMock`/`apiResult`). Don't mount the editor stepper in component tests — the `UStepper` recursive-update flake under `@nuxt/test-utils` makes it unreliable.
+- Upload/edit interaction logic lives in `tests/nuxt/composables/*` (`vitest --project=nuxt`) with `useApi` mocked via `tests/helpers/mockApi` (`makeApiClientMock`/`apiResult`). Mounting the editor stepper in component tests requires replacing `UStepper` via `mockComponent` with a flat slot renderer; mounting the real one hits a recursive-update flake under `@nuxt/test-utils`.
 - Full journeys go in `tests/e2e` (real backend + Chromium): they need the backend + Mailpit running and use `signUpAndVerify` for a verified session.
 
 ## Dev servers

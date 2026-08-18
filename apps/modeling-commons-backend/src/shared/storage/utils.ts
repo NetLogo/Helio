@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { nanoid } from 'nanoid';
 
 /**
  * @param filename The original filename to be sanitized.
@@ -23,11 +23,11 @@ export function sanitizeFilename(filename: string): string {
 /**
  * @param filename The original filename to be sanitized and included in the storage key.
  * @param path The path prefix for organizing files (e.g. `uploads/models`)
- * @return A storage key in the format: `{path}/{YYYY}/{MM}/{DD}/{randomId}-{sanitizedFilename}`
+ * @return A storage key in the format: `{path}/{YYYY}/{MM}/{DD}/{randomId}/{sanitizedFilename}`
  *
  * @example
  * createStorageKey('my model.png', 'uploads/models')
- * // returns: 'uploads/models/2024/06/25/abc12345-my_model.png'
+ * // returns: 'uploads/models/2024/06/25/AbCdEfGhIj/my_model.png'
  */
 export function createStorageKey(filename: string, path: string): string {
   const sanitizedFilename = sanitizeFilename(filename);
@@ -43,7 +43,7 @@ export function createStorageKey(filename: string, path: string): string {
   const normalizedPath = path.replace(/^\/+|\/+$/g, '');
 
   const timepath = `${year}/${month}/${day}`;
-  const id = randomUUID().substring(0, 8);
+  const id = nanoid(10);
 
   if (normalizedPath.length === 0) {
     return `${timepath}/${id}/${sanitizedFilename}`;

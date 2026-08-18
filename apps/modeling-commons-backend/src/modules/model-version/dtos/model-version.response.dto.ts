@@ -1,7 +1,8 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const modelVersionResponseDtoSchema = Type.Object({
-  modelId: Type.String({ format: 'uuid' }),
+  modelId: idSchema(),
   versionNumber: Type.Integer({
     minimum: 1,
     description:

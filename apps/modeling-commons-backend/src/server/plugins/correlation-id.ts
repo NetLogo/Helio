@@ -1,14 +1,14 @@
 import type { FastifyInstance } from 'fastify';
-import { randomUUID } from 'node:crypto';
 import fp from 'fastify-plugin';
-import { validateUUIDv4 } from '#src/shared/utils/validateUUIDv4.ts';
+import { newId } from '#src/shared/utils/id.ts';
+import { validateRequestId } from '#src/shared/utils/validate-request-id.ts';
 
 async function correlationIdPlugin(fastify: FastifyInstance) {
   fastify.decorateRequest('correlationId', '');
 
   fastify.addHook('onRequest', async (request, reply) => {
     const raw = request.headers['x-correlation-id'] as string | undefined;
-    const id = raw && validateUUIDv4(raw) ? raw : randomUUID();
+    const id = raw && validateRequestId(raw) ? raw : newId();
     request.correlationId = id;
     reply.header('x-correlation-id', id);
   });

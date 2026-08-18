@@ -5,6 +5,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { admin, openAPI } from 'better-auth/plugins';
 
 import rules from '#src/config/rules.ts';
+import { newId } from '#src/shared/utils/id.ts';
 import transporter, { mailDomain } from './mail.ts';
 import { prisma } from './prisma.ts';
 
@@ -117,7 +118,7 @@ export const auth = betterAuth({
       ipAddressHeaders: env.server.ipAddressHeaders,
     },
     database: {
-      generateId: 'uuid',
+      generateId: () => newId(),
     },
   },
 

@@ -18,6 +18,7 @@ import { mockModelVersionTagRepository } from '#src/modules/model-version-tag/da
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
 import type { DraftDataV1 } from '#src/modules/model-draft/schemas/v1.ts';
 import type { Model } from '#prisma/index';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
 
 function makeDraft(data: DraftDataV1 = {}, overrides: Partial<ModelDraftEntity> = {}): ModelDraftEntity {
   return {
@@ -289,7 +290,7 @@ describe('modelDraftService', () => {
       });
 
       expect(result.role).toBe('attachment');
-      expect(result.id).toMatch(/^[0-9a-f-]{36}$/);
+      expect(result.id).toMatch(new RegExp(ID_PATTERN));
       const next = modelDraftRepository.updateDataTx.mock.calls[0]![3] as DraftDataV1;
       expect(next.attachments).toHaveLength(1);
       expect(next.attachments![0]!.s3Key).toBe('staging/user-1/draft-1/att.csv');
@@ -613,7 +614,10 @@ describe('modelDraftService', () => {
   });
 
   describe('create (seedDraftDataFromModel)', () => {
-    function buildSeedService(additionalFiles: Array<{ fileKey: string; kind: 'model' | 'additional' }>) {
+    function buildSeedService(
+      additionalFiles: Array<{ fileKey: string; kind: 'model' | 'additional' }>,
+      versionOverrides: Record<string, unknown> = {},
+    ) {
       const modelRepository = mockModelRepository();
       modelRepository.findOneById.mockResolvedValue(
         makeModel({ id: 'model-1', visibility: 'public', latestVersionNumber: 1, deletedAt: null }),
@@ -628,6 +632,7 @@ describe('modelDraftService', () => {
         netlogoFileKey: 'uploads/models/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee-primary.nlogo',
         previewImageFileKey: null,
         finalizedAt: null,
+        ...versionOverrides,
       } as never);
 
       const modelVersionTagRepository = mockModelVersionTagRepository();
@@ -714,6 +719,53 @@ describe('modelDraftService', () => {
       expect(data.attachments).toBeUndefined();
       expect(data.seededFrom!.additionalFileS3Keys).toEqual([]);
       expect(data.seededFrom!.modelFileS3Keys).toEqual([]);
+    });
+
+    describe('filenameFromKey shapes', () => {
+      it('strips a legacy UUID-dash prefix from a single-segment key', async () => {
+        const { service, modelDraftRepository } = buildSeedService([], {
+          netlogoFileKey: 'uploads/models/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee-primary.nlogo',
+        });
+
+        await service.create('user-1', { modelId: 'model-1' });
+
+        const entity = modelDraftRepository.insertTx.mock.calls[0]![1] as { data: DraftDataV1 };
+        expect(entity.data.primaryFile!.filename).toBe('primary.nlogo');
+      });
+
+      it('strips a nanoid-dash prefix from a staging-shaped key', async () => {
+        const { service, modelDraftRepository } = buildSeedService([], {
+          netlogoFileKey: 'staging/user-1/draft-0/AbCdEfGhIj-wolf-sheep.nlogox',
+        });
+
+        await service.create('user-1', { modelId: 'model-1' });
+
+        const entity = modelDraftRepository.insertTx.mock.calls[0]![1] as { data: DraftDataV1 };
+        expect(entity.data.primaryFile!.filename).toBe('wolf-sheep.nlogox');
+      });
+
+      it('leaves a createStorageKey-style key untouched since the filename is its own segment', async () => {
+        const { service, modelDraftRepository } = buildSeedService([], {
+          netlogoFileKey: 'uploads/models/2026/04/17/AbCdEfGhIj/my_model.png',
+        });
+
+        await service.create('user-1', { modelId: 'model-1' });
+
+        const entity = modelDraftRepository.insertTx.mock.calls[0]![1] as { data: DraftDataV1 };
+        expect(entity.data.primaryFile!.filename).toBe('my_model.png');
+      });
+
+      it('does not truncate a long filename that has no dash-joined id prefix', async () => {
+        const longFilename = 'a-very-long-model-filename-that-exceeds-thirty-seven-characters.nlogox';
+        const { service, modelDraftRepository } = buildSeedService([], {
+          netlogoFileKey: `uploads/models/2026/04/17/AbCdEfGhIj/${longFilename}`,
+        });
+
+        await service.create('user-1', { modelId: 'model-1' });
+
+        const entity = modelDraftRepository.insertTx.mock.calls[0]![1] as { data: DraftDataV1 };
+        expect(entity.data.primaryFile!.filename).toBe(longFilename);
+      });
     });
   });
 

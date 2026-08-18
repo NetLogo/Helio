@@ -7,6 +7,8 @@ import type { ModelAuthorRecord } from '#src/modules/model-author/model-author.m
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
+import { readableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
+import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
 
 export default function modelAuthorRepository({
   db,
@@ -45,8 +47,11 @@ export default function modelAuthorRepository({
     async findModelsByUser(
       userId: string,
       params: PaginatedQueryParams,
+      viewer: ViewerContext | null,
     ): Promise<Paginated<ModelAuthorEntity>> {
-      const where = { userId };
+      // Authorship rows are only as visible as the model they point at, so the
+      // filter applies to both the page and the count.
+      const where = { userId, model: readableModelFilter(viewer) };
       const [count, records] = await Promise.all([
         db.modelAuthor.count({ where }),
         db.modelAuthor.findMany({

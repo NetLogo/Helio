@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import modelDraftDomain from '#src/modules/model-draft/domain/model-draft.domain.ts';
 import { ModelDraftAccessDeniedError } from '#src/modules/model-draft/domain/model-draft.errors.ts';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
 
 const domain = modelDraftDomain();
 
@@ -27,8 +28,7 @@ describe('modelDraftDomain', () => {
         data: {},
       });
 
-      expect(draft.id).toBeTypeOf('string');
-      expect(draft.id.length).toBeGreaterThan(0);
+      expect(draft.id).toMatch(new RegExp(ID_PATTERN));
       expect(draft.userId).toBe('user-1');
       expect(draft.modelId).toBeNull();
       expect(draft.schemaVersion).toBe(1);

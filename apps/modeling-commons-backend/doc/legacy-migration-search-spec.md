@@ -86,11 +86,11 @@ WHERE mv."searchVector" @@ q
   AND m."deletedAt" IS NULL
   AND (
     m.visibility = 'public'
-    OR ($2::uuid IS NOT NULL AND EXISTS (
+    OR ($2::text IS NOT NULL AND EXISTS (
          SELECT 1 FROM "ModelAuthor" a
          WHERE a."modelId" = m.id AND a."userId" = $2
        ))
-    OR ($2::uuid IS NOT NULL AND EXISTS (
+    OR ($2::text IS NOT NULL AND EXISTS (
          SELECT 1 FROM "ModelPermission" p
          WHERE p."modelId" = m.id AND p."granteeUserId" = $2
        ))

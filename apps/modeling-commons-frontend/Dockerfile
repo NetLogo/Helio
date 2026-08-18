@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends dumb-init \
 ENV NODE_ENV=production HOST=0.0.0.0 NITRO_PORT=3005
 
 # Sensible default values
-ARG NUXT_PUBLIC_API_BASE="https://beta.modelingcommons.org"
-ARG NUXT_PUBLIC_AUTH_BASE="https://beta.modelingcommons.org/api/auth"
-ARG NUXT_PUBLIC_APP_URL="https://beta.modelingcommons.org"
+ARG NUXT_PUBLIC_API_BASE="https://www.modelingcommons.org"
+ARG NUXT_PUBLIC_AUTH_BASE="https://www.modelingcommons.org/api/auth"
+ARG NUXT_PUBLIC_APP_URL="https://www.modelingcommons.org"
 ARG NUXT_STORAGE_BASE_URL="https://cdn.modelingcommons.org"
 ARG NUXT_PUBLIC_CDN_URL="https://cdn.modelingcommons.org"
 ARG NUXT_PUBLIC_NETLOGO_WEB_URL="https://www.netlogoweb.org"

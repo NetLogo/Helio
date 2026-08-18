@@ -71,6 +71,51 @@ Feature: Model Authors
     And the response body should have property "data" as an array
     And the response body property "data" should have length 1
 
+  Scenario: A user's private models are hidden from anonymous callers
+    Given an authenticated user "author"
+    And a public model "Open Model" created by "author"
+    And a private model "Hidden Model" created by "author"
+    When I list models by user "author"
+    Then the response status should be 200
+    And the response body property "data" should have length 1
+    And the response body path "count" should be 1
+
+  Scenario: A user's private models are hidden from an unrelated signed-in caller
+    Given an authenticated user "author"
+    And a public model "Shared Model" created by "author"
+    And a private model "Secret Model" created by "author"
+    And an authenticated user "stranger"
+    When "stranger" lists models by user "author"
+    Then the response status should be 200
+    And the response body property "data" should have length 1
+    And the response body path "count" should be 1
+
+  Scenario: A user sees their own private models
+    Given an authenticated user "author"
+    And a public model "Visible Model" created by "author"
+    And a private model "Own Secret" created by "author"
+    When "author" lists models by user "author"
+    Then the response status should be 200
+    And the response body property "data" should have length 2
+    And the response body path "count" should be 2
+
+  Scenario: A contributor sees a private model they collaborate on
+    Given an authenticated user "author"
+    And a private model "Collab Secret" created by "author"
+    And an authenticated user "contributor"
+    And "author" has added "contributor" as a contributor to "Collab Secret"
+    When "contributor" lists models by user "author"
+    Then the response status should be 200
+    And the response body path "count" should be 1
+
+  Scenario: Soft-deleted models are hidden from anonymous callers
+    Given an authenticated user "author"
+    And a public model "Doomed Model" created by "author"
+    And the model "Doomed Model" has been deleted
+    When I list models by user "author"
+    Then the response status should be 200
+    And the response body path "count" should be 0
+
   Scenario: Cannot add the same contributor twice
     Given an authenticated user "owner"
     And a public model "Dup Model" created by "owner"

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import modelInteractionDomain from '#src/modules/model-interaction/domain/model-interaction.domain.ts';
 import { ModelInteractionKind } from '#src/modules/model-interaction/domain/model-interaction.types.ts';
 import type { ClientContext } from '#src/shared/http/client-context.ts';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
 
 const domain = modelInteractionDomain();
 
@@ -19,7 +20,7 @@ function ctx(overrides: Partial<ClientContext> = {}): ClientContext {
 
 describe('modelInteractionDomain', () => {
   describe('create', () => {
-    it('builds an entity with a uuid and copies the client context', () => {
+    it('builds an entity with an id and copies the client context', () => {
       const entity = domain.create(
         'model-1',
         ModelInteractionKind.view,
@@ -34,7 +35,7 @@ describe('modelInteractionDomain', () => {
         5,
       );
 
-      expect(entity.id).toMatch(/^[0-9a-f-]{36}$/);
+      expect(entity.id).toMatch(new RegExp(ID_PATTERN));
       expect(entity.modelId).toBe('model-1');
       expect(entity.kind).toBe(ModelInteractionKind.view);
       expect(entity.versionNumber).toBe(5);

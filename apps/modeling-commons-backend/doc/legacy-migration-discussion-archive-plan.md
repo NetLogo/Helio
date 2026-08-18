@@ -21,10 +21,10 @@ Source table: `postings` in `nlcommons_production` (Rails). Columns confirmed ag
 
 | Legacy column     | New column / treatment                                                        |
 |-------------------|--------------------------------------------------------------------------------|
-| `id`              | `legacyId` (Int, `@unique`). New row gets a uuid `id`.                          |
+| `id`              | `legacyId` (Int, `@unique`). New row gets a NanoID `id`.                        |
 | `person_id`       | `userId` resolved via `User.legacyId` map. `null` if author wasn't migrated.    |
 | `node_id`         | `modelId` resolved via `Model.legacyId` map. **Posting skipped if unresolved** (orphaned: model was spam-excluded or never migrated). |
-| `parent_id`       | `parentLegacyPostingId` resolved via two-pass uuid map.                         |
+| `parent_id`       | `parentLegacyPostingId` resolved via two-pass id map.                          |
 | `title`           | `title` (nullable; legacy default was `'(No title)'`).                          |
 | `body`            | `body`. **Nulled if `deleted_at IS NOT NULL`** — no recoverable body for tombstones. Stored as-is; legacy did `gsub!('<', '&lt;')`, so values may already be HTML-escaped. Frontend treats as preformatted text. |
 | `is_question`     | `isQuestion` (bool).                                                            |
@@ -41,7 +41,7 @@ One Prisma migration. Adds `LegacyModelPosting` + two back-relations.
 
 ```prisma
 model LegacyModelPosting {
-  id                     String   @id @default(uuid())
+  id                     String   @id @default(nanoid())
   legacyId               Int      @unique
   modelId                String
   userId                 String?
@@ -106,7 +106,7 @@ src/modules/legacy-discussion/
 Deliberately minimal:
 
 - **No `domain/`.** This module has no domain logic — the data is frozen. The mapper handles the tombstone projection.
-- **No `<module>.service.ts`.** No writes from the request path. The bulk importer lives in `prisma/archive.ts` (see §6) and is the only writer.
+- **No `<module>.service.ts`.** No writes from the request path. The bulk importer lives in `prisma/legacy-migration/initial-import.ts` (see §6) and is the only writer.
 - **No `patches/`.** Same reason.
 - **One query** (`list-legacy-postings`) is enough; deep-link `get-legacy-posting` is in Open Questions.
 
@@ -139,16 +139,16 @@ Tombstone-friendly. `body`/`userId`/`author` all nullable so the frontend render
 
 ```ts
 export const legacyPostingAuthorDtoSchema = Type.Object({
-  id: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),     // null when unmapped
+  id: Type.Union([idSchema(), Type.Null()]),                           // null when unmapped
   displayName: Type.Union([Type.String(), Type.Null()]),               // legacyAuthorName fallback
   image: Type.Union([Type.String(), Type.Null()]),
 });
 
 export const legacyPostingDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   legacyId: Type.Integer(),
-  modelId: Type.String({ format: 'uuid' }),
-  parentLegacyPostingId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
+  modelId: idSchema(),
+  parentLegacyPostingId: Type.Union([idSchema(), Type.Null()]),
 
   title: Type.Union([Type.String(), Type.Null()]),
   body: Type.Union([Type.String(), Type.Null()]),  // null on tombstones
@@ -163,7 +163,7 @@ export const legacyPostingDtoSchema = Type.Object({
 });
 
 export const legacyPostingListResponseDtoSchema = Type.Object({
-  modelId: Type.String({ format: 'uuid' }),
+  modelId: idSchema(),
   postings: Type.Array(legacyPostingDtoSchema),
 });
 ```
@@ -184,7 +184,7 @@ Notes:
 - **No POST / PATCH** anywhere. Surface-area discipline: the archive is data, not a feature.
 - The list route piggybacks on `resolveModel('read')` instead of layering its own visibility logic. If you can't see the model, you can't see its archive. Anonymous viewers can read archives on public/unlisted models, same as they can read the model itself.
 
-## 7. Importer (extends `prisma/archive.ts`)
+## 7. Importer (extends `prisma/legacy-migration/initial-import.ts`)
 
 The bulk import is a new step in the existing seed script, called from `main()` after `migrateNodes` so `modelIdMap` and `userIdMap` are in scope:
 
@@ -220,9 +220,9 @@ async function migrateLegacyPostings(
 
   // 3. Two-pass import to resolve parent links.
   //    Pass 1: insert every posting with parentLegacyPostingId = null.
-  //    Pass 2: update parent links once all uuid mappings exist.
+  //    Pass 2: update parent links once all id mappings exist.
 
-  const idMap = new Map<number, string>(seenLegacyId); // legacy posting id → new uuid
+  const idMap = new Map<number, string>(seenLegacyId); // legacy posting id → new id
 
   await streamRows<OldPosting>(
     `SELECT id, person_id, node_id, parent_id, title, body,
@@ -237,19 +237,19 @@ async function migrateLegacyPostings(
           continue;
         }
         if (!p.node_id) { report.legacyPostings.skipped_orphan_model++; continue; }
-        const modelUuid = modelIdMap.get(p.node_id);
-        if (!modelUuid) { report.legacyPostings.skipped_orphan_model++; continue; }
+        const modelId = modelIdMap.get(p.node_id);
+        if (!modelId) { report.legacyPostings.skipped_orphan_model++; continue; }
 
-        const userUuid = p.person_id ? userIdMap.get(p.person_id) ?? null : null;
+        const userId = p.person_id ? userIdMap.get(p.person_id) ?? null : null;
         const authorName = p.person_id ? legacyAuthorName.get(p.person_id) ?? null : null;
 
         const isDeleted = p.deleted_at !== null;
-        const id = randomUUID();
+        const id = newId();
         rows.push({
           id,
           legacyId: p.id,
-          modelId: modelUuid,
-          userId: userUuid,
+          modelId,
+          userId,
           legacyAuthorName: authorName,
           parentLegacyPostingId: null, // pass 2 sets this
           title: p.title,
@@ -274,15 +274,15 @@ async function migrateLegacyPostings(
     `SELECT id, parent_id FROM postings WHERE parent_id IS NOT NULL`,
   );
   for (const p of parented) {
-    const childUuid = idMap.get(p.id);
-    const parentUuid = p.parent_id ? idMap.get(p.parent_id) ?? null : null;
-    if (!childUuid || !parentUuid) {
+    const childId = idMap.get(p.id);
+    const parentId = p.parent_id ? idMap.get(p.parent_id) ?? null : null;
+    if (!childId || !parentId) {
       report.legacyPostings.skipped_orphan_parent++;
       continue;
     }
     await prisma.legacyModelPosting.update({
-      where: { id: childUuid },
-      data: { parentLegacyPostingId: parentUuid },
+      where: { id: childId },
+      data: { parentLegacyPostingId: parentId },
     });
   }
 }
@@ -290,10 +290,10 @@ async function migrateLegacyPostings(
 
 Idempotency:
 
-- Re-running the seed picks up new legacy rows (none expected — legacy DB is frozen — but the script supports it). Existing rows are skipped via the `legacyId` probe in pass 1; pass 2's update is no-op-safe (same parent uuid).
+- Re-running the seed picks up new legacy rows (none expected: legacy DB is frozen, but the script supports it). Existing rows are skipped via the `legacyId` probe in pass 1; pass 2's update is no-op-safe (same parent id).
 - `WIPE_TARGET=true` already truncates the right cascade; add `"LegacyModelPosting"` to the truncate list in `wipeTarget`.
 
-Report counters to add to the existing `report` object in `archive.ts`:
+Report counters to add to the existing `report` object in `initial-import.ts`:
 
 ```ts
 legacyPostings: {
@@ -371,7 +371,7 @@ Awilix auto-loads by filename. No service to register.
 
 ### Importer
 
-- **`prisma/archive.legacy-postings.spec.ts`** (heavy; gated behind an integration flag because it touches the legacy DB)
+- **`prisma/legacy-migration/legacy-postings.spec.ts`** (heavy; gated behind an integration flag because it touches the legacy DB)
   - Seed a small `postings` fixture in a test legacy DB; run the import step; assert row counts, parent links, tombstone bodies, orphan-skip behavior.
   - Re-run the import; assert `skipped_existing` increments and no duplicates appear.
 
@@ -400,13 +400,13 @@ Awilix auto-loads by filename. No service to register.
 ## 13. Sequencing
 
 - **No dependency on `[[legacy-migration-discussion-plan]] / model-comment` landing first.** This module is independent.
-- **Does depend on `prisma/archive.ts` Users/Models import** for the `userIdMap` / `modelIdMap`. Already in place — postings just get a new step downstream of those.
+- **Does depend on `prisma/legacy-migration/initial-import.ts` Users/Models import** for the `userIdMap` / `modelIdMap`. Already in place — postings just get a new step downstream of those.
 - Land order, if both this plan and `model-comment` are picked up: either order is fine; they don't touch each other.
 
 ## 14. References
 
 - Legacy schema: `/Users/pas6148/Documents/netlogo/modelingcommons/db/schema.rb` (lines 240–259 — `postings` table).
 - Legacy model: `/Users/pas6148/Documents/netlogo/modelingcommons/app/models/posting.rb`.
-- Existing importer: `apps/modeling-commons-backend/prisma/archive.ts` (extends in §7).
+- Existing importer: `apps/modeling-commons-backend/prisma/legacy-migration/initial-import.ts` (extends in §7).
 - Mirror module shape: `src/modules/model-author/` (smallest existing module skeleton).
 - Cross-link: [[legacy-migration-discussion-plan]] (the active comment system).

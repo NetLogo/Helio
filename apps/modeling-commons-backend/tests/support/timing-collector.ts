@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
 
 export interface TimingRecord {
   method: string;
@@ -20,18 +21,18 @@ const records: TimingRecord[] = [];
 const scenarios: ScenarioTag[] = [];
 let activeScenario: string | undefined;
 
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const HEX_ID_RE = /^[0-9a-f]{24,36}$/i;
+// Legacy captured runs may still contain the old dashed 36-char identifier
+// format, so a NanoID-only matcher would fragment those older reports.
+const ID_RE = new RegExp(`${ID_PATTERN}|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`, 'i');
 const NUMERIC_RE = /^\d+$/;
 
-const normaliseUrl = (rawUrl: string): string => {
+export const normaliseUrl = (rawUrl: string): string => {
   const [pathOnly] = rawUrl.split('?');
   const path = pathOnly ?? rawUrl;
   const segments = path.split('/');
   const normalised = segments.map((seg) => {
     if (!seg) return seg;
-    if (UUID_RE.test(seg)) return ':id';
-    if (HEX_ID_RE.test(seg)) return ':id';
+    if (ID_RE.test(seg)) return ':id';
     if (NUMERIC_RE.test(seg)) return ':id';
     return seg;
   });

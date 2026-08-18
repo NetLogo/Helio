@@ -16,7 +16,7 @@ const storage = new S3Client({
   forcePathStyle: true,
 });
 const bucket = { Name: process.env['STORE_BUCKET']! };
-const seedFilesPath = path.join(import.meta.dirname, 'archive-output', 'files');
+const seedFilesPath = path.join(import.meta.dirname, 'output', 'archive', 'files');
 
 // upload each file in seedFilesPath to the S3 bucket, key relative to seedFilesPath
 const report = {

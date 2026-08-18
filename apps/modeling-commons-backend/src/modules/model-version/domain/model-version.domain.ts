@@ -19,6 +19,7 @@ export default function modelVersionDomain() {
         previewImageFileKey: props.previewImageFileKey ?? null,
         netlogoFileKey: props.netlogoFileKey,
         netlogoVersion: null,
+        changeSummary: null,
         infoTab: null,
         createdAt: new Date(),
         finalizedAt: null,

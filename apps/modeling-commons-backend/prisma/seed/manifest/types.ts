@@ -36,7 +36,7 @@ export interface TagSeed {
   legacyId?: number;
 }
 
-/** A model file backed by a real `.nlogox` shipped in `seed-files/`. */
+/** A model file backed by a real `.nlogox` shipped in `seed/files/`. */
 export interface RealFileSeed {
   file: string;
   preview?: string;

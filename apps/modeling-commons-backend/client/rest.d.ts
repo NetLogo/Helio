@@ -54,7 +54,11 @@ export interface paths {
                             data: unknown[];
                         } & {
                             data: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 id: string;
                                 type: string;
                                 actorId: string;
@@ -220,6 +224,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -234,9 +239,9 @@ export interface paths {
                     content: {
                         "application/json": ({
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                         } & {
@@ -315,6 +320,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -375,6 +381,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -461,9 +468,9 @@ export interface paths {
                     content: {
                         "application/json": {
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                         } & {
@@ -538,6 +545,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -634,6 +642,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -649,9 +658,9 @@ export interface paths {
                         "application/json": {
                             model: ({
                                 /**
-                                 * Format: uuid
+                                 * Format: nanoid
                                  * @description Entity's id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 * @example uAce-eANwFXi-tACAe9w1
                                  */
                                 id: string;
                             } & {
@@ -675,7 +684,11 @@ export interface paths {
                                 isLibraryModel: boolean;
                             };
                             latestVersion: ({
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 modelId: string;
                                 /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
                                 versionNumber: number;
@@ -692,9 +705,17 @@ export interface paths {
                                 previewImageUrl: string | null;
                             }) | null;
                             authors: ({
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 modelId: string;
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 userId: string;
                                 /** @enum {unknown} */
                                 role: "owner" | "contributor";
@@ -709,9 +730,9 @@ export interface paths {
                             })[];
                             tagsOnLatestVersion: {
                                 /**
-                                 * Format: uuid
+                                 * Format: nanoid
                                  * @description Tag id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 * @example uAce-eANwFXi-tACAe9w1
                                  */
                                 id: string;
                                 /**
@@ -815,6 +836,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -829,7 +851,11 @@ export interface paths {
                     content: {
                         "application/json": {
                             self: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 id: string;
                                 title: string;
                                 description: string | null;
@@ -845,7 +871,11 @@ export interface paths {
                                 linkedVersionNumber: number | null;
                             };
                             parent: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 id: string;
                                 title: string;
                                 description: string | null;
@@ -861,7 +891,11 @@ export interface paths {
                                 linkedVersionNumber: number | null;
                             } | null;
                             siblings: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 id: string;
                                 title: string;
                                 description: string | null;
@@ -877,7 +911,11 @@ export interface paths {
                                 linkedVersionNumber: number | null;
                             }[];
                             children: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 id: string;
                                 title: string;
                                 description: string | null;
@@ -980,8 +1018,10 @@ export interface paths {
                     order?: "asc" | "desc";
                     /** @description Filter models by tag */
                     tags?: string[];
+                    /** @description Entity's id */
                     authorId?: string;
                     authorRoles?: ("owner" | "contributor")[];
+                    /** @description Entity's id */
                     parentModelId?: string;
                     isEndorsed?: boolean;
                     isLibraryModel?: boolean;
@@ -1021,9 +1061,9 @@ export interface paths {
                         } & {
                             data: (({
                                 /**
-                                 * Format: uuid
+                                 * Format: nanoid
                                  * @description Entity's id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 * @example uAce-eANwFXi-tACAe9w1
                                  */
                                 id: string;
                             } & {
@@ -1134,8 +1174,10 @@ export interface paths {
                     order?: "asc" | "desc";
                     /** @description Filter models by tag */
                     tags?: string[];
+                    /** @description Entity's id */
                     authorId?: string;
                     authorRoles?: ("owner" | "contributor")[];
+                    /** @description Entity's id */
                     parentModelId?: string;
                     isEndorsed?: boolean;
                     isLibraryModel?: boolean;
@@ -1176,9 +1218,9 @@ export interface paths {
                             data: {
                                 model: ({
                                     /**
-                                     * Format: uuid
+                                     * Format: nanoid
                                      * @description Entity's id
-                                     * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                     * @example uAce-eANwFXi-tACAe9w1
                                      */
                                     id: string;
                                 } & {
@@ -1202,7 +1244,11 @@ export interface paths {
                                     isLibraryModel: boolean;
                                 };
                                 latestVersion: ({
-                                    /** Format: uuid */
+                                    /**
+                                     * Format: nanoid
+                                     * @description Entity's id
+                                     * @example uAce-eANwFXi-tACAe9w1
+                                     */
                                     modelId: string;
                                     /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
                                     versionNumber: number;
@@ -1219,9 +1265,17 @@ export interface paths {
                                     previewImageUrl: string | null;
                                 }) | null;
                                 authors: ({
-                                    /** Format: uuid */
+                                    /**
+                                     * Format: nanoid
+                                     * @description Entity's id
+                                     * @example uAce-eANwFXi-tACAe9w1
+                                     */
                                     modelId: string;
-                                    /** Format: uuid */
+                                    /**
+                                     * Format: nanoid
+                                     * @description Entity's id
+                                     * @example uAce-eANwFXi-tACAe9w1
+                                     */
                                     userId: string;
                                     /** @enum {unknown} */
                                     role: "owner" | "contributor";
@@ -1236,9 +1290,9 @@ export interface paths {
                                 })[];
                                 tagsOnLatestVersion: {
                                     /**
-                                     * Format: uuid
+                                     * Format: nanoid
                                      * @description Tag id
-                                     * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                     * @example uAce-eANwFXi-tACAe9w1
                                      */
                                     id: string;
                                     /**
@@ -1361,8 +1415,10 @@ export interface paths {
                     order?: "asc" | "desc";
                     /** @description Filter models by tag */
                     tags?: string[];
+                    /** @description Entity's id */
                     authorId?: string;
                     authorRoles?: ("owner" | "contributor")[];
+                    /** @description Entity's id */
                     parentModelId?: string;
                     isEndorsed?: boolean;
                     isLibraryModel?: boolean;
@@ -1372,6 +1428,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -1404,9 +1461,9 @@ export interface paths {
                         } & {
                             data: (({
                                 /**
-                                 * Format: uuid
+                                 * Format: nanoid
                                  * @description Entity's id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 * @example uAce-eANwFXi-tACAe9w1
                                  */
                                 id: string;
                             } & {
@@ -1574,6 +1631,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -1588,15 +1646,23 @@ export interface paths {
                     content: {
                         "application/json": ({
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                         } & {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             modelId: string;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             userId?: string;
                             taggedVersionNumber: number;
                             fileKey: string;
@@ -1664,6 +1730,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -1678,15 +1745,23 @@ export interface paths {
                     content: {
                         "application/json": {
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                         } & {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             modelId: string;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             userId?: string;
                             taggedVersionNumber: number;
                             fileKey: string;
@@ -1768,7 +1843,9 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     fileId: string;
                 };
                 cookie?: never;
@@ -1839,6 +1916,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -1852,9 +1930,17 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             modelId: string;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             userId: string;
                             /** @enum {unknown} */
                             role: "owner" | "contributor";
@@ -1919,6 +2005,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -1927,8 +2014,9 @@ export interface paths {
                 content: {
                     "application/json": {
                         /**
-                         * Format: uuid
+                         * Format: nanoid
                          * @description User to add as contributor
+                         * @example uAce-eANwFXi-tACAe9w1
                          */
                         userId: string;
                     };
@@ -1942,9 +2030,17 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             modelId: string;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             userId: string;
                             /** @enum {unknown} */
                             role: "owner" | "contributor";
@@ -2024,7 +2120,9 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     userId: string;
                 };
                 cookie?: never;
@@ -2097,6 +2195,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -2105,8 +2204,9 @@ export interface paths {
                 content: {
                     "application/json": {
                         /**
-                         * Format: uuid
+                         * Format: nanoid
                          * @description New owner user id
+                         * @example uAce-eANwFXi-tACAe9w1
                          */
                         newOwnerId: string;
                     };
@@ -2183,6 +2283,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -2214,9 +2315,17 @@ export interface paths {
                             data: unknown[];
                         } & {
                             data: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 modelId: string;
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 userId: string;
                                 /** @enum {unknown} */
                                 role: "owner" | "contributor";
@@ -2330,6 +2439,11 @@ export interface paths {
                             data: unknown[];
                         } & {
                             data: {
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 id: string;
                                 userId: string;
                                 modelId: string | null;
@@ -2353,7 +2467,11 @@ export interface paths {
                                         mimeType: string;
                                     };
                                     attachments?: {
-                                        /** Format: uuid */
+                                        /**
+                                         * Format: nanoid
+                                         * @description Entity's id
+                                         * @example uAce-eANwFXi-tACAe9w1
+                                         */
                                         id: string;
                                         s3Key: string;
                                         filename: string;
@@ -2436,7 +2554,11 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
-                        /** Format: uuid */
+                        /**
+                         * Format: nanoid
+                         * @description Entity's id
+                         * @example uAce-eANwFXi-tACAe9w1
+                         */
                         modelId?: string;
                     };
                 };
@@ -2450,9 +2572,9 @@ export interface paths {
                     content: {
                         "application/json": {
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                         };
@@ -2523,6 +2645,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -2536,6 +2659,11 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             id: string;
                             userId: string;
                             modelId: string | null;
@@ -2559,7 +2687,11 @@ export interface paths {
                                     mimeType: string;
                                 };
                                 attachments?: {
-                                    /** Format: uuid */
+                                    /**
+                                     * Format: nanoid
+                                     * @description Entity's id
+                                     * @example uAce-eANwFXi-tACAe9w1
+                                     */
                                     id: string;
                                     s3Key: string;
                                     filename: string;
@@ -2637,6 +2769,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -2697,6 +2830,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -2777,6 +2911,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -2790,7 +2925,11 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             id?: string;
                             role: "primary" | "model-file" | "attachment" | "preview";
                             s3Key: string;
@@ -2943,6 +3082,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3031,6 +3171,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3130,6 +3271,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3209,6 +3351,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3288,6 +3431,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3367,6 +3511,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3444,6 +3589,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3535,6 +3681,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3593,6 +3740,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3663,6 +3811,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -3762,11 +3911,23 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             id: string;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             modelId: string;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             granteeUserId: string;
                             /** @description read | write | admin */
                             permissionLevel: string;
@@ -3840,8 +4001,9 @@ export interface paths {
                 content: {
                     "application/json": {
                         /**
-                         * Format: uuid
+                         * Format: nanoid
                          * @description User to grant permission to
+                         * @example uAce-eANwFXi-tACAe9w1
                          */
                         granteeUserId: string;
                         /** @description Permission level to grant */
@@ -3857,11 +4019,23 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             id: string;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             modelId: string;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             granteeUserId: string;
                             /** @description read | write | admin */
                             permissionLevel: string;
@@ -3943,6 +4117,7 @@ export interface paths {
                 path: {
                     /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     granteeUserId: string;
                 };
                 cookie?: never;
@@ -4018,6 +4193,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -4049,7 +4225,11 @@ export interface paths {
                             data: unknown[];
                         } & {
                             data: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 modelId: string;
                                 /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
                                 versionNumber: number;
@@ -4119,6 +4299,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -4207,6 +4388,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -4281,6 +4463,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                     version: number;
                 };
@@ -4295,7 +4478,11 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             modelId: string;
                             /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
                             versionNumber: number;
@@ -4377,6 +4564,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                     version: number;
                 };
@@ -4392,7 +4580,11 @@ export interface paths {
                     content: {
                         "application/json": {
                             version: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 modelId: string;
                                 /** @description The version number, starting at 1 and incrementing by 1 for each new version of a model. */
                                 versionNumber: number;
@@ -4407,9 +4599,9 @@ export interface paths {
                             };
                             model: ({
                                 /**
-                                 * Format: uuid
+                                 * Format: nanoid
                                  * @description Entity's id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 * @example uAce-eANwFXi-tACAe9w1
                                  */
                                 id: string;
                             } & {
@@ -4434,9 +4626,9 @@ export interface paths {
                             };
                             tags: {
                                 /**
-                                 * Format: uuid
+                                 * Format: nanoid
                                  * @description Tag id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 * @example uAce-eANwFXi-tACAe9w1
                                  */
                                 id: string;
                                 /**
@@ -4531,6 +4723,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -4551,10 +4744,18 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             modelId: string;
                             versionNumber: number;
-                            /** Format: uuid */
+                            /**
+                             * Format: nanoid
+                             * @description Entity's id
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
                             tagId: string;
                             tagName: string;
                             /** Format: date-time */
@@ -4630,7 +4831,9 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     tagId: string;
                 };
                 cookie?: never;
@@ -4701,6 +4904,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                     version: number;
                 };
@@ -4716,9 +4920,9 @@ export interface paths {
                     content: {
                         "application/json": {
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Tag id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                             /**
@@ -4928,9 +5132,9 @@ export interface paths {
                         } & {
                             data: {
                                 /**
-                                 * Format: uuid
+                                 * Format: nanoid
                                  * @description Tag id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 * @example uAce-eANwFXi-tACAe9w1
                                  */
                                 id: string;
                                 /**
@@ -5067,9 +5271,9 @@ export interface paths {
                             data: {
                                 tag: {
                                     /**
-                                     * Format: uuid
+                                     * Format: nanoid
                                      * @description Tag id
-                                     * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                     * @example uAce-eANwFXi-tACAe9w1
                                      */
                                     id: string;
                                     /**
@@ -5163,7 +5367,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Tag UUID or case-insensitive name */
+                    /** @description Tag id or case-insensitive name */
                     idOrName: string;
                 };
                 cookie?: never;
@@ -5178,9 +5382,9 @@ export interface paths {
                     content: {
                         "application/json": {
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Tag id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                             /**
@@ -5270,6 +5474,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -5284,9 +5489,9 @@ export interface paths {
                     content: {
                         "application/json": ({
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                         } & {
@@ -5403,6 +5608,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -5464,6 +5670,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -5552,9 +5759,9 @@ export interface paths {
                     content: {
                         "application/json": ({
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                         } & {
@@ -5724,9 +5931,9 @@ export interface paths {
                         } & {
                             data: (({
                                 /**
-                                 * Format: uuid
+                                 * Format: nanoid
                                  * @description Entity's id
-                                 * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                                 * @example uAce-eANwFXi-tACAe9w1
                                  */
                                 id: string;
                             } & {

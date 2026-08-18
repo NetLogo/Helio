@@ -1,8 +1,8 @@
-import { randomUUID } from 'node:crypto';
 import type {
   ModelPermissionEntity,
   PermissionLevel,
 } from '#src/modules/model-permission/domain/permission.types.ts';
+import { newId } from '#src/shared/utils/id.ts';
 
 export default function permissionDomain() {
   return {
@@ -12,7 +12,7 @@ export default function permissionDomain() {
       permissionLevel: PermissionLevel,
     ): ModelPermissionEntity {
       return {
-        id: randomUUID(),
+        id: newId(),
         modelId,
         granteeUserId,
         permissionLevel,

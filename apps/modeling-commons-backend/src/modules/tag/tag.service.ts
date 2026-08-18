@@ -27,14 +27,13 @@ export default function makeTagService({ tagRepository, tagDomain }: Dependencie
     },
 
     async findByIdOrName(idOrName: string): Promise<TagEntity> {
-      const isUuid = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i.test(idOrName);
+      const byId = await tagRepository.findOneById(idOrName);
+      if (byId) return byId;
 
-      const tag = isUuid
-        ? await tagRepository.findOneById(idOrName)
-        : await tagRepository.findByNameInsensitive(idOrName);
+      const byName = await tagRepository.findByNameInsensitive(idOrName);
+      if (byName) return byName;
 
-      if (!tag) throw new TagNotFoundError(idOrName);
-      return tag;
+      throw new TagNotFoundError(idOrName);
     },
 
     async upsertByName(name: string): Promise<TagEntity> {

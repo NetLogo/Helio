@@ -1,8 +1,9 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const additionalFileParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  fileId: Type.String({ format: 'uuid' }),
+  id: idSchema(),
+  fileId: idSchema(),
 });
 export type AdditionalFileParams = Static<typeof additionalFileParamsSchema>;
 

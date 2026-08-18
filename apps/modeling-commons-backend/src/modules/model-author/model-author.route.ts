@@ -110,7 +110,11 @@ export default async function modelAuthorRoutes(fastify: FastifyInstance) {
     },
     async (request) => {
       const { limit, page } = request.query;
-      const result = await listUserModelsQuery.execute(request.params.id, { limit, page });
+      const result = await listUserModelsQuery.execute(
+        request.params.id,
+        { limit, page },
+        request.user?.id ?? null,
+      );
       return {
         ...result,
         data: result.data.map((a) => modelAuthorMapper.toResponse(a)),

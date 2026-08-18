@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import server from '../../src/server/index.ts';
+import { addIdFormat } from '../../src/shared/utils/validator.util.ts';
 import { isTimingEnabled, recordRequest } from './timing-collector.ts';
 
 export const buildApp = async () => {
@@ -15,6 +16,7 @@ export const buildApp = async () => {
       customOptions: {
         keywords: ['example'],
       },
+      onCreate: addIdFormat,
     },
   });
 
