@@ -156,6 +156,7 @@ definePageMeta({
 useSeoMeta({
   title: "Profile Settings",
   description: "Manage your Modeling Commons profile settings and sign-in preferences.",
+  robots: "noindex, nofollow",
 });
 
 const route = useRoute();

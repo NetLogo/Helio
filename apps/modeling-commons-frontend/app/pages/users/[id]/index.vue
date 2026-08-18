@@ -19,8 +19,41 @@ const {
 
 const isProfilePublic = computed(() => profile.value?.isProfilePublic);
 
+// A private profile must not leak the member's name into a title or an index.
+// The template already hides the body; without this the name still ships in
+// <title>, og:title and the SERP snippet.
+const seoMeta = computed(() => {
+  if (error.value) {
+    return {
+      title: defaultStrings.unavailableProfileName,
+      description: defaultStrings.unavailableProfileDescription,
+      indexable: false,
+    };
+  }
+  if (profile.value && !isProfilePublic.value) {
+    return {
+      title: defaultStrings.privateProfileName,
+      description: defaultStrings.privateProfileDescription,
+      indexable: false,
+    };
+  }
+  if (profile.value) {
+    return {
+      title: `${profile.value.name}'s Profile`,
+      description: `NetLogo models shared by ${profile.value.name} on Modeling Commons.`,
+      indexable: true,
+    };
+  }
+  return { title: "User Profile", description: undefined, indexable: false };
+});
+
 useSeoMeta({
-  title: () => (profile.value ? `${profile.value.name}'s Profile` : "User Profile"),
+  title: () => seoMeta.value.title,
+  description: () => seoMeta.value.description,
+  ogTitle: () => seoMeta.value.title,
+  ogDescription: () => seoMeta.value.description,
+  ogType: "profile",
+  robots: () => (seoMeta.value.indexable ? undefined : "noindex, nofollow"),
 });
 
 const isMyself = computed(() => user.value?.user?.id === id);

@@ -251,6 +251,10 @@
 </template>
 
 <script lang="ts" setup>
+useSeoMeta({
+  title: "Theme",
+  robots: "noindex, nofollow",
+});
 if (!import.meta.dev) {
   navigateTo("/");
 }

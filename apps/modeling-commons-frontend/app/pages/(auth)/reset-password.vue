@@ -120,6 +120,7 @@ definePageMeta({
 useSeoMeta({
   title: "Reset password",
   description: "Request a password reset link or choose a new password.",
+  robots: "noindex, nofollow",
 });
 
 const route = useRoute();

@@ -60,6 +60,7 @@ definePageMeta({
 useSeoMeta({
   title: "Add a passkey",
   description: "Add a passkey to sign in faster on this device.",
+  robots: "noindex, nofollow",
 });
 
 const route = useRoute();
