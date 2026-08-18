@@ -1901,8 +1901,8 @@ primitives:
 
     examples:
       - autoplot?
-      - autoplotx?
-      - autoploty?
+      - autoplot-x?
+      - autoplot-y?
     isFromExtension: false
     isConstant: false
     metadata: &a5
@@ -1914,9 +1914,9 @@ primitives:
         syntax:
           - name: autoplot?
             since: "1.0"
-          - name: autoplotx?
+          - name: autoplot-x?
             since: "7.0"
-          - name: autoploty?
+          - name: autoplot-y?
             since: "7.0"
         description: >+
           Reports true if auto-plotting is on for the current plot or plot axis,
@@ -1925,13 +1925,13 @@ primitives:
 
         examples:
           - code: autoplot?
-          - code: autoplotx?
-          - code: autoploty?
+          - code: autoplot-x?
+          - code: autoplot-y?
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
   - id: autoplot-autoplotx?
     key: autoplot
-    name: autoplotx?
+    name: autoplot-x?
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#autoplot
     description: >+
@@ -1941,8 +1941,8 @@ primitives:
 
     examples:
       - autoplot?
-      - autoplotx?
-      - autoploty?
+      - autoplot-x?
+      - autoplot-y?
     isFromExtension: false
     isConstant: false
     metadata: *a5
@@ -1950,7 +1950,7 @@ primitives:
     sourceIcon: netlogo-netlogo-desktop
   - id: autoplot-autoploty?
     key: autoplot
-    name: autoploty?
+    name: autoplot-y?
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#autoplot
     description: >+
@@ -1960,8 +1960,8 @@ primitives:
 
     examples:
       - autoplot?
-      - autoplotx?
-      - autoploty?
+      - autoplot-x?
+      - autoplot-y?
     isFromExtension: false
     isConstant: false
     metadata: *a5
@@ -1969,7 +1969,7 @@ primitives:
     sourceIcon: netlogo-netlogo-desktop
   - id: auto-plot-status-auto-plot-off
     key: auto-plot-status
-    name: auto-plot-off
+    name: autoplot-off
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#auto-plot-status
     description: >+
@@ -1993,12 +1993,12 @@ primitives:
       guide](/interfacetab#plots).
 
     examples:
-      - auto-plot-off
-      - auto-plot-x-off
-      - auto-plot-y-off
-      - auto-plot-on
-      - auto-plot-x-on
-      - auto-plot-y-on
+      - autoplot-off
+      - autoplot-x-off
+      - autoplot-y-off
+      - autoplot-on
+      - autoplot-x-on
+      - autoplot-y-on
     isFromExtension: false
     isConstant: false
     metadata: &a6
@@ -2008,17 +2008,17 @@ primitives:
           id: plottinggroup
       data:
         syntax:
-          - name: auto-plot-off
+          - name: autoplot-off
             since: "1.0"
-          - name: auto-plot-x-off
+          - name: autoplot-x-off
             since: "7.0"
-          - name: auto-plot-y-off
+          - name: autoplot-y-off
             since: "7.0"
-          - name: auto-plot-on
+          - name: autoplot-on
             since: "1.0"
-          - name: auto-plot-x-on
+          - name: autoplot-x-on
             since: "7.0"
-          - name: auto-plot-y-on
+          - name: autoplot-y-on
             since: "7.0"
         description: >+
           These pairs of commands are used to control the NetLogo feature of
@@ -2041,17 +2041,17 @@ primitives:
           Tab guide](/interfacetab#plots).
 
         examples:
-          - code: auto-plot-off
-          - code: auto-plot-x-off
-          - code: auto-plot-y-off
-          - code: auto-plot-on
-          - code: auto-plot-x-on
-          - code: auto-plot-y-on
+          - code: autoplot-off
+          - code: autoplot-x-off
+          - code: autoplot-y-off
+          - code: autoplot-on
+          - code: autoplot-x-on
+          - code: autoplot-y-on
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
   - id: auto-plot-status-auto-plot-x-off
     key: auto-plot-status
-    name: auto-plot-x-off
+    name: autoplot-x-off
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#auto-plot-status
     description: >+
@@ -2075,12 +2075,12 @@ primitives:
       guide](/interfacetab#plots).
 
     examples:
-      - auto-plot-off
-      - auto-plot-x-off
-      - auto-plot-y-off
-      - auto-plot-on
-      - auto-plot-x-on
-      - auto-plot-y-on
+      - autoplot-off
+      - autoplot-x-off
+      - autoplot-y-off
+      - autoplot-on
+      - autoplot-x-on
+      - autoplot-y-on
     isFromExtension: false
     isConstant: false
     metadata: *a6
@@ -2088,7 +2088,7 @@ primitives:
     sourceIcon: netlogo-netlogo-desktop
   - id: auto-plot-status-auto-plot-y-off
     key: auto-plot-status
-    name: auto-plot-y-off
+    name: autoplot-y-off
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#auto-plot-status
     description: >+
@@ -2112,12 +2112,12 @@ primitives:
       guide](/interfacetab#plots).
 
     examples:
-      - auto-plot-off
-      - auto-plot-x-off
-      - auto-plot-y-off
-      - auto-plot-on
-      - auto-plot-x-on
-      - auto-plot-y-on
+      - autoplot-off
+      - autoplot-x-off
+      - autoplot-y-off
+      - autoplot-on
+      - autoplot-x-on
+      - autoplot-y-on
     isFromExtension: false
     isConstant: false
     metadata: *a6
@@ -2125,7 +2125,7 @@ primitives:
     sourceIcon: netlogo-netlogo-desktop
   - id: auto-plot-status-auto-plot-on
     key: auto-plot-status
-    name: auto-plot-on
+    name: autoplot-on
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#auto-plot-status
     description: >+
@@ -2149,12 +2149,12 @@ primitives:
       guide](/interfacetab#plots).
 
     examples:
-      - auto-plot-off
-      - auto-plot-x-off
-      - auto-plot-y-off
-      - auto-plot-on
-      - auto-plot-x-on
-      - auto-plot-y-on
+      - autoplot-off
+      - autoplot-x-off
+      - autoplot-y-off
+      - autoplot-on
+      - autoplot-x-on
+      - autoplot-y-on
     isFromExtension: false
     isConstant: false
     metadata: *a6
@@ -2162,7 +2162,7 @@ primitives:
     sourceIcon: netlogo-netlogo-desktop
   - id: auto-plot-status-auto-plot-x-on
     key: auto-plot-status
-    name: auto-plot-x-on
+    name: autoplot-x-on
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#auto-plot-status
     description: >+
@@ -2186,12 +2186,12 @@ primitives:
       guide](/interfacetab#plots).
 
     examples:
-      - auto-plot-off
-      - auto-plot-x-off
-      - auto-plot-y-off
-      - auto-plot-on
-      - auto-plot-x-on
-      - auto-plot-y-on
+      - autoplot-off
+      - autoplot-x-off
+      - autoplot-y-off
+      - autoplot-on
+      - autoplot-x-on
+      - autoplot-y-on
     isFromExtension: false
     isConstant: false
     metadata: *a6
@@ -2199,7 +2199,7 @@ primitives:
     sourceIcon: netlogo-netlogo-desktop
   - id: auto-plot-status-auto-plot-y-on
     key: auto-plot-status
-    name: auto-plot-y-on
+    name: autoplot-y-on
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#auto-plot-status
     description: >+
@@ -2223,12 +2223,12 @@ primitives:
       guide](/interfacetab#plots).
 
     examples:
-      - auto-plot-off
-      - auto-plot-x-off
-      - auto-plot-y-off
-      - auto-plot-on
-      - auto-plot-x-on
-      - auto-plot-y-on
+      - autoplot-off
+      - autoplot-x-off
+      - autoplot-y-off
+      - autoplot-on
+      - autoplot-x-on
+      - autoplot-y-on
     isFromExtension: false
     isConstant: false
     metadata: *a6
@@ -29974,7 +29974,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/arduino/debug-to-arduino.html
     description: >
-      
+
       Reports a list of the last messages sent from NetLogo to the Arduino, up
       to a maximum of 5 messages.
 
@@ -29996,7 +29996,7 @@ primitives:
       tags: []
       fullName: arduino:debug-to-arduino
       description: >
-        
+
         Reports a list of the last messages sent from NetLogo to the Arduino, up
         to a maximum of 5 messages.
 
@@ -30015,7 +30015,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/arduino/debug-from-arduino.html
     description: >
-      
+
       Reports a list of lists containing any errant messages sent from NetLogo
       to the Arduino, up to a maximum of 10 errant messages.
 
@@ -30035,7 +30035,7 @@ primitives:
       tags: []
       fullName: arduino:debug-from-arduino
       description: >
-        
+
         Reports a list of lists containing any errant messages sent from NetLogo
         to the Arduino, up to a maximum of 10 errant messages.
 
@@ -30116,7 +30116,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/array/set.html
     description: >
-      
+
       Sets the item in the given array with the given index (ranging from zero
       to the length of the array minus one) to the given value.
 
@@ -30148,7 +30148,7 @@ primitives:
       tags: []
       fullName: array:set
       description: >
-        
+
         Sets the item in the given array with the given index (ranging from zero
         to the length of the array minus one) to the given value.
 
@@ -30228,7 +30228,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/bitmap/average-color.html
     description: |
-      
+
       Reports a 3-element list describing the amount of R, G, and B in
       *image*, by summing across all pixels, and normalizing each
       component by the number of pixels in the image, so each component
@@ -30251,7 +30251,7 @@ primitives:
       tags: []
       fullName: bitmap:average-color
       description: |
-        
+
         Reports a 3-element list describing the amount of R, G, and B in
         *image*, by summing across all pixels, and normalizing each
         component by the number of pixels in the image, so each component
@@ -30267,7 +30267,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/bitmap/channel.html
     description: |
-      
+
       Extracts either the alpha, red, green, or blue channel from an image.
       The input *channel* should be an integer 0-3 indicating the
       channel to remove (alpha=0, red=1, green=2, blue=3). The resulting
@@ -30295,7 +30295,7 @@ primitives:
       tags: []
       fullName: bitmap:channel
       description: |
-        
+
         Extracts either the alpha, red, green, or blue channel from an image.
         The input *channel* should be an integer 0-3 indicating the
         channel to remove (alpha=0, red=1, green=2, blue=3). The resulting
@@ -30311,7 +30311,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/bitmap/copy-to-drawing.html
     description: |
-      
+
       Imports the given image into the drawing without scaling the image at
       the given pixel coordinates.
     metadata:
@@ -30338,7 +30338,7 @@ primitives:
       tags: []
       fullName: bitmap:copy-to-drawing
       description: |
-        
+
         Imports the given image into the drawing without scaling the image at
         the given pixel coordinates.
     urlHome: https://docs.netlogo.org/bitmap.html
@@ -30352,7 +30352,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/bitmap/copy-to-pcolors.html
     description: |
-      
+
       Imports the given image into the pcolors, scaled to fit the world.
       The second input indicates whether the colors should be interpreted
       as NetLogo colors or left as RGB colors. <code>false</code> means RGB
@@ -30377,7 +30377,7 @@ primitives:
       tags: []
       fullName: bitmap:copy-to-pcolors
       description: |
-        
+
         Imports the given image into the pcolors, scaled to fit the world.
         The second input indicates whether the colors should be interpreted
         as NetLogo colors or left as RGB colors. <code>false</code> means RGB
@@ -30393,7 +30393,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/bitmap/difference-rgb.html
     description: |
-      
+
       Reports an image that is the absolute value of the pixel-wise RGB
       difference between two images. Note that image1 and image2 MUST be
       the same width and height as each other, or errors will ensue.
@@ -30421,7 +30421,7 @@ primitives:
       tags: []
       fullName: bitmap:difference-rgb
       description: |
-        
+
         Reports an image that is the absolute value of the pixel-wise RGB
         difference between two images. Note that image1 and image2 MUST be
         the same width and height as each other, or errors will ensue.
@@ -30931,7 +30931,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/csv/from-string.html
     description: >-
-      
+
       Parses a string representation of one or more CSV rows and returns it as a
       list of lists of values. For example:
 
@@ -30967,7 +30967,7 @@ primitives:
         - parsing
       fullName: csv:from-string
       description: >-
-        
+
         Parses a string representation of one or more CSV rows and returns it as
         a list of lists of values. For example:
 
@@ -30990,7 +30990,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/csv/from-file.html
     description: >-
-      
+
       Parses an entire CSV file to a list of lists of values. For example, if we
       have a file `example.csv` that contains:
 
@@ -31090,7 +31090,7 @@ primitives:
         - parsing
       fullName: csv:from-file
       description: >-
-        
+
         Parses an entire CSV file to a list of lists of values. For example, if
         we have a file `example.csv` that contains:
 
@@ -31175,7 +31175,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/csv/to-row.html
     description: |-
-      
+
       Reports the given list as a CSV row. For example:
 
       ```NetLogo
@@ -31206,7 +31206,7 @@ primitives:
         - writing
       fullName: csv:to-row
       description: |-
-        
+
         Reports the given list as a CSV row. For example:
 
         ```NetLogo
@@ -31224,7 +31224,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/csv/to-string.html
     description: |-
-      
+
       Reports the given list of lists as a CSV string. For example:
 
       ```NetLogo
@@ -31255,7 +31255,7 @@ primitives:
         - writing
       fullName: csv:to-string
       description: |-
-        
+
         Reports the given list of lists as a CSV string. For example:
 
         ```NetLogo
@@ -31273,7 +31273,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/csv/to-file.html
     description: |
-      
+
       Writes the given list of lists to a new CSV file. For example:
 
       ```NetLogo
@@ -31314,7 +31314,7 @@ primitives:
         - writing
       fullName: csv:to-file
       description: |
-        
+
         Writes the given list of lists to a new CSV file. For example:
 
         ```NetLogo
@@ -31336,7 +31336,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/set-transformation.html
     description: >
-      
+
       Defines a mapping between GIS coordinates and NetLogo coordinates.
 
       The *gis-envelope* and *netlogo-envelope* parameters must
@@ -31400,7 +31400,7 @@ primitives:
         - coord
       fullName: gis:set-transformation
       description: >
-        
+
         Defines a mapping between GIS coordinates and NetLogo coordinates.
 
         The *gis-envelope* and *netlogo-envelope* parameters must
@@ -31455,7 +31455,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/set-transformation-ds.html
     description: >
-      
+
       Does the same thing as [set-transformation](#set-transformation) above,
       except that
 
@@ -31518,7 +31518,7 @@ primitives:
         - coord
       fullName: gis:set-transformation-ds
       description: >
-        
+
         Does the same thing as [set-transformation](#set-transformation) above,
         except that
 
@@ -31572,7 +31572,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/set-world-envelope.html
     description: >
-      
+
       A shorthand for setting the transformation by mapping the envelope
 
       of the NetLogo world to the given envelope in GIS space, while
@@ -31611,7 +31611,7 @@ primitives:
         - coord
       fullName: gis:set-world-envelope
       description: >
-        
+
         A shorthand for setting the transformation by mapping the envelope
 
         of the NetLogo world to the given envelope in GIS space, while
@@ -31645,7 +31645,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/set-world-envelope-ds.html
     description: >
-      
+
       A shorthand for setting the transformation by mapping the envelope
 
       of the NetLogo world to the given envelope in GIS space, using
@@ -31684,7 +31684,7 @@ primitives:
         - coord
       fullName: gis:set-world-envelope-ds
       description: >
-        
+
         A shorthand for setting the transformation by mapping the envelope
 
         of the NetLogo world to the given envelope in GIS space, using
@@ -31718,7 +31718,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/world-envelope.html
     description: |+
-      
+
       Reports the envelope (bounding rectangle) of the NetLogo world,
       transformed into GIS space. An envelope consists of a four-element
       list of the form:
@@ -31742,7 +31742,7 @@ primitives:
         - coord
       fullName: gis:world-envelope
       description: |+
-        
+
         Reports the envelope (bounding rectangle) of the NetLogo world,
         transformed into GIS space. An envelope consists of a four-element
         list of the form:
@@ -31762,7 +31762,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/envelope-of.html
     description: |+
-      
+
       Reports the envelope (bounding rectangle) of *thing* in GIS
       coordinates. The *thing* may be an Agent, an AgentSet, a
       RasterDataset, a VectorDataset, or a VectorFeature. An envelope
@@ -31790,7 +31790,7 @@ primitives:
         - coord
       fullName: gis:envelope-of
       description: |+
-        
+
         Reports the envelope (bounding rectangle) of *thing* in GIS
         coordinates. The *thing* may be an Agent, an AgentSet, a
         RasterDataset, a VectorDataset, or a VectorFeature. An envelope
@@ -31811,7 +31811,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/envelope-union-of.html
     description: |
-      
+
       Reports an envelope (bounding rectangle) that entirely contains the
       given envelopes. An envelope consists of a four-element list of the
       form
@@ -31851,7 +31851,7 @@ primitives:
         - coord
       fullName: gis:envelope-union-of
       description: |
-        
+
         Reports an envelope (bounding rectangle) that entirely contains the
         given envelopes. An envelope consists of a four-element list of the
         form
@@ -31874,7 +31874,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/load-coordinate-system.html
     description: |
-      
+
       Loads a new global projection used for projecting or re- projecting
       GIS data as it is loaded from a file. The file must contain a valid
       <a href="https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html" target="_blank">
@@ -31928,7 +31928,7 @@ primitives:
         - coord
       fullName: gis:load-coordinate-system
       description: |
-        
+
         Loads a new global projection used for projecting or re- projecting
         GIS data as it is loaded from a file. The file must contain a valid
         <a href="https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html" target="_blank">
@@ -31977,7 +31977,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/set-coordinate-system.html
     description: |
-      
+
       Sets the global projection used for projecting or re- projecting
       GIS data as it is loaded. The *system* must be either a string
       in <a href="http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html" target="_blank">
@@ -32005,7 +32005,7 @@ primitives:
         - coord
       fullName: gis:set-coordinate-system
       description: |
-        
+
         Sets the global projection used for projecting or re- projecting
         GIS data as it is loaded. The *system* must be either a string
         in <a href="http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html" target="_blank">
@@ -32027,7 +32027,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/project-lat-lon.html
     description: >
-      
+
       Report the position, in NetLogo space, of the given latitude
 
       and longitude pair according to the current map projection and
@@ -32103,7 +32103,7 @@ primitives:
         - coord
       fullName: gis:project-lat-lon
       description: |
-        
+
         Report the position, in NetLogo space, of the given latitude
         and longitude pair according to the current map projection and
         transformation.
@@ -32141,7 +32141,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/project-lat-lon-from-ellipsoid.html
     description: >
-      
+
       Report the position, in NetLogo space, of the given latitude
 
       and longitude pair according to the current map projection and
@@ -32227,7 +32227,7 @@ primitives:
         - coord
       fullName: gis:project-lat-lon-from-ellipsoid
       description: >
-        
+
         Report the position, in NetLogo space, of the given latitude
 
         and longitude pair according to the current map projection and
@@ -32551,7 +32551,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/patch-dataset.html
     description: >
-      
+
       Reports a new raster whose cells correspond directly to NetLogo
 
       patches, and whose cell values consist of the values of the given
@@ -32581,7 +32581,7 @@ primitives:
         - data
       fullName: gis:patch-dataset
       description: >
-        
+
         Reports a new raster whose cells correspond directly to NetLogo
 
         patches, and whose cell values consist of the values of the given
@@ -32604,7 +32604,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/turtle-dataset.html
     description: |
-      
+
       Reports a new, point VectorDataset built from the turtles in the
       given agentset. The points are located at locations of the turtles,
       translated from NetLogo space into GIS space using the current
@@ -32631,7 +32631,7 @@ primitives:
         - data
       fullName: gis:turtle-dataset
       description: |
-        
+
         Reports a new, point VectorDataset built from the turtles in the
         given agentset. The points are located at locations of the turtles,
         translated from NetLogo space into GIS space using the current
@@ -32649,7 +32649,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/link-dataset.html
     description: |
-      
+
       Reports a new, line VectorDataset built from the links in the given
       agentset. The endpoints of each line are at the location of the
       turtles connected by each link, translated from NetLogo space into
@@ -32676,7 +32676,7 @@ primitives:
         - data
       fullName: gis:link-dataset
       description: |
-        
+
         Reports a new, line VectorDataset built from the links in the given
         agentset. The endpoints of each line are at the location of the
         turtles connected by each link, translated from NetLogo space into
@@ -32694,7 +32694,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/shape-type-of.html
     description: |-
-      
+
       Reports the shape type of the given dataset. The possible output
       values are "POINT", "LINE", and "POLYGON".
     metadata:
@@ -32716,7 +32716,7 @@ primitives:
         - vector
       fullName: gis:shape-type-of
       description: |-
-        
+
         Reports the shape type of the given dataset. The possible output
         values are "POINT", "LINE", and "POLYGON".
     urlHome: https://docs.netlogo.org/gis.html
@@ -32730,7 +32730,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/property-names.html
     description: |
-      
+
       Reports a list of strings where each string is the name of a
       property possessed by each VectorFeature in the given
       VectorDataset, suitable for use in [gis:property-value](#property-value).
@@ -32753,7 +32753,7 @@ primitives:
         - vector
       fullName: gis:property-names
       description: >
-        
+
         Reports a list of strings where each string is the name of a
 
         property possessed by each VectorFeature in the given
@@ -32801,7 +32801,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/vertex-lists-of.html
     description: |
-      
+
       Reports a list of lists of Vertex values. For point datasets, each
       vertex list will contain exactly one vertex: the location of a
       point. For line datasets, each vertex list will contain at least
@@ -32829,7 +32829,7 @@ primitives:
         - vector
       fullName: gis:vertex-lists-of
       description: |
-        
+
         Reports a list of lists of Vertex values. For point datasets, each
         vertex list will contain exactly one vertex: the location of a
         point. For line datasets, each vertex list will contain at least
@@ -32849,7 +32849,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/centroid-of.html
     description: >
-      
+
       Reports a single Vertex representing the centroid (center of
 
       gravity) of the given feature. For point datasets, the centroid is
@@ -32889,7 +32889,7 @@ primitives:
         - vector
       fullName: gis:centroid-of
       description: >
-        
+
         Reports a single Vertex representing the centroid (center of
 
         gravity) of the given feature. For point datasets, the centroid is
@@ -32990,7 +32990,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/location-of.html
     description: |
-      
+
       Reports a two-element list containing the x and y values (in that
       order) of the given vertex translated into NetLogo world space
       using the current transformation, or an empty list if the given
@@ -33014,7 +33014,7 @@ primitives:
         - vector
       fullName: gis:location-of
       description: |
-        
+
         Reports a two-element list containing the x and y values (in that
         order) of the given vertex translated into NetLogo world space
         using the current transformation, or an empty list if the given
@@ -33077,7 +33077,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/property-value.html
     description: |
-      
+
       Reports the value of the property with the given name for the given
       VectorDataset. The reported value may be a number, a string, or a
       boolean value, depending on the type of the field in the underlying
@@ -33113,7 +33113,7 @@ primitives:
         - vector
       fullName: gis:property-value
       description: |
-        
+
         Reports the value of the property with the given name for the given
         VectorDataset. The reported value may be a number, a string, or a
         boolean value, depending on the type of the field in the underlying
@@ -33137,7 +33137,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/find-features.html
     description: |
-      
+
       Reports a list of all VectorFeatures in the given dataset
       whose value for the property *property-name* matches
       *specified-value* (a string or number).
@@ -33178,7 +33178,7 @@ primitives:
         - vector
       fullName: gis:find-features
       description: |
-        
+
         Reports a list of all VectorFeatures in the given dataset
         whose value for the property *property-name* matches
         *specified-value* (a string or number).
@@ -33202,7 +33202,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/find-one-feature.html
     description: |
-      
+
       Reports the first VectorFeature in the dataset whose value
       for the property *property-name* matches the given string or
       number.  Reports `nobody` if no matching VectorFeature is
@@ -33253,7 +33253,7 @@ primitives:
         - vector
       fullName: gis:find-one-feature
       description: |
-        
+
         Reports the first VectorFeature in the dataset whose value
         for the property *property-name* matches the given string or
         number.  Reports `nobody` if no matching VectorFeature is
@@ -33286,7 +33286,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/find-less-than.html
     description: |
-      
+
       Reports a list of all VectorFeatures in the given dataset whose
       value for the property *property-name* is less than the given
       *value*. String values are compared using case-sensitive
@@ -33321,7 +33321,7 @@ primitives:
         - vector
       fullName: gis:find-less-than
       description: |
-        
+
         Reports a list of all VectorFeatures in the given dataset whose
         value for the property *property-name* is less than the given
         *value*. String values are compared using case-sensitive
@@ -33339,7 +33339,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/find-greater-than.html
     description: |
-      
+
       Reports a list of all VectorFeatures in the given dataset whose
       value for the property *property-name* is greater than the
       given *value*. String values are compared using case-sensitive
@@ -33374,7 +33374,7 @@ primitives:
         - vector
       fullName: gis:find-greater-than
       description: |
-        
+
         Reports a list of all VectorFeatures in the given dataset whose
         value for the property *property-name* is greater than the
         given *value*. String values are compared using case-sensitive
@@ -33392,7 +33392,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/find-range.html
     description: |
-      
+
       Reports a list of all VectorFeatures in the given dataset whose
       value for the property *property-name* is strictly greater
       than *minimum-value* and strictly less than
@@ -33433,7 +33433,7 @@ primitives:
         - vector
       fullName: gis:find-range
       description: |
-        
+
         Reports a list of all VectorFeatures in the given dataset whose
         value for the property *property-name* is strictly greater
         than *minimum-value* and strictly less than
@@ -33452,7 +33452,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/property-minimum.html
     description: |
-      
+
       Reports the smallest value for the given property over all of the
       VectorFeatures in the given dataset. String values are compared
       using case-sensitive lexicographic order as defined in the <a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/String.html#compareTo(java.lang.String)" target="_blank">
@@ -33481,7 +33481,7 @@ primitives:
         - vector
       fullName: gis:property-minimum
       description: |
-        
+
         Reports the smallest value for the given property over all of the
         VectorFeatures in the given dataset. String values are compared
         using case-sensitive lexicographic order as defined in the <a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/String.html#compareTo(java.lang.String)" target="_blank">
@@ -33497,7 +33497,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/property-maximum.html
     description: |
-      
+
       Reports the largest value for the given property over all of the
       VectorFeatures in the given dataset. String values are compared
       using case-sensitive lexicographic order as defined in the <a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/String.html#compareTo(java.lang.String)" target="_blank">
@@ -33526,7 +33526,7 @@ primitives:
         - vector
       fullName: gis:property-maximum
       description: |
-        
+
         Reports the largest value for the given property over all of the
         VectorFeatures in the given dataset. String values are compared
         using case-sensitive lexicographic order as defined in the <a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/String.html#compareTo(java.lang.String)" target="_blank">
@@ -33542,7 +33542,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/apply-coverage.html
     description: |
-      
+
       Copies values from the given property of the VectorDataset's
       features to the given patch variable. The dataset must be a
       `polygon` dataset; points and lines are not supported.
@@ -33597,7 +33597,7 @@ primitives:
         - vector
       fullName: gis:apply-coverage
       description: |
-        
+
         Copies values from the given property of the VectorDataset's
         features to the given patch variable. The dataset must be a
         `polygon` dataset; points and lines are not supported.
@@ -34256,7 +34256,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/intersects.html
     description: |
-      
+
       Reports true if the given objects' spatial representations
       share at least one point in common, and false otherwise. The
       objects x and y may be any one of:
@@ -34299,7 +34299,7 @@ primitives:
         - vector
       fullName: gis:intersects?
       description: |
-        
+
         Reports true if the given objects' spatial representations
         share at least one point in common, and false otherwise. The
         objects x and y may be any one of:
@@ -34331,7 +34331,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/contains.html
     description: |
-      
+
       Reports true if every point of *y*'s spatial
       representation is also a part of *x*'s spatial
       representation. Note that this means that polygons do contain their
@@ -34375,7 +34375,7 @@ primitives:
         - vector
       fullName: gis:contains?
       description: |
-        
+
         Reports true if every point of *y*'s spatial
         representation is also a part of *x*'s spatial
         representation. Note that this means that polygons do contain their
@@ -34408,7 +34408,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/contained-by.html
     description: |
-      
+
       Reports true if every point of *x*'s spatial
       representation is also a part of *y*'s spatial
       representation. The objects x and y may be any one of:
@@ -34451,7 +34451,7 @@ primitives:
         - vector
       fullName: gis:contained-by?
       description: |
-        
+
         Reports true if every point of *x*'s spatial
         representation is also a part of *y*'s spatial
         representation. The objects x and y may be any one of:
@@ -34483,7 +34483,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/have-relationship.html
     description: >
-      
+
       Reports true if the spatial representations of the two objects have
 
       the given spatial relationship, and false otherwise. The spatial
@@ -34613,7 +34613,7 @@ primitives:
         - vector
       fullName: gis:have-relationship?
       description: >
-        
+
         Reports true if the spatial representations of the two objects have
 
         the given spatial relationship, and false otherwise. The spatial
@@ -34732,7 +34732,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/relationship-of.html
     description: >
-      
+
       Reports the **Dimensionally Extended Nine-Intersection Model
 
       (DE-9IM)** matrix that describes the spatial relationship of the
@@ -34838,7 +34838,7 @@ primitives:
         - vector
       fullName: gis:relationship-of
       description: >
-        
+
         Reports the **Dimensionally Extended Nine-Intersection Model
 
         (DE-9IM)** matrix that describes the spatial relationship of the
@@ -34933,7 +34933,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/intersecting.html
     description: |
-      
+
       Reports a new agent set containing only those members of the given
       agent set which intersect given GIS *data*, which may be any
       one of: a VectorDataset, a VectorFeature, an Agent, an Agent Set,
@@ -34962,7 +34962,7 @@ primitives:
         - vector
       fullName: gis:intersecting
       description: |
-        
+
         Reports a new agent set containing only those members of the given
         agent set which intersect given GIS *data*, which may be any
         one of: a VectorDataset, a VectorFeature, an Agent, an Agent Set,
@@ -34978,7 +34978,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/width-of.html
     description: |
-      
+
       Reports the number of columns in the dataset. Note that this is the
       number of cells from left to right, not the width of the dataset in
       GIS space.
@@ -35001,7 +35001,7 @@ primitives:
         - raster
       fullName: gis:width-of
       description: |
-        
+
         Reports the number of columns in the dataset. Note that this is the
         number of cells from left to right, not the width of the dataset in
         GIS space.
@@ -35016,7 +35016,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/height-of.html
     description: |
-      
+
       Reports the number of rows in the dataset. Note that this is the
       number of cells from top to bottom, not the height of the dataset
       in GIS space.
@@ -35039,7 +35039,7 @@ primitives:
         - raster
       fullName: gis:height-of
       description: |
-        
+
         Reports the number of rows in the dataset. Note that this is the
         number of cells from top to bottom, not the height of the dataset
         in GIS space.
@@ -35054,7 +35054,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/raster-value.html
     description: |
-      
+
       Reports the value of the given raster dataset in the given cell.
       Cell coordinates are numbered from left to right, and from top to
       bottom, beginning with zero. So the upper left cell is (0, 0), and
@@ -35087,7 +35087,7 @@ primitives:
         - raster
       fullName: gis:raster-value
       description: |
-        
+
         Reports the value of the given raster dataset in the given cell.
         Cell coordinates are numbered from left to right, and from top to
         bottom, beginning with zero. So the upper left cell is (0, 0), and
@@ -35104,7 +35104,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/set-raster-value.html
     description: |
-      
+
       Sets the value of the given raster dataset at the given cell to a
       new value. Cell coordinates are numbered from left to right, and
       from top to bottom, beginning with zero. So the upper left cell is
@@ -35139,7 +35139,7 @@ primitives:
         - raster
       fullName: gis:set-raster-value
       description: |
-        
+
         Sets the value of the given raster dataset at the given cell to a
         new value. Cell coordinates are numbered from left to right, and
         from top to bottom, beginning with zero. So the upper left cell is
@@ -35216,7 +35216,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/sampling-method-of.html
     description: >
-      
+
       Reports the sampling method used to compute the value of the given
 
       raster dataset at a single point, or over an area smaller than a
@@ -35273,7 +35273,7 @@ primitives:
         - raster
       fullName: gis:sampling-method-of
       description: >
-        
+
         Reports the sampling method used to compute the value of the given
 
         raster dataset at a single point, or over an area smaller than a
@@ -35322,7 +35322,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/set-sampling-method.html
     description: >
-      
+
       Sets the sampling method used by the given raster dataset at a
 
       single point, or over an area smaller than a single raster cell.
@@ -35369,7 +35369,7 @@ primitives:
         - raster
       fullName: gis:set-sampling-method
       description: >
-        
+
         Sets the sampling method used by the given raster dataset at a
 
         single point, or over an area smaller than a single raster cell.
@@ -35406,7 +35406,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/raster-sample.html
     description: >
-      
+
       Reports the value of the given raster over the given location. The
 
       location may be any of the following:
@@ -35495,7 +35495,7 @@ primitives:
         - raster
       fullName: gis:raster-sample
       description: >
-        
+
         Reports the value of the given raster over the given location. The
 
         location may be any of the following:
@@ -35572,7 +35572,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/raster-world-envelope.html
     description: >
-      
+
       Reports the GIS envelope needed to match the boundaries of NetLogo
 
       patches with the boundaries of cells in the given raster dataset.
@@ -35622,7 +35622,7 @@ primitives:
         - raster
       fullName: gis:raster-world-envelope
       description: >
-        
+
         Reports the GIS envelope needed to match the boundaries of NetLogo
 
         patches with the boundaries of cells in the given raster dataset.
@@ -35656,7 +35656,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/create-raster.html
     description: |
-      
+
       Creates and reports a new, empty raster dataset with the given
       number of columns and rows, covering the given envelope.
     metadata:
@@ -35686,7 +35686,7 @@ primitives:
         - raster
       fullName: gis:create-raster
       description: |
-        
+
         Creates and reports a new, empty raster dataset with the given
         number of columns and rows, covering the given envelope.
     urlHome: https://docs.netlogo.org/gis.html
@@ -35700,7 +35700,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/resample.html
     description: >
-      
+
       Reports a new dataset that consists of the given RasterDataset
 
       resampled to cover the given envelope and to contain the given
@@ -35747,7 +35747,7 @@ primitives:
         - raster
       fullName: gis:resample
       description: >
-        
+
         Reports a new dataset that consists of the given RasterDataset
 
         resampled to cover the given envelope and to contain the given
@@ -35773,7 +35773,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/convolve.html
     description: >
-      
+
       Reports a new raster whose data consists of the given raster
 
       convolved with the given kernel.
@@ -35873,7 +35873,7 @@ primitives:
         - raster
       fullName: gis:convolve
       description: >
-        
+
         Reports a new raster whose data consists of the given raster
 
         convolved with the given kernel.
@@ -35944,7 +35944,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/apply-raster.html
     description: |
-      
+
 
       Copies values from the given raster dataset to the given patch
       variable, resampling the raster as necessary so that its cell
@@ -35976,7 +35976,7 @@ primitives:
         - raster
       fullName: gis:apply-raster
       description: |
-        
+
 
         Copies values from the given raster dataset to the given patch
         variable, resampling the raster as necessary so that its cell
@@ -35998,7 +35998,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/drawing-color.html
     description: >
-      
+
       Reports the color used by the GIS extension to draw vector features
 
       into the NetLogo drawing layer. Color can be represented either as
@@ -36025,7 +36025,7 @@ primitives:
         - drawing
       fullName: gis:drawing-color
       description: >
-        
+
         Reports the color used by the GIS extension to draw vector features
 
         into the NetLogo drawing layer. Color can be represented either as
@@ -36047,7 +36047,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/set-drawing-color.html
     description: >
-      
+
       Sets the color used by the GIS extension to draw vector features
 
       into the NetLogo drawing layer. *Color* can be represented
@@ -36073,7 +36073,7 @@ primitives:
         - drawing
       fullName: gis:set-drawing-color
       description: >
-        
+
         Sets the color used by the GIS extension to draw vector features
 
         into the NetLogo drawing layer. *Color* can be represented
@@ -36093,7 +36093,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/draw.html
     description: |
-      
+
       Draws the given vector data to the NetLogo drawing layer, using the
       current GIS drawing color, with the given line thickness. The data
       may consist either of an entire VectorDataset, or a single
@@ -36120,7 +36120,7 @@ primitives:
         - drawing
       fullName: gis:draw
       description: |
-        
+
         Draws the given vector data to the NetLogo drawing layer, using the
         current GIS drawing color, with the given line thickness. The data
         may consist either of an entire VectorDataset, or a single
@@ -36138,7 +36138,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/fill.html
     description: |
-      
+
       Fills the given vector data in the NetLogo drawing layer using the
       current GIS drawing color, using the given line thickness around
       the edges. The data may consist either of an entire VectorDataset,
@@ -36164,7 +36164,7 @@ primitives:
         - drawing
       fullName: gis:fill
       description: |
-        
+
         Fills the given vector data in the NetLogo drawing layer using the
         current GIS drawing color, using the given line thickness around
         the edges. The data may consist either of an entire VectorDataset,
@@ -36181,7 +36181,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/paint.html
     description: |
-      
+
       Paints the given raster data to the NetLogo drawing layer. The
       highest value in the dataset is painted white, the lowest is
       painted in black, and the other values are painted in shades of
@@ -36211,7 +36211,7 @@ primitives:
         - drawing
       fullName: gis:paint
       description: |
-        
+
         Paints the given raster data to the NetLogo drawing layer. The
         highest value in the dataset is painted white, the lowest is
         painted in black, and the other values are painted in shades of
@@ -36231,7 +36231,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gis/import-wms-drawing.html
     description: >
-      
+
       Imports an image into the NetLogo drawing layer using the
 
       <a href="http://www.opengeospatial.org/standards/wms" target="_blank">Web
@@ -36297,7 +36297,7 @@ primitives:
         - drawing
       fullName: gis:import-wms-drawing
       description: >
-        
+
         Imports an image into the NetLogo drawing layer using the
 
         <a href="http://www.opengeospatial.org/standards/wms"
@@ -36372,7 +36372,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/howmany-gogos.html
     description: >
-      
+
       Reports the number of USB HID devices visible to the computer and having
       the correct vendor and product ID to be a GoGo board.  A board will only
       be detected if it is both connected and powered on.  Using this primitive
@@ -36393,7 +36393,7 @@ primitives:
         - general
       fullName: gogo:howmany-gogos
       description: >
-        
+
         Reports the number of USB HID devices visible to the computer and having
         the correct vendor and product ID to be a GoGo board.  A board will only
         be detected if it is both connected and powered on.  Using this
@@ -36411,7 +36411,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/init.html
     description: >
-      
+
       Initialize the extension. The parameter `name` is a string representing
       the name of the backend to initialize.  There are currently 2 backends.
       One is the `"gogo"` backend that supports GoGo board 5 and earlier
@@ -36432,7 +36432,7 @@ primitives:
         - general
       fullName: gogo:init
       description: >
-        
+
         Initialize the extension. The parameter `name` is a string representing
         the name of the backend to initialize.  There are currently 2 backends.
         One is the `"gogo"` backend that supports GoGo board 5 and earlier
@@ -36480,7 +36480,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/talk-to-servo-ports.html
     description: >
-      
+
       Establishes a list of servo ports that will be controlled with subsequent
       output-port commands.  See below...
 
@@ -36502,7 +36502,7 @@ primitives:
         - outputs-servos
       fullName: gogo:talk-to-servo-ports
       description: >
-        
+
         Establishes a list of servo ports that will be controlled with
         subsequent output-port commands.  See below...
 
@@ -36519,7 +36519,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/set-output-port-power.html
     description: >
-      
+
       `power-level` is a number between 0 and 100, reflecting the percentage of
       maximum power.
 
@@ -36550,7 +36550,7 @@ primitives:
         - outputs-servos
       fullName: gogo:set-output-port-power
       description: >
-        
+
         `power-level` is a number between 0 and 100, reflecting the percentage
         of maximum power.
 
@@ -36576,7 +36576,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/output-port-on.html
     description: >
-      
+
       Turns on the output ports which have been indicated with
       talk-to-output-ports.
 
@@ -36595,7 +36595,7 @@ primitives:
         - outputs-servos
       fullName: gogo:output-port-on
       description: >
-        
+
         Turns on the output ports which have been indicated with
         talk-to-output-ports.
 
@@ -36612,7 +36612,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/output-port-off.html
     description: >
-      
+
       Turns off the output ports which have been indicated with
       talk-to-output-ports.
 
@@ -36631,7 +36631,7 @@ primitives:
         - outputs-servos
       fullName: gogo:output-port-off
       description: >
-        
+
         Turns off the output ports which have been indicated with
         talk-to-output-ports.
 
@@ -36648,7 +36648,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/output-port-clockwise.html
     description: >
-      
+
       Sets the polarity of the output port(s) that have been specified with
       talk-to-output-ports,
 
@@ -36666,7 +36666,7 @@ primitives:
         - outputs-servos
       fullName: gogo:output-port-clockwise
       description: >
-        
+
         Sets the polarity of the output port(s) that have been specified with
         talk-to-output-ports,
 
@@ -36682,7 +36682,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/output-port-counterclockwise.html
     description: >
-      
+
       Sets the polarity of the output port(s) that have been specified with
       `talk-to-output-ports`, so that a motor attached to one of these ports
       would turn counterclockwise.
@@ -36699,7 +36699,7 @@ primitives:
         - outputs-servos
       fullName: gogo:output-port-counterclockwise
       description: >
-        
+
         Sets the polarity of the output port(s) that have been specified with
         `talk-to-output-ports`, so that a motor attached to one of these ports
         would turn counterclockwise.
@@ -36714,7 +36714,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/set-servo.html
     description: >
-      
+
       Sets the Pulse-Width Modulation (PWM) proportion of the output port(s)
       that have been specified with talk-to-output-ports.  Note that the servo
       connectors are the male pins next to the standard motor
@@ -36736,7 +36736,7 @@ primitives:
         - outputs-servos
       fullName: gogo:set-servo
       description: >
-        
+
         Sets the Pulse-Width Modulation (PWM) proportion of the output port(s)
         that have been specified with talk-to-output-ports.  Note that the servo
         connectors are the male pins next to the standard motor
@@ -36754,7 +36754,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/led.html
     description: >
-      
+
       Turns the user-LED on or off, depending on the argument.  gogo:led 1 turns
       the LED on; gogo:led 0 turns it off.
     metadata:
@@ -36773,7 +36773,7 @@ primitives:
         - outputs-other
       fullName: gogo:led
       description: >
-        
+
         Turns the user-LED on or off, depending on the argument.  gogo:led 1
         turns the LED on; gogo:led 0 turns it off.
     urlHome: https://docs.netlogo.org/gogo.html
@@ -36839,7 +36839,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/gogo/read-sensor.html
     description: >
-      
+
       Reports the value of sensor number *which-sensor*, where *which-sensor* is
       a number between 0-7.
     metadata:
@@ -36860,7 +36860,7 @@ primitives:
         - sensors
       fullName: gogo:read-sensor
       description: >
-        
+
         Reports the value of sensor number *which-sensor*, where *which-sensor*
         is a number between 0-7.
     urlHome: https://docs.netlogo.org/gogo.html
@@ -36932,7 +36932,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/create-models.html
     description: >
-      
+
       Create the specified number of instances of the given model.  The path can
       be absolute, or relative to the main model. Compared with
       `ls:create-interactive-models`, this primitive creates lightweight models
@@ -36995,7 +36995,7 @@ primitives:
         - opening-closing
       fullName: ls:create-models
       description: >
-        
+
         Create the specified number of instances of the given model.  The path
         can be absolute, or relative to the main model. Compared with
         `ls:create-interactive-models`, this primitive creates lightweight
@@ -37040,7 +37040,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/create-interactive-models.html
     description: >
-      
+
       Like `ls:create-models`, creates the specified number of instances of the
       given model. Unlike `ls:create-models`, `ls:create-interactive-models`
       creates models that are visible by default, and have all widgets. You
@@ -37086,7 +37086,7 @@ primitives:
         - opening-closing
       fullName: ls:create-interactive-models
       description: >
-        
+
         Like `ls:create-models`, creates the specified number of instances of
         the given model. Unlike `ls:create-models`,
         `ls:create-interactive-models` creates models that are visible by
@@ -37115,7 +37115,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/close.html
     description: |
-      
+
       Close the model or models with the given `model-id`.
     metadata:
       name: close
@@ -37134,7 +37134,7 @@ primitives:
         - opening-closing
       fullName: ls:close
       description: |
-        
+
         Close the model or models with the given `model-id`.
     urlHome: https://docs.netlogo.org/ls.html
     sourceIcon: i-si-flow-parallel-duotone
@@ -37147,7 +37147,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/reset.html
     description: >
-      
+
       Close down all child models (and, recursively, their child models). You'll
       often want to call this in your setup procedure.
 
@@ -37166,7 +37166,7 @@ primitives:
         - opening-closing
       fullName: ls:reset
       description: >
-        
+
         Close down all child models (and, recursively, their child models).
         You'll often want to call this in your setup procedure.
 
@@ -37183,7 +37183,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/ask.html
     description: >
-      
+
       Ask the given child model or list of child models to run the given
       command. This is the primary of doing things with child models. For
       example:
@@ -37252,7 +37252,7 @@ primitives:
         - interaction
       fullName: ls:ask
       description: >
-        
+
         Ask the given child model or list of child models to run the given
         command. This is the primary of doing things with child models. For
         example:
@@ -37304,7 +37304,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/of.html
     description: >
-      
+
       Run the given reporter in the given model and report the result.
 
 
@@ -37344,7 +37344,7 @@ primitives:
         - interaction
       fullName: ls:of
       description: >
-        
+
         Run the given reporter in the given model and report the result.
 
 
@@ -37371,7 +37371,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/report.html
     description: >
-      
+
       Run the given reporter in the given model and report the result. This form
       exists to allow you to pass arguments to the reporter.
 
@@ -37414,7 +37414,7 @@ primitives:
         - interaction
       fullName: ls:report
       description: >
-        
+
         Run the given reporter in the given model and report the result. This
         form exists to allow you to pass arguments to the reporter.
 
@@ -37438,7 +37438,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/with.html
     description: >
-      
+
       Reports a new list of models containing only those models that report
       `true` when they run the reporter block.
 
@@ -37471,7 +37471,7 @@ primitives:
         - interaction
       fullName: ls:with
       description: >
-        
+
         Reports a new list of models containing only those models that report
         `true` when they run the reporter block.
 
@@ -37492,7 +37492,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/let.html
     description: >
-      
+
       Creates a variable containing the given data that can be accessed by the
       child models.
 
@@ -37625,7 +37625,7 @@ primitives:
         - interaction
       fullName: ls:let
       description: >
-        
+
         Creates a variable containing the given data that can be accessed by the
         child models.
 
@@ -37749,7 +37749,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/assign.html
     description: >
-      
+
       Sets the given global variable in child model to given value. For instance
 
 
@@ -37787,7 +37787,7 @@ primitives:
         - interaction
       fullName: ls:assign
       description: >
-        
+
         Sets the given global variable in child model to given value. For
         instance
 
@@ -37812,7 +37812,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/models.html
     description: |
-      
+
       Report a list of model-ids for all existing models.
     metadata:
       name: models
@@ -37829,7 +37829,7 @@ primitives:
         - logic
       fullName: ls:models
       description: |
-        
+
         Report a list of model-ids for all existing models.
     urlHome: https://docs.netlogo.org/ls.html
     sourceIcon: i-si-flow-parallel-duotone
@@ -37842,7 +37842,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/show.html
     description: |
-      
+
       Makes all of the given models visible.
     metadata:
       name: show
@@ -37861,7 +37861,7 @@ primitives:
         - logic
       fullName: ls:show
       description: |
-        
+
         Makes all of the given models visible.
     urlHome: https://docs.netlogo.org/ls.html
     sourceIcon: i-si-flow-parallel-duotone
@@ -37874,7 +37874,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/show-all.html
     description: |
-      
+
       Makes all of the given models *and their descendents* visible.
     metadata:
       name: show-all
@@ -37893,7 +37893,7 @@ primitives:
         - logic
       fullName: ls:show-all
       description: |
-        
+
         Makes all of the given models *and their descendents* visible.
     urlHome: https://docs.netlogo.org/ls.html
     sourceIcon: i-si-flow-parallel-duotone
@@ -37906,7 +37906,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/hide.html
     description: >
-      
+
       Hide all of the given models. Hiding models is a good way of making your
       simulation run faster.
     metadata:
@@ -37926,7 +37926,7 @@ primitives:
         - logic
       fullName: ls:hide
       description: >
-        
+
         Hide all of the given models. Hiding models is a good way of making your
         simulation run faster.
     urlHome: https://docs.netlogo.org/ls.html
@@ -37940,7 +37940,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/hide-all.html
     description: >
-      
+
       Hide all of the given models *and their descendents*. Hiding models is a
       good way of making your simulation run faster.
     metadata:
@@ -37960,7 +37960,7 @@ primitives:
         - logic
       fullName: ls:hide-all
       description: >
-        
+
         Hide all of the given models *and their descendents*. Hiding models is a
         good way of making your simulation run faster.
     urlHome: https://docs.netlogo.org/ls.html
@@ -37974,7 +37974,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/path-of.html
     description: >
-      
+
       Report the full path, including the file name of the model. If a list of
       models is given, a list of paths is reported.
     metadata:
@@ -37996,7 +37996,7 @@ primitives:
         - logic
       fullName: ls:path-of
       description: >
-        
+
         Report the full path, including the file name of the model. If a list of
         models is given, a list of paths is reported.
     urlHome: https://docs.netlogo.org/ls.html
@@ -38010,7 +38010,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/name-of.html
     description: >
-      
+
       Reports the name of the model file. This is the name of the window in
       which the model appears when visible. If a list of models is given, a list
       of names is reported.
@@ -38033,7 +38033,7 @@ primitives:
         - logic
       fullName: ls:name-of
       description: >
-        
+
         Reports the name of the model file. This is the name of the window in
         which the model appears when visible. If a list of models is given, a
         list of names is reported.
@@ -38048,7 +38048,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/model-exists.html
     description: >
-      
+
       Report a boolean value for whether there is a model with that model-id.
       This is often useful when you are dynamically generating models, and want
       to ensure that you are not asking models that no longer exist to do stuff.
@@ -38071,7 +38071,7 @@ primitives:
         - logic
       fullName: ls:model-exists?
       description: >
-        
+
         Report a boolean value for whether there is a model with that model-id.
         This is often useful when you are dynamically generating models, and
         want to ensure that you are not asking models that no longer exist to do
@@ -38087,7 +38087,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/ls/random-seed.html
     description: >
-      
+
       Behaves exactly like NetLogo's built-in primitive `random-seed`, except
       that child models have their RNGs seeded based on the given seed as well
       (as well their child models, and their child models' child models, and so
@@ -38110,7 +38110,7 @@ primitives:
       tags: []
       fullName: ls:random-seed
       description: >
-        
+
         Behaves exactly like NetLogo's built-in primitive `random-seed`, except
         that child models have their RNGs seeded based on the given seed as well
         (as well their child models, and their child models' child models, and
@@ -38169,7 +38169,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/make-identity.html
     description: |-
-      
+
       Reports a new square matrix object (with dimensions n-size x
       n-size), consisting of the identity matrix (1s along the main
       diagonal, 0s elsewhere).
@@ -38192,7 +38192,7 @@ primitives:
         - matrix creation
       fullName: matrix:make-identity
       description: |-
-        
+
         Reports a new square matrix object (with dimensions n-size x
         n-size), consisting of the identity matrix (1s along the main
         diagonal, 0s elsewhere).
@@ -38207,7 +38207,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/from-row-list.html
     description: |-
-      
+
       Reports a new matrix object, created from a NetLogo list, where
       each item in that list is another list (corresponding to each of
       the rows of the matrix.)
@@ -38238,7 +38238,7 @@ primitives:
         - matrix creation
       fullName: matrix:from-row-list
       description: |-
-        
+
         Reports a new matrix object, created from a NetLogo list, where
         each item in that list is another list (corresponding to each of
         the rows of the matrix.)
@@ -38261,7 +38261,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/from-column-list.html
     description: |-
-      
+
       Reports a new matrix object, created from a NetLogo list containing
       each of the *columns* of the matrix.
     metadata:
@@ -38283,7 +38283,7 @@ primitives:
         - matrix creation
       fullName: matrix:from-column-list
       description: |-
-        
+
         Reports a new matrix object, created from a NetLogo list containing
         each of the *columns* of the matrix.
     urlHome: https://docs.netlogo.org/matrix.html
@@ -38355,7 +38355,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/copy.html
     description: |
-      
+
       Reports a new matrix that is an exact copy of the given matrix.
       This primitive is important because the matrix type is mutable
       (changeable). Here's a code example:
@@ -38397,7 +38397,7 @@ primitives:
         - matrix creation
       fullName: matrix:copy
       description: |
-        
+
         Reports a new matrix that is an exact copy of the given matrix.
         This primitive is important because the matrix type is mutable
         (changeable). Here's a code example:
@@ -38614,7 +38614,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/set-row.html
     description: |
-      
+
       Changes the given matrix *matrix* by replacing the row at
       *row-i* with the contents of the simple (not nested) NetLogo
       list *simple-list*. The *simple-list* must have a length
@@ -38644,7 +38644,7 @@ primitives:
         - retrieval/manipulation
       fullName: matrix:set-row
       description: |
-        
+
         Changes the given matrix *matrix* by replacing the row at
         *row-i* with the contents of the simple (not nested) NetLogo
         list *simple-list*. The *simple-list* must have a length
@@ -38661,7 +38661,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/set-column.html
     description: |
-      
+
       Changes the given matrix *matrix* by replacing the column at
       *col-j* with the contents of the simple (not nested) NetLogo
       list *simple-list*. The *simple-list* must have a length
@@ -38691,7 +38691,7 @@ primitives:
         - retrieval/manipulation
       fullName: matrix:set-column
       description: |
-        
+
         Changes the given matrix *matrix* by replacing the column at
         *col-j* with the contents of the simple (not nested) NetLogo
         list *simple-list*. The *simple-list* must have a length
@@ -38782,7 +38782,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/set-and-report.html
     description: |
-      
+
       Reports a new matrix, which is a copy of the given matrix except
       that the value at *row-i*,*col-j* has been changed to
       *new-value*. A NetLogo statement such as
@@ -38821,7 +38821,7 @@ primitives:
         - retrieval/manipulation
       fullName: matrix:set-and-report
       description: >
-        
+
         Reports a new matrix, which is a copy of the given matrix except
 
         that the value at *row-i*,*col-j* has been changed to
@@ -38875,7 +38875,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/submatrix.html
     description: >
-      
+
       Reports a new matrix object, consisting of a rectangular subsection of the
       given matrix.
 
@@ -38933,7 +38933,7 @@ primitives:
         - retrieval/manipulation
       fullName: matrix:submatrix
       description: >
-        
+
         Reports a new matrix object, consisting of a rectangular subsection of
         the given matrix.
 
@@ -38967,7 +38967,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/map.html
     description: |
-      
+
       Reports a new matrix which results from applying <i>reporter</i>
       (an anonymous reporter or the name of a reporter)
       to each of the elements of the given matrix. For example,
@@ -39024,7 +39024,7 @@ primitives:
         - retrieval/manipulation
       fullName: matrix:map
       description: |
-        
+
         Reports a new matrix which results from applying <i>reporter</i>
         (an anonymous reporter or the name of a reporter)
         to each of the elements of the given matrix. For example,
@@ -39056,7 +39056,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/times-scalar.html
     description: |-
-      
+
       As of NetLogo 5.1, `matrix:times` can multiply matrices by scalars
       making this function obsolete. Use `matrix:times` instead.
 
@@ -39085,7 +39085,7 @@ primitives:
         - math
       fullName: matrix:times-scalar
       description: |-
-        
+
         As of NetLogo 5.1, `matrix:times` can multiply matrices by scalars
         making this function obsolete. Use `matrix:times` instead.
 
@@ -39102,7 +39102,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/times.html
     description: >
-      
+
       Reports a matrix, which is the result of multiplying the given matrices
       and scalars
 
@@ -39149,7 +39149,7 @@ primitives:
         - math
       fullName: matrix:times
       description: >
-        
+
         Reports a matrix, which is the result of multiplying the given matrices
         and scalars
 
@@ -39172,7 +39172,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/.html
     description: >
-      
+
       Reports a matrix, which is the result of multiplying the given matrices
 
       and/or scalars (using standard matrix multiplication -- make sure your
@@ -39207,7 +39207,7 @@ primitives:
         - math
       fullName: matrix:*
       description: >
-        
+
         Reports a matrix, which is the result of multiplying the given matrices
 
         and/or scalars (using standard matrix multiplication -- make sure your
@@ -39229,7 +39229,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/times-element-wise.html
     description: |
-      
+
       Reports a matrix, which is the result of multiplying the given matrices
       together, element-wise. All elements are multiplied by scalar arguments
       as well.
@@ -39262,7 +39262,7 @@ primitives:
         - math
       fullName: matrix:times-element-wise
       description: |
-        
+
         Reports a matrix, which is the result of multiplying the given matrices
         together, element-wise. All elements are multiplied by scalar arguments
         as well.
@@ -39281,7 +39281,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/plus-scalar.html
     description: |
-      
+
       As of NetLogo 5.1, `matrix:plus` can add matrices and scalars
       making this function obsolete. Use `matrix:plus` instead.
 
@@ -39309,7 +39309,7 @@ primitives:
         - math
       fullName: matrix:plus-scalar
       description: |
-        
+
         As of NetLogo 5.1, `matrix:plus` can add matrices and scalars
         making this function obsolete. Use `matrix:plus` instead.
 
@@ -39326,7 +39326,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/plus.html
     description: |
-      
+
       Reports a matrix, which is the result of adding the given matrices
       and scalars. Scalars are added to each element.
       Without parentheses, it takes two arguments. With parentheses it takes
@@ -39368,7 +39368,7 @@ primitives:
         - math
       fullName: matrix:plus
       description: |
-        
+
         Reports a matrix, which is the result of adding the given matrices
         and scalars. Scalars are added to each element.
         Without parentheses, it takes two arguments. With parentheses it takes
@@ -39385,7 +39385,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/.html
     description: |
-      
+
       Reports a matrix, which is the result of adding the given matrices
       and/or scalars. This is exactly the same as `matrix:plus m1 m2`
 
@@ -39415,7 +39415,7 @@ primitives:
         - math
       fullName: matrix:+
       description: |
-        
+
         Reports a matrix, which is the result of adding the given matrices
         and/or scalars. This is exactly the same as `matrix:plus m1 m2`
 
@@ -39431,7 +39431,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/minus.html
     description: |
-      
+
       Reports a matrix, which is the result of subtracting all arguments
       besides *m1* from *m1*. Scalar arguments are treated as
       matrices of the same size as the matrix arguments with every element
@@ -39475,7 +39475,7 @@ primitives:
         - math
       fullName: matrix:minus
       description: |
-        
+
         Reports a matrix, which is the result of subtracting all arguments
         besides *m1* from *m1*. Scalar arguments are treated as
         matrices of the same size as the matrix arguments with every element
@@ -39494,7 +39494,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/-.html
     description: |
-      
+
       Reports a matrix, which is the result of subtracting the given matrices
       and/or scalars. This is exactly the same as <pre>matrix:minus m1 m2</pre>
 
@@ -39524,7 +39524,7 @@ primitives:
         - math
       fullName: matrix:-
       description: >
-        
+
         Reports a matrix, which is the result of subtracting the given matrices
 
         and/or scalars. This is exactly the same as <pre>matrix:minus m1
@@ -39787,7 +39787,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/solve.html
     description: >-
-      
+
       Reports the solution to a linear system of equations, specified by
 
       the *A* and *C* matrices. In general, solving a set of
@@ -39847,7 +39847,7 @@ primitives:
         - advanced
       fullName: matrix:solve
       description: >-
-        
+
         Reports the solution to a linear system of equations, specified by
 
         the *A* and *C* matrices. In general, solving a set of
@@ -39893,7 +39893,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/forecast-linear-growth.html
     description: >-
-      
+
 
       Reports a four-element list of the form:
 
@@ -39972,7 +39972,7 @@ primitives:
         - advanced
       fullName: matrix:forecast-linear-growth
       description: >-
-        
+
 
         Reports a four-element list of the form:
 
@@ -40044,7 +40044,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/forecast-compound-growth.html
     description: >-
-      
+
       Reports a four-element list of the form:
 
 
@@ -40136,7 +40136,7 @@ primitives:
         - advanced
       fullName: matrix:forecast-compound-growth
       description: >-
-        
+
         Reports a four-element list of the form:
 
 
@@ -40221,7 +40221,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/forecast-continuous-growth.html
     description: >-
-      
+
       Reports a four-element list of the form:
 
 
@@ -40310,7 +40310,7 @@ primitives:
         - advanced
       fullName: matrix:forecast-continuous-growth
       description: >-
-        
+
         Reports a four-element list of the form:
 
 
@@ -40392,7 +40392,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/matrix/regress.html
     description: >-
-      
+
       All three of the forecast primitives above are just special cases
 
       of performing an OLS (ordinary-least-squares) linear regression --
@@ -40552,7 +40552,7 @@ primitives:
         - advanced
       fullName: matrix:regress
       description: >-
-        
+
         All three of the forecast primitives above are just special cases
 
         of performing an OLS (ordinary-least-squares) linear regression --
@@ -40706,7 +40706,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/set-context.html
     description: >
-      
+
       Specifies the set of turtles and the set of links that the extension will
       consider to be the current graph. All the turtles from _turtleset_ and all
       the links from _linkset_ that connect two turtles from _turtleset_ will be
@@ -40742,7 +40742,7 @@ primitives:
         - context
       fullName: nw:set-context
       description: >
-        
+
         Specifies the set of turtles and the set of links that the extension
         will consider to be the current graph. All the turtles from _turtleset_
         and all the links from _linkset_ that connect two turtles from
@@ -40768,7 +40768,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/get-context.html
     description: >
-      
+
       Reports the content of the current graph context as a list containing two
       agentsets: the agentset of turtles that are part of the context and the
       agentset of links that are part of the context.
@@ -40933,7 +40933,7 @@ primitives:
         - context
       fullName: nw:get-context
       description: >
-        
+
         Reports the content of the current graph context as a list containing
         two agentsets: the agentset of turtles that are part of the context and
         the agentset of links that are part of the context.
@@ -41095,7 +41095,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/with-context.html
     description: >
-      
+
       Executes the _command-block_ with the context temporarily set to
       _turtleset_ and _linkset_.
 
@@ -41152,7 +41152,7 @@ primitives:
         - context
       fullName: nw:with-context
       description: >
-        
+
         Executes the _command-block_ with the context temporarily set to
         _turtleset_ and _linkset_.
 
@@ -41194,7 +41194,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/turtles-in-radius.html
     description: |
-      
+
       Returns the set of turtles within the given distance (number of links followed) of the calling turtle in the current context, including the calling turtle.
 
       `nw:turtles-in-radius` form will follow both undirected links and directed **out** links. You can think of `turtles-in-radius` as "turtles **who I can get to** in _radius_ steps".
@@ -41241,7 +41241,7 @@ primitives:
         - path
       fullName: nw:turtles-in-radius
       description: |
-        
+
         Returns the set of turtles within the given distance (number of links followed) of the calling turtle in the current context, including the calling turtle.
 
         `nw:turtles-in-radius` form will follow both undirected links and directed **out** links. You can think of `turtles-in-radius` as "turtles **who I can get to** in _radius_ steps".
@@ -41280,7 +41280,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/turtles-in-reverse-radius.html
     description: >
-      
+
       Like [[nw:turtles-in-radius|/nw/turtles-in-radius]], but follows in-links
       instead of out-links. Also follow undirected links. You can think of
       `turtles-in-reverse-radius` as "turtles **who can get to me** in _radius_
@@ -41304,7 +41304,7 @@ primitives:
         - path
       fullName: nw:turtles-in-reverse-radius
       description: >
-        
+
         Like [[nw:turtles-in-radius|/nw/turtles-in-radius]], but follows
         in-links instead of out-links. Also follow undirected links. You can
         think of `turtles-in-reverse-radius` as "turtles **who can get to me**
@@ -41320,7 +41320,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/distance-to.html
     description: >
-      
+
       Finds the shortest path to the target turtle and reports the total
       distance for this path, or false if no path exists in the current context.
       Each link counts for a distance of one.
@@ -41372,7 +41372,7 @@ primitives:
         - path
       fullName: nw:distance-to
       description: >
-        
+
         Finds the shortest path to the target turtle and reports the total
         distance for this path, or false if no path exists in the current
         context. Each link counts for a distance of one.
@@ -41416,7 +41416,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/weighted-distance-to.html
     description: >
-      
+
       Like [[nw:distance-to|/nw/distance-to]], but takes link weight into
       account. The weights cannot be negative numbers.
 
@@ -41473,7 +41473,7 @@ primitives:
         - path
       fullName: nw:weighted-distance-to
       description: >
-        
+
         Like [[nw:distance-to|/nw/distance-to]], but takes link weight into
         account. The weights cannot be negative numbers.
 
@@ -41518,7 +41518,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/path-to.html
     description: >
-      
+
       Finds the shortest path to the target turtle and reports the actual path
       between the source and the target turtle. The path is reported as the list
       of links that constitute the path.
@@ -41582,7 +41582,7 @@ primitives:
         - path
       fullName: nw:path-to
       description: >
-        
+
         Finds the shortest path to the target turtle and reports the actual path
         between the source and the target turtle. The path is reported as the
         list of links that constitute the path.
@@ -41638,7 +41638,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/turtles-on-path-to.html
     description: >
-      
+
       Like [`nw:path-to`](/nw/path-to), but the turtles on the path are
       reported, instead of the links, including the source turtle and target
       turtle.
@@ -41690,7 +41690,7 @@ primitives:
         - path
       fullName: nw:turtles-on-path-to
       description: >
-        
+
         Like [`nw:path-to`](/nw/path-to), but the turtles on the path are
         reported, instead of the links, including the source turtle and target
         turtle.
@@ -41734,7 +41734,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/weighted-path-to.html
     description: |
-      
+
       Like [`nw:path-to`](/nw/path-to), but takes link weight into account.
 
       Example:
@@ -41781,7 +41781,7 @@ primitives:
         - path
       fullName: nw:weighted-path-to
       description: |
-        
+
         Like [`nw:path-to`](/nw/path-to), but takes link weight into account.
 
         Example:
@@ -41816,7 +41816,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/turtles-on-weighted-path-to.html
     description: >
-      
+
       Like [`nw:turtles-on-path-to`](/nw/turtles-on-path-to), but takes link
       weight into account.
 
@@ -41873,7 +41873,7 @@ primitives:
         - path
       fullName: nw:turtles-on-weighted-path-to
       description: >
-        
+
         Like [`nw:turtles-on-path-to`](/nw/turtles-on-path-to), but takes link
         weight into account.
 
@@ -41918,7 +41918,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/mean-path-length.html
     description: >
-      
+
       Reports the average shortest-path length between all distinct pairs of
       nodes in the current context.
 
@@ -41971,7 +41971,7 @@ primitives:
         - path
       fullName: nw:mean-path-length
       description: >
-        
+
         Reports the average shortest-path length between all distinct pairs of
         nodes in the current context.
 
@@ -42020,7 +42020,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/mean-weighted-path-length.html
     description: >
-      
+
       Like [`nw:mean-path-length`](/nw/mean-path-length), but takes into account
       link weights.
 
@@ -42075,7 +42075,7 @@ primitives:
         - path
       fullName: nw:mean-weighted-path-length
       description: >
-        
+
         Like [`nw:mean-path-length`](/nw/mean-path-length), but takes into
         account link weights.
 
@@ -42123,7 +42123,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/betweenness-centrality.html
     description: >
-      
+
       To calculate the [betweenness
       centrality](https://en.wikipedia.org/wiki/Betweenness_centrality) of a
       turtle, you take every other possible pairs of turtles and, for each pair,
@@ -42148,7 +42148,7 @@ primitives:
         - centrality
       fullName: nw:betweenness-centrality
       description: >
-        
+
         To calculate the [betweenness
         centrality](https://en.wikipedia.org/wiki/Betweenness_centrality) of a
         turtle, you take every other possible pairs of turtles and, for each
@@ -42169,7 +42169,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/eigenvector-centrality.html
     description: |
-      
+
       The [Eigenvector centrality](https://en.wikipedia.org/wiki/Centrality#Eigenvector_centrality) of a node can be thought of as the amount of influence a node has on a network. In practice, turtles that are connected to a lot of other turtles that are themselves well-connected (and so on) get a higher Eigenvector centrality score.
 
       In this implementation, the eigenvector centrality is normalized such that the highest eigenvector centrality a node can have is 1. This implementation is designed to agree with Gephi's implementation out to at least 3 decimal places. If you discover that it disagrees with Gephi on a particular network, please [report it](https://github.com/NetLogo/NW-Extension/issues/new).
@@ -42192,7 +42192,7 @@ primitives:
         - centrality
       fullName: nw:eigenvector-centrality
       description: |
-        
+
         The [Eigenvector centrality](https://en.wikipedia.org/wiki/Centrality#Eigenvector_centrality) of a node can be thought of as the amount of influence a node has on a network. In practice, turtles that are connected to a lot of other turtles that are themselves well-connected (and so on) get a higher Eigenvector centrality score.
 
         In this implementation, the eigenvector centrality is normalized such that the highest eigenvector centrality a node can have is 1. This implementation is designed to agree with Gephi's implementation out to at least 3 decimal places. If you discover that it disagrees with Gephi on a particular network, please [report it](https://github.com/NetLogo/NW-Extension/issues/new).
@@ -42211,7 +42211,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/page-rank.html
     description: >
-      
+
       The [page rank](https://en.wikipedia.org/wiki/PageRank) of a node can be
       thought of as the proportion of time that an agent walking forever at
       random on the network would spend at this node. The agent has an equal
@@ -42246,7 +42246,7 @@ primitives:
         - centrality
       fullName: nw:page-rank
       description: >
-        
+
         The [page rank](https://en.wikipedia.org/wiki/PageRank) of a node can be
         thought of as the proportion of time that an agent walking forever at
         random on the network would spend at this node. The agent has an equal
@@ -42277,7 +42277,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/closeness-centrality.html
     description: |
-      
+
       The [closeness centrality](https://en.wikipedia.org/wiki/Centrality#Closeness_centrality) of a turtle is defined as the inverse of the average of it's distances to all other turtles. (Some people use the sum of distances instead of the average, but the extension uses the average.)
 
       Note that this primitive reports the _intra-component_ closeness of a turtle, that is, it takes into account only the distances to the turtles that are part of the same [component](https://en.wikipedia.org/wiki/Connected_component_%28graph_theory%29) as the current turtle, since distance to turtles in other components is undefined. The closeness centrality of an isolated turtle is defined to be zero.
@@ -42296,7 +42296,7 @@ primitives:
         - centrality
       fullName: nw:closeness-centrality
       description: |
-        
+
         The [closeness centrality](https://en.wikipedia.org/wiki/Centrality#Closeness_centrality) of a turtle is defined as the inverse of the average of it's distances to all other turtles. (Some people use the sum of distances instead of the average, but the extension uses the average.)
 
         Note that this primitive reports the _intra-component_ closeness of a turtle, that is, it takes into account only the distances to the turtles that are part of the same [component](https://en.wikipedia.org/wiki/Connected_component_%28graph_theory%29) as the current turtle, since distance to turtles in other components is undefined. The closeness centrality of an isolated turtle is defined to be zero.
@@ -42311,7 +42311,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/weighted-closeness-centrality.html
     description: >
-      
+
       This is identical to
       [`nw:closeness-centrality`](/nw/closeness-centrality), except that weights
       provided by the given variable are treated as the distances of links.
@@ -42333,7 +42333,7 @@ primitives:
         - centrality
       fullName: nw:weighted-closeness-centrality
       description: >
-        
+
         This is identical to
         [`nw:closeness-centrality`](/nw/closeness-centrality), except that
         weights provided by the given variable are treated as the distances of
@@ -42349,7 +42349,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/clustering-coefficient.html
     description: |
-      
+
       Reports the [local clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient#Local_clustering_coefficient) of the turtle. The clustering coefficient of a node measures how connected its neighbors are. It is defined as the number of links between the node's neighbors divided by the total number of possible links between its neighbors.
 
       `nw:clustering-coefficient` takes the directedness of links into account. A directed link counts as a single link whereas an undirected link counts as two links (one going one-way, one going the other).
@@ -42386,7 +42386,7 @@ primitives:
         - clustering
       fullName: nw:clustering-coefficient
       description: |
-        
+
         Reports the [local clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient#Local_clustering_coefficient) of the turtle. The clustering coefficient of a node measures how connected its neighbors are. It is defined as the number of links between the node's neighbors divided by the total number of possible links between its neighbors.
 
         `nw:clustering-coefficient` takes the directedness of links into account. A directed link counts as a single link whereas an undirected link counts as two links (one going one-way, one going the other).
@@ -42419,7 +42419,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/modularity.html
     description: >
-      
+
       [Modularity](https://en.wikipedia.org/wiki/Modularity_(networks)) is a
       measurement of community structure in the network. It is defined based on
       the number of in-community links versus the number of between-community
@@ -42458,7 +42458,7 @@ primitives:
         - clustering
       fullName: nw:modularity
       description: >
-        
+
         [Modularity](https://en.wikipedia.org/wiki/Modularity_(networks)) is a
         measurement of community structure in the network. It is defined based
         on the number of in-community links versus the number of
@@ -42493,7 +42493,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/bicomponent-clusters.html
     description: >
-      
+
       Reports the list of [bicomponent
       clusters](https://en.wikipedia.org/wiki/Biconnected_component) in the
       current network context. A bicomponent (also known as a maximal
@@ -42517,7 +42517,7 @@ primitives:
         - clusterer
       fullName: nw:bicomponent-clusters
       description: >
-        
+
         Reports the list of [bicomponent
         clusters](https://en.wikipedia.org/wiki/Biconnected_component) in the
         current network context. A bicomponent (also known as a maximal
@@ -42537,7 +42537,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/weak-component-clusters.html
     description: |
-      
+
       Reports the list of "weakly" [connected components](https://en.wikipedia.org/wiki/Connected_component_%28graph_theory%29) in the current network context. A weakly connected component is simply a group of nodes where there is a path from each node to every other node. A "strongly" connected component would be one where there is a _directed_ path from each node to every other. The extension does not support the identification of strongly connected components at the moment.
 
       The result is reported as a list of agentsets, in random order. Note that one turtle _cannot_ be a member of more than one weakly connected component at once.
@@ -42556,7 +42556,7 @@ primitives:
         - clusterer
       fullName: nw:weak-component-clusters
       description: |
-        
+
         Reports the list of "weakly" [connected components](https://en.wikipedia.org/wiki/Connected_component_%28graph_theory%29) in the current network context. A weakly connected component is simply a group of nodes where there is a path from each node to every other node. A "strongly" connected component would be one where there is a _directed_ path from each node to every other. The extension does not support the identification of strongly connected components at the moment.
 
         The result is reported as a list of agentsets, in random order. Note that one turtle _cannot_ be a member of more than one weakly connected component at once.
@@ -42571,7 +42571,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/louvain-communities.html
     description: >
-      
+
       Detects community structure present in the network. It does this by
       maximizing [[modularity|/nw/modularity]] using the [Louvain
       method](https://en.wikipedia.org/wiki/Louvain_Modularity). The communities
@@ -42626,7 +42626,7 @@ primitives:
         - clusterer
       fullName: nw:louvain-communities
       description: >
-        
+
         Detects community structure present in the network. It does this by
         maximizing [[modularity|/nw/modularity]] using the [Louvain
         method](https://en.wikipedia.org/wiki/Louvain_Modularity). The
@@ -42677,7 +42677,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/maximal-cliques.html
     description: >
-      
+
       A [clique](https://en.wikipedia.org/wiki/Clique_%28graph_theory%29) is a
       subset of a network in which every node has a direct link to every other
       node. A maximal clique is a clique that is not, itself, contained in a
@@ -42706,7 +42706,7 @@ primitives:
         - clusterer
       fullName: nw:maximal-cliques
       description: |
-        
+
         A [clique](https://en.wikipedia.org/wiki/Clique_%28graph_theory%29) is a subset of a network in which every node has a direct link to every other node. A maximal clique is a clique that is not, itself, contained in a bigger clique.
 
         The result is reported as a list of agentsets, in random order. Note that one turtle can be a member of more than one maximal clique at once.
@@ -42723,7 +42723,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/biggest-maximal-cliques.html
     description: >
-      
+
       The biggest maximal cliques are, as the name implies, the biggest
       [cliques](https://en.wikipedia.org/wiki/Clique_%28graph_theory%29) in the
       current context. Often, more than one clique are tied for the title of
@@ -42750,7 +42750,7 @@ primitives:
         - clusterer
       fullName: nw:biggest-maximal-cliques
       description: |
-        
+
         The biggest maximal cliques are, as the name implies, the biggest [cliques](https://en.wikipedia.org/wiki/Clique_%28graph_theory%29) in the current context. Often, more than one clique are tied for the title of biggest clique, so the result is reported as a list of agentsets, in random order. If you want only one clique, use `one-of nw:biggest-maximal-cliques`.
 
         The primitive uses the [Bron–Kerbosch algorithm](https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm) and only works with undirected links.
@@ -42765,7 +42765,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/generate-preferential-attachment.html
     description: |+
-      
+
       Generates a new network using a version of the [Barabási–Albert](https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model) algorithm. This network will have the property of being "scale free": the distribution of degrees (i.e. the number of links for each turtle) should follow a power law.
 
       Generation works as follows turtles are added, one by one, each forming `min-degree` links to a previously added turtles, until `num-nodes` is reached.
@@ -42811,7 +42811,7 @@ primitives:
         - generator
       fullName: nw:generate-preferential-attachment
       description: |+
-        
+
         Generates a new network using a version of the [Barabási–Albert](https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model) algorithm. This network will have the property of being "scale free": the distribution of degrees (i.e. the number of links for each turtle) should follow a power law.
 
         Generation works as follows turtles are added, one by one, each forming `min-degree` links to a previously added turtles, until `num-nodes` is reached.
@@ -42834,7 +42834,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/generate-random.html
     description: >
-      
+
       Generates a new random network of _num-nodes_ turtles in which each one
       has a  _connection-probability_ (between 0 and 1) of being connected to
       each other turtles. The algorithm uses the _G(n, p)_ variant of the
@@ -42890,7 +42890,7 @@ primitives:
         - generator
       fullName: nw:generate-random
       description: |
-        
+
         Generates a new random network of _num-nodes_ turtles in which each one has a  _connection-probability_ (between 0 and 1) of being connected to each other turtles. The algorithm uses the _G(n, p)_ variant of the [Erdős–Rényi model](https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model).
 
         The algorithm is O(n²) for directed networks and O(n²/2) for undirected networks, so generating more than a couple thousand nodes will likely take a very long time.
@@ -42911,7 +42911,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/generate-watts-strogatz.html
     description: >
-      
+
       Generates a new [Watts-Strogatz small-world
       network](https://en.wikipedia.org/wiki/Watts_and_Strogatz_model).
 
@@ -42970,7 +42970,7 @@ primitives:
         - generator
       fullName: nw:generate-watts-strogatz
       description: >
-        
+
         Generates a new [Watts-Strogatz small-world
         network](https://en.wikipedia.org/wiki/Watts_and_Strogatz_model).
 
@@ -43002,7 +43002,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/generate-small-world.html
     description: |
-      
+
       Generates a new [small-world network](https://en.wikipedia.org/wiki/Small-world_network) using the [Kleinberg Model](https://en.wikipedia.org/wiki/Small_world_routing#The_Kleinberg_Model). Note that [`nw:generate-watts-strogatz`](/nw/generate-watts-strogatz) generates a more traditional small-world network.
 
       The algorithm proceeds by generating a lattice of the given number of rows and columns (the lattice will wrap around itself if _is-toroidal_ is `true`). The "small world effect" is created by adding additional links between the nodes in the lattice. The higher the _clustering-exponent_, the more the algorithm will favor already close-by nodes when adding new links. A clustering exponent of `2.0` is typically used.
@@ -43061,7 +43061,7 @@ primitives:
         - generator
       fullName: nw:generate-small-world
       description: |
-        
+
         Generates a new [small-world network](https://en.wikipedia.org/wiki/Small-world_network) using the [Kleinberg Model](https://en.wikipedia.org/wiki/Small_world_routing#The_Kleinberg_Model). Note that [`nw:generate-watts-strogatz`](/nw/generate-watts-strogatz) generates a more traditional small-world network.
 
         The algorithm proceeds by generating a lattice of the given number of rows and columns (the lattice will wrap around itself if _is-toroidal_ is `true`). The "small world effect" is created by adding additional links between the nodes in the lattice. The higher the _clustering-exponent_, the more the algorithm will favor already close-by nodes when adding new links. A clustering exponent of `2.0` is typically used.
@@ -43089,7 +43089,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/generate-lattice-2d.html
     description: >
-      
+
       Generates a new 2D [lattice
       network](https://en.wikipedia.org/wiki/Lattice_graph) (basically, a grid)
       of _row-count_ rows and _column-count_ columns. The grid will wrap around
@@ -43157,7 +43157,7 @@ primitives:
         - generator
       fullName: nw:generate-lattice-2d
       description: >
-        
+
         Generates a new 2D [lattice
         network](https://en.wikipedia.org/wiki/Lattice_graph) (basically, a
         grid) of _row-count_ rows and _column-count_ columns. The grid will wrap
@@ -43198,7 +43198,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/generate-ring.html
     description: >
-      
+
       Generates a [ring network](https://en.wikipedia.org/wiki/Ring_network) of
       _num-nodes_ turtles, in which each turtle is connected to exactly two
       other turtles.
@@ -43246,7 +43246,7 @@ primitives:
         - generator
       fullName: nw:generate-ring
       description: >
-        
+
         Generates a [ring network](https://en.wikipedia.org/wiki/Ring_network)
         of _num-nodes_ turtles, in which each turtle is connected to exactly two
         other turtles.
@@ -43275,7 +43275,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/generate-star.html
     description: >
-      
+
       Generates a [star network](https://en.wikipedia.org/wiki/Star_graph) in
       which there is one central turtle and every other turtle is connected only
       to this central node. The number of turtles can be as low as one, but it
@@ -43321,7 +43321,7 @@ primitives:
         - generator
       fullName: nw:generate-star
       description: >
-        
+
         Generates a [star network](https://en.wikipedia.org/wiki/Star_graph) in
         which there is one central turtle and every other turtle is connected
         only to this central node. The number of turtles can be as low as one,
@@ -43348,7 +43348,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/generate-wheel.html
     description: >
-      
+
       Variants:
 
 
@@ -43412,7 +43412,7 @@ primitives:
         - generator
       fullName: nw:generate-wheel
       description: >
-        
+
         Variants:
 
 
@@ -43457,7 +43457,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/save-matrix.html
     description: >
-      
+
       Saves the current network, as defined by `nw:set-context`, to _file-name_,
       as a text file, in the form of a simple connection matrix.
 
@@ -43495,7 +43495,7 @@ primitives:
         - io
       fullName: nw:save-matrix
       description: >
-        
+
         Saves the current network, as defined by `nw:set-context`, to
         _file-name_, as a text file, in the form of a simple connection matrix.
 
@@ -43528,7 +43528,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/load-matrix.html
     description: >
-      
+
       Generates a new network according to the connection matrix saved in
       _file-name_, using _turtle-breed_ and _link-breed_ to create the new
       turtles and links.
@@ -43606,7 +43606,7 @@ primitives:
         - io
       fullName: nw:load-matrix
       description: >
-        
+
         Generates a new network according to the connection matrix saved in
         _file-name_, using _turtle-breed_ and _link-breed_ to create the new
         turtles and links.
@@ -43665,7 +43665,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/save-graphml.html
     description: >
-      
+
       You can save the current graph to GraphML. The following NetLogo code:
 
 
@@ -43943,7 +43943,7 @@ primitives:
         - io
       fullName: nw:save-graphml
       description: >
-        
+
         You can save the current graph to GraphML. The following NetLogo code:
 
 
@@ -44219,7 +44219,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/load-graphml.html
     description: >
-      
+
       Loading a GraphML file into NetLogo with the network extension should be
       as simple as calling `nw:load-graphml "example.graphml"`, but there is a
       bit of preparation involved.
@@ -44330,7 +44330,7 @@ primitives:
         - io
       fullName: nw:load-graphml
       description: >
-        
+
         Loading a GraphML file into NetLogo with the network extension should be
         as simple as calling `nw:load-graphml "example.graphml"`, but there is a
         bit of preparation involved.
@@ -44432,7 +44432,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/load.html
     description: >
-      
+
       Filetype specific variants:
 
 
@@ -44500,7 +44500,7 @@ primitives:
         - io
       fullName: nw:load
       description: >
-        
+
         Filetype specific variants:
 
 
@@ -44549,7 +44549,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/load-from-string.html
     description: >
-      
+
       Load network `data` from an in-memory string rather than from a file. This
       is useful in NetLogo Web and other contexts where the data comes from
       somewhere other than the file system, such as the `fetch` or `resource`
@@ -44627,7 +44627,7 @@ primitives:
         - io
       fullName: nw:load-from-string
       description: >
-        
+
         Load network `data` from an in-memory string rather than from a file.
         This is useful in NetLogo Web and other contexts where the data comes
         from somewhere other than the file system, such as the `fetch` or
@@ -44682,7 +44682,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/save.html
     description: >
-      
+
       Filetype specific variants:
 
 
@@ -44749,7 +44749,7 @@ primitives:
         - io
       fullName: nw:save
       description: >
-        
+
         Filetype specific variants:
 
 
@@ -44811,7 +44811,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/nw/save-to-string.html
     description: >
-      
+
       Serialize the current network context to a string in the given format and
       report it, rather than writing to a file. This is the counterpart to
       [`nw:load-from-string`](#nwload-from-string), and is useful in NetLogo Web
@@ -44874,7 +44874,7 @@ primitives:
         - io
       fullName: nw:save-to-string
       description: >
-        
+
         Serialize the current network context to a string in the given format
         and report it, rather than writing to a file. This is the counterpart to
         [`nw:load-from-string`](#nwload-from-string), and is useful in NetLogo
@@ -44931,7 +44931,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/alpha-of.html
     description: >
-      
+
       Reports a value in the range 0 to 255 representing the alpha of the given
       NL, RGB or RGBA *color*. The alpha value of an NL or RGB color is 255.
 
@@ -44963,7 +44963,7 @@ primitives:
       tags: []
       fullName: palette:alpha-of
       description: >
-        
+
         Reports a value in the range 0 to 255 representing the alpha of the
         given NL, RGB or RGBA *color*. The alpha value of an NL or RGB color is
         255.
@@ -44989,7 +44989,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/with-alpha.html
     description: >
-      
+
       Reports an RGBA color with alpha component equal to *number* and the RGB
       content of *color*. An error message results if alpha is not in the range
       from 0 to 255.
@@ -45024,7 +45024,7 @@ primitives:
       tags: []
       fullName: palette:with-alpha
       description: >
-        
+
         Reports an RGBA color with alpha component equal to *number* and the RGB
         content of *color*. An error message results if alpha is not in the
         range from 0 to 255.
@@ -45048,7 +45048,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/alpha.html
     description: >
-      
+
       Get the alpha value of the color of the agent. The alpha value of an NL or
       RGB color is 255.
 
@@ -45074,7 +45074,7 @@ primitives:
       tags: []
       fullName: palette:alpha
       description: >
-        
+
         Get the alpha value of the color of the agent. The alpha value of an NL
         or RGB color is 255.
 
@@ -45097,7 +45097,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/set-alpha.html
     description: >
-      
+
       Set the color of the agent to the RGBA color with alpha value *number* and
       the RGB content of the color of the turtle or link (or patch in
       NetLogo3D). An error message results if *number* is not in the range 0 to
@@ -45126,7 +45126,7 @@ primitives:
       tags: []
       fullName: palette:set-alpha
       description: >
-        
+
         Set the color of the agent to the RGBA color with alpha value *number*
         and the RGB content of the color of the turtle or link (or patch in
         NetLogo3D). An error message results if *number* is not in the range 0
@@ -45151,7 +45151,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/transparency-of.html
     description: >
-      
+
       Reports a value in the range 0 to 100 representing the percent
       transparency of the given NL, RGB or RGBA *color*. The percent
       transparency of an NL or RGB color is 0.
@@ -45185,7 +45185,7 @@ primitives:
       tags: []
       fullName: palette:transparency-of
       description: >
-        
+
         Reports a value in the range 0 to 100 representing the percent
         transparency of the given NL, RGB or RGBA *color*. The percent
         transparency of an NL or RGB color is 0.
@@ -45212,7 +45212,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/with-transparency.html
     description: >
-      
+
 
       Reports an RGBA color with an alpha value equivalent to the transparency
       *number* and the RGB content of *color*. An error message results if
@@ -45248,7 +45248,7 @@ primitives:
       tags: []
       fullName: palette:with-transparency
       description: >
-        
+
 
         Reports an RGBA color with an alpha value equivalent to the transparency
         *number* and the RGB content of *color*. An error message results if
@@ -45273,7 +45273,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/transparency.html
     description: |
-      
+
 
       Reports the transparency equivalent of the agent's alpha.
 
@@ -45295,7 +45295,7 @@ primitives:
       tags: []
       fullName: palette:transparency
       description: |
-        
+
 
         Reports the transparency equivalent of the agent's alpha.
 
@@ -45314,7 +45314,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/set-transparency.html
     description: >
-      
+
 
       Set the color of the agent to the RGBA color with alpha value equivalent
       to the transparency *number* and the RGB content of the color of the
@@ -45344,7 +45344,7 @@ primitives:
       tags: []
       fullName: palette:set-transparency
       description: >
-        
+
 
         Set the color of the agent to the RGBA color with alpha value equivalent
         to the transparency *number* and the RGB content of the color of the
@@ -45370,7 +45370,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/hue-of.html
     description: >
-      
+
       Reports a value in the range 0 to 360 representing the hue component in
       HSB color space of the given NL, RGB or RGBA *color*.
 
@@ -45400,7 +45400,7 @@ primitives:
       tags: []
       fullName: palette:hue-of
       description: >
-        
+
         Reports a value in the range 0 to 360 representing the hue component in
         HSB color space of the given NL, RGB or RGBA *color*.
 
@@ -45423,7 +45423,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/with-hue.html
     description: >
-      
+
 
       Reports an RGBA color with hue component in HSB color space equal to
       *number* and the other HSB components of the input *color* unchanged. An
@@ -45459,7 +45459,7 @@ primitives:
       tags: []
       fullName: palette:with-hue
       description: >
-        
+
 
         Reports an RGBA color with hue component in HSB color space equal to
         *number* and the other HSB components of the input *color* unchanged. An
@@ -45484,7 +45484,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/hue.html
     description: >
-      
+
       Reports a number in the range 0 to 360 that represents the hue of an
       agent’s color or pcolor.
 
@@ -45513,7 +45513,7 @@ primitives:
       tags: []
       fullName: palette:hue
       description: >
-        
+
         Reports a number in the range 0 to 360 that represents the hue of an
         agent’s color or pcolor.
 
@@ -45539,7 +45539,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/set-hue.html
     description: >
-      
+
       Changes an agent’s hue value to *number*, leaving the other HSB components
       unchanged. An error message results if *number* is not in the range from 0
       to 360.
@@ -45567,7 +45567,7 @@ primitives:
       tags: []
       fullName: palette:set-hue
       description: >
-        
+
         Changes an agent’s hue value to *number*, leaving the other HSB
         components unchanged. An error message results if *number* is not in the
         range from 0 to 360.
@@ -45591,7 +45591,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/saturation-of.html
     description: >
-      
+
       Reports a value in the range 0 to 100 representing the saturation
       component in HSB color space of the given NL, RGB or RGBA *color*.
 
@@ -45621,7 +45621,7 @@ primitives:
       tags: []
       fullName: palette:saturation-of
       description: >
-        
+
         Reports a value in the range 0 to 100 representing the saturation
         component in HSB color space of the given NL, RGB or RGBA *color*.
 
@@ -45644,7 +45644,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/with-saturation.html
     description: >
-      
+
 
       Reports an RGBA color with saturation component in HSB color space equal
       to *number* and the other HSB components of the input *color* unchanged.
@@ -45680,7 +45680,7 @@ primitives:
       tags: []
       fullName: palette:with-saturation
       description: >
-        
+
 
         Reports an RGBA color with saturation component in HSB color space equal
         to *number* and the other HSB components of the input *color* unchanged.
@@ -45705,7 +45705,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/saturation.html
     description: >
-      
+
       Reports a number in the range 0 to 100 that represents the saturation of
       an agent’s color or pcolor.
 
@@ -45734,7 +45734,7 @@ primitives:
       tags: []
       fullName: palette:saturation
       description: >
-        
+
         Reports a number in the range 0 to 100 that represents the saturation of
         an agent’s color or pcolor.
 
@@ -45760,7 +45760,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/set-saturation.html
     description: >
-      
+
 
       Changes an agent’s saturation leaving the other HSB components unchanged.
       An error message results if *number* is not in the range from 0 to 100.
@@ -45788,7 +45788,7 @@ primitives:
       tags: []
       fullName: palette:set-saturation
       description: >
-        
+
 
         Changes an agent’s saturation leaving the other HSB components
         unchanged. An error message results if *number* is not in the range from
@@ -45813,7 +45813,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/brightness-of.html
     description: >
-      
+
       Reports a value in the range 0 to 100 representing the brightness
       component in HSB color space of the given NL, RGB or RGBA *color*.
 
@@ -45843,7 +45843,7 @@ primitives:
       tags: []
       fullName: palette:brightness-of
       description: >
-        
+
         Reports a value in the range 0 to 100 representing the brightness
         component in HSB color space of the given NL, RGB or RGBA *color*.
 
@@ -45866,7 +45866,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/with-brightness.html
     description: >
-      
+
 
       Reports an RGBA color with brightness component in HSB color space equal
       to *number* and the other HSB components of the input *color* unchanged.
@@ -45902,7 +45902,7 @@ primitives:
       tags: []
       fullName: palette:with-brightness
       description: >
-        
+
 
         Reports an RGBA color with brightness component in HSB color space equal
         to *number* and the other HSB components of the input *color* unchanged.
@@ -45927,7 +45927,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/brightness.html
     description: >
-      
+
       Reports a number in the range 0 to 100 that represents the brightness of
       an agent’s color or pcolor.
 
@@ -45956,7 +45956,7 @@ primitives:
       tags: []
       fullName: palette:brightness
       description: >
-        
+
         Reports a number in the range 0 to 100 that represents the brightness of
         an agent’s color or pcolor.
 
@@ -45982,7 +45982,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/set-brightness.html
     description: >
-      
+
 
       Changes an agent’s brightness leaving the other HSB components unchanged.
       An error message results if *number* is not in the range from 0 to 100.
@@ -46010,7 +46010,7 @@ primitives:
       tags: []
       fullName: palette:set-brightness
       description: >
-        
+
 
         Changes an agent’s brightness leaving the other HSB components
         unchanged. An error message results if *number* is not in the range from
@@ -46035,7 +46035,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/r-of.html
     description: >
-      
+
       Reports a value in the range 0 to 255 representing the red component in
       the RGB color space of the given NL, RGB or RGBA *color*.
 
@@ -46065,7 +46065,7 @@ primitives:
       tags: []
       fullName: palette:R-of
       description: >
-        
+
         Reports a value in the range 0 to 255 representing the red component in
         the RGB color space of the given NL, RGB or RGBA *color*.
 
@@ -46088,7 +46088,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/with-r.html
     description: >
-      
+
 
       Reports an RGBA color with red component in RGB color space equal to
       *number* and the other RGB components of the input *color* unchanged. An
@@ -46124,7 +46124,7 @@ primitives:
       tags: []
       fullName: palette:with-R
       description: >
-        
+
 
         Reports an RGBA color with red component in RGB color space equal to
         *number* and the other RGB components of the input *color* unchanged. An
@@ -46149,7 +46149,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/r.html
     description: >
-      
+
       Reports a number in the range 0 to 255 that represents the red of an
       agent’s color or pcolor.
 
@@ -46178,7 +46178,7 @@ primitives:
       tags: []
       fullName: palette:R
       description: >
-        
+
         Reports a number in the range 0 to 255 that represents the red of an
         agent’s color or pcolor.
 
@@ -46204,7 +46204,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/set-r.html
     description: >
-      
+
 
       Changes an agent’s red component of its RGB/A color leaving the other RGB
       components unchanged. An error message results if *number* is not in the
@@ -46233,7 +46233,7 @@ primitives:
       tags: []
       fullName: palette:set-R
       description: >
-        
+
 
         Changes an agent’s red component of its RGB/A color leaving the other
         RGB components unchanged. An error message results if *number* is not in
@@ -46258,7 +46258,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/g-of.html
     description: >
-      
+
       Reports a value in the range 0 to 255 representing the green component in
       the RGB color space of the given NL, RGB or RGBA *color*.
 
@@ -46284,7 +46284,7 @@ primitives:
       tags: []
       fullName: palette:G-of
       description: >
-        
+
         Reports a value in the range 0 to 255 representing the green component
         in the RGB color space of the given NL, RGB or RGBA *color*.
 
@@ -46303,7 +46303,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/with-g.html
     description: >
-      
+
 
       Reports an RGBA color with green component in RGB color space equal to
       *number* and the other RGB components of the input *color* unchanged. An
@@ -46335,7 +46335,7 @@ primitives:
       tags: []
       fullName: palette:with-G
       description: >
-        
+
 
         Reports an RGBA color with green component in RGB color space equal to
         *number* and the other RGB components of the input *color* unchanged. An
@@ -46356,7 +46356,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/g.html
     description: >
-      
+
       Reports a number in the range 0 to 255 that represents the green of an
       agent’s color or pcolor.
 
@@ -46385,7 +46385,7 @@ primitives:
       tags: []
       fullName: palette:G
       description: >
-        
+
         Reports a number in the range 0 to 255 that represents the green of an
         agent’s color or pcolor.
 
@@ -46411,7 +46411,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/set-g.html
     description: >
-      
+
 
       Changes an agent’s green component of its RGB/A color leaving the other
       RGB components unchanged. An error message results if *number* is not in
@@ -46440,7 +46440,7 @@ primitives:
       tags: []
       fullName: palette:set-G
       description: >
-        
+
 
         Changes an agent’s green component of its RGB/A color leaving the other
         RGB components unchanged. An error message results if *number* is not in
@@ -46465,7 +46465,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/b-of.html
     description: >
-      
+
       Reports a value in the range 0 to 255 representing the blue component in
       the RGB color space of the given NL, RGB or RGBA *color*.
 
@@ -46495,7 +46495,7 @@ primitives:
       tags: []
       fullName: palette:B-of
       description: >
-        
+
         Reports a value in the range 0 to 255 representing the blue component in
         the RGB color space of the given NL, RGB or RGBA *color*.
 
@@ -46518,7 +46518,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/with-b.html
     description: >
-      
+
 
       Reports an RGBA color with blue component in RGB color space equal to
       *number* and the other RGB components of the input *color* unchanged. An
@@ -46554,7 +46554,7 @@ primitives:
       tags: []
       fullName: palette:with-B
       description: >
-        
+
 
         Reports an RGBA color with blue component in RGB color space equal to
         *number* and the other RGB components of the input *color* unchanged. An
@@ -46579,7 +46579,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/b.html
     description: >
-      
+
       Reports a number in the range 0 to 255 that represents the blue of an
       agent’s color or pcolor.
 
@@ -46608,7 +46608,7 @@ primitives:
       tags: []
       fullName: palette:B
       description: >
-        
+
         Reports a number in the range 0 to 255 that represents the blue of an
         agent’s color or pcolor.
 
@@ -46634,7 +46634,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/set-b.html
     description: >
-      
+
 
       Changes an agent’s blue component of its RGB/A color leaving the other RGB
       components unchanged. An error message results if *number* is not in the
@@ -46663,7 +46663,7 @@ primitives:
       tags: []
       fullName: palette:set-B
       description: >
-        
+
 
         Changes an agent’s blue component of its RGB/A color leaving the other
         RGB components unchanged. An error message results if *number* is not in
@@ -46688,7 +46688,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/scale-gradient.html
     description: >
-      
+
       Reports an RGB color proportional to *number* using a gradient generated
       with _rgb-color-list_. The _rgb-color-list_ is a list containing NL or RGB
       colors: e.g. [NL1 [r1 g1 b1]  [r2 g2 b2] [r3 g3 b3] NL2 …].
@@ -46753,7 +46753,7 @@ primitives:
       tags: []
       fullName: palette:scale-gradient
       description: >
-        
+
         Reports an RGB color proportional to *number* using a gradient generated
         with _rgb-color-list_. The _rgb-color-list_ is a list containing NL or
         RGB colors: e.g. [NL1 [r1 g1 b1]  [r2 g2 b2] [r3 g3 b3] NL2 …].
@@ -46926,7 +46926,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/scheme-colors.html
     description: >
-      
+
       Reports a list of RGB colors using ColorBrewer scheme of type
       *scheme-type* with name *scheme-color* containing *number-of-classes*
       colors. Scheme types are "Sequential," "Divergent" and "Qualitative." The
@@ -46978,7 +46978,7 @@ primitives:
       tags: []
       fullName: palette:scheme-colors
       description: >
-        
+
         Reports a list of RGB colors using ColorBrewer scheme of type
         *scheme-type* with name *scheme-color* containing *number-of-classes*
         colors. Scheme types are "Sequential," "Divergent" and "Qualitative."
@@ -47016,7 +47016,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/scale-scheme.html
     description: >
-      
+
       Reports an RGB color from the ColorBrewer scheme of type *scheme-type*
       with name *scheme-color* containing *number-of-classes* colors. The color
       is chosen using the proportionality of *number* in the range specified by
@@ -47092,7 +47092,7 @@ primitives:
       tags: []
       fullName: palette:scale-scheme
       description: >
-        
+
         Reports an RGB color from the ColorBrewer scheme of type *scheme-type*
         with name *scheme-color* containing *number-of-classes* colors. The
         color is chosen using the proportionality of *number* in the range
@@ -47142,7 +47142,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/palette/scheme-dialog.html
     description: >
-      
+
 
       Launches a dialog for previewing all the ColorBrewer color schemes.
 
@@ -47181,7 +47181,7 @@ primitives:
       tags: []
       fullName: palette:scheme-dialog
       description: >
-        
+
 
         Launches a dialog for previewing all the ColorBrewer color schemes.
 
@@ -47538,7 +47538,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/py/setup.html
     description: >
-      
+
       Create the Python session that this extension will use to execute code.
       The session will be started with the given Python executable. This command
       *must* be run before running any other Python extension primitive. Running
@@ -47605,7 +47605,7 @@ primitives:
       tags: []
       fullName: py:setup
       description: >
-        
+
         Create the Python session that this extension will use to execute code.
         The session will be started with the given Python executable. This
         command *must* be run before running any other Python extension
@@ -47668,7 +47668,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/py/python.html
     description: >
-      
+
       Reports either the path to the latest version of Python configured in the
       `python.properties` file or, if that is blank, looks for a Python
       executable on your system's PATH.
@@ -47706,7 +47706,7 @@ primitives:
       tags: []
       fullName: py:python
       description: >
-        
+
         Reports either the path to the latest version of Python configured in
         the `python.properties` file or, if that is blank, looks for a Python
         executable on your system's PATH.
@@ -47741,7 +47741,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/py/python2.html
     description: >
-      
+
       Reports either the path to Python 2 configured in the `python.properties`
       file or, if that is blank, looks for a Python 2 executable on your
       system's PATH.
@@ -47779,7 +47779,7 @@ primitives:
       tags: []
       fullName: py:python2
       description: >
-        
+
         Reports either the path to Python 2 configured in the
         `python.properties` file or, if that is blank, looks for a Python 2
         executable on your system's PATH.
@@ -47814,7 +47814,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/py/python3.html
     description: >
-      
+
       Reports either the path to Python 3 configured in the `python.properties`
       file or, if that is blank, looks for a Python 3 executable on your
       system's PATH.
@@ -47852,7 +47852,7 @@ primitives:
       tags: []
       fullName: py:python3
       description: >
-        
+
         Reports either the path to Python 3 configured in the
         `python.properties` file or, if that is blank, looks for a Python 3
         executable on your system's PATH.
@@ -47887,7 +47887,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/py/run.html
     description: >
-      
+
       Runs the given Python statements in the current Python session. To make
       multi-line Python code easier to run, this command will take multiple
       strings, each of which will be interpreted as a separate line of Python
@@ -47929,7 +47929,7 @@ primitives:
       tags: []
       fullName: py:run
       description: >
-        
+
         Runs the given Python statements in the current Python session. To make
         multi-line Python code easier to run, this command will take multiple
         strings, each of which will be interpreted as a separate line of Python
@@ -47965,7 +47965,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/py/runresult.html
     description: >
-      
+
       Evaluates the given Python expression and reports the result.
 
       `py:runresult` attempts to convert from Python data types to NetLogo data
@@ -48011,7 +48011,7 @@ primitives:
       tags: []
       fullName: py:runresult
       description: >
-        
+
         Evaluates the given Python expression and reports the result.
 
         `py:runresult` attempts to convert from Python data types to NetLogo
@@ -48050,7 +48050,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/py/set.html
     description: >+
-      
+
       Sets a variable in the Python session with the given name to the given
       NetLogo value. NetLogo objects will be converted to Python objects as
       expected.
@@ -48115,7 +48115,7 @@ primitives:
       tags: []
       fullName: py:set
       description: >+
-        
+
         Sets a variable in the Python session with the given name to the given
         NetLogo value. NetLogo objects will be converted to Python objects as
         expected.
@@ -48233,7 +48233,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/rnd/weighted-one-of.html
     description: |
-      
+
       Reports a random agent from <div><i>agentset</i></div>.
 
       The probability of each agent being picked is proportional to the weight given by the <div><i>reporter</i></div> for that agent. The weights must not be negative.
@@ -48288,7 +48288,7 @@ primitives:
         - agentset
       fullName: rnd:weighted-one-of
       description: |
-        
+
         Reports a random agent from <div><i>agentset</i></div>.
 
         The probability of each agent being picked is proportional to the weight given by the <div><i>reporter</i></div> for that agent. The weights must not be negative.
@@ -48331,7 +48331,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/rnd/weighted-n-of.html
     description: >
-      
+
       Reports an agentset of the given <div><i>size</i></div> randomly chosen
       from the <div><i>agentset</i></div>, with no repeats.
 
@@ -48374,7 +48374,7 @@ primitives:
         - agentset
       fullName: rnd:weighted-n-of
       description: >
-        
+
         Reports an agentset of the given <div><i>size</i></div> randomly chosen
         from the <div><i>agentset</i></div>, with no repeats.
 
@@ -48402,7 +48402,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/rnd/weighted-n-of-with-repeats.html
     description: >
-      
+
       Reports a **list** of the given <div><i>size</i></div> randomly chosen
       from the <div><i>agentset</i></div>, with repeats. (Why a list instead of
       an agentset? Because an agentset cannot contain the same agent more than
@@ -48451,7 +48451,7 @@ primitives:
         - agentset
       fullName: rnd:weighted-n-of-with-repeats
       description: >
-        
+
         Reports a **list** of the given <div><i>size</i></div> randomly chosen
         from the <div><i>agentset</i></div>, with repeats. (Why a list instead
         of an agentset? Because an agentset cannot contain the same agent more
@@ -48486,7 +48486,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/rnd/weighted-one-of-list.html
     description: |
-      
+
       Reports a random item from <div><i>list</i></div>.
 
       The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
@@ -48536,7 +48536,7 @@ primitives:
         - list
       fullName: rnd:weighted-one-of-list
       description: |
-        
+
         Reports a random item from <div><i>list</i></div>.
 
         The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
@@ -48576,7 +48576,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/rnd/weighted-n-of-list.html
     description: |
-      
+
       Reports a list of the given <div><i>size</i></div> randomly chosen from the <div><i>list</i></div> of candidates, with no repeats.
 
       The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
@@ -48619,7 +48619,7 @@ primitives:
         - list
       fullName: rnd:weighted-n-of-list
       description: |
-        
+
         Reports a list of the given <div><i>size</i></div> randomly chosen from the <div><i>list</i></div> of candidates, with no repeats.
 
         The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
@@ -48648,7 +48648,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/rnd/weighted-n-of-list-with-repeats.html
     description: |
-      
+
       Reports a list of the given <div><i>size</i></div> randomly chosen from the <div><i>list</i></div> of candidates, with repeats.
 
       The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
@@ -48693,7 +48693,7 @@ primitives:
         - list
       fullName: rnd:weighted-n-of-list-with-repeats
       description: |
-        
+
         Reports a list of the given <div><i>size</i></div> randomly chosen from the <div><i>list</i></div> of candidates, with repeats.
 
         The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
@@ -48724,7 +48724,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sound/drums.html
     description: |
-      
+
       Reports a list of the names of the [47 drums](#drum-names)
       for use with `sound:play-drum`.
     metadata:
@@ -48741,7 +48741,7 @@ primitives:
       tags: []
       fullName: sound:drums
       description: |
-        
+
         Reports a list of the names of the [47 drums](#drum-names)
         for use with `sound:play-drum`.
     urlHome: https://docs.netlogo.org/sound.html
@@ -48755,7 +48755,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sound/instruments.html
     description: |
-      
+
       Reports a list of the names of the [128 instruments](#instrument-names)
       for use with `sound:play-note`, `sound:play-note-later`,
       `sound:start-note` and `sound:stop-note`.
@@ -48773,7 +48773,7 @@ primitives:
       tags: []
       fullName: sound:instruments
       description: |
-        
+
         Reports a list of the names of the [128 instruments](#instrument-names)
         for use with `sound:play-note`, `sound:play-note-later`,
         `sound:start-note` and `sound:stop-note`.
@@ -48788,7 +48788,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sound/play-drum.html
     description: |
-      
+
       Plays a drum.
 
       Example:
@@ -48815,7 +48815,7 @@ primitives:
       tags: []
       fullName: sound:play-drum
       description: |
-        
+
         Plays a drum.
 
         Example:
@@ -48834,7 +48834,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sound/play-note.html
     description: |
-      
+
       Plays a note for a specified duration, in seconds. The agent does not
       wait for the note to finish before continuing to next command.
 
@@ -48869,7 +48869,7 @@ primitives:
       tags: []
       fullName: sound:play-note
       description: |
-        
+
         Plays a note for a specified duration, in seconds. The agent does not
         wait for the note to finish before continuing to next command.
 
@@ -48888,7 +48888,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sound/play-note-later.html
     description: |
-      
+
       Waits for the specified delay before playing the note for a specified
       duration, in seconds. The agent does not wait for the note to finish
       before continuing to next command.
@@ -48930,7 +48930,7 @@ primitives:
       tags: []
       fullName: sound:play-note-later
       description: |
-        
+
         Waits for the specified delay before playing the note for a specified
         duration, in seconds. The agent does not wait for the note to finish
         before continuing to next command.
@@ -48952,7 +48952,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sr/setup.html
     description: >
-      
+
       Create the R session that this extension will use to execute code.
 
       This command *must* be run before running any other R extension primitive.
@@ -48971,7 +48971,7 @@ primitives:
       tags: []
       fullName: sr:setup
       description: >
-        
+
         Create the R session that this extension will use to execute code.
 
         This command *must* be run before running any other R extension
@@ -48990,7 +48990,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sr/run.html
     description: >
-      
+
 
       Runs the given R statements in the current session.
 
@@ -49051,7 +49051,7 @@ primitives:
       tags: []
       fullName: sr:run
       description: >
-        
+
 
         Runs the given R statements in the current session.
 
@@ -49099,7 +49099,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sr/runresult.html
     description: >
-      
+
       Evaluates the given R expression and reports the result.
 
       `rs:runresult` attempts to convert from R data types to NetLogo data
@@ -49183,7 +49183,7 @@ primitives:
       tags: []
       fullName: sr:runresult
       description: >
-        
+
         Evaluates the given R expression and reports the result.
 
         `rs:runresult` attempts to convert from R data types to NetLogo data
@@ -49261,7 +49261,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sr/set.html
     description: >
-      
+
       Sets a variable in the R session with the given name to the given NetLogo
       value.
 
@@ -49405,7 +49405,7 @@ primitives:
       tags: []
       fullName: sr:set
       description: >
-        
+
         Sets a variable in the R session with the given name to the given
         NetLogo value.
 
@@ -50086,7 +50086,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sr/r-home.html
     description: >
-      
+
 
       Outputs the R home directory which is the top-level directory of the R
       installation
@@ -50117,7 +50117,7 @@ primitives:
       tags: []
       fullName: sr:r-home
       description: >
-        
+
 
         Outputs the R home directory which is the top-level directory of the R
         installation
@@ -50145,7 +50145,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/sr/show-console.html
     description: >
-      
+
 
       Opens the R console. This console can be opened via the menu bar under the
       SimpleR heading.
@@ -50161,7 +50161,7 @@ primitives:
       tags: []
       fullName: sr:show-console
       description: >
-        
+
 
         Opens the R console. This console can be opened via the menu bar under
         the SimpleR heading.
@@ -50232,7 +50232,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/table/group-agents.html
     description: >
-      
+
       Groups the agents in the agentset based on the given reporter.
 
       Agents that report the same thing for reporter will be grouped together.
@@ -50278,7 +50278,7 @@ primitives:
       tags: []
       fullName: table:group-agents
       description: >
-        
+
         Groups the agents in the agentset based on the given reporter.
 
         Agents that report the same thing for reporter will be grouped together.
@@ -50314,7 +50314,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/table/group-items.html
     description: >
-      
+
       Groups the items of the list based on the given reporter.
 
       The reporter should take a single argument, which will be the items of the
@@ -50361,7 +50361,7 @@ primitives:
       tags: []
       fullName: table:group-items
       description: >
-        
+
         Groups the items of the list based on the given reporter.
 
         The reporter should take a single argument, which will be the items of
@@ -50398,7 +50398,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/table/from-list.html
     description: >
-      
+
       Reports a new table with the contents of *list*.
 
       *list* must be a list of two element lists, or pairs.
@@ -50422,7 +50422,7 @@ primitives:
       tags: []
       fullName: table:from-list
       description: >
-        
+
         Reports a new table with the contents of *list*.
 
         *list* must be a list of two element lists, or pairs.
@@ -50797,7 +50797,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/table/to-list.html
     description: |-
-      
+
       Reports a list with the content of <i>table</i>. The list will be a
       list of two element lists, or pairs. The first element in the pair is
       the key and the second element is the value. The keys appear in the
@@ -50819,7 +50819,7 @@ primitives:
       tags: []
       fullName: table:to-list
       description: |-
-        
+
         Reports a list with the content of <i>table</i>. The list will be a
         list of two element lists, or pairs. The first element in the pair is
         the key and the second element is the value. The keys appear in the
@@ -50863,7 +50863,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/table/values.html
     description: |-
-      
+
       Reports a list with the entries of <i>table</i>. The entries will appear
       in the same order they were inserted, with duplicates included.
     metadata:
@@ -50883,7 +50883,7 @@ primitives:
       tags: []
       fullName: table:values
       description: |-
-        
+
         Reports a list with the entries of <i>table</i>. The entries will appear
         in the same order they were inserted, with duplicates included.
     urlHome: https://docs.netlogo.org/table.html
@@ -50897,7 +50897,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/camera-names.html
     description: |
-      
+
       Provides a list of all available cameras.
 
       Example:
@@ -50920,7 +50920,7 @@ primitives:
       tags: []
       fullName: vid:camera-names
       description: |
-        
+
         Provides a list of all available cameras.
 
         Example:
@@ -50940,7 +50940,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/camera-open.html
     description: >
-      
+
       Opens the named camera as a video source.
 
       If no name is provided, opens the first camera that would be listed by
@@ -50977,7 +50977,7 @@ primitives:
       tags: []
       fullName: vid:camera-open
       description: >
-        
+
         Opens the named camera as a video source.
 
         If no name is provided, opens the first camera that would be listed by
@@ -51013,7 +51013,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/camera-select.html
     description: >
-      
+
       Prompts the user to select a camera as video source. This command does not
       error if the user cancels. Use `vid:status` to see if a user selected a
       camera.
@@ -51044,7 +51044,7 @@ primitives:
       tags: []
       fullName: vid:camera-select
       description: >
-        
+
         Prompts the user to select a camera as video source. This command does
         not error if the user cancels. Use `vid:status` to see if a user
         selected a camera.
@@ -51074,7 +51074,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/movie-select.html
     description: |-
-      
+
       Prompts the user to select a movie to use as a video source.
       The formats supported are those [supported by JavaFX2](https://docs.oracle.com/javafx/2/api/javafx/scene/media/package-summary.html#SupportedMediaTypes).
       This command does not error if the user cancels.
@@ -51101,7 +51101,7 @@ primitives:
       tags: []
       fullName: vid:movie-select
       description: |-
-        
+
         Prompts the user to select a movie to use as a video source.
         The formats supported are those [supported by JavaFX2](https://docs.oracle.com/javafx/2/api/javafx/scene/media/package-summary.html#SupportedMediaTypes).
         This command does not error if the user cancels.
@@ -51127,7 +51127,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/movie-open.html
     description: >
-      
+
       Opens a video from the file system.
 
       If the provided path is not absolute the extension searches for the given
@@ -51174,7 +51174,7 @@ primitives:
       tags: []
       fullName: vid:movie-open
       description: >
-        
+
         Opens a video from the file system.
 
         If the provided path is not absolute the extension searches for the
@@ -51217,7 +51217,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/movie-open-remote.html
     description: >
-      
+
       Opens a remote video from a website or ftp server.
 
 
@@ -51257,7 +51257,7 @@ primitives:
       tags: []
       fullName: vid:movie-open-remote
       description: >
-        
+
         Opens a remote video from a website or ftp server.
 
 
@@ -51293,7 +51293,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/close.html
     description: |
-      
+
       Closes the currently selected video source.
       Has no effect if there is no active video source.
 
@@ -51314,7 +51314,7 @@ primitives:
       tags: []
       fullName: vid:close
       description: |
-        
+
         Closes the currently selected video source.
         Has no effect if there is no active video source.
 
@@ -51334,7 +51334,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/start.html
     description: >
-      
+
       Starts the selected video source.
 
       A video source must have been selected before calling `vid:start`.
@@ -51368,7 +51368,7 @@ primitives:
       tags: []
       fullName: vid:start
       description: >
-        
+
         Starts the selected video source.
 
         A video source must have been selected before calling `vid:start`.
@@ -51401,7 +51401,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/stop.html
     description: |
-      
+
       Stops the currently running video source.
 
       Example:
@@ -51420,7 +51420,7 @@ primitives:
       tags: []
       fullName: vid:stop
       description: |
-        
+
         Stops the currently running video source.
 
         Example:
@@ -51438,7 +51438,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/status.html
     description: >
-      
+
       Reports the current status of an active video.
 
       Note that after calling `vid:movie-open` or `vid:movie-select` the status
@@ -51480,7 +51480,7 @@ primitives:
       tags: []
       fullName: vid:status
       description: >
-        
+
         Reports the current status of an active video.
 
         Note that after calling `vid:movie-open` or `vid:movie-select` the
@@ -51519,7 +51519,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/capture-image.html
     description: >
-      
+
       Captures an image from the currently selected active source.
 
 
@@ -51588,7 +51588,7 @@ primitives:
       tags: []
       fullName: vid:capture-image
       description: >
-        
+
         Captures an image from the currently selected active source.
 
 
@@ -51649,7 +51649,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/set-time.html
     description: >
-      
+
       Sets the time of the current video source to `*seconds*`.
 
       This has no effect when the current video source is a camera.
@@ -51689,7 +51689,7 @@ primitives:
       tags: []
       fullName: vid:set-time
       description: >
-        
+
         Sets the time of the current video source to `*seconds*`.
 
         This has no effect when the current video source is a camera.
@@ -51725,7 +51725,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/show-player.html
     description: >
-      
+
       Shows a player in a separate window.
 
       If there is no video source, the window will be an empty black frame.
@@ -51784,7 +51784,7 @@ primitives:
       tags: []
       fullName: vid:show-player
       description: >
-        
+
         Shows a player in a separate window.
 
         If there is no video source, the window will be an empty black frame.
@@ -51835,7 +51835,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/hide-player.html
     description: |
-      
+
       Hides the player if open. Does nothing if there is no player window.
 
       Example:
@@ -51855,7 +51855,7 @@ primitives:
       tags: []
       fullName: vid:hide-player
       description: |
-        
+
         Hides the player if open. Does nothing if there is no player window.
 
         Example:
@@ -51874,7 +51874,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/record-view.html
     description: >
-      
+
       Records the current image shown in the NetLogo view to the active
       recording.
 
@@ -51906,7 +51906,7 @@ primitives:
       tags: []
       fullName: vid:record-view
       description: >
-        
+
         Records the current image shown in the NetLogo view to the active
         recording.
 
@@ -51937,7 +51937,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/record-interface.html
     description: >
-      
+
       Records the NetLogo interface view to the active recording.
 
 
@@ -51972,7 +51972,7 @@ primitives:
       tags: []
       fullName: vid:record-interface
       description: >
-        
+
         Records the NetLogo interface view to the active recording.
 
 
@@ -52006,7 +52006,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/record-source.html
     description: >
-      
+
       Records a frame to the active recording from the currently active source.
 
 
@@ -52041,7 +52041,7 @@ primitives:
       tags: []
       fullName: vid:record-source
       description: >
-        
+
         Records a frame to the active recording from the currently active
         source.
 
@@ -52076,7 +52076,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/recorder-status.html
     description: >
-      
+
       Reports the current status of the recorder.
 
       Initially and after the recorder is saved (via `vid:save-recording`) or
@@ -52117,7 +52117,7 @@ primitives:
       tags: []
       fullName: vid:recorder-status
       description: >
-        
+
         Reports the current status of the recorder.
 
         Initially and after the recorder is saved (via `vid:save-recording`) or
@@ -52180,7 +52180,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/start-recorder.html
     description: >
-      
+
       Starts the recorder.
 
       If the recorder is already running this will cause an error to be raised.
@@ -52224,7 +52224,7 @@ primitives:
       tags: []
       fullName: vid:start-recorder
       description: >
-        
+
         Starts the recorder.
 
         If the recorder is already running this will cause an error to be
@@ -52268,7 +52268,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/vid/save-recording.html
     description: >
-      
+
       Saves the recording to the specified path.
 
       If the recorder is not running this will cause an error to be raised.
@@ -52330,7 +52330,7 @@ primitives:
       tags: []
       fullName: vid:save-recording
       description: >
-        
+
         Saves the recording to the specified path.
 
         If the recorder is not running this will cause an error to be raised.
@@ -52389,7 +52389,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/patch-view.html
     description: >
-      
+
       This command must be called from the Observer context.  (Attempting to
       call from another context causes an error)
 
@@ -52427,7 +52427,7 @@ primitives:
       tags: []
       fullName: view2.5d:patch-view
       description: >
-        
+
         This command must be called from the Observer context.  (Attempting to
         call from another context causes an error)
 
@@ -52457,7 +52457,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/decorate-patch-view.html
     description: >
-      
+
       This command must be called from the Observer context.  (Attempting to
       call from another context causes an error)
 
@@ -52498,7 +52498,7 @@ primitives:
       tags: []
       fullName: view2.5d:decorate-patch-view
       description: >
-        
+
         This command must be called from the Observer context.  (Attempting to
         call from another context causes an error)
 
@@ -52535,7 +52535,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/undecorate-patch-view.html
     description: >
-      
+
       This command must be called from the Observer context.  (Attempting to
       call from another context causes an error)
 
@@ -52569,7 +52569,7 @@ primitives:
       tags: []
       fullName: view2.5d:undecorate-patch-view
       description: >
-        
+
         This command must be called from the Observer context.  (Attempting to
         call from another context causes an error)
 
@@ -52599,7 +52599,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/turtle-view.html
     description: >
-      
+
       This command must be called from the Observer context.  (Attempting to
       call from another context causes an error)
 
@@ -52648,7 +52648,7 @@ primitives:
       tags: []
       fullName: view2.5d:turtle-view
       description: >
-        
+
         This command must be called from the Observer context.  (Attempting to
         call from another context causes an error)
 
@@ -52684,7 +52684,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/update-all-patch-views.html
     description: |
-      
+
       This command must be called from the Observer context.
       Updates all existing patch-view windows according to the latest values.
     metadata:
@@ -52699,7 +52699,7 @@ primitives:
       tags: []
       fullName: view2.5d:update-all-patch-views
       description: |
-        
+
         This command must be called from the Observer context.
         Updates all existing patch-view windows according to the latest values.
     urlHome: https://docs.netlogo.org/view2.5d.html
@@ -52713,7 +52713,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/update-patch-view.html
     description: |
-      
+
       This command must be called from the Observer context.
       Updates only the patch-view window with the specified title (if any).
     metadata:
@@ -52731,7 +52731,7 @@ primitives:
       tags: []
       fullName: view2.5d:update-patch-view
       description: |
-        
+
         This command must be called from the Observer context.
         Updates only the patch-view window with the specified title (if any).
     urlHome: https://docs.netlogo.org/view2.5d.html
@@ -52745,7 +52745,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/update-turtle-view.html
     description: |
-      
+
       This command must be called from the Observer context.
       Updates only the turtle-view window with the specified title (if any).
       The turtle-set selector must be supplied to refresh the set of turtles.
@@ -52769,7 +52769,7 @@ primitives:
       tags: []
       fullName: view2.5d:update-turtle-view
       description: |
-        
+
         This command must be called from the Observer context.
         Updates only the turtle-view window with the specified title (if any).
         The turtle-set selector must be supplied to refresh the set of turtles.
@@ -52784,7 +52784,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/get-z-scale.html
     description: >
-      
+
       This reporter must be called from the Observer context.
 
       Returns the current z-scale of the turtle-view or patch-view window with
@@ -52806,7 +52806,7 @@ primitives:
       tags: []
       fullName: view2.5d:get-z-scale
       description: >
-        
+
         This reporter must be called from the Observer context.
 
         Returns the current z-scale of the turtle-view or patch-view window with
@@ -52822,7 +52822,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/set-z-scale.html
     description: >
-      
+
       This command must be called from the Observer context.
 
       Updates only the turtle-view or patch-view window with the specified title
@@ -52848,7 +52848,7 @@ primitives:
       tags: []
       fullName: view2.5d:set-z-scale
       description: >
-        
+
         This command must be called from the Observer context.
 
         Updates only the turtle-view or patch-view window with the specified
@@ -52866,7 +52866,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/set-turtle-stem-thickness.html
     description: >
-      
+
       This command must be called from the Observer context.
 
       Updates only the turtle-view window with the specified title (if any).
@@ -52892,7 +52892,7 @@ primitives:
       tags: []
       fullName: view2.5d:set-turtle-stem-thickness
       description: >
-        
+
         This command must be called from the Observer context.
 
         Updates only the turtle-view window with the specified title (if any).
@@ -52910,7 +52910,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/set-turtle-stem-color.html
     description: >
-      
+
       This command must be called from the Observer context.
 
       Updates only the turtle-view window with the specified title (if any).
@@ -52978,7 +52978,7 @@ primitives:
       tags: []
       fullName: view2.5d:set-turtle-stem-color
       description: >
-        
+
         This command must be called from the Observer context.
 
         Updates only the turtle-view window with the specified title (if any).
@@ -53142,7 +53142,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/get-observer-angles.html
     description: >
-      
+
       This reporter must be called from the Observer context.
 
       Returns a list reflecting the observer's angular perspective { heading
@@ -53165,7 +53165,7 @@ primitives:
       tags: []
       fullName: view2.5d:get-observer-angles
       description: >
-        
+
         This reporter must be called from the Observer context.
 
         Returns a list reflecting the observer's angular perspective { heading
@@ -53182,7 +53182,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/set-observer-angles.html
     description: >
-      
+
       This command must be called from the Observer context.
 
       Updates only the turtle-view window with the specified title (if any).
@@ -53212,7 +53212,7 @@ primitives:
       tags: []
       fullName: view2.5d:set-observer-angles
       description: >
-        
+
         This command must be called from the Observer context.
 
         Updates only the turtle-view window with the specified title (if any).
@@ -53230,7 +53230,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/get-observer-xy-focus.html
     description: >
-      
+
       This reporter must be called from the Observer context.
 
       Returns a list reflecting the x and y coordinates the observer is "looking
@@ -53252,7 +53252,7 @@ primitives:
       tags: []
       fullName: view2.5d:get-observer-xy-focus
       description: >
-        
+
         This reporter must be called from the Observer context.
 
         Returns a list reflecting the x and y coordinates the observer is
@@ -53268,7 +53268,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/set-observer-xy-focus.html
     description: >
-      
+
       This command must be called from the Observer context.
 
       Updates only the turtle-view window with the specified title (if any).
@@ -53297,7 +53297,7 @@ primitives:
       tags: []
       fullName: view2.5d:set-observer-xy-focus
       description: >
-        
+
         This command must be called from the Observer context.
 
         Updates only the turtle-view window with the specified title (if any).
@@ -53315,7 +53315,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/get-observer-distance.html
     description: |
-      
+
       This reporter must be called from the Observer context.
       Returns the observer's distance from its "focus point"
     metadata:
@@ -53335,7 +53335,7 @@ primitives:
       tags: []
       fullName: view2.5d:get-observer-distance
       description: |
-        
+
         This reporter must be called from the Observer context.
         Returns the observer's distance from its "focus point"
     urlHome: https://docs.netlogo.org/view2.5d.html
@@ -53349,7 +53349,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/set-observer-distance.html
     description: |
-      
+
       This command must be called from the Observer context.
       Updates only the turtle-view window with the specified title (if any).
       Sets the observer's distance from its "focus point"
@@ -53372,7 +53372,7 @@ primitives:
       tags: []
       fullName: view2.5d:set-observer-distance
       description: |
-        
+
         This command must be called from the Observer context.
         Updates only the turtle-view window with the specified title (if any).
         Sets the observer's distance from its "focus point"
@@ -53387,7 +53387,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/remove-patch-view.html
     description: >
-      
+
       This command closes and removes the specified patch view programmatically
       (equivalent to closing the window manually).
     metadata:
@@ -53405,7 +53405,7 @@ primitives:
       tags: []
       fullName: view2.5d:remove-patch-view
       description: >
-        
+
         This command closes and removes the specified patch view
         programmatically (equivalent to closing the window manually).
     urlHome: https://docs.netlogo.org/view2.5d.html
@@ -53419,7 +53419,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/remove-turtle-view.html
     description: >
-      
+
       This command closes and removes the specified turtle view programmatically
       (equivalent to closing the window manually).
     metadata:
@@ -53437,7 +53437,7 @@ primitives:
       tags: []
       fullName: view2.5d:remove-turtle-view
       description: >
-        
+
         This command closes and removes the specified turtle view
         programmatically (equivalent to closing the window manually).
     urlHome: https://docs.netlogo.org/view2.5d.html
@@ -53451,7 +53451,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/remove-all-patch-views.html
     description: >
-      
+
       This command closes and removes all patch views programmatically
       (equivalent to closing the windows manually).
     metadata:
@@ -53466,7 +53466,7 @@ primitives:
       tags: []
       fullName: view2.5d:remove-all-patch-views
       description: >
-        
+
         This command closes and removes all patch views programmatically
         (equivalent to closing the windows manually).
     urlHome: https://docs.netlogo.org/view2.5d.html
@@ -53480,7 +53480,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/remove-all-turtle-views.html
     description: >
-      
+
       This command closes and removes all turtle views programmatically
       (equivalent to closing the windows manually).
     metadata:
@@ -53495,7 +53495,7 @@ primitives:
       tags: []
       fullName: view2.5d:remove-all-turtle-views
       description: >
-        
+
         This command closes and removes all turtle views programmatically
         (equivalent to closing the windows manually).
     urlHome: https://docs.netlogo.org/view2.5d.html
@@ -53509,7 +53509,7 @@ primitives:
     isFromExtension: true
     url: https://docs.netlogo.org/view2.5d/count-windows.html
     description: >
-      
+
       This reporter returns the number of turtle and patch views that are
       currently active.
     metadata:
@@ -53526,7 +53526,7 @@ primitives:
       tags: []
       fullName: view2.5d:count-windows
       description: >
-        
+
         This reporter returns the number of turtle and patch views that are
         currently active.
     urlHome: https://docs.netlogo.org/view2.5d.html

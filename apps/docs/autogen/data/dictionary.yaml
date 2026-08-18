@@ -483,9 +483,9 @@ entries:
       syntax:
         - name: autoplot?
           since: "1.0"
-        - name: autoplotx?
+        - name: autoplot-x?
           since: "7.0"
-        - name: autoploty?
+        - name: autoplot-y?
           since: "7.0"
       description: |+
         Reports true if auto-plotting is on for the current plot or plot axis, false
@@ -493,25 +493,25 @@ entries:
 
       examples:
         - code: autoplot?
-        - code: autoplotx?
-        - code: autoploty?
+        - code: autoplot-x?
+        - code: autoplot-y?
   - id: auto-plot-status
     entry_categories:
       - title: Plotting
         id: plottinggroup
     data:
       syntax:
-        - name: auto-plot-off
+        - name: autoplot-off
           since: "1.0"
-        - name: auto-plot-x-off
+        - name: autoplot-x-off
           since: "7.0"
-        - name: auto-plot-y-off
+        - name: autoplot-y-off
           since: "7.0"
-        - name: auto-plot-on
+        - name: autoplot-on
           since: "1.0"
-        - name: auto-plot-x-on
+        - name: autoplot-x-on
           since: "7.0"
-        - name: auto-plot-y-on
+        - name: autoplot-y-on
           since: "7.0"
       description: |+
         These pairs of commands are used to control the NetLogo feature of
@@ -530,12 +530,12 @@ entries:
         See also [[plot|plot]], [[plotxy|plotxy]], and [[histogram|histogram]], and also the [Plots section of the Interface Tab guide](/interfacetab#plots).
 
       examples:
-        - code: auto-plot-off
-        - code: auto-plot-x-off
-        - code: auto-plot-y-off
-        - code: auto-plot-on
-        - code: auto-plot-x-on
-        - code: auto-plot-y-on
+        - code: autoplot-off
+        - code: autoplot-x-off
+        - code: autoplot-y-off
+        - code: autoplot-on
+        - code: autoplot-x-on
+        - code: autoplot-y-on
   - id: back
     entry_categories:
       - title: Turtle-related

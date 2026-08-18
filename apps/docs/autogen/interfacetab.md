@@ -898,7 +898,7 @@ the extent of the axes. The x and y axes can be automatically (and independently
 by checking the Auto scale x-axis? and Auto scale y-axis? boxes respectively. Note that if
 you use `histogram` Auto scale y-axis? will work but Auto scale x-axis? will have no
 effect. Note that these checkboxes can be overridden by Plotting commands such as
-`auto-plot-x-on`, `auto-plot-y-on`, `auto-plot-x-off`, `auto-plot-y-off`, `set-plot-x-range`
+`autoplot-x-on`, `autoplot-y-on`, `autoplot-x-off`, `autoplot-y-off`, `set-plot-x-range`
 and `set-plot-y-range`.
 
 Under "Plot setup commands" and "Plot update commands" you can enter commands
