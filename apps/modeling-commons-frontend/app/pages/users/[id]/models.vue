@@ -16,6 +16,41 @@ const {
   return handleApiError(data, error, "fetching user profile");
 });
 
+// Mirrors users/[id]/index.vue: a private member's name must not reach a title
+// or an index, and a listing of someone's models is not useful to a crawler.
+const seoMeta = computed(() => {
+  if (error.value) {
+    return {
+      title: defaultStrings.unavailableProfileName,
+      description: defaultStrings.unavailableProfileDescription,
+      indexable: false,
+    };
+  }
+  if (profile.value && !profile.value.isProfilePublic) {
+    return {
+      title: defaultStrings.privateProfileName,
+      description: defaultStrings.privateProfileDescription,
+      indexable: false,
+    };
+  }
+  if (profile.value) {
+    return {
+      title: `Models by ${profile.value.name}`,
+      description: `NetLogo models shared by ${profile.value.name} on Modeling Commons.`,
+      indexable: true,
+    };
+  }
+  return { title: "Models by Member", description: undefined, indexable: false };
+});
+
+useSeoMeta({
+  title: () => seoMeta.value.title,
+  description: () => seoMeta.value.description,
+  ogTitle: () => seoMeta.value.title,
+  ogDescription: () => seoMeta.value.description,
+  robots: () => (seoMeta.value.indexable ? undefined : "noindex, nofollow"),
+});
+
 const {
   data,
   error: modelsError,

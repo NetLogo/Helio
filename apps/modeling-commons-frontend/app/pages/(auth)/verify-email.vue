@@ -54,6 +54,7 @@ definePageMeta({
 useSeoMeta({
   title: "Verify your email address",
   description: "Check your inbox and verify your email address to continue.",
+  robots: "noindex, nofollow",
 });
 
 const COOLDOWN_SECONDS = 60 * 5;

@@ -17,6 +17,14 @@
 
 <script lang="ts" setup>
 import type { PageHeroProps } from "#ui/types";
+useSeoMeta({
+  title: "Donate",
+  description:
+    "Support Modeling Commons and help keep agent-based modeling open and accessible to everyone.",
+  ogTitle: "Support Modeling Commons",
+  ogDescription:
+    "Support Modeling Commons and help keep agent-based modeling open and accessible to everyone.",
+});
 const hero = {
   title: "Help us build a more\nscientifically-literate world",
   description: [

@@ -72,6 +72,7 @@ definePageMeta({
 useSeoMeta({
   title: "Welcome to Modeling Commons",
   description: "A quick intro to the community before you dive in.",
+  robots: "noindex, nofollow",
 });
 
 const route = useRoute();

@@ -110,6 +110,15 @@ useSeoMeta({
   ogTitle: () => seoMeta.value.title,
   ogDescription: () => seoMeta.value.description,
   ogType: "article",
+  // Only for a model we actually rendered. On the private and unavailable
+  // branches displayCard is null, so no preview reaches a social card.
+  //
+  // nuxt-og-image rebases any og:image that does not start with "https" onto
+  // site.url, so this passes through untouched against the production CDN and
+  // gets rewritten against a plain-http local storage endpoint. That rewrite is
+  // a local artifact, not a production problem.
+  ogImage: () => displayCard.value?.previewImageUrl ?? undefined,
+  twitterImage: () => displayCard.value?.previewImageUrl ?? undefined,
   robots: () => (error.value ? "noindex, nofollow" : undefined),
 });
 

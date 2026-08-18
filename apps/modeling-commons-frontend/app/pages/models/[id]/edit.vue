@@ -18,6 +18,7 @@ definePageMeta({
 useSeoMeta({
   title: "Edit Model",
   description: "Edit an existing NetLogo model on Modeling Commons",
+  robots: "noindex, nofollow",
 });
 
 const route = useRoute();

@@ -17,6 +17,7 @@ definePageMeta({
 useSeoMeta({
   title: "Upload Model",
   description: "Upload a new NetLogo model to Modeling Commons",
+  robots: "noindex, nofollow",
 });
 
 const route = useRoute();

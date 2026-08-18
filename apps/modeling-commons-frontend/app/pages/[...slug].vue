@@ -36,4 +36,13 @@ if (!page.value) {
     message: "Page Not Found",
   });
 }
+
+// Privacy, terms and cookies are real indexable pages; without this they
+// inherited only the site-wide title and shipped no description at all.
+useSeoMeta({
+  title: () => page.value?.title,
+  description: () => page.value?.description,
+  ogTitle: () => page.value?.title,
+  ogDescription: () => page.value?.description,
+});
 </script>

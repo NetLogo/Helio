@@ -1,2 +1,10 @@
 User-Agent: *
 Disallow:
+
+# Account and authoring pages are kept out of the index with a `noindex` meta
+# tag on the page itself, not with Disallow. A crawler has to fetch a page to
+# see that tag, so disallowing it here would preserve exactly the URLs we want
+# dropped: blocked pages can still be indexed, without a snippet, when they are
+# linked from elsewhere.
+
+Sitemap: https://www.modelingcommons.org/sitemap.xml

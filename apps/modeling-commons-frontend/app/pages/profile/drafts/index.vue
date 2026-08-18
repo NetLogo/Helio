@@ -133,6 +133,7 @@ definePageMeta({
 useSeoMeta({
   title: "My Drafts",
   description: "Your in-progress model uploads",
+  robots: "noindex, nofollow",
 });
 
 interface DraftsListResponse {

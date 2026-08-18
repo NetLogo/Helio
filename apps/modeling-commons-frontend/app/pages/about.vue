@@ -20,6 +20,14 @@
 </template>
 
 <script lang="ts" setup>
+useSeoMeta({
+  title: "About",
+  description:
+    "Modeling Commons is a space to share, explore and collaborate on NetLogo agent-based models.",
+  ogTitle: "About Modeling Commons",
+  ogDescription:
+    "Modeling Commons is a space to share, explore and collaborate on NetLogo agent-based models.",
+});
 const hero = {
   title: "Understanding Complexity, Together.",
   description: [

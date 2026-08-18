@@ -83,6 +83,7 @@ definePageMeta({
 useSeoMeta({
   title: "Log In",
   description: "Log In to your account to continue",
+  robots: "noindex, nofollow",
 });
 
 const meta = useWebsite();
