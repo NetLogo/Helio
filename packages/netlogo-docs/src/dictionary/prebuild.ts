@@ -85,7 +85,7 @@ export function prebuild(_dictionary: DictionaryType): Required<FullDictionary> 
     "Agentset",
     "Color",
     "Control Flow and Logic",
-    "Anonymous Procedures",
+    "Arrow Procedures",
     "World",
     "Perspective",
     "HubNet",

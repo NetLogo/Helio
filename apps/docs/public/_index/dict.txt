@@ -221,7 +221,9 @@ int int.html
 is-agent? is-of-type.html
 is-agentset? is-of-type.html
 is-anonymous-command? is-of-type.html
+is-arrow-command? is-of-type.html
 is-anonymous-reporter? is-of-type.html
+is-arrow-reporter? is-of-type.html
 is-boolean? is-of-type.html
 is-directed-link? is-of-type.html
 is-link? is-of-type.html

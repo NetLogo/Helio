@@ -8692,7 +8692,7 @@ primitives:
     description: >+
       Reports a list containing only those items of *list* for which
        the reporter reports true -- in other words, the items satisfying the
-       given condition. *reporter* may be an anonymous reporter or the
+       given condition. *reporter* may be an arrow reporter or the
        name of a reporter.
 
       ```
@@ -8712,7 +8712,7 @@ primitives:
       ```
 
 
-      See also [[map|map]], [[reduce|reduce]], [[-> (anonymous
+      See also [[map|map]], [[reduce|reduce]], [[-> (arrow
       procedure)|arrow]].
 
     examples:
@@ -8722,7 +8722,7 @@ primitives:
     metadata:
       id: filter
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
         - title: List
           id: listsgroup
@@ -8733,7 +8733,7 @@ primitives:
         description: >+
           Reports a list containing only those items of *list* for which
            the reporter reports true -- in other words, the items satisfying the
-           given condition. *reporter* may be an anonymous reporter or the
+           given condition. *reporter* may be an arrow reporter or the
            name of a reporter.
 
           ```
@@ -8753,7 +8753,7 @@ primitives:
           ```
 
 
-          See also [[map|map]], [[reduce|reduce]], [[-> (anonymous
+          See also [[map|map]], [[reduce|reduce]], [[-> (arrow
           procedure)|arrow]].
 
         examples:
@@ -8952,7 +8952,7 @@ primitives:
     url: https://docs.netlogo.org/dictionary.html#foreach
     description: >+
       With a single list, runs the command for each item of *list*. *command*
-      may be the name of a command, or an anonymous command
+      may be the name of a command, or an arrow command
        created with [[->|arrow]].
 
       ```
@@ -9003,7 +9003,7 @@ primitives:
       ```
 
 
-      See also [[map|map]], [[-> (anonymous procedure)|arrow]].
+      See also [[map|map]], [[-> (arrow procedure)|arrow]].
 
     examples:
       - foreach *list* *command*
@@ -9013,7 +9013,7 @@ primitives:
     metadata:
       id: foreach
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
         - title: List
           id: listsgroup
@@ -9023,7 +9023,7 @@ primitives:
             since: "1.3"
         description: >+
           With a single list, runs the command for each item of *list*.
-          *command* may be the name of a command, or an anonymous command
+          *command* may be the name of a command, or an arrow command
            created with [[->|arrow]].
 
           ```
@@ -9074,7 +9074,7 @@ primitives:
           ```
 
 
-          See also [[map|map]], [[-> (anonymous procedure)|arrow]].
+          See also [[map|map]], [[-> (arrow procedure)|arrow]].
 
         examples:
           - code: foreach *list* *command*
@@ -12056,8 +12056,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12077,7 +12077,7 @@ primitives:
     metadata: &a25
       id: is-of-type
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
         - title: Link-related
           id: linkgroup
@@ -12096,8 +12096,8 @@ primitives:
       primitive_aliases:
         - category_id: anonymousproceduresgroup
           aliases:
-            - is-anonymous-command?
-            - is-anonymous-reporter?
+            - is-arrow-command?
+            - is-arrow-reporter?
         - category_id: linkgroup
           aliases:
             - is-directed-link?
@@ -12133,9 +12133,9 @@ primitives:
             since: 1.2.1
           - name: is-agentset?
             since: 1.2.1
-          - name: is-anonymous-command?
+          - name: is-arrow-command?
             since: "6.0"
-          - name: is-anonymous-reporter?
+          - name: is-arrow-reporter?
             since: "6.0"
           - name: is-boolean?
             since: 1.2.1
@@ -12167,8 +12167,8 @@ primitives:
         examples:
           - code: is-agent? *value*
           - code: is-agentset? *value*
-          - code: is-anonymous-command? *value*
-          - code: is-anonymous-reporter? *value*
+          - code: is-arrow-command? *value*
+          - code: is-arrow-reporter? *value*
           - code: is-boolean? *value*
           - code: is-<breed>? *value*
           - code: is-<link-breed>? *value*
@@ -12196,8 +12196,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12219,7 +12219,7 @@ primitives:
     sourceIcon: netlogo-netlogo-desktop
   - id: is-of-type-is-anonymous-command?
     key: is-of-type
-    name: is-anonymous-command?
+    name: is-arrow-command?
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#is-of-type
     description: |+
@@ -12228,8 +12228,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12251,7 +12251,7 @@ primitives:
     sourceIcon: netlogo-netlogo-desktop
   - id: is-of-type-is-anonymous-reporter?
     key: is-of-type
-    name: is-anonymous-reporter?
+    name: is-arrow-reporter?
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#is-of-type
     description: |+
@@ -12260,8 +12260,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12292,8 +12292,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12324,8 +12324,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12356,8 +12356,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12388,8 +12388,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12420,8 +12420,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12452,8 +12452,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12484,8 +12484,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12516,8 +12516,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12548,8 +12548,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12580,8 +12580,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12612,8 +12612,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -12644,8 +12644,8 @@ primitives:
     examples:
       - is-agent? *value*
       - is-agentset? *value*
-      - is-anonymous-command? *value*
-      - is-anonymous-reporter? *value*
+      - is-arrow-command? *value*
+      - is-arrow-reporter? *value*
       - is-boolean? *value*
       - is-<breed>? *value*
       - is-<link-breed>? *value*
@@ -14191,7 +14191,7 @@ primitives:
     url: https://docs.netlogo.org/dictionary.html#map
     description: >+
       With a single *list*, the given reporter is run for each item in
-       the list, and a list of the results is collected and reported. *reporter* may be an anonymous reporter or the name of a reporter.
+       the list, and a list of the results is collected and reported. *reporter* may be an arrow reporter or the name of a reporter.
 
       ```
 
@@ -14227,7 +14227,7 @@ primitives:
       ```
 
 
-      See also [[foreach|foreach]], [[-> (anonymous procedure)|arrow]].
+      See also [[foreach|foreach]], [[-> (arrow procedure)|arrow]].
 
     examples:
       - map *reporter* *list*
@@ -14237,7 +14237,7 @@ primitives:
     metadata:
       id: map
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
         - title: List
           id: listsgroup
@@ -14247,7 +14247,7 @@ primitives:
             since: "1.3"
         description: >+
           With a single *list*, the given reporter is run for each item in
-           the list, and a list of the results is collected and reported. *reporter* may be an anonymous reporter or the name of a reporter.
+           the list, and a list of the results is collected and reported. *reporter* may be an arrow reporter or the name of a reporter.
 
           ```
 
@@ -14283,7 +14283,7 @@ primitives:
           ```
 
 
-          See also [[foreach|foreach]], [[-> (anonymous procedure)|arrow]].
+          See also [[foreach|foreach]], [[-> (arrow procedure)|arrow]].
 
         examples:
           - code: map *reporter* *list*
@@ -15976,7 +15976,7 @@ primitives:
     url: https://docs.netlogo.org/dictionary.html#n-values
     description: >+
       Reports a list of length *size* containing values computed
-       by repeatedly running the reporter. *reporter* may be an anonymous
+       by repeatedly running the reporter. *reporter* may be an arrow
        reporter or the name of a reporter.
 
       If the reporter accepts inputs, the input will be the number of the
@@ -16006,7 +16006,7 @@ primitives:
       ```
 
 
-      See also [[reduce|reduce]], [[filter|filter]], [[-> (anonymous
+      See also [[reduce|reduce]], [[filter|filter]], [[-> (arrow
       procedure)|arrow]], [[range|range]].
 
     examples:
@@ -16016,7 +16016,7 @@ primitives:
     metadata:
       id: n-values
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
         - title: List
           id: listsgroup
@@ -16026,7 +16026,7 @@ primitives:
             since: "2.0"
         description: >+
           Reports a list of length *size* containing values computed
-           by repeatedly running the reporter. *reporter* may be an anonymous
+           by repeatedly running the reporter. *reporter* may be an arrow
            reporter or the name of a reporter.
 
           If the reporter accepts inputs, the input will be the number of the
@@ -16056,7 +16056,7 @@ primitives:
           ```
 
 
-          See also [[reduce|reduce]], [[filter|filter]], [[-> (anonymous
+          See also [[reduce|reduce]], [[filter|filter]], [[-> (arrow
           procedure)|arrow]], [[range|range]].
 
         examples:
@@ -20145,7 +20145,7 @@ primitives:
       Reduces a list from left to right using the given reporter, resulting
        in a single value. This means, for example, that `reduce
        [ [a b] -> a + b] [1 2 3 4]`is equivalent to *(((1 + 2) + 3) + 4)*. If *list* has a single item, that item is reported. It is an
-       error to reduce an empty list. *reporter* may be an anonymous
+       error to reduce an empty list. *reporter* may be an arrow
        reporter or the name of a reporter.
 
       The first input passed to the reporter is the result so far, and the
@@ -20239,7 +20239,7 @@ primitives:
       ```
 
 
-      See also [[filter|filter]], [[-> (anonymous procedure|arrow]].
+      See also [[filter|filter]], [[-> (arrow procedure|arrow]].
 
     examples:
       - reduce *reporter* *list*
@@ -20248,7 +20248,7 @@ primitives:
     metadata:
       id: reduce
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
       data:
         syntax:
@@ -20258,7 +20258,7 @@ primitives:
           Reduces a list from left to right using the given reporter, resulting
            in a single value. This means, for example, that `reduce
            [ [a b] -> a + b] [1 2 3 4]`is equivalent to *(((1 + 2) + 3) + 4)*. If *list* has a single item, that item is reported. It is an
-           error to reduce an empty list. *reporter* may be an anonymous
+           error to reduce an empty list. *reporter* may be an arrow
            reporter or the name of a reporter.
 
           The first input passed to the reporter is the result so far, and the
@@ -20352,7 +20352,7 @@ primitives:
           ```
 
 
-          See also [[filter|filter]], [[-> (anonymous procedure|arrow]].
+          See also [[filter|filter]], [[-> (arrow procedure|arrow]].
 
         examples:
           - code: reduce *reporter* *list*
@@ -21273,10 +21273,10 @@ primitives:
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#run
     description: >+
-      The `run` form expects the name of a command, an anonymous command,
+      The `run` form expects the name of a command, an arrow command,
        or a string containing commands. This agent then runs them.
 
-      The `runresult` form expects the name of a reporter, an anonymous
+      The `runresult` form expects the name of a reporter, an arrow
       reporter,
        or a string containing a reporter. This agent runs it and reports the result.
 
@@ -21286,17 +21286,17 @@ primitives:
        are cached by NetLogo and thus using `run` on the same
        string over and over is much faster than running different strings.
        The first run, though, will be many times slower than
-       running the same code directly, or in an anonymous command.
+       running the same code directly, or in an arrow command.
 
-      Anonymous procedures are recommended over strings whenever possible.
+      Arrow procedures are recommended over strings whenever possible.
        (An example of when you must use strings is if you accept pieces
        of code from the user of your model.)
 
-      Anonymous procedures may freely read and/or set local variables
+      Arrow procedures may freely read and/or set local variables
        and procedure inputs. Trying to do the same with strings may
        or may not work and should not be relied on.
 
-      When using anonymous procedures, you can provide them with inputs,
+      When using arrow procedures, you can provide them with inputs,
        if you surround the entire call with parentheses. For example:
 
       ```
@@ -21315,7 +21315,7 @@ primitives:
       ```
 
 
-      See also [[foreach|foreach]], [[-> (anonymous procedure)|arrow]].
+      See also [[foreach|foreach]], [[-> (arrow procedure)|arrow]].
 
     examples:
       - run *command*
@@ -21329,7 +21329,7 @@ primitives:
     metadata: &a50
       id: run
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
         - title: Control Flow and Logic
           id: controlgroup
@@ -21340,10 +21340,10 @@ primitives:
           - name: runresult
             since: "1.3"
         description: >+
-          The `run` form expects the name of a command, an anonymous command,
+          The `run` form expects the name of a command, an arrow command,
            or a string containing commands. This agent then runs them.
 
-          The `runresult` form expects the name of a reporter, an anonymous
+          The `runresult` form expects the name of a reporter, an arrow
           reporter,
            or a string containing a reporter. This agent runs it and reports the result.
 
@@ -21353,17 +21353,17 @@ primitives:
            are cached by NetLogo and thus using `run` on the same
            string over and over is much faster than running different strings.
            The first run, though, will be many times slower than
-           running the same code directly, or in an anonymous command.
+           running the same code directly, or in an arrow command.
 
-          Anonymous procedures are recommended over strings whenever possible.
+          Arrow procedures are recommended over strings whenever possible.
            (An example of when you must use strings is if you accept pieces
            of code from the user of your model.)
 
-          Anonymous procedures may freely read and/or set local variables
+          Arrow procedures may freely read and/or set local variables
            and procedure inputs. Trying to do the same with strings may
            or may not work and should not be relied on.
 
-          When using anonymous procedures, you can provide them with inputs,
+          When using arrow procedures, you can provide them with inputs,
            if you surround the entire call with parentheses. For example:
 
           ```
@@ -21382,7 +21382,7 @@ primitives:
           ```
 
 
-          See also [[foreach|foreach]], [[-> (anonymous procedure)|arrow]].
+          See also [[foreach|foreach]], [[-> (arrow procedure)|arrow]].
 
         examples:
           - code: run *command*
@@ -21399,10 +21399,10 @@ primitives:
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#run
     description: >+
-      The `run` form expects the name of a command, an anonymous command,
+      The `run` form expects the name of a command, an arrow command,
        or a string containing commands. This agent then runs them.
 
-      The `runresult` form expects the name of a reporter, an anonymous
+      The `runresult` form expects the name of a reporter, an arrow
       reporter,
        or a string containing a reporter. This agent runs it and reports the result.
 
@@ -21412,17 +21412,17 @@ primitives:
        are cached by NetLogo and thus using `run` on the same
        string over and over is much faster than running different strings.
        The first run, though, will be many times slower than
-       running the same code directly, or in an anonymous command.
+       running the same code directly, or in an arrow command.
 
-      Anonymous procedures are recommended over strings whenever possible.
+      Arrow procedures are recommended over strings whenever possible.
        (An example of when you must use strings is if you accept pieces
        of code from the user of your model.)
 
-      Anonymous procedures may freely read and/or set local variables
+      Arrow procedures may freely read and/or set local variables
        and procedure inputs. Trying to do the same with strings may
        or may not work and should not be relied on.
 
-      When using anonymous procedures, you can provide them with inputs,
+      When using arrow procedures, you can provide them with inputs,
        if you surround the entire call with parentheses. For example:
 
       ```
@@ -21441,7 +21441,7 @@ primitives:
       ```
 
 
-      See also [[foreach|foreach]], [[-> (anonymous procedure)|arrow]].
+      See also [[foreach|foreach]], [[-> (arrow procedure)|arrow]].
 
     examples:
       - run *command*
@@ -23317,7 +23317,7 @@ primitives:
     description: >+
       If the input is a list, reports a new list containing the same
        items as the input list, in a sorted order defined by the boolean
-       reporter. *reporter* may be an anonymous reporter or
+       reporter. *reporter* may be an arrow reporter or
        the name of a reporter.
 
       The two inputs to *reporter* are the values being compared.
@@ -23349,7 +23349,7 @@ primitives:
       ```
 
 
-      See also [[sort|sort]], [[sort-on|sort-on]], [[-> (anonymous
+      See also [[sort|sort]], [[sort-on|sort-on]], [[-> (arrow
       procedure)|arrow]].
 
     examples:
@@ -23360,7 +23360,7 @@ primitives:
     metadata:
       id: sort-by
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
         - title: Agentset
           id: agentsetgroup
@@ -23373,7 +23373,7 @@ primitives:
         description: >+
           If the input is a list, reports a new list containing the same
            items as the input list, in a sorted order defined by the boolean
-           reporter. *reporter* may be an anonymous reporter or
+           reporter. *reporter* may be an arrow reporter or
            the name of a reporter.
 
           The two inputs to *reporter* are the values being compared.
@@ -23405,7 +23405,7 @@ primitives:
           ```
 
 
-          See also [[sort|sort]], [[sort-on|sort-on]], [[-> (anonymous
+          See also [[sort|sort]], [[sort-on|sort-on]], [[-> (arrow
           procedure)|arrow]].
 
         examples:
@@ -27555,18 +27555,18 @@ primitives:
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#arrow
     description: >+
-      Creates and reports an anonymous procedure - a command or reporter
+      Creates and reports an arrow procedure - a command or reporter
        - depending on the input. Within *commands* or *reporter* the listed *args* may be used just as you would use `let` or procedure variables.
        The variable names in *args* have the same restrictions
        as variable names of commands and reporters. In addition, they must not match the name of
        any let or procedure variable in their procedure.
 
-      Anonymous procedures are commonly used with the primitives
+      Arrow procedures are commonly used with the primitives
       [[foreach|foreach]], [[map|map]], [[reduce|reduce]], [[filter|filter]],
       [[sort-by|sort-by]], and [[n-values|n-values]]. See
        those entries for example usage.
 
-      See the [Anonymous Procedures section](/programming#anonymous-procedures)
+      See the [Arrow Procedures section](/programming#arrow-procedures)
       of the
        Programming Guide for details.
 
@@ -27578,30 +27578,30 @@ primitives:
     metadata:
       id: arrow
       entry_categories:
-        - title: Anonymous Procedures
+        - title: Arrow Procedures
           id: anonproceduresgroup
       primitive_aliases:
         - category_id: anonproceduresgroup
           aliases:
-            - -> (anonymous procedure)
+            - -> (arrow procedure)
       data:
         syntax:
           - name: ->
             since: "6.0"
         description: >+
-          Creates and reports an anonymous procedure - a command or reporter
+          Creates and reports an arrow procedure - a command or reporter
            - depending on the input. Within *commands* or *reporter* the listed *args* may be used just as you would use `let` or procedure variables.
            The variable names in *args* have the same restrictions
            as variable names of commands and reporters. In addition, they must not match the name of
            any let or procedure variable in their procedure.
 
-          Anonymous procedures are commonly used with the primitives
+          Arrow procedures are commonly used with the primitives
           [[foreach|foreach]], [[map|map]], [[reduce|reduce]],
           [[filter|filter]], [[sort-by|sort-by]], and [[n-values|n-values]]. See
            those entries for example usage.
 
-          See the [Anonymous Procedures
-          section](/programming#anonymous-procedures) of the
+          See the [Arrow Procedures
+          section](/programming#arrow-procedures) of the
            Programming Guide for details.
 
         examples:
@@ -37207,7 +37207,7 @@ primitives:
 
 
       You may supply the command with arguments, just like you would with
-      anonymous commands:
+      arrow commands:
 
 
       ```NetLogo
@@ -37276,7 +37276,7 @@ primitives:
 
 
         You may supply the command with arguments, just like you would with
-        anonymous commands:
+        arrow commands:
 
 
         ```NetLogo
@@ -38969,7 +38969,7 @@ primitives:
     description: |
 
       Reports a new matrix which results from applying <i>reporter</i>
-      (an anonymous reporter or the name of a reporter)
+      (an arrow reporter or the name of a reporter)
       to each of the elements of the given matrix. For example,
 
       ```NetLogo
@@ -39026,7 +39026,7 @@ primitives:
       description: |
 
         Reports a new matrix which results from applying <i>reporter</i>
-        (an anonymous reporter or the name of a reporter)
+        (an arrow reporter or the name of a reporter)
         to each of the elements of the given matrix. For example,
 
         ```NetLogo
@@ -48489,7 +48489,7 @@ primitives:
 
       Reports a random item from <div><i>list</i></div>.
 
-      The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
+      The probability of each item being picked is proportional to the weight given by the <div><i>arrow-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the arrow procedure refers to the list item. (See the [Arrow Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#arrow-procedures) of the Programming Guide for more details.)
 
       It is an error for the list to be empty.
 
@@ -48514,7 +48514,7 @@ primitives:
       let pairs (map list items weights)
       ```
 
-      Since we apply [`map`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#map) to both the `items` list and the `weights` list, the parentheses are needed in `(map list items weights)`. We also use the concise anonymous procedure syntax (see the [programming guide](http://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures)) to pass [`list`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#list) as the reporter for [`map`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#map). The same thing could have been written `(map [ [a b] -> list a b ] items weights)`.
+      Since we apply [`map`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#map) to both the `items` list and the `weights` list, the parentheses are needed in `(map list items weights)`. We also use the concise arrow procedure syntax (see the [programming guide](http://ccl.northwestern.edu/netlogo/docs/programming.html#arrow-procedures)) to pass [`list`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#list) as the reporter for [`map`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#map). The same thing could have been written `(map [ [a b] -> list a b ] items weights)`.
     metadata:
       name: weighted-one-of-list
       extensionName: rnd
@@ -48530,7 +48530,7 @@ primitives:
             - type:
                 kind: ReporterType
               kind: DescribedType
-              explicitName: anonymous-reporter
+              explicitName: arrow-reporter
         isInfix: false
       tags:
         - list
@@ -48539,7 +48539,7 @@ primitives:
 
         Reports a random item from <div><i>list</i></div>.
 
-        The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
+        The probability of each item being picked is proportional to the weight given by the <div><i>arrow-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the arrow procedure refers to the list item. (See the [Arrow Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#arrow-procedures) of the Programming Guide for more details.)
 
         It is an error for the list to be empty.
 
@@ -48564,7 +48564,7 @@ primitives:
         let pairs (map list items weights)
         ```
 
-        Since we apply [`map`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#map) to both the `items` list and the `weights` list, the parentheses are needed in `(map list items weights)`. We also use the concise anonymous procedure syntax (see the [programming guide](http://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures)) to pass [`list`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#list) as the reporter for [`map`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#map). The same thing could have been written `(map [ [a b] -> list a b ] items weights)`.
+        Since we apply [`map`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#map) to both the `items` list and the `weights` list, the parentheses are needed in `(map list items weights)`. We also use the concise arrow procedure syntax (see the [programming guide](http://ccl.northwestern.edu/netlogo/docs/programming.html#arrow-procedures)) to pass [`list`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#list) as the reporter for [`map`](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#map). The same thing could have been written `(map [ [a b] -> list a b ] items weights)`.
     urlHome: https://docs.netlogo.org/rnd.html
     sourceIcon: i-mingcute-random-line
   - id: rnd-weighted-n-of-list
@@ -48579,7 +48579,7 @@ primitives:
 
       Reports a list of the given <div><i>size</i></div> randomly chosen from the <div><i>list</i></div> of candidates, with no repeats.
 
-      The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
+      The probability of each item being picked is proportional to the weight given by the <div><i>arrow-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the arrow procedure refers to the list item. (See the [Arrow Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#arrow-procedures) of the Programming Guide for more details.)
 
       It is an error for <div><i>size</i></div> to be greater than the size of the <div><i>list</i> of candidates</div>.
 
@@ -48613,7 +48613,7 @@ primitives:
             - type:
                 kind: ReporterType
               kind: DescribedType
-              explicitName: anonymous-reporter
+              explicitName: arrow-reporter
         isInfix: false
       tags:
         - list
@@ -48622,7 +48622,7 @@ primitives:
 
         Reports a list of the given <div><i>size</i></div> randomly chosen from the <div><i>list</i></div> of candidates, with no repeats.
 
-        The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
+        The probability of each item being picked is proportional to the weight given by the <div><i>arrow-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the arrow procedure refers to the list item. (See the [Arrow Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#arrow-procedures) of the Programming Guide for more details.)
 
         It is an error for <div><i>size</i></div> to be greater than the size of the <div><i>list</i> of candidates</div>.
 
@@ -48651,7 +48651,7 @@ primitives:
 
       Reports a list of the given <div><i>size</i></div> randomly chosen from the <div><i>list</i></div> of candidates, with repeats.
 
-      The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
+      The probability of each item being picked is proportional to the weight given by the <div><i>arrow-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the arrow procedure refers to the list item. (See the [Arrow Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#arrow-procedures) of the Programming Guide for more details.)
 
       It is **not** an error for <div><i>size</i></div> to be greater than the size of the <div><i>list</i></div> of candidates, but there has to be at least one candidate.
 
@@ -48687,7 +48687,7 @@ primitives:
             - type:
                 kind: ReporterType
               kind: DescribedType
-              explicitName: anonymous-reporter
+              explicitName: arrow-reporter
         isInfix: false
       tags:
         - list
@@ -48696,7 +48696,7 @@ primitives:
 
         Reports a list of the given <div><i>size</i></div> randomly chosen from the <div><i>list</i></div> of candidates, with repeats.
 
-        The probability of each item being picked is proportional to the weight given by the <div><i>anonymous-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the anonymous procedure refers to the list item. (See the [Anonymous Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#anonymous-procedures) of the Programming Guide for more details.)
+        The probability of each item being picked is proportional to the weight given by the <div><i>arrow-reporter</i></div> for that item. The weights must not be negative. The first argument passed to the arrow procedure refers to the list item. (See the [Arrow Procedures section](https://ccl.northwestern.edu/netlogo/docs/programming.html#arrow-procedures) of the Programming Guide for more details.)
 
         It is **not** an error for <div><i>size</i></div> to be greater than the size of the <div><i>list</i></div> of candidates, but there has to be at least one candidate.
 
@@ -50355,7 +50355,7 @@ primitives:
               kind: UnnamedType
             - type:
                 kind: CustomType
-                name: anonymous-reporter
+                name: arrow-reporter
               kind: UnnamedType
         isInfix: false
       tags: []
@@ -52396,7 +52396,7 @@ primitives:
       The Title is a string, which will be used to label the new Window and to
       call for subsequent updates and modifications.
 
-      Specification of the Reporter uses the NetLogo anonymous procedure syntax,
+      Specification of the Reporter uses the NetLogo arrow procedure syntax,
       from the Observer perspective.
 
 
@@ -52434,7 +52434,7 @@ primitives:
         The Title is a string, which will be used to label the new Window and to
         call for subsequent updates and modifications.
 
-        Specification of the Reporter uses the NetLogo anonymous procedure
+        Specification of the Reporter uses the NetLogo arrow procedure
         syntax, from the Observer perspective.
 
 
@@ -52608,7 +52608,7 @@ primitives:
 
       The turtle-set is any selector for turtles.
 
-      Reporter is an anonymous reporter that should take a turtle as input, and
+      Reporter is an arrow reporter that should take a turtle as input, and
       report some number from it.
 
 
@@ -52657,7 +52657,7 @@ primitives:
 
         The turtle-set is any selector for turtles.
 
-        Reporter is an anonymous reporter that should take a turtle as input,
+        Reporter is an arrow reporter that should take a turtle as input,
         and report some number from it.
 
 
@@ -52915,7 +52915,7 @@ primitives:
 
       Updates only the turtle-view window with the specified title (if any).
 
-      colorReporter is an anonymous reporter that should take a turtle as input,
+      colorReporter is an arrow reporter that should take a turtle as input,
       and report some number representing a color from it.
 
       Turtles are now drawn with "pins" or "stems" that have the specified color
@@ -52983,7 +52983,7 @@ primitives:
 
         Updates only the turtle-view window with the specified title (if any).
 
-        colorReporter is an anonymous reporter that should take a turtle as
+        colorReporter is an arrow reporter that should take a turtle as
         input, and report some number representing a color from it.
 
         Turtles are now drawn with "pins" or "stems" that have the specified
