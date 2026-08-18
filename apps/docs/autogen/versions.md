@@ -727,7 +727,7 @@ example: `let strangers turtles who-are-not link-neighbors`.
   from the NetLogo preferences dialog. The output is in JSON text file format.
   See the Logging docs for more information.
 - BehaviorSpace experiments can now also be run from a terminal or command
-  console using the "NetLogo_Console" app with NetLogo's bundled Java by using
+  console using the "NetLogo Console" app with NetLogo's bundled Java by using
   the `--headless` flag. See the BehaviorSpace documentation for more
   information and examples. This avoids the need to install and configure a
   separate Java runtime to use the `netlogo-headless.sh` script, which remains

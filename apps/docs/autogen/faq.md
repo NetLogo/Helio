@@ -615,8 +615,8 @@ memory, or 4 gigabytes.
 Each platform contains configuration files (with the extension ".cfg")
 containing JVM settings. There is one configuration file for each
 sub-application (NetLogo, NetLogo 3D, HubNet Client, etc.). Windows also has a
-configuration file for the NetLogo_Console app; on macOS and Linux the
-configuration file for NetLogo_Console is just the NetLogo.cfg file. Although
+configuration file for the NetLogo Console app; on macOS and Linux the
+configuration file for NetLogo Console is just the NetLogo.cfg file. Although
 the file location varies by platform, the process for changing it is the same.
 
 Platform specific notes follow:

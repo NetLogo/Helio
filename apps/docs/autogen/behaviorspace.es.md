@@ -710,8 +710,8 @@ se pueden crear o editar configuraciones de experimentos directamente utilizando
 
 #### Cómo se usa
 
-Se ejecuta NetLogo usando la aplicación `NetLogo_Console` con el argumento de línea de comandos `--headless`
-Ésta se encuentra en el directorio principal de la instalación de NetLogo. El script `NetLogo_Console` es
+Se ejecuta NetLogo usando la aplicación `NetLogo Console` con el argumento de línea de comandos `--headless`
+Ésta se encuentra en el directorio principal de la instalación de NetLogo. El script `NetLogo Console` es
 compatible con los siguientes argumentos:
 
 - `--headless`: activa el modo sin interfaz para ejecutar un experimento de Espacio-Conductual (obligatorio, de lo contrario
@@ -748,7 +748,7 @@ Es importante tener en cuenta que antes de NetLogo 6.3.0, las indicaciones recom
 en el sistema para llevar a cabo experimentos de Espacio-Conductual. El script `netlogo-headless.sh` aún se
 incluye en NetLogo y puede seguir utilizándose como antes, lo que puede ser preferible en entornos de servidor,
 donde la versión de Java instalada está estrictamente controlada. Sin embargo, en una computadora personal, el
-método recomendado es utilizar la aplicación `NetLogo_Console --headless`. Dado que `NetLogo_Console` emplea la
+método recomendado es utilizar la aplicación `NetLogo\ Console --headless`. Dado que `NetLogo Console` emplea la
 versión de Java que se incluye con NetLogo, no es necesario realizar una instalación adicional de software ni
 configuraciones especiales.
 
@@ -758,14 +758,14 @@ Resulta más conveniente crear previamente la configuración de un experimento e
 de modo que quede guardada como parte del modelo. Para ejecutar una configuración de experimento que
 se haya guardado en un modelo, se presenta un ejemplo de línea de comandos que debe ejecutarse
 desde la carpeta de instalación de NetLogo {{version}}, de modo que las rutas a la aplicación
-`NetLogo_Console` y al modelo `Wolf Sheep Simple 5.nlogo` sean correctas.
+`NetLogo Console` y al modelo `Wolf Sheep Simple 5.nlogo` sean correctas.
 
 Las siguientes instrucciones deberían funcionar tal cual en una terminal en macOS y Linux. En Windows,
 en el símbolo del sistema, puede usarse `^` en lugar de `\` para dividir el comando en varias líneas
 o simplemente colocar el comando en una sola línea.
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --model "models/IABM Textbook/chapter 4/Wolf Sheep Simple 5.nlogo" \
   --experiment "Wolf Sheep Simple model analysis" \
   --table -
@@ -789,7 +789,7 @@ nombre).
 A continuación, se presenta otro ejemplo que muestra algunos argumentos adicionales, opcionales:
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --model "models/IABM Textbook/chapter 4/Wolf Sheep Simple 5.nlogo" \
   --experiment "Wolf Sheep Simple model analysis" \
   --max-pxcor 5 \
@@ -812,7 +812,7 @@ de texto.
 Otro ejemplo adicional:
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --model "models/IABM Textbook/chapter 4/Wolf Sheep Simple 5.nlogo" \
   --experiment "Wolf Sheep Simple model analysis" \
   --table wsp5-table-output.csv \
@@ -857,7 +857,7 @@ es crear un experimento utilizando Espacio-Conductual en la interfaz gráfica de
 la opción "Exportar".
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --model "models/IABM Textbook/chapter 4/Wolf Sheep Simple 5.nlogo" \
   --setup-file ~/my-wsp-setups.xml \
   --experiment "My WSP Exploration"
@@ -870,7 +870,7 @@ Para ejecutar un experimento NetLogo 3D en modo sin interfaz, utiliza el argumen
 por ejemplo:
 
 ```sh
-./NetLogo_Console --headless \
+./NetLogo\ Console --headless \
   --3D \
   --model "models/3D/Sample Models/GasLab/GasLab Free Gas 3D.nlogo3d" \
   --experiment "100 runs" \
