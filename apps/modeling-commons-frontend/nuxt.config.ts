@@ -41,6 +41,23 @@ export default defineNuxtConfig({
     "@nuxtjs/turnstile",
   ],
 
+  sitemap: {
+    sources: ["/api/__sitemap__/urls"],
+    exclude: [
+      "/login",
+      "/signup",
+      "/reset-password",
+      "/verify-email",
+      "/passkey",
+      "/onboarding",
+      "/profile",
+      "/profile/**",
+      "/models/upload",
+      "/models/*/edit",
+      "/theme",
+    ],
+  },
+
   security: {
     enabled: false,
     headers: {
