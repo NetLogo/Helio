@@ -826,8 +826,10 @@ Let's take a look at the design of the Command Center.
 ![[interfacetab/command-center.webp]]
 
 The smaller box, below the large box, is where you type a command. After typing
-it press the Return or Enter key to run it. You can use the up arrow to access the
-commands you previously typed, and the down arrow to navigate back through the list.
+it press the Return or Enter key to run it. You can also hold Shift and press the
+Return or Enter key to add a new line without running the current command. You can
+use the up arrow to access the commands you previously typed, and the down arrow to
+navigate back through the list.
 
 To the left of where you type is a label that initially says "observer>". Clicking on
 the label will open a popup menu where you can choose either observer, turtles, or patches,
