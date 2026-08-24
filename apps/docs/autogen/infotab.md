@@ -373,6 +373,18 @@ H<sub>2</sub>O
 
 WWW<sup>[1]</sup>
 
+## LaTeX
+
+As of NetLogo 7.1.0, the Info tab now supports LaTeX formatting. You can wrap LaTeX expressions in `$` for inline formatting, or in `$$` for block formatting.
+
+#### Example
+
+```text
+$E=mc^2$
+
+$$a^2+b^2=c^2$$
+```
+
 ## Notes on usage
 
 - Paragraphs, lists, code blocks and other features should be separated from each other with a blank line. If you find that something isn't formatted the way you expected, it might be because you need to add a blank line before it.
