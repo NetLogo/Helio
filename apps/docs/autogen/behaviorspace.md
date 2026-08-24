@@ -646,6 +646,25 @@ can add `random-seed new-seed` to your setup commands to re-generate a new uniqu
 storing the `new-seed` as a global variable so you can output it with the rest of your results would let you re-run a
 run later on by manually using that value to set the `random-seed`.
 
+#### Run options: Error behavior
+
+This run option allows you to control the behavior of the experiment when an error occurs. By default, the current
+run will be aborted, but other runs will continue. Alternatively, you can abort the entire experiment when an error
+occurs, or ignore all errors entirely.
+
+#### Run options: Experiment memory limit
+
+By default, there is no limit on the memory that a BehaviorSpace experiment can use while it's running. This run
+option allows you to control this, preventing BehaviorSpace from using too many of your computer's resources. Note
+that if you specify a limit that is too low (in most cases, below ~750MB) BehaviorSpace may not be able to load the
+model. Also note that this option limits the overall memory for the entire experiment, not for individual runs, so
+if you have a large number of parallel runs you may need to choose a higher memory limit.
+
+#### Run options: Display parallel run output
+
+If this option is enabled, output (eg. `print`, `show`) from background runs will be forwarded to the Command Center
+visible in the primary run.
+
 #### Observing runs
 
 After you complete the "Run Options" dialog, another dialog will appear, titled
