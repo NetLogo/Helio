@@ -188,9 +188,6 @@ const rules = {
       { pattern: /^application\/xml/, mapped: 'application/octet-stream' },
     ],
     undetectedTypesDefault: 'application/octet-stream',
-    // Declared types that aren't real claims (browser fallbacks for unrecognized
-    // extensions like .nlogox); skip the declared-vs-detected mismatch check.
-    mismatchAllowedDeclaredTypes: ['application/octet-stream'],
   },
   avatar: {
     maxFileSize: 2 * MEGABYTE,

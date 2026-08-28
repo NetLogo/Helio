@@ -64,24 +64,6 @@ describe('resolveFile', () => {
     await expect(hook(request, reply)).rejects.toThrow(FileUploadError);
   });
 
-  it('rejects when the detected mime does not match the declared mime', async () => {
-    fileTypeMock.fileTypeFromBuffer.mockResolvedValue({
-      mime: 'application/x-msdownload',
-      ext: 'exe',
-    });
-    const hook = resolveFile();
-    const request = makeRequest({
-      file: {
-        filename: 'image.png',
-        mimetype: 'image/png',
-        encoding: '7bit',
-        buffer: Buffer.from('xx'),
-      },
-    });
-    // @ts-expect-error - no need for done callback
-    await expect(hook(request, reply)).rejects.toThrow(FileValidationError);
-  });
-
   it('rejects when the detected type is in the denied list', async () => {
     fileTypeMock.fileTypeFromBuffer.mockResolvedValue({
       mime: 'application/x-msdownload',
@@ -211,5 +193,111 @@ describe('resolveFile', () => {
 
     // @ts-expect-error - no need for done callback
     await expect(hook(request, reply)).rejects.toThrow(ArgumentInvalidException);
+  });
+
+  describe('declared mime is ignored', () => {
+    const nlogoxDeclaredTypes = [
+      ['text/nlogox', 'NetLogo installed, OS knows the extension'],
+      ['application/octet-stream', 'NetLogo not installed, browser fallback'],
+      ['text/xml', 'client maps the extension to generic xml'],
+      ['application/xml', 'client maps the extension to generic xml'],
+      ['text/plain', 'client treats the extension as text'],
+      ['', 'client sends no type at all'],
+    ] as const;
+
+    it.each(nlogoxDeclaredTypes)('accepts a .nlogox declared as %s (%s)', async (declared) => {
+      fileTypeMock.fileTypeFromBuffer.mockResolvedValue({ mime: 'application/xml', ext: 'xml' });
+      const hook = resolveFile();
+      const request = makeRequest({
+        file: {
+          filename: 'PID4Rabbits_IFAC06.nlogox',
+          mimetype: declared,
+          encoding: '7bit',
+          buffer: Buffer.from('<?xml version="1.0" encoding="utf-8"?><model/>'),
+        },
+      });
+
+      // @ts-expect-error - no need for done callback
+      await hook(request, reply);
+
+      const uploaded = (request as unknown as { uploadedFile: ResolvedFile }).uploadedFile;
+      expect(uploaded.detectedMimetype).toBe('application/xml');
+      expect(uploaded.mimetype).toBe('application/octet-stream');
+    });
+
+    it('accepts a legacy .nlogo, which sniffs as nothing at all', async () => {
+      fileTypeMock.fileTypeFromBuffer.mockResolvedValue(undefined);
+      const hook = resolveFile();
+      const request = makeRequest({
+        file: {
+          filename: 'wolf-sheep.nlogo',
+          mimetype: 'text/plain',
+          encoding: '7bit',
+          buffer: Buffer.from('globals [ energy ]'),
+        },
+      });
+
+      // @ts-expect-error - no need for done callback
+      await hook(request, reply);
+
+      const uploaded = (request as unknown as { uploadedFile: ResolvedFile }).uploadedFile;
+      expect(uploaded.detectedMimetype).toBeNull();
+      expect(uploaded.mimetype).toBe('application/octet-stream');
+    });
+
+    it('resolves the stored mime from the detected type, not the declared one', async () => {
+      fileTypeMock.fileTypeFromBuffer.mockResolvedValue({ mime: 'image/jpeg', ext: 'jpg' });
+      const hook = resolveFile();
+      const request = makeRequest({
+        file: {
+          filename: 'a.png',
+          mimetype: 'image/png',
+          encoding: '7bit',
+          buffer: Buffer.from('xx'),
+        },
+      });
+
+      // @ts-expect-error - no need for done callback
+      await hook(request, reply);
+
+      const uploaded = (request as unknown as { uploadedFile: ResolvedFile }).uploadedFile;
+      expect(uploaded.detectedMimetype).toBe('image/jpeg');
+      expect(uploaded.mimetype).toBe('image/jpeg');
+    });
+
+    it('applies the allowlist to the detected type, so a benign declared type cannot smuggle a file in', async () => {
+      fileTypeMock.fileTypeFromBuffer.mockResolvedValue({ mime: 'image/gif', ext: 'gif' });
+      const hook = resolveFile({ allowedMimeTypes: ['image/png'] });
+      const request = makeRequest({
+        file: {
+          filename: 'a.png',
+          mimetype: 'image/png',
+          encoding: '7bit',
+          buffer: Buffer.from('xx'),
+        },
+      });
+
+      // @ts-expect-error - no need for done callback
+      await expect(hook(request, reply)).rejects.toThrow(FileValidationError);
+    });
+
+    it('rejects a denied type even when the declared type is benign', async () => {
+      fileTypeMock.fileTypeFromBuffer.mockResolvedValue({
+        mime: 'application/x-msdownload',
+        ext: 'exe',
+      });
+      const hook = resolveFile();
+      const request = makeRequest({
+        file: {
+          filename: 'image.png',
+          mimetype: 'image/png',
+          encoding: '7bit',
+          buffer: Buffer.from('xx'),
+        },
+      });
+
+      // @ts-expect-error - no need for done callback
+      await expect(hook(request, reply)).rejects.toThrow(FileValidationError);
+    });
   });
 });

@@ -56,19 +56,11 @@ export function resolveFile(options: ResolveFileOptions = {}): preHandlerHookHan
       throw new FileUploadError('File exceeds the maximum allowed size');
     }
 
+    // The declared MIME comes from the client's OS association table, so it varies
+    // per machine for the same bytes (a .nlogox is `text/nlogox` where NetLogo is
+    // installed, `application/octet-stream` where it isn't). Only the sniffed type
+    // decides anything here.
     const detected = await fileTypeFromBuffer(buffer);
-
-    if (
-      detected &&
-      detected.mime !== data.mimetype &&
-      !rules.mime.mismatchAllowedDeclaredTypes.includes(data.mimetype)
-    ) {
-      gc(buffer);
-      throw new FileValidationError(
-        data.filename,
-        `declared MIME ${data.mimetype} does not match detected ${detected.mime}`,
-      );
-    }
 
     if (detected && rules.mime.deniedTypes.includes(detected.mime)) {
       gc(buffer);
