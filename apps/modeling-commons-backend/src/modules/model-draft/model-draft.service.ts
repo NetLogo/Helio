@@ -39,9 +39,35 @@ import { STAGING_KEY_RANDOM_SEGMENT_LENGTH } from './model-draft.storage.ts';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
+import rules from '#src/config/rules.ts';
 
 const LEGACY_UUID_PREFIX_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i;
+
+function assertFileAllowedForRole(
+  role: DraftFileRole,
+  file: { filename: string; contentType: string; buffer: Buffer },
+): void {
+  if (role === 'primary' && !isValidNetlogoFilename(file.filename)) {
+    throw new ModelDraftInvalidPayloadError(
+      'Primary file must have a valid NetLogo filename extension (.nlogo, .nlogo3d, .nlogox, .nlogox3d)',
+    );
+  }
+
+  if (role !== 'preview') return;
+
+  const { allowedMimeTypes, maxFileSize } = rules.previewImage;
+  if (!allowedMimeTypes.includes(file.contentType)) {
+    throw new ModelDraftInvalidPayloadError(
+      `Preview image must be one of ${allowedMimeTypes.join(', ')}`,
+    );
+  }
+  if (file.buffer.length > maxFileSize) {
+    throw new ModelDraftInvalidPayloadError(
+      `Preview image exceeds the maximum size of ${maxFileSize} bytes`,
+    );
+  }
+}
 
 export default function makeModelDraftService({
   transactionManager,
@@ -350,6 +376,8 @@ export default function makeModelDraftService({
       role: DraftFileRole,
       file: { buffer: Buffer<ArrayBuffer>; filename: string; contentType: string },
     ): Promise<DraftFileUploadResponseDto> {
+      assertFileAllowedForRole(role, file);
+
       const key = await modelDraftStorage.putStaged({
         userId: draft.userId,
         draftId: draft.id,
@@ -369,11 +397,6 @@ export default function makeModelDraftService({
 
       const next: DraftData = { ...data };
       if (role === 'primary') {
-        if (!isValidNetlogoFilename(file.filename)) {
-          throw new ModelDraftInvalidPayloadError(
-            'Primary file must have a valid NetLogo filename extension (.nlogo, .nlogo3d, .nlogox, .nlogox3d)',
-          );
-        }
         if (data.primaryFile) {
           await modelDraftStorage.deleteObject(data.primaryFile.s3Key).catch(() => undefined);
         }

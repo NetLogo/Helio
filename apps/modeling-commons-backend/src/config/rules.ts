@@ -193,6 +193,10 @@ const rules = {
     maxFileSize: 2 * MEGABYTE,
     allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
   },
+  previewImage: {
+    maxFileSize: 5 * MEGABYTE,
+    allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+  },
   auth: {
     name: {
       length: { min: 2, max: 50 } as MinMax,
