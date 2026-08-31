@@ -5,6 +5,7 @@ import { prisma } from '#src/shared/db/prisma.client.ts';
 import { newId } from '#src/shared/utils/id.ts';
 import { validateRequestId } from '#src/shared/utils/validate-request-id.ts';
 import { addIdFormat } from '#src/shared/utils/validator.util.ts';
+import { trace } from '@opentelemetry/api';
 import Fastify from 'fastify';
 
 async function init(): Promise<void> {
@@ -12,6 +13,12 @@ async function init(): Promise<void> {
     logger: {
       level: env.log.level,
       redact: ['headers.authorization'],
+      mixin: () => {
+        const span = trace.getActiveSpan();
+        if (!span) return {};
+        const { traceId, spanId } = span.spanContext();
+        return { trace_id: traceId, span_id: spanId };
+      },
     },
     genReqId: (req) => {
       // header best practice: don't use "x-"
