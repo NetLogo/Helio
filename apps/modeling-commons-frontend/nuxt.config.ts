@@ -247,10 +247,9 @@ export default defineNuxtConfig({
     },
   },
 
-  // @disable-after-beta
   sourcemap: {
     server: true,
-    client: true,
+    client: false,
   },
   logLevel: "verbose",
 });
