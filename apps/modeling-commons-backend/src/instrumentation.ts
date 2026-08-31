@@ -29,12 +29,14 @@ if (process.env['OTEL_SDK_DISABLED'] !== 'true') {
   const { NodeSDK } = await import('@opentelemetry/sdk-node');
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http');
   const { FastifyOtelInstrumentation } = await import('@fastify/otel');
+  const { PrismaInstrumentation } = await import('@prisma/instrumentation');
 
   const sdk = new NodeSDK({
     instrumentations: [
       new HttpInstrumentation(),
       // registerOnInitialization auto-registers the Fastify plugin on server creation
       new FastifyOtelInstrumentation({ registerOnInitialization: true }),
+      new PrismaInstrumentation(),
     ],
   });
 
