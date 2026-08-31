@@ -4,6 +4,7 @@
  * Registered instrumentations:
  *   - HTTP           — inbound/outbound HTTP request spans
  *   - @fastify/otel  — Fastify route + lifecycle hook spans (official Fastify plugin)
+ *   - @prisma/instrumentation — Prisma client operation + query spans
  *
  * CQRS tracing is handled by application-level middleware that uses
  * @opentelemetry/api directly (see src/shared/cqrs/otel-middleware.ts).
