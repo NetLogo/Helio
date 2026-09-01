@@ -36,7 +36,10 @@ if (process.env['OTEL_SDK_DISABLED'] !== 'true') {
     instrumentations: [
       new HttpInstrumentation(),
       // registerOnInitialization auto-registers the Fastify plugin on server creation
-      new FastifyOtelInstrumentation({ registerOnInitialization: true }),
+      new FastifyOtelInstrumentation({
+        registerOnInitialization: true,
+        ignorePaths: '/api/health',
+      }),
       new PrismaInstrumentation(),
     ],
   });
