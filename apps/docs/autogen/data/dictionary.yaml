@@ -3540,9 +3540,9 @@ entries:
         import utils
         ```
 
-        This will import procedures in "utils.nls" in the same directory as the
+        This will import procedures in "utils.nlm" in the same directory as the
         current file and make them available with a "utils:" prefix. As an example,
-        if there is a reporter called `add` in "utils.nls", then it will be made
+        if there is a reporter called `add` in "utils.nlm", then it will be made
         available for use under the name `utils:add`.
 
         The prefix can be changed as follows:
