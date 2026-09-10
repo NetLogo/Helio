@@ -13,16 +13,14 @@ const isVideoTutorial = computed(() => {
 </script>
 
 <template>
-  <!-- eslint-disable-next-line vue/no-multiple-template-root -->
   <UPage :ui="{ root: 'lg:gap-10' }">
     <ScrollProgress />
 
-    <StickyHeader>
+    <!-- <StickyHeader>
       <CollapsibleHeader :label="article?.title || 'Learning Content'">
-        <ArticleRelevantFor :article="article" class="m-0! p-0! mt-5! mb-2! lg:hidden ml-(--space-xl)! mr-auto" />
         <ArticleNavigation class="block" />
       </CollapsibleHeader>
-    </StickyHeader>
+    </StickyHeader> -->
 
     <template v-if="article">
       <ArticleBody :article="article" :surround="surround" />
