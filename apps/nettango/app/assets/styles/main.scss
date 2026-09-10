@@ -13,3 +13,41 @@
 
 @include meta.load-css("@repo/vue-ui/styles.scss");
 @include meta.load-css("./BlockHero.css");
+
+table {
+    --color-neutral-lightest: #f2f2f2;
+    --color-neutral-darkest-15: rgba(0, 0, 0, 0.15);
+
+    --table-background: var(--color-neutral-lightest);
+    --table-border-color: var(--color-neutral-darkest-15);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--radius-md);
+
+    th {
+      color: var(--color-text);
+      
+    }
+
+    tr:first-child {
+      th {
+        &:first-child {
+          border-top-left-radius: var(--radius-md);
+        }
+        &:last-child {
+          border-top-right-radius: var(--radius-md);
+        }
+      }
+    }
+
+    tr:last-child {
+      td {
+        &:first-child {
+          border-bottom-left-radius: var(--radius-md);
+        }
+        &:last-child {
+          border-bottom-right-radius: var(--radius-md);
+        }
+      }
+    }
+  }
