@@ -17,10 +17,12 @@ export default defineAppConfig({
 
     contentNavigation: {
       slots: {
+        root: "text-4xl",
         list: 'mx-0 px-2 lg:mt-[var(--block-top)]',
         listWithChildren: 'px-0',
       },
     },
+
     contentToc: {
       slots: {
         root: 'px-0! w-full -mx-0',
