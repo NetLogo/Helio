@@ -10,7 +10,6 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/content",              // Markdown
     "@nuxt/hints",                // Development hints
-    "@nuxt/image",                // Image optimization
   ],
 
   gtag: {},
