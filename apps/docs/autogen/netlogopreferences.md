@@ -140,12 +140,6 @@ that location. Deselecting this option will cause the value to change by one
 increment towards the mouse click, also moving the widget thumb. This option
 applies to slider widgets and the Speed Slider.
 
-### UI Scale
-
-This option is for Linux only. It must be set to the same value as your system
-UI scale or NetLogo will fail to resize its visual components correctly. This
-value must be a floating point number, or NetLogo will produce an error message.
-
 ### Send anonymous usage statistics
 
 By default NetLogo will now collect anonymous usage statistics from users while
