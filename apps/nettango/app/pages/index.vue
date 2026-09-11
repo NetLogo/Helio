@@ -15,6 +15,7 @@
           <UBadge variant="subtle" size="lg" class="px-3 relative rounded-full font-semibold">
             <Turtles class="size-4 pointer-events-none fill-primary" />
             {{ page.hero.cta.label }}
+            <Icon :name="page.hero.cta.icon" class="size-4" />
           </UBadge>
         </NuxtLink>
       </template>
@@ -43,7 +44,7 @@
               :variant="link.variant === 'solid' ? 'default' : 'outline'"
               as-child
             >
-              <NuxtLink :to="link.to">
+              <NuxtLink :to="link.to" :target="link.external ? '_blank' : undefined">
                 <Icon v-if="link.icon" :name="link.icon" class="size-5" />
                 {{ link.label }}
               </NuxtLink>
@@ -71,51 +72,84 @@
         <UPageCard
           v-for="(card, index) in page.ecosystem.cards"
           :key="index"
-          :icon="card.icon"
           :title="card.title"
+          :description="card.description"
+          :to="card.to"
+          :target="card.external ? '_blank' : undefined"
+          :external="card.external"
           spotlight
           spotlight-color="primary"
         >
-          <template #description>
-            {{ card.description }}
+          <template #leading>
+            <div
+              class="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary"
+            >
+              <UIcon :name="card.icon" class="size-6" />
+            </div>
+          </template>
+          <template #footer>
+            <span class="inline-flex items-center gap-1 text-sm font-medium text-primary">
+              {{ card.cta }}
+              <UIcon :name="card.to ? 'i-lucide-arrow-right' : 'i-lucide-archive'" class="size-4" />
+            </span>
           </template>
         </UPageCard>
       </UPageGrid>
     </UPageSection>
 
     <UPageSection
+      :title="page.gallery.title"
+      :description="page.gallery.description"
+      :links="page.gallery.links"
+      :ui="{ container: '!pt-10' }"
+      class="border-t border-gray-200"
+    >
+      <UPageGrid>
+        <ModelCard v-for="model in models" :key="model.id" :model="model" />
+      </UPageGrid>
+    </UPageSection>
+
+    <UPageSection
       :title="page.gettingStarted.title"
-      align="left"
+      :description="page.gettingStarted.description"
+      :features="page.gettingStarted.features"
+      :links="page.gettingStarted.links"
+      orientation="horizontal"
       :ui="{
-        root: 'bg-gradient-to-b border-t border-gray-200 from-gray-50 to-white',
-        container: 'pt-10!',
+        root: 'border-t border-gray-200 bg-gradient-to-b from-gray-50 to-white',
+        container: 'pt-10! lg:items-center',
+        features: 'gap-6',
       }"
     >
-      <template #description>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <span v-html="page.gettingStarted.description" />
-      </template>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-        <!-- Documentation Block -->
-        <div class="grid grid-cols-1 col-span-2 gap-8">
-          <div v-for="(block, index) in page.gettingStarted.blocks" :key="index" class="space-y-2">
-            <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <UIcon :name="block.icon" class="text-primary" />
-              {{ block.title }}
-            </h3>
-            <p class="text-gray-500">
-              {{ block.description }}
-            </p>
-            <UButton :to="block.link.to" target="_blank" variant="link" class="p-0">
-              {{ block.link.label }} &rarr;
-            </UButton>
-          </div>
-        </div>
-
+      <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <AntSetup />
+        <p class="mb-4 text-xs text-muted text-center uppercase">
+          {{ page.gettingStarted.figure.caption }}
+        </p>
       </div>
     </UPageSection>
+
+        <UPageCTA
+          title="Built something with NetTango?"
+          description="Share your blocks environment with the NetLogo community, or open the Builder to start a new one."
+          variant="subtle"
+          class="mt-16"
+          :links="[
+            {
+              label: 'Open the Builder',
+              to: 'https://netlogoweb.org/nettango-builder',
+              target: '_blank',
+              trailingIcon: 'i-lucide-arrow-up-right',
+            },
+            {
+              label: 'NetLogo Forum',
+              to: 'https://forum.netlogo.org',
+              target: '_blank',
+              color: 'neutral',
+              variant: 'subtle',
+            },
+          ]"
+        />
 
     <UPageSection
       :ui="{ root: 'bg-gray-50  border-t border-gray-200 ', container: '!pt-10 !pb-20' }"
@@ -142,15 +176,19 @@
 </template>
 
 <script setup lang="ts">
+import type { ButtonProps } from "@nuxt/ui";
 import Turtles from "@repo/vue-ui/assets/brands/Turtles.svg";
+
+const models = useModels().slice(0, 3);
+
 const page = {
   hero: {
     title: "Block-based Programming",
     subtitle: "for NetLogo Web",
     description:
-      "NetTango is a blocks-based programming environment for NetLogo designed to make it easier than ever to engage in agent-based modeling with little or no programming experience.",
+      "NetTango is a block-based programming environment for NetLogo Web. Build and explore agent-based models with little or no programming experience.",
     cta: {
-      label: "NetLogo Center",
+      label: "Part of the NetLogo ecosystem",
       to: "https://www.netlogo.org/",
       icon: "i-lucide-arrow-right",
     },
@@ -159,10 +197,11 @@ const page = {
         label: "Launch NetTango Builder",
         to: "https://netlogoweb.org/nettango-builder",
         variant: "solid",
+        external: true,
       },
       {
         label: "Read the Tutorial",
-        to: "https://ccl.northwestern.edu/nettangoweb/tutorial/",
+        to: "/tutorials/introduction-to-the-nettango-builder",
         variant: "outline",
         icon: "i-lucide-book",
       },
@@ -170,67 +209,90 @@ const page = {
   },
   ecosystem: {
     title: "The NetTango Ecosystem",
-    description: "Define the blocks, or play with the model. Two interfaces for different needs.",
+    description:
+      "Define the blocks in the Builder, then hand the finished model to learners in the Player.",
     cards: [
-      {
-        title: "NetTango Desktop",
-        description: "Older desktop version of NetTango that works with NetLogo Desktop models.",
-        icon: "i-lucide-computer",
-      },
       {
         title: "NetTango Builder",
         description:
-          "NetTango builder is an interface for defining blocks and linking them to existing NetLogo Web models.",
+          "Design domain-specific blocks and wire them to an existing NetLogo Web model.",
         icon: "i-heroicons-wrench-screwdriver",
+        to: "https://netlogoweb.org/nettango-builder",
+        external: true,
+        cta: "Open the Builder",
       },
       {
         title: "NetTango Player",
         description:
-          "NetTango player provides the model for end-users to experiment with the model’s behavior using domain-specific blocks.",
+          "Let learners snap blocks together and run the model. No NetLogo code required.",
         icon: "i-heroicons-play-circle",
+        to: "/models/ants",
+        cta: "Try the Ants model",
+      },
+      {
+        title: "NetTango Desktop",
+        description: "The original desktop version of NetTango, built for NetLogo Desktop models.",
+        icon: "i-lucide-computer",
+        cta: "Superseded by NetTango Web",
       },
     ],
   },
+  gallery: {
+    title: "Model Gallery",
+    description:
+      "Ready-to-run NetTango environments. Try one in your browser, or download the project file to open it in the Builder.",
+    links: [
+      {
+        label: "Browse the gallery",
+        to: "/models-gallery",
+        trailingIcon: "i-lucide-arrow-right",
+        color: "neutral",
+        variant: "subtle",
+      },
+    ] satisfies ButtonProps[],
+  },
   gettingStarted: {
     title: "Getting Started",
-    description: `The <a href="https://www.netlogoweb.org/nettango-builder" class="text-primary hover:underline">NetTango builder</a> is available as a part of the NetLogo Web site. <br /><br /> You can select <code class="text-primary font-bold bg-slate-100 rounded-lg px-3 py-1">Files > Load Wolves and Sheep</code> sample project to get a quick look at a simple NetTango Web project.`,
-    blocks: [
+    description:
+      "The NetTango Builder runs in your browser as part of NetLogo Web. Three good places to begin:",
+    features: [
       {
-        title: "Documentation",
-        description:
-          "We have documentation on our GitHub wiki on the basic concepts, terminology, and usage.",
+        title: "Read the documentation",
+        description: "Core concepts, terminology, and usage notes on the GitHub wiki.",
         icon: "i-heroicons-document-text",
-        link: {
-          label: "Visit Wiki",
-          to: "https://github.com/NetLogo/NetTango/wiki",
-        },
+        to: "https://github.com/NetLogo/NetTango/wiki",
+        target: "_blank",
       },
       {
-        title: "Detailed Tutorial",
+        title: "Follow the tutorial",
         description:
-          "There is also a detailed tutorial available which includes links to some completed NetTango Web models as examples.",
+          "Build the Ants blocks environment from an empty project, one short video per step.",
         icon: "i-heroicons-academic-cap",
-        link: {
-          label: "Start Tutorial",
-          to: "https://ccl.northwestern.edu/nettangoweb/tutorial/",
-        },
+        to: "/tutorials/introduction-to-the-nettango-builder",
       },
       {
-        title: "Ants Model",
-        description:
-          "You can also explore the Ant Model to see how NetTango Web blocks are used in a complete example.",
-        icon: "i-lucide-info",
-        link: {
-          label: "Check out Ants Model",
-          to: "https://ccl.northwestern.edu/nettangoweb/tutorial/tango/ants.html",
-        },
+        title: "Explore a finished example",
+        description: "Open the completed tutorial project in the Player before you build your own.",
+        icon: "i-lucide-play",
+        to: "/models/ants",
       },
     ],
+    links: [
+      {
+        label: "Open the Builder",
+        to: "https://www.netlogoweb.org/nettango-builder",
+        target: "_blank",
+        trailingIcon: "i-lucide-arrow-up-right",
+      },
+    ],
+    figure: {
+      caption: "The Setup procedure from the Ants tutorial",
+    },
   },
   collaboration: {
     title: "Collaboration & Open Source",
     content: `NetTango Web is developed as a collaboration between the <a href="https://ccl.northwestern.edu/" class="underline decoration-dotted hover:text-primary">Center for Connected Learning</a> and the <a href="https://tidal.northwestern.edu/" class="underline decoration-dotted hover:text-primary">TIDAL lab</a>, both at Northwestern University.`,
-    footer: `NetTango Web is open source software. The NetTango Web builder is part of the <a href="#" class="text-primary hover:underline">Galapagos project</a> for NetLogo Web. The NetTango blocks interface has its own <a href="https://github.com/NetLogo/NetTango" class="text-primary hover:underline">repository</a>.`,
+    footer: `NetTango Web is open source software. The NetTango Web builder is part of the <a href="https://github.com/NetLogo/Galapagos" target="_blank" class="text-primary hover:underline">Galapagos project</a> for NetLogo Web. The NetTango blocks interface has its own <a href="https://github.com/NetLogo/NetTango" class="text-primary hover:underline">repository</a>.`,
   },
 };
 </script>
