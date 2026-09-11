@@ -9,6 +9,7 @@
   "scripts": {
     "create:env": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.example')) { if (!fs.existsSync('.env')) { fs.copyFileSync('.env.example', '.env'); console.log('✓ .env created from .env.example'); } else { console.log('✓ .env already exists'); } } else { console.log('⚠ .env.example not found'); }\"",
     "init": "npm run create:env && nuxt prepare",
+    "models:sync": "node scripts/sync-models.mjs",
     "nuxt:build": "nuxt build",
     "nuxt:dev": "nuxt dev --port 3003",
     "nuxt:dev:no-autogen": "sh -c 'NO_AUTOGEN=true nuxt dev --port 3003'",

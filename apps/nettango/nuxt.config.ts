@@ -26,6 +26,10 @@ export default defineNuxtConfig({
     },
   ],
 
+  routeRules: {
+    "/models/**": { headers: { "Access-Control-Allow-Origin": "*" } },
+  },
+
   content: {
     build: MarkdownConfig.buildOptions,
   },
