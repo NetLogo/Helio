@@ -4,7 +4,7 @@ import type { DocumentMetadataSchema } from "@repo/netlogo-docs/metadata";
 import type z from 'zod';
 
 definePageMeta({
-  layout: 'docs',
+  layout: 'clean',
 });
 
 const {
@@ -91,10 +91,6 @@ function resolveMeta(page: ContentCollectionItem): ResolvedMeta {
 
 <template>
   <!-- eslint-disable-next-line vue/no-multiple-template-root -->
-  <!-- <template v-if="page">
-    <ContentRenderer :value="page" tag="main" class="prose min-h-screen" />
-  </template>
-  <ErrorDisplay v-else :error-code="404" error-details="The requested page could not be found." /> -->
   <UPage :ui="{ root: 'lg:gap-10' }">
     <ScrollProgress />
 
