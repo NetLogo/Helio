@@ -14,7 +14,12 @@
 @include meta.load-css("@repo/vue-ui/styles.scss");
 @include meta.load-css("./BlockHero.css");
 
-table {
+.prose {
+  blockquote {
+    padding: calc(1.5 * var(--space-md));
+  }
+
+  table {
     --color-neutral-lightest: #f2f2f2;
     --color-neutral-darkest-15: rgba(0, 0, 0, 0.15);
 
@@ -26,7 +31,6 @@ table {
 
     th {
       color: var(--color-text);
-      
     }
 
     tr:first-child {
@@ -34,6 +38,7 @@ table {
         &:first-child {
           border-top-left-radius: var(--radius-md);
         }
+
         &:last-child {
           border-top-right-radius: var(--radius-md);
         }
@@ -45,9 +50,22 @@ table {
         &:first-child {
           border-bottom-left-radius: var(--radius-md);
         }
+
         &:last-child {
           border-bottom-right-radius: var(--radius-md);
         }
       }
     }
   }
+}
+
+.no-stylized-heading {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+  }
+}
