@@ -78,6 +78,12 @@ const _useNavigation = () => {
             { title: 'NetLogo Conference', path: 'https://conference.netlogo.org/', icon: 'lucide:calendar-1', external: true },
           ],
         },
+        {
+          "title": 'Donate to NetLogo',
+          "path": 'https://give.northwestern.edu/campaigns/37603/donations/new?a=9727914&designation_id=N3004411',
+          "icon": 'lucide:heart',
+          "external": true,
+        }
       ]
     }
   ]);
