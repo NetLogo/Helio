@@ -10,10 +10,10 @@
       "Biology",
       "Tutorial"
     ],
-    "thumbnail": "/models/ants.webp",
-    "animatedThumbnail": "/models/ants.gif",
-    "player": "/models/ants.html",
-    "project": "/models/ants.ntjson"
+    "thumbnail": "/assets/models/ants.webp",
+    "animatedThumbnail": "/assets/models/ants.gif",
+    "player": "/assets/models/ants.html",
+    "project": "/assets/models/ants.ntjson"
   },
   {
     "id": "gpc",
@@ -29,10 +29,10 @@
       "Chemistry",
       "Physics"
     ],
-    "thumbnail": "/models/gpc.webp",
-    "animatedThumbnail": "/models/gpc.gif",
-    "player": "/models/gpc.html",
-    "project": "/models/gpc.ntjson"
+    "thumbnail": "/assets/models/gpc.webp",
+    "animatedThumbnail": "/assets/models/gpc.gif",
+    "player": "/assets/models/gpc.html",
+    "project": "/assets/models/gpc.ntjson"
   },
   {
     "id": "rollypollies",
@@ -46,10 +46,10 @@
       "Biology",
       "Behavior"
     ],
-    "thumbnail": "/models/rollypollies.webp",
-    "animatedThumbnail": "/models/rollypollies.gif",
-    "player": "/models/rollypollies.html",
-    "project": "/models/rollypollies.ntjson"
+    "thumbnail": "/assets/models/rollypollies.webp",
+    "animatedThumbnail": "/assets/models/rollypollies.gif",
+    "player": "/assets/models/rollypollies.html",
+    "project": "/assets/models/rollypollies.ntjson"
   },
   {
     "id": "wolves-and-sheep",
@@ -61,9 +61,9 @@
     "tags": [
       "Biology"
     ],
-    "thumbnail": "/models/wolves-and-sheep.webp",
-    "animatedThumbnail": "/models/wolves-and-sheep.gif",
-    "player": "/models/wolves-and-sheep.html",
+    "thumbnail": "/assets/models/wolves-and-sheep.webp",
+    "animatedThumbnail": "/assets/models/wolves-and-sheep.gif",
+    "player": "/assets/models/wolves-and-sheep.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Biology/Wolves%20and%20Sheep.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Biology/Wolves%20and%20Sheep.ntjson",
     "frameHeight": 1468,
@@ -79,9 +79,9 @@
     "tags": [
       "Theory Building"
     ],
-    "thumbnail": "/models/sound-propagation.webp",
-    "animatedThumbnail": "/models/sound-propagation.gif",
-    "player": "/models/sound-propagation.html",
+    "thumbnail": "/assets/models/sound-propagation.webp",
+    "animatedThumbnail": "/assets/models/sound-propagation.gif",
+    "player": "/assets/models/sound-propagation.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Sound%20Propagation.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Sound%20Propagation.ntjson",
     "frameHeight": 2448,
@@ -97,9 +97,9 @@
     "tags": [
       "Theory Building"
     ],
-    "thumbnail": "/models/thermal-equilibration.webp",
-    "animatedThumbnail": "/models/thermal-equilibration.gif",
-    "player": "/models/thermal-equilibration.html",
+    "thumbnail": "/assets/models/thermal-equilibration.webp",
+    "animatedThumbnail": "/assets/models/thermal-equilibration.gif",
+    "player": "/assets/models/thermal-equilibration.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Thermal%20Equilibration.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Thermal%20Equilibration.ntjson",
     "frameHeight": 1574,
@@ -115,9 +115,9 @@
     "tags": [
       "Theory Building"
     ],
-    "thumbnail": "/models/watermelon-biodiversity.webp",
-    "animatedThumbnail": "/models/watermelon-biodiversity.gif",
-    "player": "/models/watermelon-biodiversity.html",
+    "thumbnail": "/assets/models/watermelon-biodiversity.webp",
+    "animatedThumbnail": "/assets/models/watermelon-biodiversity.gif",
+    "player": "/assets/models/watermelon-biodiversity.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Watermelon%20Biodiversity.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Watermelon%20Biodiversity.ntjson",
     "frameHeight": 2018,
@@ -133,9 +133,9 @@
     "tags": [
       "Theory Building"
     ],
-    "thumbnail": "/models/fire.webp",
-    "animatedThumbnail": "/models/fire.gif",
-    "player": "/models/fire.html",
+    "thumbnail": "/assets/models/fire.webp",
+    "animatedThumbnail": "/assets/models/fire.gif",
+    "player": "/assets/models/fire.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Fire.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Fire.ntjson",
     "frameHeight": 940,
@@ -151,9 +151,9 @@
     "tags": [
       "Theory Building"
     ],
-    "thumbnail": "/models/disease.webp",
-    "animatedThumbnail": "/models/disease.gif",
-    "player": "/models/disease.html",
+    "thumbnail": "/assets/models/disease.webp",
+    "animatedThumbnail": "/assets/models/disease.gif",
+    "player": "/assets/models/disease.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Disease.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Disease.ntjson",
     "frameHeight": 2502,
@@ -169,9 +169,9 @@
     "tags": [
       "Theory Building"
     ],
-    "thumbnail": "/models/simplified-disease.webp",
-    "animatedThumbnail": "/models/simplified-disease.gif",
-    "player": "/models/simplified-disease.html",
+    "thumbnail": "/assets/models/simplified-disease.webp",
+    "animatedThumbnail": "/assets/models/simplified-disease.gif",
+    "player": "/assets/models/simplified-disease.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Simplified%20Disease.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Simplified%20Disease.ntjson",
     "frameHeight": 1190,
@@ -187,9 +187,9 @@
     "tags": [
       "Biology"
     ],
-    "thumbnail": "/models/slime-tutorial.webp",
-    "animatedThumbnail": "/models/slime-tutorial.gif",
-    "player": "/models/slime-tutorial.html",
+    "thumbnail": "/assets/models/slime-tutorial.webp",
+    "animatedThumbnail": "/assets/models/slime-tutorial.gif",
+    "player": "/assets/models/slime-tutorial.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Biology/Slime%20Tutorial.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Biology/Slime%20Tutorial.ntjson",
     "frameHeight": 940,
@@ -205,9 +205,9 @@
     "tags": [
       "Biology"
     ],
-    "thumbnail": "/models/wolves-and-moose.webp",
-    "animatedThumbnail": "/models/wolves-and-moose.gif",
-    "player": "/models/wolves-and-moose.html",
+    "thumbnail": "/assets/models/wolves-and-moose.webp",
+    "animatedThumbnail": "/assets/models/wolves-and-moose.gif",
+    "player": "/assets/models/wolves-and-moose.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Biology/Wolves%20and%20Moose.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Biology/Wolves%20and%20Moose.ntjson",
     "frameHeight": 1347,
@@ -223,9 +223,9 @@
     "tags": [
       "Biology"
     ],
-    "thumbnail": "/models/rollypollies-simple.webp",
-    "animatedThumbnail": "/models/rollypollies-simple.gif",
-    "player": "/models/rollypollies-simple.html",
+    "thumbnail": "/assets/models/rollypollies-simple.webp",
+    "animatedThumbnail": "/assets/models/rollypollies-simple.gif",
+    "player": "/assets/models/rollypollies-simple.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Biology/Rollypollies%20Simple.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Biology/Rollypollies%20Simple.ntjson",
     "frameHeight": 940,
@@ -241,9 +241,9 @@
     "tags": [
       "Chemistry and Physics"
     ],
-    "thumbnail": "/models/free-fall.webp",
-    "animatedThumbnail": "/models/free-fall.gif",
-    "player": "/models/free-fall.html",
+    "thumbnail": "/assets/models/free-fall.webp",
+    "animatedThumbnail": "/assets/models/free-fall.gif",
+    "player": "/assets/models/free-fall.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Chemistry%20and%20Physics/Free%20Fall.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Chemistry%20and%20Physics/Free%20Fall.ntjson",
     "frameHeight": 1371,
@@ -259,10 +259,10 @@
     "tags": [
       "Chemistry and Physics"
     ],
-    "thumbnail": "/models/ideal-gas-law.webp",
-    "animatedThumbnail": "/models/ideal-gas-law.gif",
-    "player": "/models/ideal-gas-law.html",
-    "project": "/models/ideal-gas-law.ntjson",
+    "thumbnail": "/assets/models/ideal-gas-law.webp",
+    "animatedThumbnail": "/assets/models/ideal-gas-law.gif",
+    "player": "/assets/models/ideal-gas-law.html",
+    "project": "/assets/models/ideal-gas-law.ntjson",
     "source": "library",
     "frameHeight": 1030
   },
@@ -276,9 +276,9 @@
     "tags": [
       "Chemistry and Physics"
     ],
-    "thumbnail": "/models/motion-maps-1d.webp",
-    "animatedThumbnail": "/models/motion-maps-1d.gif",
-    "player": "/models/motion-maps-1d.html",
+    "thumbnail": "/assets/models/motion-maps-1d.webp",
+    "animatedThumbnail": "/assets/models/motion-maps-1d.gif",
+    "player": "/assets/models/motion-maps-1d.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Chemistry%20and%20Physics/Motion%20Maps%201D.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Chemistry%20and%20Physics/Motion%20Maps%201D.ntjson",
     "frameHeight": 940,
@@ -294,9 +294,9 @@
     "tags": [
       "Chemistry and Physics"
     ],
-    "thumbnail": "/models/particles-sandbox.webp",
-    "animatedThumbnail": "/models/particles-sandbox.gif",
-    "player": "/models/particles-sandbox.html",
+    "thumbnail": "/assets/models/particles-sandbox.webp",
+    "animatedThumbnail": "/assets/models/particles-sandbox.gif",
+    "player": "/assets/models/particles-sandbox.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Chemistry%20and%20Physics/Particles%20Sandbox.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Chemistry%20and%20Physics/Particles%20Sandbox.ntjson",
     "frameHeight": 1574,
@@ -312,9 +312,9 @@
     "tags": [
       "Chemistry and Physics"
     ],
-    "thumbnail": "/models/stop-light.webp",
-    "animatedThumbnail": "/models/stop-light.gif",
-    "player": "/models/stop-light.html",
+    "thumbnail": "/assets/models/stop-light.webp",
+    "animatedThumbnail": "/assets/models/stop-light.gif",
+    "player": "/assets/models/stop-light.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Chemistry%20and%20Physics/Stop%20Light.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Chemistry%20and%20Physics/Stop%20Light.ntjson",
     "frameHeight": 1995,
@@ -330,10 +330,10 @@
     "tags": [
       "Chemistry and Physics"
     ],
-    "thumbnail": "/models/two-particle-sandbox.webp",
-    "animatedThumbnail": "/models/two-particle-sandbox.gif",
-    "player": "/models/two-particle-sandbox.html",
-    "project": "/models/two-particle-sandbox.ntjson",
+    "thumbnail": "/assets/models/two-particle-sandbox.webp",
+    "animatedThumbnail": "/assets/models/two-particle-sandbox.gif",
+    "player": "/assets/models/two-particle-sandbox.html",
+    "project": "/assets/models/two-particle-sandbox.ntjson",
     "source": "library",
     "frameHeight": 1030
   },
@@ -347,9 +347,9 @@
     "tags": [
       "Theory Building"
     ],
-    "thumbnail": "/models/diffusion-graphics.webp",
-    "animatedThumbnail": "/models/diffusion-graphics.gif",
-    "player": "/models/diffusion-graphics.html",
+    "thumbnail": "/assets/models/diffusion-graphics.webp",
+    "animatedThumbnail": "/assets/models/diffusion-graphics.gif",
+    "player": "/assets/models/diffusion-graphics.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Diffusion%20Graphics.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Theory%20Building/Diffusion%20Graphics.ntjson",
     "frameHeight": 940,
@@ -365,9 +365,9 @@
     "tags": [
       "Antomology"
     ],
-    "thumbnail": "/models/antomology-ant-colony.webp",
-    "animatedThumbnail": "/models/antomology-ant-colony.gif",
-    "player": "/models/antomology-ant-colony.html",
+    "thumbnail": "/assets/models/antomology-ant-colony.webp",
+    "animatedThumbnail": "/assets/models/antomology-ant-colony.gif",
+    "player": "/assets/models/antomology-ant-colony.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Ant%20Colony.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Ant%20Colony.ntjson",
     "frameHeight": 940,
@@ -383,9 +383,9 @@
     "tags": [
       "Antomology"
     ],
-    "thumbnail": "/models/antomology-foraging-for-food.webp",
-    "animatedThumbnail": "/models/antomology-foraging-for-food.gif",
-    "player": "/models/antomology-foraging-for-food.html",
+    "thumbnail": "/assets/models/antomology-foraging-for-food.webp",
+    "animatedThumbnail": "/assets/models/antomology-foraging-for-food.gif",
+    "player": "/assets/models/antomology-foraging-for-food.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Foraging%20For%20Food.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Foraging%20For%20Food.ntjson",
     "frameHeight": 940,
@@ -401,9 +401,9 @@
     "tags": [
       "Antomology"
     ],
-    "thumbnail": "/models/antomology-introduction.webp",
-    "animatedThumbnail": "/models/antomology-introduction.gif",
-    "player": "/models/antomology-introduction.html",
+    "thumbnail": "/assets/models/antomology-introduction.webp",
+    "animatedThumbnail": "/assets/models/antomology-introduction.gif",
+    "player": "/assets/models/antomology-introduction.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Introduction.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Introduction.ntjson",
     "frameHeight": 940,
@@ -419,9 +419,9 @@
     "tags": [
       "Antomology"
     ],
-    "thumbnail": "/models/antomology-life-cycle.webp",
-    "animatedThumbnail": "/models/antomology-life-cycle.gif",
-    "player": "/models/antomology-life-cycle.html",
+    "thumbnail": "/assets/models/antomology-life-cycle.webp",
+    "animatedThumbnail": "/assets/models/antomology-life-cycle.gif",
+    "player": "/assets/models/antomology-life-cycle.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Life%20Cycle.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Life%20Cycle.ntjson",
     "frameHeight": 1170,
@@ -437,9 +437,9 @@
     "tags": [
       "Antomology"
     ],
-    "thumbnail": "/models/antomology-pheromones.webp",
-    "animatedThumbnail": "/models/antomology-pheromones.gif",
-    "player": "/models/antomology-pheromones.html",
+    "thumbnail": "/assets/models/antomology-pheromones.webp",
+    "animatedThumbnail": "/assets/models/antomology-pheromones.gif",
+    "player": "/assets/models/antomology-pheromones.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Pheromones.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Pheromones.ntjson",
     "frameHeight": 990,
@@ -455,9 +455,9 @@
     "tags": [
       "Antomology"
     ],
-    "thumbnail": "/models/antomology-predation.webp",
-    "animatedThumbnail": "/models/antomology-predation.gif",
-    "player": "/models/antomology-predation.html",
+    "thumbnail": "/assets/models/antomology-predation.webp",
+    "animatedThumbnail": "/assets/models/antomology-predation.gif",
+    "player": "/assets/models/antomology-predation.html",
     "project": "https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Predation.ntjson",
     "editor": "https://netlogoweb.org/nettango-builder?netTangoModel=https://netlogoweb.org/assets/nt-modelslib/Antomology/Antomology%20-%20Predation.ntjson",
     "frameHeight": 1170,

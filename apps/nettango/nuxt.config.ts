@@ -27,7 +27,7 @@ export default defineNuxtConfig({
   ],
 
   routeRules: {
-    "/models/**": { headers: { "Access-Control-Allow-Origin": "*" } },
+    "/assets/models/**": { headers: { "Access-Control-Allow-Origin": "*" } },
   },
 
   content: {

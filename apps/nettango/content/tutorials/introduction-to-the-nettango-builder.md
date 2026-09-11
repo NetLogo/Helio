@@ -47,7 +47,7 @@ In this step-by-step tutorial, we are going to explain how to start with an exis
 
 ### Project Files
 
-You can try the [final version of the blocks-based Ant model programming environment](/models/ants) or download the [completed NetTango builder project file](/models/ants.ntjson) to explore the finished project.
+You can try the [final version of the blocks-based Ant model programming environment](/models/ants) or download the [completed NetTango builder project file](/assets/models/ants.ntjson) to explore the finished project.
 
 > **Use a compatible browser**
 >
@@ -733,7 +733,7 @@ In case you did not follow along but skimmed the tutorial and you would like to 
 
 You can also download the finished project file with the following link:
 
-**[Project file](/models/ants.ntjson)**
+**[Project file](/assets/models/ants.ntjson)**
 
 <p>
 <video controls poster="/tutorial/videos/thumb/20-final-go.webp">
@@ -775,7 +775,7 @@ If you would like to get your hands on more example projects, here are a few oth
 ### Rollypollies
 
 
-[:Icon{name="fa:file"} Download the Project file](/models/rollypollies.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
+[:Icon{name="fa:file"} Download the Project file](/assets/models/rollypollies.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
 
 [:Icon{name="fa:play"} Demo the Rollypollies environment](/models/rollypollies){class="inline-flex items-center gap-2 font-semibold"}
 
@@ -796,7 +796,7 @@ If you would like to get your hands on more example projects, here are a few oth
 
 
 
-[:Icon{name="fa:file"} Download the Project file](/models/gpc.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
+[:Icon{name="fa:file"} Download the Project file](/assets/models/gpc.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
 
 [:Icon{name="fa:play"} Demo the Gas Particle Sandbox environment](/models/gpc){class="inline-flex items-center gap-2 font-semibold"}
 
