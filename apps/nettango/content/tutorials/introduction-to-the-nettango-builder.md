@@ -47,7 +47,7 @@ In this step-by-step tutorial, we are going to explain how to start with an exis
 
 ### Project Files
 
-You can download the [final version of the blocks-based Ant model programming environment](tango/ants.html) and the [completed NetTango builder project file](tango/ants.ntjson) to explore the finished project.
+You can try the [final version of the blocks-based Ant model programming environment](/models/ants) or download the [completed NetTango builder project file](/models/ants.ntjson) to explore the finished project.
 
 > **Use a compatible browser**
 >
@@ -729,11 +729,11 @@ Congratulations! You have created your very first NetTango project. By now, you 
 
 In case you did not follow along but skimmed the tutorial and you would like to test out the finished project, you can test the finished project with the following link (feel free to also use this link to view the suggested block ordering):
 
-**[Blocks based Ants modeling environment (opens a new window)](tango/ants.html)**
+**[Blocks based Ants modeling environment](/models/ants)**
 
 You can also download the finished project file with the following link:
 
-**[Project file](tango/ants.ntjson)**
+**[Project file](/models/ants.ntjson)**
 
 <p>
 <video controls poster="/tutorial/videos/thumb/20-final-go.webp">
@@ -775,9 +775,9 @@ If you would like to get your hands on more example projects, here are a few oth
 ### Rollypollies
 
 
-[:Icon{name="fa:file"} Download the Project file](tango/ants.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
+[:Icon{name="fa:file"} Download the Project file](/models/rollypollies.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
 
-[:Icon{name="fa:external-link"} Demo the Rollypollies environment](tango/rollypollies.html){class="inline-flex items-center gap-2 font-semibold" target="_blank" rel="noopener"}
+[:Icon{name="fa:play"} Demo the Rollypollies environment](/models/rollypollies){class="inline-flex items-center gap-2 font-semibold"}
 
 :span[The Rollypollies environment is developed by Sugat Dabholkar and Teresa Granito.]{class="italic text-gray-600"}
 :::
@@ -796,9 +796,9 @@ If you would like to get your hands on more example projects, here are a few oth
 
 
 
-[:Icon{name="fa:file"} Download the Project file](tango/gpc.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
+[:Icon{name="fa:file"} Download the Project file](/models/gpc.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
 
-[:Icon{name="fa:external-link"} Demo the Gas Particle Sandbox environment](tango/gpc.html){class="inline-flex items-center gap-2 font-semibold" target="_blank" rel="noopener"}
+[:Icon{name="fa:play"} Demo the Gas Particle Sandbox environment](/models/gpc){class="inline-flex items-center gap-2 font-semibold"}
 
 :span[The Gas Particle Sandbox with Phenomenological Programming environment is developed by Umit Aslan, Nicholas LaGrassa, Michael Horn & Uri Wilensky.]{class="italic text-gray-600"}
 :::
