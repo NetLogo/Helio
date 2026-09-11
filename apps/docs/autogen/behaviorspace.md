@@ -750,6 +750,9 @@ open the graphical interface otherwise).
   to disable parallel runs. defaults to `floor(0.75 * <number of processors>)`.
 - `--update-plots`: enable plot updates. Include this if you want to export plot data,
   or exclude it for better performance.
+- `--error-behavior <behavior>`: controls how the experiment should proceed in the
+  event of a runtime error. valid options are `ignore`, `abortRun`, and `abortExperiment`,
+  with `abortRun` being the default.
 - `--min-pxcor <number>`: override world size setting in model file
 - `--max-pxcor <number>`: override world size setting in model file
 - `--min-pycor <number>`: override world size setting in model file
