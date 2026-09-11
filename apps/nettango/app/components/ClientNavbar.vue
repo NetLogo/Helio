@@ -56,6 +56,10 @@ const navbarLinks = ref<NavbarLink[]>([
     href: "/",
   },
   {
+    title: "Models Gallery",
+    href: "/models-gallery",
+  },
+  {
     title: "NetTango Tutorial",
     href: "/tutorials/introduction-to-the-nettango-builder",
   },
