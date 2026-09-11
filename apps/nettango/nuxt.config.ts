@@ -1,3 +1,5 @@
+import * as MarkdownConfig from '@repo/nuxt-core/markdown.config';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ["@repo/nuxt-core/nuxt.config.ts"],
@@ -10,7 +12,6 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/content",              // Markdown
     "@nuxt/hints",                // Development hints
-    "@nuxt/image",                // Image optimization
   ],
 
   gtag: {},
@@ -24,6 +25,14 @@ export default defineNuxtConfig({
       watch: true,
     },
   ],
+
+  routeRules: {
+    "/assets/models/**": { headers: { "Access-Control-Allow-Origin": "*" } },
+  },
+
+  content: {
+    build: MarkdownConfig.buildOptions,
+  },
 
   vite: {
     optimizeDeps: {
