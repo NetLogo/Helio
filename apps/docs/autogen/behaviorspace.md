@@ -763,6 +763,10 @@ open the graphical interface otherwise).
 specify either `--table` or `--spreadsheet`, or both. If you specify any of the
 world dimensions, you must specify all four.
 
+You can also change the experiment memory limit from the command line, although it can't be
+done with a standard argument like the ones above. Instructions for this can be found in
+[**Adjusting JVM Parameters**](#adjusting-jvm-parameters).
+
 Note that prior to NetLogo 6.3.0 the directions were to use `netlogo-headless.sh`
 (or `netlogo-headless.bat` on Windows) along with a separate installation of Java of the
 system to run BehaviorSpace experiments.  The `netlogo-headless.sh` script is still
