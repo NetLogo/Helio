@@ -76,10 +76,13 @@ its edit dialog. Alternatively you can right-click the widget and choose
 
 **Moving:** Select the widget, then drag it with your mouse to its
 new location. If you hold down the shift key while dragging, the widget will
-move only straight up and down or straight left and right.
+move only straight up and down or straight left and right. If you hold down the
+Ctrl/Cmd key while dragging, the widget will snap to the edges and centers of
+other widgets.
 
 **Resizing:** Select the widget, then drag the handles in the
-selection border.
+selection border. If you hold down the Ctrl/Cmd key while resizing, the selected
+handle will snap to the edges and centers of other widgets.
 
 **Deleting:** With the Delete Tool active you can click on a widget to delete it.
 Clicking the Delete button will delete any selected widgets.
@@ -574,13 +577,17 @@ location. You can use the arrow keys to move the widgets a small
 increment right, left, up, or down. Using shift plus an arrow key
 increases the increment. If you hold down the shift key while dragging,
 the elements will move only straight up and down or straight left and
-right. The items remain selected.
+right. If you hold down the Ctrl/Cmd key while dragging, the selected
+widgets will snap to the edges and centers of other widgets, using the
+widget under the cursor as a reference. The items remain selected.
 
 #### Resizing
 
 Select the widget, then drag the square handles in the
 selection border. If multiple elements are selected the handles can be
-dragged one at a time, and the items remain selected.
+dragged one at a time, and the items remain selected. If you hold down
+the Ctrl/Cmd key while resizing, the selected handle will snap to the
+edges and centers of other widgets.
 
 ### Editing Tool
 
