@@ -252,8 +252,7 @@ following chart.
         <td>
         Available only in the Interface Tab.
         When enabled new widgets stay on a 5 pixel grid so it is easier
-        to line them up. (Note: this feature is disabled when zoomed in
-        or out.)</td>
+        to line them up.</td>
       </tr>
       <tr>
         <td>Convert from 5.3.1 to 6.0</td>
@@ -282,7 +281,7 @@ following chart.
       <tr>
         <td>Preferences…</td>
         <td>
-        Opens the [Preferences dialog](netlogopreferences), where you can customize various NetLogo
+        Opens the <a href="netlogopreferences">Preferences dialog</a>, where you can customize various NetLogo
         settings. On a Mac, this item is on the NetLogo menu instead.</td>
       </tr>
       <tr>
