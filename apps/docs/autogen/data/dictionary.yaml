@@ -1907,20 +1907,21 @@ entries:
         - name: export
           since: "7.1"
       description: |+
-        Make the given names available for importing. For example, suppose we
-        have an NLM file that defines three reporters: `add`, `subtract`, and
-        `multiply`.
+        Make the given names available for importing. For example, with a 
+        `.nlm` file that defines the reports `add`, `subtract`, and
+        `multiply`, this code:
 
         ```
         export [add subtract]
         ```
 
-        This will make `add` and `subtract` available for importing.  Because
-        `multiply` is not in the list, it will not be available for importing.
-        It can still be used within the module itself.
+        will make `add` and `subtract` available for importing.  Because
+        `multiply` is not in the list, it will not be available for importing,
+        even though it can still be used within the module itself.
 
-        This command can only be used in an NLM file. It is an error to use it
-        elsewhere. For more information about importing, see [[import|import]].
+        `export` can only be used in a `.nlm` file. It is an error to use it
+        elsewhere (for example, in the main Code tab). For more information
+        about importing, see [[import|import]].
       examples:
         - code: export [ *names* ]
   - id: export-cmds
