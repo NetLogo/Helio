@@ -1,298 +1,407 @@
 <template>
   <UPage class="landing no-stylized-heading">
-    <!-- direct child h1 no margin what tailwind class is [-->
-    <UPageHero
-      class="relative [&_h1]:mt-0!"
-      orientation="horizontal"
-      :ui="{
-        container: '!pb-20 py-20 sm:py-32 lg:py-25',
-        title: 'text-5xl sm:text-7xl',
-        wrapper: 'lg:min-h-[540px]',
-      }"
-    >
-      <template #headline>
-        <NuxtLink :to="page.hero.cta.to">
-          <UBadge variant="subtle" size="lg" class="px-3 relative rounded-full font-semibold">
-            <Turtles class="size-4 pointer-events-none fill-primary" />
-            {{ page.hero.cta.label }}
-            <Icon :name="page.hero.cta.icon" class="size-4" />
-          </UBadge>
-        </NuxtLink>
-      </template>
-
-      <template #title>
-        <span class="text-primary">{{ page.hero.title }}</span
-        ><br /><span class="text-4xl block">{{ page.hero.subtitle }}</span>
-      </template>
-
-      <template #description>
-        <LazyMDC
-          :value="page.hero.description"
-          unwrap="p"
-          cache-key="index-hero-description"
-          hydrate-never
-        />
-      </template>
-
-      <template #links>
-        <div class="flex flex-col gap-4">
-          <div class="flex items-center flex-wrap gap-2">
-            <Button
-              v-for="(link, index) in page.hero.links"
-              :key="index"
-              size="lg"
-              :variant="link.variant === 'solid' ? 'default' : 'outline'"
-              as-child
-            >
-              <NuxtLink :to="link.to" :target="link.external ? '_blank' : undefined">
-                <Icon v-if="link.icon" :name="link.icon" class="size-5" />
-                {{ link.label }}
-              </NuxtLink>
-            </Button>
-          </div>
-        </div>
-      </template>
-
-      <UPageCard
-        class="overflow-auto lg:absolute [@media(min-width:2400px)]:relative lg:-mt-16 [@media(min-width:2400px)]:mt-8 right-0 [@media(min-width:2400px)]:right-auto w-screen lg:w-[calc(50%-2rem)] [@media(min-width:2400px)]:w-full max-w-[800px] [@media(min-width:2400px)]:mx-auto rounded-none lg:rounded-l-[calc(var(--ui-radius)*4)] [@media(min-width:2400px)]:rounded-2xl -mx-4 sm:-mx-6 lg:mx-0 ring-0 bg-transparent"
-        variant="subtle"
-        :ui="{ container: 'sm:pt-4.5 lg:pr-0 [@media(min-width:2400px)]:px-6 w-full ' }"
+    <section aria-labelledby="hero-title" class="relative overflow-hidden bg-wall">
+      <div
+        class="mx-auto grid max-w-hero items-center gap-12 px-4 pt-10 pb-16 sm:px-8 lg:min-h-hero lg:grid-cols-hero lg:gap-10 lg:px-12 lg:py-10 2xl:px-0"
       >
-        <BlockHero />
-      </UPageCard>
-    </UPageHero>
-
-    <UPageSection
-      :title="page.ecosystem.title"
-      :description="page.ecosystem.description"
-      :ui="{ container: '!pt-10' }"
-      class="bg-gradient-to-primary border-t border-gray-200 from-gray-50 to-white"
-    >
-      <UPageGrid>
-        <UPageCard
-          v-for="(card, index) in page.ecosystem.cards"
-          :key="index"
-          :title="card.title"
-          :description="card.description"
-          :to="card.to"
-          :target="card.external ? '_blank' : undefined"
-          :external="card.external"
-          spotlight
-          spotlight-color="primary"
-        >
-          <template #leading>
-            <div
-              class="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary"
-            >
-              <UIcon :name="card.icon" class="size-6" />
-            </div>
-          </template>
-          <template #footer>
-            <span class="inline-flex items-center gap-1 text-sm font-medium text-primary">
-              {{ card.cta }}
-              <UIcon :name="card.to ? 'i-lucide-arrow-right' : 'i-lucide-archive'" class="size-4" />
+        <div class="max-w-hero-copy mx-auto">
+          <h1
+            id="hero-title"
+            class="mt-6! text-display-md text-highlighted text-center lg:text-left xl:text-display-lg -tracking-normal"
+          >
+            <span v-for="(line, index) in page.hero.titleLines" :key="index" class="block">
+              <template v-for="word in line" :key="word">
+                <NtBlock
+                  v-if="word === HERO_BLOCK_WORD"
+                  as="span"
+                  size="display"
+                  color="red"
+                  motion="drop"
+                  :label="word"
+                />
+                <template v-else>{{ word }}</template>
+                {{ " " }}
+              </template>
             </span>
-          </template>
-        </UPageCard>
-      </UPageGrid>
+          </h1>
+
+          <p class="mt-8 max-w-lede text-lede px-5 text-center md:text-left md:px-0 text-toned sm:text-lede-sm">
+            {{ page.hero.description }}
+          </p>
+
+          <div class="mt-9 flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-7">
+            <UButton size="xl" :to="heroLink" :label="page.cta" />
+            <NuxtLink
+              :to="page.hero.secondary.to"
+              class="text-base font-semibold text-highlighted underline decoration-slate-900/30 decoration-2 underline-offset-6 hover:decoration-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+            >
+              {{ page.hero.secondary.label }}
+            </NuxtLink>
+          </div>
+
+          <p class="mt-8 text-sm text-toned text-center md:text-left">
+            {{ page.hero.builder.text }}
+            <ULink
+              :to="page.hero.builder.to"
+              class="font-medium text-highlighted underline decoration-slate-900/25 underline-offset-4 hover:decoration-primary"
+            >
+              {{ page.hero.builder.label }}
+            </ULink>
+          </p>
+        </div>
+
+        <HeroModel :model="heroModel" player="/assets/models/ants-hero.html" class="px-5 md:px-0"/>
+      </div>
+    </section>
+
+    <UPageSection
+      id="how-it-works"
+      :title="page.howItWorks.title"
+      :description="page.howItWorks.description"
+    >
+      <NtBlockStack :blocks="howItWorksBlocks" motion="none" class="mx-auto w-full max-w-sm" />
+      <p class="mx-auto mt-8 max-w-2xl text-center text-muted">
+        {{ page.howItWorks.example }}
+        <UButton variant="link" block :to="page.howItWorks.link.to" class="text-primary underline block">
+          {{ page.howItWorks.link.label }}
+        </UButton>
+      </p>
     </UPageSection>
 
     <UPageSection
-      :title="page.gallery.title"
-      :description="page.gallery.description"
-      :links="page.gallery.links"
-      :ui="{ container: '!pt-10' }"
-      class="border-t border-gray-200"
+      id="showcase"
+      :title="page.showcase.title"
+      :description="page.showcase.description"
     >
       <UPageGrid>
-        <ModelCard v-for="model in models" :key="model.id" :model="model" />
+        <UCard
+          v-for="card in showcase"
+          :key="card.model.id"
+          as="article"
+          class="flex h-full flex-col"
+          :ui="{ header: 'p-0 sm:px-0', body: 'flex flex-1 flex-col gap-2' }"
+        >
+          <template #header>
+            <img
+              :src="card.model.animatedThumbnail ?? card.model.thumbnail"
+              :alt="card.alt"
+              class="aspect-square w-full bg-neutral-900 object-cover"
+              loading="lazy"
+            />
+          </template>
+          <p class="text-xs text-muted">Model at setup</p>
+          <h3 class="text-lg font-semibold text-highlighted">{{ card.model.title }}</h3>
+          <p class="text-sm text-muted">{{ card.text }}</p>
+          <ULink :to="`/models/${card.model.id}`" class="mt-auto pt-2 text-sm text-primary">
+            Open {{ card.model.title }}
+          </ULink>
+        </UCard>
       </UPageGrid>
     </UPageSection>
 
     <UPageSection
-      :title="page.gettingStarted.title"
-      :description="page.gettingStarted.description"
-      :features="page.gettingStarted.features"
-      :links="page.gettingStarted.links"
+      id="topics"
+      :title="page.topics.title"
+    >
+      <UPageGrid class="lg:grid-cols-4">
+        <TopicTile
+          v-for="group in topics"
+          :key="group.id"
+          :group="group"
+          :lead="group.models[0]!"
+        />
+      </UPageGrid>
+      <p class="mt-2 text-center">
+        <UButton variant="ghost" to="/models-gallery" icon="lucide:arrow-right">
+          {{ page.topics.link }}
+        </UButton>
+      </p>
+    </UPageSection>
+
+    <UPageSection
+      id="about"
       orientation="horizontal"
+      :title="page.origin.title"
+      :description="page.origin.body"
       :ui="{
-        root: 'border-t border-gray-200 bg-gradient-to-b from-gray-50 to-white',
-        container: 'pt-10! lg:items-center',
-        features: 'gap-6',
+        root: 'overflow-hidden',
+        container: 'pb-0 ml-[25ch] sm:pb-0 lg:pb-0 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]',
+        wrapper: 'lg:pb-32',
       }"
     >
-      <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <template #body>
+        <ul aria-label="Devices" class="grid grid-cols-2 gap-3 p-0">
+          <li v-for="device in page.origin.devices" :key="device.label" class="m-0">
+            <UCard class="h-full">
+              <UIcon :name="device.icon" class="size-8 text-primary" />
+              <p class="mt-3 font-semibold text-highlighted">{{ device.label }}</p>
+              <p class="text-sm text-muted">{{ device.sublabel }}</p>
+            </UCard>
+          </li>
+        </ul>
+        <ul aria-label="Browsers" class="mt-8 flex mx-auto gap-20 w-fit p-0">
+          <li
+            v-for="browser in page.origin.browsers"
+            :key="browser.label"
+            class="flex flex-col items-center gap-3 text-sm text-muted m-0"
+          >
+            <UIcon :name="browser.icon" class="size-12" />
+            {{ browser.label }}
+          </li>
+        </ul>
+      </template>
+      <div class="relative -mr-4 h-80 sm:-mr-6 sm:h-112 lg:mr-0 lg:h-auto lg:self-stretch">
+        <NtBrowser url="https://netlogoweb.org/nettango-builder" class="absolute top-0 left-0 w-[115%] lg:top-12 lg:left-16 lg:w-[64vw]">
+          <div class="aspect-1309/924 bg-white">
+            <img
+              src="/assets/home/nettango-player.webp"
+              alt="NetTango running in a browser: the Slime model view, its block program and the NetLogo code it generates"
+              class="block h-full w-full object-cover object-left mt-5"
+            >
+          </div>
+        </NtBrowser>
+      </div>
+    </UPageSection>
+
+    <UPageSection :ui="{ root: 'bg-wall' }">
+      <div class="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
+        <h2 class="text-2xl font-bold text-highlighted sm:text-3xl">
+          {{ page.closing.statement }}
+        </h2>
+        <UButton size="xl" :to="heroLink" :label="page.cta" />
+      </div>
+    </UPageSection>
+
+    <UPageSection
+      id="faq"
+      :title="page.faq.title"
+    >
+      <UAccordion :items="faqItems" class="mx-auto max-w-3xl">
+        <template #body="{ item }">
+          <p class="text-muted">
+            {{ item.answer }}
+            <ULink v-if="item.action" :to="item.action.to" class="text-primary underline">
+              {{ item.action.label }}
+            </ULink>
+          </p>
+        </template>
+      </UAccordion>
+    </UPageSection>
+
+    <UPageSection
+      id="designers"
+      orientation="horizontal"
+      :title="page.designers.title"
+      :description="page.designers.description"
+      :links="page.designers.links"
+      :ui="{
+        root: 'bg-neutral-900 text-white',
+        container: 'lg:items-center',
+        title: 'text-white!',
+        description: 'text-neutral-300',
+      }"
+    >
+      <div class="rounded-2xl bg-white p-6 shadow-sm">
         <AntSetup />
-        <p class="mb-4 text-xs text-muted text-center uppercase">
-          {{ page.gettingStarted.figure.caption }}
+        <p class="mt-4 text-center text-xs text-muted">
+          {{ page.designers.caption }}
         </p>
       </div>
     </UPageSection>
 
-        <UPageCTA
-          title="Built something with NetTango?"
-          description="Share your blocks environment with the NetLogo community, or open the Builder to start a new one."
-          variant="subtle"
-          class="mt-16"
-          :links="[
-            {
-              label: 'Open the Builder',
-              to: 'https://netlogoweb.org/nettango-builder',
-              target: '_blank',
-              trailingIcon: 'i-lucide-arrow-up-right',
-            },
-            {
-              label: 'NetLogo Forum',
-              to: 'https://forum.netlogo.org',
-              target: '_blank',
-              color: 'neutral',
-              variant: 'subtle',
-            },
-          ]"
-        />
-
-    <UPageSection
-      :ui="{ root: 'bg-gray-50  border-t border-gray-200 ', container: '!pt-10 !pb-20' }"
-    >
-      <div
-        class="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left"
-      >
-        <div class="max-w-3xl">
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ page.collaboration.title }}</h2>
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <p class="text-gray-600 max-w-3xl" v-html="page.collaboration.content" />
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <p class="text-sm text-gray-500 mt-4" v-html="page.collaboration.footer" />
-        </div>
-
-        <div class="flex gap-4 opacity-50">
-          <UIcon name="i-heroicons-users" class="size-12" />
-          <UIcon name="i-heroicons-code-bracket-square" class="size-12" />
-          <Turtles class="size-12" />
-        </div>
-      </div>
-    </UPageSection>
   </UPage>
 </template>
 
 <script setup lang="ts">
-import type { ButtonProps } from "@nuxt/ui";
-import Turtles from "@repo/vue-ui/assets/brands/Turtles.svg";
+import type { NtBlockSpec } from "~/utils/blockStack";
+import type { GalleryModel } from "~/composables/useModels";
 
-const models = useModels().slice(0, 3);
+const HERO_MODEL_ID = "ants";
+
+const models = useModels();
+const byId = (id: string): GalleryModel => models.find((model) => model.id === id)!;
+
+const heroModel = byId(HERO_MODEL_ID);
+const heroLink = `/models/${HERO_MODEL_ID}`;
+const HERO_BLOCK_WORD = "build";
+
+const curatedIds = new Set(useModelCuration().groups.map((group) => group.id));
+const topics = useModelGroups().filter((group) => curatedIds.has(group.id));
+
 
 const page = {
+  cta: "Try a model with your class",
   hero: {
-    title: "Block-based Programming",
-    subtitle: "for NetLogo Web",
+    titleLines: [["Let", "your"], ["students"], ["build", "the"], ["science."]],
     description:
-      "NetTango is a block-based programming environment for NetLogo Web. Build and explore agent-based models with little or no programming experience.",
-    cta: {
-      label: "Part of the NetLogo ecosystem",
-      to: "https://www.netlogo.org/",
-      icon: "i-lucide-arrow-right",
+      "NetTango turns NetLogo models into blocks your students snap together. They set the rules, press GO, and watch the results unfold. No coding experience needed.",
+    secondary: { label: "Or find the topic you teach", to: "#topics" },
+    builder: {
+      text: "Designing lessons for a new topic?",
+      label: "Read the Builder tutorial",
+      to: "/tutorials/introduction-to-the-nettango-builder",
     },
-    links: [
-      {
-        label: "Launch NetTango Builder",
-        to: "https://netlogoweb.org/nettango-builder",
-        variant: "solid",
-        external: true,
-      },
-      {
-        label: "Read the Tutorial",
-        to: "/tutorials/introduction-to-the-nettango-builder",
-        variant: "outline",
-        icon: "i-lucide-book",
-      },
-    ],
   },
-  ecosystem: {
-    title: "The NetTango Ecosystem",
+  howItWorks: {
+    title: "Build real world phenomenon from simple blocks",
     description:
-      "Define the blocks in the Builder, then hand the finished model to learners in the Player.",
+      "Each model provides blocks for a single phenomenon, such as ant foraging, gas particles, or predators and prey. Students work only with the blocks that phenomenon requires, without first learning a programming language.",
+    steps: ["Predict", "Build a rule", "Run", "Compare with the real world", "Revise"],
+    example:
+      "In Wolves and Sheep, the model begins with three sheep and one wolf. Students add the rules for reproduction and death, then observe which population declines first.",
+    link: { label: "Open Wolves and Sheep", to: "/models/wolves-and-sheep" },
+  },
+  showcase: {
+    title: "Give students the tools to explore complexity",
+    description:
+      "Blocks define rules that ants, trees, and particles follow, then you press GO to see the results in real time",
     cards: [
       {
-        title: "NetTango Builder",
-        description:
-          "Design domain-specific blocks and wire them to an existing NetLogo Web model.",
-        icon: "i-heroicons-wrench-screwdriver",
-        to: "https://netlogoweb.org/nettango-builder",
-        external: true,
-        cta: "Open the Builder",
+        id: "antomology-pheromones",
+        alt: "The Antomology Pheromones model at setup: ants and a nest with no trail yet",
+        text: "Explore how ants use pheromones to find their way. Your students build the rule for laying a chemical trail and observe whether the ants mark a path back to the nest.",
       },
       {
-        title: "NetTango Player",
-        description:
-          "Let learners snap blocks together and run the model. No NetLogo code required.",
-        icon: "i-heroicons-play-circle",
-        to: "/models/ants",
-        cta: "Try the Ants model",
+        id: "fire",
+        alt: "The Fire model at setup: a forest of trees with nothing burning",
+        text: "Explore how fire spreads in a forest simulation. Your students build the fire rule and observe whether the fire spreads as expected.",
       },
       {
-        title: "NetTango Desktop",
-        description: "The original desktop version of NetTango, built for NetLogo Desktop models.",
-        icon: "i-lucide-computer",
-        cta: "Superseded by NetTango Web",
+        id: "two-particle-sandbox",
+        alt: "The Two Particle Sandbox model at setup: two particles in a small box",
+        text: "Explore how gas particles interact in a closed box. Your students build the collision rule and observe how collisions change the motion of the particles.",
       },
     ],
   },
-  gallery: {
-    title: "Model Gallery",
+  topics: {
+    title: "Find the topic you teach",
+    link: "Explore the models gallery",
+  },
+  ready: {
+    title: "Lessons to explore",
+    paragraphs: [
+      "Three gas models correspond to a published lesson, Ideal Gas Laws (lesson 1) from Connected Chemistry (2019): Two Particle Sandbox, Ideal Gas Law, and Gas Particle Sandbox. Other models are available without a lesson.",
+      "Some topics are arranged as a sequence of models. The six Antomology models progress from 2 blocks to 13.",
+    ],
+    models: [
+      { label: "Two Particle Sandbox", to: "/models/two-particle-sandbox" },
+      { label: "Ideal Gas Law", to: "/models/ideal-gas-law" },
+      { label: "Gas Particle Sandbox", to: "/models/gpc" },
+      { label: "Antomology Introduction", to: "/models/antomology-introduction" },
+    ],
+    lesson: {
+      label: "See the Ideal Gas Laws lesson",
+      to: "https://ct-stem.northwestern.edu/curriculum/preview/513/",
+    },
+  },
+  origin: {
+    title: "Runs on all major platforms",
+    body: "NetTango is developed at Northwestern's Center for Connected Learning. It is open source, built on NetLogo Web, and runs in the browser.",
+    devices: [
+      { label: "Chromebook", sublabel: "School managed devices", icon: "i-lucide-laptop-minimal" },
+      { label: "Laptop", sublabel: "Windows, macOS and Linux", icon: "i-lucide-laptop" },
+      { label: "Desktop", sublabel: "Computer labs and classrooms", icon: "i-lucide-monitor" },
+      { label: "Tablet", sublabel: "iPad and Android tablets", icon: "i-lucide-tablet" },
+    ],
+    browsers: [
+      { label: "Chrome", icon: "i-logos-chrome" },
+      { label: "Firefox", icon: "i-logos-firefox" },
+      { label: "Safari", icon: "i-logos-safari" },
+      { label: "Edge", icon: "i-logos-microsoft-edge" },
+    ],
+  },
+  closing: {
+    statement:
+      "Start with the Ants model.",
+  },
+  faq: {
+    title: "Frequently asked questions",
+    items: [
+      {
+        label: "Do I need to install anything?",
+        answer: "No. NetTango runs in your web browser. You do not need to install any software.",
+      },
+      {
+        label: "Do my students need to know how to code?",
+        answer:
+          "No. Students assemble blocks, and each model includes only the blocks its phenomenon requires. They do not need prior coding experience.",
+      },
+      {
+        label: "What does it cost?",
+        answer:
+          "Nothing. NetTango is free and open source, developed at Northwestern's Center for Connected Learning by the NetLogo Foundation.",
+      },
+      {
+        label: "Is there a lesson for my topic?",
+        answer:
+          "We are working on developing an enriched set of lessons for various topics. Right now, you can explore the Ideal Gas Laws lesson on CT-STEM.",
+        action: {
+          label: "Explore the Ideal Gas Laws lesson",
+          to: "https://ct-stem.northwestern.edu/curriculum/preview/513/",
+        },
+      },
+      {
+        label: "Which devices does it work on?",
+        answer: "NetTango runs in a web browser. It works on Chromebooks, laptops, desktops, and tablets. Make sure your browser is up to date for the best experience.",
+      },
+      {
+        label: "How long does it take to set up?",
+        answer: "Each model loads directly from its page, with no installation.",
+        hidden: true,
+      },
+      {
+        label: "Can I make blocks for a topic you don't cover?",
+        answer: "Yes. New block sets are designed in NetTango Builder.",
+        action: {
+          label: "Check out the Builder tutorial!",
+          to: "/tutorials/introduction-to-the-nettango-builder",
+        },
+      },
+      {
+        label: "Do my students need accounts?",
+        answer: "No. Students do not need accounts to use NetTango. They can start building and exploring models immediately.",
+      },
+      {
+        label: "What happens to what my students build?",
+        answer: "",
+        hidden: true,
+      },
+    ] as { label: string; answer: string; action?: { label: string; to: string }; hidden?: boolean }[],
+  },
+  designers: {
+    title: "Designing blocks for a new topic",
     description:
-      "Ready-to-run NetTango environments. Try one in your browser, or download the project file to open it in the Builder.",
+      "Curriculum designers and researchers use NetTango Builder to design blocks for a new phenomenon. The tutorial builds the blocks for the Ants model from the NetLogo Models Library, with a short video for each step.",
     links: [
       {
-        label: "Browse the gallery",
-        to: "/models-gallery",
-        trailingIcon: "i-lucide-arrow-right",
-        color: "neutral",
-        variant: "subtle",
-      },
-    ] satisfies ButtonProps[],
-  },
-  gettingStarted: {
-    title: "Getting Started",
-    description:
-      "The NetTango Builder runs in your browser as part of NetLogo Web. Three good places to begin:",
-    features: [
-      {
-        title: "Read the documentation",
-        description: "Core concepts, terminology, and usage notes on the GitHub wiki.",
-        icon: "i-heroicons-document-text",
-        to: "https://github.com/NetLogo/NetTango/wiki",
-        target: "_blank",
-      },
-      {
-        title: "Follow the tutorial",
-        description:
-          "Build the Ants blocks environment from an empty project, one short video per step.",
-        icon: "i-heroicons-academic-cap",
+        label: "Read the Builder tutorial",
         to: "/tutorials/introduction-to-the-nettango-builder",
       },
       {
-        title: "Explore a finished example",
-        description: "Open the completed tutorial project in the Player before you build your own.",
-        icon: "i-lucide-play",
-        to: "/models/ants",
-      },
-    ],
-    links: [
-      {
         label: "Open the Builder",
-        to: "https://www.netlogoweb.org/nettango-builder",
+        to: "https://netlogoweb.org/nettango-builder",
         target: "_blank",
+        color: "neutral" as const,
+        variant: "subtle" as const,
         trailingIcon: "i-lucide-arrow-up-right",
-      },
+      }
     ],
-    figure: {
-      caption: "The Setup procedure from the Ants tutorial",
-    },
-  },
-  collaboration: {
-    title: "Collaboration & Open Source",
-    content: `NetTango Web is developed as a collaboration between the <a href="https://ccl.northwestern.edu/" class="underline decoration-dotted hover:text-primary">Center for Connected Learning</a> and the <a href="https://tidal.northwestern.edu/" class="underline decoration-dotted hover:text-primary">TIDAL lab</a>, both at Northwestern University.`,
-    footer: `NetTango Web is open source software. The NetTango Web builder is part of the <a href="https://github.com/NetLogo/Galapagos" target="_blank" class="text-primary hover:underline">Galapagos project</a> for NetLogo Web. The NetTango blocks interface has its own <a href="https://github.com/NetLogo/NetTango" class="text-primary hover:underline">repository</a>.`,
+    caption: "The Setup procedure from the Ants tutorial",
   },
 };
+
+
+const HOW_IT_WORKS_COLORS = ["green", "red", "blue", "yellow", "orange"] as const;
+const howItWorksBlocks: NtBlockSpec[] = page.howItWorks.steps.map((label, index) => ({
+  color: HOW_IT_WORKS_COLORS[index % HOW_IT_WORKS_COLORS.length]!,
+  label,
+}));
+
+const showcase = page.showcase.cards.map(({ id, alt, text }) => ({
+  model: byId(id),
+  alt,
+  text,
+}));
+
+const faqItems = page.faq.items.filter((item) => !item.hidden);
 </script>

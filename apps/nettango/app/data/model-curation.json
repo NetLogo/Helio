@@ -1,0 +1,913 @@
+{
+  "groups": [
+    {
+      "id": "ant-colonies",
+      "title": "Ant foraging",
+      "description": "Your students build the rules one ant follows and watch the whole colony find food, from a first walk to a full colony with a queen and predators.",
+      "lead": "ants",
+      "models": [
+        "ants",
+        "antomology-introduction",
+        "antomology-foraging-for-food",
+        "antomology-ant-colony",
+        "antomology-pheromones",
+        "antomology-life-cycle",
+        "antomology-predation"
+      ]
+    },
+    {
+      "id": "predator-prey",
+      "title": "Predator and prey",
+      "description": "Your students write rules for hunters and the animals they hunt, then see whether both populations last or one dies out.",
+      "lead": "wolves-and-sheep",
+      "models": [
+        "wolves-and-sheep",
+        "wolves-and-moose"
+      ]
+    },
+    {
+      "id": "animal-behavior",
+      "title": "Animal behavior",
+      "description": "Your students turn simple rules for single animals into a class experiment on how rollypollies pick a chamber and how slime mold cells gather.",
+      "lead": "slime-tutorial",
+      "models": [
+        "slime-tutorial",
+        "rollypollies-simple",
+        "rollypollies"
+      ]
+    },
+    {
+      "id": "gases-particles",
+      "title": "Gases and particles",
+      "description": "Your students program how gas particles move and collide, then use the pattern they see to explain gas behavior and heat transfer.",
+      "lead": "two-particle-sandbox",
+      "models": [
+        "two-particle-sandbox",
+        "ideal-gas-law",
+        "gpc",
+        "particles-sandbox",
+        "thermal-equilibration"
+      ]
+    },
+    {
+      "id": "force-motion",
+      "title": "Force and motion",
+      "description": "Your students program cars, falling balls and spaceships, then compare the motion they built with position and speed graphs.",
+      "lead": "motion-maps-1d",
+      "models": [
+        "motion-maps-1d",
+        "stop-light",
+        "free-fall",
+        "spaceship-programming",
+        "spaceship-programming-variable-engines"
+      ]
+    },
+    {
+      "id": "disease-fire-spread",
+      "title": "Disease and fire spread",
+      "description": "Your students build rules for how a disease, a forest fire or a crop fungus spreads and test what slows it down.",
+      "lead": "fire",
+      "models": [
+        "fire",
+        "simplified-disease",
+        "disease",
+        "watermelon-biodiversity"
+      ]
+    },
+    {
+      "id": "waves-diffusion",
+      "title": "Waves and diffusion",
+      "description": "Your students build a speaker and air particles to see how sound travels, and explore how a value spreads out across a grid.",
+      "lead": "sound-propagation",
+      "models": [
+        "sound-propagation",
+        "diffusion-graphics"
+      ]
+    },
+    {
+      "id": "growth-networks",
+      "title": "Growth and Networks",
+      "description": "Your students build simple rules for particles and links and watch growth curves, branching shapes and networks with hubs take form.",
+      "lead": "dla",
+      "models": [
+        "dla",
+        "abstract-exponential",
+        "abstract-exponential-and-logistic",
+        "preferential-attachment"
+      ]
+    }
+  ],
+  "sequences": [
+    {
+      "id": "antomology",
+      "title": "Antomology",
+      "models": [
+        "antomology-introduction",
+        "antomology-foraging-for-food",
+        "antomology-ant-colony",
+        "antomology-pheromones",
+        "antomology-life-cycle",
+        "antomology-predation"
+      ]
+    },
+    {
+      "id": "rollypollies",
+      "title": "Rollypollies",
+      "models": [
+        "rollypollies-simple",
+        "rollypollies"
+      ]
+    },
+    {
+      "id": "gas-particle-sandbox",
+      "title": "Gas particle sandbox, small box to full box",
+      "models": [
+        "two-particle-sandbox",
+        "ideal-gas-law"
+      ]
+    },
+    {
+      "id": "disease",
+      "title": "Disease spread",
+      "models": [
+        "simplified-disease",
+        "disease"
+      ]
+    },
+    {
+      "id": "spaceship",
+      "title": "Spaceship programming",
+      "models": [
+        "spaceship-programming",
+        "spaceship-programming-variable-engines"
+      ]
+    },
+    {
+      "id": "population-growth",
+      "title": "Exponential to limited growth",
+      "models": [
+        "abstract-exponential",
+        "abstract-exponential-and-logistic"
+      ]
+    }
+  ],
+  "models": {
+    "ants": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Umit Aslan"
+      ],
+      "basedOn": "Wilensky, U. (1997). NetLogo Ants model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "antomology-introduction",
+        "slime-tutorial"
+      ],
+      "tips": [
+        "Build the Setup blocks first (Create a nest, Create Ants, one or more Create a food pile) and press setup to check the nest and piles appear before your students write any Go rules.",
+        "The population slider does nothing in this version: the number of ants comes only from the Create Ants block (125 by default).",
+        "New ants start in random colors, and only red ants count as not carrying food, so on the first run most ants follow the carrying-food rules and head home first. Ask your students why.",
+        "Once trails form, drag evaporation-rate or diffusion-rate while it runs and watch the green trails fade or spread. The Info tab notes that nearer food piles usually empty first."
+      ]
+    },
+    "antomology-introduction": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Martin, K. and Wilensky, U. (2019). NetLogo Ant Adaptation model; extends NetLogo Ants (Wilensky, 1997)",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "ants"
+      ],
+      "tips": [
+        "This is the first of six Antomology stages. Your students snap wander into move-ant; one ant starts at the nest.",
+        "wander's wiggle-radius sets how much the ant turns each step. Try a small and a large value and compare paths; at 0 it walks straight and turns around at the edge.",
+        "The ant is hidden while it is within 5 steps of the nest, so at first it can seem to be missing. It appears once it walks away.",
+        "The Info tab describes a two-player ant game, not this stage, and all six stages share it, so introduce each stage yourself."
+      ]
+    },
+    "antomology-foraging-for-food": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Martin, K. and Wilensky, U. (2019). NetLogo Ant Adaptation model; extends NetLogo Ants (Wilensky, 1997)",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "ants"
+      ],
+      "tips": [
+        "Second stage, after Introduction. A working build: in forage-food, if ant has food with go-to-nest in the first slot and pickup-food-nearby in the second; in move-ant, wander.",
+        "There is only one ant, and each flower gives 8 loads before it disappears. Ask your students to predict how fast Stored Food will grow; new flowers appear only now and then.",
+        "pickup-food-nearby also steers the ant toward any flower within 7 steps, so an ant without it finds food only by bumping into it."
+      ]
+    },
+    "antomology-ant-colony": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Martin, K. and Wilensky, U. (2019). NetLogo Ant Adaptation model; extends NetLogo Ants (Wilensky, 1997)",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "ants"
+      ],
+      "tips": [
+        "Third stage. setup-ants starts empty, so after setup there are no ants until your students put hatch-ants (3 by default) in it and press setup again.",
+        "Reuse the forage-food and move-ants rules from Foraging For Food, then ask whether 3 ants or 10 ants will fill Stored Food faster.",
+        "Stored Food only goes up in this stage: ants do not die and food is not used. That changes in Life Cycle."
+      ]
+    },
+    "antomology-pheromones": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Martin, K. and Wilensky, U. (2019). NetLogo Ant Adaptation model; extends NetLogo Ants (Wilensky, 1997)",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "ants",
+        "slime-tutorial"
+      ],
+      "tips": [
+        "Fourth stage. Ants lay no trail unless you add drop-chemical (60 by default); put it with go-to-nest in the has-food branch so ants mark the way home.",
+        "Ants follow trails only through pickup-food-nearby, so keep it in the not-carrying branch. The pink trails fade a little each step and spread out."
+      ]
+    },
+    "antomology-life-cycle": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Martin, K. and Wilensky, U. (2019). NetLogo Ant Adaptation model; extends NetLogo Ants (Wilensky, 1997)",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "ants",
+        "abstract-exponential-and-logistic"
+      ],
+      "tips": [
+        "Fifth stage. Ants now lose 4 energy each step and die when energy falls to their age, so set start-energy on hatch-ants high enough or the colony dies right after setup.",
+        "Build create-more-ants with if food-store > build-cost holding birth-ant, so the queen makes a new ant whenever there is enough food. Watch the population plot and #-of-ants.",
+        "Create Cost is 5 plus start-energy divided by 1000, so long-lived ants cost more food. Ask whether a few strong ants or many weak ones do better."
+      ]
+    },
+    "antomology-predation": {
+      "subjects": [
+        "Biology",
+        "Environmental Science"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Martin, K. and Wilensky, U. (2019). NetLogo Ant Adaptation model; extends NetLogo Ants (Wilensky, 1997)",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "ants",
+        "wolves-and-sheep"
+      ],
+      "tips": [
+        "Two spiders start in the bottom right corner. A spider eats an ant on its spot with a chance of 100 minus 3 times the ant's size (percent), so bigger ants survive more often.",
+        "Bigger ants cost more: Create Cost is 2 plus start-energy divided by 1000 plus half the ant size. Set size on hatch-ants and compare the Ants and Spiders monitors.",
+        "Spiders make a new spider after eating, so ask your students whether spider numbers will follow ant numbers on the population plot."
+      ]
+    },
+    "wolves-and-sheep": {
+      "subjects": [
+        "Biology",
+        "Environmental Science"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Wilensky, U. (1997). NetLogo Wolf Sheep Predation model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "wolves-and-moose",
+        "antomology-predation",
+        "abstract-exponential-and-logistic"
+      ],
+      "tips": [
+        "Setup makes only 3 sheep and 1 wolf. Before adding hatch and die rules, ask your students to predict which group will run out first.",
+        "Nothing tracks energy here, so wolves never starve on their own: they die only through a die block you add, often under chance (20 percent by default).",
+        "If sheep hatch with nothing to stop them, the run ends with the message The sheep have inherited the earth at over 1000 sheep. The Info tab's sliders are not in this version."
+      ]
+    },
+    "wolves-and-moose": {
+      "subjects": [
+        "Biology",
+        "Environmental Science"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "wolves-and-sheep",
+        "antomology-predation"
+      ],
+      "tips": [
+        "The Info tab is empty and both action blocks start empty, so nothing moves until your students add forward. Setup makes 3 moose and 1 wolf.",
+        "Use ▶ in slow motion (one step every half second) while checking rules, and add pen down to leave trails that show a chase.",
+        "chase and flee react only when the other animal is within 5 steps; farther away they wander. wolf meets moose runs when a moose is within 2 steps, so put ask nearby moose with die there.",
+        "Wolves never starve on their own, so give them a die rule under chance. Without one, the run stops at over 1000 moose or wolves with an inherited the earth message."
+      ]
+    },
+    "slime-tutorial": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Wilensky, U. (1997). NetLogo Slime model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "ants",
+        "antomology-pheromones",
+        "rollypollies-simple"
+      ],
+      "tips": [
+        "Change the population slider and press setup again. Ask your students to predict whether clumps still form with only a few cells.",
+        "if chemical strength (1 by default, up to 5) sets how strong a trail must be before a cell turns toward it. Raise it and compare.",
+        "The Info tab names WIGGLE-ANGLE, WIGGLE-BIAS and SNIFF-THRESHOLD sliders. Here those settings live on the wiggle, if chemical strength and turn toward chemical blocks."
+      ]
+    },
+    "rollypollies-simple": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "slime-tutorial",
+        "ants"
+      ],
+      "tips": [
+        "The Info tab is empty and behave like rollypollies starts empty. After setup every rollypolly sits at the center, between the chambers, so both monitors read 0 until they move.",
+        "Pick dry or moist in condition-in-chamber1 and condition-in-chamber2, type the preferred condition (for example moist) into preferred-conditions, and press update conditions.",
+        "A good first build: under if on a preferred patch put chance with move, and under if not on a preferred patch put move alone. Ask which chamber plot will rise before pressing go.",
+        "Use this after Rollypollies, where students build the chambers themselves. Here the chambers are ready, so class time goes to the behavior rules."
+      ]
+    },
+    "rollypollies": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Sugat Dabholkar",
+        "Teresa Granito"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "slime-tutorial"
+      ],
+      "tips": [
+        "The Info tab is empty, so introduce the question yourself: do rollypollies gather in a dry chamber or a moist one? Your students build the chambers and the rules from scratch.",
+        "Put clear at the top of setup. It wipes everything, so placed after add-rollipollies or the create chamber blocks it erases what they made.",
+        "if I am facing a dark patch checks for black, which is everything outside the chambers. Put change direction clockwise by (90 by default) in its first slot to keep rollypollies inside.",
+        "When coloring chambers under visualize-conditions, avoid 0 in set color as a number: 0 is black, and rollypollies will treat that chamber as a wall."
+      ]
+    },
+    "two-particle-sandbox": {
+      "subjects": [
+        "Chemistry",
+        "Physics"
+      ],
+      "gradeBands": [
+        "high-school"
+      ],
+      "gradeBandSource": "nettango-catalog.md: CC2019 Macro / Micro Particle Sandbox row and Ideal Gas Laws lesson row, both Chemistry / high school",
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Novak, M., Brady, C., Holbert, N., Soylu, F. and Wilensky, U. (2010). Particulate Nature of Matter, Diffusion Sandbox model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": {
+        "title": "Ideal Gas Laws (Connected Chemistry 2019), lesson 1",
+        "url": "https://ct-stem.northwestern.edu/curriculum/preview/513/",
+        "provider": "CT-STEM, Northwestern University"
+      },
+      "related": [
+        "gpc",
+        "particles-sandbox"
+      ],
+      "tips": [
+        "The starting program makes each particle zig-zag and bounce off walls like a football, which loses a little speed at every hit, so the gas slowly slows down. Ask what changes with like a billiard ball.",
+        "Particles pass through each other until you add if touches another particle with a bounces back block inside each particle. Have your students predict what collisions will change.",
+        "The particle block gives one particle its own rules. It counts from 0, so its default of 1 picks the second particle; keep the number below the number-of-particles setting.",
+        "The box is only 5 patches across, so a few particles are easy to follow. Press trace a particle to draw one particle's path and compare straight with zig-zag."
+      ]
+    },
+    "ideal-gas-law": {
+      "subjects": [
+        "Chemistry",
+        "Physics"
+      ],
+      "gradeBands": [
+        "high-school"
+      ],
+      "gradeBandSource": "nettango-catalog.md: CC2019 Macro / Micro Particle Sandbox row and Ideal Gas Laws lesson row, both Chemistry / high school",
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Novak, M., Brady, C., Holbert, N., Soylu, F. and Wilensky, U. (2010). Particulate Nature of Matter, Diffusion Sandbox model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": {
+        "title": "Ideal Gas Laws (Connected Chemistry 2019), lesson 1",
+        "url": "https://ct-stem.northwestern.edu/curriculum/preview/513/",
+        "provider": "CT-STEM, Northwestern University"
+      },
+      "related": [
+        "gpc",
+        "particles-sandbox"
+      ],
+      "tips": [
+        "The starting program makes each particle zig-zag and bounce off walls like a football, which loses a little speed at every hit, so the gas slowly slows down. Ask what changes with like a billiard ball.",
+        "if touches a wall does not test anything: it only tells a bounces back block inside it to act at walls. A moves block placed inside it runs every step anyway.",
+        "Use ↓↓ save design and load design ↑↑ to keep a student's walls and particles for the next lesson, and the 📸 button to save a picture of the view."
+      ]
+    },
+    "gpc": {
+      "subjects": [
+        "Chemistry",
+        "Physics"
+      ],
+      "gradeBands": [
+        "high-school"
+      ],
+      "gradeBandSource": "nettango-catalog.md: CC2019 Macro / Micro Particle Sandbox row and Ideal Gas Laws lesson row, both Chemistry / high school",
+      "creators": [
+        "Umit Aslan",
+        "Nicholas LaGrassa",
+        "Michael Horn",
+        "Uri Wilensky"
+      ],
+      "basedOn": "Novak, M., Brady, C., Holbert, N., Soylu, F. and Wilensky, U. (2010). Particulate Nature of Matter, Diffusion Sandbox model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": {
+        "title": "Ideal Gas Laws (Connected Chemistry 2019), lesson 1",
+        "url": "https://ct-stem.northwestern.edu/curriculum/preview/513/",
+        "provider": "CT-STEM, Northwestern University"
+      },
+      "related": [
+        "two-particle-sandbox",
+        "ideal-gas-law"
+      ],
+      "tips": [
+        "Particles stay still until your students put a moves block (straight, spinning, zig-zag or erratic) inside each particle under At GO. Start with straight and press go.",
+        "Without if touches a wall holding a bounces back block, particles do not bounce off the yellow box. Ask your students to predict what happens before they add the wall rule.",
+        "Only like a billiard ball keeps a particle's speed; balloon, football and basketball slow it at every bounce. Set visualize-particle-speed to different shades to see slow particles darken.",
+        "if touches a wall does not test anything: it only tells a bounces back block inside it to act at walls. A moves block placed inside it runs every step anyway."
+      ]
+    },
+    "particles-sandbox": {
+      "subjects": [
+        "Chemistry",
+        "Physics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Wilensky, U. (2006). NetLogo Connected Chemistry 8 Gas Particle Sandbox model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "thermal-equilibration",
+        "two-particle-sandbox",
+        "sound-propagation"
+      ],
+      "tips": [
+        "The starting program only moves particles, so they pass through each other and each color's line in Temperature of gases stays flat. Ask your students what changes once particles can collide.",
+        "To show heat transfer, set initial-purple-particle-speed high and initial-green-particle-speed low, put change speed and direction inside check for particle-contact, and watch the two plot lines.",
+        "The Info tab names INITIAL-#-PARTICLES and INITIAL-GAS-TEMPERATURE; here separate sliders set purple and green particles, and the green count slider is spelled intitial-green-particles."
+      ]
+    },
+    "thermal-equilibration": {
+      "subjects": [
+        "Chemistry",
+        "Physics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": "Wilensky, U. (2006). NetLogo Connected Chemistry 8 Gas Particle Sandbox model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "particles-sandbox",
+        "diffusion-graphics"
+      ],
+      "tips": [
+        "The starting program only moves particles, so they pass through each other and each color's line in Temperature of gases stays flat. Ask your students what changes once particles can collide.",
+        "To show heat transfer, set initial-purple-particle-speed high and initial-green-particle-speed low, put change speed and direction inside check for particle-contact, and watch the two plot lines.",
+        "The Info tab names INITIAL-#-PARTICLES and INITIAL-GAS-TEMPERATURE; here separate sliders set purple and green particles, and the green count slider is spelled intitial-green-particles."
+      ]
+    },
+    "motion-maps-1d": {
+      "subjects": [
+        "Physics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Neil Schmidgall"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "stop-light",
+        "free-fall"
+      ],
+      "tips": [
+        "The blocks only take effect when the programming? switch is on. With it off, the x-velocity, initial-position and draw-interval sliders run the car.",
+        "Each change block sets x-velocity for a number of seconds, and the run stops after the last one. Have your students sketch the motion map (yellow position dots, cyan velocity arrows) first.",
+        "When the velocity changes direction or reaches 0, the dots start a new row above, so the return trip does not overlap the first.",
+        "Keep set draw interval above 0 (its range is 0 to 5): 0 stops the model with an error. The car also stops with a message if it would leave the 0 to 300 road."
+      ]
+    },
+    "stop-light": {
+      "subjects": [
+        "Physics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "motion-maps-1d",
+        "free-fall"
+      ],
+      "tips": [
+        "In the starting program the car starts at position 5 moving 5 per second, and the light turns yellow at about 2.5 seconds and red at about 4.5. Ask: left alone, does the car pass before red?",
+        "Each press of Gas or Brake changes speed only once, by a tenth of the value in increasing speed or decreasing speed, so students press repeatedly. Watch the Car's Speed plot.",
+        "The model runs close to real time: each step waits 0.1 second and adds 0.1 to the clock, so if seconds = matches the seconds your students count.",
+        "The Info tab is empty, so use the note's question (run the yellow or stop?) as the hook. The road wraps, so a car that passes the light comes back on the left."
+      ]
+    },
+    "free-fall": {
+      "subjects": [
+        "Physics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "motion-maps-1d",
+        "spaceship-programming"
+      ],
+      "tips": [
+        "The Info tab is empty and both block spaces start empty. Build setup with create-a-ball, set-position (the top of the view is y 320) and set-ground, then press setup.",
+        "A new ball faces a random direction, so put face-downwards before the move blocks, or the ball drifts sideways.",
+        "Use upate-velocity with move-forward2 (moves by the current velocity) and leave trace, then press proceed for one second several times. Ask whether the dots will be evenly spaced.",
+        "The distance covered in last step monitor stays at N/A because no block records the previous position, so compare the gaps between trace dots instead. The view wraps top to bottom."
+      ]
+    },
+    "spaceship-programming": {
+      "subjects": [
+        "Physics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Jacob Kelter"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "motion-maps-1d",
+        "free-fall"
+      ],
+      "tips": [
+        "The Info tab is empty. Start with the maze chooser on none horizontal, which needs only the side engines, and turn on draw-path? so dot spacing shows speed. Press setup after changing the maze.",
+        "Each engine pushes the ship away from its own side: turn left engine on (1N) pushes it right. Ask your students to predict the direction before the first go.",
+        "Put engine blocks right after a for duration block; each turns its engine on for that duration. An engine block after wait for, or with no for duration above it, stops the model with an error.",
+        "Once the engines stop, the ship keeps its speed (see the speed monitor and Velocity plot). To stop on the green target, students must fire the opposite engine for the same time."
+      ]
+    },
+    "spaceship-programming-variable-engines": {
+      "subjects": [
+        "Physics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Jacob Kelter"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "free-fall",
+        "stop-light"
+      ],
+      "tips": [
+        "Use this after spaceship programming: the engine blocks now take a force from 0 to 10 (1 by default). The Info tab is empty.",
+        "With the 10 kg ship, each step at force 2 changes speed by 0.2. Ask your students how to reach the target in fewer steps with more force.",
+        "To stop, the opposite engine's force times its duration must match the first push: force 2 for 3 steps cancels force 3 for 2 steps.",
+        "Engine blocks must follow a for duration block; after wait for they stop the model with an error. Each engine pushes the ship away from its own side."
+      ]
+    },
+    "fire": {
+      "subjects": [
+        "Environmental Science"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Kit Martin"
+      ],
+      "basedOn": "Wilensky, U. (1997). NetLogo Fire model",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "simplified-disease",
+        "watermelon-biodiversity"
+      ],
+      "tips": [
+        "The go block starts empty, so pressing go does nothing until your students build fire rules, for example ask 🔥🔥 holding ask neighboring 🌳 🌳 with catch 🔥 inside. The run never stops by itself.",
+        "Without cool 🔥🔥, burning trees stay red and keep spreading fire. Ask your students what adding it changes about the shape of the fire.",
+        "Change the number in set 🌳 🌳 density (56 in the saved program) and press setup again. The Info tab asks how high density can go while the fire is still contained; check percent 🔥 burned.",
+        "Two ways to fight: click the view while go runs to clear trees (100 per patch), or put Make a fire break line under Fighting 🔥🔥, which runs at setup. Both add to Cost of 🔥 Fighting."
+      ]
+    },
+    "simplified-disease": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "fire",
+        "watermelon-biodiversity"
+      ],
+      "tips": [
+        "The Info tab is empty. The starting program has 30 healthy people and 1 sick person; everyone moves, and anyone on the same spot as a sick person gets sick. Ask how long until everyone is sick.",
+        "Lower the number in if sick, infect (100 in the starting program) or add if sick, recover, then check whether Percentage of Population Sick still climbs to 100.",
+        "Values under 1 in chance, if sick, recover or if sick, die act as 1 percent, because the model draws whole numbers: the if sick, die default of 0.5 behaves like 1.",
+        "Add draw line under Go for a few steps to trace paths and see where contacts happen. The Number of People monitor shows the effect of die and reproduce."
+      ]
+    },
+    "disease": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Center for Connected Learning"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "watermelon-biodiversity",
+        "abstract-exponential"
+      ],
+      "tips": [
+        "The Info tab is empty, but the starting program works: 6 sick and 500 healthy people, and only healthy people move. Ask what changes if sick people move too (add move under ask sick people).",
+        "infect only works once Set Infectiousness has set a value (the starting program uses 21.96). If your students rebuild setup without it, nobody gets sick.",
+        "The chance block counts whole percents: any value under 1, including its default 0.01, acts as 1 percent."
+      ]
+    },
+    "watermelon-biodiversity": {
+      "subjects": [
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Kit Martin"
+      ],
+      "basedOn": null,
+      "license": null,
+      "lesson": null,
+      "related": [
+        "disease",
+        "fire"
+      ],
+      "tips": [
+        "The starting program already runs: press setup, then go, and let both kinds of watermelon spread before you press start an infection. Watch the How many watermelons by color plot.",
+        "start an infection releases spores that attack green, the asexual watermelons. Spores they hatch then attack the color shown in the fungus is now targeting: monitor.",
+        "Only the sexual watermelons change color when they reproduce (22 percent of offspring in the starting program). Ask your students which group should survive a fungus that attacks one color.",
+        "Put Set time of infection in setup, not go. In go it pushes the start time forward every step, so the infection never begins."
+      ]
+    },
+    "sound-propagation": {
+      "subjects": [
+        "Physics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Michael Novak",
+        "Kit Martin",
+        "Maryam Hedayati"
+      ],
+      "basedOn": "NetLogo Wave Machine model (Info: based on its code); cites Novak, M. (2014). Sound Waves through a Medium. Next Generation Science Storylines",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "diffusion-graphics",
+        "particles-sandbox"
+      ],
+      "tips": [
+        "The setup block needs add speaker, turn speaker on, add particles and add listener. turn speaker on must be in setup: the speaker only vibrates if it was on when setup ran.",
+        "While it runs, click a green particle to turn it red. Ask your students to predict whether it travels to the listener or moves back and forth in place, then watch.",
+        "Compare set material airium, wetonium and vibratium: wetonium and vibratium add friction (3 and 7) and stiffer springs. Watch the energy reaching hearer plot."
+      ]
+    },
+    "diffusion-graphics": {
+      "subjects": [
+        "Computer Science"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "Kit Martin"
+      ],
+      "basedOn": null,
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "sound-propagation",
+        "thermal-equilibration",
+        "dla"
+      ],
+      "tips": [
+        "The Info tab's HOW TO USE lists which blocks to snap under setup and go, which makes a good first build. The go block starts empty, so nothing changes until your students add blocks.",
+        "Try the Info tab's question: run for a while without the wander block and ask your students to predict what the colors will eventually do.",
+        "While go runs, clicking in the view adds a circle; it starts heating the ground once set patch-here heat is in go.",
+        "Tell your students this is not a model of real heat but a number that spreads out, as the Info tab says. Change the diffuse heat rate (50 by default) and watch how the color bands change."
+      ]
+    },
+    "dla": {
+      "subjects": [
+        "Physics",
+        "Mathematics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "John Chen"
+      ],
+      "basedOn": "Wilensky, U. and Rand, W. (2006). NetLogo DLA Simple model, a simplified version of NetLogo DLA (Wilensky, 1997)",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "abstract-exponential",
+        "diffusion-graphics"
+      ],
+      "tips": [
+        "The Info tab mentions NUM-PARTICLES and WIGGLE-ANGLE sliders; here you set them with Create Particles and the Left and Right values of Wiggle Randomly (-15 and 15 in the starting program).",
+        "Growth is slow: 100 particles wander a 201 by 201 world. Stack extra Create Particles blocks (up to 100 each) to add more and watch Attached Seeds climb.",
+        "Before running, ask why the shape branches like a tree (an Info question). Afterwards try Create Seeds for several starting points, as the Info tab suggests."
+      ]
+    },
+    "abstract-exponential": {
+      "subjects": [
+        "Mathematics",
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "John Chen"
+      ],
+      "basedOn": null,
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "dla",
+        "simplified-disease"
+      ],
+      "tips": [
+        "The Info tab describes a different model (DLA), so introduce this one yourself: it starts with one particle, and each step every particle has a 20 percent chance to hatch another.",
+        "Before pressing go, ask your students to sketch the Wandering Particles plot. At 20 percent the count roughly doubles every 4 steps.",
+        "Stop the run early: on average there are about 9,000 particles by step 50, and the count keeps growing.",
+        "Change the Chance value and compare how quickly the curve turns upward. Then use Abstract Exponential and Logistic, which adds a crowding rule."
+      ]
+    },
+    "abstract-exponential-and-logistic": {
+      "subjects": [
+        "Mathematics",
+        "Biology"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "John Chen"
+      ],
+      "basedOn": null,
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "wolves-and-sheep",
+        "dla"
+      ],
+      "tips": [
+        "Use after Abstract Exponential. Ignore the Info tab (it describes DLA): here 50 particles hatch at 10 percent per step, and Other Particles Here? with Die removes crowded ones.",
+        "Ask your students whether the Particle Count plot will keep climbing like before, then run it long enough to see the shape of the curve.",
+        "Change the starting number in Create Particles (50 in the starting program) and ask whether it changes where the count ends up.",
+        "Take out the Die rule to get back to plain exponential growth, and compare the two runs."
+      ]
+    },
+    "preferential-attachment": {
+      "subjects": [
+        "Mathematics"
+      ],
+      "gradeBands": [],
+      "gradeBandSource": null,
+      "creators": [
+        "John Chen"
+      ],
+      "basedOn": "Wilensky, U. (2005). NetLogo Preferential Attachment model; based on Barabasi, A.-L. Linked: The New Science of Networks, pages 79 to 92",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
+      "lesson": null,
+      "related": [
+        "dla",
+        "abstract-exponential"
+      ],
+      "tips": [
+        "The starting go only redraws the network, so nothing grows until your students put Create a Node with a Connect block inside it under Go. Use go-once to add one step at a time.",
+        "Compare Connect to a Random Node with Connect to a Random Link: the second picks one end of a random link, so well-connected nodes are chosen more often. Ask which one makes hubs.",
+        "Node size grows with the number of links, so hubs stand out; check the Degree Distribution plot too. The Info tab's LAYOUT?, PLOT? and RESIZE-NODES controls are not here.",
+        "The Repeat block's number (labeled How probably?) is how many times it repeats. Wrap Create a Node in Repeat to add many nodes per step."
+      ]
+    }
+  }
+}
