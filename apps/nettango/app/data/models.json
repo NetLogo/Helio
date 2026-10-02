@@ -214,6 +214,96 @@
     "source": "library"
   },
   {
+    "id": "spaceship-programming",
+    "title": "Spaceship Programming",
+    "description": "Students schedule timed engine firings with blocks to fly a spaceship to a target. The ship keeps its velocity until an opposing engine fires.",
+    "authors": [
+      "Jacob Kelter"
+    ],
+    "tags": [
+      "Physics"
+    ],
+    "thumbnail": "/assets/models/spaceship-programming.webp",
+    "animatedThumbnail": "/assets/models/spaceship-programming.gif",
+    "player": "/assets/models/spaceship-programming.html",
+    "project": "/assets/models/spaceship-programming.ntjson"
+  },
+  {
+    "id": "spaceship-programming-variable-engines",
+    "title": "Spaceship Programming: Variable Engines",
+    "description": "Follows Spaceship Programming. Students again schedule engine firings with blocks to reach a target, and now set each engine's force from 0 to 10 N.",
+    "authors": [
+      "Jacob Kelter"
+    ],
+    "tags": [
+      "Physics"
+    ],
+    "thumbnail": "/assets/models/spaceship-programming-variable-engines.webp",
+    "animatedThumbnail": "/assets/models/spaceship-programming-variable-engines.gif",
+    "player": "/assets/models/spaceship-programming-variable-engines.html",
+    "project": "/assets/models/spaceship-programming-variable-engines.ntjson"
+  },
+  {
+    "id": "abstract-exponential",
+    "title": "Abstract Exponential",
+    "description": "Students build rules for wandering particles that hatch new particles by chance each step, and plot how the particle count grows. NetTango version by John Chen. The model file carries the Info text of the NetLogo Models Library model DLA Simple (Wilensky and Rand, 2006) and states a CC BY-NC-SA 3.0 license.",
+    "authors": [
+      "John Chen"
+    ],
+    "tags": [
+      "Complex Systems"
+    ],
+    "thumbnail": "/assets/models/abstract-exponential.webp",
+    "animatedThumbnail": "/assets/models/abstract-exponential.gif",
+    "player": "/assets/models/abstract-exponential.html",
+    "project": "/assets/models/abstract-exponential.ntjson"
+  },
+  {
+    "id": "abstract-exponential-and-logistic",
+    "title": "Abstract Exponential and Logistic",
+    "description": "Students build rules for wandering particles that hatch new particles by chance and die when another particle shares their patch, so crowding limits the particle count. NetTango version by John Chen. The model file carries the Info text of the NetLogo Models Library model DLA Simple (Wilensky and Rand, 2006) and states a CC BY-NC-SA 3.0 license.",
+    "authors": [
+      "John Chen"
+    ],
+    "tags": [
+      "Complex Systems"
+    ],
+    "thumbnail": "/assets/models/abstract-exponential-and-logistic.webp",
+    "animatedThumbnail": "/assets/models/abstract-exponential-and-logistic.gif",
+    "player": "/assets/models/abstract-exponential-and-logistic.html",
+    "project": "/assets/models/abstract-exponential-and-logistic.ntjson"
+  },
+  {
+    "id": "dla",
+    "title": "DLA",
+    "description": "Students build rules for wandering particles that attach to a seed cluster when they touch it, growing branching, treelike structures. NetTango version by John Chen, based on the NetLogo Models Library model DLA Simple (Wilensky and Rand, 2006). Licensed CC BY-NC-SA 3.0.",
+    "authors": [
+      "John Chen"
+    ],
+    "tags": [
+      "Complex Systems"
+    ],
+    "thumbnail": "/assets/models/dla.webp",
+    "animatedThumbnail": "/assets/models/dla.gif",
+    "player": "/assets/models/dla.html",
+    "project": "/assets/models/dla.ntjson"
+  },
+  {
+    "id": "preferential-attachment",
+    "title": "Preferential Attachment",
+    "description": "Students build rules for a growing network in which new nodes connect to existing ones, and explore how linking to already popular nodes produces a few highly connected hubs. NetTango version by John Chen, based on the NetLogo Models Library model Preferential Attachment (Wilensky, 2005). Licensed CC BY-NC-SA 3.0.",
+    "authors": [
+      "John Chen"
+    ],
+    "tags": [
+      "Complex Systems"
+    ],
+    "thumbnail": "/assets/models/preferential-attachment.webp",
+    "animatedThumbnail": "/assets/models/preferential-attachment.gif",
+    "player": "/assets/models/preferential-attachment.html",
+    "project": "/assets/models/preferential-attachment.ntjson"
+  },
+  {
     "id": "rollypollies-simple",
     "title": "Rollypollies Simple",
     "description": "A NetTango blocks environment from the Biology collection.",
