@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>NetTango icon</title>
+  <desc>
+    Product icon in the NetLogo family look (packages/vue-ui/assets/icon-pack/nettango-fill.svg):
+    rounded tile, corner radius 192 (6 of 32), linear gradient #0099F5 at the left to #9AD9FF
+    at the right, flat red mark on top.
+    The mark is NetTango-Mark.svg at 3/4 scale, so one grid unit is 48 and the grid lines land
+    on a multiple of 16. The block edge (#B01000, --color-block-red-edge) sits one unit
+    below the block, as the NtBlock edge does. The group sits at (128, 96), so block plus
+    edge is centred 8 px above the canvas centre, where optical centre falls.
+  </desc>
+  <defs>
+    <linearGradient id="tile-gradient" x1="0" y1="0" x2="1024" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0099F5"/>
+      <stop offset="1" stop-color="#9AD9FF"/>
+    </linearGradient>
+  </defs>
+  <g id="tile">
+    <rect width="1024" height="1024" rx="192" fill="url(#tile-gradient)"/>
+  </g>
+  <g id="mark" transform="translate(128 96) scale(0.75)">
+    <path id="block-edge" fill="#B01000" transform="translate(0 64)" d="M 256 128 H 896 A 64 64 0 0 1 960 192 V 320 A 128 128 0 0 0 832 448 V 576 A 128 128 0 0 0 960 704 V 832 A 64 64 0 0 1 896 896 H 256 A 64 64 0 0 1 192 832 V 704 A 128 128 0 0 1 64 576 V 448 A 128 128 0 0 1 192 320 V 192 A 64 64 0 0 1 256 128 Z"/>
+    <path id="M 384 371.78 A 32 32 0 0 1 430.31 343.16 L 710.76 483.38 A 32 32 0 0 1 710.76 540.62 L 430.31 680.84 A 32 32 0 0 1 384 652.22 Z" fill="#E91400" d="M 256 128 H 896 A 64 64 0 0 1 960 192 V 320 A 128 128 0 0 0 832 448 V 576 A 128 128 0 0 0 960 704 V 832 A 64 64 0 0 1 896 896 H 256 A 64 64 0 0 1 192 832 V 704 A 128 128 0 0 1 64 576 V 448 A 128 128 0 0 1 192 320 V 192 A 64 64 0 0 1 256 128 Z"/>
+    <path id="play" fill="#FFFFFF" d="M 384 371.78 A 32 32 0 0 1 430.31 343.16 L 710.76 483.38 A 32 32 0 0 1 710.76 540.62 L 430.31 680.84 A 32 32 0 0 1 384 652.22 Z"/>
+  </g>
+</svg>

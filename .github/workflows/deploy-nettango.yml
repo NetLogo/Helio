@@ -1,6 +1,7 @@
 name: Deploy NetTango
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,77 +9,70 @@ on:
 
 jobs:
   deploy:
-    if: startsWith(github.event.head_commit.message, '#build app/nettango')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '#build app/nettango')
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "24"
-          cache: "yarn"
+          node-version: '24'
+          cache: yarn
+
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ hashFiles('yarn.lock') }}-
+            ${{ runner.os }}-turbo-
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
 
       - name: Install dependencies
-        run: yarn install --ignore-scripts
-
-      - name: Build monorepo
-        run: yarn build
+        run: yarn run init
+        env:
+          HELIO_SKIP_CHECKS: 1
+          HELIO_HEADLESS: 1
+          NUXT_TELEMETRY_DISABLED: 1
 
       - name: Generate NetTango
         working-directory: apps/nettango
+        env:
+          NUXT_TELEMETRY_DISABLED: 1
+        run: yarn run nuxt:generate
+
+      - name: Setup SSH
+        uses: ./.github/actions/setup-ssh
+        with:
+          ssh-private-key: ${{ secrets.NETTANGO_DEPLOY_PRIVATE_KEY }}
+
+      - name: Push to NetLogo/nettango-site
+        shell: bash
         run: |
-          yarn install --force
+          git config --global user.name "HELIO CI"
+          git config --global user.email "helio-noreply@netlogo.org"
 
-          if [ -f .env ]; then
-            export $(grep -v '^#' .env | xargs)
-          else
-            echo ".env file not found"
-            exit 1
-          fi
+          git clone --depth 1 git@github.com:NetLogo/nettango-site.git site
+          rsync -a --delete \
+            --exclude .git --exclude .nojekyll --exclude CNAME \
+            apps/nettango/.output/public/ site/
 
-          yarn run nuxt:generate
-
-      - name: Configure Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Deploy to Isolated Orphan Branch
-        run: |
-          DEPLOY_DIR="/tmp/deploy-nettango"
-          BRANCH_NAME="deploy/nettango"
-
-          mkdir -p $DEPLOY_DIR
-          cd $DEPLOY_DIR
-
-          git clone --depth 1 \
-            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" \
-            .
-
-          if git rev-parse --verify $BRANCH_NAME >/dev/null 2>&1; then
-            echo "Checking out existing branch: $BRANCH_NAME"
-            git checkout $BRANCH_NAME
-            find . -mindepth 1 ! -name '.git' ! -name '.git*' -exec rm -rf {} +
-          else
-            # Branch does not exist, create it as an orphan
-            echo "Creating orphan branch: $BRANCH_NAME"
-            git checkout --orphan $BRANCH_NAME
-            git rm -rf .
-          fi
-
-          cp -r "${{ github.workspace }}"/apps/nettango/.output/public/. .
-
+          cd site
           git add --all
-          CURRENT_SHA="${{ github.sha }}"
-          COMMIT_MSG="Deploy NetTango site from Monorepo commit $CURRENT_SHA"
-
-          if git diff-index --quiet HEAD --; then
-            echo "No changes found. Deployment skipped."
-          else
-            git commit -m "$COMMIT_MSG"
-            echo "$COMMIT_MSG"
-            git push origin $BRANCH_NAME --force-with-lease
+          if git diff --cached --quiet; then
+            echo "No changes to deploy."
+            exit 0
           fi
+          git commit -m "Deploy NetTango site from Monorepo commit \`${GITHUB_SHA::7}\`"
+          git push origin HEAD
