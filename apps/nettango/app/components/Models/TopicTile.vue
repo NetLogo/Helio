@@ -3,9 +3,13 @@
     as="article"
     class="flex h-full flex-col"
     :ui="{ header: 'p-0 sm:px-0', body: 'flex flex-1 flex-col gap-3' }"
+    @pointerenter="active = true"
+    @pointerleave="active = false"
+    @focusin="active = true"
+    @focusout="active = false"
   >
     <template #header>
-      <ModelThumbnail :model="lead" class="aspect-4/3" />
+      <ModelThumbnail :model="lead" :animate="active" class="aspect-4/3" />
     </template>
     <NtBlock as="h3" :color="TOPIC_COLORS[group.id] ?? 'blue'" :label="group.title" class="mb-1 self-start" />
     <p class="text-sm text-muted">{{ group.description }}</p>
@@ -51,4 +55,6 @@ const props = defineProps<{
 }>();
 
 const lesson = modelMetadata(useModelCuration(), props.lead.id)?.lesson ?? null;
+
+const active = ref(false);
 </script>

@@ -101,3 +101,47 @@ export const sequencePosition = (
 
 export const modelMetadata = (curation: ModelCuration, modelId: string): ModelMetadata | null =>
   curation.models[modelId] ?? null;
+
+export type ModelNavLink = { id: string; title: string };
+
+export type ModelNavigation = {
+  groups: { id: string; title: string; models: (ModelNavLink & { current: boolean })[] }[];
+  topic: { id: string; title: string } | null;
+  sequence: {
+    title: string;
+    step: number;
+    total: number;
+    previous: ModelNavLink | null;
+    next: ModelNavLink | null;
+  } | null;
+};
+
+export const modelNavigation = (
+  curation: ModelCuration,
+  models: GalleryModel[],
+  currentId: string,
+): ModelNavigation => {
+  const groups = resolveGroups(curation, models).map(({ id, title, models: members }) => ({
+    id,
+    title,
+    models: members.map((model) => ({ id: model.id, title: model.title, current: model.id === currentId })),
+  }));
+  const topic = groups.find((group) => group.models.some((model) => model.current));
+  const position = sequencePosition(curation, currentId);
+  const link = (id: string | null): ModelNavLink | null => {
+    const model = id ? models.find((candidate) => candidate.id === id) : undefined;
+    return model ? { id: model.id, title: model.title } : null;
+  };
+
+  return {
+    groups,
+    topic: topic ? { id: topic.id, title: topic.title } : null,
+    sequence: position && {
+      title: position.title,
+      step: position.step,
+      total: position.total,
+      previous: link(position.previous),
+      next: link(position.next),
+    },
+  };
+};

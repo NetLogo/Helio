@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-const pageProductName = `NetTango Builder by NetLogo`;
 
 const appear = ref(false);
 const appeared = ref(false);
@@ -24,20 +23,15 @@ onMounted(() => {
   }, 0);
 });
 
+useProductHead();
+
 useHead({
-  titleTemplate: (chunk) => (chunk ? `${chunk} - ${pageProductName}` : pageProductName),
   link: () => [
     {
       rel: "preconnect",
       href: "https://fonts.googleapis.com",
     },
   ],
-});
-
-useSeoMeta({
-  ogSiteName: pageProductName,
-  ogType: "website",
-  twitterCard: "summary_large_image",
 });
 </script>
 

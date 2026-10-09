@@ -11,9 +11,13 @@
       description: 'line-clamp-3',
       footer: 'relative z-10 mt-auto',
     }"
+    @pointerenter="active = true"
+    @pointerleave="active = false"
+    @focusin="active = true"
+    @focusout="active = false"
   >
     <template #header >
-      <ModelThumbnail :model="model" />
+      <ModelThumbnail :model="model" :animate="active" />
     </template>
 
     <template #badge>
@@ -88,4 +92,6 @@ const position = sequencePosition(curation, props.model.id);
 const stepLabel = position ? `Step ${position.step} of ${position.total}` : "";
 const stepTitle = position ? `${stepLabel} in ${position.title}` : "";
 const authorList = computed(() => new Intl.ListFormat("en").format(props.model.authors));
+
+const active = ref(false);
 </script>

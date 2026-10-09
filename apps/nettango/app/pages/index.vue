@@ -125,8 +125,8 @@
       :description="page.origin.body"
       :ui="{
         root: 'overflow-hidden',
-        container: 'pb-0 ml-[25ch] sm:pb-0 lg:pb-0 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]',
-        wrapper: 'lg:pb-32',
+        container: 'pb-0 2xl:ml-[25ch] sm:pb-0 lg:pb-0 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]',
+        wrapper: 'px-10 xl:px-0 lg:pb-10 2xl:pb-32',
       }"
     >
       <template #body>
@@ -139,7 +139,7 @@
             </UCard>
           </li>
         </ul>
-        <ul aria-label="Browsers" class="mt-8 flex mx-auto gap-20 w-fit p-0">
+        <ul aria-label="Browsers" class="mt-8 flex mx-auto gap-10 sm:gap-20 w-fit p-0">
           <li
             v-for="browser in page.origin.browsers"
             :key="browser.label"
@@ -150,8 +150,8 @@
           </li>
         </ul>
       </template>
-      <div class="relative -mr-4 h-80 sm:-mr-6 sm:h-112 lg:mr-0 lg:h-auto lg:self-stretch">
-        <NtBrowser url="https://netlogoweb.org/nettango-builder" class="absolute top-0 left-0 w-[115%] lg:top-12 lg:left-16 lg:w-[64vw]">
+      <div class="relative h-80 sm:h-112 lg:mr-0 lg:h-auto lg:self-stretch">
+        <NtBrowser url="https://netlogoweb.org/nettango-builder" class="absolute top-0 left-0  lg:top-12 lg:left-16 lg:w-[64vw]">
           <div class="aspect-1309/924 bg-white">
             <img
               src="/assets/home/nettango-player.webp"

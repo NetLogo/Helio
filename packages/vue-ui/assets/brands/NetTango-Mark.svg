@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>NetTango mark</title>
+  <desc>
+    Grid: 1024 canvas, 16 x 16 units of 64 (1 unit = 1 px at 16, 2 at 32, 64 at 1024).
+    Safe area: 1 unit inset, 64 to 960.
+    Mark bounds: x 64 to 960 (14 units), y 128 to 896 (12 units).
+    Block body: x 192 to 960, y 128 to 896, corner radius 64 (1 unit).
+    Tab (left) and notch (right): 2 units deep, 6 units tall (y 320 to 704), end radius 128.
+    Tab and notch share one shape, so two marks interlock.
+    Play glyph: triangle x 384 to 768, y 320 to 704, corner radius 32; its centroid
+    (x 512) sits on the mark's area centroid, which is the optical center.
+    Colours: block #E91400 (--color-block-red), glyph #FFFFFF.
+    Surface: #FFFFFF behind opaque exports such as the touch icon.
+    The surface and keylines groups are hidden; the icon script turns them on per export.
+  </desc>
+  <g id="surface-light" display="none">
+    <rect width="1024" height="1024" fill="#FFFFFF"/>
+  </g>
+  <g id="mark">
+    <path id="block" fill="#E91400" d="M 256 128 H 896 A 64 64 0 0 1 960 192 V 320 A 128 128 0 0 0 832 448 V 576 A 128 128 0 0 0 960 704 V 832 A 64 64 0 0 1 896 896 H 256 A 64 64 0 0 1 192 832 V 704 A 128 128 0 0 1 64 576 V 448 A 128 128 0 0 1 192 320 V 192 A 64 64 0 0 1 256 128 Z"/>
+    <path id="play" fill="#FFFFFF" d="M 384 371.78 A 32 32 0 0 1 430.31 343.16 L 710.76 483.38 A 32 32 0 0 1 710.76 540.62 L 430.31 680.84 A 32 32 0 0 1 384 652.22 Z"/>
+  </g>
+  <g id="keylines" display="none" fill="none" stroke="#0670ED" stroke-width="2">
+    <path id="grid" stroke-opacity="0.25" d="M 64 0 V 1024 M 128 0 V 1024 M 192 0 V 1024 M 256 0 V 1024 M 320 0 V 1024 M 384 0 V 1024 M 448 0 V 1024 M 512 0 V 1024 M 576 0 V 1024 M 640 0 V 1024 M 704 0 V 1024 M 768 0 V 1024 M 832 0 V 1024 M 896 0 V 1024 M 960 0 V 1024 M 0 64 H 1024 M 0 128 H 1024 M 0 192 H 1024 M 0 256 H 1024 M 0 320 H 1024 M 0 384 H 1024 M 0 448 H 1024 M 0 512 H 1024 M 0 576 H 1024 M 0 640 H 1024 M 0 704 H 1024 M 0 768 H 1024 M 0 832 H 1024 M 0 896 H 1024 M 0 960 H 1024"/>
+    <rect id="safe-area" x="64" y="64" width="896" height="896" stroke-width="4"/>
+    <rect id="mark-bounds" x="64" y="128" width="896" height="768" stroke-dasharray="16 12" stroke-width="4"/>
+    <rect id="body-bounds" x="192" y="128" width="768" height="768" stroke-dasharray="4 8" stroke-width="4"/>
+    <path id="optical-center" stroke-width="4" d="M 512 480 V 544 M 480 512 H 544"/>
+  </g>
+</svg>
