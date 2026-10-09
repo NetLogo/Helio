@@ -8,6 +8,7 @@ export type GalleryModel = {
   tags: string[];
   thumbnail?: string;
   animatedThumbnail?: string;
+  stepThumbnail?: string;
   player: string;
   project: string;
   editor?: string;

@@ -19,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-const pageProductName = `NetTango Builder by NetLogo`;
 
 const heroBackgroundClass = ref(
   "pointer-events-none absolute w-full -top-px transition-all text-primary shrink-0 -z-10 -z-10 duration-[400ms]",
@@ -37,20 +36,15 @@ onMounted(() => {
   }, 0);
 });
 
+useProductHead();
+
 useHead({
-  titleTemplate: (chunk) => (chunk ? `${chunk} - ${pageProductName}` : pageProductName),
   link: () => [
     {
       rel: "preconnect",
       href: "https://fonts.googleapis.com",
     },
   ],
-});
-
-useSeoMeta({
-  ogSiteName: pageProductName,
-  ogType: "website",
-  twitterCard: "summary_large_image",
 });
 </script>
 

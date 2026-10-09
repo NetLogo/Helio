@@ -1,78 +1,87 @@
 <template>
-  <UPage class="no-stylized-heading">
-    <UContainer>
-      <UBreadcrumb :items="breadcrumbs" class="mt-8" />
-      <ModelHeader v-if="model" :model="model" class="my-8" />
-      <USeparator v-if="model" class="mb-8" icon="netlogo-turtles" />
-    </UContainer>
-    <iframe
+  <NuxtLayout name="app" class="no-stylized-heading">
+    <template #bar>
+      <ModelAppBar
+        :model="model"
+        :sidebar-visible="sidebarVisible"
+        :sidebar-icons="sidebarIcons"
+        :swapped="swapped"
+        @toggle-sidebar="toggleSidebar"
+        @swap="swapped = !swapped"
+        @reset-split="split?.reset()"
+      />
+    </template>
+
+    <!-- One split for every model, not one per model: a teacher sets it once. -->
+    <NtSplitPane
       v-if="model"
-      ref="player"
-      :src="model.player"
-      :title="`${model.title} NetTango model`"
-      class="block w-full border-0 bg-white px-(--space-xl)"
-      :style="{ height: `${height}px` }"
-      allow="fullscreen"
-      @load="observePlayer"
-    />
-    <ErrorDisplay
-      v-else
-      :error-code="404"
-      error-details="The requested model could not be found."
-    />
-  </UPage>
+      ref="split"
+      storage-key="model-app-view"
+      label="Resize model and details"
+      :initial-ratio="queryRatio"
+      :hide-end="sidebarState"
+      :reversed="swapped"
+    >
+      <template #start>
+        <iframe
+          :src="model.player"
+          :title="`${model.title} NetTango model`"
+          class="block size-full border-0 bg-white"
+          allow="fullscreen"
+        />
+      </template>
+      <template #end>
+        <div class="min-h-full bg-muted p-3">
+          <ModelSidebar :model="model" class="lg:w-full" />
+        </div>
+      </template>
+    </NtSplitPane>
+    <ErrorDisplay v-else :error-code="404" error-details="The requested model could not be found." />
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: "clean",
-});
+import { useEventListener } from "@vueuse/core";
+
+definePageMeta({ layout: false });
+
 const route = useRoute();
 const modelKey = route.params.modelKey as string;
-
 const model = useModels().find((m) => m.id === modelKey);
 
-const player = useTemplateRef<HTMLIFrameElement>("player");
-const height = ref(model?.frameHeight ?? 800);
-let observer: ResizeObserver | undefined;
+const queryRatio = splitFromQuery(route.query.split);
+const sidebarState = ref<boolean | "compact">(sidebarHiddenFromQuery(route.query.sidebar) ? true : "compact");
+const swapped = ref(false);
+const isDesktop = ref(false);
+const split = useTemplateRef<{ reset: () => void }>("split");
 
-const observePlayer = () => {
-  const doc = player.value?.contentDocument;
-  const win = player.value?.contentWindow;
-  if (!doc?.documentElement || !win) {
-    height.value = 1400;
-    return;
-  }
+const sidebarVisible = computed(
+  () => sidebarState.value === false || (sidebarState.value === "compact" && isDesktop.value),
+);
+// One icon per breakpoint, chosen in CSS, so the SSR markup is already right before isDesktop is known.
+const sidebarIcons = computed(() => ({
+  desktop: `i-lucide-panel-${swapped.value ? "left" : "right"}-${sidebarState.value === true ? "open" : "close"}`,
+  compact: `i-lucide-panel-${swapped.value ? "top" : "bottom"}-${sidebarState.value === false ? "close" : "open"}`,
+}));
 
-  const sync = () => {
-    height.value = doc.documentElement.scrollHeight;
-  };
-
-  sync();
-  observer?.disconnect();
-  observer = new ResizeObserver(sync);
-  observer.observe(doc.documentElement);
-  observer.observe(doc.body);
+const toggleSidebar = () => {
+  sidebarState.value = sidebarVisible.value;
 };
 
 onMounted(() => {
-  if (player.value?.contentDocument?.readyState === "complete") observePlayer();
+  const query = window.matchMedia("(min-width: 64rem)");
+  isDesktop.value = query.matches;
+  useEventListener(query, "change", (event: MediaQueryListEvent) => {
+    isDesktop.value = event.matches;
+  });
 });
 
-onBeforeUnmount(() => observer?.disconnect());
-
 if (model) {
-  useSeoMeta({ title: model.title, description: model.description });
+  useSeoMeta({ title: model.title, description: model.description, });
 } else {
   useHead({
     title: "Model Not Found",
     meta: [{ name: "robots", content: "noindex, nofollow" }],
   });
 }
-
-const breadcrumbs = ref<import("#ui/types").BreadcrumbItem[]>([
-  { label: "Home", to: "/" },
-  { label: "Model Gallery", to: "/models-gallery" },
-  { label: model?.title ?? "Not Found", to: `/models/${modelKey}` },
-]);
 </script>

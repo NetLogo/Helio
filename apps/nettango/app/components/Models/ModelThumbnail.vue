@@ -19,8 +19,7 @@
       alt=""
       aria-hidden="true"
       class="absolute inset-0 size-full object-cover transition-opacity duration-500"
-      :class="loaded ? 'opacity-100' : 'opacity-0'"
-      loading="lazy"
+      :class="animate && loaded ? 'opacity-100' : 'opacity-0'"
       @load="loaded = true"
       @error="failed = true"
     />
@@ -31,13 +30,21 @@
 import { useMediaQuery } from "@vueuse/core";
 import type { GalleryModel } from "~/composables/useModels";
 
-const props = defineProps<{ model: GalleryModel }>();
+const props = defineProps<{ model: GalleryModel; animate?: boolean }>();
 
 const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 const loaded = ref(false);
 const failed = ref(false);
+const requested = ref(false);
+
+watch(
+  () => props.animate,
+  (animate) => {
+    if (animate) requested.value = true;
+  },
+);
 
 const animatedSrc = computed(() =>
-  failed.value || reducedMotion.value ? undefined : props.model.animatedThumbnail,
+  !requested.value || failed.value || reducedMotion.value ? undefined : props.model.animatedThumbnail,
 );
 </script>
