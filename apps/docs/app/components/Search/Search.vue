@@ -26,6 +26,8 @@ const { data: files } = await useLazyAsyncData(
 );
 
 const fuseOptions: IFuseOptions<unknown> = {
+  // @nuxt/ui 4.12 turns on token search by default, which matches a page if any single word matches.
+  useTokenSearch: false,
   ignoreDiacritics: true,
   shouldSort: true,
   threshold: 0,

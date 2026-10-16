@@ -28,9 +28,6 @@ export default defineNuxtConfig({
       appUrl: process.env.NUXT_PUBLIC_APP_URL as string,
       cdnUrl,
     },
-    turnstile: {
-      secretKey: process.env.CAPTCHA_SECRET_KEY as string,
-    },
   },
 
   // prettier-ignore
@@ -38,7 +35,6 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/test-utils/module",
     "nuxt-security",
-    "@nuxtjs/turnstile",
   ],
 
   sitemap: {
@@ -69,18 +65,12 @@ export default defineNuxtConfig({
     },
   },
 
-  turnstile: {
-    siteKey: process.env.CAPTCHA_SITE_KEY as string,
-  },
-
   gtag: {
     id: process.env.NUXT_PUBLIC_GA_TRACKING_ID || "",
   },
 
-  googleFonts: {
-    families: {
-      Epilogue: [400, 500, 600, 700],
-    },
+  fonts: {
+    families: [{ name: "Epilogue", provider: "google", weights: [400, 500, 600, 700], global: true }],
   },
 
   imports: {
@@ -173,6 +163,16 @@ export default defineNuxtConfig({
   vite: {
     server: {
       hmr: false,
+    },
+    build: {
+      rollupOptions: {
+        onwarn(warning, warn) {
+          if (warning.code === "THIS_IS_UNDEFINED" && warning.id?.includes("@opentelemetry")) {
+            return;
+          }
+          warn(warning);
+        },
+      },
     },
   },
 

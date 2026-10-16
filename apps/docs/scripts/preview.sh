@@ -11,9 +11,6 @@ if [ ! -d .build ]; then
   exit 1
 fi
 
-log_warn "This script will kill any process using port $PORT."
-kill_processes_by_port $PORT
-
 log_info "Starting preview server for built documentation..."
 
 rm -rf .preview || true

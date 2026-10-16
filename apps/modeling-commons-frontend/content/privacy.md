@@ -13,7 +13,7 @@ We value your privacy and are committed to protecting your personal information.
 
 ### Definitions
 
-This Privacy Policy uses the same definitions as our [Terms of Service](/terms). In addition:
+This Privacy Policy uses the same definitions as our [Terms of Service](/terms-of-service). In addition:
 
 - **Personal Information** refers to any information that identifies or can reasonably be used to identify You as an individual.
 

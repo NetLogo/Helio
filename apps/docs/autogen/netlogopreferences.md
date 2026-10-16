@@ -34,10 +34,10 @@ Code Preferences
 <tr>
 <tr>
 <td>
-<img src="./images/preferences/generalprefs.png" style="width:5in" />
+<img src="./images/preferences/generalprefs.webp" style="width:5in" />
 </td>
 <td>
-<img src="./images/preferences/codeprefs.png" style="width:5in" />
+<img src="./images/preferences/codeprefs.webp" style="width:5in" />
 </td>
 </tr>
 </tbody>
@@ -62,10 +62,10 @@ Color Themes
 <tr>
 <tr>
 <td>
-<img src="./images/preferences/loggingprefs.png" style="width:5in" />
+<img src="./images/preferences/loggingprefs.webp" style="width:5in" />
 </td>
 <td>
-<img src="./images/preferences/colorthemes.png" style="width:5in" />
+<img src="./images/preferences/colorthemes.webp" style="width:5in" />
 </td>
 <tr>
 </tbody>
@@ -166,9 +166,26 @@ When selected line numbers will be shown on the left edge of the Code Tab.
 
 ### Code Font
 
-This preference allows you to apply any font installed on your system to all
-code editors in NetLogo, such as the Code Tab and the Button Widget commands
-field.
+This preference allows you to set the font to use wherever NetLogo would
+normally display a monospaced font (usually for code).  The list of font
+options is provided by your operating system, so you can add third-party
+fonts to the list by installing them to your operating system.
+
+The places where the selected font will be used include:
+
+* Code tab editor
+* Command Center input
+* Command Center output
+* Button dialog editor
+* Slider dialog editors
+* Chooser dialog editor
+* Input widget inputs (when Number, String (Reporter), or String (Command))
+* Monitor dialog editor
+* Plot dialog editors
+* Output widget output
+* Info tab editor
+* Info tab rendered content (e.g. the rendering of \`my favorite code\`)
+* All editors in agent inspection windows
 
 ## Logging Preferences
 
@@ -212,15 +229,15 @@ example of each theme.
 
 ### Light
 
-<img src="./images/nl7intro/inttablight.png" style="width:5in" />
+<img src="./images/nl7intro/inttablight.webp" style="width:5in" />
 
 ### Dark
 
-<img src="./images/nl7intro/inttabdark.png" style="width:5in" />
+<img src="./images/nl7intro/inttabdark.webp" style="width:5in" />
 
 ### Classic
 
-<img src="./images/nl7intro/inttabclassic.png" style="width:5in" />
+<img src="./images/nl7intro/inttabclassic.webp" style="width:5in" />
 
 ### Automatic
 

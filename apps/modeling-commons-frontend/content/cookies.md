@@ -10,7 +10,7 @@ description: |
 ---
 # Cookie Policy
 
-This Cookie Policy explains how the Modeling Commons uses cookies. It should be read alongside our [Privacy Policy](/privacy) and [Terms of Service](/terms), which use the same definitions.
+This Cookie Policy explains how the Modeling Commons uses cookies. It should be read alongside our [Privacy Policy](/privacy) and [Terms of Service](/terms-of-service), which use the same definitions.
 
 ### What Are Cookies?
 

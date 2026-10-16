@@ -34,6 +34,8 @@
     "eslint": "^9.31.0",
     "glob": "^13.0.0",
     "tsc-alias": "^1.8.16",
+    "typescript-eslint": "^8.46.2",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.16"
   }
 }

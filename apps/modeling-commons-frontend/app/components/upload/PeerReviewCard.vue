@@ -40,7 +40,7 @@
             <span class="text-md leading-normal text-text">Description</span>
           </template>
           <UTextarea
-            v-model="state.peerReviewDescription"
+            v-model.nullable="state.peerReviewDescription"
             placeholder="Write 1-2 lines to help others understand what you are trying to resolve"
             :rows="6"
             class="w-full"

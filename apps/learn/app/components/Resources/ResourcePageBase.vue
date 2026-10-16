@@ -49,7 +49,9 @@
 
       <section v-if="resource.longDescription" class="prose prose-medium max-w-none mb-0">
         <h2 class="no-stylized-heading">{{ longDescriptionTitle }}</h2>
-        <MDC :value="resource.longDescription" class="mb-0" />
+        <MDC v-slot="{ body, data }" :value="resource.longDescription">
+          <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" class="mb-0" />
+        </MDC>
       </section>
 
       <slot name="content" />

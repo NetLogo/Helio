@@ -10,6 +10,9 @@
   "tasks": {
     "turbo:postinstall": {
       "cache": false,
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": [
         ".nuxt/**",
         ".output/**",

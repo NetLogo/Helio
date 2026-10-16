@@ -27,6 +27,6 @@ export function useArticleSEO(article: ObjectModel.Article) {
     ogType: 'article',
     title: `${title}`,
     description: description,
-    keywords: keywords,
   });
+  useHead({ meta: [{ name: 'keywords', content: keywords }] });
 }

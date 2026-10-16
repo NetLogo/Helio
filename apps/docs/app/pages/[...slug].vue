@@ -12,17 +12,15 @@ const {
 
 const route = useRoute();
 const path = decodeURIComponent(route.path).replace(/\?/, '');
+
+// Disabled until feature is rolled out.
+// --Omar I. (05-10-2026)
+provide('prim-tooltip-disabled', true);
+
 const { data: page } = await useAsyncData(path, () => {
   return queryCollection('content').path(path).first();
 });
 
-// Special case due to the large number of
-// primitives on the dictionary page, which causes too many
-// tooltips to be rendered and results in degraded performance.
-// --Omar I. (05-10-2026)
-if (['/dictionary', '/3d'].includes(path)) {
-  provide('prim-tooltip-disabled', true);
-}
 
 const { data: surround } = await useAsyncData(`${path}-surround`, () => {
   return queryCollectionItemSurroundings('content', path, {
@@ -51,7 +49,7 @@ const layoutComponent = computed(() => {
   }
 });
 
-defineOgImageComponent('DocsSeo', {
+defineOgImage('DocsSeo', {
   title,
   description,
   theme: '#f31500',
@@ -68,8 +66,8 @@ useSeoMeta({
   ogType: 'article',
   title: `${title}`,
   description: description,
-  keywords: keywords,
 });
+useHead({ meta: [{ name: 'keywords', content: keywords }] });
 
 function isPageContent(item: ContentCollectionItem | null | undefined): item is ContentCollectionItem {
   return item !== null && item !== undefined;
@@ -105,7 +103,7 @@ function resolveMeta(page: ContentCollectionItem): ResolvedMeta {
 
   const title = [meta.title, seo.title, 'NetLogo Docs'].filter(Boolean).at(0)!;
   const description = [meta.description, seo.description, 'NetLogo Documentation'].filter(Boolean).at(0)!;
-  const keywords = [meta.keywords, seo.keywords, 'NetLogo', 'Documentation'].filter(Boolean).flat().join(', ');
+  const keywords = [...new Set([meta.keywords, seo.keywords, 'NetLogo', 'Documentation'].filter(Boolean).flat())].join(', ');
 
   const layout = meta.layout ?? 'default';
 
@@ -117,10 +115,10 @@ function resolveMeta(page: ContentCollectionItem): ResolvedMeta {
   <!-- eslint-disable-next-line vue/no-multiple-template-root -->
   <template v-if="page">
     <component :is="layoutComponent.component" v-if="layoutComponent" v-bind="layoutComponent.props" class="main">
-      <ContentRenderer :value="page" tag="article" class="prose" />
+      <ContentRenderer :value="page" :prose="false" tag="article" class="prose" />
     </component>
 
-    <ContentRenderer v-else :value="page" tag="main" class="prose min-h-screen" />
+    <ContentRenderer v-else :value="page" :prose="false" tag="main" class="prose min-h-screen" />
   </template>
   <ErrorDisplay v-else :error-code="404" error-details="The requested page could not be found." />
 </template>

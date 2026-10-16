@@ -70,11 +70,6 @@ const schema = Type.Object({
     }),
   ), // comma-separated list of IP address headers
   IP_HASH_SALT: Type.String({ default: 'change-me-ip-hash-salt' }),
-  CAPTCHA_PROVIDER: Type.Optional(
-    Type.Enum(['cloudflare-turnstile', 'hcaptcha', 'google-recaptcha', 'captchafox'] as const),
-  ),
-  CAPTCHA_SITE_KEY: Type.Optional(Type.String()),
-  CAPTCHA_SECRET_KEY: Type.Optional(Type.String()),
   TRUST_PROXY_MAX_HOPS: Type.Optional(Type.Number({ default: 0 })),
 });
 
@@ -171,10 +166,5 @@ export default {
   },
   workers: {
     enabled: env.WORKERS_ENABLED,
-  },
-  captcha: {
-    provider: env.CAPTCHA_PROVIDER,
-    siteKey: env.CAPTCHA_SITE_KEY,
-    secretKey: env.CAPTCHA_SECRET_KEY,
   },
 };

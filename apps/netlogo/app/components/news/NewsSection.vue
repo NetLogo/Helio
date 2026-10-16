@@ -8,7 +8,9 @@
       <div v-for="item in visibleNews" :key="item.id" class="p-4 border-b-2 border-gray-300">
         <h3 class="font-bold text-2xl mt-4 mb-1">{{ item.title }}</h3>
         <span class="text-gray-500 text-md block mb-2">{{ formatDate(item.date) }}</span>
-        <MDC :value="item.body" />
+        <MDC v-slot="{ body, data }" :value="item.body">
+          <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" />
+        </MDC>
       </div>
 
       <div v-if="visibleCount < newsData.length" class="text-center py-4">

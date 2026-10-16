@@ -196,7 +196,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           },
         },
       ],
-    ] satisfies DropdownMenuItem[];
+    ] satisfies DropdownMenuItem[][];
   }
   return [];
 });

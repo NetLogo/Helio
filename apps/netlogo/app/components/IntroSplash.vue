@@ -18,11 +18,9 @@
     </div>
 
     <div v-if="activeEntry" class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-      <MDC
-        v-if="activeEntry.description"
-        :value="activeEntry.description"
-        class="mb-6 text-center"
-      />
+      <MDC v-if="activeEntry.description" v-slot="{ body, data }" :value="activeEntry.description">
+        <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" class="mb-6 text-center" />
+      </MDC>
 
       <!-- Right side section now on the top for mobile -->
       <div
