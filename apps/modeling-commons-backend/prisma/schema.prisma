@@ -386,7 +386,7 @@ model ModelDraft {
 }
 
 model ModelComment {
-  id            String    @id @default(uuid())
+  id            String    @id @default(nanoid())
   legacyId      Int?      @unique
 
   parentId      String?
@@ -450,7 +450,7 @@ model Event {
 }
 
 model UserNotification {
-  id            String    @id @default(uuid())
+  id            String    @id @default(nanoid())
   recipientId   String
   eventId       String
   category      String
@@ -472,7 +472,7 @@ model UserNotification {
 }
 
 model UserNotificationPreference {
-  id        String   @id @default(uuid())
+  id        String   @id @default(nanoid())
   userId    String
   category  String
   email     Boolean

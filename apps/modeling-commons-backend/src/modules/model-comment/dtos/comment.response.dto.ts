@@ -1,7 +1,8 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const commentAuthorDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   name: Type.String(),
   image: Type.String(),
 });
@@ -16,9 +17,9 @@ export const commentResponseSchemaId = 'CommentResponse';
 export const commentResponseDtoSchema = Type.Cyclic(
   {
     Comment: Type.Object({
-      id: Type.String({ format: 'uuid' }),
-      modelId: Type.String({ format: 'uuid' }),
-      parentId: Type.Optional(Type.String({ format: 'uuid' })),
+      id: idSchema(),
+      modelId: idSchema(),
+      parentId: Type.Optional(idSchema()),
       versionNumber: Type.Optional(Type.Integer()),
       legacyId: Type.Optional(Type.Integer()),
       author: commentAuthorDtoSchema,

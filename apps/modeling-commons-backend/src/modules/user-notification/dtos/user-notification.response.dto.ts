@@ -1,4 +1,5 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 import { NOTIFICATION_CATEGORIES } from '#src/modules/user-notification/domain/user-notification.types.ts';
 
@@ -8,7 +9,7 @@ const notificationSubjectSchema = Type.Object({
 });
 
 export const userNotificationResponseDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
   category: Type.Enum(NOTIFICATION_CATEGORIES),
   title: Type.String(),
   body: Type.String(),

@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { newId } from '#src/shared/utils/id.ts';
 import rules from '#src/config/rules.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import {
@@ -30,7 +30,7 @@ export default function modelCommentDomain() {
 
       const now = new Date();
       return {
-        id: randomUUID(),
+        id: newId(),
         legacyId: null,
         parentId: props.parentId ?? null,
         userId: props.userId,
