@@ -3,9 +3,11 @@ import { test } from "node:test";
 
 import {
   gradeBandLabels,
+  modelDescription,
   previewSource,
   resolveModels,
   sidebarHiddenFromQuery,
+  tutorialCredit,
 } from "../app/utils/modelSidebar.ts";
 
 const models = [
@@ -59,6 +61,22 @@ test("gradeBandLabels names each band in order", () => {
     "High school",
     "Elementary school",
   ]);
+});
+
+// Catches a credit line that hardcodes one author instead of reading the overlay.
+test("tutorialCredit names the tutorial author", () => {
+  assert.equal(
+    tutorialCredit({ title: "T", url: "https://example.com", author: "Jeremy Baker" }),
+    "Tutorial by Jeremy Baker",
+  );
+});
+
+// Catches the overlay description being ignored, or models without one losing their text.
+test("modelDescription prefers the overlay text and falls back to the model", () => {
+  const model = { description: "Synced text." };
+  assert.equal(modelDescription(model, { description: "Curated text." }), "Curated text.");
+  assert.equal(modelDescription(model, {}), "Synced text.");
+  assert.equal(modelDescription(model, null), "Synced text.");
 });
 
 // Catches a query parser that hides the panel on anything but the exact "hidden" value.

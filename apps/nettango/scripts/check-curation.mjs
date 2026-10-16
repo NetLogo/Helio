@@ -7,6 +7,13 @@ const MAX_RELATED = 3;
 
 const duplicates = (ids) => ids.filter((id, index) => ids.indexOf(id) !== index);
 
+const isText = (value) => typeof value === "string" && value.trim() !== "";
+
+const isPlainObject = (value) =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const isHttpsUrl = (value) => URL.canParse(value) && new URL(value).protocol === "https:";
+
 export const checkCuration = (models, curation) => {
   const problems = [];
   const modelIds = new Set(models.map((model) => model.id));
@@ -119,6 +126,26 @@ export const checkCuration = (models, curation) => {
         problems.push(`model "${id}": lesson url "${lesson.url}" is not a valid URL`);
       }
       if (!lesson.provider) problems.push(`model "${id}": lesson needs a provider`);
+    }
+
+    const { tutorial } = metadata;
+    if (tutorial !== undefined) {
+      if (!isPlainObject(tutorial)) {
+        problems.push(`model "${id}": tutorial must be omitted or an object`);
+      } else {
+        for (const field of ["title", "url", "author"]) {
+          if (!isText(tutorial[field])) {
+            problems.push(`model "${id}": tutorial needs a non-empty ${field}`);
+          }
+        }
+        if (isText(tutorial.url) && !isHttpsUrl(tutorial.url)) {
+          problems.push(`model "${id}": tutorial url "${tutorial.url}" is not an absolute https URL`);
+        }
+      }
+    }
+
+    if (metadata.description !== undefined && !isText(metadata.description)) {
+      problems.push(`model "${id}": description must be omitted or a non-empty string`);
     }
   }
 

@@ -8,6 +8,12 @@ export type ModelLesson = {
   provider: string;
 };
 
+export type ModelTutorial = {
+  title: string;
+  url: string;
+  author: string;
+};
+
 export type ModelGroup = {
   id: string;
   title: string;
@@ -30,6 +36,8 @@ export type ModelMetadata = {
   basedOn: string | null;
   license: string | null;
   lesson: ModelLesson | null;
+  tutorial?: ModelTutorial;
+  description?: string;
   related: string[];
   tips: string[];
 };
@@ -58,7 +66,7 @@ export type SequencePosition = {
 const MORE_MODELS_GROUP: Omit<ResolvedGroup, "models"> = {
   id: "more-models",
   title: "More models",
-  description: "Other models in the gallery.",
+  description: "Other models in the library.",
 };
 
 export const resolveGroups = (curation: ModelCuration, models: GalleryModel[]): ResolvedGroup[] => {

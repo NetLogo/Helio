@@ -1,4 +1,8 @@
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import * as MarkdownConfig from '@repo/nuxt-core/markdown.config';
+import models from "./app/data/models.json";
+import { robotsText } from "./shared/utils/seo";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -28,7 +32,6 @@ export default defineNuxtConfig({
 
   routeRules: {
     "/assets/models/**": { headers: { "Access-Control-Allow-Origin": "*" } },
-    "/models-v2/**": { redirect: { to: "/models/**", statusCode: 301 } },
   },
 
   icon: {
@@ -67,10 +70,33 @@ export default defineNuxtConfig({
     skipInspections: ["no-baseless", "no-underscores", "trailing-slash"],
   },
 
+  ogImage: {
+    // The render cache under node_modules/.cache is keyed on the image options, not the template,
+    // and CI restores node_modules; with no runtime to serve from, the cache only ever ships stale images.
+    defaults: { cacheMaxAgeSeconds: 0 },
+  },
+
   nitro: {
     baseURL: "/",
     prerender: {
-      routes: ["/"],
+      routes: [
+        "/",
+        "/models-library",
+        "/llms.txt",
+        ...models.map(({ id }) => `/models/${id}`),
+      ],
+    },
+  },
+
+  hooks: {
+    // Static files are served ahead of server routes while prerendering, so the layer's
+    // placeholder public/robots.txt would shadow a route; write the real one after the copy.
+    "nitro:build:public-assets"(nitro) {
+      const siteUrl = nitro.options.runtimeConfig.public.website.productWebsite;
+      writeFileSync(
+        join(nitro.options.output.publicDir, "robots.txt"),
+        robotsText(new URL("/sitemap.xml", siteUrl).href),
+      );
     },
   },
 });

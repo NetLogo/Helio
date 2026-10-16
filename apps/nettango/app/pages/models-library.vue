@@ -3,7 +3,7 @@
     <UPage class="no-stylized-heading">
       <UPageHeader
         headline="NetTango"
-        title="Models Gallery"
+        title="Models Library"
         description="Ready-to-run NetTango environments built with the Builder. Run one in your browser, or download the project file to open and remix it in the NetTango Builder."
       />
 
@@ -34,9 +34,12 @@ definePageMeta({
   layout: "clean",
 });
 
-useSeoMeta({
-  title: "Model Gallery",
+const seo = {
+  title: "Models Library",
   description:
-    "Ready-to-run NetTango environments. Run a model in your browser or download the project file for the NetTango Builder.",
-});
+    "Ready-to-run NetTango models grouped by classroom topic, from ant foraging to force and motion. Run one in the browser or open it in the NetTango Builder.",
+};
+
+usePageSeo(seo);
+defineOgImage("SiteSeo", seo);
 </script>

@@ -15,7 +15,7 @@
     "nuxt:build": "nuxt build",
     "nuxt:dev": "nuxt dev --port 3003",
     "nuxt:dev:no-autogen": "sh -c 'NO_AUTOGEN=true nuxt dev --port 3003'",
-    "nuxt:generate": "nuxt prepare && nuxt generate",
+    "nuxt:generate": "nuxt prepare && node scripts/og-thumbnails.mjs && nuxt generate",
     "nuxt:preview": "nuxt preview",
     "nuxt:prepare": "nuxt prepare",
     "check-types": "nuxi typecheck",
@@ -23,7 +23,8 @@
     "lint:fix": "eslint . --fix",
     "turbo:postinstall": "nuxt prepare",
     "node-version": "node -v && npm -v",
-    "test:e2e": "vitest run --project e2e"
+    "test:e2e": "vitest run --project e2e",
+    "og:thumbnails": "node scripts/og-thumbnails.mjs"
   },
   "dependencies": {
     "@nuxt/content": "^3.16.2",

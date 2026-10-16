@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import BrandLogo from "@repo/vue-ui/assets/brands/NetTango-Logo.svg";
+import BrandLogo from "@repo/vue-ui/assets/brands/NetTango-Logo-Flat.svg";
 import type { Navbar as _Navbar } from "@repo/vue-ui/components/navbar/index";
 import { onMounted, ref, watch } from "vue";
 
@@ -56,8 +56,8 @@ const navbarLinks = ref<NavbarLink[]>([
     href: "/",
   },
   {
-    title: "Models Gallery",
-    href: "/models-gallery",
+    title: "Models Library",
+    href: "/models-library",
   },
   {
     title: "NetTango Tutorial",
