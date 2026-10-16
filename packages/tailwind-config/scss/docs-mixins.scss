@@ -270,9 +270,9 @@
   }
 
   // Images
-  .prose img,
-  .prose video,
-  .prose audio {
+  .prose img:not(.not-prose *),
+  .prose video:not(.not-prose *),
+  .prose audio:not(.not-prose *) {
     max-width: 100%;
     height: auto;
     display: block;
@@ -322,7 +322,7 @@
   }
 
   .prose-text-medium {
-    --max-width-ch: min(90%, 100ch);
+    --max-width-ch: min(100%, 100ch);
 
     --h1-size: 2.3rem;
     --h2-size: 1.8rem;

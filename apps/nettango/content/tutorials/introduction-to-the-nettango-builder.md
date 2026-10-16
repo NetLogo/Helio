@@ -33,7 +33,7 @@ table pre {
 
 *Starting with an existing NetLogo model*
 
-![Sample blocks](/tutorial/images/sample-blocks.webp)
+![Sample blocks](/tutorial/images/sample-blocks.webp){width=242 height=261}
 
 NetTango is a domain-blocks-based interface for the NetLogo agent-based modeling environment.
 
@@ -95,7 +95,7 @@ You can load an existing `ntjson` project file by clicking clicking the "**Files
 
 The next step in our project is to create two "**Block Spaces**". Each block space in NetTango is a self-contained widget that has its own blocks library. There can be as many block spaces in a NetTango project as needed. There can be just one, as well. The block spaces can simplify the programming environment in various ways. For example, you can use separate block spaces for each agent breed. Here, we will use one block space for the "*setup*" procedure and another for the "*go*" procedure for our ants model because we only have one agent breed.
 
-Create two new block spaces by clicking the "**Add Block Space**" button <u>twice</u>.
+The NetTango builder starts with one block space. Create the second one by clicking the "**Add New Block Space**" button <u>once</u>.
 
 <p>
   <video controls poster="/tutorial/videos/thumb/03-create-spaces.webp">
@@ -371,7 +371,7 @@ A pop-up window titled "**Go Block**" will appear on the screen.
 1. Change the "**Display Name**" to <kbd>Go</kbd>.
 2. Leave the "**Limit**" as 1.
 3. Change the contents of the "**NetLogo code format**" to "`to blocks-go`".
-4. Under "**Which blocks are allowed to be added to this chain starter?**" select "Allow blocks with at least one of the chosen tags". Then enter "ask ants" as a new tag name. This will be referenced when we create the next block, an "*`ask`*" block.
+4. Under "**Which blocks are allowed to be added to this chain starter?**" select "Allow blocks with at least one of the chosen tags". A tag box appears below it. Type <kbd>ask ants</kbd> in the "Filter available tags or enter new tag name" field and click "**Add New Tag**". This tag will be referenced when we create the next block, an "*`ask`*" block.
 
 Click the "**Add New Block**" button at the bottom.
 
@@ -400,7 +400,7 @@ A pop-up window titled "**Go Block**" will appear on the screen.
 1. Change the "**Display Name**" to <kbd>Each ant</kbd>.
 2. Set the "**Limit**" as <kbd>1.</kbd>
 3. Leave the contents of the "**NetLogo code format**" as "`ask turtles`".
-4. Add the tag "ask ants" which we first created in the "Go" procedure block. Now only this block can be placed directly beneath the "Go" procedure block.
+4. Expand the "**Tags**" section by clicking the arrow next to it. Select "ask ants", the tag we created in the "Go" procedure block, in the "**Available Tags**" list and click "**Add Selected Tags**". Now only this block can be placed directly beneath the "Go" procedure block.
 
 Click the "**Add New Block**" button at the bottom.
 
@@ -750,58 +750,13 @@ Once you finished your project and it is ready for deployment, you can save it a
 
 ## Example projects
 
-The NetTango builder has an embedded example project if you would like to quickly tinker with a pre-built project or if it is intimidating to start with an empty project.
-
-To access the embedded example project, scroll to the end of the page and click the "**Load WSP Testing Defaults**" button. Keep in mind that this will erase your previous work without a prompt. Make sure to export your existing project if necessary.
+The NetTango Builder has an embedded example project if you would like to tinker with a pre-built project or if it is intimidating to start with an empty project. Click the "**Files**" button and then click the "**Load Wolves and Sheep sample project**" item. Keep in mind that this will erase your previous work without a prompt. Make sure to export your existing project if necessary.
 
 ![Load WSP](/tutorial/images/load-wsp.webp)
 
-::Flex{.flex .gap-5}
-![WSP](/tutorial/images/wsp.webp){class="object-contain"}
-![WSP actions](/tutorial/images/wsp-actions.webp){class="object-contain"}
-::
+For more ready-to-run projects, the NetTango Models Library collects every model on this site, grouped by the topic you teach. Each one runs in the browser, opens in the NetTango Builder, and has a project file to download. The Wolves and Sheep sample and two projects created by our research team members are a good place to start:
 
-If you would like to get your hands on more example projects, here are a few others created by our research team members:
-
-
-::div{class="my-10 flex flex-col gap-6 sm:flex-row sm:items-start"}
-
-
-::Flex
-![Rollypollies](/tutorial/images/rollypollies.webp){class="w-50 mt-0 rounded"}
-::
-
-:::div{class="flex flex-col gap-3 *:my-0"}
-### Rollypollies
-
-
-[:Icon{name="fa:file"} Download the Project file](/assets/models/rollypollies.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
-
-[:Icon{name="fa:play"} Demo the Rollypollies environment](/models/rollypollies){class="inline-flex items-center gap-2 font-semibold"}
-
-:span[The Rollypollies environment is developed by Sugat Dabholkar and Teresa Granito.]{class="italic text-gray-600"}
-:::
-
-::
-
-::div{class="my-10 flex flex-col gap-6 sm:flex-row sm:items-start"}
-
-
-::Flex
-![Gas Particle Sandbox](/tutorial/images/gpc.webp){class="w-50 mt-0 rounded"}
-::
-
-:::div{class="flex flex-col gap-3 *:my-0"}
-### Gas Particle Sandbox with Phenomenological Programming
-
-
-
-[:Icon{name="fa:file"} Download the Project file](/assets/models/gpc.ntjson){class="inline-flex items-center gap-2 font-semibold" download}
-
-[:Icon{name="fa:play"} Demo the Gas Particle Sandbox environment](/models/gpc){class="inline-flex items-center gap-2 font-semibold"}
-
-:span[The Gas Particle Sandbox with Phenomenological Programming environment is developed by Umit Aslan, Nicholas LaGrassa, Michael Horn & Uri Wilensky.]{class="italic text-gray-600"}
-:::
+::model-cards{ids="wolves-and-sheep,rollypollies,gpc"}
 ::
 
 ::div{class="mt-12 border-t border-gray-200 pt-6 text-sm text-gray-600"}
