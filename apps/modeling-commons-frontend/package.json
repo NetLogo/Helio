@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "@better-auth/passkey": "^1.5.6",
+    "@grafana/faro-web-sdk": "^2.11.0",
+    "@grafana/faro-web-tracing": "^2.11.0",
     "@nuxt/content": "^3.7.1",
     "@nuxt/eslint": "1.10.0",
     "@nuxt/fonts": "0.12.1",
@@ -67,6 +69,7 @@
     "nuxt-og-image": "^5.1.12",
     "nuxt-security": "2.5.1",
     "nuxt-svgo": "4.2.6",
+    "pino": "^10.3.1",
     "postcss": "^8.5.8",
     "slugify": "^1.6.9",
     "tailwind-merge": "^3.3.1",

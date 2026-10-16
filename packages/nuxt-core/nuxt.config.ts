@@ -190,6 +190,9 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   runtimeConfig: {
     public: {
       website,
+      faroUrl: process.env.NUXT_PUBLIC_FARO_URL,
+      faroEnvironment: process.env.NUXT_PUBLIC_FARO_ENVIRONMENT || "production",
+      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || "dev",
     },
   },
 

@@ -87,6 +87,9 @@ jobs:
           NUXT_PUBLIC_CDN_URL: ${{ vars.NUXT_PUBLIC_CDN_URL }}
           NUXT_PUBLIC_NETLOGO_WEB_URL: ${{ vars.NUXT_PUBLIC_NETLOGO_WEB_URL }}
           NUXT_PUBLIC_GA_TRACKING_ID: ${{ vars.NUXT_PUBLIC_GA_TRACKING_ID }}
+          NUXT_PUBLIC_FARO_URL: ${{ vars.NUXT_PUBLIC_FARO_URL }}
+          NUXT_PUBLIC_FARO_ENVIRONMENT: ${{ vars.NUXT_PUBLIC_FARO_ENVIRONMENT }}
+          NUXT_PUBLIC_APP_VERSION: ${{ github.sha }}
 
       - uses: docker/setup-buildx-action@v3
 
@@ -133,6 +136,9 @@ jobs:
             NUXT_PUBLIC_CDN_URL=${{ vars.NUXT_PUBLIC_CDN_URL }}
             NUXT_PUBLIC_NETLOGO_WEB_URL=${{ vars.NUXT_PUBLIC_NETLOGO_WEB_URL }}
             NUXT_PUBLIC_GA_TRACKING_ID=${{ vars.NUXT_PUBLIC_GA_TRACKING_ID }}
+            NUXT_PUBLIC_FARO_URL=${{ vars.NUXT_PUBLIC_FARO_URL }}
+            NUXT_PUBLIC_FARO_ENVIRONMENT=${{ vars.NUXT_PUBLIC_FARO_ENVIRONMENT }}
+            NUXT_PUBLIC_APP_VERSION=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

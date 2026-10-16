@@ -174,6 +174,16 @@ export default defineNuxtConfig({
     server: {
       hmr: false,
     },
+    build: {
+      rollupOptions: {
+        onwarn(warning, warn) {
+          if (warning.code === "THIS_IS_UNDEFINED" && warning.id?.includes("@opentelemetry")) {
+            return;
+          }
+          warn(warning);
+        },
+      },
+    },
   },
 
   content: {
