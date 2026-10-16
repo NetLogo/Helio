@@ -14,15 +14,17 @@ const fastifyErrorCodesMap: Record<
       message: string;
       error: string;
       correlationId?: string;
-      subErrors?: Array<{ path: string; message: string }>;
+      subErrors?: string;
     })
   | undefined
 > = {
   FST_ERR_VALIDATION: (error: FastifyError) => ({
-    subErrors: (error.validation ?? []).map((validationError) => ({
-      path: validationError.instancePath,
-      message: validationError.message ?? '',
-    })),
+    subErrors: JSON.stringify(
+      (error.validation ?? []).map((validationError) => ({
+        path: validationError.instancePath,
+        message: validationError.message ?? '',
+      })),
+    ),
     statusCode: 400,
     message: 'Validation error',
     error: 'Bad Request', // https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1
