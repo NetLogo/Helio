@@ -18,6 +18,6 @@ Full rationale and inventory: `doc/nanoid-id-migration-plan.md`.
 
 **Decisions:**
 1. **`ModelComment`, `UserNotification` and `UserNotificationPreference` ids are nanoids.** Prisma defaults moved to `@default(nanoid())` (client-side, no SQL diff) and the comment domain generates with `newId()`. Every param and DTO in both modules uses `idSchema()`; `format: 'uuid'` no longer appears in `src/`. No data migration: pre-beta, no production rows.
-2. **The event processor is not split into a separate container or process.** It stays inside the API process via `startWorkers(fastify)`. The protection against a second worker sharing the e2e database is a harness guard (`single-worker-guard-4.md`, proposed), not a deployment change.
+2. **The event processor is not split into a separate container or process.** It stays inside the API process via `startWorkers(fastify)`. The protection against a second worker sharing the e2e database is a harness guard (`small-fixes/single-worker-guard-1.md`, proposed), not a deployment change.
 3. **Validation `subErrors` are a JSON string.** The wire schema already declares `subErrors` as a string; the handler now `JSON.stringify`s the `[{ path, message }]` list instead of letting the serializer coerce it to `[object Object]`. Keeping the string type avoids a client change.
 4. **The preview fixture is a real 1x1 PNG**, because `resolveFile` decides on sniffed bytes only. Test fixtures must be what they claim to be.
