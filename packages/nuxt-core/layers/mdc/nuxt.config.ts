@@ -7,6 +7,7 @@ export default defineNuxtConfig({
         Container: "MDCContainer",
         ErrorBanner: "MDCErrorBanner",
         Button: "MDCButton",
+        Flex: "MDCFlex",
         NetlogoCommand: "NetLogoCommand",
         a: "ProseA",
       },
