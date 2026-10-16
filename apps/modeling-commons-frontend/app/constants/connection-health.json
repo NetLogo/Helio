@@ -1,0 +1,9 @@
+{
+  "storageKey": "mc:connection",
+  "lockName": "mc:connection-health",
+  "requestTimeoutMs": 2500,
+  "backoffBaseMs": 5000,
+  "backoffCapMs": 60000,
+  "backoffJitter": 0.25,
+  "idleTimeoutMs": 300000
+}

@@ -1,57 +1,67 @@
+import {
+  useDocumentVisibility,
+  useEventListener,
+  useIdle,
+  useStorage,
+  useWindowFocus,
+} from "@vueuse/core";
+import type { Middleware } from "openapi-fetch";
 import { useApi } from "~/composables/api/useApi";
+import settings from "~/constants/connection-health.json";
 
 export type ConnectionStatus = "online" | "offline";
 
-const INTERVAL_MS: Record<ConnectionStatus, number> = {
-  online: 120_000,
-  offline: 15_000,
+type SharedState = {
+  status: ConnectionStatus;
+  lastCheckedAt: number | null;
 };
 
-const REQUEST_TIMEOUT_MS = 4_000;
+const DEFAULT_STATE: SharedState = { status: "online", lastCheckedAt: null };
 
-type HealthState = {
-  status: Ref<ConnectionStatus>;
-  lastCheckedAt: Ref<number | null>;
-  refCount: number;
-  timer: ReturnType<typeof setTimeout> | null;
-  inFlight: boolean;
-  browserListenersBound: boolean;
-};
-
-let state: HealthState | null = null;
-
-function getState(): HealthState {
-  if (!state) {
-    state = {
-      status: ref<ConnectionStatus>("online"),
-      lastCheckedAt: ref<number | null>(null),
-      refCount: 0,
-      timer: null,
-      inFlight: false,
-      browserListenersBound: false,
-    };
-  }
-  return state;
+export function isNetworkError(error: unknown): boolean {
+  return error instanceof TypeError;
 }
 
+export function backoffDelay(attempt: number, random: () => number = Math.random): number {
+  const base = Math.min(settings.backoffBaseMs * 2 ** Math.max(0, attempt), settings.backoffCapMs);
+  const spread = (random() * 2 - 1) * settings.backoffJitter;
+  return Math.round(base * (1 + spread));
+}
+
+let shared: Ref<SharedState> | null = null;
+
+function sharedState(): Ref<SharedState> {
+  if (!shared) {
+    shared = import.meta.client
+      ? useStorage<SharedState>(settings.storageKey, { ...DEFAULT_STATE }, localStorage)
+      : ref<SharedState>({ ...DEFAULT_STATE });
+  }
+  return shared;
+}
+
+function setStatus(status: ConnectionStatus, checkedAt?: number): void {
+  const s = sharedState();
+  if (s.value.status === status && checkedAt === undefined) return;
+  s.value = { status, lastCheckedAt: checkedAt ?? s.value.lastCheckedAt };
+}
+
+export const connectionMiddleware: Middleware = {
+  onResponse() {
+    setStatus("online");
+  },
+  onError({ error }) {
+    if (isNetworkError(error)) setStatus("offline");
+  },
+};
+
+let inFlight: Promise<boolean> | null = null;
+
 async function pingHealth(): Promise<boolean> {
-  const api = useApi();
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), settings.requestTimeoutMs);
   try {
-    const { response, error } = await (
-      api as unknown as {
-        GET: (
-          path: string,
-          init: { signal: AbortSignal },
-        ) => Promise<{
-          response?: Response;
-          error?: unknown;
-        }>;
-      }
-    ).GET("/api/health", { signal: controller.signal });
-    if (error) return false;
-    return !!response && response.ok;
+    await useApi().GET("/api/health", { signal: controller.signal });
+    return true;
   } catch {
     return false;
   } finally {
@@ -59,63 +69,97 @@ async function pingHealth(): Promise<boolean> {
   }
 }
 
-function scheduleNext(s: HealthState): void {
-  if (s.timer) clearTimeout(s.timer);
-  if (s.refCount <= 0) return;
-  const delay = INTERVAL_MS[s.status.value];
-  s.timer = setTimeout(() => {
-    void runCheck(s);
-  }, delay);
+function runCheck(): Promise<boolean> {
+  if (inFlight) return inFlight;
+  inFlight = pingHealth()
+    .then((reachable) => {
+      setStatus(reachable ? "online" : "offline", Date.now());
+      return reachable;
+    })
+    .finally(() => {
+      inFlight = null;
+    });
+  return inFlight;
 }
 
-async function runCheck(s: HealthState): Promise<void> {
-  if (s.inFlight) return;
-  s.inFlight = true;
-  try {
-    const healthy = await pingHealth();
-    s.status.value = healthy ? "online" : "offline";
-    s.lastCheckedAt.value = Date.now();
-  } finally {
-    s.inFlight = false;
-    scheduleNext(s);
-  }
-}
+function startLeader(): void {
+  const s = sharedState();
+  const visibility = useDocumentVisibility();
+  const focused = useWindowFocus();
+  const { idle } = useIdle(settings.idleTimeoutMs);
+  const shouldPoll = computed(
+    () =>
+      s.value.status === "offline" &&
+      visibility.value === "visible" &&
+      focused.value &&
+      !idle.value,
+  );
 
-function bindBrowserListeners(s: HealthState): void {
-  if (s.browserListenersBound || typeof window === "undefined") return;
-  s.browserListenersBound = true;
-  window.addEventListener("online", () => {
-    void runCheck(s);
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let attempt = 0;
+
+  const stop = (): void => {
+    if (timer) clearTimeout(timer);
+    timer = null;
+  };
+
+  const schedule = (): void => {
+    stop();
+    if (!shouldPoll.value) return;
+    timer = setTimeout(() => {
+      void runCheck().then(() => {
+        attempt += 1;
+        schedule();
+      });
+    }, backoffDelay(attempt));
+  };
+
+  watch(
+    shouldPoll,
+    (on) => {
+      if (!on) {
+        stop();
+        return;
+      }
+      attempt = 0;
+      void runCheck().then(schedule);
+    },
+    { immediate: true },
+  );
+
+  useEventListener(window, "online", () => {
+    void runCheck();
   });
-  window.addEventListener("offline", () => {
-    s.status.value = "offline";
-    scheduleNext(s);
+  useEventListener(window, "offline", () => {
+    setStatus("offline");
+  });
+}
+
+let leadershipRequested = false;
+
+function requestLeadership(): void {
+  if (leadershipRequested) return;
+  leadershipRequested = true;
+  const locks = typeof navigator === "undefined" ? undefined : navigator.locks;
+  if (!locks) {
+    startLeader();
+    return;
+  }
+  void locks.request(settings.lockName, () => {
+    startLeader();
+    return new Promise<never>(() => {});
   });
 }
 
 export function useConnectionHealth() {
-  const s = getState();
+  const s = sharedState();
 
-  if (import.meta.client) {
-    s.refCount += 1;
-    bindBrowserListeners(s);
-    if (s.refCount === 1) {
-      void runCheck(s);
-    }
-
-    onScopeDispose(() => {
-      s.refCount = Math.max(0, s.refCount - 1);
-      if (s.refCount === 0 && s.timer) {
-        clearTimeout(s.timer);
-        s.timer = null;
-      }
-    });
-  }
+  if (import.meta.client) requestLeadership();
 
   return {
-    status: readonly(s.status),
-    isOffline: computed(() => s.status.value === "offline"),
-    lastCheckedAt: readonly(s.lastCheckedAt),
-    checkNow: () => runCheck(s),
+    status: computed(() => s.value.status),
+    isOffline: computed(() => s.value.status === "offline"),
+    lastCheckedAt: computed(() => s.value.lastCheckedAt),
+    checkNow: runCheck,
   };
 }

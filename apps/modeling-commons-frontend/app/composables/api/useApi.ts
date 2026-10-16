@@ -1,14 +1,15 @@
-import createClient, { type Client } from "openapi-fetch";
+import createClient, { type Client, type Middleware } from "openapi-fetch";
 import type { paths } from "~~/shared/types/api";
 
 let browserClient: Client<paths> | null = null;
 
-export function initApi(baseUrl: string) {
+export function initApi(baseUrl: string, middleware: Array<Middleware> = []) {
   if (import.meta.server) return;
   browserClient = createClient<paths>({
     baseUrl,
     credentials: "include",
   });
+  browserClient.use(...middleware);
 }
 
 function makeServerClient(baseUrl: string): Client<paths> {

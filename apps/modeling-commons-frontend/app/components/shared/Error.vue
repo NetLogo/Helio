@@ -36,17 +36,13 @@ const props = withDefaults(
   },
 );
 
-const { isOffline, checkNow } = useConnectionHealth();
+const { isOffline } = useConnectionHealth();
 const hasBeenOffline = ref(false);
 watch(isOffline, (offline) => {
   if (props.reloadOnRecovery && hasBeenOffline.value && !offline) {
     window.location.reload();
   }
   hasBeenOffline.value ||= offline;
-});
-
-onMounted(() => {
-  checkNow();
 });
 </script>
 
