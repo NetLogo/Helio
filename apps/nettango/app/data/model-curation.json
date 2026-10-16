@@ -171,7 +171,7 @@
       "tips": [
         "Build the Setup blocks first (Create a nest, Create Ants, one or more Create a food pile) and press setup to check the nest and piles appear before your students write any Go rules.",
         "The population slider does nothing in this version: the number of ants comes only from the Create Ants block (125 by default).",
-        "New ants start in random colors, and only red ants count as not carrying food, so on the first run most ants follow the carrying-food rules and head home first. Ask your students why.",
+        "Every ant starts red, which means it is not carrying food. An ant that finds food turns orange and heads home, and turns red again once it reaches the nest. Point this out before your students read the Go rules, which test the color to tell the two states apart.",
         "Once trails form, drag evaporation-rate or diffusion-rate while it runs and watch the green trails fade or spread. The Info tab notes that nearer food piles usually empty first."
       ]
     },
@@ -365,6 +365,12 @@
       "basedOn": "Wilensky, U. (1997). NetLogo Slime model",
       "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
       "lesson": null,
+      "tutorial": {
+        "title": "NetTango Builder tutorial",
+        "url": "https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder-tutorial",
+        "author": "Jeremy Baker"
+      },
+      "description": "This model is inspired by the aggregation behavior of slime-mold cells. It is the final checkpoint of Jeremy Baker's NetTango Builder tutorial.",
       "related": [
         "ants",
         "antomology-pheromones",

@@ -6,7 +6,3 @@
     </main>
   </div>
 </template>
-
-<script setup lang="ts">
-useProductHead();
-</script>

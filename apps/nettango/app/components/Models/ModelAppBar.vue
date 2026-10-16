@@ -124,7 +124,7 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
-import BrandLogo from "@repo/vue-ui/assets/brands/NetTango-Logo.svg";
+import BrandLogo from "@repo/vue-ui/assets/brands/NetTango-Logo-Flat.svg";
 import type { GalleryModel } from "~/composables/useModels";
 
 const TUTORIAL_PATH = "/tutorials/introduction-to-the-nettango-builder";
@@ -153,12 +153,12 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
       slot: model.current ? "current" : undefined,
     })),
   ]),
-  [{ label: "All models", icon: "i-lucide-images", to: "/models-gallery" }],
+  [{ label: "All models", icon: "i-lucide-images", to: "/models-library" }],
 ]);
 
 const trail = computed(() => [
   ...(nav.value?.topic
-    ? [{ label: nav.value.topic.title, to: `/models-gallery#group-${nav.value.topic.id}` }]
+    ? [{ label: nav.value.topic.title, to: `/models-library#group-${nav.value.topic.id}` }]
     : []),
   { label: props.model?.title ?? "" },
 ]);

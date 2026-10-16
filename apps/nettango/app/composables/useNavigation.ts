@@ -32,8 +32,8 @@ const _useNavigation = () => {
       path: '/',
       children: [
         {
-          title: 'Models Gallery',
-          path: '/models-gallery',
+          title: 'Models Library',
+          path: '/models-library',
           icon: 'lucide:images'
         },
         {

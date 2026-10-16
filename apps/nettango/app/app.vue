@@ -11,8 +11,9 @@
 </template>
 
 <script setup lang="ts">
+useProductHead();
+
 useHead({
-  titleTemplate: (title) => (title ? `${title} | NetTango` : "NetTango Builder and Player"),
   meta: [{ key: "theme-color", name: "theme-color", content: "#0670ed" }],
   link: [
     { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
@@ -29,11 +30,6 @@ if (import.meta.server) {
     htmlAttrs: {
       lang: "en",
     },
-  });
-  useSeoMeta({
-    ogSiteName: "NetTango",
-    ogType: "website",
-    twitterCard: "summary_large_image",
   });
 }
 </script>

@@ -23,8 +23,6 @@ onMounted(() => {
   }, 0);
 });
 
-useProductHead();
-
 useHead({
   link: () => [
     {

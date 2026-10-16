@@ -1,5 +1,5 @@
 import type { GalleryModel } from "~/composables/useModels";
-import type { GradeBand } from "~/utils/modelCuration";
+import type { GradeBand, ModelMetadata, ModelTutorial } from "~/utils/modelCuration";
 
 const GRADE_BAND_LABELS: Record<GradeBand, string> = {
   elementary: "Elementary school",
@@ -26,6 +26,13 @@ export const previewSource = (model: GalleryModel, reducedMotion: boolean): stri
 
 export const gradeBandLabels = (bands: GradeBand[]): string[] =>
   bands.map((band) => GRADE_BAND_LABELS[band]);
+
+export const tutorialCredit = (tutorial: ModelTutorial): string => `Tutorial by ${tutorial.author}`;
+
+export const modelDescription = (
+  model: Pick<GalleryModel, "description">,
+  metadata: Pick<ModelMetadata, "description"> | null,
+): string => metadata?.description ?? model.description;
 
 export const sidebarHiddenFromQuery = (value: unknown): boolean =>
   (Array.isArray(value) ? value[0] : value) === "hidden";

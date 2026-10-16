@@ -26,7 +26,7 @@
     </div>
     <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-2">
       <UButton :to="`/models/${lead.id}`" size="sm" icon="i-lucide-play" :label="lead.title" block/>
-      <UButton variant="link" color="neutral" :to="`/models-gallery#group-${group.id}`"  block size="xs" class="text-xs">
+      <UButton variant="link" color="neutral" :to="`/models-library#group-${group.id}`"  block size="xs" class="text-xs">
         More in this topic?
       </UButton>
     </div>

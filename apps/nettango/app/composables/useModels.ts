@@ -1,3 +1,4 @@
+import { useSiteConfig } from "#site-config/app/composables";
 import models from "~/data/models.json";
 
 export type GalleryModel = {
@@ -22,8 +23,5 @@ const BUILDER_URL = "https://netlogoweb.org/nettango-builder?netTangoModel=";
 
 export const useModelEditorUrl = (model: GalleryModel): string => {
   if (model.editor) return model.editor;
-  const project = model.project.startsWith("/")
-    ? useRequestURL().origin + model.project
-    : model.project;
-  return BUILDER_URL + project;
+  return BUILDER_URL + new URL(model.project, useSiteConfig().url).href;
 };

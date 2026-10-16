@@ -1,16 +1,16 @@
 <template>
   <div
-    class="relative mx-auto w-full max-w-hero-model lg:mx-0 lg:max-w-none"
-    :class="playing ? '' : 'lg:pl-projector-inset'"
+    class="relative mx-auto w-full min-w-0 max-w-hero-model lg:mx-0 lg:max-w-none"
+    :class="playing ? '' : 'xl:pl-projector-inset'"
   >
-    <NtScreen hung class="lg:ml-auto" :class="playing ? 'lg:w-full' : 'lg:w-projector'">
+    <NtScreen hung class="lg:ml-auto lg:w-full" :class="playing ? '' : 'xl:max-w-projector'">
       <div
         v-if="!playing"
         class="relative aspect-square w-full overflow-hidden rounded-screen ring-1 ring-black/60"
       >
         <img
           :src="model.thumbnail"
-          :alt="`The ${model.title} model: ants carry food from colored piles back to the yellow nest, leaving green pheromone trails`"
+          :alt="`The ${model.title} model: ants carry food from colored piles back to the violet nest, leaving green pheromone trails`"
           width="994"
           height="994"
           fetchpriority="high"
@@ -22,7 +22,7 @@
         ref="stage"
         class="overflow-hidden rounded-screen bg-white ring-1 ring-black/20"
         :class="player ? '' : 'max-h-[80vh] overflow-y-auto'"
-        :style="player ? { height: `${heroHeight * scale}px` } : undefined"
+        :style="player ? { height: `${fitHeight(heroHeight, scale)}px` } : undefined"
       >
         <iframe
           ref="frame"
@@ -62,7 +62,7 @@
 
       <template v-if="!playing" #overlay>
         <div
-          class="relative z-20 mx-auto -mt-10 w-stack max-w-11/12 pt-4.5 pr-9 pb-1.5 pl-4.5 lg:absolute lg:bottom-0.5 lg:-left-stack-offset lg:mt-0 lg:max-w-none"
+          class="relative z-20 mx-auto -mt-10 w-stack max-w-11/12 pt-4.5 pr-9 pb-1.5 pl-4.5 xl:absolute xl:bottom-0.5 xl:-left-stack-offset xl:mt-0 xl:max-w-none"
         >
           <NtBlockStack
             tilt
@@ -114,7 +114,7 @@ let observer: ResizeObserver | undefined;
 
 const fitStage = () => {
   const width = stage.value?.clientWidth;
-  if (width) scale.value = Math.min(1, width / HERO_PLAYER.width);
+  if (width) scale.value = fitScale(width, HERO_PLAYER.width);
 };
 
 watch(playing, async (isPlaying) => {

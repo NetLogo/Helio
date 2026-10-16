@@ -1,7 +1,7 @@
 <template>
   <UBlogPost
     :title="model.title"
-    :description="model.description"
+    :description="description"
     :to="`/models/${model.id}`"
     variant="outline"
     class="h-full transition-transform duration-300 hover:scale-[1.02]"
@@ -87,7 +87,9 @@ const props = withDefaults(defineProps<{ model: GalleryModel; showCuration?: boo
 
 const editorUrl = useModelEditorUrl(props.model);
 const curation = useModelCuration();
-const lesson = modelMetadata(curation, props.model.id)?.lesson ?? null;
+const metadata = modelMetadata(curation, props.model.id);
+const lesson = metadata?.lesson ?? null;
+const description = modelDescription(props.model, metadata);
 const position = sequencePosition(curation, props.model.id);
 const stepLabel = position ? `Step ${position.step} of ${position.total}` : "";
 const stepTitle = position ? `${stepLabel} in ${position.title}` : "";

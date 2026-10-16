@@ -22,7 +22,16 @@ const valid = () => ({
       related: ["c"],
       lesson: { title: "L", url: "https://example.com", provider: "P" },
     },
-    b: { subjects: [], gradeBands: [], creators: [], tips: [], related: [], lesson: null },
+    b: {
+      subjects: [],
+      gradeBands: [],
+      creators: [],
+      tips: [],
+      related: [],
+      lesson: null,
+      tutorial: { title: "T", url: "https://example.com/t", author: "A" },
+      description: "Curated text.",
+    },
   },
 });
 
@@ -194,6 +203,49 @@ test("reports a lesson without a provider", () => {
   // Would catch: a lesson with no credit line.
   const problems = problemsFor((c) => (c.models.a.lesson.provider = ""));
   assert.ok(has(problems, "lesson needs a provider"));
+});
+
+test("accepts an entry with no tutorial and no description", () => {
+  // Would catch: the optional fields being treated as required.
+  const problems = problemsFor((c) => {
+    delete c.models.b.tutorial;
+    delete c.models.b.description;
+  });
+  assert.deepEqual(problems, []);
+});
+
+test("reports a tutorial that is not an object", () => {
+  // Would catch: null or a bare URL where the sidebar expects title, url and author.
+  for (const value of [null, "https://example.com", ["T"], 3]) {
+    const problems = problemsFor((c) => (c.models.b.tutorial = value));
+    assert.ok(has(problems, "tutorial must be omitted or an object"), String(value));
+  }
+});
+
+test("reports a tutorial missing its title, url or author", () => {
+  // Would catch: an unlabeled Tutorial row or an empty credit line.
+  for (const field of ["title", "url", "author"]) {
+    for (const value of [undefined, "", "  ", 1]) {
+      const problems = problemsFor((c) => (c.models.b.tutorial[field] = value));
+      assert.ok(has(problems, `tutorial needs a non-empty ${field}`), `${field}=${value}`);
+    }
+  }
+});
+
+test("reports a tutorial url that is not absolute https", () => {
+  // Would catch: a relative wiki path or a plain http link in the external Tutorial row.
+  for (const url of ["wiki/Tutorial", "http://example.com/t", "not a url"]) {
+    const problems = problemsFor((c) => (c.models.b.tutorial.url = url));
+    assert.ok(has(problems, "is not an absolute https URL"), url);
+  }
+});
+
+test("reports a description override that is not a non-empty string", () => {
+  // Would catch: an empty override blanking the sidebar description.
+  for (const value of [null, "", "  ", 2]) {
+    const problems = problemsFor((c) => (c.models.b.description = value));
+    assert.ok(has(problems, "description must be omitted or a non-empty string"), String(value));
+  }
 });
 
 test("modelMetadata returns the entry or null", () => {

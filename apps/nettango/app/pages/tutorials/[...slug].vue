@@ -7,12 +7,6 @@ definePageMeta({
   layout: 'clean',
 });
 
-const {
-  public: {
-    website: { productName },
-  },
-} = useRuntimeConfig();
-
 const route = useRoute();
 const path = decodeURIComponent(route.path).replace(/\?/, '');
 
@@ -29,23 +23,14 @@ const content = useContent(page.value);
 const { title, description, keywords } = resolveMeta(content);
 
 
-defineOgImageComponent('DocsSeo', {
-  title,
-  description,
-  theme: '#f31500',
-  siteLogo: '/turtles.png',
-  siteName: productName,
-});
+defineOgImageComponent('SiteSeo', { title, description });
+
+usePageSeo({ title, description, ogType: 'article' });
 
 useSeoMeta({
   robots: 'index, follow',
   author: 'Center for Connected Learning and Computer-Based Modeling',
   generator: 'Nuxt Content',
-  ogDescription: description,
-  ogTitle: title,
-  ogType: 'article',
-  title: `${title}`,
-  description: description,
   keywords: keywords,
 });
 

@@ -112,7 +112,7 @@
         />
       </UPageGrid>
       <p class="mt-2 text-center">
-        <UButton variant="ghost" to="/models-gallery" icon="lucide:arrow-right">
+        <UButton variant="ghost" to="/models-library" icon="lucide:arrow-right">
           {{ page.topics.link }}
         </UButton>
       </p>
@@ -193,7 +193,6 @@
       orientation="horizontal"
       :title="page.designers.title"
       :description="page.designers.description"
-      :links="page.designers.links"
       :ui="{
         root: 'bg-neutral-900 text-white',
         container: 'lg:items-center',
@@ -201,6 +200,22 @@
         description: 'text-neutral-300',
       }"
     >
+      <template #links>
+        <UButton v-for="link in page.designers.links" :key="link.label" size="lg" v-bind="link" />
+        <p class="basis-full text-sm text-neutral-300">
+          {{ page.designers.shorter.lead }}
+          <ULink
+            :to="page.designers.shorter.to"
+            external
+            target="_blank"
+            rel="noopener"
+            class="font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-primary"
+          >
+            {{ page.designers.shorter.label }}
+          </ULink>
+          {{ page.designers.shorter.trail }}
+        </p>
+      </template>
       <div class="rounded-2xl bg-white p-6 shadow-sm">
         <AntSetup />
         <p class="mt-4 text-center text-xs text-muted">
@@ -275,7 +290,7 @@ const page = {
   },
   topics: {
     title: "Find the topic you teach",
-    link: "Explore the models gallery",
+    link: "Explore the Models Library",
   },
   ready: {
     title: "Lessons to explore",
@@ -386,6 +401,12 @@ const page = {
         trailingIcon: "i-lucide-arrow-up-right",
       }
     ],
+    shorter: {
+      lead: "Here is a",
+      label: "shorter tutorial",
+      trail: "which may be better suited to more experienced NetLogo users.",
+      to: "https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder-tutorial",
+    },
     caption: "The Setup procedure from the Ants tutorial",
   },
 };
@@ -404,4 +425,14 @@ const showcase = page.showcase.cards.map(({ id, alt, text }) => ({
 }));
 
 const faqItems = page.faq.items.filter((item) => !item.hidden);
+
+useHead({ titleTemplate: "%s" });
+usePageSeo({
+  title: "NetTango: Block-based NetLogo models for the classroom",
+  description: page.hero.description,
+});
+defineOgImageComponent("SiteSeo", {
+  title: page.hero.titleLines.flat().join(" "),
+  description: page.hero.description,
+});
 </script>

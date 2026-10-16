@@ -17,7 +17,7 @@
           class="text-sm text-toned"
           :class="{ 'max-lg:line-clamp-3': !descriptionExpanded }"
         >
-          {{ model.description }}
+          {{ descriptionText }}
         </p>
         <UButton
           v-if="descriptionClamped || descriptionExpanded"
@@ -162,7 +162,25 @@
               <UIcon name="i-lucide-arrow-up-right" class="size-4 shrink-0" />
             </ULink>
             <p v-else class="text-muted">No lesson yet.</p>
-            <dl v-if="facts.length" class="m-0 flex flex-col gap-2 p-0">
+            <dl v-if="facts.length || tutorial" class="m-0 flex flex-col gap-2 p-0">
+              <div v-if="tutorial">
+                <dt class="text-muted">Tutorial</dt>
+                <dd class="m-0 flex flex-col gap-1 text-toned">
+                  <ULink
+                    :to="tutorial.url"
+                    external
+                    target="_blank"
+                    rel="noopener"
+                    :aria-label="`Tutorial: ${tutorial.title}`"
+                    class="flex items-center gap-2 font-medium text-primary"
+                  >
+                    <UIcon name="i-lucide-graduation-cap" class="size-4 shrink-0" />
+                    <span>{{ tutorial.title }}</span>
+                    <UIcon name="i-lucide-arrow-up-right" class="size-4 shrink-0" />
+                  </ULink>
+                  <span class="text-muted">{{ tutorialCredit(tutorial) }}</span>
+                </dd>
+              </div>
               <div v-for="fact in facts" :key="fact.label">
                 <dt class="text-muted">{{ fact.label }}</dt>
                 <dd class="m-0 text-toned">{{ fact.value }}</dd>
@@ -221,6 +239,8 @@ const models = useModels();
 const details = computed(() => modelMetadata(curation, props.model.id));
 const position = computed(() => sequencePosition(curation, props.model.id));
 const tips = computed(() => details.value?.tips ?? []);
+const tutorial = computed(() => details.value?.tutorial);
+const descriptionText = computed(() => modelDescription(props.model, details.value));
 
 const findModel = (id: string | null | undefined) =>
   id ? resolveModels([id], models)[0] : undefined;
