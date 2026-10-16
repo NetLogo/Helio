@@ -194,7 +194,7 @@ p {
 
 p,
 pre {
-  max-width: min(100%, var(--max-width-ch));
+  max-width: 100%;
 }
 
 p:first-of-type {
