@@ -1,3 +1,4 @@
+import { HEALTH_PATH } from '#src/shared/utils/consts.ts';
 import { fromNodeHeaders } from 'better-auth/node';
 import { auth } from '#src/lib/auth.ts';
 import { prisma } from '#src/lib/prisma.ts';
@@ -144,7 +145,7 @@ async function authPlugin(fastify: FastifyInstance) {
   });
 
   fastify.addHook('onRequest', async (request) => {
-    if (request.url.startsWith('/api/auth/')) return;
+    if (request.url.startsWith('/api/auth/') || request.url === HEALTH_PATH) return;
 
     const session = await authService.getSession(request);
     request.user = session?.user ?? null;

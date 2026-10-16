@@ -1,3 +1,4 @@
+import { HEALTH_PATH } from '#src/shared/utils/consts.ts';
 import {
   TRACKING_COOKIE_NAME,
   generateUniqueId,
@@ -9,7 +10,7 @@ import fp from 'fastify-plugin';
 
 async function trackingCookiePlugin(fastify: FastifyInstance) {
   fastify.addHook('onRequest', async (request, reply) => {
-    if (request.url.startsWith('/api/auth/')) return;
+    if (request.url.startsWith('/api/auth/') || request.url === HEALTH_PATH) return;
     if (readTrackingCookie(request)) return;
     const value = generateUniqueId();
     const existingCookie = request.headers.cookie;

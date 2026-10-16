@@ -1,3 +1,4 @@
+import { HEALTH_PATH } from '#src/shared/utils/consts.ts';
 import { LimitExceededException } from '#src/shared/exceptions/exceptions.ts';
 import { getClientIp } from '#src/shared/http/client-context.ts';
 import RateLimit from '@fastify/rate-limit';
@@ -8,6 +9,7 @@ async function rateLimitPlugin(fastify: FastifyInstance) {
   await fastify.register(RateLimit, {
     max: (request) => (request.user ? 2500 : 1200),
     timeWindow: '10 seconds',
+    allowList: (request) => request.url === HEALTH_PATH,
     keyGenerator: (request) => request.user?.id ?? getClientIp(request),
     errorResponseBuilder: (_, context) => {
       return new LimitExceededException(

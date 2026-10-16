@@ -1,3 +1,4 @@
+import { HEALTH_PATH } from '#src/shared/utils/consts.ts';
 import path from 'node:path';
 
 import { TypeBoxValidatorCompiler, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
@@ -100,7 +101,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
     maxEventLoopUtilization: 0.98,
     exposeStatusRoute: {
       routeOpts: { logLevel: 'silent' },
-      url: '/api/health',
+      url: HEALTH_PATH,
     },
   });
 
