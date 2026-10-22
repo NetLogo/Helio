@@ -130,18 +130,31 @@ function buildOversizedPrimaryFileMultipart(): { payload: Buffer; contentType: s
   };
 }
 
-function buildPreviewImageMultipart(content: string): { payload: Buffer; contentType: string } {
+// The upload hook trusts only sniffed bytes, so the fixture has to be a real PNG: a 1x1 RGBA
+// image with the signature, IHDR, IDAT and IEND chunks file-type looks for.
+const ONE_PIXEL_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGNgAAIAAAUAAXpeqz8AAAAASUVORK5CYII=',
+  'base64',
+);
+
+function buildPreviewImageMultipart(): { payload: Buffer; contentType: string } {
   const boundary = `----DraftPreviewBoundary${Date.now().toString(16)}`;
   const parts = [
-    `--${boundary}\r\n` +
-      `Content-Disposition: form-data; name="file"; filename="preview.png"\r\n` +
-      `Content-Type: image/png\r\n\r\n` +
-      `${content}\r\n`,
-    `--${boundary}\r\n` + `Content-Disposition: form-data; name="role"\r\n\r\n` + `preview\r\n`,
-    `--${boundary}--\r\n`,
+    Buffer.from(
+      `--${boundary}\r\n` +
+        `Content-Disposition: form-data; name="file"; filename="preview.png"\r\n` +
+        `Content-Type: image/png\r\n\r\n`,
+    ),
+    ONE_PIXEL_PNG,
+    Buffer.from(
+      `\r\n--${boundary}\r\n` +
+        `Content-Disposition: form-data; name="role"\r\n\r\n` +
+        `preview\r\n` +
+        `--${boundary}--\r\n`,
+    ),
   ];
   return {
-    payload: Buffer.from(parts.join(''), 'utf-8'),
+    payload: Buffer.concat(parts),
     contentType: `multipart/form-data; boundary=${boundary}`,
   };
 }
@@ -317,7 +330,7 @@ When('I upload an additional file to the draft', async function (this: ICustomWo
 When('I upload a preview image to the draft', async function (this: ICustomWorld) {
   const user = this.context['currentUser'] as TestUser;
   const draftId = this.context['currentDraftId'] as string;
-  const { payload, contentType } = buildPreviewImageMultipart('fake-png-bytes');
+  const { payload, contentType } = buildPreviewImageMultipart();
   this.context.latestResponse = await this.server.inject({
     method: 'POST',
     url: `/api/v1/model-drafts/${draftId}/files`,

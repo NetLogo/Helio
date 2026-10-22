@@ -1,12 +1,13 @@
 import { Type, type Static } from 'typebox';
+import { idSchema } from '#src/shared/utils/id.ts';
 
 export const modelCommentParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: idSchema(),
 });
 export type ModelCommentParams = Static<typeof modelCommentParamsSchema>;
 
 export const modelCommentDetailParamsSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  commentId: Type.String({ format: 'uuid' }),
+  id: idSchema(),
+  commentId: idSchema(),
 });
 export type ModelCommentDetailParams = Static<typeof modelCommentDetailParamsSchema>;
