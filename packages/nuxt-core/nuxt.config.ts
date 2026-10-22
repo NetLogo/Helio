@@ -27,7 +27,6 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     "nuxt-gtag", // Google
     "nuxt-og-image", // Dynamic Open Graph image generation
     "nuxt-link-checker", // Link checking post-build
-    "@nuxtjs/google-fonts", // Google Fonts
   ],
 
   site: { url: website.productWebsite, name: website.productName },
@@ -83,13 +82,13 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     customComponent: "SvgImport",
   },
 
-  googleFonts: {
-    families: {
-      Inter: [400, 500, 600, 700],
-      "Fira+Code": [400, 500, 600, 700],
-      Nunito: [400, 600, 700],
-      "Maven Pro": [400, 500, 600, 700],
-    },
+  fonts: {
+    families: [
+      { name: "Inter", provider: "google", weights: [400, 500, 600, 700], global: true },
+      { name: "Fira Code", provider: "google", weights: [400, 500, 600, 700], global: true },
+      { name: "Nunito", provider: "google", weights: [400, 600, 700], global: true },
+      { name: "Maven Pro", provider: "google", weights: [400, 500, 600, 700], global: true },
+    ],
   },
 
   build: {

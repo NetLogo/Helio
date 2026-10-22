@@ -7,13 +7,12 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/types.d.ts",
-      "import": "./dist/module.mjs",
-      "require": "./dist/module.cjs"
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
     }
   },
-  "main": "./dist/module.cjs",
-  "types": "./dist/types.d.ts",
+  "main": "./dist/module.mjs",
+  "types": "./dist/types.d.mts",
   "files": [
     "cache",
     "dist"
@@ -37,11 +36,11 @@
     "@nuxt/content": "^3.7.1"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest",
+    "@nuxt/devtools": "^3.4.3",
     "@nuxt/eslint-config": "^0.2.0",
-    "@nuxt/module-builder": "^0.5.5",
+    "@nuxt/module-builder": "^1.0.3",
     "@nuxt/schema": "4.6.2",
-    "@nuxt/test-utils": "^3.12.0",
+    "@nuxt/test-utils": "^4.3.4",
     "@types/debounce": "^1.2.1",
     "@types/node": "^24.0.0",
     "@types/ws": "^8.5.10",
