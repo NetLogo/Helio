@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:24-slim
+FROM node:24.22.1-slim
 RUN apt-get update && apt-get install -y --no-install-recommends dumb-init \
   && rm -rf /var/lib/apt/lists/*
 
