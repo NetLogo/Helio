@@ -37,7 +37,7 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   imports: {
     autoImport: true,
     transform: {
-      exclude: [/\bnode_modules\b/, /\b\.git\b/],
+      exclude: [/\b\.git\b/],
     },
   },
 
