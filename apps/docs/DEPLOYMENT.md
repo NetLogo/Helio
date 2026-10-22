@@ -1,10 +1,7 @@
 # Deploying the Documentation Site
 
 ## Environment Variables
-- `PROJECT_ROOT`: The root directory of the project.
-- `BUILD_REPO`: The Git repository URL for the documentation site.
-- `PRODUCT_VERSION`: The version of the product being documented.
-- `BUILD_LATEST`: A boolean flag indicating whether to build the `latest` version.
+See [`scripts/README.md`](./scripts/README.md) for the environment variables `deploy.sh` reads (including `DEPLOY_MODE` for staging).
 
 ## Overview
 
@@ -13,18 +10,18 @@ set -e
 source .env
 ```
 
-First, we need to build the documentation site via `$PROJECT_ROOT/generate.sh`. This creates static files in the
-`$PROJECT_ROOT/apps/.build` directory.
+First, we need to build the documentation site via `$PROJECT_ROOT/scripts/generate.sh`. This creates static files in the
+`$PROJECT_ROOT/.build` directory.
 
 ```
 $PROJECT_ROOT
 ├── 📂 .build
-│   ├── 📁 <product_version>          <!-- Version with non-prefixed URL -->
-│   ├── 📁 <product_version>          <!-- Version with prefixed URL -->
+│   ├── 📁 latest                     <!-- Build with non-prefixed URL -->
+│   ├── 📁 <product_version>          <!-- Build with prefixed URL -->
 ```
 
 ```sh
-yarn run build-docs
+yarn run docs:build
 ```
 
 Second, we read the current contents of the `$BUILD_REPO/main` branch, this includes a `versions.json` file that lists
@@ -50,10 +47,10 @@ Third, we update the `versions.json` file with the new version information, incl
 
 ```bash
 # cwd: $PROJECT_ROOT/.repo
-node ../.github/update-versions.js
+node ../scripts/update-versions.cjs
 ```
 
-Fourth, we copy the newly built static files from `$PROJECT_ROOT/apps/.build` into the appropriate directories in the
+Fourth, we copy the newly built static files from `$PROJECT_ROOT/.build` into the appropriate directories in the
 documentation repository. If the directory exists, we overwrite its contents. If it does not exist, we create it. We
 only copy `latest` if the environment flag `BUILD_LATEST` is set to `true`.
 

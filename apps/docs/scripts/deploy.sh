@@ -14,9 +14,26 @@ require_env \
   "BUILD_LATEST" \
   "BUILD_BRANCH"
 
+export DEPLOY_MODE="${DEPLOY_MODE:-"production"}"
+if [ "$DEPLOY_MODE" = "staging" ]; then
+  log_info "Running in staging mode"
+  log_info "versions.json will not be updated"
+  log_info "BUILD_LATEST will be set to false"
+  export BUILD_LATEST="false"
+elif [ "$DEPLOY_MODE" = "testing" ]; then
+  log_info "Running in testing mode"
+  log_info "nothing will be deployed, but the build will be created"
+elif [ "$DEPLOY_MODE" = "production" ]; then
+  log_info "Running in production mode"
+  export BUILD_LATEST="${BUILD_LATEST}"
+else 
+  log_error "Invalid DEPLOY_MODE: $DEPLOY_MODE. Must be one of: staging, testing, production."
+  exit 1
+fi
+
+
 export PRODUCT_VERSION="${PRODUCT_VERSION}"
 export PRODUCT_DISPLAY_NAME="${PRODUCT_DISPLAY_NAME}"
-export BUILD_LATEST="${BUILD_LATEST}"
 export BUILD_REPO="${BUILD_REPO}"
 export BUILD_BRANCH="${BUILD_BRANCH}"
 
@@ -60,8 +77,12 @@ else
   clone_branch $BUILD_REPO $BUILD_BRANCH $REPO_DIRNAME
 fi
 
-log_title "Step 3: Update versions.json"
-COMMIT_HASH=$(git rev-parse HEAD) node ../$UPDATE_VERSIONS_SCRIPT_PATH
+if [ "$DEPLOY_MODE" = "staging" ]; then
+  log_info "Skipping versions.json update in staging mode."
+else
+  log_title "Step 3: Update versions.json"
+  COMMIT_HASH=$(git rev-parse HEAD) node ../$UPDATE_VERSIONS_SCRIPT_PATH
+fi
 
 log_title "Step 4: Copy build files"
 BUILD_DIR="../$BUILD_DIRNAME"
@@ -78,13 +99,18 @@ if [ "$BUILD_LATEST" = "true" ]; then
   log_info "Copied latest/ directory"
 fi
 
-log_title "Step 5: Commit and push changes"
-
-if [ $(yn "⚠️  Are you sure you want to commit and push changes to the $BUILD_BRANCH branch?") == "y" ]; then
-  commit_repo_changes "Deploy docs v$PRODUCT_VERSION" $BUILD_BRANCH
-else
-  log_info "Deployment aborted by user."
+if [ "$DEPLOY_MODE" = "testing" ]; then
+  log_info "Skipping commit and push in testing mode."
   exit 0
+else
+  log_title "Step 5: Commit and push changes"
+  if [ $(yn "⚠️  Are you sure you want to commit and push changes to the $BUILD_BRANCH branch?") == "y" ]; then
+    STAGING_MSG=" (staging)" && [ "$DEPLOY_MODE" != "staging" ] && STAGING_MSG=""
+    commit_repo_changes "Deploy docs v$PRODUCT_VERSION$STAGING_MSG" $BUILD_BRANCH
+  else
+    log_info "Deployment aborted by user."
+    exit 0
+  fi
 fi
 
 log_title "Deployment complete"
