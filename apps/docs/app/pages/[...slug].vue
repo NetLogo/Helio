@@ -115,10 +115,10 @@ function resolveMeta(page: ContentCollectionItem): ResolvedMeta {
   <!-- eslint-disable-next-line vue/no-multiple-template-root -->
   <template v-if="page">
     <component :is="layoutComponent.component" v-if="layoutComponent" v-bind="layoutComponent.props" class="main">
-      <ContentRenderer :value="page" tag="article" class="prose" />
+      <ContentRenderer :value="page" :prose="false" tag="article" class="prose" />
     </component>
 
-    <ContentRenderer v-else :value="page" tag="main" class="prose min-h-screen" />
+    <ContentRenderer v-else :value="page" :prose="false" tag="main" class="prose min-h-screen" />
   </template>
   <ErrorDisplay v-else :error-code="404" error-details="The requested page could not be found." />
 </template>
