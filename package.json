@@ -1,9 +1,6 @@
 {
   "name": "helio",
   "private": true,
-  "engine": {
-    "node": "^24.0.0"
-  },
   "scripts": {
     "init": "sh -c 'NUXT_TELEMETRY_DISABLED=1 sh ./scripts/initialize.sh && sh ./scripts/check-repo.sh'",
     "build": "turbo run build",
@@ -30,7 +27,7 @@
     "vitest": "^4.0.16"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1"
   },
   "packageManager": "yarn@1.22.22",
   "workspaces": [
