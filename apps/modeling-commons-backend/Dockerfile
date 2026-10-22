@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:24-alpine
+FROM node:24.22.1-alpine
 RUN apk add --no-cache dumb-init
 ENV NODE_ENV=production HOST=0.0.0.0 OTEL_SDK_DISABLED=true
 RUN addgroup -g 1001 -S nodejs && adduser -S fastify -u 1001 -G nodejs
