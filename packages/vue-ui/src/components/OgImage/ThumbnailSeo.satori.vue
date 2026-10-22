@@ -24,10 +24,10 @@ const props = withDefaults(
 )
 
 const siteConfig = useSiteConfig()
-const siteName = computed<string | undefined>(() => {
+const resolvedSiteName = computed<string | undefined>(() => {
   return props.siteName ?? (isNonEmptyString(siteConfig['name']) ? siteConfig['name'] : undefined)
 })
-const siteLogo = computed<string | undefined>(() => {
+const resolvedSiteLogo = computed<string | undefined>(() => {
   return props.siteLogo ?? (isNonEmptyString(siteConfig['logo']) ? siteConfig['logo'] : undefined)
 })
 </script>
@@ -42,14 +42,19 @@ const siteLogo = computed<string | undefined>(() => {
     />
 
     <div class="relative z-10 flex flex-col justify-between w-full h-full p-[60px]">
-      <div>
+      <div class="flex flex-col">
         <h1 class="text-5xl font-bold text-white mb-4">{{ title }}</h1>
         <p class="text-2xl text-white/90 max-w-2xl line-clamp-5 text-ellipsis">{{ description }}</p>
       </div>
 
       <div class="flex items-center">
-        <img v-if="siteLogo" :src="siteLogo" alt="Site Logo" class="w-12 h-12 object-contain mr-4 rounded" />
-        <span class="text-white text-lg font-semibold">{{ siteName }}</span>
+        <img
+          v-if="resolvedSiteLogo"
+          :src="resolvedSiteLogo"
+          alt="Site Logo"
+          class="w-12 h-12 object-contain mr-4 rounded"
+        />
+        <span class="text-white text-lg font-semibold">{{ resolvedSiteName }}</span>
       </div>
     </div>
   </div>

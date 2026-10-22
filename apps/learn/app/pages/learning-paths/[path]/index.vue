@@ -19,7 +19,7 @@ useSeoMeta({
   twitterSite: '@netlogo',
 });
 
-defineOgImageComponent('ThumbnailSeo', {
+defineOgImage('ThumbnailSeo', {
   title: lp.value.title,
   description: lp.value.subtitle,
   theme: '#f31500',

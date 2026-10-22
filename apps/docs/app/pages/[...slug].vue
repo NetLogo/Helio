@@ -49,7 +49,7 @@ const layoutComponent = computed(() => {
   }
 });
 
-defineOgImageComponent('DocsSeo', {
+defineOgImage('DocsSeo', {
   title,
   description,
   theme: '#f31500',
@@ -66,8 +66,8 @@ useSeoMeta({
   ogType: 'article',
   title: `${title}`,
   description: description,
-  keywords: keywords,
 });
+useHead({ meta: [{ name: 'keywords', content: keywords }] });
 
 function isPageContent(item: ContentCollectionItem | null | undefined): item is ContentCollectionItem {
   return item !== null && item !== undefined;

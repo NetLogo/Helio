@@ -13,6 +13,6 @@
     "@typescript-eslint/eslint-plugin": "^8.45.0",
     "postcss": "^8.5.3",
     "sass": "^1.93.3",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.3.3"
   }
 }

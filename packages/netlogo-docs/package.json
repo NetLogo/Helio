@@ -44,7 +44,7 @@
     "eslint": "^9.31.0",
     "glob": "^13.0.0",
     "jsdom": "^25.0.0",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.4.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.16"

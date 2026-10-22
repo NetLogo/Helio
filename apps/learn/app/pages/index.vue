@@ -94,10 +94,10 @@ onMounted(() => {
 useSeoMeta({
   robots: 'index, follow',
   description: website.value.longDescription,
-  keywords: website.value.keywords.join(', '),
 });
+useHead({ meta: [{ name: 'keywords', content: website.value.keywords.join(', ') }] });
 
-defineOgImageComponent('DocsSeo', {
+defineOgImage('DocsSeo', {
   title: website.value.name,
   description: website.value.longDescription,
   theme: '#f31500',
