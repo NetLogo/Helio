@@ -20,13 +20,17 @@ export async function e2eSetup(host: string, extra: SetupOptions = {}) {
 export type SmokeOptions = {
   // Requests that are expected to fail in the environment under test, such as files that only exist on the deployed site.
   allowedFailedRequests?: RegExp[];
+  // Console errors the app logs on purpose in that environment, such as a handled fetch failure.
+  allowedConsoleErrors?: RegExp[];
 };
 
-export function collectPageErrors(page: Page, { allowedFailedRequests = [] }: SmokeOptions = {}): string[] {
+export function collectPageErrors(page: Page, { allowedFailedRequests = [], allowedConsoleErrors = [] }: SmokeOptions = {}): string[] {
   const errors: string[] = [];
   page.on("console", (msg) => {
     // Failed requests are reported below with their URL, which the generic console line omits.
-    if (msg.type() === "error" && !msg.text().startsWith("Failed to load resource")) errors.push(msg.text());
+    const text = msg.text();
+    if (msg.type() !== "error" || text.startsWith("Failed to load resource")) return;
+    if (!allowedConsoleErrors.some((re) => re.test(text))) errors.push(text);
   });
   page.on("pageerror", (err) => errors.push(`pageerror: ${err.message}`));
   page.on("response", (res) => {
