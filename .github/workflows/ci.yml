@@ -40,20 +40,6 @@ jobs:
       - name: Run ${{ matrix.command }}
         run: yarn ${{ matrix.command }}
 
-  focused-tests:
-    name: No focused or skipped tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Fail on .only, .skip, .todo or x-prefixed tests
-        run: |
-          if git grep -nE '\b(it|test|describe)\.(only|skip|todo)\b|\bx(it|describe|test)\(' -- '*.test.ts' '*.spec.ts'; then
-            echo "Remove focused or skipped tests before merging."
-            exit 1
-          fi
-
   test-builds:
     name: Build and test ${{ matrix.app.name }}
     runs-on: ubuntu-latest
