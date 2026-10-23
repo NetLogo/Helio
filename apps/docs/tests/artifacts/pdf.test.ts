@@ -65,6 +65,33 @@ describe("PDF manual", () => {
     expect(missing).toEqual([]);
   });
 
+  // Catches table of contents entries that do not jump anywhere (named destinations Chrome dropped while printing).
+  it("links every table of contents entry to a page", () => {
+    const tocIndex = outlineTop.indexOf("Table of Contents");
+    const outline = (doc.loadOutline() ?? []) as OutlineItem[];
+    const start = outline[tocIndex]?.page ?? 1;
+    const end = outline[tocIndex + 1]?.page ?? start + 1;
+    const unlinked: string[] = [];
+    for (let i = start; i < end; i++) {
+      const page = doc.loadPage(i);
+      const links = page.getLinks();
+      const text = JSON.parse(page.toStructuredText().asJSON()) as {
+        blocks?: { lines?: { text: string; bbox: { x: number; y: number; w: number; h: number } }[] }[];
+      };
+      for (const line of (text.blocks ?? []).flatMap((b) => b.lines ?? [])) {
+        if (!/^\d+(\.\d+)*\.?\s/.test(line.text)) continue;
+        const cy = line.bbox.y + line.bbox.h / 2;
+        const link = links.find((l) => {
+          const [x0, y0, x1, y1] = l.getBounds();
+          return cy >= y0 - 1 && cy <= y1 + 1 && line.bbox.x < x1 && line.bbox.x + line.bbox.w > x0;
+        });
+        const target = link ? doc.resolveLink(link) : -1;
+        if (target < 0) unlinked.push(line.text);
+      }
+    }
+    expect(unlinked).toEqual([]);
+  });
+
   // Catches chapters missing from the PDF bookmarks, which readers use to navigate.
   it("has a top-level bookmark for every chapter", () => {
     const missing = chapters.filter((c) => !outlineTop.includes(c.title)).map((c) => `${c.file} (${c.title})`);
