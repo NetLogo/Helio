@@ -32,7 +32,8 @@
     "lint:fix": "eslint . --fix",
     "node-version": "node -v && npm -v",
     "turbo:postinstall": "nuxt prepare",
-    "test:e2e": "vitest run --project e2e"
+    "test:e2e": "vitest run --project e2e",
+    "test:artifacts": "vitest run --project artifacts"
   },
   "dependencies": {
     "@nuxt/content": "^3.16.2",

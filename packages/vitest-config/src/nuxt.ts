@@ -92,11 +92,11 @@ const nuxtE2EVitestProject = (overrides: Partial<TestRunnerConfig> = {}) => ({
   },
 });
 
-// Build tests inspect generated artifacts (.output, .build) and expect the matching build to have run first.
-const nuxtBuildVitestProject = (overrides: Partial<TestRunnerConfig> = {}) => ({
+// Artifact tests inspect generated build output (.output, .build) and expect the matching build to have run first.
+const nuxtArtifactsVitestProject = (overrides: Partial<TestRunnerConfig> = {}) => ({
   test: {
-    name: "build",
-    include: [ "tests/build/**/*.{test,spec}.ts" ],
+    name: "artifacts",
+    include: [ "tests/artifacts/**/*.{test,spec}.ts" ],
     environment: "node",
     testTimeout: 120_000,
     ...overrides
@@ -104,7 +104,7 @@ const nuxtBuildVitestProject = (overrides: Partial<TestRunnerConfig> = {}) => ({
 });
 
 export {
-  nuxtBuildVitestProject,
+  nuxtArtifactsVitestProject,
   nuxtComponentsVitestProject,
   nuxtE2EVitestProject,
   nuxtEnvironmentVitestProject,
