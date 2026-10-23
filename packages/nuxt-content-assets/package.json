@@ -18,7 +18,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "nuxt-module-build build",
+    "build": "nuxi prepare playground && nuxt-module-build build",
     "lint": "eslint .",
     "turbo:postinstall": "cd ./playground && nuxt prepare"
   },
