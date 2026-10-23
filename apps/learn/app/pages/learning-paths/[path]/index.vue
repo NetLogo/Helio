@@ -51,7 +51,9 @@ defineOgImage('ThumbnailSeo', {
           }"
         />
       </div>
-      <MDC :value="lp.description" class="prose prose-medium prose-text-medium" />
+      <MDC v-slot="{ body, data }" :value="lp.description">
+        <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" class="prose prose-medium prose-text-medium" />
+      </MDC>
     </UPageBody>
 
     <template #left>

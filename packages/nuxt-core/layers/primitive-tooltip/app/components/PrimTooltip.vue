@@ -56,20 +56,21 @@
         </div>
 
         <div class="prose prose-tight p-0 m-0 mt-1 w-full min-h-10">
-          <MDC
-            v-if="primitive.examples"
-            :cache-key="`${primitive.name}-examples`"
-            tag="div"
-            unwrap="p"
-            class="dict_entry"
-            :value="primitive.examples"
-          />
+          <MDC v-if="primitive.examples" v-slot="{ body, data }" :cache-key="`${primitive.name}-examples`" :value="primitive.examples">
+            <MDCRenderer
+              v-if="body"
+              :body="body"
+              :data="data"
+              :prose="false"
+              tag="div"
+              unwrap="p"
+              class="dict_entry"
+            />
+          </MDC>
 
-          <MDC
-            :cache-key="primitive.name + 'description'"
-            class="mt-2"
-            :value="primitive.description ?? ''"
-          />
+          <MDC v-slot="{ body, data }" :cache-key="primitive.name + 'description'" :value="primitive.description ?? ''">
+            <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" class="mt-2" />
+          </MDC>
 
           <div v-if="primitive.metadata?.['isConstant']" class="mt-2">
             <h2 class="mt-1 text-sm">
