@@ -41,6 +41,7 @@
     "@repo/typescript-config": "0.0.0",
     "@repo/utils": "0.0.0",
     "@repo/vue-ui": "1.0.0",
+    "@vueuse/core": "^14.4.0",
     "graphql": "^16.10.0",
     "graphql-request": "^7.1.2",
     "nuxt": "4.6.2",

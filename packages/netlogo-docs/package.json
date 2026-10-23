@@ -51,7 +51,10 @@
     "vitest": "^4.0.16"
   },
   "dependencies": {
+    "minimatch": "^10.2.6",
     "slugify": "^1.6.6",
-    "tsc-alias": "^1.8.16"
+    "tsc-alias": "^1.8.16",
+    "yaml": "^2.8.1",
+    "zod": "^4.1.12"
   }
 }

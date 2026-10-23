@@ -38,6 +38,7 @@
     "test:ci": "jest --ci --coverage --watchAll=false"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@repo/eslint-config": "0.0.0",
     "@repo/typescript-config": "0.0.0",
     "@types/ini": "^4.1.1",

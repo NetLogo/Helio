@@ -22,10 +22,13 @@
     "check-types": "nuxi typecheck"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vueuse/core": "^14.4.0",
     "nuxt": "4.6.2",
     "nuxt-gtag": "5.0.0",
     "nuxt-link-checker": "6.0.1",
     "nuxt-og-image": "^7.0.7",
+    "remark-toc": "^9.0.0",
     "satori": "^0.47.1",
     "@resvg/resvg-js": "^2.6.2",
     "@tiptap/y-tiptap": "^3.0.10",
