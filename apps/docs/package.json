@@ -91,7 +91,7 @@
     "eslint-plugin-perfectionist": "^4.15.1",
     "extend": "^3.0.2",
     "fs-extra": "^11.3.0",
-    "fuse.js": "^7.1.0",
+    "fuse.js": "^7.5.0",
     "html-minifier-terser": "^7.2.0",
     "mupdf": "^1.27.0",
     "puppeteer": "^25.16.0",
