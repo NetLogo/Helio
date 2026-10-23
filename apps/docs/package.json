@@ -31,7 +31,8 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "node-version": "node -v && npm -v",
-    "turbo:postinstall": "nuxt prepare"
+    "turbo:postinstall": "nuxt prepare",
+    "test:e2e": "vitest run --project e2e"
   },
   "dependencies": {
     "@nuxt/content": "^3.16.2",
@@ -100,6 +101,10 @@
     "sharp": "^0.34.4",
     "turbo-meta-utilities": "^1.0.1",
     "typescript": "^5.4.0",
-    "zod": "^4.1.12"
+    "zod": "^4.1.12",
+    "@nuxt/test-utils": "^4.3.4",
+    "@repo/vitest-config": "0.0.0",
+    "playwright-core": "^1.60.0",
+    "vitest": "^4.0.16"
   }
 }
