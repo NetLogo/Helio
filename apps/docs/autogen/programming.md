@@ -2765,7 +2765,9 @@ of such NetLogo colors. ![[programming/colors.webp]]
 
 The chart shows that:
 
-- Some of the colors have names. (You can use these names in your code.)
+- Some of the colors have names: black, gray, white, red, orange, brown, yellow,
+  green, lime, turquoise, cyan, sky, blue, violet, magenta, and pink. (You can
+  use these names in your code.)
 - Every named color except black and white has a number ending in 5.
 - On either side of each named color are darker and lighter shades of the color.
 - 0 is pure black. 9.9 is pure white.
