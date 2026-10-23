@@ -94,7 +94,6 @@
     "fuse.js": "^7.1.0",
     "html-minifier-terser": "^7.2.0",
     "mupdf": "^1.27.0",
-    "pdf-creator-node": "^2.3.5",
     "puppeteer": "^24.28.0",
     "rehype-autolink-headings": "^7.1.0",
     "remark-toc": "^9.0.0",

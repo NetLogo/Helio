@@ -34,9 +34,6 @@
     "apps/*",
     "packages/*"
   ],
-  "dependencies": {
-    "npm-run-parallel": "^0.6.0"
-  },
   "resolutions": {
     "vue": "3.5.44",
     "@vue/runtime-core": "3.5.44",
