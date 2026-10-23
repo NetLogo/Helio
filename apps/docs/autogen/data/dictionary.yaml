@@ -826,7 +826,7 @@ entries:
         It is equivalent to:
 
         ```
-                  patch-ahead distance != nobody
+        patch-ahead distance != nobody
         ```
 
       examples:
