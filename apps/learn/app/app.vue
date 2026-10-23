@@ -65,17 +65,8 @@ useHead({
 
 useLazyAsyncData(
   'search',
-  () => {
-    return Promise.all([
-      queryCollectionSearchSections('content'),
-      queryCollectionSearchSections('learningPaths'),
-      queryCollectionSearchSections('primitives'),
-    ]);
-  },
-  {
-    server: false,
-    transform: (data) => data.flat(),
-  },
+  () => queryCollectionSearchSections('content'),
+  { server: false },
 );
 
 if (import.meta.server) {

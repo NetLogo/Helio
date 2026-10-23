@@ -33,7 +33,7 @@
     "ws": "^8.18.3"
   },
   "peerDependencies": {
-    "@nuxt/content": "^3.7.1"
+    "@nuxt/content": "^3.16.2"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.4.3",
