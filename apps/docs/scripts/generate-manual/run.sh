@@ -6,9 +6,6 @@ source scripts/generate-manual/.help
 PORT=${PORT:-3002}
 MANUAL_NAME="NetLogo_User_Manual.pdf"
 
-log "⚠️  This script will kill any process using port $PORT."
-lsof -ti:$PORT | xargs -r kill -9 >/dev/null 2>/dev/null || true
-
 set -ea
 source .env
 

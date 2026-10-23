@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Repo scripts kill node processes and prompt unless they run headless.
+  # Repo scripts prompt for confirmation unless they run headless.
   HELIO_HEADLESS: "1"
   NUXT_TELEMETRY_DISABLED: "1"
 

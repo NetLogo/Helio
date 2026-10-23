@@ -116,28 +116,3 @@ function require_env() {
   done
 }
 
-# list(processes_names) -> void
-function kill_processes_by_name() {
-  local processes_names=("$@")
-  local process
-  for process in "${processes_names[@]}"; do
-    if [ -n "$WINDOWS_OS" ]; then
-      taskkill /F /IM "$process.exe" >/dev/null 2>/dev/null || true
-    else
-      pgrep $process | xargs -r kill -9 >/dev/null 2>/dev/null || true
-    fi
-  done
-}
-
-# list(ports) -> void
-function kill_processes_by_port() {
-  local ports=("$@")
-  local port
-  for port in "${ports[@]}"; do
-    if [ -n "$WINDOWS_OS" ]; then
-      netstat -ano | grep ":$port " | awk '{print $5}' | xargs -r taskkill /F /PID >/dev/null 2>/dev/null || true
-    else
-      lsof -ti:$port | xargs -r kill -9 >/dev/null 2>/dev/null || true
-    fi
-  done
-}
