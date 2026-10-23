@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "nuxt": "4.6.2",
-    "nuxt-gtag": "4.1.0",
+    "nuxt-gtag": "5.0.0",
     "nuxt-link-checker": "6.0.1",
     "nuxt-og-image": "^7.0.7",
     "satori": "^0.47.1",
