@@ -103,7 +103,7 @@ function resolveMeta(page: ContentCollectionItem): ResolvedMeta {
 
   const title = [meta.title, seo.title, 'NetLogo Docs'].filter(Boolean).at(0)!;
   const description = [meta.description, seo.description, 'NetLogo Documentation'].filter(Boolean).at(0)!;
-  const keywords = [meta.keywords, seo.keywords, 'NetLogo', 'Documentation'].filter(Boolean).flat().join(', ');
+  const keywords = [...new Set([meta.keywords, seo.keywords, 'NetLogo', 'Documentation'].filter(Boolean).flat())].join(', ');
 
   const layout = meta.layout ?? 'default';
 
