@@ -3,7 +3,7 @@
     v-if="primitive && primitive.name && !isNested"
     mode="hover"
     :ui="{ content: 'primitive-tooltip ring-0 bg-transparent shadow-none ' }"
-    :content="{ side: 'top', sideOffset: 50, align: 'start' }"
+    :content="{ side: 'top', sideOffset: 8, align: 'start' }"
     :open-delay="300"
     :close-delay="300"
   >
