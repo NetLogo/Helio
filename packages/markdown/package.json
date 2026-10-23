@@ -55,6 +55,7 @@
     "vitest": "^4.0.16"
   },
   "dependencies": {
+    "hastscript": "^7.0.2",
     "prismjs": "^1.30.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-raw": "^7.0.0",
