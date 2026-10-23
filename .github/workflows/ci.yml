@@ -9,6 +9,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # Repo scripts kill node processes and prompt unless they run headless.
+  HELIO_HEADLESS: "1"
+  NUXT_TELEMETRY_DISABLED: "1"
+
 jobs:
   validate:
     name: Run ${{ matrix.command }}
@@ -35,8 +40,22 @@ jobs:
       - name: Run ${{ matrix.command }}
         run: yarn ${{ matrix.command }}
 
+  focused-tests:
+    name: No focused or skipped tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fail on .only, .skip, .todo or x-prefixed tests
+        run: |
+          if git grep -nE '\b(it|test|describe)\.(only|skip|todo)\b|\bx(it|describe|test)\(' -- '*.test.ts' '*.spec.ts'; then
+            echo "Remove focused or skipped tests before merging."
+            exit 1
+          fi
+
   test-builds:
-    name: Test Builds
+    name: Build and test ${{ matrix.app.name }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -44,8 +63,23 @@ jobs:
       matrix:
         app:
           - name: docs
-            command: "yarn run nuxt:generate"
-            path: "./apps/docs"
+            path: ./apps/docs
+            build: yarn run nuxt:generate
+            artifact-test: tests/artifacts/normal.test.ts
+            e2e: true
+          - name: docs (static)
+            path: ./apps/docs
+            build: DOCS_ENV_STATIC=1 yarn run nuxt:generate
+            artifact-test: tests/artifacts/static.test.ts
+            e2e: false
+          - name: learn
+            path: ./apps/learn
+            build: yarn run nuxt:build
+            e2e: true
+          - name: nettango
+            path: ./apps/nettango
+            build: yarn run nuxt:build
+            e2e: true
 
     steps:
       - name: Checkout code
@@ -61,6 +95,25 @@ jobs:
         run: |
           yarn run init
 
-      - name: Build ${{ matrix.app.name }}
+      - name: Build
         working-directory: ${{ matrix.app.path }}
-        run: ${{ matrix.app.command }}
+        run: ${{ matrix.app.build }}
+
+      - name: Test build output
+        if: ${{ matrix.app.artifact-test }}
+        working-directory: ${{ matrix.app.path }}
+        run: yarn run test:artifacts ${{ matrix.app.artifact-test }}
+
+      - name: Install Chromium
+        if: ${{ matrix.app.e2e }}
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Smoke test against the built site
+        if: ${{ matrix.app.e2e }}
+        working-directory: ${{ matrix.app.path }}
+        env:
+          E2E_HOST: http://localhost:4100
+        run: |
+          yarn run nuxt:preview --port 4100 > preview.log 2>&1 &
+          for i in $(seq 1 60); do curl -fsS "$E2E_HOST" > /dev/null 2>&1 && break; sleep 2; done
+          yarn run test:e2e
