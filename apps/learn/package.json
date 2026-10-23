@@ -91,7 +91,7 @@
     "rehype-autolink-headings": "^7.1.0",
     "remark-toc": "^9.0.0",
     "sass": "^1.93.3",
-    "sharp": "^0.34.4",
+    "sharp": "^0.35.5",
     "turbo-meta-utilities": "^1.0.1",
     "typescript": "^5.4.0",
     "zod": "^4.1.12",
