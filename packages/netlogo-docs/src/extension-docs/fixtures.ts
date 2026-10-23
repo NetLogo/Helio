@@ -29,7 +29,7 @@ const markdownTemplate = `
 {{{prePrimitiveSections}}}
 
 ## Primitives
-Looking for the primitive reference for the {{extensionName}} extension? You can find [the full reference here](#all-primitives).
+[Open the catalog here](/{{primRoot}}/dictionary) to search for primitives.
 
 {{^emptyTableOfContents}}{{#contents}}
 
