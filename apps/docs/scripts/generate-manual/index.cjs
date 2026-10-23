@@ -240,9 +240,10 @@ async function main() {
       fs.writeFileSync(filePath, fileContent);
 
       const fileBaseName = path.basename(file);
-      const fileUrl = 'http://' + serverHost + ':' + serverPort + '/' + urlPrefix + fileBaseName;
-      console.log(`Handling: ${fileBaseName} (=> ${fileUrl})`);
-      await myPage.goto(fileUrl, { waitUntil: 'domcontentloaded', timeout: 120000 });
+      console.log(`Handling: ${fileBaseName}`);
+      // Parse the rewritten HTML directly instead of fetching it back from the preview server: the server resolves
+      // a chapter such as view2.5d to its same-named directory listing, which left that chapter out of the TOC.
+      await myPage.setContent(fileContent, { waitUntil: 'domcontentloaded', timeout: 120000 });
 
       /**
        * Extract the table of contents entries from the page.
