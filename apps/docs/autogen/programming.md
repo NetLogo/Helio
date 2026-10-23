@@ -1300,6 +1300,17 @@ can be written with an especially concise syntax. You can write:
     foreach [1 2 3 4] print
     ;; prints 1 through 4
 
+This works with any primitive or reporter procedure that can take as many inputs
+as the anonymous procedure would be given, either because that is its default
+number of inputs or because it is variadic. For example, [[list]] takes two
+inputs by default, but it is variadic, so `map list` makes a list out of each
+item, or out of each group of items when there are several lists:
+
+    map list [1 2 3]
+    ;; => [[1] [2] [3]]
+    (map list [1 2 3] [4 5 6] [7 8 9])
+    ;; => [[1 4 7] [2 5 8] [3 6 9]]
+
 In older NetLogo versions (4 and earlier), these had to be written:
 
     map [abs ?] [1 -2 3 -4]
@@ -2765,7 +2776,9 @@ of such NetLogo colors. ![[programming/colors.webp]]
 
 The chart shows that:
 
-- Some of the colors have names. (You can use these names in your code.)
+- Some of the colors have names: black, gray, white, red, orange, brown, yellow,
+  green, lime, turquoise, cyan, sky, blue, violet, magenta, and pink. (You can
+  use these names in your code.)
 - Every named color except black and white has a number ending in 5.
 - On either side of each named color are darker and lighter shades of the color.
 - 0 is pure black. 9.9 is pure white.

@@ -573,7 +573,11 @@ entries:
         - name: base-colors
           since: "4.0"
       description: |+
-        Reports a list of the 14 basic NetLogo hues.
+        Reports a list of the 14 basic NetLogo hues. In order, these are
+         the values of the color names gray, red, orange, brown, yellow, green,
+         lime, turquoise, cyan, sky, blue, violet, magenta, and pink. The other
+         two color names, black and white, are not included. See
+         [[Color Constants|colorconstants]].
 
         ```
         print base-colors
@@ -826,7 +830,7 @@ entries:
         It is equivalent to:
 
         ```
-                  patch-ahead distance != nobody
+        patch-ahead distance != nobody
         ```
 
       examples:
@@ -5095,7 +5099,7 @@ entries:
         show modes [1 2 2 3 3 4]
         => [2 3]
         show modes [ [1 2 [3]] [1 2 [3]] [2 3 4] ]
-        => __WIKILINK_0__]
+        => [[1 2 [3]]]
         show modes [pxcor] of turtles
         ;; shows which columns of patches have the most
         ;; turtles on them
@@ -7571,7 +7575,7 @@ entries:
         => [1 2 3]
         show sentence [1 2] [3 4]
         => [1 2 3 4]
-        show sentence __WIKILINK_0__ __WIKILINK_1__
+        show sentence [[1 2]] [[3 4]]
         => [[1 2] [3 4]]
         show (sentence [1 2] 3 [4 5] (3 + 3) 7)
         => [1 2 3 4 5 6 7]
