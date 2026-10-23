@@ -125,11 +125,7 @@ jobs:
       - name: Smoke test every sitemap route
         working-directory: ${{ matrix.app.path }}
         env:
-          E2E_HOST: http://localhost:4100
           SMOKE_ALL_ROUTES: "1"
-        run: |
-          # Resolves paths like the production host; nuxt preview (serve) 404s when a page has a same-named directory.
-          node ../../packages/vitest-config/src/serve-static.mjs .output/public 4100 > preview.log 2>&1 &
-          for i in $(seq 1 60); do curl -fsS "$E2E_HOST" > /dev/null 2>&1 && break; sleep 2; done
-          curl -fsS "$E2E_HOST" > /dev/null || { cat preview.log; exit 1; }
-          yarn run test:e2e
+        # serve-static resolves pages like the production host (nuxt preview 404s on same-named directories),
+        # runs the tests once it is listening, and exits with their status.
+        run: node ../../packages/vitest-config/src/serve-static.mjs .output/public 4100 -- yarn run test:e2e

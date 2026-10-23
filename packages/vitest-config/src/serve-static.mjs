@@ -1,11 +1,16 @@
 // Serves a prerendered Nuxt site the way the production host resolves paths: the exact file, then <path>.html,
 // then <path>/index.html. `nuxt preview` uses `serve`, which picks a same-named directory over <path>.html and 404s.
-// Usage: node serve-static.mjs <dir> <port>
+// Usage: node serve-static.mjs <dir> <port> [-- <command...>]
+// With a command, it runs once the server is listening (E2E_HOST set to the server), then exits with its status.
+import { spawn } from "node:child_process";
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";
 
-const [root = ".output/public", port = "4100"] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const separator = args.indexOf("--");
+const command = separator === -1 ? [] : args.slice(separator + 1);
+const [root = ".output/public", port = "4100"] = separator === -1 ? args : args.slice(0, separator);
 const base = resolve(root);
 
 const types = {
@@ -37,7 +42,7 @@ function send(res, status, file) {
   createReadStream(file).pipe(res);
 }
 
-createServer((req, res) => {
+const server = createServer((req, res) => {
   const pathname = decodeURIComponent(new URL(req.url ?? "/", "http://localhost").pathname);
   const target = normalize(join(base, pathname));
   if (!target.startsWith(base)) {
@@ -50,4 +55,15 @@ createServer((req, res) => {
   const notFound = join(base, "404.html");
   if (isFile(notFound)) return send(res, 404, notFound);
   res.writeHead(404).end();
-}).listen(Number(port), () => console.log(`Serving ${base} on http://localhost:${port}`));
+});
+
+server.listen(Number(port), () => {
+  const host = `http://localhost:${port}`;
+  console.log(`Serving ${base} on ${host}`);
+  if (command.length === 0) return;
+  const child = spawn(command[0], command.slice(1), { stdio: "inherit", env: { ...process.env, E2E_HOST: host } });
+  child.on("exit", (code) => {
+    server.close();
+    process.exit(code ?? 1);
+  });
+});
