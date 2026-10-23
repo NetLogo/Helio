@@ -25,7 +25,7 @@
   "dependencies": {
     "@nuxt/content": "^3.16.2",
     "@nuxt/eslint": "1.10.0",
-    "@nuxt/fonts": "0.14.0",
+    "@nuxt/fonts": "1.0.1",
     "@nuxt/hints": "1.1.5",
     "@nuxt/icon": "2.5.1",
     "@nuxt/image": "2.2.0",

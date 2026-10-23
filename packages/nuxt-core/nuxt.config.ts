@@ -140,6 +140,8 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     mdc: false,
     content: false,
     colorMode: false,
+    // @nuxt/ui pins @nuxt/fonts 0.14; we register 1.x ourselves, which og-image needs for font extraction.
+    fonts: false,
   },
 
   ogImage: {
