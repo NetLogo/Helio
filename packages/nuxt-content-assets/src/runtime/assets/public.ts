@@ -1,7 +1,7 @@
 import Path from "crosspath";
 import debounce from "debounce";
 import * as Fs from "fs";
-import getImageSize from "image-size";
+import { imageSize } from "image-size";
 import { hash } from "ohash";
 import type { AssetConfig } from "../../types";
 import { isImage, log, removeEntry, warn } from "../utils";
@@ -302,7 +302,7 @@ export function getAssetSize(srcAbs: string): {
 } {
   if (isImage(srcAbs)) {
     try {
-      return getImageSize(srcAbs);
+      return imageSize(Fs.readFileSync(srcAbs));
     } catch (err) {
       warn(`could not read image "${srcAbs}`);
     }

@@ -73,10 +73,10 @@ const themeRgb = computed(() => {
 })
 
 const siteConfig = useSiteConfig()
-const siteName = computed<string | undefined>(() => {
+const resolvedSiteName = computed<string | undefined>(() => {
   return props.siteName ?? (typeof siteConfig['name'] === 'string' ? siteConfig['name'] : undefined)
 })
-const siteLogo = computed<string | undefined>(() => {
+const resolvedSiteLogo = computed<string | undefined>(() => {
   return props.siteLogo ?? (typeof siteConfig['logo'] === 'string' ? siteConfig['logo'] : undefined)
 })
 
@@ -108,7 +108,7 @@ if (typeof props.icon === 'string' && !runtimeConfig.hasNuxtIcon && process.dev)
         backgroundImage: `radial-gradient(circle, rgba(${themeRgb}, 0.5) 0%,  ${colorMode === 'dark' ? 'rgba(5, 5, 5,0.3)' : 'rgba(255, 255, 255, 0.7)'} 50%, ${props.colorMode === 'dark' ? 'rgba(5, 5, 5,0)' : 'rgba(255, 255, 255, 0)'} 70%)`,
       }"
     />
-    <div class="h-full w-full justify-between relative">
+    <div class="h-full w-full flex flex-col justify-between relative">
       <div class="flex flex-row justify-between items-start">
         <div class="flex flex-col w-full max-w-[65%]">
           <h1
@@ -120,7 +120,7 @@ if (typeof props.icon === 'string' && !runtimeConfig.hasNuxtIcon && process.dev)
           </h1>
           <p
             v-if="description"
-            class="text-[35px] leading-12"
+            class="text-[35px] leading-[48px]"
             :class="[colorMode === 'light' ? ['text-gray-700'] : ['text-gray-300']]"
             style="display: block; line-clamp: 3; text-overflow: ellipsis"
           >
@@ -132,7 +132,7 @@ if (typeof props.icon === 'string' && !runtimeConfig.hasNuxtIcon && process.dev)
         </div>
       </div>
       <div class="flex flex-row justify-center items-center text-left w-full">
-        <img v-if="siteLogo" :src="siteLogo" height="60" />
+        <img v-if="resolvedSiteLogo" :src="resolvedSiteLogo" height="60" />
         <template v-else>
           <svg height="50" width="50" class="mr-3" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -141,8 +141,8 @@ if (typeof props.icon === 'string' && !runtimeConfig.hasNuxtIcon && process.dev)
               transform="translate(100 100)"
             />
           </svg>
-          <p v-if="siteName" style="font-size: 25px" class="font-bold">
-            {{ siteName }}
+          <p v-if="resolvedSiteName" style="font-size: 25px" class="font-bold">
+            {{ resolvedSiteName }}
           </p>
         </template>
       </div>

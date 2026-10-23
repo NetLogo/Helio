@@ -45,6 +45,11 @@ const staticOverrides: Parameters<DefineNuxtConfig>[0] = {
   },
 
   nitro: {
+    // The static link rewrite turns hrefs into relative .html paths, which the crawler does not follow,
+    // so pages reachable only through such a link have to be listed.
+    prerender: {
+      routes: ['/es/behaviorspace'],
+    },
     hooks: {
       async close() {
         const cwd = '.output/public'

@@ -27,7 +27,6 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     "nuxt-gtag", // Google
     "nuxt-og-image", // Dynamic Open Graph image generation
     "nuxt-link-checker", // Link checking post-build
-    "@nuxtjs/google-fonts", // Google Fonts
   ],
 
   site: { url: website.productWebsite, name: website.productName },
@@ -37,7 +36,7 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
   imports: {
     autoImport: true,
     transform: {
-      exclude: [/\bnode_modules\b/, /\b\.git\b/],
+      exclude: [/\b\.git\b/],
     },
   },
 
@@ -83,13 +82,13 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     customComponent: "SvgImport",
   },
 
-  googleFonts: {
-    families: {
-      Inter: [400, 500, 600, 700],
-      "Fira+Code": [400, 500, 600, 700],
-      Nunito: [400, 600, 700],
-      "Maven Pro": [400, 500, 600, 700],
-    },
+  fonts: {
+    families: [
+      { name: "Inter", provider: "google", weights: [400, 500, 600, 700], global: true },
+      { name: "Fira Code", provider: "google", weights: [400, 500, 600, 700], global: true },
+      { name: "Nunito", provider: "google", weights: [400, 600, 700], global: true },
+      { name: "Maven Pro", provider: "google", weights: [400, 500, 600, 700], global: true },
+    ],
   },
 
   build: {
@@ -141,6 +140,8 @@ export const nuxtBaseConfig: NuxtBaseConfig = {
     mdc: false,
     content: false,
     colorMode: false,
+    // @nuxt/ui pins @nuxt/fonts 0.14; we register 1.x ourselves, which og-image needs for font extraction.
+    fonts: false,
   },
 
   ogImage: {

@@ -26,6 +26,8 @@ const pullVersionsFromSource = async (
 ): Promise<Record<string, VersionProps>> => {
   try {
     const data = await $fetch<Array<LiveVersionData>>(url, { "baseURL": "/" });
+    // Local dev has no versions.json, and the catch-all page answers the request with HTML
+    if (!Array.isArray(data)) return currentVersions;
 
     const normalizeLiveVersionsToProps = (version: LiveVersionData): VersionProps => ({
       displayName: version.name,

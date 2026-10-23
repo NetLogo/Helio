@@ -11,6 +11,6 @@ defineProps({
 
 <template>
   <ClientNavbar />
-  <ErrorDisplay :error-code="error.statusCode" :error-details="error.message" />
+  <ErrorDisplay :error-code="error.status ?? 500" :error-details="error.message" />
   <ClientFooter />
 </template>
