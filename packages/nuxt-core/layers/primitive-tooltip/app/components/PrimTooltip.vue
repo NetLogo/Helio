@@ -1,15 +1,11 @@
 <template>
-  <UTooltip
-    v-if="primitive && primitive.name"
+  <UPopover
+    v-if="primitive && primitive.name && !isNested"
+    mode="hover"
     :ui="{ content: 'primitive-tooltip ring-0 bg-transparent shadow-none ' }"
-    :content="{
-      side: 'top',
-      sideOffset: 50,
-      align: 'start',
-      ariaLabel: `Details about the ${primitive.name} NetLogo primitive`,
-    }"
-    :delay-duration="300"
-    :disabled="isNested"
+    :content="{ side: 'top', sideOffset: 8, align: 'start' }"
+    :open-delay="300"
+    :close-delay="300"
   >
     <PrimitiveMarkup :name="primitive.name" :url="primitive.url" />
     <template #content>
@@ -17,6 +13,7 @@
         varian="outline"
         class="primitive-tooltip-content animate-scale-in relative p-0 min-w-75 lg:min-w-125 max-w-150 max-h-62.5 [&_p]:mb-3 overflow-y-auto no-stylized-heading"
         as="div"
+        :aria-label="`Details about the ${primitive.name} NetLogo primitive`"
         :ui="{
           container: 'p-4! pt-0!  gap-y-1! h-full max-w-150 [&_pre]:max-w-138',
         }"
@@ -56,20 +53,21 @@
         </div>
 
         <div class="prose prose-tight p-0 m-0 mt-1 w-full min-h-10">
-          <MDC
-            v-if="primitive.examples"
-            :cache-key="`${primitive.name}-examples`"
-            tag="div"
-            unwrap="p"
-            class="dict_entry"
-            :value="primitive.examples"
-          />
+          <MDC v-if="primitive.examples" v-slot="{ body, data }" :cache-key="`${primitive.name}-examples`" :value="primitive.examples">
+            <MDCRenderer
+              v-if="body"
+              :body="body"
+              :data="data"
+              :prose="false"
+              tag="div"
+              unwrap="p"
+              class="dict_entry"
+            />
+          </MDC>
 
-          <MDC
-            :cache-key="primitive.name + 'description'"
-            class="mt-2"
-            :value="primitive.description ?? ''"
-          />
+          <MDC v-slot="{ body, data }" :cache-key="primitive.name + 'description'" :value="primitive.description ?? ''">
+            <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" class="mt-2" />
+          </MDC>
 
           <div v-if="primitive.metadata?.['isConstant']" class="mt-2">
             <h2 class="mt-1 text-sm">
@@ -93,7 +91,8 @@
         </div>
       </UPageCard>
     </template>
-  </UTooltip>
+  </UPopover>
+  <PrimitiveMarkup v-else-if="primitive && primitive.name" :name="primitive.name" :url="primitive.url" />
   <PrimitiveMarkup v-else-if="isDisabled" :name="props.name" :url="primitive?.url" v-bind="$attrs">
     <slot v-if="$slots['default']" />
   </PrimitiveMarkup>

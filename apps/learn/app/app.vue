@@ -18,6 +18,8 @@
             resultLimit: 42,
             fuseOptions: {
               threshold: 0,
+              // @nuxt/ui 4.12 turns on token search by default, which matches a page if any single word matches.
+              useTokenSearch: false,
             },
           }"
         >
@@ -65,17 +67,8 @@ useHead({
 
 useLazyAsyncData(
   'search',
-  () => {
-    return Promise.all([
-      queryCollectionSearchSections('content'),
-      queryCollectionSearchSections('learningPaths'),
-      queryCollectionSearchSections('primitives'),
-    ]);
-  },
-  {
-    server: false,
-    transform: (data) => data.flat(),
-  },
+  () => queryCollectionSearchSections('content'),
+  { server: false },
 );
 
 if (import.meta.server) {

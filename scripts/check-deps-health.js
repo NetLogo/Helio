@@ -3,6 +3,7 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const semver = require("semver");
+const { yarnWhy: yarnWhyVersions } = require("./lib/yarn-why");
 
 class Rule {
   constructor(name, level = "error" /* or "warn" */) {
@@ -36,26 +37,8 @@ class Rule {
 const _yarnWhyCache = new Map();
 
 function yarnWhy(pkg) {
-  if (_yarnWhyCache.has(pkg)) return _yarnWhyCache.get(pkg);
-  try {
-    const out = execSync(`yarn why ${pkg} --json`, {
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    const versions = new Set();
-    for (const line of out.trim().split("\n").filter(Boolean)) {
-      const entry = JSON.parse(line);
-      if (entry.type !== "info" || typeof entry.data !== "string") continue;
-      const match = entry.data.match(/Found ".+@(\d+\..+?)"/);
-      if (match) versions.add(match[1]);
-    }
-    _yarnWhyCache.set(pkg, versions);
-    return versions;
-  } catch {
-    const empty = new Set();
-    _yarnWhyCache.set(pkg, empty);
-    return empty;
-  }
+  if (!_yarnWhyCache.has(pkg)) _yarnWhyCache.set(pkg, new Set(yarnWhyVersions(pkg)));
+  return _yarnWhyCache.get(pkg);
 }
 
 function findPackageJsons(dir, results = []) {
@@ -589,7 +572,12 @@ const rules = [
 
 let ok = true;
 for (const rule of rules) {
-  if (!rule.check() && rule.level === "error") ok = false;
+  try {
+    if (!rule.check() && rule.level === "error") ok = false;
+  } catch (e) {
+    console.error(`ERROR [${rule.name}]: ${e.message}`);
+    ok = false;
+  }
 }
 
 console.log(ok ? "\n✓ All checks passed" : "\n✗ Some checks failed");

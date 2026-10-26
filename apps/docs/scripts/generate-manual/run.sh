@@ -6,9 +6,6 @@ source scripts/generate-manual/.help
 PORT=${PORT:-3002}
 MANUAL_NAME="NetLogo_User_Manual.pdf"
 
-log "⚠️  This script will kill any process using port $PORT."
-lsof -ti:$PORT | xargs -r kill -9 >/dev/null 2>/dev/null || true
-
 set -ea
 source .env
 
@@ -50,7 +47,7 @@ title=$(cat <<EOF
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 		<style>
-			body.title {
+			.title-page {
 				width: 100vw;
 				display: flex;
 				flex-direction: column;
@@ -58,7 +55,7 @@ title=$(cat <<EOF
 				align-items: center;
         font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 			}
-      body.title h1.landing {
+      .title-page h1.landing {
         background: transparent;
         color: #1a1a1a;
       }
@@ -73,9 +70,12 @@ title=$(cat <<EOF
       }
 		</style>
 	</head>
-	<body class="title">
-		<img src="${imagesDirUri}/manual-banner.png" width="600" height="231" alt="Title image">
-		<h1 class="landing">The NetLogo ${PRODUCT_VERSION} User Manual</h1>
+	<body>
+		<!-- Scoped to a wrapper: the manual is combined into one document, so styles on body apply to every chapter -->
+		<div class="title-page">
+			<img src="${imagesDirUri}/manual-banner.png" width="600" height="231" alt="Title image">
+			<h1 class="landing">The NetLogo ${PRODUCT_VERSION} User Manual</h1>
+		</div>
 </body></html>
 EOF
 )

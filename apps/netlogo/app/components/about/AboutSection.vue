@@ -1,6 +1,8 @@
 <template>
   <div class="text-start pt-4 px-5 pb-8 mx-auto w-3/4">
-    <MDC :value="aboutData.body" class="typography about-content" />
+    <MDC v-slot="{ body, data }" :value="aboutData.body">
+      <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" class="typography about-content" />
+    </MDC>
   </div>
 </template>
 

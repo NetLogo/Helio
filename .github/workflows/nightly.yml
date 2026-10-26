@@ -1,0 +1,131 @@
+name: Nightly
+
+# Slow checks that are too heavy for every push: the PDF manual and a smoke test of every route in each sitemap.
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+env:
+  HELIO_HEADLESS: "1"
+  NUXT_TELEMETRY_DISABLED: "1"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  changes:
+    name: Check for new commits since the last nightly
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.compare.outputs.changed }}
+    steps:
+      - name: Compare HEAD with the last successful nightly
+        id: compare
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          HEAD_SHA: ${{ github.sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          last=$(gh run list --repo "$REPO" --workflow nightly.yml --status success --limit 1 --json headSha --jq ".[0].headSha // empty")
+          echo "Last successful nightly: ${last:-none}, HEAD: $HEAD_SHA"
+          if [ "$EVENT" = "workflow_dispatch" ] || [ "$last" != "$HEAD_SHA" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No new commits since the last successful nightly; skipping." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  pdf-manual:
+    name: Build and test the PDF manual
+    needs: changes
+    if: ${{ needs.changes.outputs.changed == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+          cache: "yarn"
+
+      - name: Initialize Repository
+        run: |
+          yarn run init
+
+      - name: Build the PDF manual
+        working-directory: ./apps/docs
+        env:
+          PORT: "3099"
+        run: yarn run docs:build-and-generate-manual
+
+      - name: Test the PDF manual
+        working-directory: ./apps/docs
+        run: yarn run test:artifacts tests/artifacts/pdf.test.ts
+
+      - name: Upload the PDF manual
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: NetLogo_User_Manual
+          path: apps/docs/.build/NetLogo_User_Manual.pdf
+          if-no-files-found: error
+
+      - name: Summarize the artifact
+        if: ${{ always() }}
+        working-directory: ./apps/docs
+        run: |
+          echo "### PDF manual" >> "$GITHUB_STEP_SUMMARY"
+          ls -la .build/NetLogo_User_Manual.pdf >> "$GITHUB_STEP_SUMMARY" 2>&1 || echo "PDF missing" >> "$GITHUB_STEP_SUMMARY"
+
+  all-routes:
+    name: Smoke test every route of ${{ matrix.app.name }}
+    needs: changes
+    if: ${{ needs.changes.outputs.changed == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - name: docs
+            path: ./apps/docs
+            build: yarn run nuxt:generate
+          - name: learn
+            path: ./apps/learn
+            build: yarn run nuxt:build
+          - name: nettango
+            path: ./apps/nettango
+            build: yarn run nuxt:build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+          cache: "yarn"
+
+      - name: Initialize Repository
+        run: |
+          yarn run init
+
+      - name: Build
+        working-directory: ${{ matrix.app.path }}
+        run: ${{ matrix.app.build }}
+
+      - name: Install Chromium
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Smoke test every sitemap route
+        working-directory: ${{ matrix.app.path }}
+        env:
+          SMOKE_ALL_ROUTES: "1"
+        # serve-static resolves pages like the production host (nuxt preview 404s on same-named directories),
+        # runs the tests once it is listening, and exits with their status.
+        run: node ../../packages/vitest-config/src/serve-static.mjs .output/public 4100 -- yarn run test:e2e

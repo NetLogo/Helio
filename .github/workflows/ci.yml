@@ -9,6 +9,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # Repo scripts prompt for confirmation unless they run headless.
+  HELIO_HEADLESS: "1"
+  NUXT_TELEMETRY_DISABLED: "1"
+
 jobs:
   validate:
     name: Run ${{ matrix.command }}
@@ -36,7 +41,7 @@ jobs:
         run: yarn ${{ matrix.command }}
 
   test-builds:
-    name: Test Builds
+    name: Build and test ${{ matrix.app.name }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -44,8 +49,23 @@ jobs:
       matrix:
         app:
           - name: docs
-            command: "yarn run nuxt:generate"
-            path: "./apps/docs"
+            path: ./apps/docs
+            build: yarn run nuxt:generate
+            artifact-test: tests/artifacts/normal.test.ts
+            e2e: true
+          - name: docs (static)
+            path: ./apps/docs
+            build: DOCS_ENV_STATIC=1 yarn run nuxt:generate
+            artifact-test: tests/artifacts/static.test.ts
+            e2e: false
+          - name: learn
+            path: ./apps/learn
+            build: yarn run nuxt:build
+            e2e: true
+          - name: nettango
+            path: ./apps/nettango
+            build: yarn run nuxt:build
+            e2e: true
 
     steps:
       - name: Checkout code
@@ -61,6 +81,22 @@ jobs:
         run: |
           yarn run init
 
-      - name: Build ${{ matrix.app.name }}
+      - name: Build
         working-directory: ${{ matrix.app.path }}
-        run: ${{ matrix.app.command }}
+        run: ${{ matrix.app.build }}
+
+      - name: Test build output
+        if: ${{ matrix.app.artifact-test }}
+        working-directory: ${{ matrix.app.path }}
+        run: yarn run test:artifacts ${{ matrix.app.artifact-test }}
+
+      - name: Install Chromium
+        if: ${{ matrix.app.e2e }}
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Smoke test against the built site
+        if: ${{ matrix.app.e2e }}
+        working-directory: ${{ matrix.app.path }}
+        # serve-static resolves pages like the production host (nuxt preview 404s on same-named directories),
+        # runs the tests once it is listening, and exits with their status.
+        run: node ../../packages/vitest-config/src/serve-static.mjs .output/public 4100 -- yarn run test:e2e

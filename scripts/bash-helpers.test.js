@@ -9,6 +9,9 @@ const __dirname = dirname(__filename);
 const HELPERS_PATH = join(__dirname, ".helpers");
 const TEST_DIR = join(__dirname, ".test-tmp");
 
+// Each test sets HELIO_HEADLESS itself, so a value from the calling shell must not leak in.
+const { HELIO_HEADLESS: _ignored, ...inheritedEnv } = process.env;
+
 if (process.platform !== "win32") {
   function callBash(command, env = {}) {
     if (!existsSync(TEST_DIR)) {
@@ -17,7 +20,7 @@ if (process.platform !== "win32") {
 
     const result = spawnSync("bash", ["-c", `source ${HELPERS_PATH} && ${command}`], {
       encoding: "utf-8",
-      env: { ...process.env, ...env },
+      env: { ...inheritedEnv, ...env },
       cwd: TEST_DIR,
     });
     return {
@@ -191,24 +194,20 @@ if (process.platform !== "win32") {
       });
     });
 
-    describe("_read function", () => {
-      it("should return the default value when in headless mode", () => {
-        const { stdout } = callBash('_read "Enter value: " "default_value"', {
-          HELIO_HEADLESS: "1",
-        });
-        expect(stdout).toContain("default_value");
+    describe("yn function", () => {
+      it("should answer yes without prompting in headless mode", () => {
+        const { stdout, status } = callBash('yn "Continue?"', { HELIO_HEADLESS: "1" });
+        expect(status).toBe(0);
+        expect(stdout.split("\n").at(-1)).toBe("y");
       });
 
-      it("should return different defaults based on input", () => {
-        const { stdout: stdout1 } = callBash('_read "Prompt: " "first"', {
-          HELIO_HEADLESS: "1",
-        });
-        expect(stdout1).toContain("first");
+      it("should read y or n from input when interactive", () => {
+        expect(callBash('yn "Continue?" <<< "n"').stdout.split("\n").at(-1)).toBe("n");
+        expect(callBash('yn "Continue?" <<< "yes"').stdout.split("\n").at(-1)).toBe("y");
+      });
 
-        const { stdout: stdout2 } = callBash('_read "Prompt: " "second"', {
-          HELIO_HEADLESS: "1",
-        });
-        expect(stdout2).toContain("second");
+      it("should require a prompt", () => {
+        expect(callBash("yn").status).not.toBe(0);
       });
     });
 
@@ -240,7 +239,7 @@ if (process.platform !== "win32") {
         expect(content).toContain("function rm_dir_or_link()");
         expect(content).toContain("function resolve_dir_or_link()");
         expect(content).toContain("function unroll()");
-        expect(content).toContain("_read()");
+        expect(content).toContain("yn()");
       });
 
       it("should set strict mode options", () => {
