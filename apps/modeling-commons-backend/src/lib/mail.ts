@@ -9,7 +9,7 @@ class FastifyMailerError extends Error {
   }
 }
 
-const defaults: SMTPTransport.Options = {
+const defaults: SMTPTransport.MailOptions = {
   from: `${env.product.name} <${env.smtp.senderAddress}>`,
 };
 const hasAuth = env.smtp.user.length > 0;

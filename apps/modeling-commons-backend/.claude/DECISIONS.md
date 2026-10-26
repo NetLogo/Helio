@@ -21,3 +21,12 @@ Full rationale and inventory: `doc/nanoid-id-migration-plan.md`.
 2. **The event processor is not split into a separate container or process.** It stays inside the API process via `startWorkers(fastify)`. The protection against a second worker sharing the e2e database is a harness guard (`single-worker-guard-4.md`, proposed), not a deployment change.
 3. **Validation `subErrors` are a JSON string.** The wire schema already declares `subErrors` as a string; the handler now `JSON.stringify`s the `[{ path, message }]` list instead of letting the serializer coerce it to `[object Object]`. Keeping the string type avoids a client change.
 4. **The preview fixture is a real 1x1 PNG**, because `resolveFile` decides on sniffed bytes only. Test fixtures must be what they claim to be.
+
+## 2026-10-26: The event worker calls userNotificationService directly; no dispatcher layer
+
+**Context:** `apps/modeling-commons-backend`. `src/modules/event/event-dispatcher.service.ts` was a generic subscriber fan-out (`handles()` filter, run all, aggregate rejections, rethrow) with exactly one subscriber, `userNotificationService`. That service already filters notifiers by event type, runs them with `Promise.allSettled`, and throws its own `AggregateError`, so the dispatcher duplicated the error aggregation and added a `handles()` method and an `EventSubscriber` type whose only consumer was the dispatcher.
+
+**Decisions:**
+1. **The dispatcher, its spec, `EventSubscriber` and `userNotificationService.handles()` are deleted.** `startEventProcessor` takes `userNotificationService` and calls `userNotificationService.handleEvent(event)` per event; a throw still goes to `eventRepository.markFailed`, a return to `markProcessed`. `handleEvent` returns early for event types no notifier declares, which is what `handles()` guarded.
+2. **The call is a property access at invocation time, not a method destructured at startup.** `tests/api/workers.steps.ts` rigs failures by replacing `handleEvent` on the cradle singleton and restoring it in an After hook; destructuring would defeat that.
+3. **A second subscriber reintroduces fan-out at the worker**, inside `drainOnce` in `src/workers/event-processor.ts`, not as a new module. Until then one direct call is the whole mechanism.

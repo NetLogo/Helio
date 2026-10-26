@@ -16,8 +16,6 @@ export default function makeResolveNotificationSubjectsQuery({
   logger,
 }: Dependencies) {
   return {
-    // Two batched reads for a whole page, whatever the page size. A reference that no
-    // longer resolves - deleted user, deleted model - yields null rather than a dead link.
     async execute(
       records: Array<UserNotificationRecord>,
     ): Promise<Map<string, ResolvedNotificationSubjects>> {

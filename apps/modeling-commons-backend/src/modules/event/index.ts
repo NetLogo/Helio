@@ -13,8 +13,5 @@ declare global {
     listEventsQuery: ReturnType<
       typeof import('#src/modules/event/queries/list-events.query.ts').default
     >;
-    eventDispatcherService: ReturnType<
-      typeof import('#src/modules/event/event-dispatcher.service.ts').default
-    >;
   }
 }

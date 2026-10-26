@@ -20,9 +20,9 @@ interface PrismaCradle {
   };
 }
 
-interface EventDispatcherCradle {
-  eventDispatcherService: {
-    dispatch: (event: unknown) => Promise<void>;
+interface UserNotificationCradle {
+  userNotificationService: {
+    handleEvent: (event: unknown) => Promise<void>;
   };
 }
 
@@ -74,28 +74,29 @@ Given(
   },
 );
 
-// `eventDispatcherService` is a DI singleton shared across the whole scenario run
+// `userNotificationService` is a DI singleton shared across the whole scenario run
 // (same pattern as the mail/repository spies in model-comment.steps.ts), so the
-// After hook below restores the original `dispatch` rather than leaving a scenario's
+// After hook below restores the original `handleEvent` rather than leaving a scenario's
 // rig in place for whatever runs next.
-Given('dispatching that event is rigged to fail once', function (this: ICustomWorld) {
-  const { eventDispatcherService } = this.server.diContainer.cradle as unknown as EventDispatcherCradle;
-  const original = eventDispatcherService.dispatch.bind(eventDispatcherService);
+Given('handling that event is rigged to fail once', function (this: ICustomWorld) {
+  const { userNotificationService } = this.server.diContainer
+    .cradle as unknown as UserNotificationCradle;
+  const original = userNotificationService.handleEvent.bind(userNotificationService);
   let hasFailed = false;
-  eventDispatcherService.dispatch = async (event: unknown) => {
+  userNotificationService.handleEvent = async (event: unknown) => {
     if (!hasFailed) {
       hasFailed = true;
-      throw new Error('workers.feature: rigged dispatch failure');
+      throw new Error('workers.feature: rigged handleEvent failure');
     }
     return original(event);
   };
-  this.context['restoreDispatch'] = () => {
-    eventDispatcherService.dispatch = original;
+  this.context['restoreHandleEvent'] = () => {
+    userNotificationService.handleEvent = original;
   };
 });
 
 After(function (this: ICustomWorld) {
-  const restore = this.context['restoreDispatch'] as (() => void) | undefined;
+  const restore = this.context['restoreHandleEvent'] as (() => void) | undefined;
   restore?.();
 });
 

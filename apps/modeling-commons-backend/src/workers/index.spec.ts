@@ -30,12 +30,12 @@ import { startWorkers } from '#src/workers/index.ts';
 function makeFastify(): {
   fastify: FastifyInstance;
   hooks: Map<string, () => Promise<void>>;
-  cradle: { eventRepository: unknown; eventDispatcherService: unknown; modelDraftService: unknown };
+  cradle: { eventRepository: unknown; userNotificationService: unknown; modelDraftService: unknown };
 } {
   const hooks = new Map<string, () => Promise<void>>();
   const cradle = {
     eventRepository: { tag: 'er' },
-    eventDispatcherService: { tag: 'eds' },
+    userNotificationService: { tag: 'uns' },
     modelDraftService: { tag: 'mds' },
   };
   const fastify = {
@@ -74,7 +74,7 @@ describe('startWorkers', () => {
     expect(startEventProcessor).toHaveBeenCalledWith({
       connectionString: 'postgres://test',
       eventRepository: cradle.eventRepository,
-      eventDispatcherService: cradle.eventDispatcherService,
+      userNotificationService: cradle.userNotificationService,
       logger: fastify.log,
     });
     expect(startModelDraftJanitor).toHaveBeenCalledWith({

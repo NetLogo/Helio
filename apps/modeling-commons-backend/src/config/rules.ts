@@ -1,8 +1,7 @@
-import { MEGABYTE } from '#src/shared/utils/consts.ts';
+import { MEGABYTE, MINUTE_MS } from '#src/shared/utils/consts.ts';
 import type { FastifyRateLimitOptions } from '@fastify/rate-limit';
 import type { BetterAuthRateLimitOptions } from 'better-auth';
 
-const MINUTE_MS = 60 * 1000;
 const rules = {
   limits: {
     fileUpload: {
@@ -176,8 +175,6 @@ const rules = {
     },
 
     notification: {
-      eventBatchSize: 50,
-      maxEventAttempts: 5,
       previewLength: 280,
     },
   },

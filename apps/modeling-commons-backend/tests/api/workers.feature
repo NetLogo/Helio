@@ -9,10 +9,10 @@ Feature: Background workers
     When the event processor queue is triggered
     Then the event should be marked processed within 10 seconds
 
-  Scenario: A failing dispatch increments attempts and records the error instead of processing
+  Scenario: A failing handler increments attempts and records the error instead of processing
     Given an authenticated user "actor"
     And an unprocessed event of type "test.event" exists for "actor"
-    And dispatching that event is rigged to fail once
+    And handling that event is rigged to fail once
     When the event processor queue is triggered
     Then the event should have 1 attempt and a recorded error within 10 seconds
     And the event should still be unprocessed

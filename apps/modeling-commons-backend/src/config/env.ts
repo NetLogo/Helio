@@ -1,5 +1,6 @@
 import envSchema from 'env-schema';
 import { type Static, Type } from 'typebox';
+import { getServerCapabilities, getServerRole, ServerRole } from './role.ts';
 
 const NodeEnv = {
   development: 'development',
@@ -17,6 +18,7 @@ export const LogLevel = {
 export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
 
 const schema = Type.Object({
+  SERVER_ROLE: Type.Optional(Type.Enum(ServerRole)),
   POSTGRES_URL: Type.String(),
   POSTGRES_PASSWORD: Type.String(),
   POSTGRES_USER: Type.String(),
@@ -63,14 +65,13 @@ const schema = Type.Object({
   SMTP_PASSWORD: Type.String({ default: '' }),
   SMTP_SECURE: Type.Boolean({ default: false }),
   SENDER_ADDRESS: Type.String(),
-  WORKERS_ENABLED: Type.Boolean({ default: true }),
   IP_ADDRESS_HEADERS: Type.Optional(
     Type.String({
       default: 'cf-connecting-ip,X-Forwarded-For',
     }),
   ), // comma-separated list of IP address headers
   IP_HASH_SALT: Type.String({ default: 'change-me-ip-hash-salt' }),
-  TRUST_PROXY_MAX_HOPS: Type.Optional(Type.Number({ default: 0 })),
+  TRUST_PROXY_ADDRESSES: Type.Optional(Type.String({ default: '' })), // comma-separated proxy IPs or CIDRs
 });
 
 const env = envSchema<Static<typeof schema>>({
@@ -92,6 +93,9 @@ if (allowedOrigins.length === 0) {
   throw new Error('ALLOWED_ORIGINS cannot include more than 100 origins');
 }
 
+const serverRole = getServerRole(env.SERVER_ROLE, env.NODE_ENV === NodeEnv.development);
+const serverCapabilities = getServerCapabilities(serverRole);
+
 export default {
   nodeEnv: env.NODE_ENV,
   isDevelopment: env.NODE_ENV === NodeEnv.development,
@@ -108,6 +112,7 @@ export default {
     endpoint: env.NODE_ENV === NodeEnv.development ? `${env.HOST}:${env.PORT}` : env.HOST,
     ipAddressHeaders: envVariableToList(env.IP_ADDRESS_HEADERS),
     ipHashSalt: env.IP_HASH_SALT,
+    role: serverRole,
   },
   db: {
     url: `postgres://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_URL}/${env.POSTGRES_DB}?sslmode=disable`,
@@ -138,7 +143,7 @@ export default {
     allowedOrigins: envVariableToList(env.ALLOWED_ORIGINS),
   },
   trustProxy: {
-    maxHops: env.TRUST_PROXY_MAX_HOPS,
+    addresses: envVariableToList(env.TRUST_PROXY_ADDRESSES),
   },
   auth: {
     secret: env.BETTER_AUTH_SECRET,
@@ -165,6 +170,9 @@ export default {
     senderName: env.PRODUCT_NAME,
   },
   workers: {
-    enabled: env.WORKERS_ENABLED,
+    enabled: serverCapabilities.worker,
+  },
+  api: {
+    enabled: serverCapabilities.api,
   },
 };

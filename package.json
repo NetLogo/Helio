@@ -82,8 +82,6 @@
     "fflate": "0.7.5",
     "fast-xml-parser": "^5.11.2",
     "sharp": "^0.35.5",
-    "@opentelemetry/core": "2.9.0",
-    "@opentelemetry/propagator-jaeger": "2.9.0",
     "prismjs": "^1.30.0"
   }
 }

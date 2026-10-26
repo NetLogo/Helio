@@ -1,9 +1,8 @@
+import workersConfig from '#src/config/workers.ts';
 import type { FastifyBaseLogger } from 'fastify';
 import { PgBoss } from 'pg-boss';
 
-const QUEUE_NAME = 'purge-stale-model-drafts';
-const STALE_DAYS = 90;
-const CRON_EXPRESSION = '0 3 * * 0'; // Sunday 03:00 UTC
+const config = workersConfig.modelDraftJanitor;
 
 export async function startModelDraftJanitor({
   connectionString,
@@ -23,15 +22,15 @@ export async function startModelDraftJanitor({
   });
 
   await boss.start();
-  await boss.createQueue(QUEUE_NAME);
+  await boss.createQueue(config.queueName);
 
-  await boss.work(QUEUE_NAME, async () => {
-    const cutoff = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000);
+  await boss.work(config.queueName, async () => {
+    const cutoff = new Date(Date.now() - config.staleMs);
     const count = await modelDraftService.purgeStale(cutoff);
     logger.info({ cutoff, count }, 'Purged stale model drafts');
   });
 
-  await boss.schedule(QUEUE_NAME, CRON_EXPRESSION);
+  await boss.schedule(config.queueName, config.cronExpression);
 
   logger.info('Model-draft janitor scheduled');
   return boss;

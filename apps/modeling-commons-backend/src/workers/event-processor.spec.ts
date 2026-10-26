@@ -22,7 +22,7 @@ vi.mock('pg-boss', () => ({
 import { startEventProcessor } from '#src/workers/event-processor.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import makeEventQueueNotifier from '#src/shared/jobs/event-queue.notifier.ts';
-import rules from '#src/config/rules.ts';
+import workersConfig from '#src/config/workers.ts';
 
 const logger = {
   info: vi.fn(),
@@ -31,29 +31,30 @@ const logger = {
   warn: vi.fn(),
 } as unknown as FastifyBaseLogger;
 
-const batchSize = rules.limits.notification.eventBatchSize;
+const batchSize = workersConfig.eventProcessor.eventBatchSize;
 
 type Deps = Parameters<typeof startEventProcessor>[0];
 
-function makeEventDispatcherService(): { dispatch: ReturnType<typeof vi.fn> } {
-  return { dispatch: vi.fn().mockResolvedValue(undefined) };
+function makeUserNotificationService(): { handleEvent: ReturnType<typeof vi.fn> } {
+  return { handleEvent: vi.fn().mockResolvedValue(undefined) };
 }
 
 async function start(overrides: Partial<Deps> = {}) {
   const eventRepository = overrides.eventRepository ?? mockEventRepository();
-  const eventDispatcherService = overrides.eventDispatcherService ?? makeEventDispatcherService();
+  const userNotificationService =
+    overrides.userNotificationService ?? makeUserNotificationService();
   const eventQueueNotifier = overrides.eventQueueNotifier ?? makeEventQueueNotifier();
 
   const boss = await startEventProcessor({
     connectionString: 'postgres://test',
     eventRepository: eventRepository as unknown as Deps['eventRepository'],
-    eventDispatcherService: eventDispatcherService as unknown as Deps['eventDispatcherService'],
+    userNotificationService: userNotificationService as unknown as Deps['userNotificationService'],
     eventQueueNotifier,
     logger,
   });
 
   const handler = bossInstance.work.mock.calls[0]![1] as () => Promise<void>;
-  return { boss, handler, eventRepository, eventDispatcherService, eventQueueNotifier };
+  return { boss, handler, eventRepository, userNotificationService, eventQueueNotifier };
 }
 
 function events(count: number): Array<{ id: string }> {
@@ -95,41 +96,43 @@ describe('startEventProcessor', () => {
 
     expect(eventRepository.findUnprocessed).toHaveBeenCalledWith(
       batchSize,
-      rules.limits.notification.maxEventAttempts,
+      workersConfig.eventProcessor.maxEventAttempts,
     );
   });
 
-  it('dispatches each unprocessed event, then marks it processed', async () => {
+  it('hands each unprocessed event to the notification service, then marks it processed', async () => {
     const eventRepository = mockEventRepository();
     eventRepository.findUnprocessed.mockResolvedValue([{ id: 'event-1' }, { id: 'event-2' }]);
     eventRepository.markProcessed.mockResolvedValue(undefined);
-    const eventDispatcherService = makeEventDispatcherService();
+    const userNotificationService = makeUserNotificationService();
 
     const { handler } = await start({
       eventRepository: eventRepository as never,
-      eventDispatcherService: eventDispatcherService as never,
+      userNotificationService: userNotificationService as never,
     });
     await handler();
 
-    expect(eventDispatcherService.dispatch).toHaveBeenNthCalledWith(1, { id: 'event-1' });
-    expect(eventDispatcherService.dispatch).toHaveBeenNthCalledWith(2, { id: 'event-2' });
+    expect(userNotificationService.handleEvent).toHaveBeenNthCalledWith(1, { id: 'event-1' });
+    expect(userNotificationService.handleEvent).toHaveBeenNthCalledWith(2, { id: 'event-2' });
     expect(eventRepository.markProcessed).toHaveBeenNthCalledWith(1, 'event-1');
     expect(eventRepository.markProcessed).toHaveBeenNthCalledWith(2, 'event-2');
     expect(eventRepository.markFailed).not.toHaveBeenCalled();
   });
 
-  it('marks a failed dispatch and keeps processing the rest of the batch', async () => {
+  it('marks the event failed when handleEvent throws and keeps processing the rest of the batch', async () => {
     const eventRepository = mockEventRepository();
     eventRepository.findUnprocessed.mockResolvedValue([{ id: 'event-1' }, { id: 'event-2' }]);
     eventRepository.markProcessed.mockResolvedValue(undefined);
     eventRepository.markFailed.mockResolvedValue(undefined);
-    const error = new Error('subscriber exploded');
-    const eventDispatcherService = makeEventDispatcherService();
-    eventDispatcherService.dispatch.mockRejectedValueOnce(error).mockResolvedValueOnce(undefined);
+    const error = new Error('notifier exploded');
+    const userNotificationService = makeUserNotificationService();
+    userNotificationService.handleEvent
+      .mockRejectedValueOnce(error)
+      .mockResolvedValueOnce(undefined);
 
     const { handler } = await start({
       eventRepository: eventRepository as never,
-      eventDispatcherService: eventDispatcherService as never,
+      userNotificationService: userNotificationService as never,
     });
     await handler();
 

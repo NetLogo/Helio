@@ -14,8 +14,7 @@ import { userNotificationPaginatedResponseSchema } from '#src/modules/user-notif
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
 
 export default async function userNotificationRoutes(fastify: FastifyInstance) {
-  const { getNotificationPreferencesQuery, listUserNotificationsQuery, userNotificationService } =
-    fastify.diContainer.cradle;
+  const { listUserNotificationsQuery, userNotificationService } = fastify.diContainer.cradle;
 
   fastify.get(
     '/v1/me/notification-preferences',
@@ -28,7 +27,7 @@ export default async function userNotificationRoutes(fastify: FastifyInstance) {
     },
     async (request): Promise<NotificationPreferenceResponseDto> => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return getNotificationPreferencesQuery.execute(request.user!.id);
+      return userNotificationService.getPreferences(request.user!.id);
     },
   );
 

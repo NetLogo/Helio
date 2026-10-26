@@ -23,6 +23,11 @@ export interface UserNotificationRepositoryPort {
     ctx: TransactionContext,
     params: InsertUserNotificationParams,
   ) => Promise<UserNotificationRecord | undefined>;
+  findOneByDeliveryKey: (
+    eventId: string,
+    recipientId: string,
+    category: NotificationCategory,
+  ) => Promise<UserNotificationRecord | undefined>;
   markEmailSent: (id: string, at: Date) => Promise<void>;
   markRead: (id: string, at: Date) => Promise<void>;
   findOneById: (id: string) => Promise<UserNotificationRecord | undefined>;

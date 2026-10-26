@@ -1,31 +1,13 @@
+import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
-import {
-  NotificationAlreadyDeliveredError,
-  NotificationNotFoundError,
-  NotificationSuppressedError,
-  RecipientBannedError,
-  RecipientDeletedError,
-  RecipientEmailDisabledError,
-  RecipientEmailNotFoundError,
-  RecipientNotFoundError,
-} from '#src/modules/user-notification/domain/user-notification.errors.ts';
+import type { InsertUserNotificationParams } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
+import { NotificationNotFoundError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import type {
   NotificationCategory,
   NotificationCategoryInfo,
   NotificationChannels,
+  NotificationIntent,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
-
-export type EligibleRecipient = UserEntity & { email: string };
-
-const SKIPPABLE_DELIVERY_ERRORS = [
-  RecipientNotFoundError,
-  RecipientDeletedError,
-  RecipientBannedError,
-  RecipientEmailNotFoundError,
-  NotificationSuppressedError,
-  RecipientEmailDisabledError,
-  NotificationAlreadyDeliveredError,
-] as const;
 
 const catalog = {
   'comment.on_your_model': {
@@ -83,6 +65,38 @@ export default function userNotificationDomain() {
         .map((info) => info.category);
     },
 
+    isDeliverableRecipient(
+      recipient: UserEntity | undefined,
+    ): recipient is UserEntity & { email: string } {
+      return Boolean(recipient && !recipient.deletedAt && !recipient.banned && recipient.email);
+    },
+
+    isSuppressed(channels: NotificationChannels): boolean {
+      return !channels.email && !channels.inApp;
+    },
+
+    createLedgerRow(
+      event: EventRecord,
+      recipientId: string,
+      intent: NotificationIntent,
+    ): InsertUserNotificationParams {
+      return {
+        recipientId,
+        eventId: event.id,
+        category: intent.category,
+        title: intent.title,
+        body: intent.body,
+        url: intent.url,
+        actorUserId: intent.actorUserId ?? null,
+        targetType: intent.target?.type ?? null,
+        targetId: intent.target?.id ?? null,
+      };
+    },
+
+    isRead(notification: { readAt: Date | null } | undefined): boolean {
+      return Boolean(notification?.readAt);
+    },
+
     assertOwnedByRecipient(
       notification: { id: string; recipientId: string } | undefined,
       notificationId: string,
@@ -91,44 +105,6 @@ export default function userNotificationDomain() {
       if (notification?.recipientId !== recipientId) {
         throw new NotificationNotFoundError(notificationId);
       }
-    },
-
-    assertRecipientEligible(
-      recipient: UserEntity | undefined,
-      recipientId: string,
-    ): EligibleRecipient {
-      if (!recipient) throw new RecipientNotFoundError(recipientId);
-      if (recipient.deletedAt) throw new RecipientDeletedError(recipientId);
-      if (recipient.banned) throw new RecipientBannedError(recipientId);
-      if (!recipient.email) throw new RecipientEmailNotFoundError(recipientId);
-      return { ...recipient, email: recipient.email };
-    },
-
-    assertChannelsEnabled(
-      resolved: NotificationChannels,
-      recipientId: string,
-      category: NotificationCategory,
-    ): void {
-      if (!resolved.email && !resolved.inApp) {
-        throw new NotificationSuppressedError(recipientId, category);
-      }
-    },
-
-    assertEmailDeliverable(
-      insertedNotificationId: string | undefined,
-      resolved: NotificationChannels,
-      eventId: string,
-      recipientId: string,
-      category: NotificationCategory,
-    ): string {
-      if (!insertedNotificationId)
-        throw new NotificationAlreadyDeliveredError(eventId, recipientId);
-      if (!resolved.email) throw new RecipientEmailDisabledError(recipientId, category);
-      return insertedNotificationId;
-    },
-
-    isSkippableDeliveryError(error: unknown): boolean {
-      return SKIPPABLE_DELIVERY_ERRORS.some((ErrorClass) => error instanceof ErrorClass);
     },
   };
 }

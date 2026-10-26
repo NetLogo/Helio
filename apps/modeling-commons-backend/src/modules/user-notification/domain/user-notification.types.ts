@@ -63,8 +63,3 @@ export type Notifier = {
   eventTypes: ReadonlyArray<string>;
   resolve: (event: EventRecord) => Promise<Array<NotificationIntent>>;
 };
-
-export type EventSubscriber = {
-  handles: (eventType: string) => boolean;
-  handleEvent: (event: EventRecord) => Promise<void>;
-};

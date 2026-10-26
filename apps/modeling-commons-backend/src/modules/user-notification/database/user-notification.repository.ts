@@ -29,8 +29,8 @@ export default function userNotificationRepository({
 }: Dependencies): UserNotificationRepositoryPort {
   return {
     // Swallowing P2002 leaves the surrounding transaction aborted in Postgres, so this must
-    // stay the last write of its transaction - any statement after it would fail on a
-    // connection that can only roll back.
+    // stay the last write of its transaction; read the existing row with
+    // findOneByDeliveryKey after the transaction returns, never on this connection.
     async insertTx(
       ctx: TransactionContext,
       params: InsertUserNotificationParams,
@@ -44,6 +44,18 @@ export default function userNotificationRepository({
         }
         throw error;
       }
+    },
+
+    async findOneByDeliveryKey(
+      eventId: string,
+      recipientId: string,
+      category: NotificationCategory,
+    ): Promise<UserNotificationRecord | undefined> {
+      return (
+        (await db.userNotification.findUnique({
+          where: { eventId_recipientId_category: { eventId, recipientId, category } },
+        })) ?? undefined
+      );
     },
 
     async markEmailSent(id: string, at: Date): Promise<void> {

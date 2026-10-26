@@ -35,7 +35,7 @@
     "turbo:postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@better-auth/passkey": "^1.5.6",
+    "@better-auth/passkey": "~1.6.33",
     "@grafana/faro-web-sdk": "^2.11.0",
     "@grafana/faro-web-tracing": "^2.11.0",
     "@internationalized/date": "^3.12.4",
@@ -60,7 +60,7 @@
     "@repo/vue-ui": "1.0.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@vueuse/core": "^14.4.0",
-    "better-auth": "^1.5.6",
+    "better-auth": "~1.6.33",
     "class-variance-authority": "^0.7.1",
     "gsap": "^3.15.0",
     "h3": "^1.15.11",

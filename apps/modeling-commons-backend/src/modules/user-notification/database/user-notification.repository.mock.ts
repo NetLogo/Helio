@@ -6,6 +6,7 @@ export function mockUserNotificationRepository(): {
 } {
   return {
     insertTx: vi.fn(),
+    findOneByDeliveryKey: vi.fn(),
     markEmailSent: vi.fn(),
     markRead: vi.fn(),
     findOneById: vi.fn(),

@@ -13,6 +13,11 @@ import { di } from '#src/server/di/index.ts';
 import { startWorkers } from '#src/workers/index.ts';
 
 export default async function createServer(fastify: FastifyInstance): Promise<FastifyInstance> {
+  // Announce server mode and environment
+  fastify.log.info(
+    { name: 'server' },
+    `Server is running in ${env.nodeEnv} mode with role (${env.server.role})`,
+  );
   // Set sensible default security headers
   await fastify.register(Helmet, {
     global: true,
@@ -83,15 +88,17 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
   await startWorkers(fastify);
 
   // Auto-load routes
-  await fastify.register(AutoLoad, {
-    dir: path.join(import.meta.dirname, '../modules'),
-    dirNameRoutePrefix: false,
-    options: {
-      prefix: '/api',
-    },
-    indexPattern: /^$/, // Ignore index files
-    matchFilter: (thisPath) => /\.(route|resolver)\.ts$/.test(thisPath),
-  });
+  if (env.api.enabled) {
+    await fastify.register(AutoLoad, {
+      dir: path.join(import.meta.dirname, '../modules'),
+      dirNameRoutePrefix: false,
+      options: {
+        prefix: '/api',
+      },
+      indexPattern: /^$/, // Ignore index files
+      matchFilter: (thisPath) => /\.(route|resolver)\.ts$/.test(thisPath),
+    });
+  }
 
   await fastify.register(UnderPressure, {
     healthCheck: async () => true,

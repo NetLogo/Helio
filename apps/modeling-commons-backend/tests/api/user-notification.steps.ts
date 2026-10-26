@@ -185,7 +185,7 @@ interface PrismaCradle {
 function installMailSpy(server: FastifyInstance): MailCall[] {
   const calls: MailCall[] = [];
   const mailService = server.diContainer.cradle.mailService as {
-    sendMailAsync: (content: unknown) => Promise<void>;
+    sendMailAsync: (content: unknown) => Promise<unknown>;
   };
   mailService.sendMailAsync = (content: unknown) => {
     const { to } = content as { to?: string };

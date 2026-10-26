@@ -9,9 +9,6 @@ declare global {
     notificationPreferenceRepository: NotificationPreferenceRepositoryPort;
     userNotificationDomain: ReturnType<typeof userNotificationDomain>;
     userNotificationMapper: UserNotificationMapper;
-    getNotificationPreferencesQuery: ReturnType<
-      typeof import('#src/modules/user-notification/queries/get-notification-preferences.query.ts').default
-    >;
     listUserNotificationsQuery: ReturnType<
       typeof import('#src/modules/user-notification/queries/list-user-notifications.query.ts').default
     >;
