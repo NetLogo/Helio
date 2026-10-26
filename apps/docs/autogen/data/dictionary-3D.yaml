@@ -330,7 +330,7 @@ entries:
       description: |+
         3D version of [[patch|patch]].
 
-        Given three integers, reports the single patch with the given pxcor, pycor and pzcor. *pxcor*, *pycor* and *pzcor*must be integers.
+        Given three integers, reports the single patch with the given pxcor, pycor and pzcor. *pxcor*, *pycor* and *pzcor* must be integers.
 
         ```
         ask (patch 3 -4 2) [ set pcolor green ]
@@ -612,7 +612,7 @@ entries:
         - name: roll-right
           since: "4.1"
       description: |+
-        The wingtip of the turtle rotates to the right *number*degrees with respect to the current heading and pitch.
+        The wingtip of the turtle rotates to the right *number* degrees with respect to the current heading and pitch.
 
       examples:
         - code: roll-right *number*
