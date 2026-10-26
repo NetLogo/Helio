@@ -547,7 +547,7 @@ entries:
         - name: bk
           since: "1.0"
       description: |+
-        The turtle moves backward by *number* steps. (If *number*is negative, the turtle moves forward.)
+        The turtle moves backward by *number* steps. (If *number* is negative, the turtle moves forward.)
 
         Turtles using this primitive can move a maximum of one unit per
          time increment. So `bk 0.5` and `bk 1` both take one
@@ -573,7 +573,11 @@ entries:
         - name: base-colors
           since: "4.0"
       description: |+
-        Reports a list of the 14 basic NetLogo hues.
+        Reports a list of the 14 basic NetLogo hues. In order, these are
+         the values of the color names gray, red, orange, brown, yellow, green,
+         lime, turquoise, cyan, sky, blue, violet, magenta, and pink. The other
+         two color names, black and white, are not included. See
+         [[Color Constants|colorconstants]].
 
         ```
         print base-colors
@@ -826,7 +830,7 @@ entries:
         It is equivalent to:
 
         ```
-                  patch-ahead distance != nobody
+        patch-ahead distance != nobody
         ```
 
       examples:
@@ -844,7 +848,7 @@ entries:
           since: "2.1"
       description: |+
         Runs *commands1*. If a runtime error occurs inside *commands1*, NetLogo won't stop and alert the user that an
-         error occurred. It will suppress the error and run *commands2*instead.
+         error occurred. It will suppress the error and run *commands2* instead.
 
         The error-message reporter can be used in *commands2* to find
          out what error was suppressed in *commands1*. See [[error-message|error-message]].
@@ -1164,8 +1168,8 @@ entries:
       examples:
         - code: create-ordered-turtles *number*
         - code: create-ordered-turtles *number* [ *commands* ]
-        - code: create-ordered<breeds> *number*
-        - code: create-ordered<breeds> *number* [ *commands* ]
+        - code: create-ordered-<breeds> *number*
+        - code: create-ordered-<breeds> *number* [ *commands* ]
   - id: create-link
     entry_categories:
       - title: Link-related
@@ -1197,7 +1201,7 @@ entries:
          caller to *agent*. `create-link-from` creates a directed link
          from *agent* to the caller.
 
-        When the plural form of the breed name is used, an *agentset*is expected instead of an agent and links are created between the
+        When the plural form of the breed name is used, an *agentset* is expected instead of an agent and links are created between the
          caller and all agents in the agentset.
 
         The optional command block is the set of commands each newly formed
@@ -2465,7 +2469,7 @@ entries:
           since: "2.0"
       description: |+
         This command will output *value*, which can be a number,
-         string, list, boolean, or nobody to an opened file, *not*followed by a carriage return (unlike [[file-print|file-print]] and [[file-show|file-show]]).
+         string, list, boolean, or nobody to an opened file, *not* followed by a carriage return (unlike [[file-print|file-print]] and [[file-show|file-show]]).
 
         This agent is *not* printed before the value, unlike [[file-show|file-show]]. Its output also includes quotes around
          strings and is prepended with a space. It will output the value in
@@ -3333,8 +3337,7 @@ entries:
         See also: [[hubnet-clear-overrides|hubnet-clear-override]]
 
       examples:
-        - code: hubnet-send-override *client-name agent-or-set variable-name*
-        - code: "[ *reporter* ]"
+        - code: hubnet-send-override *client-name agent-or-set variable-name* [ *reporter* ]
   - id: hubnet-send-watch
     entry_categories:
       - title: HubNet
@@ -3394,7 +3397,7 @@ entries:
       description: |+
         For the first *boolean* that reports true, runs the *commands* that follow.
 
-        If no *boolean* reports true, runs *elsecommands* or does nothing if *elsecommands* is not given. When using only one *boolean*you do not need to surround the entire *ifelse* primitive and its blocks in parentheses.
+        If no *boolean* reports true, runs *elsecommands* or does nothing if *elsecommands* is not given. When using only one *boolean* you do not need to surround the entire *ifelse* primitive and its blocks in parentheses.
 
         If a *boolean* reports a value other than true or false a runtime error will occur.
 
@@ -3451,7 +3454,7 @@ entries:
         - name: ifelse-value
           since: "2.0"
       description: |+
-        For the first *boolean* that reports true, runs the *reporter* that follows and reports that result. When using only one *boolean*you do not need to surround the entire *ifelse-value* primitive and its blocks in parentheses.
+        For the first *boolean* that reports true, runs the *reporter* that follows and reports that result. When using only one *boolean* you do not need to surround the entire *ifelse-value* primitive and its blocks in parentheses.
 
         If all *boolean*s report false, the result is the value of *elsereporter*. You may leave out the *elsereporter*, but
          if all *boolean*s report false then a runtime error will occur.
@@ -3695,7 +3698,7 @@ entries:
         - name: in-link-neighbor?
           since: "4.0"
       description: |+
-        Reports true if there is a directed link going from *turtle*to the caller or an undirected link connecting *turtle* to the
+        Reports true if there is a directed link going from *turtle* to the caller or an undirected link connecting *turtle* to the
          caller. You can think of this as "is there a link I can use to get from *turtle* to the caller?"
 
         ```
@@ -3847,7 +3850,7 @@ entries:
          where the item will be inserted. The first item has an index of 0.
          (The 6th item in a list would have an index of 5.)
 
-        Likewise for a string, but all characters in a multiple-character *string2*are inserted at *index*.
+        Likewise for a string, but all characters in a multiple-character *string2* are inserted at *index*.
 
         ```
         show insert-item 2 [2 7 4 5] 15
@@ -4215,7 +4218,7 @@ entries:
         Arranges the turtles in *turtle-set* connected by links in *link-set*, in a radial tree layout, centered around the *root-agent* which is moved to the center of the world view.
 
         Only links in the *link-set* will be used to determine the
-         layout. If links connect turtles that are not in *turtle-set*those turtles will remain stationary.
+         layout. If links connect turtles that are not in *turtle-set* those turtles will remain stationary.
 
         Even if the network does contain cycles, and is not a true tree
          structure, this layout will still work, although the results will
@@ -4359,7 +4362,7 @@ entries:
         - name: lt
           since: "1.0"
       description: |+
-        The turtle turns left by *number* degrees. (If *number*is negative, it turns right.)
+        The turtle turns left by *number* degrees. (If *number* is negative, it turns right.)
 
       examples:
         - code: left *number*
@@ -5095,7 +5098,7 @@ entries:
         show modes [1 2 2 3 3 4]
         => [2 3]
         show modes [ [1 2 [3]] [1 2 [3]] [2 3 4] ]
-        => __WIKILINK_0__]
+        => [[1 2 [3]]]
         show modes [pxcor] of turtles
         ;; shows which columns of patches have the most
         ;; turtles on them
@@ -5365,7 +5368,7 @@ entries:
         - name: n-of
           since: "3.1"
       description: |+
-        From an agentset, reports an agentset of size *size*randomly chosen from the input set, with no repeats.
+        From an agentset, reports an agentset of size *size* randomly chosen from the input set, with no repeats.
 
         From a list, reports a list of size *size* randomly chosen
          from the input set, with no repeats. The items in the result
@@ -7158,7 +7161,7 @@ entries:
          list would have an index of 5.) Note that "replace-item"
          is used in conjunction with "set" to change a list.
 
-        Likewise for a string, but the given character of *string1*removed and the contents of *string2* spliced in instead.
+        Likewise for a string, but the given character of *string1* removed and the contents of *string2* spliced in instead.
 
         If *index* is fractional, it will be rounded down to
          the nearest integer (4.5 becomes 4, 10.9 becomes 10).
@@ -7368,7 +7371,7 @@ entries:
         - name: rt
           since: "1.0"
       description: |+
-        The turtle turns right by *number* degrees. (If *number*is negative, it turns left.)
+        The turtle turns right by *number* degrees. (If *number* is negative, it turns left.)
 
       examples:
         - code: right *number*
@@ -7481,7 +7484,7 @@ entries:
         Reports a shade of *color* proportional to the value of *number*.
 
         When *range1* is less than or equal to *range2*, then the larger the
-         number, the lighter the shade of *color*. However, if *range2*is less than *range1*, the color scaling is inverted.
+         number, the lighter the shade of *color*. However, if *range2* is less than *range1*, the color scaling is inverted.
 
         Let *min-range* be the minimum of *range1* and *range2*.
          If *number* is less than or equal to *min-range*, then the result is the same
@@ -7571,7 +7574,7 @@ entries:
         => [1 2 3]
         show sentence [1 2] [3 4]
         => [1 2 3 4]
-        show sentence __WIKILINK_0__ __WIKILINK_1__
+        show sentence [[1 2]] [[3 4]]
         => [[1 2] [3 4]]
         show (sentence [1 2] 3 [4 5] (3 + 3) 7)
         => [1 2 3 4 5 6 7]
@@ -9301,7 +9304,7 @@ entries:
         - name: up-to-n-of
           since: "6.1"
       description: |+
-        From an agentset, reports an agentset of size *size*randomly chosen from the input set, with no repeats. If the
+        From an agentset, reports an agentset of size *size* randomly chosen from the input set, with no repeats. If the
          input does not have enough agents to satisfy the *size*,
          reports the entire agentset.
 
@@ -9784,7 +9787,8 @@ entries:
         ; contains all the turtles who are not frogs
         ask turtles who-are-not frogs [
           forward 1
-        ]```
+        ]
+        ```
 
         Another example:
 
@@ -9795,7 +9799,8 @@ entries:
           if count targets > 0 [
             create-link-with one-of targets
           ]
-        ]```
+        ]
+        ```
 
       examples:
         - code: "*agentset* who-are-not *agentset*"
@@ -9983,9 +9988,9 @@ entries:
         => "turtle"
         word "a" 6
         => "a6"
-        set directory "c:\foo\fish\"
+        set directory "c:\\foo\\fish\\"
         show word directory "bar.txt"
-        => "c:foofishbar.txt"
+        => "c:\\foo\\fish\\bar.txt"
         show word [1 54 8] "fishy"
         => "[1 54 8]fishy"
         show (word 3)
@@ -10058,7 +10063,7 @@ entries:
           since: "2.0"
       description: |+
         This command will output *value*, which can be a number,
-         string, list, boolean, or nobody to the Command Center, *not*followed by a carriage return (unlike [[print|print]]and [[show|show]]).
+         string, list, boolean, or nobody to the Command Center, *not* followed by a carriage return (unlike [[print|print]]and [[show|show]]).
 
         This agent is *not* printed before the value, unlike [[show|show]]. Its output also includes quotes around strings
          and is prepended with a space.

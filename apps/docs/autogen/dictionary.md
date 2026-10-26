@@ -35,6 +35,10 @@ actually run a primitive, consult its dictionary entry.
 
 {{#each entries}}
 [[{{{name}}}|{{{id}}}]]
+{{#each additional_names}}
+ <span class="font-bold"> · </span> [[{{{.}}}|{{{../id}}}]]
+{{/each}}
+{{#unless @last}} <span class="font-bold"> · </span> {{/unless}}
 {{/each}}
 
 {{/each}}
@@ -44,6 +48,7 @@ actually run a primitive, consult its dictionary entry.
 ## Keywords
 {{#each keywords.entries}}
 [[{{{name}}}|{{{id}}}]]
+{{#unless @last}} <span class="font-bold"> · </span> {{/unless}}
 {{/each}}
 
 ## Constants

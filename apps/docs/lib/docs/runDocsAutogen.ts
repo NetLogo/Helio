@@ -24,6 +24,13 @@ export default async function runDocsAutogen() {
 
   handlebarsEngine.engine.registerHelper({
     netlogoDictionary: prebuildHandlebarsHelper,
+    interpolate: (text: unknown, options: { data: { root: unknown } }) => {
+      const source = String(text ?? "");
+      if (!source.includes("{{")) {
+        return source;
+      }
+      return handlebarsEngine.engine.compile(source, { noEscape: true })(options.data.root);
+    },
   });
 
   const buildVariables = {

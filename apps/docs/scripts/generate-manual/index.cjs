@@ -221,10 +221,10 @@ async function main() {
           // If it's an absolute link, we leave it as is
           return match;
         });
-        // Remove the "Looking for the primitive reference..." paragraph
-        // It links to pages not in the manual.
+        // Remove the "Open the catalog here..." paragraph
+        // It links to the extension catalog, which is not in the manual.
         fileContent = fileContent.replace(
-          /<p><!--\[-->Looking for the primitive reference for the [^\s]+ extension\? You can find <a href="#dictionary" class=""><!--\[-->the full reference here<!--\]--><\/a>\.<!--\]--><\/p>/g,
+          /<p>(?:<!--\[-->)*<a [^>]*>(?:<!--\[-->)*Open the catalog here(?:<!--\]-->)*<\/a> to search for primitives\.(?:<!--\]-->)*<\/p>/g,
           '',
         );
         if (index === 0) {

@@ -72,7 +72,7 @@ espacio de parámetros multidimensional- funciona mejor nuestro modelo?
 Por ejemplo, supongamos que desea lograrse una sincronización rápida entre los agentes en el modelo
 Fireflies. El modelo tiene cuatro deslizadores: number, cycle-length,
 flash-length and flashes-to-reset, con aproximadamente 2000, 100, 10 y 3 valores posibles,
-respectivamente. Esto significa que, ¡hay 2000 _ 100 _ 10 \* 3 =
+respectivamente. Esto significa que, ¡hay 2000 * 100 * 10 * 3 =
 6,000,000 posibles combinaciones de valores de los deslizadores! Probar combinaciones una por una,
 no es una forma remotamente eficiente de descubrir cuál provocará la sincronización
 más rápida.

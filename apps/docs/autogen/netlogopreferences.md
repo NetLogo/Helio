@@ -184,7 +184,7 @@ The places where the selected font will be used include:
 * Plot dialog editors
 * Output widget output
 * Info tab editor
-* Info tab rendered content (e.g. the rendering of \`my favorite code\`)
+* Info tab rendered content (e.g. the rendering of `my favorite code`)
 * All editors in agent inspection windows
 
 ## Logging Preferences
