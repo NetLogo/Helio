@@ -6925,7 +6925,7 @@ entries:
          integers supported by NetLogo (-9007199254740992 to
          9007199254740992).
 
-        See the [Random Numbers](/programming#random-numbers)section of the Programming Guide for more details.
+        See the [Random Numbers](/programming#random-numbers) section of the Programming Guide for more details.
 
         ```
         random-seed 47822
