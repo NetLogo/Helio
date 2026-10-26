@@ -1,5 +1,8 @@
 <template>
-  <Anchor :href="href" :target="props.target" :external="external">
+  <a v-if="file" :href="href" :target="props.target ?? undefined">
+    <slot />
+  </a>
+  <Anchor v-else :href="href" :target="props.target" :external="external">
     <slot />
   </Anchor>
 </template>
@@ -44,6 +47,13 @@ const props = defineProps({
 
 const external = computed(() => {
   return props.href.startsWith("http") || props.href.startsWith("//");
+});
+
+// Files such as downloads have no route, so the router must not handle them. Pages may end in .html in the offline build.
+const file = computed(() => {
+  const path = props.href.split(/[?#]/)[0] ?? "";
+  const extension = path.split("/").pop()?.match(/\.([a-z0-9]+)$/i)?.[1]?.toLowerCase();
+  return extension !== undefined && extension !== "html" && !external.value;
 });
 
 const href = computed(() =>
