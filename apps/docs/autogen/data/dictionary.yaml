@@ -1168,8 +1168,8 @@ entries:
       examples:
         - code: create-ordered-turtles *number*
         - code: create-ordered-turtles *number* [ *commands* ]
-        - code: create-ordered<breeds> *number*
-        - code: create-ordered<breeds> *number* [ *commands* ]
+        - code: create-ordered-<breeds> *number*
+        - code: create-ordered-<breeds> *number* [ *commands* ]
   - id: create-link
     entry_categories:
       - title: Link-related
@@ -3337,8 +3337,7 @@ entries:
         See also: [[hubnet-clear-overrides|hubnet-clear-override]]
 
       examples:
-        - code: hubnet-send-override *client-name agent-or-set variable-name*
-        - code: "[ *reporter* ]"
+        - code: hubnet-send-override *client-name agent-or-set variable-name* [ *reporter* ]
   - id: hubnet-send-watch
     entry_categories:
       - title: HubNet
@@ -9788,7 +9787,8 @@ entries:
         ; contains all the turtles who are not frogs
         ask turtles who-are-not frogs [
           forward 1
-        ]```
+        ]
+        ```
 
         Another example:
 
@@ -9799,7 +9799,8 @@ entries:
           if count targets > 0 [
             create-link-with one-of targets
           ]
-        ]```
+        ]
+        ```
 
       examples:
         - code: "*agentset* who-are-not *agentset*"
@@ -9987,9 +9988,9 @@ entries:
         => "turtle"
         word "a" 6
         => "a6"
-        set directory "c:\foo\fish\"
+        set directory "c:\\foo\\fish\\"
         show word directory "bar.txt"
-        => "c:foofishbar.txt"
+        => "c:\\foo\\fish\\bar.txt"
         show word [1 54 8] "fishy"
         => "[1 54 8]fishy"
         show (word 3)
