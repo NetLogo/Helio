@@ -1,12 +1,12 @@
+import * as MarkdownConfig from '@repo/nuxt-core/markdown.config';
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import * as MarkdownConfig from '@repo/nuxt-core/markdown.config';
 import models from "./app/data/models.json";
 import { robotsText } from "./shared/utils/seo";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: ["@repo/nuxt-core/nuxt.config.ts"],
+  extends: [ "@repo/nuxt-core/nuxt.config.ts" ],
   app: {
     rootId: "__nettango",
   },
@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     {
       path: "~/components",
       pattern: "**/*.vue",
-      ignore: ["**/examples/*.vue", "**/tests/*.vue"],
+      ignore: [ "**/examples/*.vue", "**/tests/*.vue" ],
       pathPrefix: false,
       watch: true,
     },
@@ -32,6 +32,10 @@ export default defineNuxtConfig({
 
   routeRules: {
     "/assets/models/**": { headers: { "Access-Control-Allow-Origin": "*" } },
+  },
+
+  experimental: {
+    payloadExtraction: true,
   },
 
   icon: {
@@ -62,12 +66,12 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      exclude: ["@nuxt/hints"],
+      exclude: [ "@nuxt/hints" ],
     },
   },
 
   linkChecker: {
-    skipInspections: ["no-baseless", "no-underscores", "trailing-slash"],
+    skipInspections: [ "no-baseless", "no-underscores", "trailing-slash" ],
   },
 
   ogImage: {
