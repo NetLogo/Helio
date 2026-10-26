@@ -29,7 +29,7 @@
 </h4>
 {{/if}}
 
-{{{data.description}}}
+{{{interpolate data.description}}}
 
 </div>
 {{/if}}
