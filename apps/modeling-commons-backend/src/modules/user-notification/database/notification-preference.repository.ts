@@ -14,6 +14,13 @@ export default function notificationPreferenceRepository({
       return db.userNotificationPreference.findMany({ where: { userId } });
     },
 
+    async findAllByUserTx(
+      ctx: TransactionContext,
+      userId: string,
+    ): Promise<Array<NotificationPreferenceRecord>> {
+      return resolveTransaction(ctx).userNotificationPreference.findMany({ where: { userId } });
+    },
+
     async upsertTx(
       ctx: TransactionContext,
       params: UpsertNotificationPreferenceParams,

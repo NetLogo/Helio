@@ -16,7 +16,7 @@ export default function makeListUserNotificationsQuery({
     ): Promise<UserNotificationPaginatedResponse> {
       const params = paginatedQueryBase(query);
       const overrides = await notificationPreferenceRepository.findAllByUser(userId);
-      const categories = userNotificationDomain.inAppEnabledCategories(overrides);
+      const categories = userNotificationDomain.listInAppEnabledCategories(overrides);
 
       if (categories.length === 0) {
         return { count: 0, limit: params.limit, page: params.page, data: [], unreadCount: 0 };
@@ -35,7 +35,9 @@ export default function makeListUserNotificationsQuery({
         userNotificationRepository.countUnread(userId, categories),
       ]);
 
-      const subjects = await resolveNotificationSubjectsQuery.execute(page.data);
+      const subjects = await resolveNotificationSubjectsQuery.execute(page.data, userId, {
+        includeThumbnails: true,
+      });
 
       return {
         count: page.count,

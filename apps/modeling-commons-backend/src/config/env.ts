@@ -64,6 +64,7 @@ const schema = Type.Object({
   SMTP_USER: Type.String({ default: '' }),
   SMTP_PASSWORD: Type.String({ default: '' }),
   SMTP_SECURE: Type.Boolean({ default: false }),
+  MAILPIT_URL: Type.String({ default: 'http://localhost:8025' }),
   SENDER_ADDRESS: Type.String(),
   IP_ADDRESS_HEADERS: Type.Optional(
     Type.String({
@@ -168,6 +169,7 @@ export default {
     secure: env.SMTP_SECURE,
     senderAddress: env.SENDER_ADDRESS,
     senderName: env.PRODUCT_NAME,
+    mailpitUrl: env.MAILPIT_URL,
   },
   workers: {
     enabled: serverCapabilities.worker,

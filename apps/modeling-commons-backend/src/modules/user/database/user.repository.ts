@@ -34,7 +34,7 @@ export default function userRepository({
       if (ids.length === 0) return [];
       return db.user.findMany({
         where: { id: { in: ids }, deletedAt: null },
-        select: { id: true, image: true },
+        select: { id: true, name: true, image: true },
       });
     },
 

@@ -10,7 +10,6 @@ export const MAX_BACKOFF_FACTOR = 8;
 export const notificationIcons: Partial<Record<Notification["category"], string>> = {
   "comment.on_your_model": "lucide:message-circle",
   "comment.reply_to_you": "lucide:message-circle",
-  "general.daily_digest": "lucide:bell",
 };
 
 export const FALLBACK_ICON = "lucide:bell";

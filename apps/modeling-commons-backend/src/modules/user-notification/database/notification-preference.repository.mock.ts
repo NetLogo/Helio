@@ -5,7 +5,8 @@ export function mockNotificationPreferenceRepository(): {
   [K in keyof NotificationPreferenceRepositoryPort]: ReturnType<typeof vi.fn>;
 } {
   return {
-    findAllByUser: vi.fn(),
-    upsertTx: vi.fn(),
+    findAllByUser: vi.fn().mockResolvedValue([]),
+    findAllByUserTx: vi.fn().mockResolvedValue([]),
+    upsertTx: vi.fn().mockResolvedValue(undefined),
   };
 }

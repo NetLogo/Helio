@@ -18,6 +18,19 @@ const workersConfig = {
     eventBatchSize: 50,
     maxEventAttempts: 5,
   },
+  digestProcessor: {
+    queueName: 'send-notification-digests',
+    cronExpression: '0 17 * * *',
+    recipientBatchSize: 25,
+    retryLimit: 3,
+    retryDelaySeconds: 30 * 60,
+    expireInSeconds: 60 * 60,
+  },
+  notificationJanitor: {
+    queueName: 'purge-notifications',
+    cronExpression: '0 4 * * 0',
+    retentionMs: 90 * DAY_MS,
+  },
 } as const;
 
 export default workersConfig;

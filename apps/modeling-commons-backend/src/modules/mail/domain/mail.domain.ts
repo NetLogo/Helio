@@ -1,5 +1,10 @@
 import env from '#src/config/env.ts';
-import { createRenderer, type EmailModel, type EmailRenderer } from '@repo/emails';
+import {
+  createRenderer,
+  type EmailModel,
+  type EmailRenderer,
+  type NotificationSummaryItem,
+} from '@repo/emails';
 
 let _renderer: EmailRenderer | null = null;
 function getRenderer(): EmailRenderer {
@@ -90,11 +95,21 @@ export default function mailDomain() {
     async createNotificationSummaryEmail(
       userEmail: string,
       userName: string,
-      notifications: Array<string>,
+      notifications: Array<NotificationSummaryItem>,
+      moreCount: number,
+      feedUrl: string,
       unsubscribeUrl: string,
+      preferencesUrl: string,
     ) {
       return wrap(userEmail)(
-        renderer.renderNotificationSummaryEmail({ userName, notifications, unsubscribeUrl }),
+        renderer.renderNotificationSummaryEmail({
+          userName,
+          notifications,
+          moreCount,
+          feedUrl,
+          unsubscribeUrl,
+          preferencesUrl,
+        }),
       );
     },
 

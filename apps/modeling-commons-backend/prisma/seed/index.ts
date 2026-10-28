@@ -1,12 +1,20 @@
 import { prisma } from './providers.js';
 import { AssetUploader } from './assets.js';
-import { USERS, TAGS, MODELS, COMMENTS, DRAFTS } from './manifest/index.js';
+import {
+  USERS,
+  TAGS,
+  MODELS,
+  COMMENTS,
+  DRAFTS,
+  NOTIFICATION_PREFERENCES,
+} from './manifest/index.js';
 import {
   loadUsers,
   loadTags,
   loadModels,
   loadEngagement,
   loadComments,
+  loadNotifications,
   loadDrafts,
   type IdMap,
 } from './loaders.js';
@@ -34,6 +42,18 @@ async function main() {
 
   const comments = await loadComments(COMMENTS, users, modelIds);
   console.log(`  ✓ ${comments.comments} comments, ${comments.likes} comment likes`);
+
+  const notifications = await loadNotifications(
+    COMMENTS,
+    MODELS,
+    USERS,
+    NOTIFICATION_PREFERENCES,
+    users,
+    modelIds,
+  );
+  console.log(
+    `  ✓ ${notifications.notifications} notifications, ${notifications.preferences} notification preferences`,
+  );
 
   const draftCount = await loadDrafts(DRAFTS, users, modelIds, uploader);
   console.log(`  ✓ ${draftCount} model drafts`);

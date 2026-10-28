@@ -3,6 +3,8 @@ export type UserKindLit = 'student' | 'teacher' | 'researcher' | 'other';
 export type VisibilityLit = 'public' | 'private' | 'unlisted';
 export type AuthorRoleLit = 'owner' | 'contributor';
 export type PermissionLevelLit = 'read' | 'write' | 'admin';
+export type EmailModeLit = 'immediate' | 'daily' | 'off';
+export type NotificationCategoryLit = 'comment.on_your_model' | 'comment.reply_to_you';
 
 export interface SocialLinkSeed {
   rawValue: string;
@@ -146,4 +148,11 @@ export interface DraftSeed {
   tags?: string[];
   primaryFile?: ModelFileSeed;
   createdDaysAgo?: number;
+}
+
+export interface NotificationPreferenceSeed {
+  user: string;
+  category: NotificationCategoryLit;
+  email: EmailModeLit;
+  inApp?: boolean;
 }

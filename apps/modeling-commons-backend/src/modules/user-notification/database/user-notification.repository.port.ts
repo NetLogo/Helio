@@ -1,4 +1,7 @@
-import type { UserNotificationRecord } from '#src/modules/user-notification/database/user-notification.record.ts';
+import type {
+  EmailClaimRecord,
+  UserNotificationRecord,
+} from '#src/modules/user-notification/database/user-notification.record.ts';
 import type {
   NotificationCategory,
   NotificationFeedFilters,
@@ -28,7 +31,22 @@ export interface UserNotificationRepositoryPort {
     recipientId: string,
     category: NotificationCategory,
   ) => Promise<UserNotificationRecord | undefined>;
-  markEmailSent: (id: string, at: Date) => Promise<void>;
+  claimUnsent: (ids: Array<string>, leaseMs: number) => Promise<Array<EmailClaimRecord>>;
+  markSent: (ids: Array<string>, claimedAt: Date, at: Date) => Promise<void>;
+  releaseClaim: (ids: Array<string>, claimedAt: Date) => Promise<void>;
+  findPendingForRecipient: (
+    recipientId: string,
+    categories: Array<NotificationCategory>,
+    since: Date,
+    until: Date,
+  ) => Promise<Array<UserNotificationRecord>>;
+  findDigestRecipients: (
+    since: Date,
+    until: Date,
+    dailyByDefault: Array<NotificationCategory>,
+    afterRecipientId: string | null,
+    limit: number,
+  ) => Promise<Array<string>>;
   markRead: (id: string, at: Date) => Promise<void>;
   findOneById: (id: string) => Promise<UserNotificationRecord | undefined>;
   findAllByRecipient: (
@@ -37,4 +55,6 @@ export interface UserNotificationRepositoryPort {
     params: PaginatedQueryParams,
   ) => Promise<Paginated<UserNotificationRecord>>;
   countUnread: (recipientId: string, categories: Array<NotificationCategory>) => Promise<number>;
+  deleteOrphaned: () => Promise<number>;
+  deleteOlderThan: (cutoff: Date) => Promise<number>;
 }

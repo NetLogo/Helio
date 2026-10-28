@@ -357,6 +357,7 @@ exports.Prisma.UserNotificationScalarFieldEnum = {
   targetType: 'targetType',
   targetId: 'targetId',
   emailSentAt: 'emailSentAt',
+  emailClaimedAt: 'emailClaimedAt',
   readAt: 'readAt',
   createdAt: 'createdAt'
 };
@@ -439,6 +440,12 @@ exports.ModelInteractionKind = exports.$Enums.ModelInteractionKind = {
   run: 'run',
   download: 'download',
   share: 'share'
+};
+
+exports.EmailMode = exports.$Enums.EmailMode = {
+  immediate: 'immediate',
+  daily: 'daily',
+  off: 'off'
 };
 
 exports.Prisma.ModelName = {

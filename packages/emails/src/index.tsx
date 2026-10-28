@@ -7,7 +7,9 @@ import AccountEmailChanged from './templates/1-Account/AccountEmailChanged.js';
 import AccountInactiveEmail from './templates/1-Account/AccountInactive.js';
 import AccountDeletedEmail from './templates/1-Account/AcctionDeleted.js';
 import NotificationEmail from './templates/2-Notifications/NotificationEmail.js';
-import NotificationSummaryEmail from './templates/2-Notifications/NotificationSummaryEmail.js';
+import NotificationSummaryEmail, {
+  type NotificationSummaryItem,
+} from './templates/2-Notifications/NotificationSummaryEmail.js';
 import CommentedOnModelEmail from './templates/3-ModelingCommons/CommentedOnModelEmail.js';
 import RepliedToCommentEmail from './templates/3-ModelingCommons/RepliedToCommentEmail.js';
 import { PasswordResetEmail } from './templates/PasswordResetEmail.js';
@@ -18,6 +20,7 @@ import type { Branding } from './types/branding.js';
 
 export type { Branding } from './types/branding.js';
 export type { EmailModel } from './components/ModelCard.js';
+export type { NotificationSummaryItem } from './templates/2-Notifications/NotificationSummaryEmail.js';
 
 export interface RenderedEmail {
   subject: string;
@@ -185,8 +188,11 @@ export function createRenderer({ branding }: CreateRendererOptions) {
 
     async renderNotificationSummaryEmail(args: {
       userName: string;
-      notifications: string[];
+      notifications: NotificationSummaryItem[];
+      moreCount: number;
+      feedUrl: string;
       unsubscribeUrl: string;
+      preferencesUrl: string;
     }): Promise<RenderedEmail> {
       const { html, text } = await renderBoth(
         <NotificationSummaryEmail branding={branding} {...args} />,

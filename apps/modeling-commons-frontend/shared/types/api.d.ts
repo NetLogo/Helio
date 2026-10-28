@@ -2411,6 +2411,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -2498,6 +2499,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
                 };
                 cookie?: never;
@@ -2506,7 +2508,11 @@ export interface paths {
                 content: {
                     "application/json": {
                         content: string;
-                        /** Format: uuid */
+                        /**
+                         * Format: nanoid
+                         * @description Entity's id
+                         * @example uAce-eANwFXi-tACAe9w1
+                         */
                         parentId?: string;
                         versionNumber?: number;
                     };
@@ -2521,9 +2527,9 @@ export interface paths {
                     content: {
                         "application/json": {
                             /**
-                             * Format: uuid
+                             * Format: nanoid
                              * @description Entity's id
-                             * @example 2cdc8ab1-6d50-49cc-ba14-54e4ac7ec231
+                             * @example uAce-eANwFXi-tACAe9w1
                              */
                             id: string;
                         };
@@ -2599,7 +2605,9 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     commentId: string;
                 };
                 cookie?: never;
@@ -2669,7 +2677,9 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     commentId: string;
                 };
                 cookie?: never;
@@ -2730,7 +2740,9 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     commentId: string;
                 };
                 cookie?: never;
@@ -2806,7 +2818,9 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     commentId: string;
                 };
                 cookie?: never;
@@ -2865,7 +2879,9 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Entity's id */
                     id: string;
+                    /** @description Entity's id */
                     commentId: string;
                 };
                 cookie?: never;
@@ -6609,7 +6625,8 @@ export interface paths {
                                 category: string;
                                 label: string;
                                 description: string;
-                                email: boolean;
+                                /** @enum {unknown} */
+                                email: "immediate" | "daily" | "off";
                                 inApp: boolean;
                             }[];
                         };
@@ -6679,7 +6696,8 @@ export interface paths {
                     "application/json": {
                         preferences: {
                             category: string;
-                            email?: boolean;
+                            /** @enum {unknown} */
+                            email?: "immediate" | "daily" | "off";
                             inApp?: boolean;
                         }[];
                     };
@@ -6788,10 +6806,14 @@ export interface paths {
                             data: unknown[];
                         } & {
                             data: {
-                                /** Format: uuid */
+                                /**
+                                 * Format: nanoid
+                                 * @description Entity's id
+                                 * @example uAce-eANwFXi-tACAe9w1
+                                 */
                                 id: string;
                                 /** @enum {unknown} */
-                                category: "comment.on_your_model" | "comment.reply_to_you" | "general.daily_digest";
+                                category: "comment.on_your_model" | "comment.reply_to_you";
                                 title: string;
                                 body: string;
                                 /** Format: uri */
@@ -7090,16 +7112,32 @@ export interface components {
         "def-1": components["schemas"]["def-2"];
         /** Comment */
         "def-2": {
-            /** Format: uuid */
+            /**
+             * Format: nanoid
+             * @description Entity's id
+             * @example uAce-eANwFXi-tACAe9w1
+             */
             id: string;
-            /** Format: uuid */
+            /**
+             * Format: nanoid
+             * @description Entity's id
+             * @example uAce-eANwFXi-tACAe9w1
+             */
             modelId: string;
-            /** Format: uuid */
+            /**
+             * Format: nanoid
+             * @description Entity's id
+             * @example uAce-eANwFXi-tACAe9w1
+             */
             parentId?: string;
             versionNumber?: number;
             legacyId?: number;
             author: {
-                /** Format: uuid */
+                /**
+                 * Format: nanoid
+                 * @description Entity's id
+                 * @example uAce-eANwFXi-tACAe9w1
+                 */
                 id: string;
                 name: string;
                 image: string;

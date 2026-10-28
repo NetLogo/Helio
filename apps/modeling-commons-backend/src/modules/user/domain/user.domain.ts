@@ -32,6 +32,10 @@ export default function userDomain() {
       };
     },
 
+    formatGreetingName(user: { name: string | null }): string {
+      return user.name ?? 'there';
+    },
+
     isAdmin(role: string | null | undefined): boolean {
       return role === SystemRole.admin;
     },

@@ -16,7 +16,7 @@ Feature: Notification Preferences and Feed
     Then the response status should be 204
     When "editor" gets their notification preferences
     Then the response status should be 200
-    And category "comment.on_your_model" should have email false
+    And category "comment.on_your_model" should have email "off"
     And category "comment.on_your_model" should have the same inApp value as before
     And every other category should be unchanged from before
 
@@ -28,6 +28,44 @@ Feature: Notification Preferences and Feed
     When "confused" gets their notification preferences
     Then the response status should be 200
     And every category should be unchanged from before
+
+  Scenario Outline: Each email mode is stored and read back
+    Given an authenticated user "chooser"
+    When "chooser" sets email to "<mode>" for category "comment.reply_to_you"
+    Then the response status should be 204
+    When "chooser" gets their notification preferences
+    Then the response status should be 200
+    And category "comment.reply_to_you" should have email "<mode>"
+
+    Examples:
+      | mode      |
+      | immediate |
+      | daily     |
+      | off       |
+
+  Scenario: A boolean email value is rejected and writes nothing
+    Given an authenticated user "legacy"
+    And "legacy" gets their notification preferences
+    When "legacy" sets email to the boolean true for category "comment.on_your_model"
+    Then the response status should be 400
+    When "legacy" gets their notification preferences
+    Then the response status should be 200
+    And every category should be unchanged from before
+
+  Scenario: An unknown email mode is rejected and writes nothing
+    Given an authenticated user "weekly"
+    And "weekly" gets their notification preferences
+    When "weekly" sets email to "weekly" for category "comment.on_your_model"
+    Then the response status should be 400
+    When "weekly" gets their notification preferences
+    Then the response status should be 200
+    And every category should be unchanged from before
+
+  Scenario: The daily digest is a mode, not a category
+    Given an authenticated user "digester"
+    When "digester" sets email to "daily" for category "general.daily_digest"
+    Then the response status should be 400
+    And the response body property "message" should equal "Unknown notification category: general.daily_digest"
 
   Scenario: Reading preferences requires authentication
     When an anonymous viewer gets notification preferences
@@ -155,3 +193,70 @@ Feature: Notification Preferences and Feed
     Then the response status should be 201
     When the event processor queue is triggered
     Then no mail should have been sent
+
+  Scenario: A recipient on the daily email mode gets no immediate email
+    Given an authenticated user "owner"
+    And a public model "Daily Model" created by "owner"
+    And "owner" sets email to "daily" for category "comment.on_your_model"
+    And an authenticated user "commenter"
+    And mail delivery is captured
+    When "commenter" comments "Save it for later" on "Daily Model"
+    Then the response status should be 201
+    When the event processor queue is triggered
+    Then no mail should have been sent
+
+  Scenario: Switching a daily category to immediate emails its pending notifications in one summary
+    Given an authenticated user "owner"
+    And a public model "Flush Model" created by "owner"
+    And "owner" sets email to "daily" for category "comment.on_your_model"
+    And an authenticated user "commenter"
+    And mail delivery is captured
+    When "commenter" comments "Held for the digest" on "Flush Model"
+    And the event processor queue is triggered
+    And "commenter" comments "Still holding" on "Flush Model"
+    And the event processor queue is triggered
+    Then no mail should have been sent
+    When "owner" sets email to "immediate" for category "comment.on_your_model"
+    Then the response status should be 204
+    And one notification summary should be emailed to "owner"
+    And the notification summary should list "commenter commented on Flush Model" once
+
+  Scenario: Switching an off category to daily emails what was missed in one summary
+    Given an authenticated user "owner"
+    And a public model "Missed Model" created by "owner"
+    And "owner" turns off email for category "comment.on_your_model"
+    And an authenticated user "commenter"
+    And mail delivery is captured
+    When "commenter" comments "You missed this" on "Missed Model"
+    And the event processor queue is triggered
+    Then no mail should have been sent
+    When "owner" sets email to "daily" for category "comment.on_your_model"
+    Then the response status should be 204
+    And one notification summary should be emailed to "owner"
+
+  Scenario: Saving the same email mode again sends nothing
+    Given an authenticated user "owner"
+    And a public model "Same Model" created by "owner"
+    And "owner" sets email to "daily" for category "comment.on_your_model"
+    And an authenticated user "commenter"
+    And mail delivery is captured
+    When "commenter" comments "Still daily" on "Same Model"
+    And the event processor queue is triggered
+    Then no mail should have been sent
+    When "owner" sets email to "daily" for category "comment.on_your_model"
+    Then the response status should be 204
+    And no notification summary should be emailed
+
+  Scenario: Switching to immediate never emails notifications older than the flush window
+    Given an authenticated user "owner"
+    And a public model "Stale Model" created by "owner"
+    And "owner" sets email to "daily" for category "comment.on_your_model"
+    And an authenticated user "commenter"
+    And mail delivery is captured
+    When "commenter" comments "Long ago" on "Stale Model"
+    And the event processor queue is triggered
+    Then no mail should have been sent
+    Given the notifications of "owner" are older than the flush window
+    When "owner" sets email to "immediate" for category "comment.on_your_model"
+    Then the response status should be 204
+    And no notification summary should be emailed

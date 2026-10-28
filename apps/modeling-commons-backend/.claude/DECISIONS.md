@@ -30,3 +30,68 @@ Full rationale and inventory: `doc/nanoid-id-migration-plan.md`.
 1. **The dispatcher, its spec, `EventSubscriber` and `userNotificationService.handles()` are deleted.** `startEventProcessor` takes `userNotificationService` and calls `userNotificationService.handleEvent(event)` per event; a throw still goes to `eventRepository.markFailed`, a return to `markProcessed`. `handleEvent` returns early for event types no notifier declares, which is what `handles()` guarded.
 2. **The call is a property access at invocation time, not a method destructured at startup.** `tests/api/workers.steps.ts` rigs failures by replacing `handleEvent` on the cradle singleton and restoring it in an After hook; destructuring would defeat that.
 3. **A second subscriber reintroduces fan-out at the worker**, inside `drainOnce` in `src/workers/event-processor.ts`, not as a new module. Until then one direct call is the whole mechanism.
+
+## 2026-10-27: Email digest build decisions made mid-slice
+
+**Context:** `apps/modeling-commons-backend`. The approved plan `doc/email-digest-plan.md` left four points open or unspecified; they were settled while building commits 5d737f6a to 557c8bea.
+
+**Decisions:**
+1. **Digest retry and expiry options go on `boss.schedule`, not `createQueue`.** pg-boss 12 upserts the schedule row with `ON CONFLICT DO UPDATE SET options`, while `createQueue` is `ON CONFLICT DO NOTHING`, so only the schedule picks up a config change on the next deploy. Cron jobs carry the schedule's options.
+2. **`retryLimit: 3`, `retryDelaySeconds: 1800`, `expireInSeconds: 3600`.** The delay sits above `claimLeaseMs` so a crashed attempt's claims expire before the retry; the worst case (four attempts to expiry plus three delays) ends at 22:30 UTC, the same day as the 17:00 run. Both bounds are pinned by `src/config/workers.spec.ts`.
+3. **`sendDigest` drops rows whose category is now `'off'` before claiming** (`listEmailEnabledRows` in the domain). The plan's Edge cases required it; the slice's step list did not spell it out.
+4. **`maxDigestItems` is 50.** No number was given; the overflow is released, not dropped, so a later digest still reaches it.
+5. **Previous preference modes are read on the transaction connection** (`findAllByUserTx`) at READ COMMITTED without `FOR UPDATE`. Two concurrent PATCHes can both flush; the claim makes the second flush a no-op, so the plan's "seen exactly once" is not enforced by a lock.
+
+## 2026-10-27: NotificationSubject.name stays out of the feed response
+
+**Context:** `apps/modeling-commons-backend`, slice `subject-names-7`. `resolveNotificationSubjectsQuery` now fills `name` on actors (user name) and model targets (latest version title) for the digest to use.
+
+**Decisions:**
+1. **The feed DTO is unchanged.** `userNotificationMapper.toResponse` passes the subject object through, and the route's 200 schema (`notificationSubjectSchema`: `thumbnailUrl`, `url`) drops `name` at serialization, so neither `client/rest.d.ts` nor the frontend `api.d.ts` changes. Exposing it later is a DTO change plus type regeneration.
+2. **A model with no version resolves with `name: null`**, matching how its thumbnail resolves; a deleted user or model still resolves to `null` as a whole.
+
+## 2026-10-27: Plain notification rows and the digest worker's category selection
+
+**Context:** `apps/modeling-commons-backend`, slice `plain-rows-6`. `UserNotification.emailMode` is dropped; the worker must send only categories currently `daily`.
+
+**Decisions:**
+1. **"Currently daily" is resolved per row against `UserNotificationPreference`.** `findDigestRecipients` left joins the preference row on `(recipientId, category)` and keeps rows whose override is `daily`, or that have no override and whose category is daily by default. The defaults come from the domain (`listDailyCategories([])`) as a parameter, so the catalog stays the single source of defaults.
+2. **The worker reads each recipient's preferences** (`notificationPreferenceRepository.findAllByUser`, new worker dependency) and passes `listDailyCategories(preferences)` to `findPendingForRecipient`, which keeps its explicit category list so the switch's flush can reuse it.
+3. **A retried event whose ledger row is unsent now emails when the category is `immediate` at retry time,** even if the row was written while email was `off`. Rows no longer record the mode they were written under.
+
+## 2026-10-27: Digest lines per target
+
+**Context:** `apps/modeling-commons-backend` and `packages/emails`, slice `notification-groups-8`. The digest is built from `groupNotifications`, `describeGroup` and `buildDigest`; every claimed row is marked sent.
+
+**Decisions:**
+1. **A group keeps each distinct actor with the id of their newest row** (`actors: [{ userId, rowId }]`), because `resolveNotificationSubjectsQuery` returns subjects keyed by row id. `describeGroup` reads names through those row ids without a second lookup.
+2. **A digest whose groups all fail to resolve sends no email** and still marks every claimed row sent.
+3. **A resolved target with no name (a model with no version) or a group with no actor ids uses the newest row's stored title** with the target's url, rather than dropping the line or printing "0 people".
+4. **The "and N more" link points at `links.notifications()` (`/notifications`).** The frontend has no such page yet, the same as `/settings/notifications`.
+5. **`NotificationSummaryItem` is `{ text, url }`** and the email takes `moreCount` and `feedUrl`; the category headings and per-item bodies are gone.
+
+## 2026-10-27: Notification janitor
+
+**Context:** `apps/modeling-commons-backend`, slice `notification-janitor-9`. A weekly worker (`purge-notifications`, `0 4 * * 0`) deletes orphaned rows and rows past `workersConfig.notificationJanitor.retentionMs` (90 days).
+
+**Decisions:**
+1. **An orphan is a row with `targetType = 'model'` whose model is missing or has `deletedAt` set.** Rows with no target, and rows of any other target type, are kept. `deleteOrphaned` is one `DELETE ... NOT EXISTS` against `Model`, since `targetId` has no foreign key.
+2. **The worker derives the cutoff as now minus `retentionMs`,** as the model draft janitor does with `staleMs`. The rule lives in config; the worker only subtracts.
+3. **Orphans are purged before expired rows,** each in its own statement, and the worker logs both counts with the cutoff. A failure throws and pg-boss retries on its defaults.
+
+## 2026-10-27: Digest overflow is marked sent, not released
+
+**Context:** `apps/modeling-commons-backend`. Supersedes decision 4 of "Email digest build decisions made mid-slice", per `doc/email-digest-followup-plan.md`.
+
+**Decisions:**
+1. **Every claimed row is marked sent, including the overflow.** `maxDigestItems` (50) caps the lines; beyond it the email ends with "and N more", linking to the feed. `splitDigestOverflow` is gone, so overflow is no longer released into a window it could not reach.
+
+## 2026-10-27: Notification model titles are read as the recipient
+
+**Context:** `apps/modeling-commons-backend`, task `model-titles`. A digest line or feed entry named a model by its current title even after the model went private.
+
+**Decisions:**
+1. **`modelService.getModelTitlesForViewer(modelIds, viewerId)` is the only source of model titles for notification subjects.** It loads the viewer with `loadViewer` and makes one `findTitlesReadableBy` read, filtered by the existing `readableModelFilter` (the query form of `canRead`). No new access rule. The returned map holds only models the viewer can read; a missing key means not viewable.
+2. **Soft-deleted models are excluded even for their owner,** although `canRead` lets an owner read them, so a deleted model keeps the earlier behavior of resolving no subject.
+3. **A model the viewer cannot read keeps a linkable target with no name and no thumbnail,** so the digest falls back to the stored row title (`describeGroup`) and the feed shows no name or preview. `findLatestPreviewKeys` no longer returns a title.
+4. **The feed and the digest both pass the recipient as viewer** through `resolveNotificationSubjectsQuery.execute(records, viewerId)`.

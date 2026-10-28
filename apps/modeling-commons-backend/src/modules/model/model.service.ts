@@ -1,6 +1,8 @@
 import type { Model } from '#prisma/index';
+import type { ModelSubjectRecord } from '#src/modules/model/database/model.repository.port.ts';
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
 import type { UpdateModelProps } from '#src/modules/model/domain/model.types.ts';
+import { loadViewer } from '#src/shared/permissions/model-access.viewer.ts';
 
 export default function makeModelService({
   transactionManager,
@@ -8,6 +10,7 @@ export default function makeModelService({
   modelDomain,
   eventRepository,
   modelDraftService,
+  db,
 }: Dependencies) {
   return {
     async update(modelId: string, input: UpdateModelProps): Promise<void> {
@@ -45,6 +48,16 @@ export default function makeModelService({
       const model = await modelRepository.findOneById(modelId);
       if (!model) throw new ModelNotFoundError(modelId);
       return model;
+    },
+
+    async getModelSubjectsForViewer(
+      modelIds: Array<string>,
+      viewerId: string | null,
+    ): Promise<Map<string, ModelSubjectRecord>> {
+      if (modelIds.length === 0) return new Map();
+      const viewer = await loadViewer(db, viewerId);
+      const records = await modelRepository.findSubjectsReadableBy(modelIds, viewer);
+      return new Map(records.map((record) => [record.id, record]));
     },
 
     async resolveLegacyId(legacyId: number): Promise<string> {

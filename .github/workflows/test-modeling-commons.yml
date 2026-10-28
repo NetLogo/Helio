@@ -93,6 +93,8 @@ jobs:
       - name: Run backend tests
         run: yarn run test
         working-directory: apps/modeling-commons-backend
+        env:
+          E2E_MAILPIT: '1'
 
       - name: Run backend server
         run: node dist/src/index.ts &

@@ -51,6 +51,12 @@ enum ModelFileKind {
   additional
 }
 
+enum EmailMode {
+  immediate
+  daily
+  off
+}
+
 // Better Auth core tables
 
 model User {
@@ -449,34 +455,36 @@ model Event {
 }
 
 model UserNotification {
-  id          String    @id @default(nanoid())
-  recipientId String
-  eventId     String
-  category    String
-  title       String
-  body        String    @db.Text
-  url         String
-  actorUserId String?
-  targetType  String?
-  targetId    String?
-  emailSentAt DateTime? @db.Timestamptz(3)
-  readAt      DateTime? @db.Timestamptz(3)
-  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  id             String    @id @default(nanoid())
+  recipientId    String
+  eventId        String
+  category       String
+  title          String
+  body           String    @db.Text
+  url            String
+  actorUserId    String?
+  targetType     String?
+  targetId       String?
+  emailSentAt    DateTime? @db.Timestamptz(3)
+  emailClaimedAt DateTime? @db.Timestamptz(3)
+  readAt         DateTime? @db.Timestamptz(3)
+  createdAt      DateTime  @default(now()) @db.Timestamptz(3)
 
   recipient User  @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@unique([eventId, recipientId, category])
   @@index([recipientId, readAt, createdAt])
+  @@index([createdAt])
 }
 
 model UserNotificationPreference {
-  id        String   @id @default(nanoid())
+  id        String    @id @default(nanoid())
   userId    String
   category  String
-  email     Boolean
+  email     EmailMode
   inApp     Boolean
-  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

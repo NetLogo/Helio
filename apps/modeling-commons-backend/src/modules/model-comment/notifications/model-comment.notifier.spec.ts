@@ -1,3 +1,4 @@
+import userDomain from '#src/modules/user/domain/user.domain.ts';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import env from '#src/config/env.ts';
 import makeModelCommentNotifier from '#src/modules/model-comment/notifications/model-comment.notifier.ts';
@@ -67,6 +68,7 @@ describe('modelCommentNotifier', () => {
     modelCommentRepository,
     modelAuthorRepository,
     userRepository,
+    userDomain: userDomain(),
     getModelCardQuery,
     mailDomain,
     logger,

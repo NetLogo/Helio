@@ -51,6 +51,12 @@ enum ModelFileKind {
   additional
 }
 
+enum EmailMode {
+  immediate
+  daily
+  off
+}
+
 // Better Auth core tables
 
 model User {
@@ -461,6 +467,7 @@ model UserNotification {
   targetType    String?
   targetId      String?
   emailSentAt   DateTime? @db.Timestamptz(3)
+  emailClaimedAt DateTime? @db.Timestamptz(3)
   readAt        DateTime? @db.Timestamptz(3)
   createdAt     DateTime  @default(now()) @db.Timestamptz(3)
 
@@ -469,13 +476,14 @@ model UserNotification {
 
   @@unique([eventId, recipientId, category])
   @@index([recipientId, readAt, createdAt])
+  @@index([createdAt])
 }
 
 model UserNotificationPreference {
   id        String   @id @default(nanoid())
   userId    String
   category  String
-  email     Boolean
+  email     EmailMode
   inApp     Boolean
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 

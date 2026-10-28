@@ -1,12 +1,15 @@
 import type { Model } from '#prisma/index';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
+import makeModelRepository from '#src/modules/model/database/model.repository.ts';
 import modelDomain from '#src/modules/model/domain/model.domain.ts';
 import {
   ModelAlreadyDeletedError,
   ModelNotFoundError,
 } from '#src/modules/model/domain/model.errors.ts';
 import makeModelService from '#src/modules/model/model.service.ts';
+import { readableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
+import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -74,6 +77,67 @@ describe('modelService', () => {
       modelRepository.findOneById.mockResolvedValue(makeModel({ deletedAt: new Date() }));
 
       await expect(service.update('model-1', {})).rejects.toThrow(ModelAlreadyDeletedError);
+    });
+  });
+
+  describe('getModelSubjectsForViewer', () => {
+    const viewer: ViewerContext = {
+      id: 'viewer-1',
+      systemRole: 'user',
+      banned: false,
+      deletedAt: null,
+    };
+    const subjectDb = { user: { findUnique: vi.fn() }, model: { findMany: vi.fn() } };
+    const subjectService = makeModelService({
+      modelRepository: makeModelRepository({
+        db: subjectDb,
+        modelMapper: {},
+        repositoryBase: () => ({}),
+      } as never),
+      db: subjectDb,
+    } as never);
+
+    it('reads title and preview of the readable, live models in one query', async () => {
+      subjectDb.user.findUnique.mockResolvedValue(viewer);
+      subjectDb.model.findMany.mockResolvedValue([
+        { id: 'model-1', versions: [{ title: 'Wolf Sheep', previewImageFileKey: 'preview.png' }] },
+      ]);
+
+      const subjects = await subjectService.getModelSubjectsForViewer(
+        ['model-1', 'model-2'],
+        'viewer-1',
+      );
+
+      expect(subjectDb.model.findMany).toHaveBeenCalledOnce();
+      expect(subjectDb.model.findMany.mock.calls[0]![0].where).toEqual({
+        AND: [{ id: { in: ['model-1', 'model-2'] }, deletedAt: null }, readableModelFilter(viewer)],
+      });
+      expect(subjects).toEqual(
+        new Map([
+          ['model-1', { id: 'model-1', title: 'Wolf Sheep', previewImageFileKey: 'preview.png' }],
+        ]),
+      );
+    });
+
+    it('keeps a model whose latest version has no title or preview', async () => {
+      subjectDb.user.findUnique.mockResolvedValue(viewer);
+      subjectDb.model.findMany.mockResolvedValue([{ id: 'model-1', versions: [] }]);
+
+      const subjects = await subjectService.getModelSubjectsForViewer(['model-1'], 'viewer-1');
+
+      expect(subjects.get('model-1')).toEqual({
+        id: 'model-1',
+        title: null,
+        previewImageFileKey: null,
+      });
+    });
+
+    it('reads nothing when there are no models', async () => {
+      const subjects = await subjectService.getModelSubjectsForViewer([], 'viewer-1');
+
+      expect(subjects.size).toBe(0);
+      expect(subjectDb.user.findUnique).not.toHaveBeenCalled();
+      expect(subjectDb.model.findMany).not.toHaveBeenCalled();
     });
   });
 

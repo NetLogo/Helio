@@ -25,6 +25,8 @@ const links = {
 
   user: (userId: string) => absolute(`/users/${segment(userId)}`),
 
+  notifications: () => absolute('/notifications'),
+
   notificationPreferences: () => absolute('/settings/notifications'),
 
   support: () => `mailto:${env.product.supportEmail}`,

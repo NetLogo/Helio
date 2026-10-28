@@ -15,6 +15,12 @@ declare global {
     resolveNotificationSubjectsQuery: ReturnType<
       typeof import('#src/modules/user-notification/queries/resolve-notification-subjects.query.ts').default
     >;
+    notificationEmailService: ReturnType<
+      typeof import('#src/modules/user-notification/notification-email.service.ts').default
+    >;
+    notificationDigestService: ReturnType<
+      typeof import('#src/modules/user-notification/notification-digest.service.ts').default
+    >;
     userNotificationService: ReturnType<
       typeof import('#src/modules/user-notification/user-notification.service.ts').default
     >;

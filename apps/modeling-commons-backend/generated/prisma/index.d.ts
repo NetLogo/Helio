@@ -185,6 +185,15 @@ export const ModelFileKind: {
 
 export type ModelFileKind = (typeof ModelFileKind)[keyof typeof ModelFileKind]
 
+
+export const EmailMode: {
+  immediate: 'immediate',
+  daily: 'daily',
+  off: 'off'
+};
+
+export type EmailMode = (typeof EmailMode)[keyof typeof EmailMode]
+
 }
 
 export type ModelVisibility = $Enums.ModelVisibility
@@ -214,6 +223,10 @@ export const ModelInteractionKind: typeof $Enums.ModelInteractionKind
 export type ModelFileKind = $Enums.ModelFileKind
 
 export const ModelFileKind: typeof $Enums.ModelFileKind
+
+export type EmailMode = $Enums.EmailMode
+
+export const EmailMode: typeof $Enums.EmailMode
 
 /**
  * ##  Prisma Client ʲˢ
@@ -25918,6 +25931,7 @@ export namespace Prisma {
     targetType: string | null
     targetId: string | null
     emailSentAt: Date | null
+    emailClaimedAt: Date | null
     readAt: Date | null
     createdAt: Date | null
   }
@@ -25934,6 +25948,7 @@ export namespace Prisma {
     targetType: string | null
     targetId: string | null
     emailSentAt: Date | null
+    emailClaimedAt: Date | null
     readAt: Date | null
     createdAt: Date | null
   }
@@ -25950,6 +25965,7 @@ export namespace Prisma {
     targetType: number
     targetId: number
     emailSentAt: number
+    emailClaimedAt: number
     readAt: number
     createdAt: number
     _all: number
@@ -25968,6 +25984,7 @@ export namespace Prisma {
     targetType?: true
     targetId?: true
     emailSentAt?: true
+    emailClaimedAt?: true
     readAt?: true
     createdAt?: true
   }
@@ -25984,6 +26001,7 @@ export namespace Prisma {
     targetType?: true
     targetId?: true
     emailSentAt?: true
+    emailClaimedAt?: true
     readAt?: true
     createdAt?: true
   }
@@ -26000,6 +26018,7 @@ export namespace Prisma {
     targetType?: true
     targetId?: true
     emailSentAt?: true
+    emailClaimedAt?: true
     readAt?: true
     createdAt?: true
     _all?: true
@@ -26089,6 +26108,7 @@ export namespace Prisma {
     targetType: string | null
     targetId: string | null
     emailSentAt: Date | null
+    emailClaimedAt: Date | null
     readAt: Date | null
     createdAt: Date
     _count: UserNotificationCountAggregateOutputType | null
@@ -26122,6 +26142,7 @@ export namespace Prisma {
     targetType?: boolean
     targetId?: boolean
     emailSentAt?: boolean
+    emailClaimedAt?: boolean
     readAt?: boolean
     createdAt?: boolean
     recipient?: boolean | UserDefaultArgs<ExtArgs>
@@ -26140,6 +26161,7 @@ export namespace Prisma {
     targetType?: boolean
     targetId?: boolean
     emailSentAt?: boolean
+    emailClaimedAt?: boolean
     readAt?: boolean
     createdAt?: boolean
     recipient?: boolean | UserDefaultArgs<ExtArgs>
@@ -26158,6 +26180,7 @@ export namespace Prisma {
     targetType?: boolean
     targetId?: boolean
     emailSentAt?: boolean
+    emailClaimedAt?: boolean
     readAt?: boolean
     createdAt?: boolean
     recipient?: boolean | UserDefaultArgs<ExtArgs>
@@ -26176,11 +26199,12 @@ export namespace Prisma {
     targetType?: boolean
     targetId?: boolean
     emailSentAt?: boolean
+    emailClaimedAt?: boolean
     readAt?: boolean
     createdAt?: boolean
   }
 
-  export type UserNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipientId" | "eventId" | "category" | "title" | "body" | "url" | "actorUserId" | "targetType" | "targetId" | "emailSentAt" | "readAt" | "createdAt", ExtArgs["result"]["userNotification"]>
+  export type UserNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipientId" | "eventId" | "category" | "title" | "body" | "url" | "actorUserId" | "targetType" | "targetId" | "emailSentAt" | "emailClaimedAt" | "readAt" | "createdAt", ExtArgs["result"]["userNotification"]>
   export type UserNotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     recipient?: boolean | UserDefaultArgs<ExtArgs>
     event?: boolean | EventDefaultArgs<ExtArgs>
@@ -26212,6 +26236,7 @@ export namespace Prisma {
       targetType: string | null
       targetId: string | null
       emailSentAt: Date | null
+      emailClaimedAt: Date | null
       readAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["userNotification"]>
@@ -26650,6 +26675,7 @@ export namespace Prisma {
     readonly targetType: FieldRef<"UserNotification", 'String'>
     readonly targetId: FieldRef<"UserNotification", 'String'>
     readonly emailSentAt: FieldRef<"UserNotification", 'DateTime'>
+    readonly emailClaimedAt: FieldRef<"UserNotification", 'DateTime'>
     readonly readAt: FieldRef<"UserNotification", 'DateTime'>
     readonly createdAt: FieldRef<"UserNotification", 'DateTime'>
   }
@@ -27085,7 +27111,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     category: string | null
-    email: boolean | null
+    email: $Enums.EmailMode | null
     inApp: boolean | null
     updatedAt: Date | null
   }
@@ -27094,7 +27120,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     category: string | null
-    email: boolean | null
+    email: $Enums.EmailMode | null
     inApp: boolean | null
     updatedAt: Date | null
   }
@@ -27214,7 +27240,7 @@ export namespace Prisma {
     id: string
     userId: string
     category: string
-    email: boolean
+    email: $Enums.EmailMode
     inApp: boolean
     updatedAt: Date
     _count: UserNotificationPreferenceCountAggregateOutputType | null
@@ -27295,7 +27321,7 @@ export namespace Prisma {
       id: string
       userId: string
       category: string
-      email: boolean
+      email: $Enums.EmailMode
       inApp: boolean
       updatedAt: Date
     }, ExtArgs["result"]["userNotificationPreference"]>
@@ -27725,7 +27751,7 @@ export namespace Prisma {
     readonly id: FieldRef<"UserNotificationPreference", 'String'>
     readonly userId: FieldRef<"UserNotificationPreference", 'String'>
     readonly category: FieldRef<"UserNotificationPreference", 'String'>
-    readonly email: FieldRef<"UserNotificationPreference", 'Boolean'>
+    readonly email: FieldRef<"UserNotificationPreference", 'EmailMode'>
     readonly inApp: FieldRef<"UserNotificationPreference", 'Boolean'>
     readonly updatedAt: FieldRef<"UserNotificationPreference", 'DateTime'>
   }
@@ -28455,6 +28481,7 @@ export namespace Prisma {
     targetType: 'targetType',
     targetId: 'targetId',
     emailSentAt: 'emailSentAt',
+    emailClaimedAt: 'emailClaimedAt',
     readAt: 'readAt',
     createdAt: 'createdAt'
   };
@@ -28685,6 +28712,20 @@ export namespace Prisma {
    * Reference to a field of type 'ModelInteractionKind[]'
    */
   export type ListEnumModelInteractionKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModelInteractionKind[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EmailMode'
+   */
+  export type EnumEmailModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'EmailMode[]'
+   */
+  export type ListEnumEmailModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailMode[]'>
     
 
 
@@ -30287,6 +30328,7 @@ export namespace Prisma {
     targetType?: StringNullableFilter<"UserNotification"> | string | null
     targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
+    emailClaimedAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
     recipient?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30305,6 +30347,7 @@ export namespace Prisma {
     targetType?: SortOrderInput | SortOrder
     targetId?: SortOrderInput | SortOrder
     emailSentAt?: SortOrderInput | SortOrder
+    emailClaimedAt?: SortOrderInput | SortOrder
     readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     recipient?: UserOrderByWithRelationInput
@@ -30327,6 +30370,7 @@ export namespace Prisma {
     targetType?: StringNullableFilter<"UserNotification"> | string | null
     targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
+    emailClaimedAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
     recipient?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30345,6 +30389,7 @@ export namespace Prisma {
     targetType?: SortOrderInput | SortOrder
     targetId?: SortOrderInput | SortOrder
     emailSentAt?: SortOrderInput | SortOrder
+    emailClaimedAt?: SortOrderInput | SortOrder
     readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: UserNotificationCountOrderByAggregateInput
@@ -30367,6 +30412,7 @@ export namespace Prisma {
     targetType?: StringNullableWithAggregatesFilter<"UserNotification"> | string | null
     targetId?: StringNullableWithAggregatesFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableWithAggregatesFilter<"UserNotification"> | Date | string | null
+    emailClaimedAt?: DateTimeNullableWithAggregatesFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableWithAggregatesFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"UserNotification"> | Date | string
   }
@@ -30378,7 +30424,7 @@ export namespace Prisma {
     id?: StringFilter<"UserNotificationPreference"> | string
     userId?: StringFilter<"UserNotificationPreference"> | string
     category?: StringFilter<"UserNotificationPreference"> | string
-    email?: BoolFilter<"UserNotificationPreference"> | boolean
+    email?: EnumEmailModeFilter<"UserNotificationPreference"> | $Enums.EmailMode
     inApp?: BoolFilter<"UserNotificationPreference"> | boolean
     updatedAt?: DateTimeFilter<"UserNotificationPreference"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30402,7 +30448,7 @@ export namespace Prisma {
     NOT?: UserNotificationPreferenceWhereInput | UserNotificationPreferenceWhereInput[]
     userId?: StringFilter<"UserNotificationPreference"> | string
     category?: StringFilter<"UserNotificationPreference"> | string
-    email?: BoolFilter<"UserNotificationPreference"> | boolean
+    email?: EnumEmailModeFilter<"UserNotificationPreference"> | $Enums.EmailMode
     inApp?: BoolFilter<"UserNotificationPreference"> | boolean
     updatedAt?: DateTimeFilter<"UserNotificationPreference"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30427,7 +30473,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"UserNotificationPreference"> | string
     userId?: StringWithAggregatesFilter<"UserNotificationPreference"> | string
     category?: StringWithAggregatesFilter<"UserNotificationPreference"> | string
-    email?: BoolWithAggregatesFilter<"UserNotificationPreference"> | boolean
+    email?: EnumEmailModeWithAggregatesFilter<"UserNotificationPreference"> | $Enums.EmailMode
     inApp?: BoolWithAggregatesFilter<"UserNotificationPreference"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"UserNotificationPreference"> | Date | string
   }
@@ -32110,6 +32156,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
     recipient: UserCreateNestedOneWithoutNotificationsInput
@@ -32128,6 +32175,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -32142,6 +32190,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipient?: UserUpdateOneRequiredWithoutNotificationsNestedInput
@@ -32160,6 +32209,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32176,6 +32226,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -32190,6 +32241,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32206,6 +32258,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32213,7 +32266,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceCreateInput = {
     id?: string
     category: string
-    email: boolean
+    email: $Enums.EmailMode
     inApp: boolean
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutNotificationPreferencesInput
@@ -32223,7 +32276,7 @@ export namespace Prisma {
     id?: string
     userId: string
     category: string
-    email: boolean
+    email: $Enums.EmailMode
     inApp: boolean
     updatedAt?: Date | string
   }
@@ -32231,7 +32284,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
+    email?: EnumEmailModeFieldUpdateOperationsInput | $Enums.EmailMode
     inApp?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutNotificationPreferencesNestedInput
@@ -32241,7 +32294,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
+    email?: EnumEmailModeFieldUpdateOperationsInput | $Enums.EmailMode
     inApp?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32250,7 +32303,7 @@ export namespace Prisma {
     id?: string
     userId: string
     category: string
-    email: boolean
+    email: $Enums.EmailMode
     inApp: boolean
     updatedAt?: Date | string
   }
@@ -32258,7 +32311,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
+    email?: EnumEmailModeFieldUpdateOperationsInput | $Enums.EmailMode
     inApp?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32267,7 +32320,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
+    email?: EnumEmailModeFieldUpdateOperationsInput | $Enums.EmailMode
     inApp?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33763,6 +33816,7 @@ export namespace Prisma {
     targetType?: SortOrder
     targetId?: SortOrder
     emailSentAt?: SortOrder
+    emailClaimedAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -33779,6 +33833,7 @@ export namespace Prisma {
     targetType?: SortOrder
     targetId?: SortOrder
     emailSentAt?: SortOrder
+    emailClaimedAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -33795,8 +33850,16 @@ export namespace Prisma {
     targetType?: SortOrder
     targetId?: SortOrder
     emailSentAt?: SortOrder
+    emailClaimedAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumEmailModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.EmailMode | EnumEmailModeFieldRefInput<$PrismaModel>
+    in?: $Enums.EmailMode[] | ListEnumEmailModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EmailMode[] | ListEnumEmailModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumEmailModeFilter<$PrismaModel> | $Enums.EmailMode
   }
 
   export type UserNotificationPreferenceUserIdCategoryCompoundUniqueInput = {
@@ -33829,6 +33892,16 @@ export namespace Prisma {
     email?: SortOrder
     inApp?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumEmailModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EmailMode | EnumEmailModeFieldRefInput<$PrismaModel>
+    in?: $Enums.EmailMode[] | ListEnumEmailModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EmailMode[] | ListEnumEmailModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumEmailModeWithAggregatesFilter<$PrismaModel> | $Enums.EmailMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEmailModeFilter<$PrismaModel>
+    _max?: NestedEnumEmailModeFilter<$PrismaModel>
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -35691,6 +35764,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type EnumEmailModeFieldUpdateOperationsInput = {
+    set?: $Enums.EmailMode
+  }
+
   export type UserUpdateOneRequiredWithoutNotificationPreferencesNestedInput = {
     create?: XOR<UserCreateWithoutNotificationPreferencesInput, UserUncheckedCreateWithoutNotificationPreferencesInput>
     connectOrCreate?: UserCreateOrConnectWithoutNotificationPreferencesInput
@@ -36078,6 +36155,23 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumEmailModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.EmailMode | EnumEmailModeFieldRefInput<$PrismaModel>
+    in?: $Enums.EmailMode[] | ListEnumEmailModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EmailMode[] | ListEnumEmailModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumEmailModeFilter<$PrismaModel> | $Enums.EmailMode
+  }
+
+  export type NestedEnumEmailModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EmailMode | EnumEmailModeFieldRefInput<$PrismaModel>
+    in?: $Enums.EmailMode[] | ListEnumEmailModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EmailMode[] | ListEnumEmailModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumEmailModeWithAggregatesFilter<$PrismaModel> | $Enums.EmailMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEmailModeFilter<$PrismaModel>
+    _max?: NestedEnumEmailModeFilter<$PrismaModel>
+  }
+
   export type AccountCreateWithoutUserInput = {
     id?: string
     accountId: string
@@ -36420,6 +36514,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
     event: EventCreateNestedOneWithoutNotificationsInput
@@ -36436,6 +36531,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -36453,7 +36549,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceCreateWithoutUserInput = {
     id?: string
     category: string
-    email: boolean
+    email: $Enums.EmailMode
     inApp: boolean
     updatedAt?: Date | string
   }
@@ -36461,7 +36557,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceUncheckedCreateWithoutUserInput = {
     id?: string
     category: string
-    email: boolean
+    email: $Enums.EmailMode
     inApp: boolean
     updatedAt?: Date | string
   }
@@ -36871,6 +36967,7 @@ export namespace Prisma {
     targetType?: StringNullableFilter<"UserNotification"> | string | null
     targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
+    emailClaimedAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
   }
@@ -36898,7 +36995,7 @@ export namespace Prisma {
     id?: StringFilter<"UserNotificationPreference"> | string
     userId?: StringFilter<"UserNotificationPreference"> | string
     category?: StringFilter<"UserNotificationPreference"> | string
-    email?: BoolFilter<"UserNotificationPreference"> | boolean
+    email?: EnumEmailModeFilter<"UserNotificationPreference"> | $Enums.EmailMode
     inApp?: BoolFilter<"UserNotificationPreference"> | boolean
     updatedAt?: DateTimeFilter<"UserNotificationPreference"> | Date | string
   }
@@ -41618,6 +41715,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
     recipient: UserCreateNestedOneWithoutNotificationsInput
@@ -41634,6 +41732,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -42274,6 +42373,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -42281,7 +42381,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceCreateManyUserInput = {
     id?: string
     category: string
-    email: boolean
+    email: $Enums.EmailMode
     inApp: boolean
     updatedAt?: Date | string
   }
@@ -42639,6 +42739,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     event?: EventUpdateOneRequiredWithoutNotificationsNestedInput
@@ -42655,6 +42756,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42670,6 +42772,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42677,7 +42780,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
+    email?: EnumEmailModeFieldUpdateOperationsInput | $Enums.EmailMode
     inApp?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42685,7 +42788,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
+    email?: EnumEmailModeFieldUpdateOperationsInput | $Enums.EmailMode
     inApp?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42693,7 +42796,7 @@ export namespace Prisma {
   export type UserNotificationPreferenceUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
+    email?: EnumEmailModeFieldUpdateOperationsInput | $Enums.EmailMode
     inApp?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43431,6 +43534,7 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
+    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -43445,6 +43549,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipient?: UserUpdateOneRequiredWithoutNotificationsNestedInput
@@ -43461,6 +43566,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43476,6 +43582,7 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

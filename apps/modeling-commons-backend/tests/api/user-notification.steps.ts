@@ -3,6 +3,8 @@ import { Given, Then, When } from '@cucumber/cucumber';
 import { PgBoss } from 'pg-boss';
 import type { FastifyInstance } from 'fastify';
 import env from '#src/config/env.ts';
+import notificationsConfig from '#src/config/notifications.ts';
+import { HOUR_MS } from '#src/shared/utils/consts.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
@@ -10,12 +12,13 @@ import userNotificationDomain from '#src/modules/user-notification/domain/user-n
 // The real catalog, not a copy, keeps this suite honest about which categories
 // exist without asserting on their label/description copy.
 const KNOWN_CATEGORIES = userNotificationDomain().categories.map((c) => c.category);
+const EMAIL_MODES: ReadonlyArray<unknown> = ['immediate', 'daily', 'off'];
 
 type CategoryPreference = {
   category: string;
   label: string;
   description: string;
-  email: boolean;
+  email: 'immediate' | 'daily' | 'off';
   inApp: boolean;
 };
 
@@ -64,7 +67,35 @@ When(
     this.context.latestResponse = await this.server.inject({
       method: 'PATCH',
       url: '/api/v1/me/notification-preferences',
-      payload: { preferences: [{ category, email: false }] },
+      payload: { preferences: [{ category, email: 'off' }] },
+      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+When(
+  '{string} sets email to {string} for category {string}',
+  async function (this: ICustomWorld, name: string, mode: string, category: string) {
+    const user = getUsers(this.context).get(name)!;
+    this.context['lastNotificationUser'] = name;
+    this.context.latestResponse = await this.server.inject({
+      method: 'PATCH',
+      url: '/api/v1/me/notification-preferences',
+      payload: { preferences: [{ category, email: mode }] },
+      headers: { cookie: user.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+When(
+  '{string} sets email to the boolean true for category {string}',
+  async function (this: ICustomWorld, name: string, category: string) {
+    const user = getUsers(this.context).get(name)!;
+    this.context['lastNotificationUser'] = name;
+    this.context.latestResponse = await this.server.inject({
+      method: 'PATCH',
+      url: '/api/v1/me/notification-preferences',
+      payload: { preferences: [{ category, email: true }] },
       headers: { cookie: user.cookie, 'content-type': 'application/json' },
     });
   },
@@ -77,7 +108,7 @@ Given(
     await this.server.inject({
       method: 'PATCH',
       url: '/api/v1/me/notification-preferences',
-      payload: { preferences: [{ category, email: false, inApp: false }] },
+      payload: { preferences: [{ category, email: 'off', inApp: false }] },
       headers: { cookie: user.cookie, 'content-type': 'application/json' },
     });
   },
@@ -94,7 +125,7 @@ When('an anonymous viewer updates notification preferences', async function (thi
   this.context.latestResponse = await this.server.inject({
     method: 'PATCH',
     url: '/api/v1/me/notification-preferences',
-    payload: { preferences: [{ category: KNOWN_CATEGORIES[0], email: false }] },
+    payload: { preferences: [{ category: KNOWN_CATEGORIES[0], email: 'off' }] },
     headers: { 'content-type': 'application/json' },
   });
 });
@@ -108,19 +139,22 @@ Then(
     const returned = body.categories.map((entry) => entry.category).sort();
     assert.deepStrictEqual(returned, [...KNOWN_CATEGORIES].sort());
     for (const entry of body.categories) {
-      assert.strictEqual(typeof entry.email, 'boolean');
+      assert.ok(EMAIL_MODES.includes(entry.email), `unexpected email mode ${String(entry.email)}`);
       assert.strictEqual(typeof entry.inApp, 'boolean');
     }
   },
 );
 
-Then('category {string} should have email false', function (this: ICustomWorld, category: string) {
-  const body = JSON.parse(this.context.latestResponse!.body) as {
-    categories: Array<CategoryPreference>;
-  };
-  const entry = findCategory(body.categories, category);
-  assert.strictEqual(entry.email, false);
-});
+Then(
+  'category {string} should have email {string}',
+  function (this: ICustomWorld, category: string, mode: string) {
+    const body = JSON.parse(this.context.latestResponse!.body) as {
+      categories: Array<CategoryPreference>;
+    };
+    const entry = findCategory(body.categories, category);
+    assert.strictEqual(entry.email, mode);
+  },
+);
 
 Then(
   'category {string} should have the same inApp value as before',
@@ -165,6 +199,8 @@ Then('every category should be unchanged from before', function (this: ICustomWo
 
 interface MailCall {
   to: string;
+  subject: string;
+  text: string;
 }
 
 interface EventRow {
@@ -173,6 +209,12 @@ interface EventRow {
 
 interface PrismaCradle {
   prisma: {
+    userNotification: {
+      updateMany: (args: {
+        where: { recipientId: string };
+        data: { createdAt: Date };
+      }) => Promise<unknown>;
+    };
     event: {
       findFirst: (args: {
         where: { type: string };
@@ -188,8 +230,8 @@ function installMailSpy(server: FastifyInstance): MailCall[] {
     sendMailAsync: (content: unknown) => Promise<unknown>;
   };
   mailService.sendMailAsync = (content: unknown) => {
-    const { to } = content as { to?: string };
-    calls.push({ to: to ?? '' });
+    const { to, subject, text } = content as { to?: string; subject?: string; text?: string };
+    calls.push({ to: to ?? '', subject: subject ?? '', text: text ?? '' });
     return Promise.resolve();
   };
   return calls;
@@ -251,6 +293,49 @@ Then('no mail should have been sent', async function (this: ICustomWorld) {
   const calls = this.context['mailCalls'] as MailCall[];
   assert.strictEqual(calls.length, 0);
 });
+
+Given(
+  'the notifications of {string} are older than the flush window',
+  async function (this: ICustomWorld, name: string) {
+    const user = getUsers(this.context).get(name)!;
+    const { prisma } = this.server.diContainer.cradle as unknown as PrismaCradle;
+    await prisma.userNotification.updateMany({
+      where: { recipientId: user.id },
+      data: { createdAt: new Date(Date.now() - notificationsConfig.windowMs - HOUR_MS) },
+    });
+  },
+);
+
+Then('no notification summary should be emailed', async function (this: ICustomWorld) {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const calls = this.context['mailCalls'] as MailCall[];
+  assert.strictEqual(calls.length, 0);
+});
+
+Then(
+  'one notification summary should be emailed to {string}',
+  async function (this: ICustomWorld, name: string) {
+    const user = getUsers(this.context).get(name)!;
+    const calls = this.context['mailCalls'] as MailCall[];
+    const deadline = Date.now() + 10_000;
+    while (calls.length === 0 && Date.now() < deadline) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    assert.strictEqual(calls.length, 1);
+    assert.strictEqual(calls[0]!.to, user.email);
+    assert.match(calls[0]!.subject, /Notification Summary/);
+  },
+);
+
+Then(
+  'the notification summary should list {string} once',
+  function (this: ICustomWorld, line: string) {
+    const calls = this.context['mailCalls'] as MailCall[];
+    assert.strictEqual(calls[0]!.text.split(line).length - 1, 1, calls[0]!.text);
+  },
+);
 
 interface FeedNotification {
   id: string;

@@ -2,19 +2,31 @@ import { createHash } from 'node:crypto';
 import { prisma } from './providers.js';
 import { seedId, seededRandom } from './id.js';
 import { AssetUploader, loadNlogox, fakeNlogox, textAsset, type NlogoxAsset } from './assets.js';
+import type { Prisma } from '#prisma/index';
+import links from '#src/config/links.ts';
+import {
+  formatCommenterName,
+  listCommentNotificationRecipients,
+} from '#src/modules/model-comment/domain/model-comment.recipients.ts';
+import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import { truncatePreview } from '#src/shared/utils/formatters.ts';
 import {
   isRealFile,
   type CommentSeed,
   type CommentThreadSeed,
   type DraftSeed,
+  type EmailModeLit,
   type ModelFileSeed,
   type ModelSeed,
+  type NotificationPreferenceSeed,
   type TagSeed,
   type UserSeed,
   type VersionSeed,
 } from './manifest/index.js';
 
 const DAY = 86_400_000;
+const HOUR = DAY / 24;
+const DEFAULT_COMMENT_AGE_DAYS = 30;
 const NOW = Date.now();
 const daysAgo = (n: number) => new Date(NOW - n * DAY);
 
@@ -443,13 +455,12 @@ export async function loadComments(
   users: IdMap,
   modelIds: IdMap,
 ): Promise<{ comments: number; likes: number }> {
-  const HOUR = DAY / 24;
   let commentCount = 0;
   const likeRows: Array<{ modelCommentId: string; userId: string; createdAt: Date }> = [];
 
   async function upsertNode(node: CommentSeed, modelId: string, parentId: string | null) {
     const id = seedId('comment', node.key);
-    const createdAt = daysAgo(node.createdDaysAgo ?? 30);
+    const createdAt = daysAgo(node.createdDaysAgo ?? DEFAULT_COMMENT_AGE_DAYS);
     const deleted = node.deleted ?? false;
     const likers = deleted ? [] : (node.likedBy ?? []);
 
@@ -504,6 +515,121 @@ export async function loadComments(
   }
 
   return { comments: commentCount, likes: likeRows.length };
+}
+
+const NOTIFICATION_READ_AFTER_DAYS = 30;
+
+export async function loadNotifications(
+  threads: CommentThreadSeed[],
+  models: ModelSeed[],
+  people: UserSeed[],
+  preferences: NotificationPreferenceSeed[],
+  users: IdMap,
+  modelIds: IdMap,
+): Promise<{ notifications: number; preferences: number }> {
+  const notificationDomain = userNotificationDomain();
+  const channelsByPreference = new Map<string, { email: EmailModeLit; inApp: boolean }>();
+
+  for (const p of preferences) {
+    const userId = mustGet(users, p.user, 'notification preference user');
+    const channels = { email: p.email, inApp: p.inApp ?? true };
+    channelsByPreference.set(`${p.user}:${p.category}`, channels);
+    await prisma.userNotificationPreference.upsert({
+      where: { userId_category: { userId, category: p.category } },
+      update: channels,
+      create: {
+        id: seedId('notification-preference', p.user, p.category),
+        userId,
+        category: p.category,
+        ...channels,
+      },
+    });
+  }
+
+  const authorsByModel = new Map(models.map((m) => [m.key, m.authors.map((a) => a.user)]));
+  const namesByUser = new Map(people.map((u) => [u.key, u.name]));
+
+  const events: Array<Record<string, unknown>> = [];
+  const rows: Array<Prisma.UserNotificationUncheckedCreateInput & { id: string }> = [];
+
+  function collect(node: CommentSeed, modelKey: string, parent: CommentSeed | null) {
+    const modelId = mustGet(modelIds, modelKey, 'notification model');
+    const commentId = seedId('comment', node.key);
+    const parentCommentId = parent ? seedId('comment', parent.key) : null;
+    const ageDays = node.createdDaysAgo ?? DEFAULT_COMMENT_AGE_DAYS;
+    const createdAt = daysAgo(ageDays);
+    const actorUserId = mustGet(users, node.user, 'notification actor');
+    const eventId = seedId('event', 'model_comment.created', commentId);
+
+    events.push({
+      id: eventId,
+      type: 'model_comment.created',
+      actorId: actorUserId,
+      resourceType: 'model',
+      resourceId: modelId,
+      payload: { commentId, parentId: parentCommentId },
+      createdAt,
+      processedAt: createdAt,
+    });
+
+    const recipients = listCommentNotificationRecipients({
+      commenterId: node.user,
+      commenterName: formatCommenterName(namesByUser.get(node.user)),
+      parentAuthorId: parent?.user ?? null,
+      modelAuthorIds: authorsByModel.get(modelKey) ?? [],
+    });
+
+    const read = ageDays >= NOTIFICATION_READ_AFTER_DAYS;
+    for (const r of recipients) {
+      const channels = notificationDomain.resolvePreference(
+        r.category,
+        channelsByPreference.get(`${r.recipientId}:${r.category}`),
+      );
+      if (notificationDomain.isSuppressed(channels)) continue;
+      const mode = channels.email;
+      const pendingDigest = mode === 'daily' && ageDays < 1;
+      const sentAfterMs = mode === 'daily' ? DAY : 0;
+      rows.push({
+        id: seedId('notification', node.key, r.recipientId, r.category),
+        recipientId: mustGet(users, r.recipientId, 'notification recipient'),
+        eventId,
+        category: r.category,
+        title: r.title,
+        body: truncatePreview(node.content),
+        url: links.modelComment(modelId, parentCommentId ?? commentId, commentId),
+        actorUserId,
+        targetType: 'model',
+        targetId: modelId,
+        createdAt,
+        readAt: read ? new Date(createdAt.getTime() + HOUR) : null,
+        emailSentAt:
+          mode === 'off' || pendingDigest ? null : new Date(createdAt.getTime() + sentAfterMs),
+      });
+    }
+  }
+
+  function walk(node: CommentSeed, modelKey: string, parent: CommentSeed | null) {
+    if (!node.deleted) collect(node, modelKey, parent);
+    for (const reply of node.replies ?? []) walk(reply, modelKey, node);
+  }
+
+  for (const thread of threads) {
+    for (const c of thread.comments) walk(c, thread.model, null);
+  }
+
+  if (events.length) {
+    await prisma.event.createMany({ data: events as never, skipDuplicates: true });
+  }
+
+  for (const row of rows) {
+    await prisma.userNotification.upsert({
+      where: { id: row.id },
+      update: {},
+      create: row,
+    });
+  }
+
+  return { notifications: rows.length, preferences: preferences.length };
 }
 
 export async function loadDrafts(

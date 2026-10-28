@@ -1,7 +1,11 @@
+import userDomain from '#src/modules/user/domain/user.domain.ts';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import notificationsConfig from '#src/config/notifications.ts';
 import makeUserNotificationService, {
   createUserNotificationService,
 } from '#src/modules/user-notification/user-notification.service.ts';
+import makeNotificationEmailService from '#src/modules/user-notification/notification-email.service.ts';
+import makeNotificationDigestService from '#src/modules/user-notification/notification-digest.service.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
 import userNotificationMapper from '#src/modules/user-notification/user-notification.mapper.ts';
 import {
@@ -12,10 +16,12 @@ import { mockNotificationPreferenceRepository } from '#src/modules/user-notifica
 import { mockUserNotificationRepository } from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
 import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
+import { MINUTE_MS } from '#src/shared/utils/consts.ts';
 import type { NotificationPreferenceRecord } from '#src/modules/user-notification/database/notification-preference.record.ts';
 import type { UserNotificationRecord } from '#src/modules/user-notification/database/user-notification.record.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type {
+  EmailMode,
   NotificationIntent,
   Notifier,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
@@ -27,7 +33,7 @@ function makeRecord(
     id: 'pref-1',
     userId: 'user-1',
     category: 'comment.on_your_model',
-    email: false,
+    email: 'off',
     inApp: true,
     updatedAt: new Date('2026-01-01'),
     ...overrides,
@@ -43,27 +49,29 @@ describe('userNotificationService', () => {
     transactionManager,
     notificationPreferenceRepository,
     userNotificationDomain: domain,
+    userDomain: userDomain(),
     userNotificationMapper: userNotificationMapper(),
   } as never);
 
   beforeEach(() => {
     notificationPreferenceRepository.findAllByUser.mockReset();
+    notificationPreferenceRepository.findAllByUserTx.mockReset();
     notificationPreferenceRepository.upsertTx.mockReset();
   });
 
   describe('updatePreferences', () => {
     it('rejects an unknown category and writes nothing', async () => {
       await expect(
-        service.updatePreferences('user-1', [{ category: 'comment.mentions_you', email: false }]),
+        service.updatePreferences('user-1', [{ category: 'comment.mentions_you', email: 'off' }]),
       ).rejects.toThrow(UnknownCategoryError);
 
-      expect(notificationPreferenceRepository.findAllByUser).not.toHaveBeenCalled();
+      expect(notificationPreferenceRepository.findAllByUserTx).not.toHaveBeenCalled();
       expect(notificationPreferenceRepository.upsertTx).not.toHaveBeenCalled();
     });
 
     it('keeps the currently-resolved value for an omitted channel', async () => {
-      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
-        makeRecord({ email: false, inApp: true }),
+      notificationPreferenceRepository.findAllByUserTx.mockResolvedValue([
+        makeRecord({ email: 'off', inApp: true }),
       ]);
 
       await service.updatePreferences('user-1', [
@@ -74,17 +82,17 @@ describe('userNotificationService', () => {
         expect.anything(),
         expect.objectContaining({
           category: 'comment.on_your_model',
-          email: false,
+          email: 'off',
           inApp: false,
         }),
       );
     });
 
     it('falls back to the catalog default for an omitted channel with no override', async () => {
-      notificationPreferenceRepository.findAllByUser.mockResolvedValue([]);
+      notificationPreferenceRepository.findAllByUserTx.mockResolvedValue([]);
 
       await service.updatePreferences('user-1', [
-        { category: 'comment.on_your_model', email: false },
+        { category: 'comment.on_your_model', email: 'off' },
       ]);
 
       const defaults = domain.categories.find(
@@ -95,20 +103,23 @@ describe('userNotificationService', () => {
         expect.anything(),
         expect.objectContaining({
           category: 'comment.on_your_model',
-          email: false,
+          email: 'off',
           inApp: defaults.inApp,
         }),
       );
     });
 
     it('writes with the userId that was passed in, not any value from the input rows', async () => {
-      notificationPreferenceRepository.findAllByUser.mockResolvedValue([]);
+      notificationPreferenceRepository.findAllByUserTx.mockResolvedValue([]);
 
       await service.updatePreferences('caller-user', [
-        { category: 'comment.on_your_model', email: true, inApp: true },
+        { category: 'comment.on_your_model', email: 'immediate', inApp: true },
       ]);
 
-      expect(notificationPreferenceRepository.findAllByUser).toHaveBeenCalledWith('caller-user');
+      expect(notificationPreferenceRepository.findAllByUserTx).toHaveBeenCalledWith(
+        expect.anything(),
+        'caller-user',
+      );
       expect(notificationPreferenceRepository.upsertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ userId: 'caller-user' }),
@@ -137,15 +148,15 @@ describe('userNotificationService', () => {
 
     it('applies a stored override to its category and leaves the rest at defaults', async () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
-        makeRecord({ category: 'general.daily_digest', email: false, inApp: true }),
+        makeRecord({ category: 'comment.reply_to_you', email: 'off', inApp: true }),
       ]);
 
       const result = await service.getPreferences('user-1');
 
       expect(result).toEqual({
         categories: expectedDefaults().map((preference) =>
-          preference.category === 'general.daily_digest'
-            ? { ...preference, email: false, inApp: true }
+          preference.category === 'comment.reply_to_you'
+            ? { ...preference, email: 'off', inApp: true }
             : preference,
         ),
       });
@@ -153,7 +164,7 @@ describe('userNotificationService', () => {
 
     it('ignores an override row for a category missing from the catalog', async () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
-        makeRecord({ category: 'comment.mentions_you', email: false, inApp: false }),
+        makeRecord({ category: 'comment.mentions_you', email: 'off', inApp: false }),
       ]);
 
       const result = await service.getPreferences('user-1');
@@ -224,6 +235,7 @@ function makeInsertedNotification(
     targetType: null,
     targetId: null,
     emailSentAt: null,
+    emailClaimedAt: null,
     readAt: null,
     createdAt: new Date('2026-01-01'),
     ...overrides,
@@ -245,18 +257,55 @@ describe('userNotificationService handleEvent', () => {
       notificationPreferenceRepository,
       userNotificationRepository,
       userNotificationDomain: domain,
+      userDomain: userDomain(),
       userNotificationMapper: userNotificationMapper(),
       userRepository,
-      mailService,
+      notificationEmailService: makeNotificationEmailService({
+        userNotificationRepository,
+        mailService,
+        logger,
+      } as never),
       logger,
     } as never);
   }
 
+  const claims = new Map<string, Date>();
+  const sentIds = new Set<string>();
+
+  function isHeldClaim(id: string, claimedAt: Date): boolean {
+    return claims.get(id)?.getTime() === claimedAt.getTime();
+  }
+
   beforeEach(() => {
+    claims.clear();
+    sentIds.clear();
     notificationPreferenceRepository.findAllByUser.mockReset().mockResolvedValue([]);
     userNotificationRepository.insertTx.mockReset().mockResolvedValue(makeInsertedNotification());
     userNotificationRepository.findOneByDeliveryKey.mockReset().mockResolvedValue(undefined);
-    userNotificationRepository.markEmailSent.mockReset().mockResolvedValue(undefined);
+    userNotificationRepository.claimUnsent
+      .mockReset()
+      .mockImplementation(async (ids: Array<string>) =>
+        ids
+          .filter((id) => !claims.has(id) && !sentIds.has(id))
+          .map((id) => {
+            const emailClaimedAt = new Date();
+            claims.set(id, emailClaimedAt);
+            return { id, emailClaimedAt };
+          }),
+      );
+    userNotificationRepository.markSent
+      .mockReset()
+      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
+        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) {
+          claims.delete(id);
+          sentIds.add(id);
+        }
+      });
+    userNotificationRepository.releaseClaim
+      .mockReset()
+      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
+        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) claims.delete(id);
+      });
     userRepository.findOneById.mockReset().mockResolvedValue(makeUserRecord());
     mailService.sendMailAsync.mockReset().mockResolvedValue({});
     logger.error.mockReset();
@@ -307,10 +356,7 @@ describe('userNotificationService handleEvent', () => {
         }),
       );
       expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledWith(
-        'notification-1',
-        expect.any(Date),
-      );
+      expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
     it('stores the references an intent carries, not resolved urls', async () => {
@@ -357,7 +403,7 @@ describe('userNotificationService handleEvent', () => {
 
     it('sends no mail and writes no ledger row for a recipient fully opted out of the category', async () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
-        makeRecord({ category: 'comment.on_your_model', email: false, inApp: false }),
+        makeRecord({ category: 'comment.on_your_model', email: 'off', inApp: false }),
       ]);
       const intent = makeIntent();
       const service = build([makeNotifier([intent])]);
@@ -369,9 +415,21 @@ describe('userNotificationService handleEvent', () => {
       expect(mailService.sendMailAsync).not.toHaveBeenCalled();
     });
 
-    it('sends no mail when the recipient turned the email channel off', async () => {
+    it('records an immediate row and sends it right away when email is immediate', async () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
-        makeRecord({ category: 'comment.on_your_model', email: false, inApp: true }),
+        makeRecord({ category: 'comment.on_your_model', email: 'immediate', inApp: true }),
+      ]);
+      const service = build([makeNotifier([makeIntent()])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
+      expect(sentIds).toEqual(new Set(['notification-1']));
+    });
+
+    it('records a daily row and leaves it unsent when email is daily', async () => {
+      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+        makeRecord({ category: 'comment.on_your_model', email: 'daily', inApp: true }),
       ]);
       const intent = makeIntent();
       const service = build([makeNotifier([intent])]);
@@ -380,11 +438,26 @@ describe('userNotificationService handleEvent', () => {
 
       expect(intent.buildEmail).not.toHaveBeenCalled();
       expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(sentIds.size).toBe(0);
+    });
+
+    it('records a row and sends nothing when email is off', async () => {
+      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+        makeRecord({ category: 'comment.on_your_model', email: 'off', inApp: true }),
+      ]);
+      const intent = makeIntent();
+      const service = build([makeNotifier([intent])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.insertTx).toHaveBeenCalled();
+      expect(intent.buildEmail).not.toHaveBeenCalled();
+      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
     });
 
     it('still writes the ledger row when only the in-app channel is off, so a retry cannot resend', async () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
-        makeRecord({ category: 'comment.on_your_model', email: true, inApp: false }),
+        makeRecord({ category: 'comment.on_your_model', email: 'immediate', inApp: false }),
       ]);
       const service = build([makeNotifier([makeIntent()])]);
 
@@ -392,10 +465,7 @@ describe('userNotificationService handleEvent', () => {
 
       expect(userNotificationRepository.insertTx).toHaveBeenCalledTimes(1);
       expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledWith(
-        'notification-1',
-        expect.any(Date),
-      );
+      expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
     it.each([
@@ -415,11 +485,12 @@ describe('userNotificationService handleEvent', () => {
       expect(mailService.sendMailAsync).not.toHaveBeenCalled();
     });
 
-    it('skips without mailing when a retry finds a ledger row whose email was already sent', async () => {
+    it('skips without mailing when a retry finds a ledger row it cannot claim', async () => {
       userNotificationRepository.insertTx.mockResolvedValue(undefined);
       userNotificationRepository.findOneByDeliveryKey.mockResolvedValue(
         makeInsertedNotification({ emailSentAt: new Date('2026-01-02') }),
       );
+      userNotificationRepository.claimUnsent.mockResolvedValue([]);
       const intent = makeIntent();
       const service = build([makeNotifier([intent])]);
 
@@ -432,7 +503,17 @@ describe('userNotificationService handleEvent', () => {
       );
       expect(intent.buildEmail).not.toHaveBeenCalled();
       expect(mailService.sendMailAsync).not.toHaveBeenCalled();
-      expect(userNotificationRepository.markEmailSent).not.toHaveBeenCalled();
+    });
+
+    it('sends nothing when the row is already claimed by a live attempt', async () => {
+      claims.set('notification-1', new Date());
+      const intent = makeIntent();
+      const service = build([makeNotifier([intent])]);
+
+      await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
+
+      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(sentIds.size).toBe(0);
     });
 
     it('resumes and mails when a retry finds a ledger row whose email was never sent', async () => {
@@ -447,10 +528,7 @@ describe('userNotificationService handleEvent', () => {
 
       expect(intent.buildEmail).toHaveBeenCalledTimes(1);
       expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledWith(
-        'existing-1',
-        expect.any(Date),
-      );
+      expect(sentIds).toEqual(new Set(['existing-1']));
     });
 
     it('does not read the ledger back when the insert wrote a fresh row', async () => {
@@ -463,7 +541,7 @@ describe('userNotificationService handleEvent', () => {
 
     it('skips without mailing when the email channel is off and the ledger row already exists', async () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
-        makeRecord({ category: 'comment.on_your_model', email: false, inApp: true }),
+        makeRecord({ category: 'comment.on_your_model', email: 'off', inApp: true }),
       ]);
       userNotificationRepository.insertTx.mockResolvedValue(undefined);
       userNotificationRepository.findOneByDeliveryKey.mockResolvedValue(
@@ -478,7 +556,7 @@ describe('userNotificationService handleEvent', () => {
       expect(mailService.sendMailAsync).not.toHaveBeenCalled();
     });
 
-    it('leaves emailSentAt unset, logs, and rethrows when sendMailAsync rejects', async () => {
+    it('leaves the row unsent and unclaimed, logs, and rethrows when sendMailAsync rejects', async () => {
       const smtpError = new Error('SMTP unreachable');
       mailService.sendMailAsync.mockRejectedValue(smtpError);
       const service = build([makeNotifier([makeIntent()])]);
@@ -487,24 +565,24 @@ describe('userNotificationService handleEvent', () => {
 
       expect(rejection).toBeInstanceOf(AggregateError);
       expect((rejection as AggregateError).errors).toEqual([smtpError]);
-      expect(userNotificationRepository.markEmailSent).not.toHaveBeenCalled();
+      expect(sentIds.size).toBe(0);
+      expect(claims.size).toBe(0);
       expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({ error: smtpError }));
     });
 
     it('logs and resolves when the email is sent but marking it as sent fails', async () => {
       const dbError = new Error('database unreachable');
-      userNotificationRepository.markEmailSent.mockRejectedValue(dbError);
+      userNotificationRepository.markSent.mockRejectedValue(dbError);
       const service = build([makeNotifier([makeIntent()])]);
 
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
       expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
-      expect(logger.error).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'UserNotificationService', error: dbError }),
-      );
+      expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({ error: dbError }));
+      expect(claims.size).toBe(1);
     });
 
-    it('sends the email exactly once across a failed attempt and its retry', async () => {
+    it('releases the claim on a failed send so the retry sends exactly once', async () => {
       const service = build([makeNotifier([makeIntent()])]);
       mailService.sendMailAsync.mockRejectedValueOnce(new Error('SMTP unreachable'));
 
@@ -515,13 +593,10 @@ describe('userNotificationService handleEvent', () => {
         makeInsertedNotification({ emailSentAt: null }),
       );
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
+      await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
       expect(mailService.sendMailAsync).toHaveBeenCalledTimes(2);
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledTimes(1);
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledWith(
-        'notification-1',
-        expect.any(Date),
-      );
+      expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
     it.each([
@@ -568,14 +643,9 @@ describe('userNotificationService handleEvent', () => {
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
       expect((rejection as AggregateError).errors).toEqual([failingError]);
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledTimes(1);
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledWith(
-        'row-a',
-        expect.any(Date),
-      );
+      expect(sentIds).toEqual(new Set(['row-a']));
 
       mailService.sendMailAsync.mockReset().mockResolvedValue({});
-      userNotificationRepository.markEmailSent.mockClear();
       userNotificationRepository.insertTx.mockResolvedValue(undefined);
       userNotificationRepository.findOneByDeliveryKey.mockImplementation(
         async (_eventId: string, recipientId: string) =>
@@ -593,11 +663,7 @@ describe('userNotificationService handleEvent', () => {
         to: 'b@example.test',
         subject: 'B',
       });
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledTimes(1);
-      expect(userNotificationRepository.markEmailSent).toHaveBeenCalledWith(
-        'row-b',
-        expect.any(Date),
-      );
+      expect(sentIds).toEqual(new Set(['row-a', 'row-b']));
     });
 
     it('rethrows resolution and delivery failures together after every intent is attempted', async () => {
@@ -617,7 +683,7 @@ describe('userNotificationService handleEvent', () => {
     it('applies preferences and recipient checks independently per intent', async () => {
       notificationPreferenceRepository.findAllByUser.mockImplementation(async (userId: string) =>
         userId === 'blocked-recipient'
-          ? [makeRecord({ category: 'comment.on_your_model', email: false, inApp: false })]
+          ? [makeRecord({ category: 'comment.on_your_model', email: 'off', inApp: false })]
           : [],
       );
       userRepository.findOneById.mockImplementation(async (id: string) =>
@@ -642,6 +708,7 @@ describe('userNotificationService markRead', () => {
   const service = makeUserNotificationService({
     userNotificationRepository,
     userNotificationDomain: domain,
+    userDomain: userDomain(),
   } as never);
 
   beforeEach(() => {
@@ -685,5 +752,322 @@ describe('userNotificationService markRead', () => {
       NotificationNotFoundError,
     );
     expect(userNotificationRepository.markRead).not.toHaveBeenCalled();
+  });
+});
+
+describe('userNotificationService digest', () => {
+  const notificationPreferenceRepository = mockNotificationPreferenceRepository();
+  const userNotificationRepository = mockUserNotificationRepository();
+  const userRepository = mockUserRepository();
+  const domain = userNotificationDomain();
+  const mailService = { sendMailAsync: vi.fn(), sendMail: vi.fn() };
+  const mailDomain = { createNotificationSummaryEmail: vi.fn() };
+  const logger = { error: vi.fn(), info: vi.fn(), warn: vi.fn(), debug: vi.fn() };
+  const existingModels = new Map<string, string>();
+  const resolveNotificationSubjectsQuery = {
+    execute: vi.fn(async (rows: ReadonlyArray<UserNotificationRecord>) => {
+      return new Map(
+        rows.map((row) => {
+          const modelName = row.targetId ? existingModels.get(row.targetId) : undefined;
+          const target =
+            modelName === undefined
+              ? null
+              : {
+                  name: modelName,
+                  thumbnailUrl: null,
+                  url: `https://example.test/models/${row.targetId}`,
+                };
+          return [row.id, { actor: null, target }] as const;
+        }),
+      );
+    }),
+  };
+
+  const notificationDigestService = makeNotificationDigestService({
+    notificationPreferenceRepository,
+    userNotificationRepository,
+    userNotificationDomain: domain,
+    userDomain: userDomain(),
+    userRepository,
+    resolveNotificationSubjectsQuery,
+    notificationEmailService: makeNotificationEmailService({
+      userNotificationRepository,
+      mailService,
+      logger,
+    } as never),
+    mailDomain,
+  } as never);
+
+  const service = createUserNotificationService([], {
+    transactionManager: mockTransactionManager(),
+    notificationPreferenceRepository,
+    userNotificationRepository,
+    userNotificationDomain: domain,
+    userDomain: userDomain(),
+    userNotificationMapper: userNotificationMapper(),
+    userRepository,
+    notificationDigestService,
+    logger,
+  } as never);
+
+  type SentDigest = {
+    to: string;
+    items: Array<{ text: string; url: string }>;
+    moreCount: number;
+    feedUrl: string;
+  };
+
+  const claims = new Map<string, Date>();
+  const sentIds = new Set<string>();
+  let pendingRows: Array<UserNotificationRecord> = [];
+  let sentDigests: Array<SentDigest> = [];
+
+  function makeRow(
+    id: string,
+    category = 'comment.on_your_model',
+    createdAt = new Date('2026-01-01T12:00:00Z'),
+  ): UserNotificationRecord {
+    return makeInsertedNotification({ id, category, title: id, createdAt });
+  }
+
+  function makeRecentRow(id: string, ageMs: number, category = 'comment.on_your_model') {
+    return makeRow(id, category, new Date(Date.now() - ageMs));
+  }
+
+  function isHeldClaim(id: string, claimedAt: Date): boolean {
+    return claims.get(id)?.getTime() === claimedAt.getTime();
+  }
+
+  async function settle(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
+
+  beforeEach(() => {
+    existingModels.clear();
+    claims.clear();
+    sentIds.clear();
+    pendingRows = [];
+    sentDigests = [];
+    notificationPreferenceRepository.findAllByUser.mockReset().mockResolvedValue([]);
+    notificationPreferenceRepository.findAllByUserTx.mockReset().mockResolvedValue([]);
+    notificationPreferenceRepository.upsertTx.mockReset().mockResolvedValue(undefined);
+    userNotificationRepository.findPendingForRecipient
+      .mockReset()
+      .mockImplementation(
+        async (_recipientId: string, categories: Array<string>, since: Date, until: Date) =>
+          pendingRows.filter(
+            (row) =>
+              categories.includes(row.category) &&
+              !sentIds.has(row.id) &&
+              row.createdAt >= since &&
+              row.createdAt <= until,
+          ),
+      );
+    userNotificationRepository.claimUnsent
+      .mockReset()
+      .mockImplementation(async (ids: Array<string>) => {
+        const emailClaimedAt = new Date();
+        return ids
+          .filter((id) => !claims.has(id) && !sentIds.has(id))
+          .map((id) => {
+            claims.set(id, emailClaimedAt);
+            return { id, emailClaimedAt };
+          });
+      });
+    userNotificationRepository.markSent
+      .mockReset()
+      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
+        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) {
+          claims.delete(id);
+          sentIds.add(id);
+        }
+      });
+    userNotificationRepository.releaseClaim
+      .mockReset()
+      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
+        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) claims.delete(id);
+      });
+    userRepository.findOneById.mockReset().mockResolvedValue(makeUserRecord());
+    mailDomain.createNotificationSummaryEmail
+      .mockReset()
+      .mockImplementation(
+        async (
+          to: string,
+          _name: string,
+          items: SentDigest['items'],
+          moreCount: number,
+          feedUrl: string,
+        ) => ({
+          to,
+          items,
+          moreCount,
+          feedUrl,
+        }),
+      );
+    mailService.sendMailAsync.mockReset().mockImplementation(async (content: SentDigest) => {
+      sentDigests.push(content);
+      return {};
+    });
+    logger.error.mockReset();
+  });
+
+  describe('updatePreferences flush', () => {
+    const recentMs = MINUTE_MS;
+
+    function storeModes(email: EmailMode, ...categories: Array<string>) {
+      notificationPreferenceRepository.findAllByUserTx.mockResolvedValue(
+        categories.map((category) => makeRecord({ userId: 'recipient-1', category, email })),
+      );
+    }
+
+    function storeDaily(...categories: Array<string>) {
+      storeModes('daily', ...categories);
+    }
+
+    it('sends one email covering the pending rows of every category switched to immediate', async () => {
+      storeDaily('comment.on_your_model', 'comment.reply_to_you');
+      pendingRows = [
+        makeRecentRow('a', recentMs),
+        makeRecentRow('b', recentMs, 'comment.reply_to_you'),
+      ];
+
+      await service.updatePreferences('recipient-1', [
+        { category: 'comment.on_your_model', email: 'immediate' },
+        { category: 'comment.reply_to_you', email: 'immediate' },
+      ]);
+      await vi.waitFor(() => expect(sentIds.size).toBe(2));
+      await settle();
+
+      expect(sentDigests).toHaveLength(1);
+      expect(sentDigests[0]!.items.map((item) => item.text).sort()).toEqual(['a', 'b']);
+    });
+
+    it.each<[EmailMode, EmailMode]>([
+      ['off', 'immediate'],
+      ['off', 'daily'],
+      ['immediate', 'daily'],
+      ['daily', 'immediate'],
+    ])(
+      'flushes rows younger than the digest minimum age when switching %s to %s',
+      async (from, to) => {
+        storeModes(from, 'comment.on_your_model');
+        notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+          makeRecord({ userId: 'recipient-1', category: 'comment.on_your_model', email: to }),
+        ]);
+        pendingRows = [makeRecentRow('fresh', 0)];
+
+        await service.updatePreferences('recipient-1', [
+          { category: 'comment.on_your_model', email: to },
+        ]);
+        await vi.waitFor(() => expect(sentIds.has('fresh')).toBe(true));
+        await settle();
+
+        expect(sentDigests).toHaveLength(1);
+      },
+    );
+
+    it('flushes a category with no stored override when it is switched to daily', async () => {
+      notificationPreferenceRepository.findAllByUserTx.mockResolvedValue([]);
+      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+        makeRecord({ userId: 'recipient-1', category: 'comment.on_your_model', email: 'daily' }),
+      ]);
+      pendingRows = [makeRecentRow('a', recentMs)];
+
+      await service.updatePreferences('recipient-1', [
+        { category: 'comment.on_your_model', email: 'daily' },
+      ]);
+      await vi.waitFor(() => expect(sentIds.has('a')).toBe(true));
+      await settle();
+
+      expect(sentDigests).toHaveLength(1);
+    });
+
+    it('never flushes a row older than the 25 hour window', async () => {
+      storeDaily('comment.on_your_model');
+      pendingRows = [
+        makeRecentRow('recent', recentMs),
+        makeRecentRow('old', notificationsConfig.windowMs + recentMs),
+      ];
+
+      await service.updatePreferences('recipient-1', [
+        { category: 'comment.on_your_model', email: 'immediate' },
+      ]);
+      await vi.waitFor(() => expect(sentIds.has('recent')).toBe(true));
+      await settle();
+
+      expect(sentIds.has('old')).toBe(false);
+      expect(sentDigests[0]!.items.map((item) => item.text)).toEqual(['recent']);
+    });
+
+    it.each<[EmailMode, EmailMode]>([
+      ['daily', 'off'],
+      ['immediate', 'off'],
+      ['daily', 'daily'],
+      ['immediate', 'immediate'],
+    ])('sends nothing when %s is saved as %s', async (from, to) => {
+      storeModes(from, 'comment.on_your_model');
+      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+        makeRecord({ userId: 'recipient-1', category: 'comment.on_your_model', email: to }),
+      ]);
+      pendingRows = [makeRecentRow('a', recentMs)];
+
+      await service.updatePreferences('recipient-1', [
+        { category: 'comment.on_your_model', email: to },
+      ]);
+      await settle();
+
+      expect(sentDigests).toHaveLength(0);
+      expect(sentIds.size).toBe(0);
+    });
+
+    it('sends nothing for an in-app only toggle', async () => {
+      storeDaily('comment.on_your_model');
+      pendingRows = [makeRecentRow('a', recentMs)];
+
+      await service.updatePreferences('recipient-1', [
+        { category: 'comment.on_your_model', inApp: false },
+      ]);
+      await settle();
+
+      expect(sentDigests).toHaveLength(0);
+      expect(sentIds.size).toBe(0);
+    });
+
+    it('resolves before the flush email has been sent', async () => {
+      storeDaily('comment.on_your_model');
+      pendingRows = [makeRecentRow('a', recentMs)];
+      let finishSend: () => void = () => undefined;
+      mailService.sendMailAsync.mockImplementation(
+        async () =>
+          new Promise<void>((resolve) => {
+            finishSend = resolve;
+          }),
+      );
+
+      await service.updatePreferences('recipient-1', [
+        { category: 'comment.on_your_model', email: 'immediate' },
+      ]);
+
+      expect(sentIds.size).toBe(0);
+      await vi.waitFor(() => expect(mailService.sendMailAsync).toHaveBeenCalled());
+      finishSend();
+      await vi.waitFor(() => expect(sentIds.has('a')).toBe(true));
+    });
+
+    it('logs a failed flush and still resolves, leaving the rows sendable', async () => {
+      storeDaily('comment.on_your_model');
+      pendingRows = [makeRecentRow('a', recentMs)];
+      mailService.sendMailAsync.mockRejectedValue(new Error('smtp down'));
+
+      await expect(
+        service.updatePreferences('recipient-1', [
+          { category: 'comment.on_your_model', email: 'immediate' },
+        ]),
+      ).resolves.toBeUndefined();
+      await vi.waitFor(() => expect(logger.error).toHaveBeenCalled());
+
+      expect(sentIds.size).toBe(0);
+      expect(claims.size).toBe(0);
+    });
   });
 });

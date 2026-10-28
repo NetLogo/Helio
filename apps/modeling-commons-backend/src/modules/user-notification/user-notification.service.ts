@@ -1,7 +1,11 @@
 import links from '#src/config/links.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
+import { handleFailedDeliveries } from '#src/modules/user-notification/delivery-failures.ts';
 import { UnknownCategoryError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import type {
+  DeliverableRecipient,
+  EmailMode,
+  EmailModeByCategory,
   NotificationCategory,
   NotificationIntent,
   NotificationLinks,
@@ -11,13 +15,13 @@ import type { NotificationPreferenceResponseDto } from '#src/modules/user-notifi
 
 export type UpdatePreferenceInput = {
   category: string;
-  email?: boolean;
+  email?: EmailMode;
   inApp?: boolean;
 };
 
 type ValidatedPreferenceInput = {
   category: NotificationCategory;
-  email?: boolean;
+  email?: EmailMode;
   inApp?: boolean;
 };
 
@@ -30,24 +34,28 @@ export function createUserNotificationService(
     userNotificationDomain,
     userNotificationMapper,
     userRepository,
-    mailService,
+    notificationEmailService,
+    notificationDigestService,
     logger,
   }: Dependencies,
 ) {
-  async function deliver(
-    event: EventRecord,
-    intent: NotificationIntent,
-    emailLinks: NotificationLinks,
-  ): Promise<void> {
+  async function findDeliverableRecipient(intent: NotificationIntent) {
     const recipient = await userRepository.findOneById(intent.recipientUserId);
-    if (!userNotificationDomain.isDeliverableRecipient(recipient)) return;
+    if (!userNotificationDomain.isDeliverableRecipient(recipient)) return undefined;
 
     const preferences = await notificationPreferenceRepository.findAllByUser(recipient.id);
     const override = preferences.find((preference) => preference.category === intent.category);
-    const resolved = userNotificationDomain.resolvePreference(intent.category, override);
+    const channels = userNotificationDomain.resolvePreference(intent.category, override);
+    if (userNotificationDomain.isSuppressed(channels)) return undefined;
 
-    if (userNotificationDomain.isSuppressed(resolved)) return;
+    return { recipient, channels };
+  }
 
+  async function recordLedgerRow(
+    event: EventRecord,
+    recipient: DeliverableRecipient,
+    intent: NotificationIntent,
+  ) {
     // The row is the delivery ledger, not the feed entry, so it is written even when
     // `inApp` is off, its unique key is what stops a retried event resending the email.
     const inserted = await transactionManager.run(async (ctx) =>
@@ -56,29 +64,30 @@ export function createUserNotificationService(
         userNotificationDomain.createLedgerRow(event, recipient.id, intent),
       ),
     );
-    const ledger =
+    return (
       inserted ??
-      (await userNotificationRepository.findOneByDeliveryKey(
-        event.id,
-        recipient.id,
-        intent.category,
-      ));
-    if (!ledger || ledger.emailSentAt || !resolved.email) return;
-
-    const content = await intent.buildEmail(
-      { id: recipient.id, email: recipient.email, name: recipient.name },
-      emailLinks,
+      userNotificationRepository.findOneByDeliveryKey(event.id, recipient.id, intent.category)
     );
-    await mailService.sendMailAsync(content);
-    await userNotificationRepository
-      .markEmailSent(ledger.id, new Date())
-      .catch((error: unknown) => {
-        logger.error({
-          name: 'UserNotificationService',
-          message: 'The email was sent but could not be marked as sent',
-          error,
-        });
-      });
+  }
+
+  async function deliver(
+    event: EventRecord,
+    intent: NotificationIntent,
+    emailLinks: NotificationLinks,
+  ): Promise<void> {
+    const deliverable = await findDeliverableRecipient(intent);
+    if (!deliverable) return;
+
+    const { recipient, channels } = deliverable;
+    const ledger = await recordLedgerRow(event, recipient, intent);
+    if (!ledger || !userNotificationDomain.isSendableNow(channels)) return;
+
+    await notificationEmailService.sendClaimed([ledger.id], async () =>
+      intent.buildEmail(
+        { id: recipient.id, email: recipient.email, name: recipient.name },
+        emailLinks,
+      ),
+    );
   }
 
   return {
@@ -92,7 +101,6 @@ export function createUserNotificationService(
       const intents = resolutions
         .filter((result) => result.status === 'fulfilled')
         .flatMap((result) => result.value);
-      const failedResolutions = resolutions.filter((result) => result.status === 'rejected');
 
       const emailLinks: NotificationLinks = {
         unsubscribeUrl: links.support(),
@@ -102,30 +110,17 @@ export function createUserNotificationService(
       const deliveries = await Promise.allSettled(
         intents.map(async (intent) => deliver(event, intent, emailLinks)),
       );
-      const failedDeliveries = deliveries.filter((result) => result.status === 'rejected');
-
-      for (const failure of failedResolutions) {
-        logger.error({
+      handleFailedDeliveries(
+        [
+          { results: resolutions, message: 'A notifier failed to resolve intents' },
+          { results: deliveries, message: 'Failed to deliver a notification' },
+        ],
+        logger,
+        {
           name: 'UserNotificationService',
-          message: 'A notifier failed to resolve intents',
-          error: failure.reason,
-        });
-      }
-      for (const failure of failedDeliveries) {
-        logger.error({
-          name: 'UserNotificationService',
-          message: 'Failed to deliver a notification',
-          error: failure.reason,
-        });
-      }
-
-      const failures = [...failedResolutions, ...failedDeliveries];
-      if (failures.length > 0) {
-        throw new AggregateError(
-          failures.map((failure) => failure.reason as unknown),
-          'One or more notifications failed to resolve or deliver',
-        );
-      }
+          summary: 'One or more notifications failed to resolve or deliver',
+        },
+      );
     },
 
     async markRead(userId: string, notificationId: string): Promise<void> {
@@ -167,23 +162,41 @@ export function createUserNotificationService(
         return { category, email: preference.email, inApp: preference.inApp };
       });
 
-      const existing = await notificationPreferenceRepository.findAllByUser(userId);
-      const existingByCategory = new Map(existing.map((row) => [row.category, row]));
+      const { previous, next } = await transactionManager.run(async (ctx) => {
+        const existing = await notificationPreferenceRepository.findAllByUserTx(ctx, userId);
+        const existingByCategory = new Map(existing.map((row) => [row.category, row]));
+        const previousModes: EmailModeByCategory = {};
+        const nextModes: EmailModeByCategory = {};
 
-      await transactionManager.run(async (ctx) => {
         for (const preference of validated) {
           const resolved = userNotificationDomain.resolvePreference(
             preference.category,
             existingByCategory.get(preference.category),
           );
+          const email = preference.email ?? resolved.email;
 
           await notificationPreferenceRepository.upsertTx(ctx, {
             userId,
             category: preference.category,
-            email: preference.email ?? resolved.email,
+            email,
             inApp: preference.inApp ?? resolved.inApp,
           });
+          previousModes[preference.category] = resolved.email;
+          nextModes[preference.category] = email;
         }
+
+        return { previous: previousModes, next: nextModes };
+      });
+
+      const flushed = userNotificationDomain.listFlushedCategories(previous, next);
+      if (flushed.length === 0) return;
+
+      void notificationDigestService.flushDigest(userId, flushed).catch((error: unknown) => {
+        logger.error({
+          name: 'UserNotificationService',
+          message: 'Failed to flush the notification digest',
+          error,
+        });
       });
     },
   };

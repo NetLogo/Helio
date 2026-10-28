@@ -14,7 +14,7 @@ function makePreference(
     id: 'pref-1',
     userId: 'user-1',
     category: 'comment.on_your_model',
-    email: true,
+    email: 'immediate',
     inApp: true,
     updatedAt: new Date('2026-01-01'),
     ...overrides,
@@ -114,8 +114,10 @@ describe('listUserNotificationsQuery', () => {
   it('resolves subjects from the page it just read, not from the stored row', async () => {
     await query.execute('user-1', {});
 
-    const [records] = resolveNotificationSubjectsQuery.execute.mock.calls[0]!;
+    const [records, viewerId, options] = resolveNotificationSubjectsQuery.execute.mock.calls[0]!;
     expect(records).toEqual([expect.objectContaining({ id: 'notification-1' })]);
+    expect(viewerId).toBe('user-1');
+    expect(options).toEqual({ includeThumbnails: true });
     expect(resolveNotificationSubjectsQuery.execute).toHaveBeenCalledOnce();
   });
 
@@ -150,14 +152,12 @@ describe('listUserNotificationsQuery', () => {
   it('honours an inApp override over the catalog default', async () => {
     notificationPreferenceRepository.findAllByUser.mockResolvedValue([
       makePreference({ category: 'comment.on_your_model', inApp: false }),
-      makePreference({ id: 'pref-2', category: 'general.daily_digest', inApp: true }),
     ]);
 
     await query.execute('user-1', {});
 
     const [, filters] = userNotificationRepository.findAllByRecipient.mock.calls[0]!;
     expect(filters.categories).not.toContain('comment.on_your_model');
-    expect(filters.categories).toContain('general.daily_digest');
   });
 
   it('returns an empty page without touching the ledger when every category is muted', async () => {

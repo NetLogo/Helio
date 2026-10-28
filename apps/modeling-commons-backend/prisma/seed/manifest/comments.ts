@@ -5,6 +5,7 @@ import type { CommentThreadSeed } from './types.js';
 // `maximumShownRepliesPerLevel` replies (see-more), a chain deeper than
 // `maximumNested` (continue-thread link), an edited comment, likes, a
 // version-scoped comment, and a soft-deleted comment kept alive by its replies.
+// Comments under a day old feed the pending daily digest seeded from them.
 export const COMMENTS: CommentThreadSeed[] = [
   {
     model: 'wolf-sheep',
@@ -47,6 +48,13 @@ export const COMMENTS: CommentThreadSeed[] = [
             user: 'diego',
             content: '+1, ran into the exact same question when I taught with this.',
             createdDaysAgo: 37,
+          },
+          {
+            key: 'ws-1-4',
+            user: 'chen',
+            content:
+              'Following up: a density-dependent birth rate also keeps the grass from collapsing.',
+            createdDaysAgo: 0.15,
           },
         ],
       },
@@ -129,6 +137,19 @@ export const COMMENTS: CommentThreadSeed[] = [
         user: 'chen',
         content: 'Any appetite for a 3D port? The emergent lanes would be gorgeous in three dimensions.',
         createdDaysAgo: 8,
+      },
+      {
+        key: 'flock-3',
+        user: 'maria',
+        content: 'At a vision of 2 patches the flocks split into narrow lanes. Is that expected?',
+        createdDaysAgo: 0.1,
+      },
+      {
+        key: 'flock-4',
+        user: 'kenji',
+        content:
+          'Using this with my physics class next week, the separation rule is a great intro to forces.',
+        createdDaysAgo: 0.2,
       },
     ],
   },

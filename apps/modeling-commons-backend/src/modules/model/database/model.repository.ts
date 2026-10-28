@@ -5,8 +5,8 @@ import {
 } from '#src/modules/model/database/model.card.record.ts';
 import type {
   ModelInteractionCounts,
-  ModelPreviewKeyRecord,
   ModelRepository,
+  ModelSubjectRecord,
 } from '#src/modules/model/database/model.repository.port.ts';
 import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
@@ -17,6 +17,8 @@ import {
   type PaginatedQueryParams,
 } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+import { readableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
+import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
 import { buildModelOrderBy, buildModelWhere } from './model.search.ts';
 
 const interactionCountColumn: Record<ModelInteractionKind, keyof Model> = {
@@ -145,23 +147,27 @@ export default function modelRepository({
       });
     },
 
-    // One correlated read for a whole page of models; the full card is far too much
-    // to load when all a caller wants is the latest version's thumbnail.
-    async findLatestPreviewKeys(modelIds: Array<string>): Promise<Array<ModelPreviewKeyRecord>> {
+    async findSubjectsReadableBy(
+      modelIds: Array<string>,
+      viewer: ViewerContext | null,
+    ): Promise<Array<ModelSubjectRecord>> {
       if (modelIds.length === 0) return [];
       const records = await db.model.findMany({
-        where: { id: { in: modelIds }, deletedAt: null },
+        where: {
+          AND: [{ id: { in: modelIds }, deletedAt: null }, readableModelFilter(viewer)],
+        },
         select: {
           id: true,
           versions: {
             orderBy: { versionNumber: 'desc' },
             take: 1,
-            select: { previewImageFileKey: true },
+            select: { title: true, previewImageFileKey: true },
           },
         },
       });
       return records.map((record) => ({
         id: record.id,
+        title: record.versions[0]?.title ?? null,
         previewImageFileKey: record.versions[0]?.previewImageFileKey ?? null,
       }));
     },

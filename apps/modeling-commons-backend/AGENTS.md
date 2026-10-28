@@ -12,7 +12,7 @@ RESTful API backend: Fastify + TypeScript, Prisma/PostgreSQL, better-auth, admin
 
 Every module follows the same skeleton - mirror it when adding a new one:
 
-- `domain/` - aggregates, value types, domain errors, pure logic (`<module>.domain.ts`, `<module>.errors.ts`, `<module>.types.ts`).
+- `domain/` - aggregates, value types, domain errors, pure logic, domain predicate functions (`<module>.domain.ts`, `<module>.errors.ts`, `<module>.types.ts`).
 - `database/` - always three files: `<module>.repository.ts` (Prisma impl), `.repository.port.ts` (interface), `.repository.mock.ts` (for tests). Record shapes live here too (`<module>.record.ts`).
 - `dtos/` - Typebox request/response schemas + inferred types. Paginated responses have their own `*.paginated.response.dto.ts`.
 - `queries/` - read-side CQRS-like handlers for complex queries (`get-*.query.ts`, `list-*.query.ts`).
@@ -80,11 +80,14 @@ Use path aliases, never relative `../../`:
 - `yarn run test:unit` (vitest) · `yarn run test:e2e` (cucumber, needs `yarn run svc` running for postgres/object-storage/mailpit/netlogo-services).
 - `test:unit` is fully mocked (no DB); apply pending migrations before `test:e2e` (`yarn run db:migrate:dev`) — an unapplied migration makes the generated client mismatch the DB and 500s every affected route. Diagnose e2e failures from `reports/cucumber-report.json`.
 - In vitest specs, import `beforeEach`/`afterEach` from `vitest`, never `node:test` — wrong import silently no-ops the hook.
+- Tests should never enforce an implementation detail; they should focus on observable behavior and outcomes.
+- Enforce constraints through tests, ensuring that the system behaves correctly under expected and edge-case scenarios.
 
 ## Config & limits
 
 - Limits (file size, allowed MIME types, rate caps, …) live in `src/config/rules.ts`. Don't redeclare module-local constants.
 - App-level env (`SMTP_*`, `STORAGE_*`, …) flows through `src/config/env.ts`. Services receive derived values via awilix DI (`storagePublicBaseUrl`, `bucket`), not direct `env.*` reads.
+- Worker schedules and cron expressions are defined in `src/config/workers.ts`. Tests validate that each cron expression is well-formed and adheres to the expected five-field format.
 
 ## Dev servers
 

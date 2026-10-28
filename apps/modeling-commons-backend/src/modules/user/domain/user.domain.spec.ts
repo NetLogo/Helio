@@ -115,3 +115,13 @@ describe('userDomain', () => {
     });
   });
 });
+
+describe('formatGreetingName', () => {
+  it('greets a user by name', () => {
+    expect(domain.formatGreetingName({ name: 'Alice' })).toBe('Alice');
+  });
+
+  it('falls back to a neutral greeting when the user has no name', () => {
+    expect(domain.formatGreetingName({ name: null })).toBe('there');
+  });
+});

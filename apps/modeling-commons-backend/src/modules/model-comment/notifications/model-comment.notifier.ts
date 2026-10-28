@@ -1,5 +1,9 @@
 import links from '#src/config/links.ts';
 import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
+import {
+  formatCommenterName,
+  listCommentNotificationRecipients,
+} from '#src/modules/model-comment/domain/model-comment.recipients.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type {
   NotificationIntent,
@@ -13,6 +17,7 @@ export default function makeModelCommentNotifier({
   modelCommentRepository,
   modelAuthorRepository,
   userRepository,
+  userDomain,
   getModelCardQuery,
   mailDomain,
   logger,
@@ -59,70 +64,51 @@ export default function makeModelCommentNotifier({
       const preview = truncatePreview(entity.content ?? '');
 
       const commenter = entity.userId ? await userRepository.findOneById(entity.userId) : null;
-      const commenterName = commenter?.name ?? 'Someone';
+      const commenterName = formatCommenterName(commenter?.name);
       const model = await buildEmailModel(entity.modelId);
 
       const actorUserId = commenter?.id;
       const target: NotificationTargetRef = { type: 'model', id: entity.modelId };
 
-      // A reply notifies the parent's author with "replied to your comment". Model
-      // authors get "commented on your model" - minus the commenter and minus the
-      // parent author, who already received the more specific reply email.
-      const parentAuthorId =
-        parent?.userId && parent.userId !== entity.userId ? parent.userId : null;
-
       const authors = await modelAuthorRepository.findAllByModel(entity.modelId);
-      const modelAuthorIds = new Set(authors.map((author) => author.userId));
-      if (entity.userId) modelAuthorIds.delete(entity.userId);
-      if (parentAuthorId) modelAuthorIds.delete(parentAuthorId);
+      const recipients = listCommentNotificationRecipients({
+        commenterId: entity.userId,
+        commenterName,
+        parentAuthorId: parent?.userId ?? null,
+        modelAuthorIds: authors.map((author) => author.userId),
+      });
 
-      const intents: Array<NotificationIntent> = [];
-
-      if (parentAuthorId) {
-        intents.push({
-          recipientUserId: parentAuthorId,
-          category: 'comment.reply_to_you',
-          title: `${commenterName} replied to your comment`,
-          body: preview,
-          url: commentUrl,
-          actorUserId,
-          target,
-          buildEmail: async (recipient, emailLinks) =>
-            mailDomain.createRepliedToCommentEmail(
-              recipient.email,
-              recipient.name ?? 'there',
-              commenterName,
-              model,
-              preview,
-              commentUrl,
-              emailLinks.unsubscribeUrl,
-            ),
-        });
-      }
-
-      for (const recipientId of modelAuthorIds) {
-        intents.push({
-          recipientUserId: recipientId,
-          category: 'comment.on_your_model',
-          title: `${commenterName} commented on your model`,
-          body: preview,
-          url: commentUrl,
-          actorUserId,
-          target,
-          buildEmail: async (recipient, emailLinks) =>
-            mailDomain.createCommentedOnModelEmail(
-              recipient.email,
-              recipient.name ?? 'there',
-              commenterName,
-              model,
-              preview,
-              commentUrl,
-              emailLinks.unsubscribeUrl,
-            ),
-        });
-      }
-
-      return intents;
+      return recipients.map(({ recipientId, category, title }) => ({
+        recipientUserId: recipientId,
+        category,
+        title,
+        body: preview,
+        url: commentUrl,
+        actorUserId,
+        target,
+        buildEmail: async (recipient, emailLinks) => {
+          const greetingName = userDomain.formatGreetingName(recipient);
+          return category === 'comment.reply_to_you'
+            ? mailDomain.createRepliedToCommentEmail(
+                recipient.email,
+                greetingName,
+                commenterName,
+                model,
+                preview,
+                commentUrl,
+                emailLinks.unsubscribeUrl,
+              )
+            : mailDomain.createCommentedOnModelEmail(
+                recipient.email,
+                greetingName,
+                commenterName,
+                model,
+                preview,
+                commentUrl,
+                emailLinks.unsubscribeUrl,
+              );
+        },
+      }));
     },
   };
 }

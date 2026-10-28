@@ -1,7 +1,13 @@
 import { describe, it, expect } from 'vitest';
+import notificationsConfig from '#src/config/notifications.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
 import { NotificationNotFoundError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
-import type { NotificationIntent } from '#src/modules/user-notification/domain/user-notification.types.ts';
+import type {
+  DigestRow,
+  EmailMode,
+  NotificationChannels,
+  NotificationIntent,
+} from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
 
@@ -9,11 +15,9 @@ const domain = userNotificationDomain();
 
 describe('userNotificationDomain', () => {
   describe('categories', () => {
-    it('exposes exactly the three known categories', () => {
+    it('exposes exactly the two known categories', () => {
       const names = domain.categories.map((c) => c.category).sort();
-      expect(names).toEqual(
-        ['comment.on_your_model', 'comment.reply_to_you', 'general.daily_digest'].sort(),
-      );
+      expect(names).toEqual(['comment.on_your_model', 'comment.reply_to_you'].sort());
     });
 
     it('gives every category a label and a description', () => {
@@ -46,16 +50,20 @@ describe('userNotificationDomain', () => {
       },
     );
 
+    function otherMode(mode: EmailMode): EmailMode {
+      return mode === 'daily' ? 'off' : 'daily';
+    }
+
     it('applies an override for both channels', () => {
       const { category, defaults } = domain.categories[0]!;
-      const opposite = { email: !defaults.email, inApp: !defaults.inApp };
+      const opposite = { email: otherMode(defaults.email), inApp: !defaults.inApp };
       expect(domain.resolvePreference(category, opposite)).toEqual(opposite);
     });
 
     it('merges a partial override, keeping the default for the omitted channel', () => {
       const { category, defaults } = domain.categories[0]!;
-      expect(domain.resolvePreference(category, { email: !defaults.email })).toEqual({
-        email: !defaults.email,
+      expect(domain.resolvePreference(category, { email: otherMode(defaults.email) })).toEqual({
+        email: otherMode(defaults.email),
         inApp: defaults.inApp,
       });
       expect(domain.resolvePreference(category, { inApp: !defaults.inApp })).toEqual({
@@ -67,32 +75,24 @@ describe('userNotificationDomain', () => {
 });
 
 describe('userNotificationDomain feed helpers', () => {
-  describe('inAppEnabledCategories', () => {
+  describe('listInAppEnabledCategories', () => {
     it('falls back to the catalog defaults when the user has no overrides', () => {
-      expect(domain.inAppEnabledCategories([])).toEqual(
+      expect(domain.listInAppEnabledCategories([])).toEqual(
         domain.categories.filter((info) => info.defaults.inApp).map((info) => info.category),
       );
     });
 
     it('drops a category the user muted in-app', () => {
-      const result = domain.inAppEnabledCategories([
+      const result = domain.listInAppEnabledCategories([
         { category: 'comment.on_your_model', inApp: false },
       ]);
 
       expect(result).not.toContain('comment.on_your_model');
     });
 
-    it('adds a category the user opted into against a default of off', () => {
-      const result = domain.inAppEnabledCategories([
-        { category: 'general.daily_digest', inApp: true },
-      ]);
-
-      expect(result).toContain('general.daily_digest');
-    });
-
     it('ignores an override that only touches the email channel', () => {
-      const result = domain.inAppEnabledCategories([
-        { category: 'comment.on_your_model', email: false },
+      const result = domain.listInAppEnabledCategories([
+        { category: 'comment.on_your_model', email: 'off' },
       ]);
 
       expect(result).toContain('comment.on_your_model');
@@ -208,15 +208,24 @@ describe('userNotificationDomain delivery helpers', () => {
 
   describe('isSuppressed', () => {
     it('suppresses when both channels are off', () => {
-      expect(domain.isSuppressed({ email: false, inApp: false })).toBe(true);
+      expect(domain.isSuppressed({ email: 'off', inApp: false })).toBe(true);
     });
 
-    it.each([
-      { email: true, inApp: false },
-      { email: false, inApp: true },
-      { email: true, inApp: true },
+    it.each<NotificationChannels>([
+      { email: 'immediate', inApp: false },
+      { email: 'daily', inApp: false },
+      { email: 'off', inApp: true },
+      { email: 'immediate', inApp: true },
     ])('does not suppress when a channel is on: %o', (channels) => {
       expect(domain.isSuppressed(channels)).toBe(false);
+    });
+  });
+
+  describe('isSendableNow', () => {
+    it('is true only for the immediate email mode', () => {
+      expect(domain.isSendableNow({ email: 'immediate', inApp: false })).toBe(true);
+      expect(domain.isSendableNow({ email: 'daily', inApp: true })).toBe(false);
+      expect(domain.isSendableNow({ email: 'off', inApp: true })).toBe(false);
     });
   });
 
@@ -259,6 +268,144 @@ describe('userNotificationDomain delivery helpers', () => {
 
     it('is false for a missing notification', () => {
       expect(domain.isRead(undefined)).toBe(false);
+    });
+  });
+});
+
+describe('userNotificationDomain digest helpers', () => {
+  function makeDigestRow(
+    id: string,
+    category: string,
+    createdAt: string,
+    overrides: Partial<DigestRow> = {},
+  ): DigestRow {
+    return {
+      id,
+      category,
+      title: `title ${id}`,
+      url: `https://example.test/${id}`,
+      actorUserId: null,
+      targetType: null,
+      targetId: null,
+      createdAt: new Date(createdAt),
+      ...overrides,
+    };
+  }
+
+  describe('listFlushedCategories', () => {
+    it.each<[EmailMode, EmailMode]>([
+      ['daily', 'immediate'],
+      ['off', 'immediate'],
+      ['immediate', 'daily'],
+      ['off', 'daily'],
+    ])('lists a category switched from %s to %s', (previous, next) => {
+      expect(
+        domain.listFlushedCategories(
+          { 'comment.on_your_model': previous },
+          { 'comment.on_your_model': next },
+        ),
+      ).toEqual(['comment.on_your_model']);
+    });
+
+    it.each<[EmailMode, EmailMode]>([
+      ['immediate', 'immediate'],
+      ['daily', 'daily'],
+      ['off', 'off'],
+      ['daily', 'off'],
+      ['immediate', 'off'],
+    ])('lists nothing for %s to %s', (previous, next) => {
+      expect(
+        domain.listFlushedCategories(
+          { 'comment.on_your_model': previous },
+          { 'comment.on_your_model': next },
+        ),
+      ).toEqual([]);
+    });
+
+    it('lists every switched category', () => {
+      expect(
+        domain
+          .listFlushedCategories(
+            { 'comment.on_your_model': 'daily', 'comment.reply_to_you': 'daily' },
+            { 'comment.on_your_model': 'immediate', 'comment.reply_to_you': 'immediate' },
+          )
+          .sort(),
+      ).toEqual(['comment.on_your_model', 'comment.reply_to_you']);
+    });
+  });
+
+  describe('getDigestWindow', () => {
+    it('spans from windowMs before now to minAgeMs before now', () => {
+      const now = new Date('2026-01-02T17:00:00Z');
+
+      expect(domain.getDigestWindow(now)).toEqual({
+        since: new Date(now.getTime() - notificationsConfig.windowMs),
+        until: new Date(now.getTime() - notificationsConfig.minAgeMs),
+      });
+    });
+
+    it('covers 25 hours up to 5 minutes ago', () => {
+      const { since, until } = domain.getDigestWindow(new Date('2026-01-02T17:00:00Z'));
+
+      expect(since).toEqual(new Date('2026-01-01T16:00:00Z'));
+      expect(until).toEqual(new Date('2026-01-02T16:55:00Z'));
+    });
+  });
+
+  describe('getFlushWindow', () => {
+    it('covers the last 25 hours up to now, with no minimum age', () => {
+      const now = new Date('2026-01-02T17:00:00Z');
+
+      expect(domain.getFlushWindow(now)).toEqual({
+        since: new Date('2026-01-01T16:00:00Z'),
+        until: now,
+      });
+    });
+  });
+
+  describe('listDailyCategories', () => {
+    it('lists categories whose resolved email mode is daily', () => {
+      expect(
+        domain.listDailyCategories([
+          { category: 'comment.on_your_model', email: 'daily' },
+          { category: 'comment.reply_to_you', email: 'off' },
+        ]),
+      ).toEqual(['comment.on_your_model']);
+    });
+
+    it('lists nothing for a user on the catalog defaults', () => {
+      expect(domain.listDailyCategories([])).toEqual([]);
+    });
+
+    it('ignores overrides of unknown categories', () => {
+      expect(
+        domain.listDailyCategories([{ category: 'comment.mentions_you', email: 'daily' }]),
+      ).toEqual([]);
+    });
+  });
+
+  describe('listEmailEnabledRows', () => {
+    const rows = [
+      makeDigestRow('model', 'comment.on_your_model', '2026-01-01T08:00:00Z'),
+      makeDigestRow('reply', 'comment.reply_to_you', '2026-01-01T08:00:00Z'),
+      makeDigestRow('unknown', 'comment.mentions_you', '2026-01-01T08:00:00Z'),
+    ];
+
+    it('drops rows whose category email is now off and rows of unknown categories', () => {
+      const kept = domain.listEmailEnabledRows(rows, [
+        { category: 'comment.reply_to_you', email: 'off' },
+      ]);
+
+      expect(kept.map((row) => row.id)).toEqual(['model']);
+    });
+
+    it('keeps rows whose category is daily or immediate', () => {
+      const kept = domain.listEmailEnabledRows(rows, [
+        { category: 'comment.on_your_model', email: 'daily' },
+        { category: 'comment.reply_to_you', email: 'immediate' },
+      ]);
+
+      expect(kept.map((row) => row.id)).toEqual(['model', 'reply']);
     });
   });
 });
