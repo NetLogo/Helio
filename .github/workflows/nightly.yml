@@ -131,3 +131,28 @@ jobs:
         # serve-static resolves pages like the production host (nuxt preview 404s on same-named directories),
         # runs the tests once it is listening, and exits with their status.
         run: node ../../packages/vitest-config/src/serve-static.mjs .output/public 4100 -- yarn run test:e2e
+
+  fresh-windows-install:
+    # Follows the README setup on a clean Windows runner with no caches, so a broken first install shows up here.
+    name: Fresh Windows install
+    needs: changes
+    if: ${{ needs.changes.outputs.changed == 'true' }}
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # Runs build, lint, check-types and test through scripts/check-repo.sh as well.
+      - name: Initialize Repository
+        run: yarn run init
+
+      # learn runs the markdown autogen and content asset paths, the parts most likely to differ on Windows.
+      - name: Build learn
+        working-directory: ./apps/learn
+        run: yarn run nuxt:build
