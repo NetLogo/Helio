@@ -93,7 +93,8 @@ export async function defineSmokeSuite(host: string, curatedRoutes: string[], op
         const page = await createPage("/");
         const errors = collectPageErrors(page, options);
         await navigateClientSide(page, path);
-        await page.waitForFunction((h) => document.querySelector("h1")?.textContent?.trim() === h, expected, { timeout: 15_000 });
+        // innerText on both sides: textContent drops the line break between block children ("NetLogo\nWeb" vs "NetLogo Web").
+        await page.waitForFunction((h) => document.querySelector<HTMLElement>("h1")?.innerText.trim() === h, expected, { timeout: 15_000 });
         expect(new URL(page.url()).pathname.replace(/\/$/, "")).toBe(path.replace(/\/$/, ""));
         expect(errors).toEqual([]);
         await page.close();
