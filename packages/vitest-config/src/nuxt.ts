@@ -88,6 +88,8 @@ const nuxtE2EVitestProject = (overrides: Partial<TestRunnerConfig> = {}) => ({
     hookTimeout: 300_000,
     pool: "forks",
     maxWorkers: 1,
+    // Bounds concurrent tests in one file, such as the smoke suite's routes, which share a single browser.
+    maxConcurrency: Number(process.env["E2E_CONCURRENCY"] ?? 4),
     ...overrides
   },
 });
