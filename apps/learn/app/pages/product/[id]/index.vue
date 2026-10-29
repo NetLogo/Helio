@@ -119,7 +119,8 @@ useSeoMeta({
   title: `Learn ${product.name}`,
   description: product.description,
 });
-useHead({ meta: [{ name: 'keywords', content: [product.name, 'NetLogo', 'Learn', 'Agent-Based Modeling', 'Simulations'].join(', ') }] });
+const keywords = new Set([product.name, 'NetLogo', 'Learn', 'Agent-Based Modeling', 'Simulations']);
+useHead({ meta: [{ name: 'keywords', content: [...keywords].join(', ') }] });
 </script>
 
 <template>
