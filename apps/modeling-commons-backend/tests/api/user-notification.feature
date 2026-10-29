@@ -65,7 +65,7 @@ Feature: Notification Preferences and Feed
     Given an authenticated user "digester"
     When "digester" sets email to "daily" for category "general.daily_digest"
     Then the response status should be 400
-    And the response body property "message" should equal "Unknown notification category: general.daily_digest"
+    And the response body property "message" should equal "Validation error"
 
   Scenario: Reading preferences requires authentication
     When an anonymous viewer gets notification preferences
@@ -109,6 +109,7 @@ Feature: Notification Preferences and Feed
     When the event processor queue is triggered
     Then no mail should have been sent
 
+  @sanity
   Scenario: A comment lands in the recipient's in-app feed
     Given an authenticated user "owner"
     And a public model "Feed Model" created by "owner"

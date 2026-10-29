@@ -4,6 +4,7 @@ import { idSchema } from '#src/shared/utils/id.ts';
 import { NOTIFICATION_CATEGORIES } from '#src/modules/user-notification/domain/user-notification.types.ts';
 
 const notificationSubjectSchema = Type.Object({
+  name: Type.Union([Type.String(), Type.Null()]),
   thumbnailUrl: Type.Union([Type.String(), Type.Null()]),
   url: Type.String({ format: 'uri' }),
 });

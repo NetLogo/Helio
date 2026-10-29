@@ -6622,7 +6622,8 @@ export interface paths {
                     content: {
                         "application/json": {
                             categories: {
-                                category: string;
+                                /** @enum {unknown} */
+                                category: "comment.on_your_model" | "comment.reply_to_you";
                                 label: string;
                                 description: string;
                                 /** @enum {unknown} */
@@ -6695,7 +6696,8 @@ export interface paths {
                 content: {
                     "application/json": {
                         preferences: {
-                            category: string;
+                            /** @enum {unknown} */
+                            category: "comment.on_your_model" | "comment.reply_to_you";
                             /** @enum {unknown} */
                             email?: "immediate" | "daily" | "off";
                             inApp?: boolean;
@@ -6819,11 +6821,13 @@ export interface paths {
                                 /** Format: uri */
                                 url: string;
                                 actor: {
+                                    name: string | null;
                                     thumbnailUrl: string | null;
                                     /** Format: uri */
                                     url: string;
                                 } | null;
                                 target: {
+                                    name: string | null;
                                     thumbnailUrl: string | null;
                                     /** Format: uri */
                                     url: string;

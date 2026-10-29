@@ -3,6 +3,7 @@ Feature: Authentication
   I want to sign up and sign in
   So that I can access protected resources
 
+  @sanity
   Scenario: Sign up with valid credentials
     When I sign up with name "Alice" email "alice@test.local" and password "StrongPass1!"
     Then the response status should be 200
@@ -12,6 +13,7 @@ Feature: Authentication
     When I sign up with name "Weak" email "weak@test.local" and password "short"
     Then the signup should be rejected
 
+  @sanity
   Scenario: Sign in with valid credentials
     Given a verified user with email "bob@test.local" and password "StrongPass1!"
     When I sign in with email "bob@test.local" and password "StrongPass1!"

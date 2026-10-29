@@ -1,32 +1,34 @@
 <script lang="ts" setup>
+import labels from "~/data/notifications.json";
 import { iconFor } from "./shared";
 import type { Notification } from "./shared";
 
 const props = defineProps<{ notification: Notification }>();
 
 const actor = computed(() => props.notification.actor);
+const actorLabel = computed(() =>
+  actor.value?.name
+    ? labels.viewNamedLabel.replace("{name}", actor.value.name)
+    : labels.actorFallbackLabel,
+);
 const icon = computed(() => iconFor(props.notification.category));
-
-function openActor() {
-  if (actor.value?.url) navigateTo(actor.value.url);
-}
 </script>
 
 <template>
-  <button
+  <NuxtLink
     v-if="actor?.thumbnailUrl"
-    type="button"
-    class="shrink-0"
-    @click.stop.prevent="openActor"
+    :to="actor.url"
+    :aria-label="actorLabel"
+    class="relative z-10 shrink-0"
   >
     <NuxtImg
       :src="actor.thumbnailUrl"
       width="40"
       height="40"
-      alt=""
+      :alt="actor.name ?? ''"
       class="rounded-full size-10 object-cover"
     />
-  </button>
+  </NuxtLink>
 
   <div
     v-else

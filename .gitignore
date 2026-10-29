@@ -46,3 +46,5 @@ GITIGNORE_*/**/*
 apps/modeling-commons-backend/prisma/legacy-migration/output
 apps/modeling-commons-backend/prisma/legacy-migration/avatars
 .nuxt
+
+.claude/

@@ -9,6 +9,7 @@ Feature: Daily notification digest
     And an authenticated user "bob"
     And an authenticated user "carol"
 
+  @sanity
   Scenario: A digest run emails each daily recipient once, skips immediate categories, and a second run sends nothing
     Given a "daily" notification for "alice" created 2 hours ago
     And a "daily" notification for "alice" created 3 hours ago

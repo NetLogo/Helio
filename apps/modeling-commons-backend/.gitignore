@@ -1,4 +1,5 @@
 .ongoing/**
+doc/
 prisma/id-migration/output/
 reports/sweep-*.json
 reports/sweep-summary.md

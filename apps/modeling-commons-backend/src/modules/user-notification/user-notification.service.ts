@@ -1,7 +1,6 @@
 import links from '#src/config/links.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import { handleFailedDeliveries } from '#src/modules/user-notification/delivery-failures.ts';
-import { UnknownCategoryError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import type {
   DeliverableRecipient,
   EmailMode,
@@ -14,12 +13,6 @@ import type {
 import type { NotificationPreferenceResponseDto } from '#src/modules/user-notification/dtos/notification-preference.response.dto.ts';
 
 export type UpdatePreferenceInput = {
-  category: string;
-  email?: EmailMode;
-  inApp?: boolean;
-};
-
-type ValidatedPreferenceInput = {
   category: NotificationCategory;
   email?: EmailMode;
   inApp?: boolean;
@@ -154,21 +147,13 @@ export function createUserNotificationService(
       userId: string,
       preferences: Array<UpdatePreferenceInput>,
     ): Promise<void> {
-      const validated: Array<ValidatedPreferenceInput> = preferences.map((preference) => {
-        const { category } = preference;
-        if (!userNotificationDomain.isKnownCategory(category)) {
-          throw new UnknownCategoryError(category);
-        }
-        return { category, email: preference.email, inApp: preference.inApp };
-      });
-
       const { previous, next } = await transactionManager.run(async (ctx) => {
         const existing = await notificationPreferenceRepository.findAllByUserTx(ctx, userId);
         const existingByCategory = new Map(existing.map((row) => [row.category, row]));
         const previousModes: EmailModeByCategory = {};
         const nextModes: EmailModeByCategory = {};
 
-        for (const preference of validated) {
+        for (const preference of preferences) {
           const resolved = userNotificationDomain.resolvePreference(
             preference.category,
             existingByCategory.get(preference.category),

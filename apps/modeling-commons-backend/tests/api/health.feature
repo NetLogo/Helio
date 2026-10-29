@@ -3,6 +3,7 @@ Feature: Health Check
   I want to verify the API is running
   So that I can confirm the service is available
 
+  @sanity
   Scenario: Health endpoint reports the service is up
     When I send a GET request to "/api/health"
     Then the response status should be 200

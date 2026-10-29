@@ -8,10 +8,7 @@ import makeNotificationEmailService from '#src/modules/user-notification/notific
 import makeNotificationDigestService from '#src/modules/user-notification/notification-digest.service.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
 import userNotificationMapper from '#src/modules/user-notification/user-notification.mapper.ts';
-import {
-  NotificationNotFoundError,
-  UnknownCategoryError,
-} from '#src/modules/user-notification/domain/user-notification.errors.ts';
+import { NotificationNotFoundError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import { mockNotificationPreferenceRepository } from '#src/modules/user-notification/database/notification-preference.repository.mock.ts';
 import { mockUserNotificationRepository } from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
 import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
@@ -60,15 +57,6 @@ describe('userNotificationService', () => {
   });
 
   describe('updatePreferences', () => {
-    it('rejects an unknown category and writes nothing', async () => {
-      await expect(
-        service.updatePreferences('user-1', [{ category: 'comment.mentions_you', email: 'off' }]),
-      ).rejects.toThrow(UnknownCategoryError);
-
-      expect(notificationPreferenceRepository.findAllByUserTx).not.toHaveBeenCalled();
-      expect(notificationPreferenceRepository.upsertTx).not.toHaveBeenCalled();
-    });
-
     it('keeps the currently-resolved value for an omitted channel', async () => {
       notificationPreferenceRepository.findAllByUserTx.mockResolvedValue([
         makeRecord({ email: 'off', inApp: true }),

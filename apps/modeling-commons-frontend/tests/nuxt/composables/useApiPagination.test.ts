@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { nextTick, ref } from "vue";
-import useApiPagination, { type PaginatedResponse } from "~/composables/api/useApiPagination";
+import { effectScope, nextTick, ref } from "vue";
+import useApiPagination, {
+  DEFAULT_INITIAL_PAGE,
+  clearApiPagination,
+  type PaginatedResponse,
+} from "~/composables/api/useApiPagination";
 
 function pageResponse<T>(
   data: Array<T>,
@@ -106,5 +110,45 @@ describe("useApiPagination", () => {
     await nextTick();
 
     expect(pag.data.value).toEqual(["key-b-0"]);
+  });
+
+  it("clearApiPagination makes a fresh instance for the key start from the defaults", async () => {
+    const fetchPage = vi.fn(async (p: number) => pageResponse([`row-${p}`], p, 5, 1));
+    const scope = effectScope();
+    const pag = scope.run(() => useApiPagination("pag-clear", fetchPage))!;
+    await new Promise<void>((r) => setTimeout(r, 0));
+    await nextTick();
+    pag.loadNextPage();
+    await new Promise<void>((r) => setTimeout(r, 0));
+    await nextTick();
+    expect(pag.data.value).toEqual(["row-0", "row-1"]);
+    scope.stop();
+
+    clearApiPagination("pag-clear");
+    const fresh = useApiPagination("pag-clear", vi.fn(), { immediate: false });
+    await nextTick();
+
+    expect(fresh.page.value).toBe(DEFAULT_INITIAL_PAGE);
+    expect(fresh.data.value).toEqual([]);
+    expect(fresh.count.value).toBeUndefined();
+    expect(fresh.limit.value).toBeUndefined();
+  });
+
+  it("clearApiPagination drops the cached rows of a page that is still in use", async () => {
+    const fetchPage = vi.fn(async (p: number) => pageResponse([`row-${p}`], p, 5, 1));
+    const scope = effectScope();
+    const live = scope.run(() => useApiPagination("pag-clear-live", fetchPage))!;
+    await new Promise<void>((r) => setTimeout(r, 0));
+    await nextTick();
+    expect(live.data.value).toEqual(["row-0"]);
+
+    clearApiPagination("pag-clear-live");
+    const fresh = scope.run(() =>
+      useApiPagination("pag-clear-live", vi.fn(), { immediate: false }),
+    )!;
+    await nextTick();
+
+    expect(fresh.data.value).toEqual([]);
+    scope.stop();
   });
 });

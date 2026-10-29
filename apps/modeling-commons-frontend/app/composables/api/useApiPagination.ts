@@ -7,14 +7,34 @@ export type PaginatedResponse<T> = {
   limit: number;
 };
 
+export const DEFAULT_INITIAL_PAGE = 0;
+
+function buildPageStateKey(key: string) {
+  return `${key}-pagination-page`;
+}
+
+function buildPageDataKeyPrefix(key: string) {
+  return `${key}-page-`;
+}
+
+function buildPageDataKey(key: string, page: number) {
+  return `${buildPageDataKeyPrefix(key)}${page}`;
+}
+
+export function clearApiPagination(key: string, initialPage = DEFAULT_INITIAL_PAGE) {
+  useState<number>(buildPageStateKey(key)).value = initialPage;
+  const prefix = buildPageDataKeyPrefix(key);
+  clearNuxtData((dataKey) => dataKey.startsWith(prefix));
+}
+
 export default function useApiPagination<T>(
   key: MaybeRefOrGetter<string>,
   fetchPage: (page: number) => Promise<PaginatedResponse<T>>,
   asyncDataOptions: Partial<AsyncDataOptions<PaginatedResponse<T>>> = {},
-  initialPage = 0,
+  initialPage = DEFAULT_INITIAL_PAGE,
 ) {
   // SSR
-  const page = useState(`${toValue(key)}-pagination-page`, () => initialPage);
+  const page = useState(buildPageStateKey(toValue(key)), () => initialPage);
   const {
     data: fetchedPage,
     error,
@@ -22,7 +42,7 @@ export default function useApiPagination<T>(
     refresh,
     clear,
   } = useAsyncData(
-    () => `${toValue(key)}-page-${page.value}`,
+    () => buildPageDataKey(toValue(key), page.value),
     () => fetchPage(page.value),
     {
       watch: [page, () => toValue(key)],

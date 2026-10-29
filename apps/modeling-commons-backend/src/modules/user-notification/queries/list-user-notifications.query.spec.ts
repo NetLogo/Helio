@@ -57,10 +57,12 @@ describe('listUserNotificationsQuery', () => {
 
   const resolvedSubjects = {
     actor: {
+      name: 'Alice',
       thumbnailUrl: 'https://cdn.example.test/avatars/commenter-1.png',
       url: 'https://example.test/users/commenter-1',
     },
     target: {
+      name: 'Wolf Sheep',
       thumbnailUrl: 'https://cdn.example.test/previews/model-1.png',
       url: 'https://example.test/models/model-1',
     },
@@ -97,10 +99,12 @@ describe('listUserNotificationsQuery', () => {
           body: 'Someone commented on your model',
           url: 'https://example.test/models/model-1',
           actor: {
+            name: 'Alice',
             thumbnailUrl: 'https://cdn.example.test/avatars/commenter-1.png',
             url: 'https://example.test/users/commenter-1',
           },
           target: {
+            name: 'Wolf Sheep',
             thumbnailUrl: 'https://cdn.example.test/previews/model-1.png',
             url: 'https://example.test/models/model-1',
           },

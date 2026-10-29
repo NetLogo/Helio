@@ -78,6 +78,7 @@ Use path aliases, never relative `../../`:
 ## Testing
 
 - `yarn run test:unit` (vitest) · `yarn run test:e2e` (cucumber, needs `yarn run svc` running for postgres/object-storage/mailpit/netlogo-services).
+- During iteration run `yarn run test:e2e:sanity` plus the feature files you touched; run the full `yarn run test:e2e` once before review or merge.
 - `test:unit` is fully mocked (no DB); apply pending migrations before `test:e2e` (`yarn run db:migrate:dev`) — an unapplied migration makes the generated client mismatch the DB and 500s every affected route. Diagnose e2e failures from `reports/cucumber-report.json`.
 - In vitest specs, import `beforeEach`/`afterEach` from `vitest`, never `node:test` — wrong import silently no-ops the hook.
 - Tests should never enforce an implementation detail; they should focus on observable behavior and outcomes.

@@ -1,10 +1,4 @@
-import { ArgumentInvalidException, NotFoundException } from '#src/shared/exceptions/index.ts';
-
-export class UnknownCategoryError extends ArgumentInvalidException {
-  constructor(category: string) {
-    super(`Unknown notification category: ${category}`);
-  }
-}
+import { NotFoundException } from '#src/shared/exceptions/index.ts';
 
 export class NotificationNotFoundError extends NotFoundException {
   constructor(notificationId: string) {

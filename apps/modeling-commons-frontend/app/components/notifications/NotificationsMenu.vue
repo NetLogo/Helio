@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-const { notifications, unreadCount, pending, error, markRead } = useNotifications();
+import labels from "~/data/notifications.json";
+
+const { notifications, unreadCount, pending, error, markRead, hasMore } = useNotifications();
 const hasUnreadNotifications = computed(() => unreadCount.value > 0);
+const showSeeAll = computed(() => notifications.value.length > 0 || hasMore.value);
 </script>
 
 <template>
@@ -36,6 +39,10 @@ const hasUnreadNotifications = computed(() => unreadCount.value > 0);
         >
           <NotificationsList :notifications="notifications" @read="markRead" />
         </AsyncBoundary>
+
+        <UButton v-if="showSeeAll" to="/notifications" variant="link" size="xs" class="self-center">
+          {{ labels.menuSeeAll }}
+        </UButton>
       </div>
     </template>
   </UDropdownMenu>

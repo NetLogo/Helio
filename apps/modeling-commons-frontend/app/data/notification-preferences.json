@@ -1,0 +1,17 @@
+{
+  "title": "Notifications",
+  "description": "Choose how Modeling Commons keeps you informed about activity on your models.",
+  "seoTitle": "Notification Settings",
+  "seoDescription": "Manage how Modeling Commons notifies you in the app and by email.",
+  "inAppLabel": "In app",
+  "emailLabel": "Email",
+  "loadErrorTitle": "We couldn't load your notification settings",
+  "loadErrorMessage": "Refresh the page and try again.",
+  "emptyMessage": "There are no notification settings to manage yet.",
+  "saveFailedAction": "Save notification preference",
+  "emailModes": [
+    { "value": "immediate", "label": "Immediately" },
+    { "value": "daily", "label": "Daily digest" },
+    { "value": "off", "label": "Off" }
+  ]
+}

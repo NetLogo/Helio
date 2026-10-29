@@ -3,6 +3,7 @@ Feature: Model Comments
   I want to comment and reply on models
   So that I can discuss models with their authors and other users
 
+  @sanity
   Scenario: Posting a comment succeeds
     Given an authenticated user "owner"
     And a public model "Commentable" created by "owner"
@@ -203,6 +204,7 @@ Feature: Model Comments
     And comment "root" should have replies count 3
     And comment "root" should have 0 embedded replies
 
+  @sanity
   Scenario: Embedded replies are ordered oldest first
     Given an authenticated user "owner"
     And a public model "Ordered" created by "owner"

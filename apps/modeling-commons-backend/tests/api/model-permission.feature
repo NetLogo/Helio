@@ -10,6 +10,7 @@ Feature: Model Permissions
     When "owner" grants "read" permission on "Shared Model" to "reader"
     Then the response status should be 201
 
+  @sanity
   Scenario: User with read permission can access a private model
     Given an authenticated user "owner"
     And a private model "Readable Model" created by "owner"

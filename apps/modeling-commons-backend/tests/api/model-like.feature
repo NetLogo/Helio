@@ -18,6 +18,7 @@ Feature: Model Likes
     When "fan" likes "Liked Model"
     Then the response status should be 204
 
+  @sanity
   Scenario: Liking a model is reflected in the summary
     Given an authenticated user "owner"
     And a public model "Famous Model" created by "owner"

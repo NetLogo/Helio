@@ -343,8 +343,8 @@ interface FeedNotification {
   title: string;
   body: string;
   url: string;
-  actor: { thumbnailUrl: string | null; url: string } | null;
-  target: { thumbnailUrl: string | null; url: string } | null;
+  actor: { name: string | null; thumbnailUrl: string | null; url: string } | null;
+  target: { name: string | null; thumbnailUrl: string | null; url: string } | null;
   createdAt: string;
   readAt: string | null;
 }
@@ -455,6 +455,7 @@ Then(
     const { actor } = firstFeedNotification(this.context);
     assert.ok(actor, 'expected the notification to carry an actor');
     assert.match(actor.url, new RegExp(`/users/${user.id}$`));
+    assert.strictEqual(actor.name, user.name);
     // Test users are created without an avatar, so the slot is linkable but imageless.
     // The url is derived on read from the stored reference, never persisted.
     assert.strictEqual(actor.thumbnailUrl, null);

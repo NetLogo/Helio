@@ -44,6 +44,8 @@ const baseConfig = {
 export default baseConfig;
 export const perf = { ...baseConfig };
 
+export const sanity = { ...baseConfig, tags: `${baseConfig.tags} and @sanity` };
+
 // Read-only invariant cohort. Runs against any populated environment and never
 // truncates it, so it needs its own report paths to avoid overwriting a normal
 // run's output.
