@@ -49,9 +49,20 @@ async function sitemapRoutes(host: string, path = "/sitemap.xml"): Promise<strin
   return nested.flat();
 }
 
+// SMOKE_SHARD=<index>/<count> keeps every count-th route. vitest --shard splits by file, and the suite is one file.
+// Round robin over the sorted list spreads large sections such as the dictionary across shards.
+function shardRoutes(routes: string[], shard = process.env["SMOKE_SHARD"]): string[] {
+  if (!shard) return routes;
+  const [index, count] = shard.split("/").map(Number);
+  if (!Number.isInteger(index) || !Number.isInteger(count) || index! < 1 || index! > count!) {
+    throw new Error(`SMOKE_SHARD must be <index>/<count> with 1 <= index <= count, got "${shard}"`);
+  }
+  return routes.filter((_, i) => i % count! === index! - 1);
+}
+
 export async function resolveSmokeRoutes(host: string, curated: string[]): Promise<string[]> {
-  if (process.env["SMOKE_ALL_ROUTES"] !== "1") return curated;
-  return [...new Set(await sitemapRoutes(host))].sort();
+  if (process.env["SMOKE_ALL_ROUTES"] !== "1") return shardRoutes(curated);
+  return shardRoutes([...new Set(await sitemapRoutes(host))].sort());
 }
 
 // Client-side navigation through the app's own router, without a full page load.
