@@ -62,7 +62,7 @@ describe('modelService', () => {
 
       await service.update('model-1', { visibility: 'private' });
 
-      expect(modelRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'model-1', {
+      expect(modelRepository.updateFieldsTx).toHaveBeenCalledWith(expect.anything(), 'model-1', {
         visibility: 'private',
       });
     });
@@ -147,8 +147,8 @@ describe('modelService', () => {
 
       await service.softDelete('model-1', 'user-1');
 
-      expect(modelRepository.softDelete).toHaveBeenCalledWith(expect.anything(), 'model-1');
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(modelRepository.softDeleteTx).toHaveBeenCalledWith(expect.anything(), 'model-1');
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model.deleted' }),
       );
@@ -161,7 +161,7 @@ describe('modelService', () => {
 
       await service.softDelete('model-1', 'user-1');
 
-      const ctxArg = modelRepository.softDelete.mock.calls[0]![0];
+      const ctxArg = modelRepository.softDeleteTx.mock.calls[0]![0];
       expect(modelDraftService.purgeForModelTx).toHaveBeenCalledWith(ctxArg, 'model-1');
       expect(modelDraftService.cleanupDraftStaging).toHaveBeenCalledWith(purged);
     });
@@ -169,7 +169,7 @@ describe('modelService', () => {
     it('does not clean up draft staging when the transaction fails', async () => {
       modelRepository.findOneById.mockResolvedValue(makeModel());
       modelDraftService.purgeForModelTx.mockResolvedValue([]);
-      eventRepository.insert.mockRejectedValueOnce(new Error('boom'));
+      eventRepository.insertTx.mockRejectedValueOnce(new Error('boom'));
 
       await expect(service.softDelete('model-1', 'user-1')).rejects.toThrow('boom');
       expect(modelDraftService.cleanupDraftStaging).not.toHaveBeenCalled();

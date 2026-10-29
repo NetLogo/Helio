@@ -57,7 +57,7 @@ describe('modelCommentService', () => {
 
       expect(result.id).toBeTypeOf('string');
       expect(modelCommentRepository.insertTx).toHaveBeenCalledOnce();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           type: 'model_comment.created',
@@ -143,7 +143,7 @@ describe('modelCommentService', () => {
         'new content',
         expect.any(Date),
       );
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model_comment.updated', actorId: 'author-1' }),
       );
@@ -170,7 +170,7 @@ describe('modelCommentService', () => {
       await service.softDelete({ modelId: 'model-1', commentId: 'comment-1', caller: { id: 'author-1' } });
 
       expect(modelCommentRepository.softDeleteTx).toHaveBeenCalledOnce();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           type: 'model_comment.deleted',
@@ -188,7 +188,7 @@ describe('modelCommentService', () => {
         caller: { id: 'admin-1', systemRole: 'admin' },
       });
 
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ payload: expect.objectContaining({ byAdmin: true }) }),
       );
@@ -220,7 +220,7 @@ describe('modelCommentService', () => {
       await service.like({ modelId: 'model-1', commentId: 'comment-1', userId: 'liker-1' });
 
       expect(modelCommentRepository.addLikeTx).toHaveBeenCalledTimes(2);
-      expect(eventRepository.insert).not.toHaveBeenCalled();
+      expect(eventRepository.insertTx).not.toHaveBeenCalled();
     });
 
     it('no-ops when unliking a comment that was not liked', async () => {
@@ -231,7 +231,7 @@ describe('modelCommentService', () => {
         service.unlike({ modelId: 'model-1', commentId: 'comment-1', userId: 'liker-1' }),
       ).resolves.toBeUndefined();
 
-      expect(eventRepository.insert).not.toHaveBeenCalled();
+      expect(eventRepository.insertTx).not.toHaveBeenCalled();
     });
 
     it('throws CommentNotFoundError on like when the comment belongs to a different model', async () => {

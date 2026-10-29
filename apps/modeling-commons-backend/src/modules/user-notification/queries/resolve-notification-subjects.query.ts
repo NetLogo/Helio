@@ -6,6 +6,7 @@ import type {
   ResolvedNotificationSubjects,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type { UserAvatarRecord } from '#src/modules/user/database/user.repository.port.ts';
+import { collectUniqueDefined } from '#src/shared/utils/collections.ts';
 
 type SubjectReference = Pick<
   UserNotificationRecord,
@@ -14,12 +15,8 @@ type SubjectReference = Pick<
 
 type ResolveOptions = { includeThumbnails: boolean };
 
-function collectUniqueIds(values: Array<string | null>): Array<string> {
-  return [...new Set(values.filter((value): value is string => Boolean(value)))];
-}
-
 function collectActorIds(records: ReadonlyArray<SubjectReference>): Array<string> {
-  return collectUniqueIds(records.map((record) => record.actorUserId));
+  return collectUniqueDefined(records.map((record) => record.actorUserId));
 }
 
 function getModelId(record: SubjectReference): string | null {
@@ -27,7 +24,7 @@ function getModelId(record: SubjectReference): string | null {
 }
 
 function collectModelIds(records: ReadonlyArray<SubjectReference>): Array<string> {
-  return collectUniqueIds(records.map(getModelId));
+  return collectUniqueDefined(records.map(getModelId));
 }
 
 function resolveActors(avatars: Array<UserAvatarRecord>): Map<string, NotificationSubject> {

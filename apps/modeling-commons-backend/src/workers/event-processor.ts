@@ -1,6 +1,6 @@
 import workersConfig from '#src/config/workers.ts';
 import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
-import type { EventQueueNotifier } from '#src/shared/jobs/event-queue.notifier.ts';
+import type { QueueNotifier } from '#src/shared/jobs/queue.notifier.ts';
 import type { FastifyBaseLogger } from 'fastify';
 import { PgBoss } from 'pg-boss';
 
@@ -16,7 +16,7 @@ export async function startEventProcessor({
   connectionString: string;
   eventRepository: EventRepositoryPort;
   userNotificationService: Dependencies['userNotificationService'];
-  eventQueueNotifier: EventQueueNotifier;
+  eventQueueNotifier: QueueNotifier;
   logger: FastifyBaseLogger;
 }): Promise<PgBoss> {
   const boss = new PgBoss(connectionString);

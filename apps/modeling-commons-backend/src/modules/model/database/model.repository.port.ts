@@ -25,8 +25,12 @@ export type ModelInteractionCounts = {
 
 export interface ModelRepository extends RepositoryPort<Model> {
   findByIdIncludeDeleted: (id: string) => Promise<Model | undefined>;
-  setLatestVersion: (ctx: TransactionContext, modelId: string, versionNumber: number) => Promise<void>;
-  softDelete: (ctx: TransactionContext, id: string) => Promise<void>;
+  setLatestVersionTx: (
+    ctx: TransactionContext,
+    modelId: string,
+    versionNumber: number,
+  ) => Promise<void>;
+  softDeleteTx: (ctx: TransactionContext, id: string) => Promise<void>;
   search: <T, I extends Prisma.ModelInclude>(
     filters: ModelSearchFilters,
     params: PaginatedQueryParams,
@@ -36,7 +40,7 @@ export interface ModelRepository extends RepositoryPort<Model> {
       map: (record: Prisma.ModelGetPayload<{ include: I }>) => T;
     },
   ) => Promise<Paginated<T>>;
-  incrementInteractionCount: (
+  incrementInteractionCountTx: (
     ctx: TransactionContext,
     modelId: string,
     kind: ModelInteractionKind,
@@ -49,7 +53,7 @@ export interface ModelRepository extends RepositoryPort<Model> {
     viewer: ViewerContext | null,
   ) => Promise<Array<ModelSubjectRecord>>;
   insertTx: (ctx: TransactionContext, entity: Model) => Promise<void>;
-  updateFields: (
+  updateFieldsTx: (
     ctx: TransactionContext,
     id: string,
     data: { visibility?: ModelVisibility; isEndorsed?: boolean },

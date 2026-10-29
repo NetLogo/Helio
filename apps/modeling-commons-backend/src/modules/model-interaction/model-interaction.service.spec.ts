@@ -52,7 +52,7 @@ describe('modelInteractionService', () => {
           versionNumber: 1,
         }),
       );
-      expect(modelRepository.incrementInteractionCount).toHaveBeenCalledWith(
+      expect(modelRepository.incrementInteractionCountTx).toHaveBeenCalledWith(
         expect.anything(),
         'model-1',
         ModelInteractionKind.run,
@@ -66,7 +66,7 @@ describe('modelInteractionService', () => {
 
       expect(modelInteractionRepository.hasRecentMatch).toHaveBeenCalled();
       expect(modelInteractionRepository.insertTx).toHaveBeenCalledOnce();
-      expect(modelRepository.incrementInteractionCount).toHaveBeenCalledWith(
+      expect(modelRepository.incrementInteractionCountTx).toHaveBeenCalledWith(
         expect.anything(),
         'model-1',
         ModelInteractionKind.view,
@@ -79,7 +79,7 @@ describe('modelInteractionService', () => {
       await service.record(ModelInteractionKind.view, 'model-1', ctx(), null);
 
       expect(modelInteractionRepository.insertTx).not.toHaveBeenCalled();
-      expect(modelRepository.incrementInteractionCount).not.toHaveBeenCalled();
+      expect(modelRepository.incrementInteractionCountTx).not.toHaveBeenCalled();
     });
   });
 

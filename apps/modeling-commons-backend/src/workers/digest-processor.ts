@@ -17,11 +17,11 @@ export type DigestProcessorDependencies = {
     Dependencies['userNotificationDomain'],
     'getDigestWindow' | 'listDailyCategories'
   >;
-  notificationDigestService: Pick<Dependencies['notificationDigestService'], 'sendDigest'>;
+  notificationDigestService: Pick<Dependencies['notificationDigestService'], 'queueDigest'>;
   logger: FastifyBaseLogger;
 };
 
-export async function sendPendingDigests({
+export async function queuePendingDigests({
   userNotificationRepository,
   notificationPreferenceRepository,
   userNotificationDomain,
@@ -40,7 +40,7 @@ export async function sendPendingDigests({
       config.recipientBatchSize,
     );
 
-  const sendRecipientDigest = async (recipientId: string) => {
+  const queueRecipientDigest = async (recipientId: string) => {
     const preferences = await notificationPreferenceRepository.findAllByUser(recipientId);
     const rows = await userNotificationRepository.findPendingForRecipient(
       recipientId,
@@ -48,7 +48,7 @@ export async function sendPendingDigests({
       since,
       until,
     );
-    await notificationDigestService.sendDigest(recipientId, rows, preferences);
+    await notificationDigestService.queueDigest(recipientId, rows, preferences);
   };
 
   const results: Array<PromiseSettledResult<void>> = [];
@@ -56,13 +56,13 @@ export async function sendPendingDigests({
 
   do {
     recipientIds = await listRecipientPage(recipientIds.at(-1) ?? null);
-    results.push(...(await Promise.allSettled(recipientIds.map(sendRecipientDigest))));
+    results.push(...(await Promise.allSettled(recipientIds.map(queueRecipientDigest))));
   } while (recipientIds.length === config.recipientBatchSize);
 
   const recipientCount = results.length;
   const failureCount = results.filter((result) => result.status === 'rejected').length;
-  logger.info({ recipientCount, failureCount }, 'Sent notification digests');
-  handleFailedDeliveries([{ results, message: 'Failed to send a notification digest' }], logger, {
+  logger.info({ recipientCount, failureCount }, 'Queued notification digests');
+  handleFailedDeliveries([{ results, message: 'Failed to queue a notification digest' }], logger, {
     name: 'DigestProcessor',
     summary: `${failureCount} of ${recipientCount} notification digests failed`,
   });
@@ -81,7 +81,7 @@ export async function startDigestProcessor({
   await boss.start();
   await boss.createQueue(config.queueName);
 
-  await boss.work(config.queueName, async () => sendPendingDigests(dependencies));
+  await boss.work(config.queueName, async () => queuePendingDigests(dependencies));
 
   await boss.schedule(config.queueName, config.cronExpression, null, {
     retryLimit: config.retryLimit,

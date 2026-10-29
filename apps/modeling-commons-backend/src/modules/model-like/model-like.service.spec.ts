@@ -32,7 +32,7 @@ describe('modelLikeService', () => {
         expect.anything(),
         expect.objectContaining({ modelId: 'model-1', userId: 'user-1' }),
       );
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           type: 'model.liked',
@@ -48,7 +48,7 @@ describe('modelLikeService', () => {
 
       await service.like('model-1', 'user-1');
 
-      expect(eventRepository.insert).not.toHaveBeenCalled();
+      expect(eventRepository.insertTx).not.toHaveBeenCalled();
     });
   });
 
@@ -63,7 +63,7 @@ describe('modelLikeService', () => {
         'model-1',
         'user-1',
       );
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model.unliked' }),
       );
@@ -74,7 +74,7 @@ describe('modelLikeService', () => {
 
       await service.unlike('model-1', 'user-1');
 
-      expect(eventRepository.insert).not.toHaveBeenCalled();
+      expect(eventRepository.insertTx).not.toHaveBeenCalled();
     });
   });
 

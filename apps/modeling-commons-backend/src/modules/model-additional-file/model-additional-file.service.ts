@@ -18,7 +18,7 @@ export default function makeModelAdditionalFileService({
       filename: string,
       contentType: string,
     ): Promise<ModelAdditionalFileEntity> {
-      const currentVersion = await modelVersionRepository.findLatestByModel(modelId);
+      const currentVersion = await modelVersionRepository.findLatestByModelTx(modelId);
       if (!currentVersion) throw new VersionNotFoundError(modelId);
 
       const fileKey = await fileService.upload({
@@ -38,7 +38,7 @@ export default function makeModelAdditionalFileService({
 
       return transactionManager.run(async (ctx) => {
         await modelAdditionalFileRepository.insertTx(ctx, entity);
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_additional_file.added',
           actorId: userId,
           resourceType: 'model_additional_file',
@@ -55,7 +55,7 @@ export default function makeModelAdditionalFileService({
 
       await transactionManager.run(async (ctx) => {
         await modelAdditionalFileRepository.deleteTx(ctx, additionalFileId);
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_additional_file.deleted',
           actorId: userId,
           resourceType: 'model_additional_file',

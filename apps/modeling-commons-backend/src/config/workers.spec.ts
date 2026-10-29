@@ -31,16 +31,19 @@ describe('workersConfig', () => {
     expect(end.getUTCDate()).toBe(start.getUTCDate());
   });
 
-  it('waits out the notification claim lease before a digest retry', () => {
-    expect(workersConfig.digestProcessor.retryDelaySeconds * 1000).toBeGreaterThanOrEqual(
-      notificationsConfig.claimLeaseMs,
-    );
-  });
-
   it('keeps notifications longer than the digest window', () => {
     expect(workersConfig.notificationJanitor.retentionMs).toBeGreaterThan(
       notificationsConfig.windowMs,
     );
+  });
+
+  it('keeps queued emails past the whole retry span of the email sender', () => {
+    const sender = workersConfig.emailSender;
+    const retrySpanMs = sender.retryBaseMs * (2 ** sender.maxEmailAttempts - 1);
+    const janitor = workersConfig.notificationJanitor;
+
+    expect(janitor.sentEmailRetentionMs).toBeGreaterThan(retrySpanMs);
+    expect(janitor.failedEmailRetentionMs).toBeGreaterThan(retrySpanMs);
   });
 
   it('runs the notification janitor weekly on Sunday at 04:00', () => {

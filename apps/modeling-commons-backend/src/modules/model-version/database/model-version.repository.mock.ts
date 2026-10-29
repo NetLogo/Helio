@@ -7,11 +7,11 @@ export function mockModelVersionRepository(): {
   return {
     insertTx: vi.fn(),
     findByModelAndVersion: vi.fn(),
-    findLatestByModel: vi.fn(),
-    finalize: vi.fn(),
-    updateFields: vi.fn(),
+    findLatestByModelTx: vi.fn(),
+    finalizeTx: vi.fn(),
+    updateFieldsTx: vi.fn(),
     listByModel: vi.fn(),
-    getNextVersionNumber: vi.fn(),
+    getNextVersionNumberTx: vi.fn(),
     findNetlogoVersionsByPrefix: vi.fn(),
   };
 }

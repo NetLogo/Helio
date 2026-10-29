@@ -28,7 +28,7 @@ export default function modelVersionRepository({
         : undefined;
     },
 
-    async findLatestByModel(
+    async findLatestByModelTx(
       modelId: string,
       ctx?: TransactionContext,
     ): Promise<ModelVersionEntity | undefined> {
@@ -42,7 +42,11 @@ export default function modelVersionRepository({
         : undefined;
     },
 
-    async finalize(ctx: TransactionContext, modelId: string, versionNumber: number): Promise<void> {
+    async finalizeTx(
+      ctx: TransactionContext,
+      modelId: string,
+      versionNumber: number,
+    ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelVersion.update({
         where: { modelId_versionNumber: { modelId, versionNumber } },
@@ -50,7 +54,7 @@ export default function modelVersionRepository({
       });
     },
 
-    async updateFields(
+    async updateFieldsTx(
       ctx: TransactionContext,
       modelId: string,
       versionNumber: number,
@@ -85,7 +89,7 @@ export default function modelVersionRepository({
       };
     },
 
-    async getNextVersionNumber(ctx: TransactionContext, modelId: string): Promise<number> {
+    async getNextVersionNumberTx(ctx: TransactionContext, modelId: string): Promise<number> {
       const client = resolveTransaction(ctx);
       const latest = await client.modelVersion.findFirst({
         where: { modelId },

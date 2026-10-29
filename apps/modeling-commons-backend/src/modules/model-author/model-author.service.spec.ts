@@ -36,7 +36,7 @@ describe('modelAuthorService', () => {
       await service.addContributor('m1', 'user-2', 'owner');
 
       expect(modelAuthorRepository.insertTx).toHaveBeenCalledOnce();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model_author.added' }),
       );
@@ -98,7 +98,7 @@ describe('modelAuthorService', () => {
       await service.transferOwnership('m1', 'user-2', 'owner');
 
       expect(modelAuthorRepository.updateRoleTx).toHaveBeenCalledTimes(2);
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model_author.ownership_transferred' }),
       );

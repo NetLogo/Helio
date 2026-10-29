@@ -12,8 +12,8 @@ export type UserAvatarRecord = { id: string; name: string | null; image: string 
 export interface UserRepository extends RepositoryPort<UserEntity> {
   findByIdIncludeDeleted: (id: string) => Promise<UserEntity | undefined>;
   findAvatarsByIds: (ids: Array<string>) => Promise<Array<UserAvatarRecord>>;
-  softDelete: (ctx: TransactionContext, id: string) => Promise<void>;
-  updateFields: (
+  softDeleteTx: (ctx: TransactionContext, id: string) => Promise<void>;
+  updateFieldsTx: (
     ctx: TransactionContext,
     id: string,
     data: {

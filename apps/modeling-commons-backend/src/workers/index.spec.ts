@@ -18,6 +18,7 @@ const startEventProcessor = vi.fn();
 const startModelDraftJanitor = vi.fn();
 const startDigestProcessor = vi.fn();
 const startNotificationJanitor = vi.fn();
+const startEmailSender = vi.fn();
 
 vi.mock('#src/workers/event-processor.ts', () => ({
   startEventProcessor: (...args: unknown[]) => startEventProcessor(...args),
@@ -35,6 +36,10 @@ vi.mock('#src/workers/notification-janitor.ts', () => ({
   startNotificationJanitor: (...args: unknown[]) => startNotificationJanitor(...args),
 }));
 
+vi.mock('#src/workers/email-sender.ts', () => ({
+  startEmailSender: (...args: unknown[]) => startEmailSender(...args),
+}));
+
 import { startWorkers } from '#src/workers/index.ts';
 
 function makeFastify(): {
@@ -48,6 +53,9 @@ function makeFastify(): {
     notificationPreferenceRepository: unknown;
     userNotificationDomain: unknown;
     modelDraftService: unknown;
+    emailQueueRepository: unknown;
+    mailService: unknown;
+    emailQueueNotifier: unknown;
   };
 } {
   const hooks = new Map<string, () => Promise<void>>();
@@ -59,6 +67,9 @@ function makeFastify(): {
     notificationPreferenceRepository: { tag: 'npr' },
     userNotificationDomain: { tag: 'und' },
     modelDraftService: { tag: 'mds' },
+    emailQueueRepository: { tag: 'eqr' },
+    mailService: { tag: 'ms' },
+    emailQueueNotifier: { tag: 'eqn' },
   };
   const fastify = {
     log: { info: vi.fn(), error: vi.fn(), warn: vi.fn(), debug: vi.fn() },
@@ -84,6 +95,7 @@ describe('startWorkers', () => {
     expect(startModelDraftJanitor).not.toHaveBeenCalled();
     expect(startDigestProcessor).not.toHaveBeenCalled();
     expect(startNotificationJanitor).not.toHaveBeenCalled();
+    expect(startEmailSender).not.toHaveBeenCalled();
   });
 
   it('starts every worker and registers an onClose hook that drains them', async () => {
@@ -95,6 +107,8 @@ describe('startWorkers', () => {
     startModelDraftJanitor.mockResolvedValue(janitorBoss);
     startDigestProcessor.mockResolvedValue(digestBoss);
     startNotificationJanitor.mockResolvedValue(notificationJanitorBoss);
+    const emailBoss = { stop: vi.fn().mockResolvedValue(undefined) };
+    startEmailSender.mockResolvedValue(emailBoss);
 
     const { fastify, hooks, cradle } = makeFastify();
     await startWorkers(fastify);
@@ -121,6 +135,14 @@ describe('startWorkers', () => {
     expect(startNotificationJanitor).toHaveBeenCalledWith({
       connectionString: 'postgres://test',
       userNotificationRepository: cradle.userNotificationRepository,
+      emailQueueRepository: cradle.emailQueueRepository,
+      logger: fastify.log,
+    });
+    expect(startEmailSender).toHaveBeenCalledWith({
+      connectionString: 'postgres://test',
+      emailQueueRepository: cradle.emailQueueRepository,
+      mailService: cradle.mailService,
+      emailQueueNotifier: cradle.emailQueueNotifier,
       logger: fastify.log,
     });
 
@@ -131,5 +153,6 @@ describe('startWorkers', () => {
     expect(janitorBoss.stop).toHaveBeenCalledWith({ graceful: true });
     expect(digestBoss.stop).toHaveBeenCalledWith({ graceful: true });
     expect(notificationJanitorBoss.stop).toHaveBeenCalledWith({ graceful: true });
+    expect(emailBoss.stop).toHaveBeenCalledWith({ graceful: true });
   });
 });

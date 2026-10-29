@@ -1,8 +1,5 @@
 import { Prisma } from '#prisma/index';
-import type {
-  EmailClaimRecord,
-  UserNotificationRecord,
-} from '#src/modules/user-notification/database/user-notification.record.ts';
+import type { UserNotificationRecord } from '#src/modules/user-notification/database/user-notification.record.ts';
 import type {
   InsertUserNotificationParams,
   UserNotificationRepositoryPort,
@@ -61,32 +58,17 @@ export default function userNotificationRepository({
       );
     },
 
-    async claimUnsent(ids: Array<string>, leaseMs: number): Promise<Array<EmailClaimRecord>> {
-      // Raw SQL: the lease compare-and-set must read now() and make_interval in the same
-      // statement that writes, and return the claim time, which updateMany cannot.
-      return db.$queryRaw<Array<EmailClaimRecord>>`
-        UPDATE "UserNotification"
-        SET "emailClaimedAt" = now()
-        WHERE "id" = ANY(${ids})
-          AND "emailSentAt" IS NULL
-          AND ("emailClaimedAt" IS NULL
-            OR "emailClaimedAt" < now() - make_interval(secs => ${leaseMs / 1000}))
-        RETURNING "id", "emailClaimedAt"
-      `;
-    },
-
-    async markSent(ids: Array<string>, claimedAt: Date, at: Date): Promise<void> {
-      await db.userNotification.updateMany({
-        where: { id: { in: ids }, emailClaimedAt: claimedAt },
-        data: { emailSentAt: at, emailClaimedAt: null },
+    async markEmailSentTx(
+      ids: Array<string>,
+      at: Date,
+      ctx: TransactionContext,
+    ): Promise<Array<string>> {
+      const rows = await resolveTransaction(ctx).userNotification.updateManyAndReturn({
+        where: { id: { in: ids }, emailSentAt: null },
+        data: { emailSentAt: at },
+        select: { id: true },
       });
-    },
-
-    async releaseClaim(ids: Array<string>, claimedAt: Date): Promise<void> {
-      await db.userNotification.updateMany({
-        where: { id: { in: ids }, emailClaimedAt: claimedAt },
-        data: { emailClaimedAt: null },
-      });
+      return rows.map((row) => row.id);
     },
 
     async findPendingForRecipient(

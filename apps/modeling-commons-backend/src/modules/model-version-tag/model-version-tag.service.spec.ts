@@ -49,7 +49,7 @@ describe('modelVersionTagService', () => {
 
   describe('add', () => {
     it('adds tag to current version', async () => {
-      modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue(makeVersion());
       tagService.upsertByName.mockResolvedValue({ id: 'tag-1', name: 'ecology' });
       modelVersionTagRepository.exists.mockResolvedValue(false);
 
@@ -62,13 +62,13 @@ describe('modelVersionTagService', () => {
     });
 
     it('throws VersionNotFoundError if no version', async () => {
-      modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue(undefined);
 
       await expect(service.add('model-1', 'user-1', 'tag')).rejects.toThrow(VersionNotFoundError);
     });
 
     it('throws TagAlreadyAppliedError if tag exists on version', async () => {
-      modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue(makeVersion());
       tagService.upsertByName.mockResolvedValue({ id: 'tag-1', name: 'ecology' });
       modelVersionTagRepository.exists.mockResolvedValue(true);
 
@@ -78,7 +78,7 @@ describe('modelVersionTagService', () => {
     });
 
     it('throws on finalized version', async () => {
-      modelVersionRepository.findLatestByModel.mockResolvedValue(
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue(
         makeVersion({ finalizedAt: new Date() }),
       );
 
@@ -88,7 +88,7 @@ describe('modelVersionTagService', () => {
 
   describe('remove', () => {
     it('removes tag from current version', async () => {
-      modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue(makeVersion());
 
       await service.remove('model-1', 'user-1', 'tag-1');
 
@@ -96,7 +96,7 @@ describe('modelVersionTagService', () => {
     });
 
     it('throws VersionNotFoundError if no version', async () => {
-      modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue(undefined);
 
       await expect(service.remove('model-1', 'user-1', 'tag-1')).rejects.toThrow(
         VersionNotFoundError,

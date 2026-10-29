@@ -2,7 +2,7 @@ import assert from 'node:assert';
 import { After, Given, Then, When } from '@cucumber/cucumber';
 import { HOUR_MS, MINUTE_MS } from '#src/shared/utils/consts.ts';
 import {
-  sendPendingDigests,
+  queuePendingDigests,
   type DigestProcessorDependencies,
 } from '#src/workers/digest-processor.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
@@ -13,8 +13,13 @@ interface DigestCradle {
   notificationPreferenceRepository: DigestProcessorDependencies['notificationPreferenceRepository'];
   userNotificationDomain: DigestProcessorDependencies['userNotificationDomain'];
   notificationDigestService: DigestProcessorDependencies['notificationDigestService'];
-  mailService: { sendMailAsync: (content: unknown) => Promise<unknown> };
+  mailService: { enqueue: (content: { to?: unknown }, ctx?: unknown) => Promise<void> };
   prisma: {
+    emailQueue: {
+      findMany: (args: {
+        where: { content: { path: Array<string>; equals: string } };
+      }) => Promise<Array<{ content: unknown }>>;
+    };
     event: {
       create: (args: { data: Record<string, unknown> }) => Promise<{ id: string }>;
     };
@@ -27,17 +32,9 @@ interface DigestCradle {
     };
     userNotification: {
       create: (args: { data: Record<string, unknown> }) => Promise<{ id: string }>;
-      findUniqueOrThrow: (args: {
-        where: { id: string };
-      }) => Promise<{ emailSentAt: Date | null; emailClaimedAt: Date | null }>;
+      findUniqueOrThrow: (args: { where: { id: string } }) => Promise<{ emailSentAt: Date | null }>;
     };
   };
-}
-
-interface DigestMailSpy {
-  delivered: Array<string>;
-  contents: Map<string, Array<string>>;
-  failNextTo: Set<string>;
 }
 
 const AGE_UNITS_MS: Record<string, number> = {
@@ -57,12 +54,6 @@ function getUser(world: ICustomWorld, name: string): TestUser {
   return user;
 }
 
-function getSpy(world: ICustomWorld): DigestMailSpy {
-  const spy = world.context['digestMailSpy'] as DigestMailSpy | undefined;
-  assert.ok(spy, 'digest mail delivery is not captured');
-  return spy;
-}
-
 function getSeededKey(name: string, age: number, unit: string): string {
   return `${name} ${age} ${unit}`;
 }
@@ -80,15 +71,18 @@ async function findSeededNotification(
   name: string,
   age: number,
   unit: string,
-): Promise<{ emailSentAt: Date | null; emailClaimedAt: Date | null }> {
+): Promise<{ emailSentAt: Date | null }> {
   const id = getSeededIds(world).get(getSeededKey(name, age, unit));
   assert.ok(id, `no notification for "${name}" created ${age} ${unit} ago`);
   return getCradle(world).prisma.userNotification.findUniqueOrThrow({ where: { id } });
 }
 
-function countDelivered(world: ICustomWorld, name: string): number {
+async function listQueuedDigests(world: ICustomWorld, name: string): Promise<Array<string>> {
   const { email } = getUser(world, name);
-  return getSpy(world).delivered.filter((to) => to === email).length;
+  const rows = await getCradle(world).prisma.emailQueue.findMany({
+    where: { content: { path: ['to'], equals: email } },
+  });
+  return rows.map((row) => JSON.stringify(row.content));
 }
 
 const DIGEST_CATEGORY = 'comment.on_your_model';
@@ -99,11 +93,6 @@ function getModelId(world: ICustomWorld, title: string): string {
   const id = (world.context['models'] as Map<string, string> | undefined)?.get(title);
   assert.ok(id, `no model "${title}"`);
   return id;
-}
-
-function listDigestContents(world: ICustomWorld, name: string): Array<string> {
-  const { email } = getUser(world, name);
-  return getSpy(world).contents.get(email) ?? [];
 }
 
 async function seedNotification(
@@ -149,30 +138,26 @@ async function seedNotification(
   getSeededIds(world).set(getSeededKey(recipientName, age, unit), notification.id);
 }
 
-Given('digest mail delivery is captured', function (this: ICustomWorld) {
+Given('digest mail delivery to {string} fails once', function (this: ICustomWorld, name: string) {
+  const { email } = getUser(this, name);
   const { mailService } = getCradle(this);
-  const original = mailService.sendMailAsync;
-  const spy: DigestMailSpy = { delivered: [], contents: new Map(), failNextTo: new Set() };
-  mailService.sendMailAsync = async (content: unknown) => {
-    const to = (content as { to?: string }).to ?? '';
-    if (spy.failNextTo.delete(to))
-      throw new Error(`notification-digest.feature: rigged failure to ${to}`);
-    spy.delivered.push(to);
-    spy.contents.set(to, [...(spy.contents.get(to) ?? []), JSON.stringify(content)]);
+  const original = mailService.enqueue.bind(mailService);
+  let hasFailed = false;
+  mailService.enqueue = async (content, ctx) => {
+    if (!hasFailed && content.to === email) {
+      hasFailed = true;
+      throw new Error(`notification-digest.feature: rigged failure to ${email}`);
+    }
+    return original(content, ctx);
   };
-  this.context['digestMailSpy'] = spy;
   this.context['restoreDigestMail'] = () => {
-    mailService.sendMailAsync = original;
+    mailService.enqueue = original;
   };
 });
 
 After(function (this: ICustomWorld) {
   const restore = this.context['restoreDigestMail'] as (() => void) | undefined;
   restore?.();
-});
-
-Given('digest mail delivery to {string} fails once', function (this: ICustomWorld, name: string) {
-  getSpy(this).failNextTo.add(getUser(this, name).email);
 });
 
 Given(
@@ -223,7 +208,7 @@ Given(
 
 When('the digest job runs', async function (this: ICustomWorld) {
   const cradle = getCradle(this);
-  this.context['digestJobError'] = await sendPendingDigests({
+  this.context['digestJobError'] = await queuePendingDigests({
     userNotificationRepository: cradle.userNotificationRepository,
     notificationPreferenceRepository: cradle.notificationPreferenceRepository,
     userNotificationDomain: cradle.userNotificationDomain,
@@ -245,8 +230,8 @@ Then('the digest job should have failed', function (this: ICustomWorld) {
 
 Then(
   '{string} should have received {int} digest(s)',
-  function (this: ICustomWorld, name: string, count: number) {
-    assert.strictEqual(countDelivered(this, name), count);
+  async function (this: ICustomWorld, name: string, count: number) {
+    assert.strictEqual((await listQueuedDigests(this, name)).length, count);
   },
 );
 
@@ -259,18 +244,17 @@ Then(
 );
 
 Then(
-  'the notification for {string} created {int} {word} ago should be unsent and unclaimed',
+  'the notification for {string} created {int} {word} ago should be unsent',
   async function (this: ICustomWorld, name: string, age: number, unit: string) {
     const notification = await findSeededNotification(this, name, age, unit);
     assert.strictEqual(notification.emailSentAt, null);
-    assert.strictEqual(notification.emailClaimedAt, null);
   },
 );
 
 Then(
   'the digest to {string} should name {string}',
-  function (this: ICustomWorld, name: string, modelTitle: string) {
-    const contents = listDigestContents(this, name);
+  async function (this: ICustomWorld, name: string, modelTitle: string) {
+    const contents = await listQueuedDigests(this, name);
     assert.strictEqual(contents.length, 1);
     assert.ok(
       contents[0]!.includes(modelTitle),
@@ -281,8 +265,8 @@ Then(
 
 Then(
   'the digest to {string} should not name {string}',
-  function (this: ICustomWorld, name: string, modelTitle: string) {
-    const contents = listDigestContents(this, name);
+  async function (this: ICustomWorld, name: string, modelTitle: string) {
+    const contents = await listQueuedDigests(this, name);
     assert.strictEqual(contents.length, 1);
     assert.ok(!contents[0]!.includes(modelTitle), `the digest to "${name}" names "${modelTitle}"`);
   },

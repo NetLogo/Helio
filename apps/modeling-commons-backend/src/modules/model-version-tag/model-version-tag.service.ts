@@ -12,7 +12,7 @@ export default function makeModelVersionTagService({
 }: Dependencies) {
   return {
     async add(modelId: string, userId: string, tagName: string): Promise<ModelVersionTagEntity> {
-      const currentVersion = await modelVersionRepository.findLatestByModel(modelId);
+      const currentVersion = await modelVersionRepository.findLatestByModelTx(modelId);
       if (!currentVersion) throw new VersionNotFoundError(modelId);
       modelVersionTagDomain.assertNotFinalized(currentVersion);
 
@@ -38,7 +38,7 @@ export default function makeModelVersionTagService({
 
       return transactionManager.run(async (ctx) => {
         await modelVersionTagRepository.insertTx(ctx, entity);
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_version_tag.added',
           actorId: userId,
           resourceType: 'model_version_tag',
@@ -50,7 +50,7 @@ export default function makeModelVersionTagService({
     },
 
     async remove(modelId: string, userId: string, tagId: string): Promise<void> {
-      const currentVersion = await modelVersionRepository.findLatestByModel(modelId);
+      const currentVersion = await modelVersionRepository.findLatestByModelTx(modelId);
       if (!currentVersion) throw new VersionNotFoundError(modelId);
       modelVersionTagDomain.assertNotFinalized(currentVersion);
 
@@ -61,7 +61,7 @@ export default function makeModelVersionTagService({
           currentVersion.versionNumber,
           tagId,
         );
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_version_tag.removed',
           actorId: userId,
           resourceType: 'model_version_tag',

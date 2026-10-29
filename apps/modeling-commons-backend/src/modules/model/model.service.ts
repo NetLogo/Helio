@@ -19,7 +19,7 @@ export default function makeModelService({
       modelDomain.assertNotDeleted(model);
 
       await transactionManager.run(async (ctx) => {
-        await modelRepository.updateFields(ctx, modelId, input);
+        await modelRepository.updateFieldsTx(ctx, modelId, input);
       });
     },
 
@@ -29,9 +29,9 @@ export default function makeModelService({
       modelDomain.assertNotDeleted(model);
 
       const purgedDrafts = await transactionManager.run(async (ctx) => {
-        await modelRepository.softDelete(ctx, modelId);
+        await modelRepository.softDeleteTx(ctx, modelId);
         const drafts = await modelDraftService.purgeForModelTx(ctx, modelId);
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model.deleted',
           actorId: userId,
           resourceType: 'model',

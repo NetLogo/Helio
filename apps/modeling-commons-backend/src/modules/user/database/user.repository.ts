@@ -38,7 +38,7 @@ export default function userRepository({
       });
     },
 
-    async softDelete(ctx: TransactionContext, id: string): Promise<void> {
+    async softDeleteTx(ctx: TransactionContext, id: string): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.user.update({
         where: { id },
@@ -46,7 +46,7 @@ export default function userRepository({
       });
     },
 
-    async updateFields(
+    async updateFieldsTx(
       ctx: TransactionContext,
       id: string,
       data: {

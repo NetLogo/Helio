@@ -5,7 +5,7 @@ export function mockEventRepository(): {
   [K in keyof EventRepositoryPort]: ReturnType<typeof vi.fn>;
 } {
   return {
-    insert: vi.fn(),
+    insertTx: vi.fn(),
     findUnprocessed: vi.fn(),
     markProcessed: vi.fn(),
     markFailed: vi.fn(),

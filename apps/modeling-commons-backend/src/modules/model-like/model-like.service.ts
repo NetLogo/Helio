@@ -10,7 +10,7 @@ export default function makeModelLikeService({
       await transactionManager.run(async (ctx) => {
         const inserted = await modelLikeRepository.upsertTx(ctx, entity);
         if (inserted) {
-          await eventRepository.insert(ctx, {
+          await eventRepository.insertTx(ctx, {
             type: 'model.liked',
             actorId: userId,
             resourceType: 'model',
@@ -25,7 +25,7 @@ export default function makeModelLikeService({
       await transactionManager.run(async (ctx) => {
         const deleted = await modelLikeRepository.deleteTx(ctx, modelId, userId);
         if (deleted) {
-          await eventRepository.insert(ctx, {
+          await eventRepository.insertTx(ctx, {
             type: 'model.unliked',
             actorId: userId,
             resourceType: 'model',

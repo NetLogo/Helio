@@ -109,6 +109,11 @@ export type ModelCommentLike = $Result.DefaultSelection<Prisma.$ModelCommentLike
  */
 export type Event = $Result.DefaultSelection<Prisma.$EventPayload>
 /**
+ * Model EmailQueue
+ * 
+ */
+export type EmailQueue = $Result.DefaultSelection<Prisma.$EmailQueuePayload>
+/**
  * Model UserNotification
  * 
  */
@@ -538,6 +543,16 @@ export class PrismaClient<
     * ```
     */
   get event(): Prisma.EventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.emailQueue`: Exposes CRUD operations for the **EmailQueue** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmailQueues
+    * const emailQueues = await prisma.emailQueue.findMany()
+    * ```
+    */
+  get emailQueue(): Prisma.EmailQueueDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.userNotification`: Exposes CRUD operations for the **UserNotification** model.
@@ -1011,6 +1026,7 @@ export namespace Prisma {
     ModelComment: 'ModelComment',
     ModelCommentLike: 'ModelCommentLike',
     Event: 'Event',
+    EmailQueue: 'EmailQueue',
     UserNotification: 'UserNotification',
     UserNotificationPreference: 'UserNotificationPreference'
   };
@@ -1028,7 +1044,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "nonMemberContributor" | "modelPermission" | "modelLike" | "modelInteraction" | "modelDraft" | "modelComment" | "modelCommentLike" | "event" | "userNotification" | "userNotificationPreference"
+      modelProps: "user" | "account" | "session" | "verification" | "passkey" | "model" | "modelVersion" | "modelVersionTag" | "modelAdditionalFile" | "tag" | "modelAuthor" | "nonMemberContributor" | "modelPermission" | "modelLike" | "modelInteraction" | "modelDraft" | "modelComment" | "modelCommentLike" | "event" | "emailQueue" | "userNotification" | "userNotificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2438,6 +2454,80 @@ export namespace Prisma {
           }
         }
       }
+      EmailQueue: {
+        payload: Prisma.$EmailQueuePayload<ExtArgs>
+        fields: Prisma.EmailQueueFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmailQueueFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmailQueueFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>
+          }
+          findFirst: {
+            args: Prisma.EmailQueueFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmailQueueFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>
+          }
+          findMany: {
+            args: Prisma.EmailQueueFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>[]
+          }
+          create: {
+            args: Prisma.EmailQueueCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>
+          }
+          createMany: {
+            args: Prisma.EmailQueueCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmailQueueCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>[]
+          }
+          delete: {
+            args: Prisma.EmailQueueDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>
+          }
+          update: {
+            args: Prisma.EmailQueueUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>
+          }
+          deleteMany: {
+            args: Prisma.EmailQueueDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmailQueueUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmailQueueUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>[]
+          }
+          upsert: {
+            args: Prisma.EmailQueueUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailQueuePayload>
+          }
+          aggregate: {
+            args: Prisma.EmailQueueAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmailQueue>
+          }
+          groupBy: {
+            args: Prisma.EmailQueueGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmailQueueGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmailQueueCountArgs<ExtArgs>
+            result: $Utils.Optional<EmailQueueCountAggregateOutputType> | number
+          }
+        }
+      }
       UserNotification: {
         payload: Prisma.$UserNotificationPayload<ExtArgs>
         fields: Prisma.UserNotificationFieldRefs
@@ -2713,6 +2803,7 @@ export namespace Prisma {
     modelComment?: ModelCommentOmit
     modelCommentLike?: ModelCommentLikeOmit
     event?: EventOmit
+    emailQueue?: EmailQueueOmit
     userNotification?: UserNotificationOmit
     userNotificationPreference?: UserNotificationPreferenceOmit
   }
@@ -25910,6 +26001,1062 @@ export namespace Prisma {
 
 
   /**
+   * Model EmailQueue
+   */
+
+  export type AggregateEmailQueue = {
+    _count: EmailQueueCountAggregateOutputType | null
+    _avg: EmailQueueAvgAggregateOutputType | null
+    _sum: EmailQueueSumAggregateOutputType | null
+    _min: EmailQueueMinAggregateOutputType | null
+    _max: EmailQueueMaxAggregateOutputType | null
+  }
+
+  export type EmailQueueAvgAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type EmailQueueSumAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type EmailQueueMinAggregateOutputType = {
+    id: string | null
+    createdAt: Date | null
+    sentAt: Date | null
+    attempts: number | null
+    lastError: string | null
+    nextAttemptAt: Date | null
+  }
+
+  export type EmailQueueMaxAggregateOutputType = {
+    id: string | null
+    createdAt: Date | null
+    sentAt: Date | null
+    attempts: number | null
+    lastError: string | null
+    nextAttemptAt: Date | null
+  }
+
+  export type EmailQueueCountAggregateOutputType = {
+    id: number
+    content: number
+    createdAt: number
+    sentAt: number
+    attempts: number
+    lastError: number
+    nextAttemptAt: number
+    _all: number
+  }
+
+
+  export type EmailQueueAvgAggregateInputType = {
+    attempts?: true
+  }
+
+  export type EmailQueueSumAggregateInputType = {
+    attempts?: true
+  }
+
+  export type EmailQueueMinAggregateInputType = {
+    id?: true
+    createdAt?: true
+    sentAt?: true
+    attempts?: true
+    lastError?: true
+    nextAttemptAt?: true
+  }
+
+  export type EmailQueueMaxAggregateInputType = {
+    id?: true
+    createdAt?: true
+    sentAt?: true
+    attempts?: true
+    lastError?: true
+    nextAttemptAt?: true
+  }
+
+  export type EmailQueueCountAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    sentAt?: true
+    attempts?: true
+    lastError?: true
+    nextAttemptAt?: true
+    _all?: true
+  }
+
+  export type EmailQueueAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailQueue to aggregate.
+     */
+    where?: EmailQueueWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailQueues to fetch.
+     */
+    orderBy?: EmailQueueOrderByWithRelationInput | EmailQueueOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmailQueueWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailQueues from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailQueues.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmailQueues
+    **/
+    _count?: true | EmailQueueCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EmailQueueAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EmailQueueSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmailQueueMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmailQueueMaxAggregateInputType
+  }
+
+  export type GetEmailQueueAggregateType<T extends EmailQueueAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmailQueue]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmailQueue[P]>
+      : GetScalarType<T[P], AggregateEmailQueue[P]>
+  }
+
+
+
+
+  export type EmailQueueGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailQueueWhereInput
+    orderBy?: EmailQueueOrderByWithAggregationInput | EmailQueueOrderByWithAggregationInput[]
+    by: EmailQueueScalarFieldEnum[] | EmailQueueScalarFieldEnum
+    having?: EmailQueueScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmailQueueCountAggregateInputType | true
+    _avg?: EmailQueueAvgAggregateInputType
+    _sum?: EmailQueueSumAggregateInputType
+    _min?: EmailQueueMinAggregateInputType
+    _max?: EmailQueueMaxAggregateInputType
+  }
+
+  export type EmailQueueGroupByOutputType = {
+    id: string
+    content: JsonValue
+    createdAt: Date
+    sentAt: Date | null
+    attempts: number
+    lastError: string | null
+    nextAttemptAt: Date | null
+    _count: EmailQueueCountAggregateOutputType | null
+    _avg: EmailQueueAvgAggregateOutputType | null
+    _sum: EmailQueueSumAggregateOutputType | null
+    _min: EmailQueueMinAggregateOutputType | null
+    _max: EmailQueueMaxAggregateOutputType | null
+  }
+
+  type GetEmailQueueGroupByPayload<T extends EmailQueueGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmailQueueGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmailQueueGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmailQueueGroupByOutputType[P]>
+            : GetScalarType<T[P], EmailQueueGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmailQueueSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    sentAt?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    nextAttemptAt?: boolean
+  }, ExtArgs["result"]["emailQueue"]>
+
+  export type EmailQueueSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    sentAt?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    nextAttemptAt?: boolean
+  }, ExtArgs["result"]["emailQueue"]>
+
+  export type EmailQueueSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    sentAt?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    nextAttemptAt?: boolean
+  }, ExtArgs["result"]["emailQueue"]>
+
+  export type EmailQueueSelectScalar = {
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    sentAt?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    nextAttemptAt?: boolean
+  }
+
+  export type EmailQueueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "sentAt" | "attempts" | "lastError" | "nextAttemptAt", ExtArgs["result"]["emailQueue"]>
+
+  export type $EmailQueuePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmailQueue"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      content: Prisma.JsonValue
+      createdAt: Date
+      sentAt: Date | null
+      attempts: number
+      lastError: string | null
+      nextAttemptAt: Date | null
+    }, ExtArgs["result"]["emailQueue"]>
+    composites: {}
+  }
+
+  type EmailQueueGetPayload<S extends boolean | null | undefined | EmailQueueDefaultArgs> = $Result.GetResult<Prisma.$EmailQueuePayload, S>
+
+  type EmailQueueCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmailQueueFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmailQueueCountAggregateInputType | true
+    }
+
+  export interface EmailQueueDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmailQueue'], meta: { name: 'EmailQueue' } }
+    /**
+     * Find zero or one EmailQueue that matches the filter.
+     * @param {EmailQueueFindUniqueArgs} args - Arguments to find a EmailQueue
+     * @example
+     * // Get one EmailQueue
+     * const emailQueue = await prisma.emailQueue.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmailQueueFindUniqueArgs>(args: SelectSubset<T, EmailQueueFindUniqueArgs<ExtArgs>>): Prisma__EmailQueueClient<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmailQueue that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmailQueueFindUniqueOrThrowArgs} args - Arguments to find a EmailQueue
+     * @example
+     * // Get one EmailQueue
+     * const emailQueue = await prisma.emailQueue.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmailQueueFindUniqueOrThrowArgs>(args: SelectSubset<T, EmailQueueFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmailQueueClient<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailQueue that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailQueueFindFirstArgs} args - Arguments to find a EmailQueue
+     * @example
+     * // Get one EmailQueue
+     * const emailQueue = await prisma.emailQueue.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmailQueueFindFirstArgs>(args?: SelectSubset<T, EmailQueueFindFirstArgs<ExtArgs>>): Prisma__EmailQueueClient<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailQueue that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailQueueFindFirstOrThrowArgs} args - Arguments to find a EmailQueue
+     * @example
+     * // Get one EmailQueue
+     * const emailQueue = await prisma.emailQueue.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmailQueueFindFirstOrThrowArgs>(args?: SelectSubset<T, EmailQueueFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmailQueueClient<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmailQueues that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailQueueFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmailQueues
+     * const emailQueues = await prisma.emailQueue.findMany()
+     * 
+     * // Get first 10 EmailQueues
+     * const emailQueues = await prisma.emailQueue.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const emailQueueWithIdOnly = await prisma.emailQueue.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmailQueueFindManyArgs>(args?: SelectSubset<T, EmailQueueFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmailQueue.
+     * @param {EmailQueueCreateArgs} args - Arguments to create a EmailQueue.
+     * @example
+     * // Create one EmailQueue
+     * const EmailQueue = await prisma.emailQueue.create({
+     *   data: {
+     *     // ... data to create a EmailQueue
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmailQueueCreateArgs>(args: SelectSubset<T, EmailQueueCreateArgs<ExtArgs>>): Prisma__EmailQueueClient<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmailQueues.
+     * @param {EmailQueueCreateManyArgs} args - Arguments to create many EmailQueues.
+     * @example
+     * // Create many EmailQueues
+     * const emailQueue = await prisma.emailQueue.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmailQueueCreateManyArgs>(args?: SelectSubset<T, EmailQueueCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmailQueues and returns the data saved in the database.
+     * @param {EmailQueueCreateManyAndReturnArgs} args - Arguments to create many EmailQueues.
+     * @example
+     * // Create many EmailQueues
+     * const emailQueue = await prisma.emailQueue.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmailQueues and only return the `id`
+     * const emailQueueWithIdOnly = await prisma.emailQueue.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmailQueueCreateManyAndReturnArgs>(args?: SelectSubset<T, EmailQueueCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmailQueue.
+     * @param {EmailQueueDeleteArgs} args - Arguments to delete one EmailQueue.
+     * @example
+     * // Delete one EmailQueue
+     * const EmailQueue = await prisma.emailQueue.delete({
+     *   where: {
+     *     // ... filter to delete one EmailQueue
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmailQueueDeleteArgs>(args: SelectSubset<T, EmailQueueDeleteArgs<ExtArgs>>): Prisma__EmailQueueClient<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmailQueue.
+     * @param {EmailQueueUpdateArgs} args - Arguments to update one EmailQueue.
+     * @example
+     * // Update one EmailQueue
+     * const emailQueue = await prisma.emailQueue.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmailQueueUpdateArgs>(args: SelectSubset<T, EmailQueueUpdateArgs<ExtArgs>>): Prisma__EmailQueueClient<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmailQueues.
+     * @param {EmailQueueDeleteManyArgs} args - Arguments to filter EmailQueues to delete.
+     * @example
+     * // Delete a few EmailQueues
+     * const { count } = await prisma.emailQueue.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmailQueueDeleteManyArgs>(args?: SelectSubset<T, EmailQueueDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailQueues.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailQueueUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmailQueues
+     * const emailQueue = await prisma.emailQueue.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmailQueueUpdateManyArgs>(args: SelectSubset<T, EmailQueueUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailQueues and returns the data updated in the database.
+     * @param {EmailQueueUpdateManyAndReturnArgs} args - Arguments to update many EmailQueues.
+     * @example
+     * // Update many EmailQueues
+     * const emailQueue = await prisma.emailQueue.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmailQueues and only return the `id`
+     * const emailQueueWithIdOnly = await prisma.emailQueue.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmailQueueUpdateManyAndReturnArgs>(args: SelectSubset<T, EmailQueueUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmailQueue.
+     * @param {EmailQueueUpsertArgs} args - Arguments to update or create a EmailQueue.
+     * @example
+     * // Update or create a EmailQueue
+     * const emailQueue = await prisma.emailQueue.upsert({
+     *   create: {
+     *     // ... data to create a EmailQueue
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmailQueue we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmailQueueUpsertArgs>(args: SelectSubset<T, EmailQueueUpsertArgs<ExtArgs>>): Prisma__EmailQueueClient<$Result.GetResult<Prisma.$EmailQueuePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmailQueues.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailQueueCountArgs} args - Arguments to filter EmailQueues to count.
+     * @example
+     * // Count the number of EmailQueues
+     * const count = await prisma.emailQueue.count({
+     *   where: {
+     *     // ... the filter for the EmailQueues we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmailQueueCountArgs>(
+      args?: Subset<T, EmailQueueCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmailQueueCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmailQueue.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailQueueAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmailQueueAggregateArgs>(args: Subset<T, EmailQueueAggregateArgs>): Prisma.PrismaPromise<GetEmailQueueAggregateType<T>>
+
+    /**
+     * Group by EmailQueue.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailQueueGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmailQueueGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmailQueueGroupByArgs['orderBy'] }
+        : { orderBy?: EmailQueueGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmailQueueGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmailQueueGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmailQueue model
+   */
+  readonly fields: EmailQueueFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmailQueue.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmailQueueClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmailQueue model
+   */
+  interface EmailQueueFieldRefs {
+    readonly id: FieldRef<"EmailQueue", 'String'>
+    readonly content: FieldRef<"EmailQueue", 'Json'>
+    readonly createdAt: FieldRef<"EmailQueue", 'DateTime'>
+    readonly sentAt: FieldRef<"EmailQueue", 'DateTime'>
+    readonly attempts: FieldRef<"EmailQueue", 'Int'>
+    readonly lastError: FieldRef<"EmailQueue", 'String'>
+    readonly nextAttemptAt: FieldRef<"EmailQueue", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmailQueue findUnique
+   */
+  export type EmailQueueFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailQueue to fetch.
+     */
+    where: EmailQueueWhereUniqueInput
+  }
+
+  /**
+   * EmailQueue findUniqueOrThrow
+   */
+  export type EmailQueueFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailQueue to fetch.
+     */
+    where: EmailQueueWhereUniqueInput
+  }
+
+  /**
+   * EmailQueue findFirst
+   */
+  export type EmailQueueFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailQueue to fetch.
+     */
+    where?: EmailQueueWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailQueues to fetch.
+     */
+    orderBy?: EmailQueueOrderByWithRelationInput | EmailQueueOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailQueues.
+     */
+    cursor?: EmailQueueWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailQueues from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailQueues.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailQueues.
+     */
+    distinct?: EmailQueueScalarFieldEnum | EmailQueueScalarFieldEnum[]
+  }
+
+  /**
+   * EmailQueue findFirstOrThrow
+   */
+  export type EmailQueueFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailQueue to fetch.
+     */
+    where?: EmailQueueWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailQueues to fetch.
+     */
+    orderBy?: EmailQueueOrderByWithRelationInput | EmailQueueOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailQueues.
+     */
+    cursor?: EmailQueueWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailQueues from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailQueues.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailQueues.
+     */
+    distinct?: EmailQueueScalarFieldEnum | EmailQueueScalarFieldEnum[]
+  }
+
+  /**
+   * EmailQueue findMany
+   */
+  export type EmailQueueFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailQueues to fetch.
+     */
+    where?: EmailQueueWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailQueues to fetch.
+     */
+    orderBy?: EmailQueueOrderByWithRelationInput | EmailQueueOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmailQueues.
+     */
+    cursor?: EmailQueueWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailQueues from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailQueues.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailQueues.
+     */
+    distinct?: EmailQueueScalarFieldEnum | EmailQueueScalarFieldEnum[]
+  }
+
+  /**
+   * EmailQueue create
+   */
+  export type EmailQueueCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EmailQueue.
+     */
+    data: XOR<EmailQueueCreateInput, EmailQueueUncheckedCreateInput>
+  }
+
+  /**
+   * EmailQueue createMany
+   */
+  export type EmailQueueCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmailQueues.
+     */
+    data: EmailQueueCreateManyInput | EmailQueueCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailQueue createManyAndReturn
+   */
+  export type EmailQueueCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmailQueues.
+     */
+    data: EmailQueueCreateManyInput | EmailQueueCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailQueue update
+   */
+  export type EmailQueueUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EmailQueue.
+     */
+    data: XOR<EmailQueueUpdateInput, EmailQueueUncheckedUpdateInput>
+    /**
+     * Choose, which EmailQueue to update.
+     */
+    where: EmailQueueWhereUniqueInput
+  }
+
+  /**
+   * EmailQueue updateMany
+   */
+  export type EmailQueueUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmailQueues.
+     */
+    data: XOR<EmailQueueUpdateManyMutationInput, EmailQueueUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailQueues to update
+     */
+    where?: EmailQueueWhereInput
+    /**
+     * Limit how many EmailQueues to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailQueue updateManyAndReturn
+   */
+  export type EmailQueueUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * The data used to update EmailQueues.
+     */
+    data: XOR<EmailQueueUpdateManyMutationInput, EmailQueueUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailQueues to update
+     */
+    where?: EmailQueueWhereInput
+    /**
+     * Limit how many EmailQueues to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailQueue upsert
+   */
+  export type EmailQueueUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EmailQueue to update in case it exists.
+     */
+    where: EmailQueueWhereUniqueInput
+    /**
+     * In case the EmailQueue found by the `where` argument doesn't exist, create a new EmailQueue with this data.
+     */
+    create: XOR<EmailQueueCreateInput, EmailQueueUncheckedCreateInput>
+    /**
+     * In case the EmailQueue was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmailQueueUpdateInput, EmailQueueUncheckedUpdateInput>
+  }
+
+  /**
+   * EmailQueue delete
+   */
+  export type EmailQueueDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+    /**
+     * Filter which EmailQueue to delete.
+     */
+    where: EmailQueueWhereUniqueInput
+  }
+
+  /**
+   * EmailQueue deleteMany
+   */
+  export type EmailQueueDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailQueues to delete
+     */
+    where?: EmailQueueWhereInput
+    /**
+     * Limit how many EmailQueues to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailQueue without action
+   */
+  export type EmailQueueDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailQueue
+     */
+    select?: EmailQueueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailQueue
+     */
+    omit?: EmailQueueOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model UserNotification
    */
 
@@ -25931,7 +27078,6 @@ export namespace Prisma {
     targetType: string | null
     targetId: string | null
     emailSentAt: Date | null
-    emailClaimedAt: Date | null
     readAt: Date | null
     createdAt: Date | null
   }
@@ -25948,7 +27094,6 @@ export namespace Prisma {
     targetType: string | null
     targetId: string | null
     emailSentAt: Date | null
-    emailClaimedAt: Date | null
     readAt: Date | null
     createdAt: Date | null
   }
@@ -25965,7 +27110,6 @@ export namespace Prisma {
     targetType: number
     targetId: number
     emailSentAt: number
-    emailClaimedAt: number
     readAt: number
     createdAt: number
     _all: number
@@ -25984,7 +27128,6 @@ export namespace Prisma {
     targetType?: true
     targetId?: true
     emailSentAt?: true
-    emailClaimedAt?: true
     readAt?: true
     createdAt?: true
   }
@@ -26001,7 +27144,6 @@ export namespace Prisma {
     targetType?: true
     targetId?: true
     emailSentAt?: true
-    emailClaimedAt?: true
     readAt?: true
     createdAt?: true
   }
@@ -26018,7 +27160,6 @@ export namespace Prisma {
     targetType?: true
     targetId?: true
     emailSentAt?: true
-    emailClaimedAt?: true
     readAt?: true
     createdAt?: true
     _all?: true
@@ -26108,7 +27249,6 @@ export namespace Prisma {
     targetType: string | null
     targetId: string | null
     emailSentAt: Date | null
-    emailClaimedAt: Date | null
     readAt: Date | null
     createdAt: Date
     _count: UserNotificationCountAggregateOutputType | null
@@ -26142,7 +27282,6 @@ export namespace Prisma {
     targetType?: boolean
     targetId?: boolean
     emailSentAt?: boolean
-    emailClaimedAt?: boolean
     readAt?: boolean
     createdAt?: boolean
     recipient?: boolean | UserDefaultArgs<ExtArgs>
@@ -26161,7 +27300,6 @@ export namespace Prisma {
     targetType?: boolean
     targetId?: boolean
     emailSentAt?: boolean
-    emailClaimedAt?: boolean
     readAt?: boolean
     createdAt?: boolean
     recipient?: boolean | UserDefaultArgs<ExtArgs>
@@ -26180,7 +27318,6 @@ export namespace Prisma {
     targetType?: boolean
     targetId?: boolean
     emailSentAt?: boolean
-    emailClaimedAt?: boolean
     readAt?: boolean
     createdAt?: boolean
     recipient?: boolean | UserDefaultArgs<ExtArgs>
@@ -26199,12 +27336,11 @@ export namespace Prisma {
     targetType?: boolean
     targetId?: boolean
     emailSentAt?: boolean
-    emailClaimedAt?: boolean
     readAt?: boolean
     createdAt?: boolean
   }
 
-  export type UserNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipientId" | "eventId" | "category" | "title" | "body" | "url" | "actorUserId" | "targetType" | "targetId" | "emailSentAt" | "emailClaimedAt" | "readAt" | "createdAt", ExtArgs["result"]["userNotification"]>
+  export type UserNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipientId" | "eventId" | "category" | "title" | "body" | "url" | "actorUserId" | "targetType" | "targetId" | "emailSentAt" | "readAt" | "createdAt", ExtArgs["result"]["userNotification"]>
   export type UserNotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     recipient?: boolean | UserDefaultArgs<ExtArgs>
     event?: boolean | EventDefaultArgs<ExtArgs>
@@ -26236,7 +27372,6 @@ export namespace Prisma {
       targetType: string | null
       targetId: string | null
       emailSentAt: Date | null
-      emailClaimedAt: Date | null
       readAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["userNotification"]>
@@ -26675,7 +27810,6 @@ export namespace Prisma {
     readonly targetType: FieldRef<"UserNotification", 'String'>
     readonly targetId: FieldRef<"UserNotification", 'String'>
     readonly emailSentAt: FieldRef<"UserNotification", 'DateTime'>
-    readonly emailClaimedAt: FieldRef<"UserNotification", 'DateTime'>
     readonly readAt: FieldRef<"UserNotification", 'DateTime'>
     readonly createdAt: FieldRef<"UserNotification", 'DateTime'>
   }
@@ -28469,6 +29603,19 @@ export namespace Prisma {
   export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
 
 
+  export const EmailQueueScalarFieldEnum: {
+    id: 'id',
+    content: 'content',
+    createdAt: 'createdAt',
+    sentAt: 'sentAt',
+    attempts: 'attempts',
+    lastError: 'lastError',
+    nextAttemptAt: 'nextAttemptAt'
+  };
+
+  export type EmailQueueScalarFieldEnum = (typeof EmailQueueScalarFieldEnum)[keyof typeof EmailQueueScalarFieldEnum]
+
+
   export const UserNotificationScalarFieldEnum: {
     id: 'id',
     recipientId: 'recipientId',
@@ -28481,7 +29628,6 @@ export namespace Prisma {
     targetType: 'targetType',
     targetId: 'targetId',
     emailSentAt: 'emailSentAt',
-    emailClaimedAt: 'emailClaimedAt',
     readAt: 'readAt',
     createdAt: 'createdAt'
   };
@@ -30313,6 +31459,70 @@ export namespace Prisma {
     lastError?: StringNullableWithAggregatesFilter<"Event"> | string | null
   }
 
+  export type EmailQueueWhereInput = {
+    AND?: EmailQueueWhereInput | EmailQueueWhereInput[]
+    OR?: EmailQueueWhereInput[]
+    NOT?: EmailQueueWhereInput | EmailQueueWhereInput[]
+    id?: StringFilter<"EmailQueue"> | string
+    content?: JsonFilter<"EmailQueue">
+    createdAt?: DateTimeFilter<"EmailQueue"> | Date | string
+    sentAt?: DateTimeNullableFilter<"EmailQueue"> | Date | string | null
+    attempts?: IntFilter<"EmailQueue"> | number
+    lastError?: StringNullableFilter<"EmailQueue"> | string | null
+    nextAttemptAt?: DateTimeNullableFilter<"EmailQueue"> | Date | string | null
+  }
+
+  export type EmailQueueOrderByWithRelationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    nextAttemptAt?: SortOrderInput | SortOrder
+  }
+
+  export type EmailQueueWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EmailQueueWhereInput | EmailQueueWhereInput[]
+    OR?: EmailQueueWhereInput[]
+    NOT?: EmailQueueWhereInput | EmailQueueWhereInput[]
+    content?: JsonFilter<"EmailQueue">
+    createdAt?: DateTimeFilter<"EmailQueue"> | Date | string
+    sentAt?: DateTimeNullableFilter<"EmailQueue"> | Date | string | null
+    attempts?: IntFilter<"EmailQueue"> | number
+    lastError?: StringNullableFilter<"EmailQueue"> | string | null
+    nextAttemptAt?: DateTimeNullableFilter<"EmailQueue"> | Date | string | null
+  }, "id">
+
+  export type EmailQueueOrderByWithAggregationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    nextAttemptAt?: SortOrderInput | SortOrder
+    _count?: EmailQueueCountOrderByAggregateInput
+    _avg?: EmailQueueAvgOrderByAggregateInput
+    _max?: EmailQueueMaxOrderByAggregateInput
+    _min?: EmailQueueMinOrderByAggregateInput
+    _sum?: EmailQueueSumOrderByAggregateInput
+  }
+
+  export type EmailQueueScalarWhereWithAggregatesInput = {
+    AND?: EmailQueueScalarWhereWithAggregatesInput | EmailQueueScalarWhereWithAggregatesInput[]
+    OR?: EmailQueueScalarWhereWithAggregatesInput[]
+    NOT?: EmailQueueScalarWhereWithAggregatesInput | EmailQueueScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmailQueue"> | string
+    content?: JsonWithAggregatesFilter<"EmailQueue">
+    createdAt?: DateTimeWithAggregatesFilter<"EmailQueue"> | Date | string
+    sentAt?: DateTimeNullableWithAggregatesFilter<"EmailQueue"> | Date | string | null
+    attempts?: IntWithAggregatesFilter<"EmailQueue"> | number
+    lastError?: StringNullableWithAggregatesFilter<"EmailQueue"> | string | null
+    nextAttemptAt?: DateTimeNullableWithAggregatesFilter<"EmailQueue"> | Date | string | null
+  }
+
   export type UserNotificationWhereInput = {
     AND?: UserNotificationWhereInput | UserNotificationWhereInput[]
     OR?: UserNotificationWhereInput[]
@@ -30328,7 +31538,6 @@ export namespace Prisma {
     targetType?: StringNullableFilter<"UserNotification"> | string | null
     targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
-    emailClaimedAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
     recipient?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30347,7 +31556,6 @@ export namespace Prisma {
     targetType?: SortOrderInput | SortOrder
     targetId?: SortOrderInput | SortOrder
     emailSentAt?: SortOrderInput | SortOrder
-    emailClaimedAt?: SortOrderInput | SortOrder
     readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     recipient?: UserOrderByWithRelationInput
@@ -30370,7 +31578,6 @@ export namespace Prisma {
     targetType?: StringNullableFilter<"UserNotification"> | string | null
     targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
-    emailClaimedAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
     recipient?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30389,7 +31596,6 @@ export namespace Prisma {
     targetType?: SortOrderInput | SortOrder
     targetId?: SortOrderInput | SortOrder
     emailSentAt?: SortOrderInput | SortOrder
-    emailClaimedAt?: SortOrderInput | SortOrder
     readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: UserNotificationCountOrderByAggregateInput
@@ -30412,7 +31618,6 @@ export namespace Prisma {
     targetType?: StringNullableWithAggregatesFilter<"UserNotification"> | string | null
     targetId?: StringNullableWithAggregatesFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableWithAggregatesFilter<"UserNotification"> | Date | string | null
-    emailClaimedAt?: DateTimeNullableWithAggregatesFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableWithAggregatesFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"UserNotification"> | Date | string
   }
@@ -32146,6 +33351,76 @@ export namespace Prisma {
     lastError?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type EmailQueueCreateInput = {
+    id?: string
+    content: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+    attempts?: number
+    lastError?: string | null
+    nextAttemptAt?: Date | string | null
+  }
+
+  export type EmailQueueUncheckedCreateInput = {
+    id?: string
+    content: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+    attempts?: number
+    lastError?: string | null
+    nextAttemptAt?: Date | string | null
+  }
+
+  export type EmailQueueUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type EmailQueueUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type EmailQueueCreateManyInput = {
+    id?: string
+    content: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+    attempts?: number
+    lastError?: string | null
+    nextAttemptAt?: Date | string | null
+  }
+
+  export type EmailQueueUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type EmailQueueUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type UserNotificationCreateInput = {
     id?: string
     category: string
@@ -32156,7 +33431,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
     recipient: UserCreateNestedOneWithoutNotificationsInput
@@ -32175,7 +33449,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -32190,7 +33463,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipient?: UserUpdateOneRequiredWithoutNotificationsNestedInput
@@ -32209,7 +33481,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32226,7 +33497,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -32241,7 +33511,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32258,7 +33527,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33793,6 +35061,42 @@ export namespace Prisma {
     attempts?: SortOrder
   }
 
+  export type EmailQueueCountOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    nextAttemptAt?: SortOrder
+  }
+
+  export type EmailQueueAvgOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+
+  export type EmailQueueMaxOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    nextAttemptAt?: SortOrder
+  }
+
+  export type EmailQueueMinOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    nextAttemptAt?: SortOrder
+  }
+
+  export type EmailQueueSumOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+
   export type EventScalarRelationFilter = {
     is?: EventWhereInput
     isNot?: EventWhereInput
@@ -33816,7 +35120,6 @@ export namespace Prisma {
     targetType?: SortOrder
     targetId?: SortOrder
     emailSentAt?: SortOrder
-    emailClaimedAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -33833,7 +35136,6 @@ export namespace Prisma {
     targetType?: SortOrder
     targetId?: SortOrder
     emailSentAt?: SortOrder
-    emailClaimedAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -33850,7 +35152,6 @@ export namespace Prisma {
     targetType?: SortOrder
     targetId?: SortOrder
     emailSentAt?: SortOrder
-    emailClaimedAt?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -36514,7 +37815,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
     event: EventCreateNestedOneWithoutNotificationsInput
@@ -36531,7 +37831,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -36967,7 +38266,6 @@ export namespace Prisma {
     targetType?: StringNullableFilter<"UserNotification"> | string | null
     targetId?: StringNullableFilter<"UserNotification"> | string | null
     emailSentAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
-    emailClaimedAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     readAt?: DateTimeNullableFilter<"UserNotification"> | Date | string | null
     createdAt?: DateTimeFilter<"UserNotification"> | Date | string
   }
@@ -41715,7 +43013,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
     recipient: UserCreateNestedOneWithoutNotificationsInput
@@ -41732,7 +43029,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -42373,7 +43669,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -42739,7 +44034,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     event?: EventUpdateOneRequiredWithoutNotificationsNestedInput
@@ -42756,7 +44050,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42772,7 +44065,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43534,7 +44826,6 @@ export namespace Prisma {
     targetType?: string | null
     targetId?: string | null
     emailSentAt?: Date | string | null
-    emailClaimedAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
   }
@@ -43549,7 +44840,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipient?: UserUpdateOneRequiredWithoutNotificationsNestedInput
@@ -43566,7 +44856,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43582,7 +44871,6 @@ export namespace Prisma {
     targetType?: NullableStringFieldUpdateOperationsInput | string | null
     targetId?: NullableStringFieldUpdateOperationsInput | string | null
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

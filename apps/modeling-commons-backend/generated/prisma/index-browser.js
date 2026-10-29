@@ -345,6 +345,16 @@ exports.Prisma.EventScalarFieldEnum = {
   lastError: 'lastError'
 };
 
+exports.Prisma.EmailQueueScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  createdAt: 'createdAt',
+  sentAt: 'sentAt',
+  attempts: 'attempts',
+  lastError: 'lastError',
+  nextAttemptAt: 'nextAttemptAt'
+};
+
 exports.Prisma.UserNotificationScalarFieldEnum = {
   id: 'id',
   recipientId: 'recipientId',
@@ -357,7 +367,6 @@ exports.Prisma.UserNotificationScalarFieldEnum = {
   targetType: 'targetType',
   targetId: 'targetId',
   emailSentAt: 'emailSentAt',
-  emailClaimedAt: 'emailClaimedAt',
   readAt: 'readAt',
   createdAt: 'createdAt'
 };
@@ -468,6 +477,7 @@ exports.Prisma.ModelName = {
   ModelComment: 'ModelComment',
   ModelCommentLike: 'ModelCommentLike',
   Event: 'Event',
+  EmailQueue: 'EmailQueue',
   UserNotification: 'UserNotification',
   UserNotificationPreference: 'UserNotificationPreference'
 };

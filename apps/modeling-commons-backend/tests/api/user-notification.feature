@@ -91,7 +91,6 @@ Feature: Notification Preferences and Feed
     And an authenticated user "contributor"
     And "owner" has added "contributor" as a contributor to "Notify Model"
     And an authenticated user "commenter"
-    And mail delivery is captured
     When "commenter" comments "Great work!" on "Notify Model"
     Then the response status should be 201
     When the event processor queue is triggered
@@ -103,7 +102,6 @@ Feature: Notification Preferences and Feed
   Scenario: Commenting on your own model does not notify yourself
     Given an authenticated user "owner"
     And a public model "Solo Model" created by "owner"
-    And mail delivery is captured
     When "owner" comments "Talking to myself" on "Solo Model"
     Then the response status should be 201
     When the event processor queue is triggered
@@ -158,7 +156,6 @@ Feature: Notification Preferences and Feed
     And a public model "Quiet Model" created by "owner"
     And "owner" mutes the in-app channel for category "comment.on_your_model"
     And an authenticated user "commenter"
-    And mail delivery is captured
     When "commenter" comments "Still emailed" on "Quiet Model"
     Then the response status should be 201
     When the event processor queue is triggered
@@ -189,7 +186,6 @@ Feature: Notification Preferences and Feed
     And a public model "Muted Model" created by "owner"
     And "owner" opts out of category "comment.on_your_model"
     And an authenticated user "commenter"
-    And mail delivery is captured
     When "commenter" comments "Anyone home?" on "Muted Model"
     Then the response status should be 201
     When the event processor queue is triggered
@@ -200,7 +196,6 @@ Feature: Notification Preferences and Feed
     And a public model "Daily Model" created by "owner"
     And "owner" sets email to "daily" for category "comment.on_your_model"
     And an authenticated user "commenter"
-    And mail delivery is captured
     When "commenter" comments "Save it for later" on "Daily Model"
     Then the response status should be 201
     When the event processor queue is triggered
@@ -211,7 +206,6 @@ Feature: Notification Preferences and Feed
     And a public model "Flush Model" created by "owner"
     And "owner" sets email to "daily" for category "comment.on_your_model"
     And an authenticated user "commenter"
-    And mail delivery is captured
     When "commenter" comments "Held for the digest" on "Flush Model"
     And the event processor queue is triggered
     And "commenter" comments "Still holding" on "Flush Model"
@@ -227,7 +221,6 @@ Feature: Notification Preferences and Feed
     And a public model "Missed Model" created by "owner"
     And "owner" turns off email for category "comment.on_your_model"
     And an authenticated user "commenter"
-    And mail delivery is captured
     When "commenter" comments "You missed this" on "Missed Model"
     And the event processor queue is triggered
     Then no mail should have been sent
@@ -240,7 +233,6 @@ Feature: Notification Preferences and Feed
     And a public model "Same Model" created by "owner"
     And "owner" sets email to "daily" for category "comment.on_your_model"
     And an authenticated user "commenter"
-    And mail delivery is captured
     When "commenter" comments "Still daily" on "Same Model"
     And the event processor queue is triggered
     Then no mail should have been sent
@@ -253,7 +245,6 @@ Feature: Notification Preferences and Feed
     And a public model "Stale Model" created by "owner"
     And "owner" sets email to "daily" for category "comment.on_your_model"
     And an authenticated user "commenter"
-    And mail delivery is captured
     When "commenter" comments "Long ago" on "Stale Model"
     And the event processor queue is triggered
     Then no mail should have been sent

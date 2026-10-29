@@ -15,7 +15,7 @@ export default function eventRepository({
   const nudged = new WeakSet<TransactionContext>();
 
   return {
-    async insert(ctx: TransactionContext, params: InsertEventParams): Promise<void> {
+    async insertTx(ctx: TransactionContext, params: InsertEventParams): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.event.create({
         data: {

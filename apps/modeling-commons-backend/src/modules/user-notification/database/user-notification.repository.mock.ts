@@ -1,5 +1,6 @@
 import { vi } from 'vitest';
 import type { UserNotificationRepositoryPort } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
+import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export function mockUserNotificationRepository(): {
   [K in keyof UserNotificationRepositoryPort]: ReturnType<typeof vi.fn>;
@@ -7,9 +8,7 @@ export function mockUserNotificationRepository(): {
   return {
     insertTx: vi.fn(),
     findOneByDeliveryKey: vi.fn(),
-    claimUnsent: vi.fn().mockResolvedValue([]),
-    markSent: vi.fn().mockResolvedValue(undefined),
-    releaseClaim: vi.fn().mockResolvedValue(undefined),
+    markEmailSentTx: vi.fn().mockResolvedValue([]),
     findPendingForRecipient: vi.fn().mockResolvedValue([]),
     findDigestRecipients: vi.fn().mockResolvedValue([]),
     markRead: vi.fn(),
@@ -18,5 +17,15 @@ export function mockUserNotificationRepository(): {
     countUnread: vi.fn(),
     deleteOrphaned: vi.fn().mockResolvedValue(0),
     deleteOlderThan: vi.fn().mockResolvedValue(0),
+  };
+}
+
+export function fakeMarkEmailSent(sentIds: Set<string>) {
+  return async (ids: Array<string>, _at: Date, ctx: TransactionContext): Promise<Array<string>> => {
+    const marked = ids.filter((id) => !sentIds.has(id));
+    ctx.onCommit(() => {
+      for (const id of marked) sentIds.add(id);
+    });
+    return marked;
   };
 }

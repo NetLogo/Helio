@@ -10,7 +10,10 @@ import userNotificationDomain from '#src/modules/user-notification/domain/user-n
 import userNotificationMapper from '#src/modules/user-notification/user-notification.mapper.ts';
 import { NotificationNotFoundError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import { mockNotificationPreferenceRepository } from '#src/modules/user-notification/database/notification-preference.repository.mock.ts';
-import { mockUserNotificationRepository } from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
+import {
+  fakeMarkEmailSent,
+  mockUserNotificationRepository,
+} from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
 import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { MINUTE_MS } from '#src/shared/utils/consts.ts';
@@ -223,7 +226,6 @@ function makeInsertedNotification(
     targetType: null,
     targetId: null,
     emailSentAt: null,
-    emailClaimedAt: null,
     readAt: null,
     createdAt: new Date('2026-01-01'),
     ...overrides,
@@ -236,7 +238,7 @@ describe('userNotificationService handleEvent', () => {
   const userRepository = mockUserRepository();
   const transactionManager = mockTransactionManager();
   const domain = userNotificationDomain();
-  const mailService = { sendMailAsync: vi.fn(), sendMail: vi.fn() };
+  const mailService = { enqueue: vi.fn() };
   const logger = { error: vi.fn(), info: vi.fn(), warn: vi.fn(), debug: vi.fn() };
 
   function build(notifiers: Array<Notifier>) {
@@ -251,51 +253,24 @@ describe('userNotificationService handleEvent', () => {
       notificationEmailService: makeNotificationEmailService({
         userNotificationRepository,
         mailService,
-        logger,
+        transactionManager,
       } as never),
       logger,
     } as never);
   }
 
-  const claims = new Map<string, Date>();
   const sentIds = new Set<string>();
 
-  function isHeldClaim(id: string, claimedAt: Date): boolean {
-    return claims.get(id)?.getTime() === claimedAt.getTime();
-  }
-
   beforeEach(() => {
-    claims.clear();
     sentIds.clear();
     notificationPreferenceRepository.findAllByUser.mockReset().mockResolvedValue([]);
     userNotificationRepository.insertTx.mockReset().mockResolvedValue(makeInsertedNotification());
     userNotificationRepository.findOneByDeliveryKey.mockReset().mockResolvedValue(undefined);
-    userNotificationRepository.claimUnsent
+    userNotificationRepository.markEmailSentTx
       .mockReset()
-      .mockImplementation(async (ids: Array<string>) =>
-        ids
-          .filter((id) => !claims.has(id) && !sentIds.has(id))
-          .map((id) => {
-            const emailClaimedAt = new Date();
-            claims.set(id, emailClaimedAt);
-            return { id, emailClaimedAt };
-          }),
-      );
-    userNotificationRepository.markSent
-      .mockReset()
-      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
-        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) {
-          claims.delete(id);
-          sentIds.add(id);
-        }
-      });
-    userNotificationRepository.releaseClaim
-      .mockReset()
-      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
-        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) claims.delete(id);
-      });
+      .mockImplementation(fakeMarkEmailSent(sentIds));
     userRepository.findOneById.mockReset().mockResolvedValue(makeUserRecord());
-    mailService.sendMailAsync.mockReset().mockResolvedValue({});
+    mailService.enqueue.mockReset().mockResolvedValue(undefined);
     logger.error.mockReset();
   });
 
@@ -318,7 +293,7 @@ describe('userNotificationService handleEvent', () => {
 
       await expect(service.handleEvent(makeEvent())).rejects.toThrow(AggregateError);
 
-      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
+      expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalled();
     });
 
@@ -343,7 +318,7 @@ describe('userNotificationService handleEvent', () => {
           preferencesUrl: expect.stringContaining('/settings/notifications'),
         }),
       );
-      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
+      expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
@@ -400,7 +375,7 @@ describe('userNotificationService handleEvent', () => {
 
       expect(intent.buildEmail).not.toHaveBeenCalled();
       expect(userNotificationRepository.insertTx).not.toHaveBeenCalled();
-      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
     it('records an immediate row and sends it right away when email is immediate', async () => {
@@ -411,7 +386,7 @@ describe('userNotificationService handleEvent', () => {
 
       await service.handleEvent(makeEvent());
 
-      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
+      expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
@@ -425,7 +400,7 @@ describe('userNotificationService handleEvent', () => {
       await service.handleEvent(makeEvent());
 
       expect(intent.buildEmail).not.toHaveBeenCalled();
-      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(mailService.enqueue).not.toHaveBeenCalled();
       expect(sentIds.size).toBe(0);
     });
 
@@ -440,7 +415,7 @@ describe('userNotificationService handleEvent', () => {
 
       expect(userNotificationRepository.insertTx).toHaveBeenCalled();
       expect(intent.buildEmail).not.toHaveBeenCalled();
-      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
     it('still writes the ledger row when only the in-app channel is off, so a retry cannot resend', async () => {
@@ -452,7 +427,7 @@ describe('userNotificationService handleEvent', () => {
       await service.handleEvent(makeEvent());
 
       expect(userNotificationRepository.insertTx).toHaveBeenCalledTimes(1);
-      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
+      expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
@@ -470,15 +445,15 @@ describe('userNotificationService handleEvent', () => {
 
       expect(intent.buildEmail).not.toHaveBeenCalled();
       expect(userNotificationRepository.insertTx).not.toHaveBeenCalled();
-      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
-    it('skips without mailing when a retry finds a ledger row it cannot claim', async () => {
+    it('skips without mailing when a retry finds a ledger row already marked sent', async () => {
       userNotificationRepository.insertTx.mockResolvedValue(undefined);
       userNotificationRepository.findOneByDeliveryKey.mockResolvedValue(
         makeInsertedNotification({ emailSentAt: new Date('2026-01-02') }),
       );
-      userNotificationRepository.claimUnsent.mockResolvedValue([]);
+      userNotificationRepository.markEmailSentTx.mockResolvedValue([]);
       const intent = makeIntent();
       const service = build([makeNotifier([intent])]);
 
@@ -489,19 +464,18 @@ describe('userNotificationService handleEvent', () => {
         'recipient-1',
         'comment.on_your_model',
       );
-      expect(intent.buildEmail).not.toHaveBeenCalled();
-      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
-    it('sends nothing when the row is already claimed by a live attempt', async () => {
-      claims.set('notification-1', new Date());
+    it('queues nothing when another path already marked the row sent', async () => {
+      sentIds.add('notification-1');
       const intent = makeIntent();
       const service = build([makeNotifier([intent])]);
 
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
-      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
-      expect(sentIds.size).toBe(0);
+      expect(mailService.enqueue).not.toHaveBeenCalled();
+      expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
     it('resumes and mails when a retry finds a ledger row whose email was never sent', async () => {
@@ -515,7 +489,7 @@ describe('userNotificationService handleEvent', () => {
       await service.handleEvent(makeEvent());
 
       expect(intent.buildEmail).toHaveBeenCalledTimes(1);
-      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
+      expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(sentIds).toEqual(new Set(['existing-1']));
     });
 
@@ -541,38 +515,36 @@ describe('userNotificationService handleEvent', () => {
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
       expect(intent.buildEmail).not.toHaveBeenCalled();
-      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
-    it('leaves the row unsent and unclaimed, logs, and rethrows when sendMailAsync rejects', async () => {
-      const smtpError = new Error('SMTP unreachable');
-      mailService.sendMailAsync.mockRejectedValue(smtpError);
+    it('leaves the row unsent, logs, and rethrows when queueing the email rejects', async () => {
+      const queueError = new Error('database unreachable');
+      mailService.enqueue.mockRejectedValue(queueError);
       const service = build([makeNotifier([makeIntent()])]);
 
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
       expect(rejection).toBeInstanceOf(AggregateError);
-      expect((rejection as AggregateError).errors).toEqual([smtpError]);
+      expect((rejection as AggregateError).errors).toEqual([queueError]);
       expect(sentIds.size).toBe(0);
-      expect(claims.size).toBe(0);
-      expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({ error: smtpError }));
+      expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({ error: queueError }));
     });
 
-    it('logs and resolves when the email is sent but marking it as sent fails', async () => {
+    it('rethrows and queues nothing when marking the row sent fails', async () => {
       const dbError = new Error('database unreachable');
-      userNotificationRepository.markSent.mockRejectedValue(dbError);
+      userNotificationRepository.markEmailSentTx.mockRejectedValue(dbError);
       const service = build([makeNotifier([makeIntent()])]);
 
-      await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
+      const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
-      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
-      expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({ error: dbError }));
-      expect(claims.size).toBe(1);
+      expect((rejection as AggregateError).errors).toEqual([dbError]);
+      expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
-    it('releases the claim on a failed send so the retry sends exactly once', async () => {
+    it('leaves the row unsent on a failed enqueue so the retry queues exactly once', async () => {
       const service = build([makeNotifier([makeIntent()])]);
-      mailService.sendMailAsync.mockRejectedValueOnce(new Error('SMTP unreachable'));
+      mailService.enqueue.mockRejectedValueOnce(new Error('database unreachable'));
 
       await expect(service.handleEvent(makeEvent())).rejects.toThrow(AggregateError);
 
@@ -583,7 +555,7 @@ describe('userNotificationService handleEvent', () => {
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
-      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(2);
+      expect(mailService.enqueue).toHaveBeenCalledTimes(2);
       expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
@@ -599,7 +571,7 @@ describe('userNotificationService handleEvent', () => {
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
       expect((rejection as AggregateError).errors).toEqual([dbError]);
-      expect(mailService.sendMailAsync).not.toHaveBeenCalled();
+      expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
     it('delivers every intent when one fails, then skips the delivered one on retry', async () => {
@@ -613,10 +585,9 @@ describe('userNotificationService handleEvent', () => {
             recipientId: params.recipientId,
           }),
       );
-      const failingError = new Error('SMTP rejected b');
-      mailService.sendMailAsync.mockImplementation(async (content: { to: string }) => {
+      const failingError = new Error('queue rejected b');
+      mailService.enqueue.mockImplementation(async (content: { to: string }) => {
         if (content.to === 'b@example.test') throw failingError;
-        return {};
       });
       const intentA = makeIntent({
         recipientUserId: 'a',
@@ -633,7 +604,7 @@ describe('userNotificationService handleEvent', () => {
       expect((rejection as AggregateError).errors).toEqual([failingError]);
       expect(sentIds).toEqual(new Set(['row-a']));
 
-      mailService.sendMailAsync.mockReset().mockResolvedValue({});
+      mailService.enqueue.mockReset().mockResolvedValue(undefined);
       userNotificationRepository.insertTx.mockResolvedValue(undefined);
       userNotificationRepository.findOneByDeliveryKey.mockImplementation(
         async (_eventId: string, recipientId: string) =>
@@ -646,25 +617,25 @@ describe('userNotificationService handleEvent', () => {
 
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
-      expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
-      expect(mailService.sendMailAsync).toHaveBeenCalledWith({
-        to: 'b@example.test',
-        subject: 'B',
-      });
+      expect(mailService.enqueue).toHaveBeenCalledTimes(1);
+      expect(mailService.enqueue).toHaveBeenCalledWith(
+        { to: 'b@example.test', subject: 'B' },
+        expect.anything(),
+      );
       expect(sentIds).toEqual(new Set(['row-a', 'row-b']));
     });
 
     it('rethrows resolution and delivery failures together after every intent is attempted', async () => {
       const resolveError = new Error('notifier down');
-      const smtpError = new Error('SMTP unreachable');
+      const queueError = new Error('database unreachable');
       const broken = makeNotifier([]);
       (broken.resolve as ReturnType<typeof vi.fn>).mockRejectedValue(resolveError);
-      mailService.sendMailAsync.mockRejectedValue(smtpError);
+      mailService.enqueue.mockRejectedValue(queueError);
       const service = build([broken, makeNotifier([makeIntent()])]);
 
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
-      expect((rejection as AggregateError).errors).toEqual([resolveError, smtpError]);
+      expect((rejection as AggregateError).errors).toEqual([resolveError, queueError]);
       expect(logger.error).toHaveBeenCalledTimes(2);
     });
 
@@ -748,7 +719,7 @@ describe('userNotificationService digest', () => {
   const userNotificationRepository = mockUserNotificationRepository();
   const userRepository = mockUserRepository();
   const domain = userNotificationDomain();
-  const mailService = { sendMailAsync: vi.fn(), sendMail: vi.fn() };
+  const mailService = { enqueue: vi.fn() };
   const mailDomain = { createNotificationSummaryEmail: vi.fn() };
   const logger = { error: vi.fn(), info: vi.fn(), warn: vi.fn(), debug: vi.fn() };
   const existingModels = new Map<string, string>();
@@ -781,7 +752,7 @@ describe('userNotificationService digest', () => {
     notificationEmailService: makeNotificationEmailService({
       userNotificationRepository,
       mailService,
-      logger,
+      transactionManager: mockTransactionManager(),
     } as never),
     mailDomain,
   } as never);
@@ -805,7 +776,6 @@ describe('userNotificationService digest', () => {
     feedUrl: string;
   };
 
-  const claims = new Map<string, Date>();
   const sentIds = new Set<string>();
   let pendingRows: Array<UserNotificationRecord> = [];
   let sentDigests: Array<SentDigest> = [];
@@ -822,17 +792,12 @@ describe('userNotificationService digest', () => {
     return makeRow(id, category, new Date(Date.now() - ageMs));
   }
 
-  function isHeldClaim(id: string, claimedAt: Date): boolean {
-    return claims.get(id)?.getTime() === claimedAt.getTime();
-  }
-
   async function settle(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, 0));
   }
 
   beforeEach(() => {
     existingModels.clear();
-    claims.clear();
     sentIds.clear();
     pendingRows = [];
     sentDigests = [];
@@ -851,30 +816,9 @@ describe('userNotificationService digest', () => {
               row.createdAt <= until,
           ),
       );
-    userNotificationRepository.claimUnsent
+    userNotificationRepository.markEmailSentTx
       .mockReset()
-      .mockImplementation(async (ids: Array<string>) => {
-        const emailClaimedAt = new Date();
-        return ids
-          .filter((id) => !claims.has(id) && !sentIds.has(id))
-          .map((id) => {
-            claims.set(id, emailClaimedAt);
-            return { id, emailClaimedAt };
-          });
-      });
-    userNotificationRepository.markSent
-      .mockReset()
-      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
-        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) {
-          claims.delete(id);
-          sentIds.add(id);
-        }
-      });
-    userNotificationRepository.releaseClaim
-      .mockReset()
-      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
-        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) claims.delete(id);
-      });
+      .mockImplementation(fakeMarkEmailSent(sentIds));
     userRepository.findOneById.mockReset().mockResolvedValue(makeUserRecord());
     mailDomain.createNotificationSummaryEmail
       .mockReset()
@@ -892,9 +836,8 @@ describe('userNotificationService digest', () => {
           feedUrl,
         }),
       );
-    mailService.sendMailAsync.mockReset().mockImplementation(async (content: SentDigest) => {
+    mailService.enqueue.mockReset().mockImplementation(async (content: SentDigest) => {
       sentDigests.push(content);
-      return {};
     });
     logger.error.mockReset();
   });
@@ -1021,11 +964,11 @@ describe('userNotificationService digest', () => {
       expect(sentIds.size).toBe(0);
     });
 
-    it('resolves before the flush email has been sent', async () => {
+    it('resolves before the flush email has been queued', async () => {
       storeDaily('comment.on_your_model');
       pendingRows = [makeRecentRow('a', recentMs)];
       let finishSend: () => void = () => undefined;
-      mailService.sendMailAsync.mockImplementation(
+      mailService.enqueue.mockImplementation(
         async () =>
           new Promise<void>((resolve) => {
             finishSend = resolve;
@@ -1037,7 +980,7 @@ describe('userNotificationService digest', () => {
       ]);
 
       expect(sentIds.size).toBe(0);
-      await vi.waitFor(() => expect(mailService.sendMailAsync).toHaveBeenCalled());
+      await vi.waitFor(() => expect(mailService.enqueue).toHaveBeenCalled());
       finishSend();
       await vi.waitFor(() => expect(sentIds.has('a')).toBe(true));
     });
@@ -1045,7 +988,7 @@ describe('userNotificationService digest', () => {
     it('logs a failed flush and still resolves, leaving the rows sendable', async () => {
       storeDaily('comment.on_your_model');
       pendingRows = [makeRecentRow('a', recentMs)];
-      mailService.sendMailAsync.mockRejectedValue(new Error('smtp down'));
+      mailService.enqueue.mockRejectedValue(new Error('database unreachable'));
 
       await expect(
         service.updatePreferences('recipient-1', [
@@ -1055,7 +998,6 @@ describe('userNotificationService digest', () => {
       await vi.waitFor(() => expect(logger.error).toHaveBeenCalled());
 
       expect(sentIds.size).toBe(0);
-      expect(claims.size).toBe(0);
     });
   });
 });

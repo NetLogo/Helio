@@ -6,9 +6,7 @@ import makeRepositoryBase, {
 } from '#src/shared/db/repository-base.factory.ts';
 import makePrismaTransactionManager from '#src/shared/db/prisma-transaction.manager.ts';
 import type { TransactionManager } from '#src/shared/db/transaction.port.ts';
-import makeEventQueueNotifier, {
-  type EventQueueNotifier,
-} from '#src/shared/jobs/event-queue.notifier.ts';
+import makeQueueNotifier, { type QueueNotifier } from '#src/shared/jobs/queue.notifier.ts';
 import { asFunction, asValue, type Resolver } from 'awilix';
 import type { FastifyBaseLogger } from 'fastify';
 import type { Bucket, S3Client } from '@aws-sdk/client-s3';
@@ -29,7 +27,8 @@ declare global {
     eventBus: EventBus;
     repositoryBase: RepositoryBaseFactory;
     transactionManager: TransactionManager;
-    eventQueueNotifier: EventQueueNotifier;
+    eventQueueNotifier: QueueNotifier;
+    emailQueueNotifier: QueueNotifier;
   }
 }
 
@@ -49,7 +48,8 @@ export function makeDependencies({
     eventBus: asValue(eventBus),
     repositoryBase: asFunction(makeRepositoryBase),
     transactionManager: asFunction(makePrismaTransactionManager),
-    eventQueueNotifier: asFunction(makeEventQueueNotifier).singleton(),
+    eventQueueNotifier: asFunction(makeQueueNotifier).singleton(),
+    emailQueueNotifier: asFunction(makeQueueNotifier).singleton(),
     ...makeFileDependencies(),
   };
 }

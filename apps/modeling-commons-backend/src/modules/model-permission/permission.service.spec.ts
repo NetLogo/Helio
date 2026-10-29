@@ -42,7 +42,7 @@ describe('permissionService', () => {
       expect(result.modelId).toBe('model-1');
       expect(result.granteeUserId).toBe('user-2');
       expect(permissionRepository.insertTx).toHaveBeenCalledOnce();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model_permission.granted' }),
       );
@@ -64,7 +64,7 @@ describe('permissionService', () => {
       await service.revoke('model-1', 'user-2', 'user-1');
 
       expect(permissionRepository.deleteTx).toHaveBeenCalledOnce();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model_permission.revoked' }),
       );

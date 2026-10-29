@@ -27,8 +27,8 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 ## Writes (Database mutations)
 
 - Always go through `transactionManager.run(async (ctx) => { ... })`.
-- Use `repository.insertTx(ctx, entity)` / `updateFields(ctx, ...)` / `softDelete(ctx, ...)` inside the txn.
-- Emit domain audit via `eventRepository.insert(ctx, { type, actorId, resourceType, resourceId, payload })` in the same txn. Event types are dotted (`model.created`, `model.deleted`).
+- Use `repository.insertTx(ctx, entity)` / `updateFieldsTx(ctx, ...)` / `softDeleteTx(ctx, ...)` inside the txn. Repository methods that take a `TransactionContext` end in `Tx`.
+- Emit domain audit via `eventRepository.insertTx(ctx, { type, actorId, resourceType, resourceId, payload })` in the same txn. Event types are dotted (`model.created`, `model.deleted`).
 - For child aggregates (e.g. comments on a model), set `resourceType` to the *parent* (`model`), not the child. Per-resource audit queries surface child activity that way.
 - Soft delete, don't hard delete: models/users carry `deletedAt`. Call `modelDomain.assertNotDeleted(entity)` before mutating.
 - **Models are written through drafts**, not directly. Flow: `POST /v1/model-drafts` → `PATCH /v1/model-drafts/:id` → multipart upload to `/v1/model-drafts/:id/files` → `POST /v1/model-drafts/:id/publish`. There is no `POST /v1/models`. Publish auto-creates `v1`; a model never has zero versions.
@@ -69,17 +69,17 @@ Use path aliases, never relative `../../`:
 
 ## Email
 
-- Send: `mailService.sendMail(content)` from `src/modules/mail/mail.service.ts`.
+- Send: queue with `mailService.enqueue(content, ctx?)` from `src/modules/mail/mail.service.ts`. Only the `email-sender` worker calls `sendMailAsync`; only `src/lib/auth.ts` uses the transporter directly.
 - Build content: `mailDomain.create*Email(...)` factories in `src/modules/mail/domain/mail.domain.ts`. New MVP notifications can reuse `createNotificationEmail`; dedicated templates are polish.
 - Templates: React Email components at `packages/emails/src/templates/` (`@repo/emails`).
-- Fire emails *after* `transactionManager.run` commits, with `Promise.allSettled` + logger on failure. Never block a write on SMTP, never let an email failure roll back the txn.
+- Enqueue inside the same `transactionManager.run` as the write, passing `ctx`, so the email is queued only if the write commits. The `email-sender` worker retries SMTP failures with backoff; they never roll back the write.
 - Local SMTP: Mailpit container (port 1025, web UI 8025) via `docker-compose.dev.yml`. No auth, no TLS.
 
 ## Testing
 
 - `yarn run test:unit` (vitest) · `yarn run test:e2e` (cucumber, needs `yarn run svc` running for postgres/object-storage/mailpit/netlogo-services).
 - During iteration run `yarn run test:e2e:sanity` plus the feature files you touched; run the full `yarn run test:e2e` once before review or merge.
-- `test:unit` is fully mocked (no DB); apply pending migrations before `test:e2e` (`yarn run db:migrate:dev`) — an unapplied migration makes the generated client mismatch the DB and 500s every affected route. Diagnose e2e failures from `reports/cucumber-report.json`.
+- `test:unit` is fully mocked (no DB). `test:e2e` runs against its own `test_e2e` database on the same Postgres, which `cucumber.mjs` creates if missing and migrates (`prisma migrate deploy`) at the start of every run, so it never truncates the dev database or shares its pg-boss queues. Only `test:e2e:data` reads the database in `.env`. Diagnose e2e failures from `reports/cucumber-report.json`.
 - In vitest specs, import `beforeEach`/`afterEach` from `vitest`, never `node:test` — wrong import silently no-ops the hook.
 - Tests should never enforce an implementation detail; they should focus on observable behavior and outcomes.
 - Enforce constraints through tests, ensuring that the system behaves correctly under expected and edge-case scenarios.

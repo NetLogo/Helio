@@ -2,6 +2,7 @@
 // https://github.com/cucumber/cucumber-js/blob/main/docs/profiles.md
 
 import { createRequire } from 'node:module';
+import { useE2eDatabase } from './tests/support/e2e-database.ts';
 
 const { default: ArgvParser } = createRequire(import.meta.url)(
   '@cucumber/cucumber/lib/configuration/argv_parser',
@@ -17,9 +18,17 @@ if (usingPerfProfile) {
   process.env.CUCUMBER_TIMING = '1';
 }
 
-// Cucumber appends CLI paths to config paths, so the glob must step aside.
 // eslint-disable-next-line no-undef
-const cliPaths = ArgvParser.parse(process.argv).configuration.paths;
+const { options: cliOptions, configuration: cliConfiguration } = ArgvParser.parse(process.argv);
+
+// Cucumber appends CLI paths to config paths, so the glob must step aside.
+const cliPaths = cliConfiguration.paths;
+
+// The data-integrity cohort reads the populated database it is pointed at, so only it keeps
+// DATABASE_URL; every truncating run gets a database of its own.
+if (!cliOptions.profile.includes('dataIntegrity')) {
+  await useE2eDatabase();
+}
 
 const baseTags = 'not @pending and not @wip and not @skip and not @data-integrity';
 

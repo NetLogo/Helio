@@ -209,7 +209,16 @@ interface EventRow {
 
 interface PrismaCradle {
   prisma: {
+    emailQueue: {
+      findMany: (args: {
+        where: { OR: Array<{ content: { path: Array<string>; equals: string } }> };
+        orderBy: { createdAt: 'asc' };
+      }) => Promise<Array<{ content: Partial<MailCall> }>>;
+    };
     userNotification: {
+      findMany: (args: {
+        where: { recipientId: string };
+      }) => Promise<Array<{ emailSentAt: Date | null }>>;
       updateMany: (args: {
         where: { recipientId: string };
         data: { createdAt: Date };
@@ -224,17 +233,24 @@ interface PrismaCradle {
   };
 }
 
-function installMailSpy(server: FastifyInstance): MailCall[] {
-  const calls: MailCall[] = [];
-  const mailService = server.diContainer.cradle.mailService as {
-    sendMailAsync: (content: unknown) => Promise<unknown>;
-  };
-  mailService.sendMailAsync = (content: unknown) => {
-    const { to, subject, text } = content as { to?: string; subject?: string; text?: string };
-    calls.push({ to: to ?? '', subject: subject ?? '', text: text ?? '' });
-    return Promise.resolve();
-  };
-  return calls;
+async function listQueuedEmails(world: ICustomWorld): Promise<Array<MailCall>> {
+  const { prisma } = world.server.diContainer.cradle as unknown as PrismaCradle;
+  const addresses = [...getUsers(world.context).values()].map((user) => user.email);
+  const rows = await prisma.emailQueue.findMany({
+    where: { OR: addresses.map((email) => ({ content: { path: ['to'], equals: email } })) },
+    orderBy: { createdAt: 'asc' },
+  });
+  return rows.map(({ content }) => ({
+    to: content.to ?? '',
+    subject: content.subject ?? '',
+    text: content.text ?? '',
+  }));
+}
+
+async function hasEmailSentNotification(world: ICustomWorld, user: TestUser): Promise<boolean> {
+  const { prisma } = world.server.diContainer.cradle as unknown as PrismaCradle;
+  const rows = await prisma.userNotification.findMany({ where: { recipientId: user.id } });
+  return rows.some((row) => row.emailSentAt !== null);
 }
 
 async function waitForCommentEventProcessed(
@@ -254,43 +270,46 @@ async function waitForCommentEventProcessed(
   throw new Error(`model_comment.created event was not processed within ${timeoutMs}ms`);
 }
 
-Given('mail delivery is captured', function (this: ICustomWorld) {
-  this.context['mailCalls'] = installMailSpy(this.server);
-});
-
 Then(
   'mail should have been sent to {int} recipients',
   async function (this: ICustomWorld, count: number) {
     await waitForCommentEventProcessed(this.server);
-    const calls = this.context['mailCalls'] as MailCall[];
+    const calls = await listQueuedEmails(this);
     assert.strictEqual(calls.length, count);
   },
 );
 
-Then('mail should have been sent to {string}', function (this: ICustomWorld, actorName: string) {
-  const calls = this.context['mailCalls'] as MailCall[];
-  const actor = getUsers(this.context).get(actorName)!;
-  assert.ok(
-    calls.some((call) => call.to === actor.email),
-    `Expected an email to be sent to ${actor.email}`,
-  );
-});
+Then(
+  'mail should have been sent to {string}',
+  async function (this: ICustomWorld, actorName: string) {
+    const calls = await listQueuedEmails(this);
+    const actor = getUsers(this.context).get(actorName)!;
+    assert.ok(
+      calls.some((call) => call.to === actor.email),
+      `Expected an email to be queued for ${actor.email}`,
+    );
+    assert.ok(
+      await hasEmailSentNotification(this, actor),
+      `Expected the notification for ${actor.email} to be marked sent`,
+    );
+  },
+);
 
 Then(
   'mail should not have been sent to {string}',
-  function (this: ICustomWorld, actorName: string) {
-    const calls = this.context['mailCalls'] as MailCall[];
+  async function (this: ICustomWorld, actorName: string) {
+    const calls = await listQueuedEmails(this);
     const actor = getUsers(this.context).get(actorName)!;
     assert.ok(
       !calls.some((call) => call.to === actor.email),
-      `Expected no email to be sent to ${actor.email}`,
+      `Expected no email to be queued for ${actor.email}`,
     );
   },
 );
 
 Then('no mail should have been sent', async function (this: ICustomWorld) {
   await waitForCommentEventProcessed(this.server);
-  const calls = this.context['mailCalls'] as MailCall[];
+  const calls = await listQueuedEmails(this);
   assert.strictEqual(calls.length, 0);
 });
 
@@ -308,7 +327,7 @@ Given(
 
 Then('no notification summary should be emailed', async function (this: ICustomWorld) {
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  const calls = this.context['mailCalls'] as MailCall[];
+  const calls = await listQueuedEmails(this);
   assert.strictEqual(calls.length, 0);
 });
 
@@ -316,12 +335,12 @@ Then(
   'one notification summary should be emailed to {string}',
   async function (this: ICustomWorld, name: string) {
     const user = getUsers(this.context).get(name)!;
-    const calls = this.context['mailCalls'] as MailCall[];
     const deadline = Date.now() + 10_000;
-    while (calls.length === 0 && Date.now() < deadline) {
+    while ((await listQueuedEmails(this)).length === 0 && Date.now() < deadline) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
     await new Promise((resolve) => setTimeout(resolve, 500));
+    const calls = await listQueuedEmails(this);
 
     assert.strictEqual(calls.length, 1);
     assert.strictEqual(calls[0]!.to, user.email);
@@ -331,8 +350,8 @@ Then(
 
 Then(
   'the notification summary should list {string} once',
-  function (this: ICustomWorld, line: string) {
-    const calls = this.context['mailCalls'] as MailCall[];
+  async function (this: ICustomWorld, line: string) {
+    const calls = await listQueuedEmails(this);
     assert.strictEqual(calls[0]!.text.split(line).length - 1, 1, calls[0]!.text);
   },
 );

@@ -46,8 +46,8 @@ export default function makeUserService({
       if (input.onboardedAt !== undefined) updateData.onboardedAt = input.onboardedAt;
 
       await transactionManager.run(async (ctx) => {
-        await userRepository.updateFields(ctx, userId, updateData);
-        await eventRepository.insert(ctx, {
+        await userRepository.updateFieldsTx(ctx, userId, updateData);
+        await eventRepository.insertTx(ctx, {
           type: 'user.updated',
           actorId: requesterId,
           resourceType: 'user',
@@ -67,8 +67,8 @@ export default function makeUserService({
       }
 
       await transactionManager.run(async (ctx) => {
-        await userRepository.softDelete(ctx, userId);
-        await eventRepository.insert(ctx, {
+        await userRepository.softDeleteTx(ctx, userId);
+        await eventRepository.insertTx(ctx, {
           type: 'user.deleted',
           actorId: requesterId,
           resourceType: 'user',

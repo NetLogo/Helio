@@ -553,17 +553,17 @@ export default function makeModelDraftService({
           }
 
           const previousVersion = existingModel
-            ? await modelVersionRepository.findLatestByModel(model.id, ctx)
+            ? await modelVersionRepository.findLatestByModelTx(model.id, ctx)
             : null;
           if (previousVersion) {
-            await modelVersionRepository.finalize(
+            await modelVersionRepository.finalizeTx(
               ctx,
               previousVersion.modelId,
               previousVersion.versionNumber,
             );
           }
 
-          const versionNumber = await modelVersionRepository.getNextVersionNumber(ctx, model.id);
+          const versionNumber = await modelVersionRepository.getNextVersionNumberTx(ctx, model.id);
           const version = modelVersionDomain.createVersion({
             modelId: model.id,
             versionNumber,
@@ -587,8 +587,8 @@ export default function makeModelDraftService({
               .map(async (entity) => modelVersionTagRepository.insertTx(ctx, entity)),
           );
 
-          await modelRepository.setLatestVersion(ctx, model.id, versionNumber);
-          await modelRepository.updateFields(ctx, model.id, { visibility: data.visibility });
+          await modelRepository.setLatestVersionTx(ctx, model.id, versionNumber);
+          await modelRepository.updateFieldsTx(ctx, model.id, { visibility: data.visibility });
 
           for (const att of attachmentCopies) {
             await modelAdditionalFileRepository.insertTx(
@@ -602,7 +602,7 @@ export default function makeModelDraftService({
             );
           }
 
-          await eventRepository.insert(ctx, {
+          await eventRepository.insertTx(ctx, {
             type: existingModel ? 'model.version.created' : 'model.created',
             actorId: userId,
             resourceType: 'model',
@@ -621,7 +621,7 @@ export default function makeModelDraftService({
         const model = existingModel;
         const baseline = seededFrom;
 
-        const current = await modelVersionRepository.findLatestByModel(model.id);
+        const current = await modelVersionRepository.findLatestByModelTx(model.id);
         if (!current) throw new ModelDraftNotFoundError(draftId);
         modelVersionDomain.assertNotFinalized(current);
         const versionNumber = current.versionNumber;
@@ -671,12 +671,12 @@ export default function makeModelDraftService({
         );
 
         return transactionManager.run(async (ctx) => {
-          await modelVersionRepository.updateFields(ctx, model.id, versionNumber, {
+          await modelVersionRepository.updateFieldsTx(ctx, model.id, versionNumber, {
             title: data.title,
             description: data.description,
             ...(newPreviewKey !== undefined ? { previewImageFileKey: newPreviewKey } : {}),
           });
-          await modelRepository.updateFields(ctx, model.id, { visibility: data.visibility });
+          await modelRepository.updateFieldsTx(ctx, model.id, { visibility: data.visibility });
 
           for (const tagId of tagIdsToInsert) {
             await modelVersionTagRepository.insertTx(
@@ -704,7 +704,7 @@ export default function makeModelDraftService({
             );
           }
 
-          await eventRepository.insert(ctx, {
+          await eventRepository.insertTx(ctx, {
             type: 'model.version.updated',
             actorId: userId,
             resourceType: 'model',

@@ -31,7 +31,7 @@ export default function makePermissionService({
 
       await transactionManager.run(async (ctx) => {
         await permissionRepository.insertTx(ctx, entity);
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_permission.granted',
           actorId: callerId,
           resourceType: 'model',
@@ -51,7 +51,7 @@ export default function makePermissionService({
 
       await transactionManager.run(async (ctx) => {
         await permissionRepository.deleteTx(ctx, modelId, granteeUserId);
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_permission.revoked',
           actorId: callerId,
           resourceType: 'model',

@@ -81,8 +81,8 @@ function makeModel(overrides: Partial<Model> = {}): Model {
 function buildPublishService(overrides: Record<string, unknown> = {}) {
   const modelRepository = mockModelRepository();
   const modelVersionRepository = mockModelVersionRepository();
-  modelVersionRepository.getNextVersionNumber.mockResolvedValue(1);
-  modelVersionRepository.findLatestByModel.mockResolvedValue(null);
+  modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(1);
+  modelVersionRepository.findLatestByModelTx.mockResolvedValue(null);
 
   const modelDraftStorage = {
     ...makeStorageMock(),
@@ -109,7 +109,7 @@ function buildPublishService(overrides: Record<string, unknown> = {}) {
     tagService: { upsertByName: vi.fn() },
     tagRepository: { findOneById: vi.fn() },
     fileService: { upload: vi.fn() },
-    eventRepository: { insert: vi.fn() },
+    eventRepository: { insertTx: vi.fn() },
     ...overrides,
   });
 
@@ -456,8 +456,8 @@ describe('modelDraftService', () => {
 
       await service.publish(draft);
 
-      expect(modelRepository.updateFields).toHaveBeenCalledOnce();
-      const [, modelId, fields] = modelRepository.updateFields.mock.calls[0]!;
+      expect(modelRepository.updateFieldsTx).toHaveBeenCalledOnce();
+      const [, modelId, fields] = modelRepository.updateFieldsTx.mock.calls[0]!;
       expect(typeof modelId).toBe('string');
       expect(fields).toEqual({ visibility: 'private' });
     });
@@ -475,7 +475,7 @@ describe('modelDraftService', () => {
       await service.publish(draft);
 
       expect(modelRepository.insertTx).not.toHaveBeenCalled();
-      expect(modelRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'model-1', {
+      expect(modelRepository.updateFieldsTx).toHaveBeenCalledWith(expect.anything(), 'model-1', {
         visibility: 'private',
       });
     });
@@ -486,7 +486,7 @@ describe('modelDraftService', () => {
 
       await service.publish(draft);
 
-      const updateCtx = modelRepository.updateFields.mock.calls[0]![0];
+      const updateCtx = modelRepository.updateFieldsTx.mock.calls[0]![0];
       const versionCtx = modelVersionRepository.insertTx.mock.calls[0]![0];
       expect(updateCtx).toBe(versionCtx);
     });
@@ -514,7 +514,7 @@ describe('modelDraftService', () => {
     function buildEditPublishService() {
       const modelVersionTagRepository = mockModelVersionTagRepository();
       modelVersionTagRepository.findByVersion.mockResolvedValue([]);
-      const eventRepository = { insert: vi.fn() };
+      const eventRepository = { insertTx: vi.fn() };
       const built = buildPublishService({ modelVersionTagRepository, eventRepository });
       built.modelRepository.findOneById.mockResolvedValue(
         makeModel({ id: 'model-1', visibility: 'public', deletedAt: null }),
@@ -530,7 +530,7 @@ describe('modelDraftService', () => {
         eventRepository,
         modelDraftRepository,
       } = buildEditPublishService();
-      modelVersionRepository.findLatestByModel.mockResolvedValue({
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
         title: 'Old',
@@ -552,10 +552,10 @@ describe('modelDraftService', () => {
         versionNumber: 1,
         createdNewVersion: false,
       });
-      expect(modelVersionRepository.updateFields).toHaveBeenCalledOnce();
-      expect(modelVersionRepository.getNextVersionNumber).not.toHaveBeenCalled();
+      expect(modelVersionRepository.updateFieldsTx).toHaveBeenCalledOnce();
+      expect(modelVersionRepository.getNextVersionNumberTx).not.toHaveBeenCalled();
       expect(modelVersionRepository.insertTx).not.toHaveBeenCalled();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model.version.updated' }),
       );
@@ -565,8 +565,8 @@ describe('modelDraftService', () => {
 
     it('bumps the version when the primary file changes', async () => {
       const { service, modelVersionRepository, eventRepository } = buildEditPublishService();
-      modelVersionRepository.getNextVersionNumber.mockResolvedValue(2);
-      modelVersionRepository.findLatestByModel.mockResolvedValue({
+      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
         finalizedAt: null,
@@ -583,9 +583,9 @@ describe('modelDraftService', () => {
 
       expect(result.createdNewVersion).toBe(true);
       expect(result.versionNumber).toBe(2);
-      expect(modelVersionRepository.finalize).toHaveBeenCalledOnce();
+      expect(modelVersionRepository.finalizeTx).toHaveBeenCalledOnce();
       expect(modelVersionRepository.insertTx).toHaveBeenCalledOnce();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model.version.created' }),
       );
@@ -593,8 +593,8 @@ describe('modelDraftService', () => {
 
     it('bumps the version when a model-file is added', async () => {
       const { service, modelVersionRepository } = buildEditPublishService();
-      modelVersionRepository.getNextVersionNumber.mockResolvedValue(2);
-      modelVersionRepository.findLatestByModel.mockResolvedValue({
+      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
         finalizedAt: null,

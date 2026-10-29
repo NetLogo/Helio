@@ -28,7 +28,7 @@ import type {
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import { MINUTE_MS } from '#src/shared/utils/consts.ts';
 import {
-  sendPendingDigests,
+  queuePendingDigests,
   startDigestProcessor,
   type DigestProcessorDependencies,
 } from '#src/workers/digest-processor.ts';
@@ -141,7 +141,7 @@ function createService(failingRecipientIds: ReadonlySet<string> = new Set()) {
   const sentTo: Array<string> = [];
   const sentRowIds: Array<string> = [];
   const service = {
-    sendDigest: vi.fn(
+    queueDigest: vi.fn(
       async (
         recipientId: string,
         rows: ReadonlyArray<DigestRow>,
@@ -165,7 +165,7 @@ function createRecipients(count: number): Array<string> {
 
 const inWindowAgeMs = notificationsConfig.minAgeMs + MINUTE_MS;
 
-describe('sendPendingDigests', () => {
+describe('queuePendingDigests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -177,7 +177,7 @@ describe('sendPendingDigests', () => {
     const repositories = createRepositories(rows, preferences);
     const { service } = createService();
 
-    await sendPendingDigests({
+    await queuePendingDigests({
       ...repositories,
       userNotificationDomain: userNotificationDomain(),
       notificationDigestService: service,
@@ -188,13 +188,13 @@ describe('sendPendingDigests', () => {
       .mocked(repositories.notificationPreferenceRepository.findAllByUser)
       .mock.calls.map(([userId]) => userId);
     expect(loadedFor.sort()).toEqual(recipients);
-    for (const [recipientId, , passed] of service.sendDigest.mock.calls) {
+    for (const [recipientId, , passed] of service.queueDigest.mock.calls) {
       expect(passed).toEqual(preferences.filter((entry) => entry.userId === recipientId));
     }
-    expect(service.sendDigest).toHaveBeenCalledTimes(recipients.length);
+    expect(service.queueDigest).toHaveBeenCalledTimes(recipients.length);
   });
 
-  it('sends one digest to each recipient with pending in-window rows, across pages, and none to others', async () => {
+  it('queues one digest for each recipient with pending in-window rows, across pages, and none to others', async () => {
     const recipients = createRecipients(batchSize * 2 + 3);
     const rows = recipients.flatMap((id) => [
       createRow(id, inWindowAgeMs),
@@ -205,7 +205,7 @@ describe('sendPendingDigests', () => {
     const preferences = createDailyPreferences([...recipients, 'user-too-old', 'user-too-young']);
     const { service, sentTo } = createService();
 
-    await sendPendingDigests({
+    await queuePendingDigests({
       ...createRepositories(rows, preferences),
       userNotificationDomain: userNotificationDomain(),
       notificationDigestService: service,
@@ -222,7 +222,7 @@ describe('sendPendingDigests', () => {
     const { service, sentTo } = createService(new Set([failing]));
 
     await expect(
-      sendPendingDigests({
+      queuePendingDigests({
         ...createRepositories(rows, createDailyPreferences(recipients)),
         userNotificationDomain: userNotificationDomain(),
         notificationDigestService: service,
@@ -251,7 +251,7 @@ describe('sendPendingDigests', () => {
     ];
     const { service, sentTo, sentRowIds } = createService();
 
-    await sendPendingDigests({
+    await queuePendingDigests({
       ...createRepositories(rows, preferences),
       userNotificationDomain: userNotificationDomain(),
       notificationDigestService: service,
@@ -265,7 +265,7 @@ describe('sendPendingDigests', () => {
   it('calls the service method present when the job runs, not the one present at startup', async () => {
     const rows = [createRow('user-a', inWindowAgeMs)];
     const service = {
-      sendDigest: vi.fn().mockResolvedValue(undefined),
+      queueDigest: vi.fn().mockResolvedValue(undefined),
     };
     await startDigestProcessor({
       connectionString: 'postgres://test',
@@ -275,13 +275,13 @@ describe('sendPendingDigests', () => {
       logger,
     });
     const handler = bossInstance.work.mock.calls[0]![1] as () => Promise<void>;
-    const startupSendDigest = service.sendDigest;
-    const replacedSendDigest = vi.fn().mockResolvedValue(undefined);
-    service.sendDigest = replacedSendDigest;
+    const startupQueueDigest = service.queueDigest;
+    const replacedQueueDigest = vi.fn().mockResolvedValue(undefined);
+    service.queueDigest = replacedQueueDigest;
 
     await handler();
 
-    expect(replacedSendDigest).toHaveBeenCalledTimes(1);
-    expect(startupSendDigest).not.toHaveBeenCalled();
+    expect(replacedQueueDigest).toHaveBeenCalledTimes(1);
+    expect(startupQueueDigest).not.toHaveBeenCalled();
   });
 });

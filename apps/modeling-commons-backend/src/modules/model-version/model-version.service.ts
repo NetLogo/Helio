@@ -28,12 +28,12 @@ export default function makeModelVersionService({
       });
 
       return transactionManager.run(async (ctx) => {
-        const previous = await modelVersionRepository.findLatestByModel(modelId);
+        const previous = await modelVersionRepository.findLatestByModelTx(modelId);
         if (previous) {
-          await modelVersionRepository.finalize(ctx, previous.modelId, previous.versionNumber);
+          await modelVersionRepository.finalizeTx(ctx, previous.modelId, previous.versionNumber);
         }
 
-        const versionNumber = await modelVersionRepository.getNextVersionNumber(ctx, modelId);
+        const versionNumber = await modelVersionRepository.getNextVersionNumberTx(ctx, modelId);
         const entity = modelVersionDomain.createVersion({
           modelId,
           versionNumber,
@@ -44,9 +44,9 @@ export default function makeModelVersionService({
         });
 
         await modelVersionRepository.insertTx(ctx, entity);
-        await modelRepository.setLatestVersion(ctx, modelId, versionNumber);
+        await modelRepository.setLatestVersionTx(ctx, modelId, versionNumber);
 
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_version.created',
           actorId: userId,
           resourceType: 'model_version',
@@ -63,18 +63,18 @@ export default function makeModelVersionService({
       userId: string,
       input: UpdateCurrentVersionProps,
     ): Promise<void> {
-      const current = await modelVersionRepository.findLatestByModel(modelId);
+      const current = await modelVersionRepository.findLatestByModelTx(modelId);
       if (!current) throw new VersionNotFoundError(modelId);
       modelVersionDomain.assertNotFinalized(current);
 
       await transactionManager.run(async (ctx) => {
-        await modelVersionRepository.updateFields(
+        await modelVersionRepository.updateFieldsTx(
           ctx,
           current.modelId,
           current.versionNumber,
           input,
         );
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_version.updated',
           actorId: userId,
           resourceType: 'model_version',

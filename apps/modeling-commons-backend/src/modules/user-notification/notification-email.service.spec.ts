@@ -1,127 +1,109 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeNotificationEmailService from '#src/modules/user-notification/notification-email.service.ts';
-import { mockUserNotificationRepository } from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
+import {
+  fakeMarkEmailSent,
+  mockUserNotificationRepository,
+} from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
+import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
+import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+import { NotificationRowsAlreadySentError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 
-describe('notificationEmailService sendClaimed', () => {
+describe('notificationEmailService queueRows', () => {
+  const sentIds = new Set<string>();
+  let queued: Array<unknown> = [];
   const userNotificationRepository = mockUserNotificationRepository();
-  const mailService = { sendMailAsync: vi.fn(), sendMail: vi.fn() };
-  const logger = { error: vi.fn(), info: vi.fn(), warn: vi.fn(), debug: vi.fn() };
+  const mailService = { enqueue: vi.fn() };
   const content = { to: 'recipient@example.test', subject: 'New comment' };
 
   const service = makeNotificationEmailService({
     userNotificationRepository,
     mailService,
-    logger,
+    transactionManager: mockTransactionManager(),
   } as never);
 
-  const claims = new Map<string, Date>();
-  const sentIds = new Set<string>();
-  const claimedAt = new Date('2026-01-01T00:00:00Z');
-
-  function isHeldClaim(id: string, claimedAt: Date): boolean {
-    return claims.get(id)?.getTime() === claimedAt.getTime();
-  }
-
-  function holdElsewhere(id: string): void {
-    claims.set(id, new Date(0));
-  }
-
   beforeEach(() => {
-    claims.clear();
     sentIds.clear();
-    userNotificationRepository.claimUnsent
+    queued = [];
+    userNotificationRepository.markEmailSentTx
       .mockReset()
-      .mockImplementation(async (ids: Array<string>) => {
-        const emailClaimedAt = claimedAt;
-        return ids
-          .filter((id) => !claims.has(id) && !sentIds.has(id))
-          .map((id) => {
-            claims.set(id, emailClaimedAt);
-            return { id, emailClaimedAt };
-          });
-      });
-    userNotificationRepository.markSent
+      .mockImplementation(fakeMarkEmailSent(sentIds));
+    mailService.enqueue
       .mockReset()
-      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
-        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) {
-          claims.delete(id);
-          sentIds.add(id);
-        }
+      .mockImplementation(async (email: unknown, ctx: TransactionContext) => {
+        ctx.onCommit(() => {
+          queued.push(email);
+        });
       });
-    userNotificationRepository.releaseClaim
-      .mockReset()
-      .mockImplementation(async (ids: Array<string>, claimedAt: Date) => {
-        for (const id of ids.filter((id) => isHeldClaim(id, claimedAt))) claims.delete(id);
-      });
-    mailService.sendMailAsync.mockReset().mockResolvedValue({});
-    logger.error.mockReset();
   });
 
-  it('builds and sends nothing when no row can be claimed', async () => {
-    holdElsewhere('a');
+  it('marks the rows sent and queues their email in the same transaction', async () => {
     const buildEmail = vi.fn().mockResolvedValue(content);
 
-    await service.sendClaimed(['a'], buildEmail);
+    await service.queueRows(['a', 'b'], buildEmail);
 
-    expect(buildEmail).not.toHaveBeenCalled();
-    expect(mailService.sendMailAsync).not.toHaveBeenCalled();
-    expect(sentIds.size).toBe(0);
+    expect(buildEmail).toHaveBeenCalledWith(['a', 'b']);
+    expect([...sentIds].sort()).toEqual(['a', 'b']);
+    expect(queued).toEqual([content]);
   });
 
-  it('releases the claim and rethrows when building the email fails', async () => {
-    const renderError = new Error('render failed');
+  it('rolls back and queues nothing when some of the rows were already sent', async () => {
+    sentIds.add('done');
 
     await expect(
-      service.sendClaimed(['a', 'b'], vi.fn().mockRejectedValue(renderError)),
-    ).rejects.toBe(renderError);
+      service.queueRows(['a', 'done'], vi.fn().mockResolvedValue(content)),
+    ).rejects.toBeInstanceOf(NotificationRowsAlreadySentError);
 
-    expect(mailService.sendMailAsync).not.toHaveBeenCalled();
-    expect(sentIds.size).toBe(0);
-    expect(claims.size).toBe(0);
+    expect([...sentIds]).toEqual(['done']);
+    expect(queued).toEqual([]);
   });
 
-  it('releases the claim and rethrows when sending fails', async () => {
-    const smtpError = new Error('SMTP unreachable');
-    mailService.sendMailAsync.mockRejectedValue(smtpError);
+  it('queues nothing and succeeds when every row was already sent', async () => {
+    sentIds.add('a');
 
-    await expect(service.sendClaimed(['a', 'b'], vi.fn().mockResolvedValue(content))).rejects.toBe(
-      smtpError,
+    await service.queueRows(['a'], vi.fn().mockResolvedValue(content));
+
+    expect([...sentIds]).toEqual(['a']);
+    expect(queued).toEqual([]);
+  });
+
+  it('builds the email from the candidate rows before marking any of them', async () => {
+    const buildEmail = vi.fn().mockImplementation(async () => {
+      expect(userNotificationRepository.markEmailSentTx).not.toHaveBeenCalled();
+      return content;
+    });
+
+    await service.queueRows(['a', 'b'], buildEmail);
+
+    expect(buildEmail).toHaveBeenCalledWith(['a', 'b']);
+  });
+
+  it('leaves the rows unsent and rethrows when building the email fails', async () => {
+    const renderError = new Error('render failed');
+
+    await expect(service.queueRows(['a'], vi.fn().mockRejectedValue(renderError))).rejects.toBe(
+      renderError,
     );
 
     expect(sentIds.size).toBe(0);
-    expect(claims.size).toBe(0);
+    expect(queued).toEqual([]);
   });
 
-  it('builds for and marks sent exactly the rows it claimed, and never releases them', async () => {
-    holdElsewhere('held');
-    const buildEmail = vi.fn().mockResolvedValue(content);
-
-    await service.sendClaimed(['a', 'held', 'b'], buildEmail);
-
-    expect(buildEmail).toHaveBeenCalledWith(['a', 'b']);
-    expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
-    expect([...sentIds].sort()).toEqual(['a', 'b']);
-    expect(claims.get('held')).toEqual(new Date(0));
-    expect(userNotificationRepository.releaseClaim).not.toHaveBeenCalled();
-  });
-
-  it('marks the claimed rows sent without sending when there is nothing to send', async () => {
-    await service.sendClaimed(['a', 'b'], vi.fn().mockResolvedValue(null));
-
-    expect(mailService.sendMailAsync).not.toHaveBeenCalled();
-    expect([...sentIds].sort()).toEqual(['a', 'b']);
-  });
-
-  it('logs and resolves when the email went out but marking it sent fails', async () => {
+  it('leaves the rows unsent and rethrows when queueing the email fails', async () => {
     const dbError = new Error('database unreachable');
-    userNotificationRepository.markSent.mockRejectedValue(dbError);
+    mailService.enqueue.mockRejectedValue(dbError);
 
-    await expect(
-      service.sendClaimed(['a'], vi.fn().mockResolvedValue(content)),
-    ).resolves.toBeUndefined();
+    await expect(service.queueRows(['a'], vi.fn().mockResolvedValue(content))).rejects.toBe(
+      dbError,
+    );
 
-    expect(mailService.sendMailAsync).toHaveBeenCalledTimes(1);
-    expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({ error: dbError }));
-    expect(userNotificationRepository.releaseClaim).not.toHaveBeenCalled();
+    expect(sentIds.size).toBe(0);
+    expect(queued).toEqual([]);
+  });
+
+  it('keeps the rows sent without queueing when the builder has nothing left to say', async () => {
+    await service.queueRows(['a'], vi.fn().mockResolvedValue(null));
+
+    expect([...sentIds]).toEqual(['a']);
+    expect(queued).toEqual([]);
   });
 });

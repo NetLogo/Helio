@@ -21,7 +21,7 @@ vi.mock('pg-boss', () => ({
 
 import { startEventProcessor } from '#src/workers/event-processor.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
-import makeEventQueueNotifier from '#src/shared/jobs/event-queue.notifier.ts';
+import makeQueueNotifier from '#src/shared/jobs/queue.notifier.ts';
 import workersConfig from '#src/config/workers.ts';
 
 const logger = {
@@ -43,7 +43,7 @@ async function start(overrides: Partial<Deps> = {}) {
   const eventRepository = overrides.eventRepository ?? mockEventRepository();
   const userNotificationService =
     overrides.userNotificationService ?? makeUserNotificationService();
-  const eventQueueNotifier = overrides.eventQueueNotifier ?? makeEventQueueNotifier();
+  const eventQueueNotifier = overrides.eventQueueNotifier ?? makeQueueNotifier();
 
   const boss = await startEventProcessor({
     connectionString: 'postgres://test',

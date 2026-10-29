@@ -47,7 +47,7 @@ export default function modelRepository({
       return record ? modelMapper.toDomain(record) : undefined;
     },
 
-    async setLatestVersion(
+    async setLatestVersionTx(
       ctx: TransactionContext,
       modelId: string,
       versionNumber: number,
@@ -59,7 +59,7 @@ export default function modelRepository({
       });
     },
 
-    async softDelete(ctx: TransactionContext, id: string): Promise<void> {
+    async softDeleteTx(ctx: TransactionContext, id: string): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.model.update({
         where: { id },
@@ -72,7 +72,7 @@ export default function modelRepository({
       await client.model.create({ data: entity });
     },
 
-    async updateFields(
+    async updateFieldsTx(
       ctx: TransactionContext,
       id: string,
       data: { visibility?: ModelVisibility; isEndorsed?: boolean },
@@ -113,7 +113,7 @@ export default function modelRepository({
       return paginate((records as Array<never>).map(map), params, count);
     },
 
-    async incrementInteractionCount(
+    async incrementInteractionCountTx(
       ctx: TransactionContext,
       modelId: string,
       kind: ModelInteractionKind,

@@ -4,8 +4,7 @@ Feature: Daily notification digest
   So that I hear about activity without one email per event
 
   Background:
-    Given digest mail delivery is captured
-    And an authenticated user "alice"
+    Given an authenticated user "alice"
     And an authenticated user "bob"
     And an authenticated user "carol"
 
@@ -44,7 +43,7 @@ Feature: Daily notification digest
     Then the digest job should have succeeded
     And "alice" should have received 1 digest
     And the notification for "alice" created 3 hours ago should be sent
-    And the notification for "alice" created 26 hours ago should be unsent and unclaimed
+    And the notification for "alice" created 26 hours ago should be unsent
 
   Scenario: A recipient with one daily and one off category gets one digest with only the daily row
     Given a "daily" notification in category "comment.on_your_model" for "alice" created 2 hours ago
@@ -53,7 +52,7 @@ Feature: Daily notification digest
     Then the digest job should have succeeded
     And "alice" should have received 1 digest
     And the notification for "alice" created 2 hours ago should be sent
-    And the notification for "alice" created 3 hours ago should be unsent and unclaimed
+    And the notification for "alice" created 3 hours ago should be unsent
 
   Scenario: A failing digest recipient fails the run, and the retry reaches only that recipient
     Given a "daily" notification for "alice" created 2 hours ago

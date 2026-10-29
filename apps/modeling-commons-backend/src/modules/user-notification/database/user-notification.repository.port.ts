@@ -1,7 +1,4 @@
-import type {
-  EmailClaimRecord,
-  UserNotificationRecord,
-} from '#src/modules/user-notification/database/user-notification.record.ts';
+import type { UserNotificationRecord } from '#src/modules/user-notification/database/user-notification.record.ts';
 import type {
   NotificationCategory,
   NotificationFeedFilters,
@@ -31,9 +28,11 @@ export interface UserNotificationRepositoryPort {
     recipientId: string,
     category: NotificationCategory,
   ) => Promise<UserNotificationRecord | undefined>;
-  claimUnsent: (ids: Array<string>, leaseMs: number) => Promise<Array<EmailClaimRecord>>;
-  markSent: (ids: Array<string>, claimedAt: Date, at: Date) => Promise<void>;
-  releaseClaim: (ids: Array<string>, claimedAt: Date) => Promise<void>;
+  markEmailSentTx: (
+    ids: Array<string>,
+    at: Date,
+    ctx: TransactionContext,
+  ) => Promise<Array<string>>;
   findPendingForRecipient: (
     recipientId: string,
     categories: Array<NotificationCategory>,

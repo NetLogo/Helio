@@ -1,4 +1,4 @@
-import { DAY_MS } from '#src/shared/utils/consts.ts';
+import { DAY_MS, MINUTE_MS } from '#src/shared/utils/consts.ts';
 
 const workersConfig = {
   modelDraftJanitor: {
@@ -18,6 +18,16 @@ const workersConfig = {
     eventBatchSize: 50,
     maxEventAttempts: 5,
   },
+  emailSender: {
+    queueName: 'send-emails',
+    cronExpression: '*/1 * * * *',
+    queuePolicy: 'short',
+    maxDrainPasses: 10,
+    emailBatchSize: 50,
+    // Doubling from one minute, eight attempts span about two hours of SMTP outage.
+    maxEmailAttempts: 8,
+    retryBaseMs: MINUTE_MS,
+  },
   digestProcessor: {
     queueName: 'send-notification-digests',
     cronExpression: '0 17 * * *',
@@ -30,6 +40,8 @@ const workersConfig = {
     queueName: 'purge-notifications',
     cronExpression: '0 4 * * 0',
     retentionMs: 90 * DAY_MS,
+    sentEmailRetentionMs: 30 * DAY_MS,
+    failedEmailRetentionMs: 90 * DAY_MS,
   },
 } as const;
 

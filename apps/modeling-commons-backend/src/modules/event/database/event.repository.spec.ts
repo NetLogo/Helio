@@ -17,7 +17,7 @@ const params = {
   payload: {},
 };
 
-describe('eventRepository.insert', () => {
+describe('eventRepository.insertTx', () => {
   const eventQueueNotifier = { bind: vi.fn(), nudge: vi.fn().mockResolvedValue(undefined) };
   const transactionManager = mockTransactionManager();
   const repository = eventRepository({ db: {}, eventQueueNotifier } as never);
@@ -28,7 +28,7 @@ describe('eventRepository.insert', () => {
 
   it('nudges the processor after the transaction commits, not during it', async () => {
     await transactionManager.run(async (ctx) => {
-      await repository.insert(ctx, params);
+      await repository.insertTx(ctx, params);
       expect(eventQueueNotifier.nudge).not.toHaveBeenCalled();
     });
 
@@ -37,9 +37,9 @@ describe('eventRepository.insert', () => {
 
   it('nudges once however many events one transaction wrote', async () => {
     await transactionManager.run(async (ctx) => {
-      await repository.insert(ctx, params);
-      await repository.insert(ctx, params);
-      await repository.insert(ctx, params);
+      await repository.insertTx(ctx, params);
+      await repository.insertTx(ctx, params);
+      await repository.insertTx(ctx, params);
     });
 
     expect(create).toHaveBeenCalledTimes(3);
@@ -47,8 +47,8 @@ describe('eventRepository.insert', () => {
   });
 
   it('nudges again for a separate transaction', async () => {
-    await transactionManager.run(async (ctx) => repository.insert(ctx, params));
-    await transactionManager.run(async (ctx) => repository.insert(ctx, params));
+    await transactionManager.run(async (ctx) => repository.insertTx(ctx, params));
+    await transactionManager.run(async (ctx) => repository.insertTx(ctx, params));
 
     expect(eventQueueNotifier.nudge).toHaveBeenCalledTimes(2);
   });

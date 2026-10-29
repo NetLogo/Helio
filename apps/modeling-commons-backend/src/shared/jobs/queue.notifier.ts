@@ -1,9 +1,9 @@
-export type EventQueueNotifier = {
+export type QueueNotifier = {
   bind: (send: () => Promise<void>) => void;
   nudge: () => Promise<void>;
 };
 
-export default function makeEventQueueNotifier(): EventQueueNotifier {
+export default function makeQueueNotifier(): QueueNotifier {
   let send: (() => Promise<void>) | null = null;
 
   return {

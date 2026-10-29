@@ -8,12 +8,12 @@ export interface ModelVersionRepository {
     modelId: string,
     versionNumber: number,
   ) => Promise<ModelVersionEntity | undefined>;
-  findLatestByModel: (
+  findLatestByModelTx: (
     modelId: string,
     ctx?: TransactionContext,
   ) => Promise<ModelVersionEntity | undefined>;
-  finalize: (ctx: TransactionContext, modelId: string, versionNumber: number) => Promise<void>;
-  updateFields: (
+  finalizeTx: (ctx: TransactionContext, modelId: string, versionNumber: number) => Promise<void>;
+  updateFieldsTx: (
     ctx: TransactionContext,
     modelId: string,
     versionNumber: number,
@@ -23,6 +23,6 @@ export interface ModelVersionRepository {
     modelId: string,
     params: PaginatedQueryParams,
   ) => Promise<Paginated<ModelVersionEntity>>;
-  getNextVersionNumber: (ctx: TransactionContext, modelId: string) => Promise<number>;
+  getNextVersionNumberTx: (ctx: TransactionContext, modelId: string) => Promise<number>;
   findNetlogoVersionsByPrefix: (prefix: string) => Promise<Array<string>>;
 }

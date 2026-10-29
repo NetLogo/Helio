@@ -31,7 +31,7 @@ export default function makeModelAuthorService({
 
       await transactionManager.run(async (ctx) => {
         await modelAuthorRepository.insertTx(ctx, entity);
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_author.added',
           actorId: callerId,
           resourceType: 'model',
@@ -52,7 +52,7 @@ export default function makeModelAuthorService({
 
       await transactionManager.run(async (ctx) => {
         await modelAuthorRepository.deleteTx(ctx, modelId, userId);
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_author.removed',
           actorId: callerId,
           resourceType: 'model',
@@ -73,7 +73,7 @@ export default function makeModelAuthorService({
       await transactionManager.run(async (ctx) => {
         await modelAuthorRepository.updateRoleTx(ctx, modelId, callerId, 'contributor');
         await modelAuthorRepository.updateRoleTx(ctx, modelId, newOwnerId, 'owner');
-        await eventRepository.insert(ctx, {
+        await eventRepository.insertTx(ctx, {
           type: 'model_author.ownership_transferred',
           actorId: callerId,
           resourceType: 'model',

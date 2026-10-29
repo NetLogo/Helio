@@ -20,14 +20,14 @@ export default function makeNotificationDigestService({
   async function buildDigestEmail(
     recipient: DeliverableRecipient,
     emailable: ReadonlyArray<DigestRow>,
-    claimedIds: ReadonlyArray<string>,
+    rowIds: ReadonlyArray<string>,
   ): Promise<Mail.Options | null> {
-    const claimedIdSet = new Set(claimedIds);
-    const claimed = emailable.filter((row) => claimedIdSet.has(row.id));
-    const subjects = await resolveNotificationSubjectsQuery.execute(claimed, recipient.id, {
+    const rowIdSet = new Set(rowIds);
+    const rows = emailable.filter((row) => rowIdSet.has(row.id));
+    const subjects = await resolveNotificationSubjectsQuery.execute(rows, recipient.id, {
       includeThumbnails: false,
     });
-    const digest = userNotificationDomain.buildDigest(claimed, subjects);
+    const digest = userNotificationDomain.buildDigest(rows, subjects);
     if (digest.items.length === 0) return null;
 
     return mailDomain.createNotificationSummaryEmail(
@@ -41,7 +41,7 @@ export default function makeNotificationDigestService({
     );
   }
 
-  async function sendDigest(
+  async function queueDigest(
     recipientId: string,
     rows: ReadonlyArray<DigestRow>,
     preferences: ReadonlyArray<NotificationPreferenceRecord>,
@@ -52,13 +52,13 @@ export default function makeNotificationDigestService({
     const emailable = userNotificationDomain.listEmailEnabledRows(rows, preferences);
     if (emailable.length === 0) return;
 
-    await notificationEmailService.sendClaimed(
+    await notificationEmailService.queueRows(
       emailable.map((row) => row.id),
-      async (claimedIds) => buildDigestEmail(recipient, emailable, claimedIds),
+      async (rowIds) => buildDigestEmail(recipient, emailable, rowIds),
     );
   }
 
-  async function flushDigest(
+  async function queueFlushedDigest(
     recipientId: string,
     categories: Array<NotificationCategory>,
   ): Promise<void> {
@@ -70,8 +70,8 @@ export default function makeNotificationDigestService({
       since,
       until,
     );
-    await sendDigest(recipientId, rows, preferences);
+    await queueDigest(recipientId, rows, preferences);
   }
 
-  return { sendDigest, flushDigest };
+  return { queueDigest, queueFlushedDigest };
 }

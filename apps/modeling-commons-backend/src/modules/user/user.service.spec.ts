@@ -59,7 +59,7 @@ describe('userService', () => {
 
       await service.updateProfile('user-1', 'user-1', 'user', { userKind: 'student' });
 
-      expect(userRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'user-1', {
+      expect(userRepository.updateFieldsTx).toHaveBeenCalledWith(expect.anything(), 'user-1', {
         userKind: 'student',
       });
     });
@@ -69,7 +69,7 @@ describe('userService', () => {
 
       await service.updateProfile('user-1', 'admin-1', 'admin', { userKind: 'teacher' });
 
-      expect(userRepository.updateFields).toHaveBeenCalled();
+      expect(userRepository.updateFieldsTx).toHaveBeenCalled();
     });
 
     it('rejects non-self non-admin update', async () => {
@@ -93,7 +93,7 @@ describe('userService', () => {
 
       await service.updateProfile('user-1', 'admin-1', 'admin', { systemRole: 'moderator' });
 
-      expect(userRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'user-1', {
+      expect(userRepository.updateFieldsTx).toHaveBeenCalledWith(expect.anything(), 'user-1', {
         systemRole: 'moderator',
       });
     });
@@ -113,7 +113,7 @@ describe('userService', () => {
 
       await service.softDelete('user-1', 'user-1', 'user');
 
-      expect(userRepository.softDelete).toHaveBeenCalledWith(expect.anything(), 'user-1');
+      expect(userRepository.softDeleteTx).toHaveBeenCalledWith(expect.anything(), 'user-1');
     });
 
     it('rejects non-self non-admin delete', async () => {

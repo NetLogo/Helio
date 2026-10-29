@@ -454,21 +454,32 @@ model Event {
   @@index([processedAt])
 }
 
+model EmailQueue {
+  id            String    @id @default(nanoid())
+  content       Json
+  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
+  sentAt        DateTime? @db.Timestamptz(3)
+  attempts      Int       @default(0)
+  lastError     String?   @db.Text
+  nextAttemptAt DateTime? @db.Timestamptz(3)
+
+  @@index([sentAt, createdAt])
+}
+
 model UserNotification {
-  id             String    @id @default(nanoid())
-  recipientId    String
-  eventId        String
-  category       String
-  title          String
-  body           String    @db.Text
-  url            String
-  actorUserId    String?
-  targetType     String?
-  targetId       String?
-  emailSentAt    DateTime? @db.Timestamptz(3)
-  emailClaimedAt DateTime? @db.Timestamptz(3)
-  readAt         DateTime? @db.Timestamptz(3)
-  createdAt      DateTime  @default(now()) @db.Timestamptz(3)
+  id          String    @id @default(nanoid())
+  recipientId String
+  eventId     String
+  category    String
+  title       String
+  body        String    @db.Text
+  url         String
+  actorUserId String?
+  targetType  String?
+  targetId    String?
+  emailSentAt DateTime? @db.Timestamptz(3)
+  readAt      DateTime? @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
 
   recipient User  @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)

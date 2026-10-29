@@ -75,7 +75,7 @@ export function createUserNotificationService(
     const ledger = await recordLedgerRow(event, recipient, intent);
     if (!ledger || !userNotificationDomain.isSendableNow(channels)) return;
 
-    await notificationEmailService.sendClaimed([ledger.id], async () =>
+    await notificationEmailService.queueRows([ledger.id], async () =>
       intent.buildEmail(
         { id: recipient.id, email: recipient.email, name: recipient.name },
         emailLinks,
@@ -176,7 +176,7 @@ export function createUserNotificationService(
       const flushed = userNotificationDomain.listFlushedCategories(previous, next);
       if (flushed.length === 0) return;
 
-      void notificationDigestService.flushDigest(userId, flushed).catch((error: unknown) => {
+      void notificationDigestService.queueFlushedDigest(userId, flushed).catch((error: unknown) => {
         logger.error({
           name: 'UserNotificationService',
           message: 'Failed to flush the notification digest',

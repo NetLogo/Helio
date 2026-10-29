@@ -15,6 +15,7 @@ Feature: Daily notification digest over SMTP
     And a "daily" notification for "alice" about "Pond" from "carol" created 3 hours ago
     When the digest job runs
     Then the digest job should have succeeded
-    And Mailpit should hold exactly 1 message to "alice"
+    When the email sender has sent the queued emails to "alice"
+    Then Mailpit should hold exactly 1 message to "alice"
     And the Mailpit message to "alice" should have the digest subject
     And the Mailpit message to "alice" should say "bob" and "carol" commented on "Pond"
