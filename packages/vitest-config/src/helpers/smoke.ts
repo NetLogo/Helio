@@ -111,7 +111,8 @@ export async function defineSmokeSuite(host: string, curatedRoutes: string[], op
       const terms = (keywords[0] ?? "").split(",").map((k) => k.trim()).filter(Boolean);
       expect(terms).toEqual([...new Set(terms)]);
 
-      const ogImage = await page.locator('meta[property="og:image"]').first().getAttribute("content").catch(() => null);
+      // evaluateAll does not auto-wait, unlike getAttribute, which stalls for the 30 s default timeout on pages without the tag.
+      const [ogImage] = await page.locator('meta[property="og:image"]').evaluateAll((els) => els.map((el) => el.getAttribute("content")));
       if (ogImage) {
         const target = new URL(ogImage, host);
         const res = await page.request.get(url(target.pathname + target.search));
