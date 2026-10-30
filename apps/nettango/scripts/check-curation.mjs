@@ -44,10 +44,6 @@ export const checkCuration = (models, curation) => {
     }
   }
 
-  for (const id of modelIds) {
-    if (!groupOf.has(id)) problems.push(`model "${id}" is in no group`);
-  }
-
   const sequenceOf = new Map();
   for (const sequence of curation.sequences) {
     const groups = new Set();
@@ -115,6 +111,8 @@ export const checkCuration = (models, curation) => {
         problems.push(`model "${id}": related id "${other}" is not in models.json`);
       } else if (ownSequence?.models.includes(other)) {
         problems.push(`model "${id}": related id "${other}" is in the model's own sequence`);
+      } else if (groupOf.has(id) && !groupOf.has(other)) {
+        problems.push(`model "${id}": related id "${other}" is hidden (in no group)`);
       }
     }
 
@@ -144,8 +142,18 @@ export const checkCuration = (models, curation) => {
       }
     }
 
-    if (metadata.description !== undefined && !isText(metadata.description)) {
-      problems.push(`model "${id}": description must be omitted or a non-empty string`);
+    const { authors } = metadata;
+    if (
+      authors !== undefined &&
+      (!Array.isArray(authors) || authors.length === 0 || !authors.every(isText))
+    ) {
+      problems.push(`model "${id}": authors must be omitted or a list of non-empty strings`);
+    }
+
+    for (const field of ["title", "description"]) {
+      if (metadata[field] !== undefined && !isText(metadata[field])) {
+        problems.push(`model "${id}": ${field} must be omitted or a non-empty string`);
+      }
     }
   }
 

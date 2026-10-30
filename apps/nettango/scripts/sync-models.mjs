@@ -18,14 +18,14 @@ const firstParagraph = (info) =>
 
 const library = await fetch(LIBRARY_URL).then((res) => res.json());
 const existing = JSON.parse(await readFile(TARGET, "utf8"));
-const byId = new Map(existing.map((m) => [m.id, m]));
+const existingById = new Map(existing.map((m) => [m.id, m]));
 const local = existing.filter((m) => m.source !== "library");
 const localIds = new Set(local.map((m) => m.id));
 
 const synced = library.models
   .map((m) => {
     const id = slugify(m.name);
-    const previous = byId.get(id) ?? {};
+    const previous = existingById.get(id) ?? {};
     return {
       id,
       title: m.name,

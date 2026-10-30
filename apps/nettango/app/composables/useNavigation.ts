@@ -43,7 +43,7 @@ const _useNavigation = () => {
           children: [
             {
               title: 'Learn NetTango Builder',
-              path: '/tutorials/introduction-to-the-nettango-builder',
+              path: TUTORIAL_PATH,
               icon: 'lucide:file-text',
             }
           ]

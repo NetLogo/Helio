@@ -1,6 +1,6 @@
 import { queryCollection } from "@nuxt/content/nitro";
 import { getSiteConfig } from "#site-config/server/composables";
-import { absoluteUrl, buildLlmsText, modelSections, type LlmsCuration } from "#shared/utils/llms";
+import { toAbsoluteUrl, buildLlmsText, buildModelSections, type LlmsCuration } from "#shared/utils/llms";
 import curation from "~~/app/data/model-curation.json";
 import models from "~~/app/data/models.json";
 
@@ -10,7 +10,7 @@ type Tutorial = { path: string; title: string; description?: string };
 
 export default defineEventHandler(async (event) => {
   const site = getSiteConfig(event);
-  const url = (path: string) => absoluteUrl(site.url, path);
+  const url = (path: string) => toAbsoluteUrl(site.url, path);
   const tutorials: Tutorial[] = await queryCollection(event, "content")
     .where("path", "LIKE", "/tutorials/%")
     .select("path", "title", "description")
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
           { title: "Models Library", url: url("/models-library"), description: "Every ready-to-run model, grouped by classroom topic." },
         ],
       },
-      ...modelSections(curation as LlmsCuration, models, url),
+      ...buildModelSections(curation as LlmsCuration, models, url),
       {
         title: "Tutorials",
         links: tutorials.map((tutorial) => ({

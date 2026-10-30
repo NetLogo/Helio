@@ -2,11 +2,25 @@
   <div
     ref="root"
     class="flex min-h-0 flex-1"
-    :class="reversed ? 'flex-col-reverse lg:flex-row-reverse' : 'flex-col lg:flex-row'"
+    :class="[reversed ? 'lg:flex-row-reverse' : 'lg:flex-row', compactReversed ? 'flex-col-reverse' : 'flex-col']"
     :style="{ '--split': splitValue }"
   >
+    <button
+      v-if="collapsible && hideStart === true"
+      type="button"
+      :aria-label="expandLabel"
+      :aria-controls="startId"
+      aria-expanded="false"
+      class="focus-inset group relative hidden w-3 shrink-0 cursor-pointer items-center justify-center bg-muted hover:bg-accented focus-visible:bg-accented lg:flex"
+      @click="emit('expand')"
+    >
+      <span
+        class="h-10 w-1.5 rounded-full bg-accented ring-2 ring-default transition-colors motion-reduce:transition-none group-hover:bg-primary group-focus-visible:bg-primary"
+      />
+    </button>
     <div
       :id="startId"
+      data-split-start
       class="min-h-0 min-w-0 flex-1 overflow-auto"
       :class="[paneClass(hideStart), bothShown && 'lg:flex-none lg:basis-(--split)', dragging && 'pointer-events-none select-none']"
     >
@@ -14,6 +28,7 @@
     </div>
     <div
       v-if="bothShown"
+      data-split-handle
       role="separator"
       tabindex="0"
       aria-orientation="vertical"
@@ -22,7 +37,7 @@
       :aria-valuenow="ratio"
       :aria-valuemin="SPLIT_BOUNDS.min"
       :aria-valuemax="SPLIT_BOUNDS.max"
-      class="group relative hidden w-3 shrink-0 cursor-col-resize touch-none items-stretch justify-center outline-none lg:flex"
+      class="focus-inset group relative hidden w-3 shrink-0 cursor-col-resize touch-none items-stretch justify-center lg:flex"
       @pointerdown="startDrag"
       @pointermove="drag"
       @pointerup="endDrag"
@@ -41,7 +56,7 @@
     </div>
     <div
       class="min-h-0 min-w-0 flex-1 overflow-auto"
-      :class="[paneClass(hideEnd), dragging && 'pointer-events-none select-none']"
+      :class="dragging && 'pointer-events-none select-none'"
     >
       <slot name="end" />
     </div>
@@ -56,78 +71,72 @@ type PaneHidden = boolean | "compact";
 const props = withDefaults(
   defineProps<{
     defaultRatio?: number;
-    initialRatio?: number;
-    storageKey?: string;
+    preferredRatio?: number;
     hideStart?: PaneHidden;
-    hideEnd?: PaneHidden;
     reversed?: boolean;
+    compactReversed?: boolean;
     minStart?: number;
     minEnd?: number;
     label?: string;
+    collapsible?: boolean;
+    expandLabel?: string;
+    // A custom property a head script may set before hydration, read until the component mounts.
+    bootRatioProperty?: string;
   }>(),
   {
     defaultRatio: 64,
-    initialRatio: undefined,
-    storageKey: undefined,
+    preferredRatio: undefined,
     hideStart: false,
-    hideEnd: false,
     reversed: false,
+    compactReversed: false,
     minStart: 320,
     minEnd: 280,
     label: "Resize panes",
+    collapsible: false,
+    expandLabel: "Show panel",
+    bootRatioProperty: undefined,
   },
 );
 
-const emit = defineEmits<{ resize: [ratio: number] }>();
+const emit = defineEmits<{ resize: [ratio: number]; collapse: []; expand: [] }>();
 
 const root = useTemplateRef<HTMLElement>("root");
 const { width } = useElementSize(root);
 const startId = useId();
 const dragging = ref(false);
-const preferred = ref(props.initialRatio ?? props.defaultRatio);
+const mounted = ref(false);
+const preferred = ref(props.preferredRatio ?? props.defaultRatio);
 const ratio = computed(() => clampRatio(preferred.value, width.value, props.minStart, props.minEnd));
-const bothShown = computed(() => props.hideStart !== true && props.hideEnd !== true);
-const storageId = computed(() => props.storageKey && splitStorageId(props.storageKey));
-const hydrated = ref(false);
-const splitValue = computed(() => {
-  if (hydrated.value || props.initialRatio !== undefined || !props.storageKey) return `${ratio.value}%`;
-  return `var(${splitCssVar(props.storageKey)}, ${ratio.value}%)`;
+const bothShown = computed(() => props.hideStart !== true);
+const splitValue = computed(() =>
+  mounted.value || !props.bootRatioProperty ? `${ratio.value}%` : `var(${props.bootRatioProperty}, ${ratio.value}%)`,
+);
+
+onMounted(() => {
+  mounted.value = true;
 });
 
-if (props.storageKey && props.initialRatio === undefined) {
-  useHead({ script: [{ key: `nt-split-${props.storageKey}`, innerHTML: splitBootScript(props.storageKey), tagPosition: "head" }] });
-}
+watch(
+  () => props.preferredRatio,
+  (next) => {
+    if (next !== undefined) preferred.value = next;
+  },
+);
 
 const paneClass = (hidden: PaneHidden) => (hidden === true ? "hidden" : hidden === "compact" ? "max-lg:hidden" : "");
 
-const readStored = (): string | null => {
-  if (!storageId.value) return null;
-  try {
-    return localStorage.getItem(storageId.value);
-  } catch {
-    return null;
-  }
-};
-
-const writeStored = (value: number | undefined) => {
-  if (!storageId.value) return;
-  try {
-    if (value === undefined) localStorage.removeItem(storageId.value);
-    else localStorage.setItem(storageId.value, String(value));
-  } catch {
-    // Blocked storage only costs persistence; the split still works for this visit.
-  }
-};
-
-const setRatio = (next: number, persist = true) => {
+// resize fires once per committed change (drag end, key, reset), not on every pointer move.
+const setRatio = (next: number, commit = true) => {
   preferred.value = clampRatio(next, width.value, props.minStart, props.minEnd);
-  if (persist) writeStored(preferred.value);
-  emit("resize", preferred.value);
+  if (commit) emit("resize", preferred.value);
 };
+
+let ratioBeforeDrag = preferred.value;
 
 const startDrag = (event: PointerEvent) => {
   if (event.button !== 0) return;
   (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+  ratioBeforeDrag = preferred.value;
   dragging.value = true;
   event.preventDefault();
 };
@@ -135,31 +144,30 @@ const startDrag = (event: PointerEvent) => {
 const drag = (event: PointerEvent) => {
   const rect = root.value?.getBoundingClientRect();
   if (!dragging.value || !rect?.width) return;
-  setRatio(ratioFromPointer(event.clientX, rect.left, rect.width, props.reversed), false);
+  const pointerRatio = getRatioFromPointer(event.clientX, rect.left, rect.width, props.reversed);
+  if (props.collapsible && shouldCollapseStart(pointerRatio, rect.width, props.minStart)) {
+    dragging.value = false;
+    preferred.value = ratioBeforeDrag;
+    emit("collapse");
+    return;
+  }
+  setRatio(pointerRatio, false);
 };
 
 const endDrag = () => {
   if (!dragging.value) return;
   dragging.value = false;
-  writeStored(preferred.value);
+  emit("resize", preferred.value);
 };
 
 const onKey = (event: KeyboardEvent) => {
-  const next = ratioForKey(ratio.value, event.key, props.reversed);
+  const next = getRatioForKey(ratio.value, event.key, props.reversed);
   if (next === undefined) return;
   event.preventDefault();
   setRatio(next);
 };
 
-const reset = () => {
-  setRatio(props.defaultRatio, false);
-  writeStored(undefined);
-};
-
-onMounted(() => {
-  preferred.value = resolveInitialRatio(props.initialRatio, readStored(), props.defaultRatio);
-  hydrated.value = true;
-});
+const reset = () => setRatio(props.defaultRatio);
 
 defineExpose({ reset });
 </script>

@@ -35,7 +35,7 @@ const titleSize = computed(() => (props.title.length > 34 ? 56 : 72));
       padding: '56px 64px',
       backgroundColor: OG_COLORS.wall,
       color: OG_COLORS.ink,
-      fontFamily: 'Inter',
+      fontFamily: 'Nunito',
     }"
   >
     <div class="flex-col" style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; align-self: stretch; width: 520px; margin-right: 34px">
@@ -43,10 +43,10 @@ const titleSize = computed(() => (props.title.length > 34 ? 56 : 72));
       <div class="flex-col" style="display: flex; flex-direction: column">
         <div
           v-if="topic"
+          class="font-bold"
           :style="{
             display: 'flex',
             fontSize: '26px',
-            fontWeight: 700,
             letterSpacing: '0.04em',
             textTransform: 'uppercase',
             color: OG_COLORS.blue,
@@ -56,10 +56,10 @@ const titleSize = computed(() => (props.title.length > 34 ? 56 : 72));
           {{ topic }}
         </div>
         <div
+          class="font-bold"
           :style="{
             display: 'flex',
             fontSize: `${titleSize}px`,
-            fontWeight: 700,
             lineHeight: 1.05,
             letterSpacing: '-0.03em',
             lineClamp: 3,

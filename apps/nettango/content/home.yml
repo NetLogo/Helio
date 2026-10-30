@@ -1,0 +1,135 @@
+title: "NetTango: Block-based NetLogo models for the classroom"
+cta:
+  label: Find a topic you teach
+  to: "#topics"
+hero:
+  titleLines:
+    - [Your, students]
+    - [build, the, model]
+    - [to, learn, the, science]
+  blockWord: build
+  description: >-
+    NetTango turns NetLogo models into blocks your students snap together. They set the rules, press GO, and watch
+    the results unfold. No coding experience needed. Runs in the browser.
+  netlogo:
+    label: NetLogo
+    to: https://www.netlogo.org
+  secondary:
+    label: Try a sample model of Ants Foraging
+  video:
+    src: /assets/home/ants-hero.mp4
+    poster: /assets/home/ants-hero.webp
+  builder:
+    text: Designing lessons for a new topic?
+    label: Read the Builder tutorial
+howItWorks:
+  title: Model real world phenomena from simple blocks
+  description: >-
+    Each model provides blocks for a single phenomenon, such as ant foraging, gas particles, or spaceship flight.
+    Students work only with the blocks that phenomenon requires, without first learning a programming language.
+  example: >-
+    In Antomology Introduction, students start with two blocks: one that moves the ants and one that makes them
+    wander. Each later model in the sequence adds a few blocks, such as picking up food or dropping a chemical trail.
+  link:
+    label: Open Antomology Introduction
+    to: /models/antomology-introduction
+showcase:
+  action: Try this one!
+  cards:
+    - id: antomology-pheromones
+      label: >-
+        The Antomology Pheromones model running: ants carry food from the flowers to the nest and leave a chemical
+        trail
+      text: >-
+        Explore how ants use pheromones to find their way. Your students build the rule for laying a chemical trail
+        and observe whether the ants mark a path back to the nest.
+      video:
+        src: /assets/home/antomology-pheromones.mp4
+        poster: /assets/home/antomology-pheromones.webp
+    - id: spaceship-programming
+      label: >-
+        The Spaceship Programming model running: a ship fires its engines one at a time to fly through an L-shaped
+        corridor to a green target
+      text: >-
+        Explore how a spaceship moves when its engines fire. Your students schedule each engine with blocks and
+        observe that the ship keeps moving until an opposing engine fires.
+      video:
+        src: /assets/home/spaceship-programming.mp4
+        poster: /assets/home/spaceship-programming.webp
+    - id: two-particle-sandbox
+      label: "The Two Particles in a Box model running: two particles move and collide in a small box"
+      text: >-
+        Explore how gas particles interact in a closed box. Your students build the collision rule and observe how
+        collisions change the motion of the particles.
+      video:
+        src: /assets/home/two-particle-sandbox.mp4
+        poster: /assets/home/two-particle-sandbox.webp
+topics:
+  title: Find the topic you teach
+  link: Explore the Models Library
+closing:
+  statement: Start with the Ants model.
+  platforms:
+    text: Runs in Chrome, Firefox, Safari and Edge on Chromebooks, laptops, desktops and tablets.
+    icons:
+      - { label: Chromebook, icon: i-lucide-laptop-minimal }
+      - { label: Laptop, icon: i-lucide-laptop }
+      - { label: Desktop, icon: i-lucide-monitor }
+      - { label: Tablet, icon: i-lucide-tablet }
+      - { label: Chrome, icon: i-logos-chrome }
+      - { label: Firefox, icon: i-logos-firefox }
+      - { label: Safari, icon: i-logos-safari }
+      - { label: Edge, icon: i-logos-microsoft-edge }
+faq:
+  title: Frequently asked questions
+  items:
+    - label: Do I need to install anything?
+      answer: No. NetTango runs in your web browser. You do not need to install any software.
+    - label: Do my students need to know how to code?
+      answer: >-
+        No. Students assemble blocks, and each model includes only the blocks its phenomenon requires. They do not
+        need prior coding experience.
+    - label: What does it cost?
+      answer: >-
+        Nothing. NetTango is free and open source, developed at Northwestern's Center for Connected Learning by the
+        NetLogo Foundation.
+    - label: Is there a lesson for my topic?
+      answer: >-
+        We are working on developing an enriched set of lessons for various topics. Right now, you can explore the
+        Ideal Gas Laws lesson on CT-STEM.
+      action:
+        label: Explore the Ideal Gas Laws lesson
+        to: https://ct-stem.northwestern.edu/curriculum/preview/513/
+    - label: Which devices does it work on?
+      answer: >-
+        NetTango runs in a web browser. It works on Chromebooks, laptops, desktops, and tablets. Make sure your
+        browser is up to date for the best experience.
+    - label: Can I make blocks for a topic you don't cover?
+      answer: Yes. New block sets are designed in NetTango Builder.
+      action:
+        label: Check out the Builder tutorial!
+        to: /tutorials/introduction-to-the-nettango-builder
+    - label: Do my students need accounts?
+      answer: >-
+        No. Students do not need accounts to use NetTango. They can start building and exploring models
+        immediately.
+designers:
+  title: Designing blocks for a new topic?
+  description: >-
+    Curriculum designers and researchers use NetTango Builder to design blocks for a new phenomenon. The tutorial
+    builds the blocks for the Ants model from the NetLogo Models Library, with a short video for each step.
+  tutorial:
+    label: Read the Builder tutorial
+  builder:
+    label: Open the Builder
+    to: https://netlogoweb.org/nettango-builder
+  shorter:
+    lead: Here is a
+    label: shorter tutorial
+    trail: which may be better suited to more experienced NetLogo users.
+    to: https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder-tutorial
+  file: "Ants tutorial: Setup"
+  caption: The Setup procedure from the Ants tutorial
+  blocksLabel: >-
+    The Ants tutorial Setup procedure in blocks: Setup. Create a nest, 5. Create ants, 125. Create a food pile at
+    20, 0, blue. Create a food pile at -25, 30, yellow. Create a food pile at -20, -20, red.

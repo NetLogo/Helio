@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-
 @import "tailwindcss";
 @import "@nuxt/ui";
 @import "@repo/tailwind-config/scss/variables.css";
@@ -9,48 +7,51 @@
 @source "../../../content/**/*.md";
 
 @theme static {
-  --color-block-green: #37833a;
-  --color-block-green-edge: #266729;
-  --color-block-green-ink: #fff;
-  --color-block-red: #e91400;
-  --color-block-red-edge: #b01000;
-  --color-block-red-ink: #fff;
-  --color-block-blue: var(--color-nt-blue-500);
-  --color-block-blue-edge: var(--color-nt-blue-700);
-  --color-block-blue-ink: #fff;
-  --color-block-yellow: #ffc22e;
-  --color-block-yellow-edge: #c98f00;
-  --color-block-yellow-ink: #3a2a00;
-  --color-block-orange: #fb8c00;
-  --color-block-orange-edge: #bf6400;
-  --color-block-orange-ink: #3d1f00;
-  --color-block-purple: #8e44ad;
-  --color-block-purple-edge: #5e2b75;
-  --color-block-purple-ink: #fff;
+  --font-sans: "Nunito", ui-rounded, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  --color-wall: #eef1f5;
+  --color-block-green: #68da2f;
+  --color-block-green-edge: #469c1c;
+  --color-block-green-ink: #1d2a36;
+  --color-block-red: #ba3b3b;
+  --color-block-red-edge: #842424;
+  --color-block-red-ink: #fff;
+  --color-block-blue: #94b8ff;
+  --color-block-blue-edge: #1f69ff;
+  --color-block-blue-ink: #1d2a36;
+  --color-block-yellow: #ffcf33;
+  --color-block-yellow-edge: #e0ac00;
+  --color-block-yellow-ink: #1d2a36;
+  --color-block-orange: #ffa057;
+  --color-block-orange-edge: #e05a00;
+  --color-block-orange-ink: #1d2a36;
+  --color-block-purple: #7c4ddb;
+  --color-block-purple-edge: #5530a8;
+  --color-block-purple-ink: #fff;
+  --color-block-display: #ff2200;
+  --color-block-display-edge: #b31800;
+  --color-block-display-ink: #fff;
+
+  --color-wall: #f4f8fb;
   --color-screen-roller: #4a5160;
   --color-screen-roller-dark: #262b35;
   --color-screen-bar: #2b303a;
   --color-screen-glow: #fff;
   --color-screen-glow-mid: #f7f8fa;
   --color-screen-glow-edge: #e7eaef;
-  --color-traffic-close: #ff5f57;
-  --color-traffic-minimize: #febc2e;
-  --color-traffic-zoom: #28c840;
   --color-ink-cable: color-mix(in oklab, var(--color-slate-900) 25%, transparent);
 
-  --color-nt-blue-50: #eef6ff;
-  --color-nt-blue-100: #d9eaff;
-  --color-nt-blue-200: #bcdaff;
-  --color-nt-blue-300: #8ec3ff;
-  --color-nt-blue-400: #589fff;
-  --color-nt-blue-500: #0670ed;
-  --color-nt-blue-600: #0563d4;
-  --color-nt-blue-700: #0450a8;
-  --color-nt-blue-800: #073f82;
-  --color-nt-blue-900: #0b366b;
-  --color-nt-blue-950: #0a2247;
+  --color-nt-blue-50: #f5f6fa;
+  --color-nt-blue-100: #e7e9f4;
+  --color-nt-blue-200: #ced4e8;
+  --color-nt-blue-300: #acb5d8;
+  --color-nt-blue-400: #828fc4;
+  --color-nt-blue-500: #4e60a6;
+  --color-nt-blue-600: #455492;
+  --color-nt-blue-700: #3b487d;
+  --color-nt-blue-800: #2a345a;
+  --color-nt-blue-900: #1f2642;
+  --color-nt-blue-950: #151a2d;
 
   --shadow-press:
     0 3px 0 var(--color-nt-blue-700),
@@ -64,26 +65,21 @@
   --drop-shadow-stack-md: 0 14px 14px rgb(18 24 40 / 0.16);
   --drop-shadow-stack-lg: 0 34px 38px rgb(18 24 40 / 0.18);
 
-  --radius-block: 0.625rem;
+  --radius-block: 0.9rem;
 
   --ease-snap: cubic-bezier(0.25, 1.5, 0.5, 1);
 
   --animate-snap: snap 420ms var(--ease-snap) both;
   --animate-drop-in: drop-in 620ms cubic-bezier(0.2, 1.4, 0.4, 1) 120ms both;
-  --animate-power-on: power-on 700ms ease-out 1180ms both;
 
-  --text-display-sm: 3.4rem;
+  --text-display-sm: 2.5rem;
   --text-display-sm--line-height: 0.92;
   --text-display-sm--letter-spacing: -0.045em;
   --text-display-sm--font-weight: 900;
-  --text-display-md: 4.6rem;
-  --text-display-md--line-height: 0.92;
-  --text-display-md--letter-spacing: -0.045em;
-  --text-display-md--font-weight: 900;
-  --text-display-lg: 6rem;
-  --text-display-lg--line-height: 0.92;
-  --text-display-lg--letter-spacing: -0.045em;
-  --text-display-lg--font-weight: 900;
+  --text-display-hero: 3.75rem;
+  --text-display-hero--line-height: 0.92;
+  --text-display-hero--letter-spacing: -0.045em;
+  --text-display-hero--font-weight: 900;
   --text-ui-sm: 0.9375rem;
   --text-ui-md: 1.0625rem;
   --text-lede: 1.125rem;
@@ -99,10 +95,7 @@
   --spacing-cable: 37.5rem;
   --spacing-roller: 1.125rem;
   --spacing-screen-bar: 0.625rem;
-  --spacing-projector: 31.25rem;
-  --spacing-projector-inset: 12.5rem;
   --spacing-stack: 21.25rem;
-  --spacing-stack-offset: 16.375rem;
 
   --radius-screen: 3px;
 
@@ -127,27 +120,36 @@
       transform: rotate(-2.5deg);
     }
   }
-
-  @keyframes power-on {
-    0% {
-      opacity: 0;
-      filter: brightness(2.6) saturate(0);
-    }
-    18% {
-      opacity: 0.85;
-    }
-    26% {
-      opacity: 0.35;
-    }
-    100% {
-      opacity: 1;
-      filter: none;
-    }
-  }
 }
 
 :root {
   --ui-primary: var(--ui-color-primary-500);
+  --font-sans: "Nunito", ui-rounded, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --color-blue: var(--color-nt-blue-500);
+  --color-blue-dark: var(--color-nt-blue-700);
+  --ui-bg: #fff;
+  --ui-bg-muted: var(--color-wall);
+  --ui-bg-elevated: var(--color-wall);
+  --ui-border: #dbe5ee;
+  --ui-border-muted: #dbe5ee;
+  --ui-text-highlighted: #1d2a36;
+  --ui-text: #1d2a36;
+  --ui-text-toned: #4d5c6a;
+  --ui-text-muted: #4d5c6a;
+}
+
+/*
+  Unlayered so it beats the shared normalize, whose "website" layer outranks Tailwind utilities and resets heading
+  line-height to normal.
+*/
+h1[class*="text-display-"] {
+  line-height: 1.08;
+}
+
+.bg-wall {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='360' viewBox='0 0 520 360'%3E%3Cpath transform='translate(40 46) rotate(20) scale(.085) translate(-150 -150)' d='M150 5 40 250 150 205 260 250Z' fill='%23e0ac00' fill-opacity='0.6'/%3E%3Cpath transform='translate(300 30) rotate(-35) scale(.085) translate(-150 -150)' d='M150 5 40 250 150 205 260 250Z' fill='%23ff6647' fill-opacity='0.6'/%3E%3Cpath transform='translate(470 120) rotate(140) scale(.085) translate(-150 -150)' d='M150 5 40 250 150 205 260 250Z' fill='%232fda68' fill-opacity='0.6'/%3E%3Cpath transform='translate(170 170) rotate(75) scale(.085) translate(-150 -150)' d='M150 5 40 250 150 205 260 250Z' fill='%23ae6ef7' fill-opacity='0.6'/%3E%3Cpath transform='translate(380 250) rotate(-110) scale(.085) translate(-150 -150)' d='M150 5 40 250 150 205 260 250Z' fill='%23ff8533' fill-opacity='0.6'/%3E%3Cpath transform='translate(90 300) rotate(200) scale(.085) translate(-150 -150)' d='M150 5 40 250 150 205 260 250Z' fill='%23e0ac00' fill-opacity='0.6'/%3E%3Cpath transform='translate(250 330) rotate(15) scale(.085) translate(-150 -150)' d='M150 5 40 250 150 205 260 250Z' fill='%232fda68' fill-opacity='0.6'/%3E%3C/svg%3E");
+  background-size: 520px 360px;
 }
 
 @utility min-h-hero {
@@ -159,5 +161,72 @@
 }
 
 @utility grid-cols-hero {
-  grid-template-columns: minmax(0, 33.75rem) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 36rem) minmax(0, 1fr);
+}
+
+/*
+  Clears the turtle pattern behind small hero text; the feathered mask fades the pattern out instead of cutting it
+  at a box edge.
+*/
+@utility wall-clear {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -2rem -2.5rem;
+    z-index: -1;
+    background: var(--color-wall);
+    mask-image:
+      linear-gradient(to right, transparent, black 2.5rem, black calc(100% - 2.5rem), transparent),
+      linear-gradient(transparent, black 2rem, black calc(100% - 2rem), transparent);
+    mask-composite: intersect;
+  }
+}
+
+/* Unlayered so it beats the shared normalize, which turns on automatic hyphenation for every paragraph. */
+p {
+  hyphens: manual;
+}
+
+/*
+  One focus ring for every interactive element, drawn with outline so it never replaces an element's own shadow.
+  The 2px offset leaves the surface showing between element and ring, so the ring only has to reach 3:1 against
+  the surface, never the element. Unlayered and important so it beats the per-component outline utilities.
+*/
+:root {
+  --focus-inner: #fff;
+  --focus-outer: var(--ui-text-highlighted);
+}
+
+.focus-on-dark {
+  --focus-inner: var(--ui-text-highlighted);
+  --focus-outer: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-outer) !important;
+  outline-offset: 2px !important;
+}
+
+/*
+  For controls flush against a neighbour that would paint over an outside ring, such as the split pane handles
+  beside the player.
+*/
+.focus-inset:focus-visible {
+  outline-offset: -2px !important;
+  box-shadow: inset 0 0 0 4px var(--focus-inner) !important;
+}
+
+@utility blueprint-grid {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+}
+
+@utility dot-grid {
+  background-image: radial-gradient(var(--color-nt-blue-200) 1px, transparent 1.5px);
+  background-size: 1rem 1rem;
 }

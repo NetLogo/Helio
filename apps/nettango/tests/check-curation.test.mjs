@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 
 import { checkCuration } from "../scripts/check-curation.mjs";
-import { modelMetadata, resolveGroups, sequencePosition } from "../app/utils/modelCuration.ts";
+import { getModelMetadata, resolveGroups, getSequencePosition, applyCuratedOverrides } from "../app/utils/modelCuration.ts";
 
 const models = [{ id: "a" }, { id: "b" }, { id: "c" }];
 
@@ -45,10 +45,27 @@ test("a consistent fixture has no problems", () => {
   assert.deepEqual(checkCuration(models, valid()), []);
 });
 
-test("reports a model that is in no group", () => {
-  // Would catch: a synced library model silently missing from the gallery.
-  const problems = problemsFor((c) => c.groups[1].models.pop());
-  assert.ok(problems.some((p) => p.includes('"c" is in no group')));
+test("accepts a model in no group, which hides it", () => {
+  // Would catch: the check rejecting a hidden model instead of treating it as left out on purpose.
+  const problems = problemsFor((c) => {
+    c.groups.pop();
+    c.models.a.related = [];
+  });
+  assert.deepEqual(problems, []);
+});
+
+test("reports a listed model whose related id is hidden", () => {
+  // Would catch: a sidebar link from a library model to a model the library hides.
+  const problems = problemsFor((c) => c.groups.pop());
+  assert.ok(problems.some((p) => p.includes('model "a": related id "c" is hidden')));
+});
+
+test("accepts a hidden model whose related ids are hidden", () => {
+  // Would catch: the related rule firing for pages only reachable by direct URL.
+  const problems = problemsFor((c) => {
+    c.groups = [{ id: "g1", title: "One", description: "d", lead: "b", models: ["b"] }];
+  });
+  assert.deepEqual(problems, []);
 });
 
 test("reports a model in more than one group", () => {
@@ -248,25 +265,72 @@ test("reports a description override that is not a non-empty string", () => {
   }
 });
 
-test("modelMetadata returns the entry or null", () => {
-  // Would catch: undefined leaking out for models without an overlay entry.
-  const curation = valid();
-  assert.equal(modelMetadata(curation, "a"), curation.models.a);
-  assert.equal(modelMetadata(curation, "c"), null);
+test("reports a title override that is not a non-empty string", () => {
+  // Would catch: an empty override blanking the model's name on cards, pages and llms.txt.
+  for (const value of [null, "", "  ", 2]) {
+    const problems = problemsFor((c) => (c.models.b.title = value));
+    assert.ok(has(problems, "title must be omitted or a non-empty string"), String(value));
+  }
 });
 
-test("sequencePosition reports the first and a middle step", () => {
+test("reports an authors override that is not a list of non-empty strings", () => {
+  // Would catch: an empty byline or a bare string where the card expects a list of names.
+  for (const value of [null, "Umit Aslan", [], [""], ["  "], [2]]) {
+    const problems = problemsFor((c) => (c.models.b.authors = value));
+    assert.ok(has(problems, "authors must be omitted or a list of non-empty strings"), JSON.stringify(value));
+  }
+});
+
+test("applyCuratedOverrides replaces a title only where the overlay sets one", () => {
+  // Would catch: the library name showing instead of the curated display title, or other titles lost.
+  const curation = valid();
+  curation.models.b.title = "Curated B";
+  const named = [
+    { id: "a", title: "A" },
+    { id: "b", title: "B" },
+    { id: "c", title: "C" },
+  ];
+  assert.deepEqual(
+    applyCuratedOverrides(named, curation).map((m) => m.title),
+    ["A", "Curated B", "C"],
+  );
+});
+
+test("applyCuratedOverrides replaces authors only where the overlay sets them", () => {
+  // Would catch: the library byline showing instead of the curated authors, or a title override dropping the authors.
+  const curation = valid();
+  curation.models.a.authors = ["Curated Author"];
+  curation.models.b.title = "Curated B";
+  const named = [
+    { id: "a", title: "A", authors: ["Library"] },
+    { id: "b", title: "B", authors: ["Library"] },
+    { id: "c", title: "C", authors: ["Library"] },
+  ];
+  assert.deepEqual(
+    applyCuratedOverrides(named, curation).map((m) => [m.title, m.authors]),
+    [["A", ["Curated Author"]], ["Curated B", ["Library"]], ["C", ["Library"]]],
+  );
+});
+
+test("getModelMetadata returns the entry or null", () => {
+  // Would catch: undefined leaking out for models without an overlay entry.
+  const curation = valid();
+  assert.equal(getModelMetadata(curation, "a"), curation.models.a);
+  assert.equal(getModelMetadata(curation, "c"), null);
+});
+
+test("getSequencePosition reports the first and a middle step", () => {
   // Would catch: swapped previous and next.
   const curation = valid();
   curation.sequences[0].models = ["a", "b", "c"];
-  assert.deepEqual(sequencePosition(curation, "a"), {
+  assert.deepEqual(getSequencePosition(curation, "a"), {
     title: "Seq",
     step: 1,
     total: 3,
     previous: null,
     next: "b",
   });
-  assert.deepEqual(sequencePosition(curation, "b"), {
+  assert.deepEqual(getSequencePosition(curation, "b"), {
     title: "Seq",
     step: 2,
     total: 3,
@@ -307,17 +371,14 @@ test("the real models.json and model-curation.json validate clean", async () => 
   assert.deepEqual(checkCuration(await read("models.json"), await read("model-curation.json")), []);
 });
 
-test("resolveGroups keeps overlay order and appends unplaced models as More models", () => {
-  // Would catch: a newly synced model vanishing from the gallery.
+test("resolveGroups keeps overlay order and leaves out models in no group", () => {
+  // Would catch: a hidden model listed in the gallery under a catch-all section.
   const curation = valid();
   curation.groups[1].models = [];
   const groups = resolveGroups(curation, models);
   assert.deepEqual(
     groups.map((g) => [g.title, g.models.map((m) => m.id)]),
-    [
-      ["One", ["a", "b"]],
-      ["More models", ["c"]],
-    ],
+    [["One", ["a", "b"]]],
   );
 });
 
@@ -332,15 +393,15 @@ test("resolveGroups skips unknown group members without throwing", () => {
   );
 });
 
-test("sequencePosition reports step, total and neighbours, or null", () => {
+test("getSequencePosition reports step, total and neighbours, or null", () => {
   // Would catch: off-by-one step numbers or wrong neighbours.
   const curation = valid();
-  assert.deepEqual(sequencePosition(curation, "b"), {
+  assert.deepEqual(getSequencePosition(curation, "b"), {
     title: "Seq",
     step: 2,
     total: 2,
     previous: "a",
     next: null,
   });
-  assert.equal(sequencePosition(curation, "c"), null);
+  assert.equal(getSequencePosition(curation, "c"), null);
 });

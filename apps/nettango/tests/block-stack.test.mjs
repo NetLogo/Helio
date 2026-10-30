@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { indexBlocks } from "../app/utils/blockStack.ts";
+import { getBlockTokenKey, indexBlocks } from "../app/utils/blockStack.ts";
 
 const program = [
   { color: "green", label: "Go" },
@@ -48,4 +48,15 @@ test("indexBlocks is stable across calls and keeps the input untouched", () => {
 
 test("indexBlocks returns an empty list for empty input", () => {
   assert.deepEqual(indexBlocks([]), []);
+});
+
+// Catches the hero word losing its scarlet display palette.
+test("getBlockTokenKey gives a red display block the display tokens", () => {
+  assert.equal(getBlockTokenKey("red", "display"), "display");
+});
+
+// Catches other colours or sizes picking display tokens they have no palette for.
+test("getBlockTokenKey keeps the block colour otherwise", () => {
+  assert.equal(getBlockTokenKey("blue", "display"), "blue");
+  assert.equal(getBlockTokenKey("red", "md"), "red");
 });

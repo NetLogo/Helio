@@ -36,27 +36,18 @@ const NtBlockStackNode: FunctionalComponent<{ node: IndexedBlockSpec }> = ({ nod
 .nt-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.214em;
   font-size: 0.8rem;
   filter: drop-shadow(var(--drop-shadow-stack-sm)) drop-shadow(var(--drop-shadow-stack-md))
     drop-shadow(var(--drop-shadow-stack-lg));
 }
 
-.nt-stack > :deep(.nt-block > .nt-block__head) {
-  font-weight: 700;
-}
-
-.nt-stack > :deep(.nt-block:first-child > .nt-block__head) {
+.nt-stack > :deep(.nt-block:first-child > .nt-block__cap > .nt-block__head) {
   border-radius: var(--radius-block) var(--radius-block) 0 0;
   mask-image: none;
 }
 
 .nt-stack > :deep(.nt-block--c > .nt-block__body > .nt-block__arm) {
   width: 2.857em;
-}
-
-.nt-stack > :deep(.nt-block--c > .nt-block__body > .nt-block__children) {
-  margin-right: -1.071em;
 }
 
 .nt-stack > :deep(.nt-block--c > .nt-block__foot) {

@@ -5,7 +5,7 @@ export default defineAppConfig({
         extend: {
           classGroups: {
             "font-size": [
-              { text: ["ui-sm", "ui-md", "lede", "lede-lg", "display-sm", "display-md", "display-lg"] },
+              { text: ["ui-sm", "ui-md", "lede", "lede-lg", "display-sm"] },
             ],
           },
         },

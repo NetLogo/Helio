@@ -1,4 +1,4 @@
-import type { NtBlockColor } from "../components/Nt/NtBlock.vue";
+import type { NtBlockColor, NtBlockSize } from "../components/Nt/NtBlock.vue";
 
 export interface NtBlockSpec {
   color: NtBlockColor;
@@ -21,3 +21,7 @@ export const indexBlocks = (blocks: NtBlockSpec[]): IndexedBlockSpec[] => {
     });
   return assign(blocks);
 };
+
+// Red is the only colour with display tokens; other colours keep their md palette at display size.
+export const getBlockTokenKey = (color: NtBlockColor, size: NtBlockSize): NtBlockColor | "display" =>
+  color === "red" && size === "display" ? "display" : color;

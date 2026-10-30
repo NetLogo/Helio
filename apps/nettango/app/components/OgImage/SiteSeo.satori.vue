@@ -34,16 +34,16 @@ const titleSize = computed(() => (props.title.length > 40 ? 60 : 80));
       padding: '56px 64px',
       backgroundColor: OG_COLORS.wall,
       color: OG_COLORS.ink,
-      fontFamily: 'Inter',
+      fontFamily: 'Nunito',
     }"
   >
     <NtOgBrand :site-name="resolvedSiteName" />
     <div class="flex-col" style="display: flex; flex-direction: column; max-width: 1000px">
       <div
+        class="font-bold"
         :style="{
           display: 'flex',
           fontSize: `${titleSize}px`,
-          fontWeight: 700,
           lineHeight: 1.02,
           letterSpacing: '-0.035em',
           lineClamp: 3,
@@ -59,6 +59,6 @@ const titleSize = computed(() => (props.title.length > 40 ? 60 : 80));
         {{ description }}
       </div>
     </div>
-    <div :style="{ display: 'flex', fontSize: '26px', fontWeight: 700, color: OG_COLORS.blue }">{{ host }}</div>
+    <div class="font-bold" :style="{ display: 'flex', fontSize: '26px', color: OG_COLORS.blue }">{{ host }}</div>
   </div>
 </template>

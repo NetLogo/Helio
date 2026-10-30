@@ -80,7 +80,7 @@ const columns: Column[] = [
     links: [
       { title: "Home", href: "/" },
       { title: "Models Library", href: "/models-library" },
-      { title: "Ants Tutorial", href: "/tutorials/introduction-to-the-nettango-builder" },
+      { title: "Ants Tutorial", href: TUTORIAL_PATH },
       { title: "Slime Tutorial", href: "https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder-tutorial", external: true },
       { title: "Builder", href: "https://www.netlogoweb.org/nettango-builder", external: true },
     ],

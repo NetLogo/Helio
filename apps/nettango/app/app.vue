@@ -14,7 +14,7 @@
 useProductHead();
 
 useHead({
-  meta: [{ key: "theme-color", name: "theme-color", content: "#0670ed" }],
+  meta: [{ key: "theme-color", name: "theme-color", content: "#4e60a6" }],
   link: [
     { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
     { rel: "icon", type: "image/png", href: "/favicon-32x32.png", sizes: "32x32" },

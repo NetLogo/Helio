@@ -51,6 +51,27 @@
           label="Download project file"
         />
       </div>
+      <USeparator />
+      <div class="flex flex-wrap items-center gap-2">
+        <UButton
+          size="sm"
+          variant="subtle"
+          :icon="copied ? 'i-lucide-check' : 'i-lucide-link'"
+          :label="copied ? 'Student link copied' : 'Share with students'"
+          @click="shareWithStudents"
+        />
+        <UButton
+          :to="studentPath"
+          target="_blank"
+          size="sm"
+          variant="link"
+          color="neutral"
+          trailing-icon="i-lucide-arrow-up-right"
+          label="Preview"
+          aria-label="Preview the student view in a new tab"
+        />
+        <span class="sr-only" aria-live="polite">{{ copied ? "Student link copied" : "" }}</span>
+      </div>
     </div>
 
     <USeparator class="my-4" />
@@ -58,8 +79,7 @@
     <UButton
       color="neutral"
       variant="ghost"
-      block
-      class="justify-between"
+      class="-mx-2.5 flex justify-between"
       label="Teaching guide"
       icon="i-lucide-book-open"
       :trailing-icon="open ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
@@ -100,7 +120,7 @@
                 <div class="flex flex-wrap justify-between gap-2">
                   <UButton
                     v-if="previous"
-                    :to="`/models/${previous.id}`"
+                    :to="getModelPath(previous.id)"
                     size="xs"
                     variant="link"
                     icon="i-lucide-chevron-left"
@@ -109,7 +129,7 @@
                   />
                   <UButton
                     v-if="next"
-                    :to="`/models/${next.id}`"
+                    :to="getModelPath(next.id)"
                     size="xs"
                     variant="link"
                     trailing-icon="i-lucide-chevron-right"
@@ -130,7 +150,7 @@
               <ul class="m-0 flex flex-col gap-2 p-0">
                 <li v-for="item in related" :key="item.id" class="m-0">
                   <ULink
-                    :to="`/models/${item.id}`"
+                    :to="getModelPath(item.id)"
                     :aria-label="item.title"
                     class="flex items-center gap-3 rounded-lg border border-default p-2 hover:bg-elevated"
                   >
@@ -178,7 +198,7 @@
                     <span>{{ tutorial.title }}</span>
                     <UIcon name="i-lucide-arrow-up-right" class="size-4 shrink-0" />
                   </ULink>
-                  <span class="text-muted">{{ tutorialCredit(tutorial) }}</span>
+                  <span class="text-muted">{{ formatTutorialCredit(tutorial) }}</span>
                 </dd>
               </div>
               <div v-for="fact in facts" :key="fact.label">
@@ -188,24 +208,6 @@
             </dl>
           </section>
 
-          <USeparator />
-
-          <section class="flex flex-col gap-2">
-            <h2 class="text-base font-semibold text-highlighted">What to expect</h2>
-            <figure v-if="preview" class="flex flex-col gap-2">
-              <img
-                :src="preview"
-                :alt="`A sample run of ${model.title}`"
-                class="aspect-square w-full rounded-lg bg-neutral-900 object-cover"
-                loading="lazy"
-              />
-              <figcaption class="text-muted">
-                A finished model, run step by step. Your students' runs will differ with the blocks
-                they choose.
-              </figcaption>
-            </figure>
-            <p v-else class="text-muted">No preview yet.</p>
-          </section>
         </div>
       </template>
     </UCollapsible>
@@ -213,7 +215,7 @@
 </template>
 
 <script setup lang="ts">
-import { useMediaQuery, useResizeObserver } from "@vueuse/core";
+import { useResizeObserver, useTimeoutFn } from "@vueuse/core";
 import type { GalleryModel } from "~/composables/useModels";
 
 const props = defineProps<{ model: GalleryModel }>();
@@ -232,15 +234,31 @@ useResizeObserver(description, ([entry]) => {
 });
 
 const editorUrl = useModelEditorUrl(props.model);
+
+const studentPath = computed(() => getModelPath(props.model.id, true));
+const copied = ref(false);
+const { start: clearCopied } = useTimeoutFn(() => (copied.value = false), 2500, { immediate: false });
+
+const shareWithStudents = async () => {
+  const url = new URL(studentPath.value, window.location.origin).href;
+  try {
+    await navigator.clipboard.writeText(url);
+    copied.value = true;
+    clearCopied();
+  } catch {
+    // Clipboard access can be denied; opening the link still lets the teacher copy it by hand.
+    window.open(url, "_blank", "noopener");
+  }
+};
 const authorList = computed(() => new Intl.ListFormat("en").format(props.model.authors));
 
 const curation = useModelCuration();
 const models = useModels();
-const details = computed(() => modelMetadata(curation, props.model.id));
-const position = computed(() => sequencePosition(curation, props.model.id));
+const details = computed(() => getModelMetadata(curation, props.model.id));
+const position = computed(() => getSequencePosition(curation, props.model.id));
 const tips = computed(() => details.value?.tips ?? []);
 const tutorial = computed(() => details.value?.tutorial);
-const descriptionText = computed(() => modelDescription(props.model, details.value));
+const descriptionText = computed(() => getModelDescription(props.model, details.value));
 
 const findModel = (id: string | null | undefined) =>
   id ? resolveModels([id], models)[0] : undefined;
@@ -254,15 +272,12 @@ const facts = computed(() => {
   const list = new Intl.ListFormat("en");
   return [
     { label: "Subject", value: list.format(meta.subjects) },
-    { label: "Grade band", value: list.format(gradeBandLabels(meta.gradeBands)) },
+    { label: "Grade band", value: list.format(getGradeBandLabels(meta.gradeBands)) },
     { label: "Creators", value: list.format(meta.creators) },
     { label: "Based on", value: meta.basedOn ?? "" },
     { label: "License", value: meta.license ?? "" },
   ].filter((fact) => fact.value);
 });
-
-const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-const preview = computed(() => previewSource(props.model, reducedMotion.value));
 
 const open = ref(false);
 onMounted(() => {

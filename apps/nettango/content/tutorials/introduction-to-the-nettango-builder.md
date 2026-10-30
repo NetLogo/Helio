@@ -754,9 +754,9 @@ The NetTango Builder has an embedded example project if you would like to tinker
 
 ![Load WSP](/tutorial/images/load-wsp.webp)
 
-For more ready-to-run projects, the NetTango Models Library collects every model on this site, grouped by the topic you teach. Each one runs in the browser, opens in the NetTango Builder, and has a project file to download. The Wolves and Sheep sample and two projects created by our research team members are a good place to start:
+For more ready-to-run projects, the NetTango Models Library collects the ready-to-run models on this site, grouped by the topic you teach. Each one runs in the browser, opens in the NetTango Builder, and has a project file to download. The Ants model from this tutorial and two projects created by our research team members are a good place to start:
 
-::model-cards{ids="wolves-and-sheep,rollypollies,gpc"}
+::model-cards{ids="ants,rollypollies,gpc"}
 ::
 
 ::div{class="mt-12 border-t border-gray-200 pt-6 text-sm text-gray-600"}

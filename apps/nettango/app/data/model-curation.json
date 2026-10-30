@@ -1,12 +1,11 @@
 {
   "groups": [
     {
-      "id": "ant-colonies",
-      "title": "Ant foraging",
-      "description": "Your students build the rules one ant follows and watch the whole colony find food, from a first walk to a full colony with a queen and predators.",
-      "lead": "ants",
+      "id": "antomology",
+      "title": "Antomology",
+      "description": "Six models in order, from 2 blocks to 13. Your students start with a single ant looking for food and build up to a full colony with pheromones, a life cycle and predators.",
+      "lead": "antomology-introduction",
       "models": [
-        "ants",
         "antomology-introduction",
         "antomology-foraging-for-food",
         "antomology-ant-colony",
@@ -16,22 +15,11 @@
       ]
     },
     {
-      "id": "predator-prey",
-      "title": "Predator and prey",
-      "description": "Your students write rules for hunters and the animals they hunt, then see whether both populations last or one dies out.",
-      "lead": "wolves-and-sheep",
+      "id": "rollypollies",
+      "title": "Rollypollies",
+      "description": "Two models in order. Your students write the rules one rollypolly follows, then run a class experiment on whether rollypollies gather in a dry chamber or a moist one.",
+      "lead": "rollypollies-simple",
       "models": [
-        "wolves-and-sheep",
-        "wolves-and-moose"
-      ]
-    },
-    {
-      "id": "animal-behavior",
-      "title": "Animal behavior",
-      "description": "Your students turn simple rules for single animals into a class experiment on how rollypollies pick a chamber and how slime mold cells gather.",
-      "lead": "slime-tutorial",
-      "models": [
-        "slime-tutorial",
         "rollypollies-simple",
         "rollypollies"
       ]
@@ -50,50 +38,33 @@
       ]
     },
     {
-      "id": "force-motion",
-      "title": "Force and motion",
-      "description": "Your students program cars, falling balls and spaceships, then compare the motion they built with position and speed graphs.",
-      "lead": "motion-maps-1d",
+      "id": "spaceship",
+      "title": "Spaceship programming",
+      "description": "Two models in order. Your students schedule engine firings to fly a spaceship to a target, then set the force of each engine.",
+      "lead": "spaceship-programming",
       "models": [
-        "motion-maps-1d",
-        "stop-light",
-        "free-fall",
         "spaceship-programming",
         "spaceship-programming-variable-engines"
       ]
     },
     {
-      "id": "disease-fire-spread",
-      "title": "Disease and fire spread",
-      "description": "Your students build rules for how a disease, a forest fire or a crop fungus spreads and test what slows it down.",
-      "lead": "fire",
+      "id": "disease",
+      "title": "Disease spread",
+      "description": "Two models in order. Your students build rules for how a disease spreads through a crowd and test what slows it down.",
+      "lead": "simplified-disease",
       "models": [
-        "fire",
         "simplified-disease",
-        "disease",
-        "watermelon-biodiversity"
+        "disease"
       ]
     },
     {
-      "id": "waves-diffusion",
-      "title": "Waves and diffusion",
-      "description": "Your students build a speaker and air particles to see how sound travels, and explore how a value spreads out across a grid.",
-      "lead": "sound-propagation",
+      "id": "biology",
+      "title": "Biology",
+      "description": "Your students build the rules one ant or one slime mold cell follows and watch a colony find food or the cells gather into clusters.",
+      "lead": "ants",
       "models": [
-        "sound-propagation",
-        "diffusion-graphics"
-      ]
-    },
-    {
-      "id": "growth-networks",
-      "title": "Growth and Networks",
-      "description": "Your students build simple rules for particles and links and watch growth curves, branching shapes and networks with hubs take form.",
-      "lead": "dla",
-      "models": [
-        "dla",
-        "abstract-exponential",
-        "abstract-exponential-and-logistic",
-        "preferential-attachment"
+        "ants",
+        "slime-tutorial"
       ]
     }
   ],
@@ -273,8 +244,7 @@
       "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
       "lesson": null,
       "related": [
-        "ants",
-        "abstract-exponential-and-logistic"
+        "ants"
       ],
       "tips": [
         "Fifth stage. Ants now lose 4 energy each step and die when energy falls to their age, so set start-energy on hatch-ants high enough or the colony dies right after setup.",
@@ -296,8 +266,7 @@
       "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
       "lesson": null,
       "related": [
-        "ants",
-        "wolves-and-sheep"
+        "ants"
       ],
       "tips": [
         "Two spiders start in the bottom right corner. A spider eats an ant on its spot with a chance of 100 minus 3 times the ant's size (percent), so bigger ants survive more often.",
@@ -438,7 +407,7 @@
       ],
       "gradeBandSource": "nettango-catalog.md: CC2019 Macro / Micro Particle Sandbox row and Ideal Gas Laws lesson row, both Chemistry / high school",
       "creators": [
-        "Center for Connected Learning"
+        "Umit Aslan"
       ],
       "basedOn": "Novak, M., Brady, C., Holbert, N., Soylu, F. and Wilensky, U. (2010). Particulate Nature of Matter, Diffusion Sandbox model",
       "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
@@ -456,6 +425,10 @@
         "Particles pass through each other until you add if touches another particle with a bounces back block inside each particle. Have your students predict what collisions will change.",
         "The particle block gives one particle its own rules. It counts from 0, so its default of 1 picks the second particle; keep the number below the number-of-particles setting.",
         "The box is only 5 patches across, so a few particles are easy to follow. Press trace a particle to draw one particle's path and compare straight with zig-zag."
+      ],
+      "title": "Two Particles in a Box",
+      "authors": [
+        "Umit Aslan"
       ]
     },
     "ideal-gas-law": {
@@ -468,7 +441,7 @@
       ],
       "gradeBandSource": "nettango-catalog.md: CC2019 Macro / Micro Particle Sandbox row and Ideal Gas Laws lesson row, both Chemistry / high school",
       "creators": [
-        "Center for Connected Learning"
+        "Umit Aslan"
       ],
       "basedOn": "Novak, M., Brady, C., Holbert, N., Soylu, F. and Wilensky, U. (2010). Particulate Nature of Matter, Diffusion Sandbox model",
       "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
@@ -485,6 +458,9 @@
         "The starting program makes each particle zig-zag and bounce off walls like a football, which loses a little speed at every hit, so the gas slowly slows down. Ask what changes with like a billiard ball.",
         "if touches a wall does not test anything: it only tells a bounces back block inside it to act at walls. A moves block placed inside it runs every step anyway.",
         "Use ↓↓ save design and load design ↑↑ to keep a student's walls and particles for the next lesson, and the 📸 button to save a picture of the view."
+      ],
+      "authors": [
+        "Umit Aslan"
       ]
     },
     "gpc": {
@@ -528,20 +504,22 @@
       "gradeBands": [],
       "gradeBandSource": null,
       "creators": [
-        "Center for Connected Learning"
+        "Umit Aslan"
       ],
       "basedOn": "Wilensky, U. (2006). NetLogo Connected Chemistry 8 Gas Particle Sandbox model",
       "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
       "lesson": null,
       "related": [
         "thermal-equilibration",
-        "two-particle-sandbox",
-        "sound-propagation"
+        "two-particle-sandbox"
       ],
       "tips": [
         "The starting program only moves particles, so they pass through each other and each color's line in Temperature of gases stays flat. Ask your students what changes once particles can collide.",
         "To show heat transfer, set initial-purple-particle-speed high and initial-green-particle-speed low, put change speed and direction inside check for particle-contact, and watch the two plot lines.",
         "The Info tab names INITIAL-#-PARTICLES and INITIAL-GAS-TEMPERATURE; here separate sliders set purple and green particles, and the green count slider is spelled intitial-green-particles."
+      ],
+      "authors": [
+        "Umit Aslan"
       ]
     },
     "thermal-equilibration": {
@@ -552,19 +530,21 @@
       "gradeBands": [],
       "gradeBandSource": null,
       "creators": [
-        "Center for Connected Learning"
+        "Umit Aslan"
       ],
       "basedOn": "Wilensky, U. (2006). NetLogo Connected Chemistry 8 Gas Particle Sandbox model",
       "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License",
       "lesson": null,
       "related": [
-        "particles-sandbox",
-        "diffusion-graphics"
+        "particles-sandbox"
       ],
       "tips": [
         "The starting program only moves particles, so they pass through each other and each color's line in Temperature of gases stays flat. Ask your students what changes once particles can collide.",
         "To show heat transfer, set initial-purple-particle-speed high and initial-green-particle-speed low, put change speed and direction inside check for particle-contact, and watch the two plot lines.",
         "The Info tab names INITIAL-#-PARTICLES and INITIAL-GAS-TEMPERATURE; here separate sliders set purple and green particles, and the green count slider is spelled intitial-green-particles."
+      ],
+      "authors": [
+        "Umit Aslan"
       ]
     },
     "motion-maps-1d": {
@@ -648,10 +628,7 @@
       "basedOn": null,
       "license": null,
       "lesson": null,
-      "related": [
-        "motion-maps-1d",
-        "free-fall"
-      ],
+      "related": [],
       "tips": [
         "The Info tab is empty. Start with the maze chooser on none horizontal, which needs only the side engines, and turn on draw-path? so dot spacing shows speed. Press setup after changing the maze.",
         "Each engine pushes the ship away from its own side: turn left engine on (1N) pushes it right. Ask your students to predict the direction before the first go.",
@@ -671,10 +648,7 @@
       "basedOn": null,
       "license": null,
       "lesson": null,
-      "related": [
-        "free-fall",
-        "stop-light"
-      ],
+      "related": [],
       "tips": [
         "Use this after spaceship programming: the engine blocks now take a force from 0 to 10 (1 by default). The Info tab is empty.",
         "With the 10 kg ship, each step at force 2 changes speed by 0.2. Ask your students how to reach the target in fewer steps with more force.",
@@ -717,10 +691,7 @@
       "basedOn": null,
       "license": null,
       "lesson": null,
-      "related": [
-        "fire",
-        "watermelon-biodiversity"
-      ],
+      "related": [],
       "tips": [
         "The Info tab is empty. The starting program has 30 healthy people and 1 sick person; everyone moves, and anyone on the same spot as a sick person gets sick. Ask how long until everyone is sick.",
         "Lower the number in if sick, infect (100 in the starting program) or add if sick, recover, then check whether Percentage of Population Sick still climbs to 100.",
@@ -740,10 +711,7 @@
       "basedOn": null,
       "license": null,
       "lesson": null,
-      "related": [
-        "watermelon-biodiversity",
-        "abstract-exponential"
-      ],
+      "related": [],
       "tips": [
         "The Info tab is empty, but the starting program works: 6 sick and 500 healthy people, and only healthy people move. Ask what changes if sick people move too (add move under ask sick people).",
         "infect only works once Set Infectiousness has set a value (the starting program uses 21.96). If your students rebuild setup without it, nobody gets sick.",

@@ -1,5 +1,7 @@
 import { useSiteConfig } from "#site-config/app/composables";
+import curation from "~/data/model-curation.json";
 import models from "~/data/models.json";
+import { applyCuratedOverrides, type ModelCuration } from "~/utils/modelCuration";
 
 export type GalleryModel = {
   id: string;
@@ -9,7 +11,6 @@ export type GalleryModel = {
   tags: string[];
   thumbnail?: string;
   animatedThumbnail?: string;
-  stepThumbnail?: string;
   player: string;
   project: string;
   editor?: string;
@@ -17,7 +18,9 @@ export type GalleryModel = {
   source?: "library";
 };
 
-export const useModels = (): GalleryModel[] => models as GalleryModel[];
+const curatedModels = applyCuratedOverrides(models as GalleryModel[], curation as ModelCuration);
+
+export const useModels = (): GalleryModel[] => curatedModels;
 
 const BUILDER_URL = "https://netlogoweb.org/nettango-builder?netTangoModel=";
 

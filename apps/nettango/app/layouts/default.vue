@@ -48,6 +48,6 @@ useHead({
 
 <style>
 body {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-sans);
 }
 </style>

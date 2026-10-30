@@ -8,5 +8,5 @@ export const clampDescription = (text: string, limit = DESCRIPTION_LIMIT): strin
   return `${(lastSpace > limit / 2 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:]+$/, "")}…`;
 };
 
-export const robotsText = (sitemapUrl: string): string =>
+export const buildRobotsText = (sitemapUrl: string): string =>
   ["User-agent: *", "Allow: /", "", `Sitemap: ${sitemapUrl}`, ""].join("\n");

@@ -12,7 +12,6 @@
     ],
     "thumbnail": "/assets/models/ants.webp",
     "animatedThumbnail": "/assets/models/ants.gif",
-    "stepThumbnail": "/assets/models/ants-step.gif",
     "player": "/assets/models/ants.html",
     "project": "/assets/models/ants.ntjson",
     "frameHeight": 3170
@@ -33,7 +32,6 @@
     ],
     "thumbnail": "/assets/models/gpc.webp",
     "animatedThumbnail": "/assets/models/gpc.gif",
-    "stepThumbnail": "/assets/models/gpc-step.gif",
     "player": "/assets/models/gpc.html",
     "project": "/assets/models/gpc.ntjson",
     "frameHeight": 1630
@@ -52,7 +50,6 @@
     ],
     "thumbnail": "/assets/models/rollypollies.webp",
     "animatedThumbnail": "/assets/models/rollypollies.gif",
-    "stepThumbnail": "/assets/models/rollypollies-step.gif",
     "player": "/assets/models/rollypollies.html",
     "project": "/assets/models/rollypollies.ntjson",
     "frameHeight": 2100
@@ -69,7 +66,6 @@
     ],
     "thumbnail": "/assets/models/wolves-and-sheep.webp",
     "animatedThumbnail": "/assets/models/wolves-and-sheep.gif",
-    "stepThumbnail": "/assets/models/wolves-and-sheep-step.gif",
     "player": "/assets/models/wolves-and-sheep.html",
     "project": "/assets/models/wolves-and-sheep.ntjson",
     "frameHeight": 1450
@@ -86,7 +82,6 @@
     ],
     "thumbnail": "/assets/models/sound-propagation.webp",
     "animatedThumbnail": "/assets/models/sound-propagation.gif",
-    "stepThumbnail": "/assets/models/sound-propagation-step.gif",
     "player": "/assets/models/sound-propagation.html",
     "project": "/assets/models/sound-propagation.ntjson",
     "frameHeight": 2410
@@ -103,7 +98,6 @@
     ],
     "thumbnail": "/assets/models/thermal-equilibration.webp",
     "animatedThumbnail": "/assets/models/thermal-equilibration.gif",
-    "stepThumbnail": "/assets/models/thermal-equilibration-step.gif",
     "player": "/assets/models/thermal-equilibration.html",
     "project": "/assets/models/thermal-equilibration.ntjson",
     "frameHeight": 1580
@@ -120,7 +114,6 @@
     ],
     "thumbnail": "/assets/models/watermelon-biodiversity.webp",
     "animatedThumbnail": "/assets/models/watermelon-biodiversity.gif",
-    "stepThumbnail": "/assets/models/watermelon-biodiversity-step.gif",
     "player": "/assets/models/watermelon-biodiversity.html",
     "project": "/assets/models/watermelon-biodiversity.ntjson",
     "frameHeight": 1940
@@ -137,7 +130,6 @@
     ],
     "thumbnail": "/assets/models/fire.webp",
     "animatedThumbnail": "/assets/models/fire.gif",
-    "stepThumbnail": "/assets/models/fire-step.gif",
     "player": "/assets/models/fire.html",
     "project": "/assets/models/fire.ntjson",
     "frameHeight": 940
@@ -154,7 +146,6 @@
     ],
     "thumbnail": "/assets/models/disease.webp",
     "animatedThumbnail": "/assets/models/disease.gif",
-    "stepThumbnail": "/assets/models/disease-step.gif",
     "player": "/assets/models/disease.html",
     "project": "/assets/models/disease.ntjson",
     "frameHeight": 2470
@@ -171,7 +162,6 @@
     ],
     "thumbnail": "/assets/models/simplified-disease.webp",
     "animatedThumbnail": "/assets/models/simplified-disease.gif",
-    "stepThumbnail": "/assets/models/simplified-disease-step.gif",
     "player": "/assets/models/simplified-disease.html",
     "project": "/assets/models/simplified-disease.ntjson",
     "frameHeight": 1190
@@ -188,7 +178,6 @@
     ],
     "thumbnail": "/assets/models/slime-tutorial.webp",
     "animatedThumbnail": "/assets/models/slime-tutorial.gif",
-    "stepThumbnail": "/assets/models/slime-tutorial-step.gif",
     "player": "/assets/models/slime-tutorial.html",
     "project": "/assets/models/slime-tutorial.ntjson",
     "frameHeight": 900
@@ -205,7 +194,6 @@
     ],
     "thumbnail": "/assets/models/wolves-and-moose.webp",
     "animatedThumbnail": "/assets/models/wolves-and-moose.gif",
-    "stepThumbnail": "/assets/models/wolves-and-moose-step.gif",
     "player": "/assets/models/wolves-and-moose.html",
     "project": "/assets/models/wolves-and-moose.ntjson",
     "frameHeight": 1350
@@ -222,7 +210,6 @@
     ],
     "thumbnail": "/assets/models/spaceship-programming.webp",
     "animatedThumbnail": "/assets/models/spaceship-programming.gif",
-    "stepThumbnail": "/assets/models/spaceship-programming-step.gif",
     "player": "/assets/models/spaceship-programming.html",
     "project": "/assets/models/spaceship-programming.ntjson",
     "frameHeight": 2140
@@ -239,7 +226,6 @@
     ],
     "thumbnail": "/assets/models/spaceship-programming-variable-engines.webp",
     "animatedThumbnail": "/assets/models/spaceship-programming-variable-engines.gif",
-    "stepThumbnail": "/assets/models/spaceship-programming-variable-engines-step.gif",
     "player": "/assets/models/spaceship-programming-variable-engines.html",
     "project": "/assets/models/spaceship-programming-variable-engines.ntjson",
     "frameHeight": 2140
@@ -256,7 +242,6 @@
     ],
     "thumbnail": "/assets/models/abstract-exponential.webp",
     "animatedThumbnail": "/assets/models/abstract-exponential.gif",
-    "stepThumbnail": "/assets/models/abstract-exponential-step.gif",
     "player": "/assets/models/abstract-exponential.html",
     "project": "/assets/models/abstract-exponential.ntjson",
     "frameHeight": 2180
@@ -273,7 +258,6 @@
     ],
     "thumbnail": "/assets/models/abstract-exponential-and-logistic.webp",
     "animatedThumbnail": "/assets/models/abstract-exponential-and-logistic.gif",
-    "stepThumbnail": "/assets/models/abstract-exponential-and-logistic-step.gif",
     "player": "/assets/models/abstract-exponential-and-logistic.html",
     "project": "/assets/models/abstract-exponential-and-logistic.ntjson",
     "frameHeight": 2270
@@ -290,7 +274,6 @@
     ],
     "thumbnail": "/assets/models/dla.webp",
     "animatedThumbnail": "/assets/models/dla.gif",
-    "stepThumbnail": "/assets/models/dla-step.gif",
     "player": "/assets/models/dla.html",
     "project": "/assets/models/dla.ntjson",
     "frameHeight": 2220
@@ -307,7 +290,6 @@
     ],
     "thumbnail": "/assets/models/preferential-attachment.webp",
     "animatedThumbnail": "/assets/models/preferential-attachment.gif",
-    "stepThumbnail": "/assets/models/preferential-attachment-step.gif",
     "player": "/assets/models/preferential-attachment.html",
     "project": "/assets/models/preferential-attachment.ntjson",
     "frameHeight": 1910
@@ -324,7 +306,6 @@
     ],
     "thumbnail": "/assets/models/rollypollies-simple.webp",
     "animatedThumbnail": "/assets/models/rollypollies-simple.gif",
-    "stepThumbnail": "/assets/models/rollypollies-simple-step.gif",
     "player": "/assets/models/rollypollies-simple.html",
     "project": "/assets/models/rollypollies-simple.ntjson",
     "frameHeight": 900
@@ -341,7 +322,6 @@
     ],
     "thumbnail": "/assets/models/free-fall.webp",
     "animatedThumbnail": "/assets/models/free-fall.gif",
-    "stepThumbnail": "/assets/models/free-fall-step.gif",
     "player": "/assets/models/free-fall.html",
     "project": "/assets/models/free-fall.ntjson",
     "frameHeight": 1370
@@ -358,7 +338,6 @@
     ],
     "thumbnail": "/assets/models/ideal-gas-law.webp",
     "animatedThumbnail": "/assets/models/ideal-gas-law.gif",
-    "stepThumbnail": "/assets/models/ideal-gas-law-step.gif",
     "player": "/assets/models/ideal-gas-law.html",
     "project": "/assets/models/ideal-gas-law.ntjson",
     "frameHeight": 1030
@@ -375,7 +354,6 @@
     ],
     "thumbnail": "/assets/models/motion-maps-1d.webp",
     "animatedThumbnail": "/assets/models/motion-maps-1d.gif",
-    "stepThumbnail": "/assets/models/motion-maps-1d-step.gif",
     "player": "/assets/models/motion-maps-1d.html",
     "project": "/assets/models/motion-maps-1d.ntjson",
     "frameHeight": 900
@@ -392,7 +370,6 @@
     ],
     "thumbnail": "/assets/models/particles-sandbox.webp",
     "animatedThumbnail": "/assets/models/particles-sandbox.gif",
-    "stepThumbnail": "/assets/models/particles-sandbox-step.gif",
     "player": "/assets/models/particles-sandbox.html",
     "project": "/assets/models/particles-sandbox.ntjson",
     "frameHeight": 1580
@@ -409,7 +386,6 @@
     ],
     "thumbnail": "/assets/models/stop-light.webp",
     "animatedThumbnail": "/assets/models/stop-light.gif",
-    "stepThumbnail": "/assets/models/stop-light-step.gif",
     "player": "/assets/models/stop-light.html",
     "project": "/assets/models/stop-light.ntjson",
     "frameHeight": 1970
@@ -426,7 +402,6 @@
     ],
     "thumbnail": "/assets/models/two-particle-sandbox.webp",
     "animatedThumbnail": "/assets/models/two-particle-sandbox.gif",
-    "stepThumbnail": "/assets/models/two-particle-sandbox-step.gif",
     "player": "/assets/models/two-particle-sandbox.html",
     "project": "/assets/models/two-particle-sandbox.ntjson",
     "frameHeight": 1030
@@ -443,7 +418,6 @@
     ],
     "thumbnail": "/assets/models/diffusion-graphics.webp",
     "animatedThumbnail": "/assets/models/diffusion-graphics.gif",
-    "stepThumbnail": "/assets/models/diffusion-graphics-step.gif",
     "player": "/assets/models/diffusion-graphics.html",
     "project": "/assets/models/diffusion-graphics.ntjson",
     "frameHeight": 820
@@ -460,7 +434,6 @@
     ],
     "thumbnail": "/assets/models/antomology-ant-colony.webp",
     "animatedThumbnail": "/assets/models/antomology-ant-colony.gif",
-    "stepThumbnail": "/assets/models/antomology-ant-colony-step.gif",
     "player": "/assets/models/antomology-ant-colony.html",
     "project": "/assets/models/antomology-ant-colony.ntjson",
     "frameHeight": 940
@@ -477,7 +450,6 @@
     ],
     "thumbnail": "/assets/models/antomology-foraging-for-food.webp",
     "animatedThumbnail": "/assets/models/antomology-foraging-for-food.gif",
-    "stepThumbnail": "/assets/models/antomology-foraging-for-food-step.gif",
     "player": "/assets/models/antomology-foraging-for-food.html",
     "project": "/assets/models/antomology-foraging-for-food.ntjson",
     "frameHeight": 740
@@ -494,7 +466,6 @@
     ],
     "thumbnail": "/assets/models/antomology-introduction.webp",
     "animatedThumbnail": "/assets/models/antomology-introduction.gif",
-    "stepThumbnail": "/assets/models/antomology-introduction-step.gif",
     "player": "/assets/models/antomology-introduction.html",
     "project": "/assets/models/antomology-introduction.ntjson",
     "frameHeight": 740
@@ -511,7 +482,6 @@
     ],
     "thumbnail": "/assets/models/antomology-life-cycle.webp",
     "animatedThumbnail": "/assets/models/antomology-life-cycle.gif",
-    "stepThumbnail": "/assets/models/antomology-life-cycle-step.gif",
     "player": "/assets/models/antomology-life-cycle.html",
     "project": "/assets/models/antomology-life-cycle.ntjson",
     "frameHeight": 1170
@@ -528,7 +498,6 @@
     ],
     "thumbnail": "/assets/models/antomology-pheromones.webp",
     "animatedThumbnail": "/assets/models/antomology-pheromones.gif",
-    "stepThumbnail": "/assets/models/antomology-pheromones-step.gif",
     "player": "/assets/models/antomology-pheromones.html",
     "project": "/assets/models/antomology-pheromones.ntjson",
     "frameHeight": 990
@@ -545,7 +514,6 @@
     ],
     "thumbnail": "/assets/models/antomology-predation.webp",
     "animatedThumbnail": "/assets/models/antomology-predation.gif",
-    "stepThumbnail": "/assets/models/antomology-predation-step.gif",
     "player": "/assets/models/antomology-predation.html",
     "project": "/assets/models/antomology-predation.ntjson",
     "frameHeight": 1170

@@ -37,6 +37,8 @@ export type ModelMetadata = {
   license: string | null;
   lesson: ModelLesson | null;
   tutorial?: ModelTutorial;
+  title?: string;
+  authors?: string[];
   description?: string;
   related: string[];
   tips: string[];
@@ -63,35 +65,33 @@ export type SequencePosition = {
   next: string | null;
 };
 
-const MORE_MODELS_GROUP: Omit<ResolvedGroup, "models"> = {
-  id: "more-models",
-  title: "More models",
-  description: "Other models in the library.",
-};
-
+// The groups are the keep list: a model in no group is hidden from every listing but keeps its page.
 export const resolveGroups = (curation: ModelCuration, models: GalleryModel[]): ResolvedGroup[] => {
-  const byId = new Map(models.map((model) => [model.id, model]));
+  const modelsById = new Map(models.map((model) => [model.id, model]));
   const placed = new Set<string>();
 
-  const groups = curation.groups
+  return curation.groups
     .map(({ id, title, description, models: ids }) => ({
       id,
       title,
       description,
       models: ids.flatMap((modelId) => {
-        const model = byId.get(modelId);
+        const model = modelsById.get(modelId);
         if (!model || placed.has(modelId)) return [];
         placed.add(modelId);
         return [model];
       }),
     }))
     .filter((group) => group.models.length > 0);
-
-  const unplaced = models.filter((model) => !placed.has(model.id));
-  return unplaced.length > 0 ? [...groups, { ...MORE_MODELS_GROUP, models: unplaced }] : groups;
 };
 
-export const sequencePosition = (
+export const applyCuratedOverrides = (models: GalleryModel[], curation: ModelCuration): GalleryModel[] =>
+  models.map((model) => {
+    const { title, authors } = curation.models[model.id] ?? {};
+    return { ...model, ...(title && { title }), ...(authors && { authors }) };
+  });
+
+export const getSequencePosition = (
   curation: ModelCuration,
   modelId: string,
 ): SequencePosition | null => {
@@ -107,7 +107,7 @@ export const sequencePosition = (
   };
 };
 
-export const modelMetadata = (curation: ModelCuration, modelId: string): ModelMetadata | null =>
+export const getModelMetadata = (curation: ModelCuration, modelId: string): ModelMetadata | null =>
   curation.models[modelId] ?? null;
 
 export type ModelNavLink = { id: string; title: string };
@@ -124,7 +124,7 @@ export type ModelNavigation = {
   } | null;
 };
 
-export const modelNavigation = (
+export const getModelNavigation = (
   curation: ModelCuration,
   models: GalleryModel[],
   currentId: string,
@@ -135,7 +135,7 @@ export const modelNavigation = (
     models: members.map((model) => ({ id: model.id, title: model.title, current: model.id === currentId })),
   }));
   const topic = groups.find((group) => group.models.some((model) => model.current));
-  const position = sequencePosition(curation, currentId);
+  const position = getSequencePosition(curation, currentId);
   const link = (id: string | null): ModelNavLink | null => {
     const model = id ? models.find((candidate) => candidate.id === id) : undefined;
     return model ? { id: model.id, title: model.title } : null;

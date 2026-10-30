@@ -4,7 +4,7 @@
     ref="navbar"
     :brand="BrandLogo"
     brand-href="/"
-    class="backdrop-blur-lg! bg-white/80! border-b-2 border-primary"
+    class="bg-white! border-b-2 border-primary"
   >
     <NavbarLinksContainer>
       <NavbarItem
@@ -61,7 +61,7 @@ const navbarLinks = ref<NavbarLink[]>([
   },
   {
     title: "NetTango Tutorial",
-    href: "/tutorials/introduction-to-the-nettango-builder",
+    href: TUTORIAL_PATH,
   },
 ]);
 
