@@ -1176,12 +1176,12 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: create-<breed>-to
-        - name: create-<breeds>-to
-        - name: create-<breed>-from
-        - name: create-<breeds>-from
-        - name: create-<breed>-with
-        - name: create-<breeds>-with
+        - name: create-<link-breed>-to
+        - name: create-<link-breeds>-to
+        - name: create-<link-breed>-from
+        - name: create-<link-breeds>-from
+        - name: create-<link-breed>-with
+        - name: create-<link-breeds>-with
         - name: create-link-to
           since: "4.0"
         - name: create-links-to
@@ -1253,18 +1253,18 @@ entries:
         ```
 
       examples:
-        - code: create-<breed>-to *turtle*
-        - code: create-<breed>-to *turtle* [ *commands* ]
-        - code: create-<breed>-from *turtle*
-        - code: create-<breed>-from *turtle* [ *commands* ]
-        - code: create-<breed>-with *turtle*
-        - code: create-<breed>-with *turtle* [ *commands* ]
-        - code: create-<breeds>-to *turtleset*
-        - code: create-<breeds>-to *turtleset* [ *commands* ]
-        - code: create-<breeds>-from *turtleset*
-        - code: create-<breeds>-from *turtleset* [ *commands* ]
-        - code: create-<breeds>-with *turtleset*
-        - code: create-<breeds>-with *turtleset* [ *commands* ]
+        - code: create-<link-breed>-to *turtle*
+        - code: create-<link-breed>-to *turtle* [ *commands* ]
+        - code: create-<link-breed>-from *turtle*
+        - code: create-<link-breed>-from *turtle* [ *commands* ]
+        - code: create-<link-breed>-with *turtle*
+        - code: create-<link-breed>-with *turtle* [ *commands* ]
+        - code: create-<link-breeds>-to *turtleset*
+        - code: create-<link-breeds>-to *turtleset* [ *commands* ]
+        - code: create-<link-breeds>-from *turtleset*
+        - code: create-<link-breeds>-from *turtleset* [ *commands* ]
+        - code: create-<link-breeds>-with *turtleset*
+        - code: create-<link-breeds>-with *turtleset* [ *commands* ]
         - code: create-link-to *turtle*
         - code: create-link-to *turtle* [ *commands* ]
         - code: create-link-from *turtle*
@@ -1911,7 +1911,7 @@ entries:
         - name: export
           since: "7.1"
       description: |+
-        Make the given names available for importing. For example, with a 
+        Make the given names available for importing. For example, with a
         `.nlm` file that defines the reports `add`, `subtract`, and
         `multiply`, this code:
 
@@ -3776,7 +3776,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: in-<breed>-neighbor?
+        - name: in-<link-breed>-neighbor?
         - name: in-link-neighbor?
           since: "4.0"
       description: |+
@@ -3797,7 +3797,7 @@ entries:
         ```
 
       examples:
-        - code: in-<breed>-neighbor? *agent*
+        - code: in-<link-breed>-neighbor? *agent*
         - code: in-link-neighbor? *turtle*
     icons:
       - alt: Turtle Command
@@ -3808,7 +3808,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: in-<breed>-neighbors
+        - name: in-<link-breed>-neighbors
         - name: in-link-neighbors
           since: "4.0"
       description: |+
@@ -3824,7 +3824,7 @@ entries:
         ```
 
       examples:
-        - code: in-<breed>-neighbors
+        - code: in-<link-breed>-neighbors
         - code: in-link-neighbors
     icons:
       - alt: Turtle Command
@@ -3835,7 +3835,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: in-<breed>-from
+        - name: in-<link-breed>-from
         - name: in-link-from
           since: "4.0"
       description: |+
@@ -3855,7 +3855,7 @@ entries:
         See also: [[out-link-to|out-link-to]] [[link-with|link-with]]
 
       examples:
-        - code: in-<breed>-from *turtle*
+        - code: in-<link-breed>-from *turtle*
         - code: in-link-from *turtle*
     icons:
       - alt: Turtle Command
@@ -5290,7 +5290,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: my-<breeds>
+        - name: my-<link-breeds>
         - name: my-links
           since: "4.0"
       description: |-
@@ -5319,7 +5319,7 @@ entries:
         If you only want the undirected links connected to a node, you
          can do `my-links with [ not is-directed-link? self ]`.
       examples:
-        - code: my-<breeds>
+        - code: my-<link-breeds>
         - code: my-links
     icons:
       - alt: Turtle Command
@@ -5330,7 +5330,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: my-in-<breeds>
+        - name: my-in-<link-breeds>
         - name: my-in-links
           since: "4.0"
       description: |+
@@ -5353,7 +5353,7 @@ entries:
         ```
 
       examples:
-        - code: my-in-<breeds>
+        - code: my-in-<link-breeds>
         - code: my-in-links
     icons:
       - alt: Turtle Command
@@ -5364,7 +5364,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: my-out-<breeds>
+        - name: my-out-<link-breeds>
         - name: my-out-links
           since: "4.0"
       description: |+
@@ -5386,7 +5386,7 @@ entries:
         ```
 
       examples:
-        - code: my-out-<breeds>
+        - code: my-out-<link-breeds>
         - code: my-out-links
     icons:
       - alt: Turtle Command
@@ -5554,7 +5554,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: <breed>-neighbors
+        - name: <link-breed>-neighbors
         - name: link-neighbors
           since: "4.0"
       description: |+
@@ -5577,7 +5577,7 @@ entries:
         ```
 
       examples:
-        - code: <breed>-neighbors
+        - code: <link-breed>-neighbors
         - code: link-neighbors
     icons:
       - alt: Turtle Command
@@ -5588,7 +5588,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: <breed>-neighbor?
+        - name: <link-breed>-neighbor?
         - name: link-neighbor?
           since: "4.0"
       description: |+
@@ -5609,7 +5609,7 @@ entries:
         ```
 
       examples:
-        - code: <breed>-neighbor? *turtle*
+        - code: <link-breed>-neighbor? *turtle*
         - code: link-neighbor? *turtle*
     icons:
       - alt: Turtle Command
@@ -5962,7 +5962,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: out-<breed>-neighbor?
+        - name: out-<link-breed>-neighbor?
         - name: out-link-neighbor?
           since: "4.0"
       description: |+
@@ -5984,7 +5984,7 @@ entries:
         ```
 
       examples:
-        - code: out-<breed>-neighbor? *turtle*
+        - code: out-<link-breed>-neighbor? *turtle*
         - code: out-link-neighbor? *turtle*
     icons:
       - alt: Turtle Command
@@ -5995,7 +5995,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: out-<breed>-neighbors
+        - name: out-<link-breed>-neighbors
         - name: out-link-neighbors
           since: "4.0"
       description: |+
@@ -6019,7 +6019,7 @@ entries:
         ```
 
       examples:
-        - code: out-<breed>-neighbors
+        - code: out-<link-breed>-neighbors
         - code: out-link-neighbors
     icons:
       - alt: Turtle Command
@@ -6030,7 +6030,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: out-<breed>-to
+        - name: out-<link-breed>-to
         - name: out-link-to
           since: "4.0"
       description: |+
@@ -6055,7 +6055,7 @@ entries:
         See also: [[in-link-from|in-link-from]] [[link-with|link-with]]
 
       examples:
-        - code: out-<breed>-to *turtle*
+        - code: out-<link-breed>-to *turtle*
         - code: out-link-to *turtle*
     icons:
       - alt: Turtle Command
@@ -9915,7 +9915,7 @@ entries:
         id: linkgroup
     data:
       syntax:
-        - name: <breed>-with
+        - name: <link-breed>-with
         - name: link-with
           since: "4.0"
       description: |+
@@ -9934,7 +9934,7 @@ entries:
         See also: [[in-link-from|in-link-from]], [[out-link-to|out-link-to]]
 
       examples:
-        - code: <breed>-with *turtle*
+        - code: <link-breed>-with *turtle*
         - code: link-with *turtle*
     icons:
       - alt: Turtle Command

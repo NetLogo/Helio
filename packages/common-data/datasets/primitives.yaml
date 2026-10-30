@@ -3964,9 +3964,9 @@ primitives:
     metadata: *a13
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: create-link-create-<breed>-to
+  - id: create-link-create-<link-breed>-to
     key: create-link
-    name: create-<breed>-to
+    name: create-<link-breed>-to
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#create-link
     description: >+
@@ -4038,18 +4038,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -4071,12 +4071,12 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: create-<breed>-to
-          - name: create-<breeds>-to
-          - name: create-<breed>-from
-          - name: create-<breeds>-from
-          - name: create-<breed>-with
-          - name: create-<breeds>-with
+          - name: create-<link-breed>-to
+          - name: create-<link-breeds>-to
+          - name: create-<link-breed>-from
+          - name: create-<link-breeds>-from
+          - name: create-<link-breed>-with
+          - name: create-<link-breeds>-with
           - name: create-link-to
             since: "4.0"
           - name: create-links-to
@@ -4158,18 +4158,18 @@ primitives:
           ```
 
         examples:
-          - code: create-<breed>-to *turtle*
-          - code: create-<breed>-to *turtle* [ *commands* ]
-          - code: create-<breed>-from *turtle*
-          - code: create-<breed>-from *turtle* [ *commands* ]
-          - code: create-<breed>-with *turtle*
-          - code: create-<breed>-with *turtle* [ *commands* ]
-          - code: create-<breeds>-to *turtleset*
-          - code: create-<breeds>-to *turtleset* [ *commands* ]
-          - code: create-<breeds>-from *turtleset*
-          - code: create-<breeds>-from *turtleset* [ *commands* ]
-          - code: create-<breeds>-with *turtleset*
-          - code: create-<breeds>-with *turtleset* [ *commands* ]
+          - code: create-<link-breed>-to *turtle*
+          - code: create-<link-breed>-to *turtle* [ *commands* ]
+          - code: create-<link-breed>-from *turtle*
+          - code: create-<link-breed>-from *turtle* [ *commands* ]
+          - code: create-<link-breed>-with *turtle*
+          - code: create-<link-breed>-with *turtle* [ *commands* ]
+          - code: create-<link-breeds>-to *turtleset*
+          - code: create-<link-breeds>-to *turtleset* [ *commands* ]
+          - code: create-<link-breeds>-from *turtleset*
+          - code: create-<link-breeds>-from *turtleset* [ *commands* ]
+          - code: create-<link-breeds>-with *turtleset*
+          - code: create-<link-breeds>-with *turtleset* [ *commands* ]
           - code: create-link-to *turtle*
           - code: create-link-to *turtle* [ *commands* ]
           - code: create-link-from *turtle*
@@ -4187,9 +4187,9 @@ primitives:
           url: images/turtle.png
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: create-link-create-<breeds>-to
+  - id: create-link-create-<link-breeds>-to
     key: create-link
-    name: create-<breeds>-to
+    name: create-<link-breeds>-to
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#create-link
     description: >+
@@ -4261,18 +4261,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -4290,9 +4290,9 @@ primitives:
     metadata: *a14
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: create-link-create-<breed>-from
+  - id: create-link-create-<link-breed>-from
     key: create-link
-    name: create-<breed>-from
+    name: create-<link-breed>-from
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#create-link
     description: >+
@@ -4364,18 +4364,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -4393,9 +4393,9 @@ primitives:
     metadata: *a14
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: create-link-create-<breeds>-from
+  - id: create-link-create-<link-breeds>-from
     key: create-link
-    name: create-<breeds>-from
+    name: create-<link-breeds>-from
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#create-link
     description: >+
@@ -4467,18 +4467,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -4496,9 +4496,9 @@ primitives:
     metadata: *a14
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: create-link-create-<breed>-with
+  - id: create-link-create-<link-breed>-with
     key: create-link
-    name: create-<breed>-with
+    name: create-<link-breed>-with
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#create-link
     description: >+
@@ -4570,18 +4570,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -4599,9 +4599,9 @@ primitives:
     metadata: *a14
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: create-link-create-<breeds>-with
+  - id: create-link-create-<link-breeds>-with
     key: create-link
-    name: create-<breeds>-with
+    name: create-<link-breeds>-with
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#create-link
     description: >+
@@ -4673,18 +4673,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -4776,18 +4776,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -4879,18 +4879,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -4982,18 +4982,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -5085,18 +5085,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -5188,18 +5188,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -5291,18 +5291,18 @@ primitives:
       ```
 
     examples:
-      - create-<breed>-to *turtle*
-      - create-<breed>-to *turtle* [ *commands* ]
-      - create-<breed>-from *turtle*
-      - create-<breed>-from *turtle* [ *commands* ]
-      - create-<breed>-with *turtle*
-      - create-<breed>-with *turtle* [ *commands* ]
-      - create-<breeds>-to *turtleset*
-      - create-<breeds>-to *turtleset* [ *commands* ]
-      - create-<breeds>-from *turtleset*
-      - create-<breeds>-from *turtleset* [ *commands* ]
-      - create-<breeds>-with *turtleset*
-      - create-<breeds>-with *turtleset* [ *commands* ]
+      - create-<link-breed>-to *turtle*
+      - create-<link-breed>-to *turtle* [ *commands* ]
+      - create-<link-breed>-from *turtle*
+      - create-<link-breed>-from *turtle* [ *commands* ]
+      - create-<link-breed>-with *turtle*
+      - create-<link-breed>-with *turtle* [ *commands* ]
+      - create-<link-breeds>-to *turtleset*
+      - create-<link-breeds>-to *turtleset* [ *commands* ]
+      - create-<link-breeds>-from *turtleset*
+      - create-<link-breeds>-from *turtleset* [ *commands* ]
+      - create-<link-breeds>-with *turtleset*
+      - create-<link-breeds>-with *turtleset* [ *commands* ]
       - create-link-to *turtle*
       - create-link-to *turtle* [ *commands* ]
       - create-link-from *turtle*
@@ -11437,9 +11437,9 @@ primitives:
           url: images/turtle.png
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: in-link-neighbor-in-<breed>-neighbor?
+  - id: in-link-neighbor-in-<link-breed>-neighbor?
     key: in-link-neighbor
-    name: in-<breed>-neighbor?
+    name: in-<link-breed>-neighbor?
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#in-link-neighbor
     description: >+
@@ -11465,7 +11465,7 @@ primitives:
       ```
 
     examples:
-      - in-<breed>-neighbor? *agent*
+      - in-<link-breed>-neighbor? *agent*
       - in-link-neighbor? *turtle*
     isFromExtension: false
     isConstant: false
@@ -11476,7 +11476,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: in-<breed>-neighbor?
+          - name: in-<link-breed>-neighbor?
           - name: in-link-neighbor?
             since: "4.0"
         description: >+
@@ -11502,7 +11502,7 @@ primitives:
           ```
 
         examples:
-          - code: in-<breed>-neighbor? *agent*
+          - code: in-<link-breed>-neighbor? *agent*
           - code: in-link-neighbor? *turtle*
       icons:
         - alt: Turtle Command
@@ -11537,16 +11537,16 @@ primitives:
       ```
 
     examples:
-      - in-<breed>-neighbor? *agent*
+      - in-<link-breed>-neighbor? *agent*
       - in-link-neighbor? *turtle*
     isFromExtension: false
     isConstant: false
     metadata: *a22
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: in-link-neighbors-in-<breed>-neighbors
+  - id: in-link-neighbors-in-<link-breed>-neighbors
     key: in-link-neighbors
-    name: in-<breed>-neighbors
+    name: in-<link-breed>-neighbors
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#in-link-neighbors
     description: >+
@@ -11567,7 +11567,7 @@ primitives:
       ```
 
     examples:
-      - in-<breed>-neighbors
+      - in-<link-breed>-neighbors
       - in-link-neighbors
     isFromExtension: false
     isConstant: false
@@ -11578,7 +11578,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: in-<breed>-neighbors
+          - name: in-<link-breed>-neighbors
           - name: in-link-neighbors
             since: "4.0"
         description: >+
@@ -11600,7 +11600,7 @@ primitives:
           ```
 
         examples:
-          - code: in-<breed>-neighbors
+          - code: in-<link-breed>-neighbors
           - code: in-link-neighbors
       icons:
         - alt: Turtle Command
@@ -11630,16 +11630,16 @@ primitives:
       ```
 
     examples:
-      - in-<breed>-neighbors
+      - in-<link-breed>-neighbors
       - in-link-neighbors
     isFromExtension: false
     isConstant: false
     metadata: *a23
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: in-link-from-in-<breed>-from
+  - id: in-link-from-in-<link-breed>-from
     key: in-link-from
-    name: in-<breed>-from
+    name: in-<link-breed>-from
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#in-link-from
     description: |+
@@ -11659,7 +11659,7 @@ primitives:
       See also: [[out-link-to|out-link-to]] [[link-with|link-with]]
 
     examples:
-      - in-<breed>-from *turtle*
+      - in-<link-breed>-from *turtle*
       - in-link-from *turtle*
     isFromExtension: false
     isConstant: false
@@ -11670,7 +11670,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: in-<breed>-from
+          - name: in-<link-breed>-from
           - name: in-link-from
             since: "4.0"
         description: |+
@@ -11690,7 +11690,7 @@ primitives:
           See also: [[out-link-to|out-link-to]] [[link-with|link-with]]
 
         examples:
-          - code: in-<breed>-from *turtle*
+          - code: in-<link-breed>-from *turtle*
           - code: in-link-from *turtle*
       icons:
         - alt: Turtle Command
@@ -11719,7 +11719,7 @@ primitives:
       See also: [[out-link-to|out-link-to]] [[link-with|link-with]]
 
     examples:
-      - in-<breed>-from *turtle*
+      - in-<link-breed>-from *turtle*
       - in-link-from *turtle*
     isFromExtension: false
     isConstant: false
@@ -15445,9 +15445,9 @@ primitives:
           url: images/turtle.png
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: my-links-my-<breeds>
+  - id: my-links-my-<link-breeds>
     key: my-links
-    name: my-<breeds>
+    name: my-<link-breeds>
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#my-links
     description: >-
@@ -15484,7 +15484,7 @@ primitives:
       If you only want the undirected links connected to a node, you
        can do `my-links with [ not is-directed-link? self ]`.
     examples:
-      - my-<breeds>
+      - my-<link-breeds>
       - my-links
     isFromExtension: false
     isConstant: false
@@ -15495,7 +15495,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: my-<breeds>
+          - name: my-<link-breeds>
           - name: my-links
             since: "4.0"
         description: >-
@@ -15532,7 +15532,7 @@ primitives:
           If you only want the undirected links connected to a node, you
            can do `my-links with [ not is-directed-link? self ]`.
         examples:
-          - code: my-<breeds>
+          - code: my-<link-breeds>
           - code: my-links
       icons:
         - alt: Turtle Command
@@ -15578,16 +15578,16 @@ primitives:
       If you only want the undirected links connected to a node, you
        can do `my-links with [ not is-directed-link? self ]`.
     examples:
-      - my-<breeds>
+      - my-<link-breeds>
       - my-links
     isFromExtension: false
     isConstant: false
     metadata: *a30
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: my-in-links-my-in-<breeds>
+  - id: my-in-links-my-in-<link-breeds>
     key: my-in-links
-    name: my-in-<breeds>
+    name: my-in-<link-breeds>
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#my-in-links
     description: |+
@@ -15610,7 +15610,7 @@ primitives:
       ```
 
     examples:
-      - my-in-<breeds>
+      - my-in-<link-breeds>
       - my-in-links
     isFromExtension: false
     isConstant: false
@@ -15621,7 +15621,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: my-in-<breeds>
+          - name: my-in-<link-breeds>
           - name: my-in-links
             since: "4.0"
         description: |+
@@ -15644,7 +15644,7 @@ primitives:
           ```
 
         examples:
-          - code: my-in-<breeds>
+          - code: my-in-<link-breeds>
           - code: my-in-links
       icons:
         - alt: Turtle Command
@@ -15676,16 +15676,16 @@ primitives:
       ```
 
     examples:
-      - my-in-<breeds>
+      - my-in-<link-breeds>
       - my-in-links
     isFromExtension: false
     isConstant: false
     metadata: *a31
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: my-out-links-my-out-<breeds>
+  - id: my-out-links-my-out-<link-breeds>
     key: my-out-links
-    name: my-out-<breeds>
+    name: my-out-<link-breeds>
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#my-out-links
     description: >+
@@ -15713,7 +15713,7 @@ primitives:
       ```
 
     examples:
-      - my-out-<breeds>
+      - my-out-<link-breeds>
       - my-out-links
     isFromExtension: false
     isConstant: false
@@ -15724,7 +15724,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: my-out-<breeds>
+          - name: my-out-<link-breeds>
           - name: my-out-links
             since: "4.0"
         description: >+
@@ -15752,7 +15752,7 @@ primitives:
           ```
 
         examples:
-          - code: my-out-<breeds>
+          - code: my-out-<link-breeds>
           - code: my-out-links
       icons:
         - alt: Turtle Command
@@ -15789,7 +15789,7 @@ primitives:
       ```
 
     examples:
-      - my-out-<breeds>
+      - my-out-<link-breeds>
       - my-out-links
     isFromExtension: false
     isConstant: false
@@ -16166,9 +16166,9 @@ primitives:
     metadata: *a33
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: link-neighbors-<breed>-neighbors
+  - id: link-neighbors-<link-breed>-neighbors
     key: link-neighbors
-    name: <breed>-neighbors
+    name: <link-breed>-neighbors
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#link-neighbors
     description: |+
@@ -16191,7 +16191,7 @@ primitives:
       ```
 
     examples:
-      - <breed>-neighbors
+      - <link-breed>-neighbors
       - link-neighbors
     isFromExtension: false
     isConstant: false
@@ -16202,7 +16202,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: <breed>-neighbors
+          - name: <link-breed>-neighbors
           - name: link-neighbors
             since: "4.0"
         description: |+
@@ -16225,7 +16225,7 @@ primitives:
           ```
 
         examples:
-          - code: <breed>-neighbors
+          - code: <link-breed>-neighbors
           - code: link-neighbors
       icons:
         - alt: Turtle Command
@@ -16257,16 +16257,16 @@ primitives:
       ```
 
     examples:
-      - <breed>-neighbors
+      - <link-breed>-neighbors
       - link-neighbors
     isFromExtension: false
     isConstant: false
     metadata: *a34
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: link-neighbor-<breed>-neighbor?
+  - id: link-neighbor-<link-breed>-neighbor?
     key: link-neighbor
-    name: <breed>-neighbor?
+    name: <link-breed>-neighbor?
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#link-neighbor
     description: |+
@@ -16287,7 +16287,7 @@ primitives:
       ```
 
     examples:
-      - <breed>-neighbor? *turtle*
+      - <link-breed>-neighbor? *turtle*
       - link-neighbor? *turtle*
     isFromExtension: false
     isConstant: false
@@ -16298,7 +16298,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: <breed>-neighbor?
+          - name: <link-breed>-neighbor?
           - name: link-neighbor?
             since: "4.0"
         description: |+
@@ -16319,7 +16319,7 @@ primitives:
           ```
 
         examples:
-          - code: <breed>-neighbor? *turtle*
+          - code: <link-breed>-neighbor? *turtle*
           - code: link-neighbor? *turtle*
       icons:
         - alt: Turtle Command
@@ -16349,7 +16349,7 @@ primitives:
       ```
 
     examples:
-      - <breed>-neighbor? *turtle*
+      - <link-breed>-neighbor? *turtle*
       - link-neighbor? *turtle*
     isFromExtension: false
     isConstant: false
@@ -17047,9 +17047,9 @@ primitives:
           url: images/link.png
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: out-link-neighbor-out-<breed>-neighbor?
+  - id: out-link-neighbor-out-<link-breed>-neighbor?
     key: out-link-neighbor
-    name: out-<breed>-neighbor?
+    name: out-<link-breed>-neighbor?
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#out-link-neighbor
     description: >+
@@ -17076,7 +17076,7 @@ primitives:
       ```
 
     examples:
-      - out-<breed>-neighbor? *turtle*
+      - out-<link-breed>-neighbor? *turtle*
       - out-link-neighbor? *turtle*
     isFromExtension: false
     isConstant: false
@@ -17087,7 +17087,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: out-<breed>-neighbor?
+          - name: out-<link-breed>-neighbor?
           - name: out-link-neighbor?
             since: "4.0"
         description: >+
@@ -17114,7 +17114,7 @@ primitives:
           ```
 
         examples:
-          - code: out-<breed>-neighbor? *turtle*
+          - code: out-<link-breed>-neighbor? *turtle*
           - code: out-link-neighbor? *turtle*
       icons:
         - alt: Turtle Command
@@ -17150,16 +17150,16 @@ primitives:
       ```
 
     examples:
-      - out-<breed>-neighbor? *turtle*
+      - out-<link-breed>-neighbor? *turtle*
       - out-link-neighbor? *turtle*
     isFromExtension: false
     isConstant: false
     metadata: *a36
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: out-link-neighbors-out-<breed>-neighbors
+  - id: out-link-neighbors-out-<link-breed>-neighbors
     key: out-link-neighbors
-    name: out-<breed>-neighbors
+    name: out-<link-breed>-neighbors
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#out-link-neighbors
     description: >+
@@ -17190,7 +17190,7 @@ primitives:
       ```
 
     examples:
-      - out-<breed>-neighbors
+      - out-<link-breed>-neighbors
       - out-link-neighbors
     isFromExtension: false
     isConstant: false
@@ -17201,7 +17201,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: out-<breed>-neighbors
+          - name: out-<link-breed>-neighbors
           - name: out-link-neighbors
             since: "4.0"
         description: >+
@@ -17232,7 +17232,7 @@ primitives:
           ```
 
         examples:
-          - code: out-<breed>-neighbors
+          - code: out-<link-breed>-neighbors
           - code: out-link-neighbors
       icons:
         - alt: Turtle Command
@@ -17272,16 +17272,16 @@ primitives:
       ```
 
     examples:
-      - out-<breed>-neighbors
+      - out-<link-breed>-neighbors
       - out-link-neighbors
     isFromExtension: false
     isConstant: false
     metadata: *a37
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: out-link-to-out-<breed>-to
+  - id: out-link-to-out-<link-breed>-to
     key: out-link-to
-    name: out-<breed>-to
+    name: out-<link-breed>-to
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#out-link-to
     description: |+
@@ -17306,7 +17306,7 @@ primitives:
       See also: [[in-link-from|in-link-from]] [[link-with|link-with]]
 
     examples:
-      - out-<breed>-to *turtle*
+      - out-<link-breed>-to *turtle*
       - out-link-to *turtle*
     isFromExtension: false
     isConstant: false
@@ -17317,7 +17317,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: out-<breed>-to
+          - name: out-<link-breed>-to
           - name: out-link-to
             since: "4.0"
         description: |+
@@ -17342,7 +17342,7 @@ primitives:
           See also: [[in-link-from|in-link-from]] [[link-with|link-with]]
 
         examples:
-          - code: out-<breed>-to *turtle*
+          - code: out-<link-breed>-to *turtle*
           - code: out-link-to *turtle*
       icons:
         - alt: Turtle Command
@@ -17376,7 +17376,7 @@ primitives:
       See also: [[in-link-from|in-link-from]] [[link-with|link-with]]
 
     examples:
-      - out-<breed>-to *turtle*
+      - out-<link-breed>-to *turtle*
       - out-link-to *turtle*
     isFromExtension: false
     isConstant: false
@@ -26788,9 +26788,9 @@ primitives:
           - code: "*agentset* with [*reporter*]"
     urlHome: https://docs.netlogo.org/dictionary.html
     sourceIcon: netlogo-netlogo-desktop
-  - id: link-with-<breed>-with
+  - id: link-with-<link-breed>-with
     key: link-with
-    name: <breed>-with
+    name: <link-breed>-with
     source: netlogo
     url: https://docs.netlogo.org/dictionary.html#link-with
     description: |+
@@ -26809,7 +26809,7 @@ primitives:
       See also: [[in-link-from|in-link-from]], [[out-link-to|out-link-to]]
 
     examples:
-      - <breed>-with *turtle*
+      - <link-breed>-with *turtle*
       - link-with *turtle*
     isFromExtension: false
     isConstant: false
@@ -26820,7 +26820,7 @@ primitives:
           id: linkgroup
       data:
         syntax:
-          - name: <breed>-with
+          - name: <link-breed>-with
           - name: link-with
             since: "4.0"
         description: |+
@@ -26839,7 +26839,7 @@ primitives:
           See also: [[in-link-from|in-link-from]], [[out-link-to|out-link-to]]
 
         examples:
-          - code: <breed>-with *turtle*
+          - code: <link-breed>-with *turtle*
           - code: link-with *turtle*
       icons:
         - alt: Turtle Command
@@ -26867,7 +26867,7 @@ primitives:
       See also: [[in-link-from|in-link-from]], [[out-link-to|out-link-to]]
 
     examples:
-      - <breed>-with *turtle*
+      - <link-breed>-with *turtle*
       - link-with *turtle*
     isFromExtension: false
     isConstant: false

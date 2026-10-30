@@ -457,10 +457,10 @@ your model. Link breeds must either be directed or undirected, unlike unbreeded
 links this is defined at compile time rather than run time. You declare link
 breeds using the keywords [[undirected-link-breed]] and [[directed-link-breed]].
 Breeded links can be created using the commands
-[[create-<breed>-with|create-link]] and [[create-<breeds>-with|create-link]] for
-undirected breeds and the commands [[create-<breed>-to|create-link]],
-[[create-<breeds>-to|create-link]], [[create-<breed>-from|create-link]], and
-[[create-<breeds>-from|create-link]] for directed links.
+[[create-<link-breed>-with|create-link]] and [[create-<link-breeds>-with|create-link]] for
+undirected breeds and the commands [[create-<link-breed>-to|create-link]],
+[[create-<link-breeds>-to|create-link]], [[create-<link-breed>-from|create-link]], and
+[[create-<link-breeds>-from|create-link]] for directed links.
 
 There cannot be more than one undirected link of the same breed (or more than
 one unbreeded undirected link) between a pair of agents, nor more than one
