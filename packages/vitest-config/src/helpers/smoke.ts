@@ -1,6 +1,6 @@
-import { createPage, setup, url } from "@nuxt/test-utils/e2e";
-import type { Page } from "playwright-core";
-import { describe, expect, it } from "vitest";
+import { getBrowser, setup, waitForHydration } from "@nuxt/test-utils/e2e";
+import type { Browser, Page } from "playwright-core";
+import { beforeAll, describe, it, type TestContext } from "vitest";
 
 type SetupOptions = Parameters<typeof setup>[0];
 
@@ -49,9 +49,20 @@ async function sitemapRoutes(host: string, path = "/sitemap.xml"): Promise<strin
   return nested.flat();
 }
 
+// SMOKE_SHARD=<index>/<count> keeps every count-th route. vitest --shard splits by file, and the suite is one file.
+// Round robin over the sorted list spreads large sections such as the dictionary across shards.
+function shardRoutes(routes: string[], shard = process.env["SMOKE_SHARD"]): string[] {
+  if (!shard) return routes;
+  const [index, count] = shard.split("/").map(Number);
+  if (!Number.isInteger(index) || !Number.isInteger(count) || index! < 1 || index! > count!) {
+    throw new Error(`SMOKE_SHARD must be <index>/<count> with 1 <= index <= count, got "${shard}"`);
+  }
+  return routes.filter((_, i) => i % count! === index! - 1);
+}
+
 export async function resolveSmokeRoutes(host: string, curated: string[]): Promise<string[]> {
-  if (process.env["SMOKE_ALL_ROUTES"] !== "1") return curated;
-  return [...new Set(await sitemapRoutes(host))].sort();
+  if (process.env["SMOKE_ALL_ROUTES"] !== "1") return shardRoutes(curated);
+  return shardRoutes([...new Set(await sitemapRoutes(host))].sort());
 }
 
 // Client-side navigation through the app's own router, without a full page load.
@@ -70,39 +81,56 @@ export async function defineSmokeSuite(host: string, curatedRoutes: string[], op
   await e2eSetup(host);
   const routes = await resolveSmokeRoutes(host, curatedRoutes);
 
-  describe.each(routes)("%s", (path) => {
+  // test-utils keeps a single global context that its afterEach clears, so concurrent tests must not call createPage or
+  // url while another test finishes: take the browser once and build URLs from the host.
+  let browser: Browser;
+  beforeAll(async () => {
+    browser = await getBrowser();
+  });
+  const openPage = async ({ onTestFinished }: TestContext, path?: string) => {
+    const page = await browser.newPage();
+    onTestFinished(() => page.close());
+    if (path) {
+      await page.goto(new URL(path, host).href);
+      await waitForHydration(page, path, "hydration");
+    }
+    return page;
+  };
+
+  // Routes share one browser and run in parallel up to the e2e project's maxConcurrency; every test opens its own pages.
+  describe.concurrent.each(routes)("%s", (path) => {
     // Catches pages that fail to render or throw on load (a missing peer dependency, a null article crashing the catch-all).
-    it("loads with a 2xx, a title and no console errors", async () => {
-      const page = await createPage();
+    it("loads with a 2xx, a title and no console errors", async (ctx) => {
+      const { expect } = ctx;
+      const page = await openPage(ctx);
       const errors = collectPageErrors(page, options);
-      const response = await page.goto(url(path), { waitUntil: "load" });
+      const response = await page.goto(new URL(path, host).href, { waitUntil: "load" });
       expect(response?.status(), `status for ${path}`).toBeLessThan(400);
       expect((await page.title()).trim()).not.toBe("");
       expect(errors).toEqual([]);
-      await page.close();
     });
 
     if (path !== "/") {
       // Catches pages that only break when reached through the router (a composable reading the previous route).
       // The server-rendered page is the reference: client-side navigation must end on the same heading, not an error page.
-      it("renders the same page after client-side navigation from the home page", async () => {
-        const direct = await createPage(path);
-        const expected = await firstHeading(direct);
-        await direct.close();
+      it("renders the same page after client-side navigation from the home page", async (ctx) => {
+        const { expect } = ctx;
+        const expected = await firstHeading(await openPage(ctx, path));
 
-        const page = await createPage("/");
+        const page = await openPage(ctx, "/");
         const errors = collectPageErrors(page, options);
         await navigateClientSide(page, path);
-        await page.waitForFunction((h) => document.querySelector("h1")?.textContent?.trim() === h, expected, { timeout: 15_000 });
+        // innerText on both sides: textContent drops the line break between block children ("NetLogo\nWeb" vs "NetLogo Web").
+        await page.waitForFunction((h) => document.querySelector<HTMLElement>("h1")?.innerText.trim() === h, expected, { timeout: 15_000 });
         expect(new URL(page.url()).pathname.replace(/\/$/, "")).toBe(path.replace(/\/$/, ""));
         expect(errors).toEqual([]);
-        await page.close();
       });
     }
 
     // Catches broken head output: keywords merged twice from layered config, og:image routes that fail to render.
-    it("has unique keywords and a reachable og:image", async () => {
-      const page = await createPage(path);
+    it("has unique keywords and a reachable og:image", async (ctx) => {
+      const { expect } = ctx;
+      const page = await openPage(ctx, path);
       const keywords = await page.locator('meta[name="keywords"]').evaluateAll((els) =>
         els.map((el) => el.getAttribute("content") ?? ""),
       );
@@ -110,14 +138,14 @@ export async function defineSmokeSuite(host: string, curatedRoutes: string[], op
       const terms = (keywords[0] ?? "").split(",").map((k) => k.trim()).filter(Boolean);
       expect(terms).toEqual([...new Set(terms)]);
 
-      const ogImage = await page.locator('meta[property="og:image"]').first().getAttribute("content").catch(() => null);
+      // evaluateAll does not auto-wait, unlike getAttribute, which stalls for the 30 s default timeout on pages without the tag.
+      const [ogImage] = await page.locator('meta[property="og:image"]').evaluateAll((els) => els.map((el) => el.getAttribute("content")));
       if (ogImage) {
         const target = new URL(ogImage, host);
-        const res = await page.request.get(url(target.pathname + target.search));
+        const res = await page.request.get(new URL(target.pathname + target.search, host).href);
         expect(res.status(), `og:image ${target.pathname}`).toBe(200);
         expect(res.headers()["content-type"]).toMatch(/^image\//);
       }
-      await page.close();
     });
   });
 }

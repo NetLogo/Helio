@@ -170,7 +170,7 @@ In NetLogo, colors have a numeric value. In all of the exercises we have been
 using the name of the color. This is because NetLogo recognizes 16 different
 color names. This does not mean that NetLogo only recognizes 16 colors. There
 are many shades in between these colors that can be used too. Here's a chart
-that shows the whole NetLogo color space: ![[tutorial2/color chart|/colors.png]]
+that shows the whole NetLogo color space: ![[color chart|tutorial2/colors.webp]]
 
 To get an intermediate shade, you refer to it by a number instead, or by adding
 or subtracting a number from a name. For example, when you type `set color red`,

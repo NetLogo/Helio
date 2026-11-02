@@ -18,6 +18,7 @@ jobs:
   changes:
     name: Check for new commits since the last nightly
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       changed: ${{ steps.compare.outputs.changed }}
     steps:
@@ -43,6 +44,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.changed == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -83,23 +85,22 @@ jobs:
           ls -la .build/NetLogo_User_Manual.pdf >> "$GITHUB_STEP_SUMMARY" 2>&1 || echo "PDF missing" >> "$GITHUB_STEP_SUMMARY"
 
   all-routes:
-    name: Smoke test every route of ${{ matrix.app.name }}
+    name: Smoke test every route of ${{ matrix.app.name }}${{ matrix.app.shard && format(' ({0})', matrix.app.shard) || '' }}
     needs: changes
     if: ${{ needs.changes.outputs.changed == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: ${{ matrix.app.timeout }}
     strategy:
       fail-fast: false
       matrix:
+        # docs has about 830 routes, so each shard builds the site and tests every fourth route (SMOKE_SHARD).
         app:
-          - name: docs
-            path: ./apps/docs
-            build: yarn run nuxt:generate
-          - name: learn
-            path: ./apps/learn
-            build: yarn run nuxt:build
-          - name: nettango
-            path: ./apps/nettango
-            build: yarn run nuxt:build
+          - { name: docs, path: ./apps/docs, build: yarn run nuxt:generate, shard: 1/4, timeout: 45 }
+          - { name: docs, path: ./apps/docs, build: yarn run nuxt:generate, shard: 2/4, timeout: 45 }
+          - { name: docs, path: ./apps/docs, build: yarn run nuxt:generate, shard: 3/4, timeout: 45 }
+          - { name: docs, path: ./apps/docs, build: yarn run nuxt:generate, shard: 4/4, timeout: 45 }
+          - { name: learn, path: ./apps/learn, build: yarn run nuxt:build, timeout: 20 }
+          - { name: nettango, path: ./apps/nettango, build: yarn run nuxt:build, timeout: 20 }
 
     steps:
       - name: Checkout code
@@ -126,6 +127,32 @@ jobs:
         working-directory: ${{ matrix.app.path }}
         env:
           SMOKE_ALL_ROUTES: "1"
+          SMOKE_SHARD: ${{ matrix.app.shard }}
         # serve-static resolves pages like the production host (nuxt preview 404s on same-named directories),
         # runs the tests once it is listening, and exits with their status.
         run: node ../../packages/vitest-config/src/serve-static.mjs .output/public 4100 -- yarn run test:e2e
+
+  fresh-windows-install:
+    # Follows the README setup on a clean Windows runner with no caches, so a broken first install shows up here.
+    name: Fresh Windows install
+    needs: changes
+    if: ${{ needs.changes.outputs.changed == 'true' }}
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # Runs build, lint, check-types and test through scripts/check-repo.sh as well.
+      - name: Initialize Repository
+        run: yarn run init
+
+      # learn runs the markdown autogen and content asset paths, the parts most likely to differ on Windows.
+      - name: Build learn
+        working-directory: ./apps/learn
+        run: yarn run nuxt:build
