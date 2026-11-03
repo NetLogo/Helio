@@ -250,7 +250,7 @@ Like local links, the easiest way to display images on your computer is to put t
 
 #### Formatted
 
-![Example](images/infotab/Perspective%20Example.png)
+![[infotab/perspective-example.png]]
 
 ### Bundled images
 
