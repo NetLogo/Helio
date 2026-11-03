@@ -87,5 +87,7 @@ const {
   { server: false },
 );
 
-const loading = !Array.isArray(catalogItems.value) && !error ? true : pending;
+// server: false leaves pending false during SSR while the client starts fetching at setup, so missing data must also
+// count as loading or the server renders the empty state against the client's loading state and hydration mismatches.
+const loading = computed(() => (!Array.isArray(catalogItems.value) && !error.value) || pending.value);
 </script>
