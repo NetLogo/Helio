@@ -75,7 +75,9 @@ async function navigateClientSide(page: Page, path: string): Promise<void> {
   }, path);
 }
 
-const firstHeading = (page: Page) => page.locator("h1").first().innerText({ timeout: 15_000 }).then((t) => t.trim());
+// Any level: dictionary and extension primitive pages start at h3.
+const HEADING = "h1, h2, h3, h4, h5, h6";
+const firstHeading = (page: Page) => page.locator(HEADING).first().innerText({ timeout: 15_000 }).then((t) => t.trim());
 
 export async function defineSmokeSuite(host: string, curatedRoutes: string[], options: SmokeOptions = {}) {
   await e2eSetup(host);
@@ -121,7 +123,11 @@ export async function defineSmokeSuite(host: string, curatedRoutes: string[], op
         const errors = collectPageErrors(page, options);
         await navigateClientSide(page, path);
         // innerText on both sides: textContent drops the line break between block children ("NetLogo\nWeb" vs "NetLogo Web").
-        await page.waitForFunction((h) => document.querySelector<HTMLElement>("h1")?.innerText.trim() === h, expected, { timeout: 15_000 });
+        await page.waitForFunction(
+          ([sel, h]) => document.querySelector<HTMLElement>(sel)?.innerText.trim() === h,
+          [HEADING, expected] as const,
+          { timeout: 15_000 },
+        );
         expect(new URL(page.url()).pathname.replace(/\/$/, "")).toBe(path.replace(/\/$/, ""));
         expect(errors).toEqual([]);
       });
