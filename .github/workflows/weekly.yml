@@ -1,9 +1,9 @@
-name: Nightly
+name: Weekly
 
 # Slow checks that are too heavy for every push: the PDF manual and a smoke test of every route in each sitemap.
 on:
   schedule:
-    - cron: "0 7 * * *"
+    - cron: "0 7 * * 1"
   workflow_dispatch:
 
 env:
@@ -16,13 +16,13 @@ permissions:
 
 jobs:
   changes:
-    name: Check for new commits since the last nightly
+    name: Check for new commits since the last weekly run
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       changed: ${{ steps.compare.outputs.changed }}
     steps:
-      - name: Compare HEAD with the last successful nightly
+      - name: Compare HEAD with the last successful weekly run
         id: compare
         env:
           GH_TOKEN: ${{ github.token }}
@@ -30,13 +30,13 @@ jobs:
           HEAD_SHA: ${{ github.sha }}
           REPO: ${{ github.repository }}
         run: |
-          last=$(gh run list --repo "$REPO" --workflow nightly.yml --status success --limit 1 --json headSha --jq ".[0].headSha // empty")
-          echo "Last successful nightly: ${last:-none}, HEAD: $HEAD_SHA"
+          last=$(gh run list --repo "$REPO" --workflow weekly.yml --status success --limit 1 --json headSha --jq ".[0].headSha // empty")
+          echo "Last successful weekly run: ${last:-none}, HEAD: $HEAD_SHA"
           if [ "$EVENT" = "workflow_dispatch" ] || [ "$last" != "$HEAD_SHA" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No new commits since the last successful nightly; skipping." >> "$GITHUB_STEP_SUMMARY"
+            echo "No new commits since the last successful weekly run; skipping." >> "$GITHUB_STEP_SUMMARY"
           fi
 
   pdf-manual:
