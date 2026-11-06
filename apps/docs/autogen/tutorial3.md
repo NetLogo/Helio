@@ -31,9 +31,9 @@ Tutorial #1.
 To start a new model, select "New" from the File menu. Then begin by creating a
 setup button:
 
-> - Click the "Add" icon in the toolbar at the top of the Interface tab.
-> - On the menu next to Add, select Button (if it isn't already selected).
-> - Click wherever you want the button to appear in the empty white area of the
+> - Click the "Add Widgets" dropdown in the toolbar at the top of the Interface
+>   tab, and choose "Button" from the popup menu.
+> - Click wherever you want the button to appear in the empty area of the
 >   Interface tab.
 > - A dialog box for editing the button opens. Type `setup` in the box labeled
 >   "Commands".
@@ -286,7 +286,6 @@ tab, before all the procedures. Call it `energy`:
 
     to go
       move-turtles
-      eat-grass
       tick
     end
 
@@ -345,11 +344,12 @@ As each turtle wanders, it will lose one unit of energy at each step.
 ## Monitors
 
 Next you will create two monitors in the Interface tab with the toolbar. (You
-make them just like buttons and sliders, using the Add icon on the toolbar.)
-Let's make the first monitor now.
+make them just like buttons and sliders, using the Add Widgets dropdown in the
+toolbar.) Let's make the first monitor now.
 
-> - Create a monitor by clicking the Add icon on the toolbar, selecting Monitor
->   next to it, and clicking on an open spot in the Interface.
+> - Create a monitor by clicking the Add Widgets dropdown in the toolbar,
+>   choosing "Monitor" from the popup menu, and clicking on an open spot in the
+>   Interface.
 >
 > | A dialog box will appear.
 >
@@ -363,8 +363,9 @@ many agents are in that set.
 
 Let's make the second monitor now:
 
-> - Create a monitor by clicking the Add icon on the toolbar, selecting Monitor
->   next to it, and clicking on an open spot in the Interface.
+> - Create a monitor by clicking the Add Widgets dropdown in the toolbar,
+>   choosing "Monitor" from the popup menu, and clicking on an open spot in the
+>   Interface.
 >
 > | A dialog box will appear.
 >
@@ -398,8 +399,8 @@ It would be nicer if we could see every turtle's energy all the time. We will
 now do exactly that, and add a switch so we can turn the extra visual
 information on and off.
 
-> - Click on the Add icon on the toolbar (in the Interface tab).
-> - Select Switch from the menu next to Add.
+> - Click on the Add Widgets dropdown in the toolbar (in the Interface tab), and
+>   choose "Switch" from the popup menu.
 > - Click on an open spot in the interface.
 >
 > | A dialog will appear.
@@ -529,8 +530,8 @@ some commands inside it.
 The commands we put in the plots will run automatically when our `setup`
 procedure calls `reset-ticks` and when our `go` procedure calls `tick`.
 
-> - Create a plot by clicking the Add icon on the toolbar, selecting Plot next
->   to it, and clicking on an open spot in the Interface.
+> - Create a plot by clicking the Add Widgets dropdown in the toolbar, choosing
+>   "Plot" from the popup menu, and clicking on an open spot in the Interface.
 > - Set its Name to "Totals" (see image below)
 > - Set the X axis label to "time"
 > - Set the Y axis label to "totals"
@@ -538,6 +539,8 @@ procedure calls `reset-ticks` and when our `go` procedure calls `tick`.
 > - Enter `plot count turtles` under Pen Update Commands.
 > - Press the "Add Pen" button.
 > - Change the name of the new pen to "grass".
+> - Click the box to the left of the pen name to change its color, select a
+>   shade of green from the Color Picker dialog, and press OK.
 > - Enter `plot count patches with [pcolor = green]` under Pen Update Commands.
 
 When you're done, the dialog should look like this: ![[tutorial3/totals.webp]]
@@ -613,8 +616,9 @@ is set up and ready to begin.
 First, instead of always using 100 turtles, you can have a varying number of
 turtles.
 
-> - Create a slider named "number": click the Add icon on the toolbar, select
->   Slider next to it, and click on an open spot in the interface.
+> - Create a slider named "number": click the Add Widgets dropdown in the
+>   toolbar, select "Slider" from the popup menu, and click on an open spot in
+>   the interface.
 > - Try changing the minimum and maximum values in the slider.
 > - Then inside of `setup-turtles`, instead of `create-turtles 100` you can
 >   type:

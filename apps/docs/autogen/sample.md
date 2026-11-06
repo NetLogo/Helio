@@ -2,7 +2,8 @@
 
 This activity gets you thinking about computer modeling and how you can use it.
 It also gives you insight into NetLogo itself. We encourage beginning users to
-start here.
+start here. Before you begin, ensure that you have installed the latest version
+of NetLogo desktop, which can be found [here](https://www.netlogo.org/download).
 
 #### Table of Contents
 
@@ -45,7 +46,8 @@ In the view of the model, you will see pink and blue groups with numbers:
 ![[Party model|sample/party.webp]]
 
 These lines represent mingling groups at a party. Men are shown as blue, women
-pink. The numbers are the sizes of the groups.
+pink. The numbers are the sizes of the groups. Note that the groups are
+randomized, so the exact numbers you see may differ from this image.
 
 | Do all the groups have about the same number of people?
 
@@ -103,7 +105,7 @@ outcome is when you start the model over again.
 
 > **How to start over:**
 >
-> 1. If the "go" button is pressed (black), then the model is still running.
+> 1. If the "go" button is pressed (dark blue), then the model is still running.
 >    Press the button again to stop it.
 > 2. Adjust the "tolerance" slider to a new value by dragging its red handle.
 > 3. Press the "setup" button to reset the model.
@@ -118,7 +120,8 @@ all groups to be mixed as an end result.
 | To make sure all groups of 10 have both sexes, at what level should we set the
 tolerance?
 
-Test your predictions on the model.
+Test your predictions on the model. You can use the "go once" button instead of
+the "go" button if you would like more time to analyze the changes at each step.
 
 | Can you see any other factors or variables that might affect the male to
 female ratio within each group?

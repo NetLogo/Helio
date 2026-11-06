@@ -21,7 +21,7 @@ We'll open one of the Sample Models and explore it in detail. Let's try a
 biology model: Wolf Sheep Predation, a predator-prey population model.
 
 > - Open the Models Library from the File menu. ![[file-menu.webp]]
-> - Choose "Wolf Sheep Predation" from the Biology section and press "Open".
+> - In the Biology section, choose "Wolf Sheep Predation" and press "Open".
 
 The Interface tab will fill up with lots of buttons, switches, sliders and
 monitors. These interface elements allow you to interact with the model. Buttons
@@ -34,7 +34,8 @@ can use the Zoom menu.
 
 When you first open the model, you will notice that the "view" (the graphical
 display of the agents in the model) is empty (all black). To begin the model,
-you will first need to set it up.
+you will first need to set it up. For now, we'll focus on the buttons, which are
+in the section that looks like this: ![[tutorial1/buttons.webp]]
 
 > - Press the "setup" button.
 >
@@ -221,10 +222,10 @@ and all of the data from before gets squeezed into a smaller space. In this way,
 more room is made for the plot to grow.
 
 If you want to save the data from a plot to view or analyze it in another
-application, use the "Export Plot" item on the File menu. It saves the plot data
-in a format that can by read back by spreadsheet and database programs such as
-Excel. You can also export a plot by right-clicking it and choosing "Export..."
-from the popup menu.
+application, right-click it and choose "Export..." from the popup menu. This
+saves the plot data in a format that can by read back by spreadsheet and
+database programs such as Excel.You can also export a plot by using the
+"Export Plot" item under "Export" in the File menu.
 
 ### Monitors
 
@@ -280,23 +281,19 @@ There are more model settings than there's room for in the toolbar. The
 > - Press the "Settings..." button in the toolbar.
 >
 > A dialog will open containing all the settings for the view:
-> ![[tutorial1/edit-view-properties.webp]] | What are the current settings for min-pxcor,
-> max-pxcor, min-pycor, | max-pycor, and patch size?
+> ![[tutorial1/edit-view-properties.webp]]
+> | What are the current settings for min-pxcor, max-pxcor, min-pycor, | max-pycor, and patch size?
 >
 > - Press "cancel" to make this window go away without changing the settings.
-> - Place your mouse pointer next to, but still outside of, the view.
+> - Right click on the view, and choose "Select" from the popup menu.
 >
-> You will notice that the pointer turns into a crosshair.
+> The view is now selected, which you know because it is now surrounded by an
+> additional thin gray border, as well as 8 gray control handles.
 >
-> - Hold down the mouse button and drag the crosshair over the view.
->
-> The view is now selected, which you know because it is now surrounded by a
-> gray border.
->
-> - Drag one of the square black "handles". The handles are found on the edges
->   and at the corners of the view.
-> - Unselect the view by clicking anywhere in the white background of the
->   Interface tab.
+> - Drag one of the square handles. The handles are found on the edges and at
+>   the corners of the view.
+> - Unselect the view by clicking anywhere in the background of the Interface
+>   tab.
 > - Press the "Settings..." button again and look at the settings.
 >
 > | What numbers changed?
