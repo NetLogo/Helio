@@ -1,17 +1,24 @@
 import { describe, it, expect } from 'vitest';
 import notificationsConfig from '#src/config/notifications.ts';
-import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
-import { NotificationNotFoundError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
+import { notificationCategoryCatalog } from '#src/modules/notification-producers.ts';
+import userNotificationDomain, {
+  mapProducersByCategory,
+} from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import { mockNotificationProducer } from '#src/modules/user-notification/domain/notification-producer.mock.ts';
+import {
+  NotificationCategoryClaimError,
+  NotificationNotFoundError,
+} from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import type {
-  DigestRow,
+  NotificationRow,
   EmailMode,
   NotificationChannels,
-  NotificationIntent,
+  NotificationRowFacts,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
 
-const domain = userNotificationDomain();
+const domain = userNotificationDomain({ notificationProducers: [mockNotificationProducer()] });
 
 describe('userNotificationDomain', () => {
   describe('categories', () => {
@@ -165,25 +172,39 @@ function makeEvent(): EventRecord {
     resourceId: 'model-1',
     payload: {},
     createdAt: new Date('2026-01-01'),
-    processedAt: null,
-    attempts: 0,
-    lastError: null,
   };
 }
 
-function makeIntent(overrides: Partial<NotificationIntent> = {}): NotificationIntent {
+function makeRowFacts(overrides: Partial<NotificationRowFacts> = {}): NotificationRowFacts {
   return {
     recipientUserId: 'recipient-1',
     category: 'comment.on_your_model',
-    title: 'New comment',
-    body: 'Someone commented on your model',
     url: 'https://example.test/models/model-1',
-    buildEmail: async () => ({}),
+    payload: { commentId: 'comment-1', excerpt: 'Nice model' },
     ...overrides,
   };
 }
 
 describe('userNotificationDomain delivery helpers', () => {
+  describe('listInAppRecipientIds', () => {
+    it('lists each recipient once whose ledger row shows in the feed', () => {
+      const ids = domain.listInAppRecipientIds([
+        { recipientId: 'a', inAppSuppressed: false },
+        { recipientId: 'b', inAppSuppressed: true },
+        { recipientId: 'a', inAppSuppressed: false },
+        { recipientId: 'c', inAppSuppressed: false },
+      ]);
+
+      expect(ids).toEqual(['a', 'c']);
+    });
+
+    it('lists nobody when every row is suppressed', () => {
+      expect(domain.listInAppRecipientIds([{ recipientId: 'a', inAppSuppressed: true }])).toEqual(
+        [],
+      );
+    });
+  });
+
   describe('isDeliverableRecipient', () => {
     it('accepts an active recipient with an email address', () => {
       expect(domain.isDeliverableRecipient(makeUser())).toBe(true);
@@ -234,24 +255,28 @@ describe('userNotificationDomain delivery helpers', () => {
       const row = domain.createLedgerRow(
         makeEvent(),
         'recipient-1',
-        makeIntent({ actorUserId: 'actor-1', target: { type: 'model', id: 'model-1' } }),
+        makeRowFacts({ actorUserId: 'actor-1', target: { type: 'model', id: 'model-1' } }),
+        { email: 'immediate', inApp: true },
       );
 
       expect(row).toEqual({
         recipientId: 'recipient-1',
         eventId: 'event-1',
         category: 'comment.on_your_model',
-        title: 'New comment',
-        body: 'Someone commented on your model',
         url: 'https://example.test/models/model-1',
+        payload: { commentId: 'comment-1', excerpt: 'Nice model' },
         actorUserId: 'actor-1',
         targetType: 'model',
         targetId: 'model-1',
+        inAppSuppressed: false,
       });
     });
 
     it('writes null reference columns for an intent with neither actor nor target', () => {
-      const row = domain.createLedgerRow(makeEvent(), 'recipient-1', makeIntent());
+      const row = domain.createLedgerRow(makeEvent(), 'recipient-1', makeRowFacts(), {
+        email: 'immediate',
+        inApp: true,
+      });
 
       expect(row).toMatchObject({ actorUserId: null, targetType: null, targetId: null });
     });
@@ -273,17 +298,17 @@ describe('userNotificationDomain delivery helpers', () => {
 });
 
 describe('userNotificationDomain digest helpers', () => {
-  function makeDigestRow(
+  function makeNotificationRow(
     id: string,
     category: string,
     createdAt: string,
-    overrides: Partial<DigestRow> = {},
-  ): DigestRow {
+    overrides: Partial<NotificationRow> = {},
+  ): NotificationRow {
     return {
       id,
       category,
-      title: `title ${id}`,
       url: `https://example.test/${id}`,
+      payload: {},
       actorUserId: null,
       targetType: null,
       targetId: null,
@@ -386,9 +411,9 @@ describe('userNotificationDomain digest helpers', () => {
 
   describe('listEmailEnabledRows', () => {
     const rows = [
-      makeDigestRow('model', 'comment.on_your_model', '2026-01-01T08:00:00Z'),
-      makeDigestRow('reply', 'comment.reply_to_you', '2026-01-01T08:00:00Z'),
-      makeDigestRow('unknown', 'comment.mentions_you', '2026-01-01T08:00:00Z'),
+      makeNotificationRow('model', 'comment.on_your_model', '2026-01-01T08:00:00Z'),
+      makeNotificationRow('reply', 'comment.reply_to_you', '2026-01-01T08:00:00Z'),
+      makeNotificationRow('unknown', 'comment.mentions_you', '2026-01-01T08:00:00Z'),
     ];
 
     it('drops rows whose category email is now off and rows of unknown categories', () => {
@@ -407,5 +432,48 @@ describe('userNotificationDomain digest helpers', () => {
 
       expect(kept.map((row) => row.id)).toEqual(['model', 'reply']);
     });
+  });
+});
+
+describe('mapProducersByCategory', () => {
+  const onYourModel = mockNotificationProducer({
+    name: 'on-your-model',
+    categories: { 'comment.on_your_model': notificationCategoryCatalog['comment.on_your_model'] },
+  });
+  const replyToYou = mockNotificationProducer({
+    name: 'reply-to-you',
+    categories: { 'comment.reply_to_you': notificationCategoryCatalog['comment.reply_to_you'] },
+  });
+  const both = ['comment.on_your_model', 'comment.reply_to_you'] as const;
+
+  // Catches a lookup that picks a producer without checking it declares the category.
+  it('maps each category to the one producer that claims it', () => {
+    const byCategory = mapProducersByCategory(both, [onYourModel, replyToYou]);
+
+    expect(byCategory.get('comment.on_your_model')).toBe(onYourModel);
+    expect(byCategory.get('comment.reply_to_you')).toBe(replyToYou);
+  });
+
+  // Catches a category added to the catalog without a producer.
+  it('throws when a category is claimed by no producer', () => {
+    expect(() => mapProducersByCategory(both, [onYourModel])).toThrow(
+      NotificationCategoryClaimError,
+    );
+  });
+
+  // Catches two producers both claiming one category, where delivery would pick one silently.
+  it('throws when a category is claimed by two producers', () => {
+    const alsoReplyToYou = { ...replyToYou, name: 'also-reply-to-you' };
+
+    expect(() => mapProducersByCategory(both, [onYourModel, replyToYou, alsoReplyToYou])).toThrow(
+      /comment.reply_to_you is claimed by 2 producers: reply-to-you, also-reply-to-you/,
+    );
+  });
+
+  // Catches a domain that builds without checking its producers, so startup would not fail.
+  it('makes the domain fail to build when its producers leave a category unclaimed', () => {
+    expect(() => userNotificationDomain({ notificationProducers: [] })).toThrow(
+      NotificationCategoryClaimError,
+    );
   });
 });

@@ -18,38 +18,72 @@ const params = {
 };
 
 describe('eventRepository.insertTx', () => {
-  const eventQueueNotifier = { bind: vi.fn(), nudge: vi.fn().mockResolvedValue(undefined) };
+  const jobQueue = { publishTx: vi.fn().mockResolvedValue(['job-1', 'job-2']) };
   const transactionManager = mockTransactionManager();
-  const repository = eventRepository({ db: {}, eventQueueNotifier } as never);
+  const repository = eventRepository({ db: {}, jobQueue } as never);
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('nudges the processor after the transaction commits, not during it', async () => {
+  it('publishes the inserted event under its type in the same transaction', async () => {
     await transactionManager.run(async (ctx) => {
       await repository.insertTx(ctx, params);
-      expect(eventQueueNotifier.nudge).not.toHaveBeenCalled();
+      expect(jobQueue.publishTx).toHaveBeenCalledWith(ctx, 'model_comment.created', {
+        eventId: 'event-1',
+      });
     });
-
-    expect(eventQueueNotifier.nudge).toHaveBeenCalledTimes(1);
   });
 
-  it('nudges once however many events one transaction wrote', async () => {
+  it('publishes once per event the transaction wrote', async () => {
+    create.mockResolvedValueOnce({ id: 'event-1' }).mockResolvedValueOnce({ id: 'event-2' });
+
     await transactionManager.run(async (ctx) => {
       await repository.insertTx(ctx, params);
       await repository.insertTx(ctx, params);
-      await repository.insertTx(ctx, params);
     });
 
-    expect(create).toHaveBeenCalledTimes(3);
-    expect(eventQueueNotifier.nudge).toHaveBeenCalledTimes(1);
+    expect(jobQueue.publishTx.mock.calls.map((call) => call[2])).toEqual([
+      { eventId: 'event-1' },
+      { eventId: 'event-2' },
+    ]);
   });
 
-  it('nudges again for a separate transaction', async () => {
-    await transactionManager.run(async (ctx) => repository.insertTx(ctx, params));
-    await transactionManager.run(async (ctx) => repository.insertTx(ctx, params));
+  it('fails the transaction when the publish fails', async () => {
+    const error = new Error('No realtime job was created for a model_comment.created publish');
+    jobQueue.publishTx.mockRejectedValueOnce(error);
 
-    expect(eventQueueNotifier.nudge).toHaveBeenCalledTimes(2);
+    await expect(
+      transactionManager.run(async (ctx) => repository.insertTx(ctx, params)),
+    ).rejects.toBe(error);
+  });
+});
+
+describe('eventRepository.search', () => {
+  const count = vi.fn().mockResolvedValue(0);
+  const findMany = vi.fn().mockResolvedValue([]);
+  const repository = eventRepository({ db: { event: { count, findMany } } } as never);
+  const page = {
+    limit: 20,
+    page: 0,
+    offset: 0,
+    orderBy: { field: 'createdAt', param: 'desc' as const },
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('narrows to the given ids', async () => {
+    await repository.search({ ids: ['event-1', 'event-2'] }, page);
+
+    expect(count).toHaveBeenCalledWith({ where: { id: { in: ['event-1', 'event-2'] } } });
+    expect(findMany.mock.calls[0]![0].where).toEqual({ id: { in: ['event-1', 'event-2'] } });
+  });
+
+  it('matches nothing for an empty id list instead of dropping the filter', async () => {
+    await repository.search({ ids: [] }, page);
+
+    expect(count).toHaveBeenCalledWith({ where: { id: { in: [] } } });
   });
 });

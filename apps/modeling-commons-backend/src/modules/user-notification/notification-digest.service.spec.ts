@@ -5,6 +5,10 @@ import notificationsConfig from '#src/config/notifications.ts';
 import makeNotificationDigestService from '#src/modules/user-notification/notification-digest.service.ts';
 import makeNotificationEmailService from '#src/modules/user-notification/notification-email.service.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import {
+  describeGroupByTarget,
+  mockNotificationProducer,
+} from '#src/modules/user-notification/domain/notification-producer.mock.ts';
 import { mockNotificationPreferenceRepository } from '#src/modules/user-notification/database/notification-preference.repository.mock.ts';
 import {
   fakeMarkEmailSent,
@@ -49,9 +53,8 @@ function makeInsertedNotification(
     recipientId: 'recipient-1',
     eventId: 'event-1',
     category: 'comment.on_your_model',
-    title: 'New comment',
-    body: 'Someone commented on your model',
     url: 'https://example.test/models/model-1',
+    payload: {},
     actorUserId: null,
     targetType: null,
     targetId: null,
@@ -66,11 +69,13 @@ describe('notificationDigestService', () => {
   const notificationPreferenceRepository = mockNotificationPreferenceRepository();
   const userNotificationRepository = mockUserNotificationRepository();
   const userRepository = mockUserRepository();
-  const domain = userNotificationDomain();
+  const domain = userNotificationDomain({
+    notificationProducers: [mockNotificationProducer({ describeGroup: describeGroupByTarget })],
+  });
   const mailService = { enqueue: vi.fn() };
   const mailDomain = { createNotificationSummaryEmail: vi.fn() };
   const existingModels = new Map<string, string>();
-  const resolveNotificationSubjectsQuery = {
+  const getNotificationPreviewsQuery = {
     execute: vi.fn(async (rows: ReadonlyArray<UserNotificationRecord>) => {
       return new Map(
         rows.map((row) => {
@@ -95,7 +100,7 @@ describe('notificationDigestService', () => {
     userNotificationDomain: domain,
     userDomain: userDomain(),
     userRepository,
-    resolveNotificationSubjectsQuery,
+    getNotificationPreviewsQuery,
     notificationEmailService: makeNotificationEmailService({
       userNotificationRepository,
       mailService,
@@ -119,7 +124,7 @@ describe('notificationDigestService', () => {
     category = 'comment.on_your_model',
     createdAt = new Date('2026-01-01T12:00:00Z'),
   ): UserNotificationRecord {
-    return makeInsertedNotification({ id, category, title: id, createdAt });
+    return makeInsertedNotification({ id, category, createdAt });
   }
 
   beforeEach(() => {
@@ -221,13 +226,13 @@ describe('notificationDigestService', () => {
 
       expect(sentDigests).toHaveLength(1);
       expect(sentDigests[0]!.items).toEqual([
-        { text: '2 people commented on Wolf Sheep', url: 'https://example.test/models/model-1' },
+        { text: '2 on Wolf Sheep', url: 'https://example.test/models/model-1' },
       ]);
       expect([...sentIds].sort()).toEqual(['a', 'b', 'gone']);
     });
 
-    it('resolves the subjects of a digest once, as its recipient', async () => {
-      resolveNotificationSubjectsQuery.execute.mockClear();
+    it('resolves the previews of a digest once, as its recipient', async () => {
+      getNotificationPreviewsQuery.execute.mockClear();
       userRepository.findOneById.mockResolvedValue(makeUserRecord({ id: 'recipient-7' }));
       existingModels.set('model-1', 'Wolf Sheep');
       const rows = [
@@ -237,11 +242,10 @@ describe('notificationDigestService', () => {
 
       await service.queueDigest('recipient-7', rows, []);
 
-      expect(resolveNotificationSubjectsQuery.execute).toHaveBeenCalledOnce();
-      expect(resolveNotificationSubjectsQuery.execute).toHaveBeenCalledWith(
+      expect(getNotificationPreviewsQuery.execute).toHaveBeenCalledOnce();
+      expect(getNotificationPreviewsQuery.execute).toHaveBeenCalledWith(
         expect.arrayContaining([expect.objectContaining({ id: 'a' })]),
         'recipient-7',
-        { includeThumbnails: false },
       );
     });
 

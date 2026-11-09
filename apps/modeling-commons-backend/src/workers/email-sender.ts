@@ -1,80 +1,33 @@
 import workersConfig from '#src/config/workers.ts';
-import type { EmailQueueRecord } from '#src/modules/mail/database/email-queue.record.ts';
-import type { EmailQueueRepositoryPort } from '#src/modules/mail/database/email-queue.repository.port.ts';
-import type { QueueNotifier } from '#src/shared/jobs/queue.notifier.ts';
-import { computeBackoffDelayMs } from '#src/shared/utils/backoff.ts';
+import { registerQueue } from '#src/workers/queues.ts';
 import type { FastifyBaseLogger } from 'fastify';
-import { PgBoss } from 'pg-boss';
+import type { PgBoss } from 'pg-boss';
+import type Mail from 'nodemailer/lib/mailer/index.js';
 
-const config = workersConfig.emailSender;
+const config = workersConfig.sendEmail;
 
 export async function startEmailSender({
-  connectionString,
-  emailQueueRepository,
+  boss,
   mailService,
-  emailQueueNotifier,
   logger,
 }: {
-  connectionString: string;
-  emailQueueRepository: EmailQueueRepositoryPort;
+  boss: PgBoss;
   mailService: Pick<Dependencies['mailService'], 'sendMailAsync'>;
-  emailQueueNotifier: QueueNotifier;
   logger: FastifyBaseLogger;
-}): Promise<PgBoss> {
-  const boss = new PgBoss(connectionString);
-  const batchSize = config.emailBatchSize;
+}): Promise<void> {
+  await registerQueue(boss, config);
 
-  boss.on('error', (error) => {
-    logger.error(error, 'pg-boss error');
-  });
-
-  await boss.start();
-  await boss.createQueue(config.queueName, { policy: config.queuePolicy });
-
-  function computeNextAttemptAt(email: EmailQueueRecord): Date {
-    return new Date(Date.now() + computeBackoffDelayMs(config.retryBaseMs, email.attempts));
-  }
-
-  async function sendOne(email: EmailQueueRecord): Promise<boolean> {
-    return mailService.sendMailAsync(email.content).then(
-      async () => {
-        await emailQueueRepository.markSent(email.id, new Date());
-        return true;
-      },
-      async (error: unknown) => {
-        await emailQueueRepository.markFailed(email.id, error, computeNextAttemptAt(email));
-        return false;
-      },
-    );
-  }
-
-  async function drainOnce(): Promise<{ fetched: number; sent: number }> {
-    const emails = await emailQueueRepository.findUnsent(
-      batchSize,
-      config.maxEmailAttempts,
-      new Date(),
-    );
-    let sent = 0;
-    for (const email of emails) if (await sendOne(email)) sent++;
-    return { fetched: emails.length, sent };
-  }
-
-  await boss.work(config.queueName, async () => {
-    let handled = 0;
-    for (let pass = 0; pass < config.maxDrainPasses; pass++) {
-      const result = await drainOnce();
-      handled += result.fetched;
-      if (result.fetched < batchSize || result.sent === 0) break;
-    }
-    logger.debug(`Handled ${handled} queued emails`);
-  });
-
-  await boss.schedule(config.queueName, config.cronExpression);
-
-  emailQueueNotifier.bind(async () => {
-    await boss.send(config.queueName, {});
-  });
+  await boss.work<Mail.Options>(
+    config.queueName,
+    {
+      batchSize: 1,
+      localConcurrency: config.work.localConcurrency,
+      pollingIntervalSeconds: workersConfig.polling.intervalSeconds,
+    },
+    async (jobs) => {
+      for (const job of jobs) await mailService.sendMailAsync(job.data);
+    },
+  );
 
   logger.info('Email sender started');
-  return boss;
 }

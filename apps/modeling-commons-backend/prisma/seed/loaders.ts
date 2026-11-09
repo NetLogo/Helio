@@ -4,10 +4,8 @@ import { seedId, seededRandom } from './id.js';
 import { AssetUploader, loadNlogox, fakeNlogox, textAsset, type NlogoxAsset } from './assets.js';
 import type { Prisma } from '#prisma/index';
 import links from '#src/config/links.ts';
-import {
-  formatCommenterName,
-  listCommentNotificationRecipients,
-} from '#src/modules/model-comment/domain/model-comment.recipients.ts';
+import { listCommentNotificationRecipients } from '#src/modules/model-comment/notifications/model-comment.recipients.ts';
+import makeModelCommentProducer from '#src/modules/model-comment/notifications/model-comment.producer.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
 import { truncatePreview } from '#src/shared/utils/formatters.ts';
 import {
@@ -61,7 +59,7 @@ function mustGet(map: IdMap, key: string, kind: string): string {
 const pick = <T>(rng: () => number, pool: readonly T[]): T =>
   pool[Math.floor(rng() * pool.length)]!;
 
-// ── Users ───────────────────────────────────────────────────────────────────
+// Users
 
 export async function loadUsers(users: UserSeed[]): Promise<IdMap> {
   const map: IdMap = new Map();
@@ -297,7 +295,12 @@ export async function loadModels(
         });
       } else {
         await prisma.modelPermission.create({
-          data: { id: seedId('perm', m.key, p.grantee ?? 'public'), modelId: id, granteeUserId, permissionLevel },
+          data: {
+            id: seedId('perm', m.key, p.grantee ?? 'public'),
+            modelId: id,
+            granteeUserId,
+            permissionLevel,
+          },
         });
       }
     }
@@ -405,7 +408,6 @@ function buildEvents(models: LoadedModel[], users: IdMap) {
       resourceId: m.id,
       payload: { title: m.versionTitles[0] ?? m.key, visibility: m.visibility },
       createdAt: m.createdAt,
-      processedAt: m.createdAt,
     });
 
     if (m.isFork && m.parentModelId) {
@@ -417,7 +419,6 @@ function buildEvents(models: LoadedModel[], users: IdMap) {
         resourceId: m.id,
         payload: { parentModelId: m.parentModelId, parentVersionNumber: m.parentVersionNumber },
         createdAt: m.createdAt,
-        processedAt: m.createdAt,
       });
     }
 
@@ -430,7 +431,6 @@ function buildEvents(models: LoadedModel[], users: IdMap) {
         resourceId: `${m.id}:${n}`,
         payload: { modelId: m.id, versionNumber: n },
         createdAt: m.createdAt,
-        processedAt: m.createdAt,
       });
     }
 
@@ -522,12 +522,13 @@ const NOTIFICATION_READ_AFTER_DAYS = 30;
 export async function loadNotifications(
   threads: CommentThreadSeed[],
   models: ModelSeed[],
-  people: UserSeed[],
   preferences: NotificationPreferenceSeed[],
   users: IdMap,
   modelIds: IdMap,
 ): Promise<{ notifications: number; preferences: number }> {
-  const notificationDomain = userNotificationDomain();
+  const notificationDomain = userNotificationDomain({
+    notificationProducers: [makeModelCommentProducer({} as Dependencies)],
+  });
   const channelsByPreference = new Map<string, { email: EmailModeLit; inApp: boolean }>();
 
   for (const p of preferences) {
@@ -547,7 +548,6 @@ export async function loadNotifications(
   }
 
   const authorsByModel = new Map(models.map((m) => [m.key, m.authors.map((a) => a.user)]));
-  const namesByUser = new Map(people.map((u) => [u.key, u.name]));
 
   const events: Array<Record<string, unknown>> = [];
   const rows: Array<Prisma.UserNotificationUncheckedCreateInput & { id: string }> = [];
@@ -569,12 +569,10 @@ export async function loadNotifications(
       resourceId: modelId,
       payload: { commentId, parentId: parentCommentId },
       createdAt,
-      processedAt: createdAt,
     });
 
     const recipients = listCommentNotificationRecipients({
       commenterId: node.user,
-      commenterName: formatCommenterName(namesByUser.get(node.user)),
       parentAuthorId: parent?.user ?? null,
       modelAuthorIds: authorsByModel.get(modelKey) ?? [],
     });
@@ -594,8 +592,7 @@ export async function loadNotifications(
         recipientId: mustGet(users, r.recipientId, 'notification recipient'),
         eventId,
         category: r.category,
-        title: r.title,
-        body: truncatePreview(node.content),
+        payload: { commentId, excerpt: truncatePreview(node.content) },
         url: links.modelComment(modelId, parentCommentId ?? commentId, commentId),
         actorUserId,
         targetType: 'model',

@@ -1,17 +1,18 @@
 import assert from 'node:assert';
 import { Given, Then, When } from '@cucumber/cucumber';
-import { PgBoss } from 'pg-boss';
-import type { FastifyInstance } from 'fastify';
 import env from '#src/config/env.ts';
 import notificationsConfig from '#src/config/notifications.ts';
 import { HOUR_MS } from '#src/shared/utils/consts.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
-import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import { listEmailJobs } from '../support/email-jobs.ts';
+import { waitForEventsDispatched } from '../support/subscriber-jobs.ts';
+import type { InsertUserNotificationParams } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
+import { NOTIFICATION_CATEGORIES } from '#src/modules/notification-producers.ts';
 
 // The real catalog, not a copy, keeps this suite honest about which categories
 // exist without asserting on their label/description copy.
-const KNOWN_CATEGORIES = userNotificationDomain().categories.map((c) => c.category);
+const KNOWN_CATEGORIES = NOTIFICATION_CATEGORIES;
 const EMAIL_MODES: ReadonlyArray<unknown> = ['immediate', 'daily', 'off'];
 
 type CategoryPreference = {
@@ -203,47 +204,27 @@ interface MailCall {
   text: string;
 }
 
-interface EventRow {
-  processedAt: Date | null;
-}
-
 interface PrismaCradle {
   prisma: {
-    emailQueue: {
-      findMany: (args: {
-        where: { OR: Array<{ content: { path: Array<string>; equals: string } }> };
-        orderBy: { createdAt: 'asc' };
-      }) => Promise<Array<{ content: Partial<MailCall> }>>;
-    };
     userNotification: {
       findMany: (args: {
         where: { recipientId: string };
-      }) => Promise<Array<{ emailSentAt: Date | null }>>;
+      }) => Promise<Array<{ emailSentAt: Date | null; inAppSuppressed: boolean }>>;
       updateMany: (args: {
         where: { recipientId: string };
         data: { createdAt: Date };
       }) => Promise<unknown>;
     };
-    event: {
-      findFirst: (args: {
-        where: { type: string };
-        orderBy: { createdAt: 'desc' };
-      }) => Promise<EventRow | null>;
-    };
   };
 }
 
 async function listQueuedEmails(world: ICustomWorld): Promise<Array<MailCall>> {
-  const { prisma } = world.server.diContainer.cradle as unknown as PrismaCradle;
   const addresses = [...getUsers(world.context).values()].map((user) => user.email);
-  const rows = await prisma.emailQueue.findMany({
-    where: { OR: addresses.map((email) => ({ content: { path: ['to'], equals: email } })) },
-    orderBy: { createdAt: 'asc' },
-  });
-  return rows.map(({ content }) => ({
-    to: content.to ?? '',
-    subject: content.subject ?? '',
-    text: content.text ?? '',
+  const jobs = await listEmailJobs(world.server, addresses);
+  return jobs.map(({ data }) => ({
+    to: String(data.to ?? ''),
+    subject: data.subject ?? '',
+    text: String(data.text ?? ''),
   }));
 }
 
@@ -253,27 +234,10 @@ async function hasEmailSentNotification(world: ICustomWorld, user: TestUser): Pr
   return rows.some((row) => row.emailSentAt !== null);
 }
 
-async function waitForCommentEventProcessed(
-  server: FastifyInstance,
-  timeoutMs = 70000,
-): Promise<void> {
-  const { prisma } = server.diContainer.cradle as unknown as PrismaCradle;
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    const event = await prisma.event.findFirst({
-      where: { type: 'model_comment.created' },
-      orderBy: { createdAt: 'desc' },
-    });
-    if (event?.processedAt) return;
-    await new Promise((resolve) => setTimeout(resolve, 200));
-  }
-  throw new Error(`model_comment.created event was not processed within ${timeoutMs}ms`);
-}
-
 Then(
   'mail should have been sent to {int} recipients',
   async function (this: ICustomWorld, count: number) {
-    await waitForCommentEventProcessed(this.server);
+    await waitForEventsDispatched(this.server);
     const calls = await listQueuedEmails(this);
     assert.strictEqual(calls.length, count);
   },
@@ -308,7 +272,7 @@ Then(
 );
 
 Then('no mail should have been sent', async function (this: ICustomWorld) {
-  await waitForCommentEventProcessed(this.server);
+  await waitForEventsDispatched(this.server);
   const calls = await listQueuedEmails(this);
   assert.strictEqual(calls.length, 0);
 });
@@ -388,28 +352,51 @@ function firstFeedNotification(context: Record<string, unknown>): FeedNotificati
   return first;
 }
 
+async function setInAppChannel(
+  world: ICustomWorld,
+  name: string,
+  category: string,
+  inApp: boolean,
+): Promise<void> {
+  const user = getUsers(world.context).get(name)!;
+  world.context.latestResponse = await world.server.inject({
+    method: 'PATCH',
+    url: '/api/v1/me/notification-preferences',
+    payload: { preferences: [{ category, inApp }] },
+    headers: { cookie: user.cookie, 'content-type': 'application/json' },
+  });
+}
+
 Given(
   '{string} mutes the in-app channel for category {string}',
   async function (this: ICustomWorld, name: string, category: string) {
+    await setInAppChannel(this, name, category, false);
+  },
+);
+
+When(
+  '{string} unmutes the in-app channel for category {string}',
+  async function (this: ICustomWorld, name: string, category: string) {
+    await setInAppChannel(this, name, category, true);
+  },
+);
+
+Then(
+  'the ledger should hold {int} in-app suppressed notification(s) for {string}',
+  async function (this: ICustomWorld, expected: number, name: string) {
     const user = getUsers(this.context).get(name)!;
-    this.context.latestResponse = await this.server.inject({
-      method: 'PATCH',
-      url: '/api/v1/me/notification-preferences',
-      payload: { preferences: [{ category, inApp: false }] },
-      headers: { cookie: user.cookie, 'content-type': 'application/json' },
-    });
+    const { prisma } = this.server.diContainer.cradle as unknown as PrismaCradle;
+    const rows = await prisma.userNotification.findMany({ where: { recipientId: user.id } });
+    assert.strictEqual(rows.length, expected);
+    assert.ok(
+      rows.every((row) => row.inAppSuppressed === true),
+      'Expected every ledger row to be stamped inAppSuppressed',
+    );
   },
 );
 
 When('the comment notification has been delivered', async function (this: ICustomWorld) {
-  const boss = new PgBoss(env.db.url);
-  await boss.start();
-  try {
-    await boss.send('process-events', {});
-  } finally {
-    await boss.stop({ graceful: false });
-  }
-  await waitForCommentEventProcessed(this.server);
+  await waitForEventsDispatched(this.server);
 });
 
 When('{string} lists their notifications', async function (this: ICustomWorld, name: string) {
@@ -499,31 +486,132 @@ Then('the first feed notification should be read', function (this: ICustomWorld)
   assert.ok(first.readAt, 'expected the notification to carry a readAt timestamp');
 });
 
-interface NudgeSpy {
-  calls: number;
+interface LedgerFixture {
+  params: InsertUserNotificationParams;
+  rowId: string;
 }
 
-Given('the event queue nudge is captured', function (this: ICustomWorld) {
-  const notifier = this.server.diContainer.cradle.eventQueueNotifier as {
-    nudge: () => Promise<void>;
-  };
-  const spy: NudgeSpy = { calls: 0 };
-  const original = notifier.nudge.bind(notifier);
-  notifier.nudge = async () => {
-    spy.calls += 1;
-    await original();
-  };
-  this.context['nudgeSpy'] = spy;
-});
-
-Then('the event queue should have been nudged', function (this: ICustomWorld) {
-  const spy = this.context['nudgeSpy'] as NudgeSpy;
-  assert.ok(spy.calls > 0, 'expected the comment write to nudge the event processor');
-});
+Given(
+  'a ledger notification already exists for {string}',
+  async function (this: ICustomWorld, name: string) {
+    const user = getUsers(this.context).get(name)!;
+    const { prisma, transactionManager, userNotificationRepository } =
+      this.server.diContainer.cradle;
+    const event = await prisma.event.create({
+      data: {
+        type: 'test.ledger',
+        actorId: user.id,
+        resourceType: 'model',
+        resourceId: 'ledger-model',
+        payload: {},
+      },
+    });
+    const params: InsertUserNotificationParams = {
+      recipientId: user.id,
+      eventId: event.id,
+      category: 'comment.on_your_model',
+      url: 'https://example.test/ledger',
+      payload: { commentId: 'ledger-comment', excerpt: 'Ledger "row" \\ with ünïcode' },
+      inAppSuppressed: false,
+    };
+    const row = await transactionManager.run((ctx) =>
+      userNotificationRepository.insertTx(ctx, params),
+    );
+    this.context['ledger'] = { params, rowId: row.id } satisfies LedgerFixture;
+  },
+);
 
 When(
-  'the comment notification arrives within {int} seconds',
-  async function (this: ICustomWorld, seconds: number) {
-    await waitForCommentEventProcessed(this.server, seconds * 1000);
+  'the same ledger notification is recorded again followed by another write in one transaction',
+  async function (this: ICustomWorld) {
+    const { params, rowId } = this.context['ledger'] as LedgerFixture;
+    const { transactionManager, userNotificationRepository } = this.server.diContainer.cradle;
+    this.context['ledgerOutcome'] = await transactionManager
+      .run(async (ctx) => {
+        const row = await userNotificationRepository.insertTx(ctx, params);
+        await userNotificationRepository.markEmailSentTx([rowId], new Date(), ctx);
+        return { rowId: row.id };
+      })
+      .catch((error: unknown) => ({ error: String(error) }));
+  },
+);
+
+Then(
+  'the transaction should commit both writes on the one existing ledger row',
+  async function (this: ICustomWorld) {
+    const { params, rowId } = this.context['ledger'] as LedgerFixture;
+    const outcome = this.context['ledgerOutcome'] as { rowId?: string; error?: string };
+    assert.strictEqual(outcome.error, undefined, outcome.error);
+    assert.strictEqual(outcome.rowId, rowId);
+
+    const rows = await this.server.diContainer.cradle.prisma.userNotification.findMany({
+      where: { eventId: params.eventId, recipientId: params.recipientId },
+    });
+    assert.strictEqual(rows.length, 1);
+    assert.ok(rows[0]!.emailSentAt, 'expected the second write to set emailSentAt');
+  },
+);
+
+Then(
+  'the ledger row should keep the payload it was recorded with',
+  async function (this: ICustomWorld) {
+    const { params, rowId } = this.context['ledger'] as LedgerFixture;
+    const row = await this.server.diContainer.cradle.prisma.userNotification.findUniqueOrThrow({
+      where: { id: rowId },
+    });
+    assert.deepStrictEqual(row.payload, params.payload);
+  },
+);
+
+When(
+  '{string} renames themselves to {string}',
+  async function (this: ICustomWorld, name: string, newName: string) {
+    const user = getUsers(this.context).get(name)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'POST',
+      url: '/api/auth/update-user',
+      payload: { name: newName },
+      headers: {
+        cookie: user.cookie,
+        'content-type': 'application/json',
+        origin: env.cors.allowedOrigins[0],
+      },
+    });
+    assert.strictEqual(
+      this.context.latestResponse.statusCode,
+      200,
+      this.context.latestResponse.body,
+    );
+    user.name = newName;
+  },
+);
+
+Then(
+  'the first feed notification should have title {string}',
+  function (this: ICustomWorld, title: string) {
+    assert.strictEqual(firstFeedNotification(this.context).title, title);
+  },
+);
+
+Then(
+  'the first feed notification should have body {string}',
+  function (this: ICustomWorld, body: string) {
+    assert.strictEqual(firstFeedNotification(this.context).body, body);
+  },
+);
+
+Then(
+  'the first feed notification should target a model named {string}',
+  function (this: ICustomWorld, name: string) {
+    assert.strictEqual(firstFeedNotification(this.context).target?.name, name);
+  },
+);
+
+Then(
+  'no field of the notification feed should contain {string}',
+  function (this: ICustomWorld, text: string) {
+    const raw = (this.context['latestResponse'] as { body: string }).body;
+    assert.ok(raw.length > 0, 'the notification feed response is empty');
+    assert.ok(!raw.includes(text), `the notification feed mentions "${text}": ${raw}`);
   },
 );

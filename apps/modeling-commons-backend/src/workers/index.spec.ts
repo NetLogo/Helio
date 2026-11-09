@@ -5,7 +5,6 @@ const envState = { enabled: true };
 
 vi.mock('#src/config/env.ts', () => ({
   default: {
-    db: { url: 'postgres://test' },
     workers: {
       get enabled() {
         return envState.enabled;
@@ -14,14 +13,19 @@ vi.mock('#src/config/env.ts', () => ({
   },
 }));
 
-const startEventProcessor = vi.fn();
+const startUserNotificationSubscriber = vi.fn();
+const startRealtimeSubscriber = vi.fn();
 const startModelDraftJanitor = vi.fn();
 const startDigestProcessor = vi.fn();
 const startNotificationJanitor = vi.fn();
 const startEmailSender = vi.fn();
 
-vi.mock('#src/workers/event-processor.ts', () => ({
-  startEventProcessor: (...args: unknown[]) => startEventProcessor(...args),
+vi.mock('#src/workers/user-notification-subscriber.ts', () => ({
+  startUserNotificationSubscriber: (...args: unknown[]) => startUserNotificationSubscriber(...args),
+}));
+
+vi.mock('#src/workers/realtime-subscriber.ts', () => ({
+  startRealtimeSubscriber: (...args: unknown[]) => startRealtimeSubscriber(...args),
 }));
 
 vi.mock('#src/workers/model-draft-janitor.ts', () => ({
@@ -53,9 +57,9 @@ function makeFastify(): {
     notificationPreferenceRepository: unknown;
     userNotificationDomain: unknown;
     modelDraftService: unknown;
-    emailQueueRepository: unknown;
     mailService: unknown;
-    emailQueueNotifier: unknown;
+    db: unknown;
+    boss: { unschedule: ReturnType<typeof vi.fn> };
   };
 } {
   const hooks = new Map<string, () => Promise<void>>();
@@ -67,9 +71,9 @@ function makeFastify(): {
     notificationPreferenceRepository: { tag: 'npr' },
     userNotificationDomain: { tag: 'und' },
     modelDraftService: { tag: 'mds' },
-    emailQueueRepository: { tag: 'eqr' },
     mailService: { tag: 'ms' },
-    emailQueueNotifier: { tag: 'eqn' },
+    db: { tag: 'db' },
+    boss: { unschedule: vi.fn().mockResolvedValue(undefined) },
   };
   const fastify = {
     log: { info: vi.fn(), error: vi.fn(), warn: vi.fn(), debug: vi.fn() },
@@ -91,41 +95,37 @@ describe('startWorkers', () => {
 
     await startWorkers(fastify);
 
-    expect(startEventProcessor).not.toHaveBeenCalled();
+    expect(startUserNotificationSubscriber).not.toHaveBeenCalled();
+    expect(startRealtimeSubscriber).not.toHaveBeenCalled();
     expect(startModelDraftJanitor).not.toHaveBeenCalled();
     expect(startDigestProcessor).not.toHaveBeenCalled();
     expect(startNotificationJanitor).not.toHaveBeenCalled();
     expect(startEmailSender).not.toHaveBeenCalled();
   });
 
-  it('starts every worker and registers an onClose hook that drains them', async () => {
-    const eventBoss = { stop: vi.fn().mockResolvedValue(undefined) };
-    const janitorBoss = { stop: vi.fn().mockResolvedValue(undefined) };
-    const digestBoss = { stop: vi.fn().mockResolvedValue(undefined) };
-    const notificationJanitorBoss = { stop: vi.fn().mockResolvedValue(undefined) };
-    startEventProcessor.mockResolvedValue(eventBoss);
-    startModelDraftJanitor.mockResolvedValue(janitorBoss);
-    startDigestProcessor.mockResolvedValue(digestBoss);
-    startNotificationJanitor.mockResolvedValue(notificationJanitorBoss);
-    const emailBoss = { stop: vi.fn().mockResolvedValue(undefined) };
-    startEmailSender.mockResolvedValue(emailBoss);
-
+  it('starts every worker on the shared boss without owning its lifecycle', async () => {
     const { fastify, hooks, cradle } = makeFastify();
     await startWorkers(fastify);
 
-    expect(startEventProcessor).toHaveBeenCalledWith({
-      connectionString: 'postgres://test',
+    expect(startUserNotificationSubscriber).toHaveBeenCalledWith({
+      boss: cradle.boss,
       eventRepository: cradle.eventRepository,
       userNotificationService: cradle.userNotificationService,
       logger: fastify.log,
     });
+    expect(startRealtimeSubscriber).toHaveBeenCalledWith({
+      boss: cradle.boss,
+      db: cradle.db,
+      eventRepository: cradle.eventRepository,
+      logger: fastify.log,
+    });
     expect(startModelDraftJanitor).toHaveBeenCalledWith({
-      connectionString: 'postgres://test',
+      boss: cradle.boss,
       modelDraftService: cradle.modelDraftService,
       logger: fastify.log,
     });
     expect(startDigestProcessor).toHaveBeenCalledWith({
-      connectionString: 'postgres://test',
+      boss: cradle.boss,
       userNotificationRepository: cradle.userNotificationRepository,
       notificationPreferenceRepository: cradle.notificationPreferenceRepository,
       userNotificationDomain: cradle.userNotificationDomain,
@@ -133,26 +133,26 @@ describe('startWorkers', () => {
       logger: fastify.log,
     });
     expect(startNotificationJanitor).toHaveBeenCalledWith({
-      connectionString: 'postgres://test',
+      boss: cradle.boss,
       userNotificationRepository: cradle.userNotificationRepository,
-      emailQueueRepository: cradle.emailQueueRepository,
       logger: fastify.log,
     });
     expect(startEmailSender).toHaveBeenCalledWith({
-      connectionString: 'postgres://test',
-      emailQueueRepository: cradle.emailQueueRepository,
+      boss: cradle.boss,
       mailService: cradle.mailService,
-      emailQueueNotifier: cradle.emailQueueNotifier,
       logger: fastify.log,
     });
 
-    const onClose = hooks.get('onClose');
-    expect(onClose).toBeDefined();
-    await onClose!();
-    expect(eventBoss.stop).toHaveBeenCalledWith({ graceful: true });
-    expect(janitorBoss.stop).toHaveBeenCalledWith({ graceful: true });
-    expect(digestBoss.stop).toHaveBeenCalledWith({ graceful: true });
-    expect(notificationJanitorBoss.stop).toHaveBeenCalledWith({ graceful: true });
-    expect(emailBoss.stop).toHaveBeenCalledWith({ graceful: true });
+    expect(hooks.has('onClose')).toBe(false);
+  });
+
+  it('drops the schedules of the retired queues', async () => {
+    const { fastify, cradle } = makeFastify();
+    await startWorkers(fastify);
+
+    expect(cradle.boss.unschedule).toHaveBeenCalledWith('send-notification-digests');
+    expect(cradle.boss.unschedule).toHaveBeenCalledWith('process-events');
+    expect(cradle.boss.unschedule).toHaveBeenCalledWith('send-emails');
+    expect(cradle.boss.unschedule).toHaveBeenCalledWith('event-dispatch');
   });
 });

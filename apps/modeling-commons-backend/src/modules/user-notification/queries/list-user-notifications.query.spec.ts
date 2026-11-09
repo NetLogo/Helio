@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import makeListUserNotificationsQuery from '#src/modules/user-notification/queries/list-user-notifications.query.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import { mockNotificationProducer } from '#src/modules/user-notification/domain/notification-producer.mock.ts';
 import userNotificationMapper from '#src/modules/user-notification/user-notification.mapper.ts';
 import { mockNotificationPreferenceRepository } from '#src/modules/user-notification/database/notification-preference.repository.mock.ts';
 import { mockUserNotificationRepository } from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
@@ -27,9 +28,8 @@ function makeNotification(overrides: Partial<UserNotificationRecord> = {}): User
     recipientId: 'user-1',
     eventId: 'event-1',
     category: 'comment.on_your_model',
-    title: 'New comment',
-    body: 'Someone commented on your model',
     url: 'https://example.test/models/model-1',
+    payload: { note: 'Nice model' },
     actorUserId: 'commenter-1',
     targetType: 'model',
     targetId: 'model-1',
@@ -43,19 +43,28 @@ function makeNotification(overrides: Partial<UserNotificationRecord> = {}): User
 describe('listUserNotificationsQuery', () => {
   const notificationPreferenceRepository = mockNotificationPreferenceRepository();
   const userNotificationRepository = mockUserNotificationRepository();
-  const domain = userNotificationDomain();
+  const domain = userNotificationDomain({
+    notificationProducers: [
+      mockNotificationProducer({
+        describeRow: (row, preview) => ({
+          title: `${preview.actor?.name ?? 'nobody'} on ${row.category}`,
+          body: JSON.stringify(row.payload),
+        }),
+      }),
+    ],
+  });
 
-  const resolveNotificationSubjectsQuery = { execute: vi.fn() };
+  const getNotificationPreviewsQuery = { execute: vi.fn() };
 
   const query = makeListUserNotificationsQuery({
     userNotificationRepository,
     notificationPreferenceRepository,
     userNotificationDomain: domain,
     userNotificationMapper: userNotificationMapper(),
-    resolveNotificationSubjectsQuery,
+    getNotificationPreviewsQuery,
   } as never);
 
-  const resolvedSubjects = {
+  const resolvedPreviews = {
     actor: {
       name: 'Alice',
       thumbnailUrl: 'https://cdn.example.test/avatars/commenter-1.png',
@@ -70,8 +79,8 @@ describe('listUserNotificationsQuery', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    resolveNotificationSubjectsQuery.execute.mockResolvedValue(
-      new Map([['notification-1', resolvedSubjects]]),
+    getNotificationPreviewsQuery.execute.mockResolvedValue(
+      new Map([['notification-1', resolvedPreviews]]),
     );
     notificationPreferenceRepository.findAllByUser.mockResolvedValue([]);
     userNotificationRepository.findAllByRecipient.mockResolvedValue({
@@ -95,8 +104,8 @@ describe('listUserNotificationsQuery', () => {
         {
           id: 'notification-1',
           category: 'comment.on_your_model',
-          title: 'New comment',
-          body: 'Someone commented on your model',
+          title: 'Alice on comment.on_your_model',
+          body: '{"note":"Nice model"}',
           url: 'https://example.test/models/model-1',
           actor: {
             name: 'Alice',
@@ -115,18 +124,33 @@ describe('listUserNotificationsQuery', () => {
     });
   });
 
-  it('resolves subjects from the page it just read, not from the stored row', async () => {
+  // Catches a feed that reads frozen text instead of describing the row with its live preview.
+  it('describes each row through its producer with the row and its live preview', async () => {
+    getNotificationPreviewsQuery.execute.mockResolvedValue(
+      new Map([
+        [
+          'notification-1',
+          { ...resolvedPreviews, actor: { ...resolvedPreviews.actor, name: 'Renamed' } },
+        ],
+      ]),
+    );
+
+    const result = await query.execute('user-1', {});
+
+    expect(result.data[0]).toMatchObject({ title: 'Renamed on comment.on_your_model' });
+  });
+
+  it('resolves previews from the page it just read, not from the stored row', async () => {
     await query.execute('user-1', {});
 
-    const [records, viewerId, options] = resolveNotificationSubjectsQuery.execute.mock.calls[0]!;
+    const [records, viewerId] = getNotificationPreviewsQuery.execute.mock.calls[0]!;
     expect(records).toEqual([expect.objectContaining({ id: 'notification-1' })]);
     expect(viewerId).toBe('user-1');
-    expect(options).toEqual({ includeThumbnails: true });
-    expect(resolveNotificationSubjectsQuery.execute).toHaveBeenCalledOnce();
+    expect(getNotificationPreviewsQuery.execute).toHaveBeenCalledOnce();
   });
 
   it('serialises a notification whose references no longer resolve as nulls', async () => {
-    resolveNotificationSubjectsQuery.execute.mockResolvedValue(
+    getNotificationPreviewsQuery.execute.mockResolvedValue(
       new Map([['notification-1', { actor: null, target: null }]]),
     );
 
@@ -136,11 +160,15 @@ describe('listUserNotificationsQuery', () => {
   });
 
   it('falls back to nulls when the resolver returns nothing for a row', async () => {
-    resolveNotificationSubjectsQuery.execute.mockResolvedValue(new Map());
+    getNotificationPreviewsQuery.execute.mockResolvedValue(new Map());
 
     const result = await query.execute('user-1', {});
 
-    expect(result.data[0]).toMatchObject({ actor: null, target: null });
+    expect(result.data[0]).toMatchObject({
+      actor: null,
+      target: null,
+      title: 'nobody on comment.on_your_model',
+    });
   });
 
   it('restricts the feed to the categories whose inApp channel is on', async () => {

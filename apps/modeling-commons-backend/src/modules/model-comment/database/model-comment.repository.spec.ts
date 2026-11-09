@@ -1,9 +1,25 @@
-import { describe, it, expect } from 'vitest';
-import {
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import modelCommentRepository, {
   toRawOrderBy,
   buildListRepliesByParentsQuery,
 } from '#src/modules/model-comment/database/model-comment.repository.ts';
 import type { PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
+import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
+
+const createMany = vi.fn();
+const create = vi.fn();
+const update = vi.fn();
+
+vi.mock('#src/shared/db/prisma-transaction.manager.ts', async (importOriginal) => {
+  const actual = await importOriginal<object>();
+  return {
+    ...actual,
+    resolveTransaction: () => ({
+      modelCommentLike: { createMany, create },
+      modelComment: { update },
+    }),
+  };
+});
 
 // Prisma.sql compiles to a Prisma.Sql (.sql / .values) without a DB connection, so the
 // injection-resistance of the raw window query in listRepliesByParents can be asserted here,
@@ -72,5 +88,44 @@ describe('model-comment repository raw query builders', () => {
       expect(query.values.at(-2)).toBe(0);
       expect(query.values.at(-1)).toBe(2);
     });
+  });
+});
+
+describe('modelCommentRepository.addLikeTx', () => {
+  const transactionManager = mockTransactionManager();
+  const repository = modelCommentRepository({ db: {} } as never);
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('inserts with skipDuplicates and bumps the count when a row was written', async () => {
+    createMany.mockResolvedValue({ count: 1 });
+
+    const added = await transactionManager.run((ctx) =>
+      repository.addLikeTx(ctx, 'comment-1', 'user-1'),
+    );
+
+    expect(added).toBe(true);
+    expect(createMany).toHaveBeenCalledWith({
+      data: { modelCommentId: 'comment-1', userId: 'user-1' },
+      skipDuplicates: true,
+    });
+    expect(create).not.toHaveBeenCalled();
+    expect(update).toHaveBeenCalledWith({
+      where: { id: 'comment-1' },
+      data: { likesCount: { increment: 1 } },
+    });
+  });
+
+  it('reports false and leaves the count alone when the like already existed', async () => {
+    createMany.mockResolvedValue({ count: 0 });
+
+    const added = await transactionManager.run((ctx) =>
+      repository.addLikeTx(ctx, 'comment-1', 'user-1'),
+    );
+
+    expect(added).toBe(false);
+    expect(update).not.toHaveBeenCalled();
   });
 });

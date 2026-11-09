@@ -80,39 +80,39 @@ describe('modelService', () => {
     });
   });
 
-  describe('getModelSubjectsForViewer', () => {
+  describe('getModelPreviewsForViewer', () => {
     const viewer: ViewerContext = {
       id: 'viewer-1',
       systemRole: 'user',
       banned: false,
       deletedAt: null,
     };
-    const subjectDb = { user: { findUnique: vi.fn() }, model: { findMany: vi.fn() } };
-    const subjectService = makeModelService({
+    const previewDb = { user: { findUnique: vi.fn() }, model: { findMany: vi.fn() } };
+    const previewService = makeModelService({
       modelRepository: makeModelRepository({
-        db: subjectDb,
+        db: previewDb,
         modelMapper: {},
         repositoryBase: () => ({}),
       } as never),
-      db: subjectDb,
+      db: previewDb,
     } as never);
 
     it('reads title and preview of the readable, live models in one query', async () => {
-      subjectDb.user.findUnique.mockResolvedValue(viewer);
-      subjectDb.model.findMany.mockResolvedValue([
+      previewDb.user.findUnique.mockResolvedValue(viewer);
+      previewDb.model.findMany.mockResolvedValue([
         { id: 'model-1', versions: [{ title: 'Wolf Sheep', previewImageFileKey: 'preview.png' }] },
       ]);
 
-      const subjects = await subjectService.getModelSubjectsForViewer(
+      const previews = await previewService.getModelPreviewsForViewer(
         ['model-1', 'model-2'],
         'viewer-1',
       );
 
-      expect(subjectDb.model.findMany).toHaveBeenCalledOnce();
-      expect(subjectDb.model.findMany.mock.calls[0]![0].where).toEqual({
+      expect(previewDb.model.findMany).toHaveBeenCalledOnce();
+      expect(previewDb.model.findMany.mock.calls[0]![0].where).toEqual({
         AND: [{ id: { in: ['model-1', 'model-2'] }, deletedAt: null }, readableModelFilter(viewer)],
       });
-      expect(subjects).toEqual(
+      expect(previews).toEqual(
         new Map([
           ['model-1', { id: 'model-1', title: 'Wolf Sheep', previewImageFileKey: 'preview.png' }],
         ]),
@@ -120,12 +120,12 @@ describe('modelService', () => {
     });
 
     it('keeps a model whose latest version has no title or preview', async () => {
-      subjectDb.user.findUnique.mockResolvedValue(viewer);
-      subjectDb.model.findMany.mockResolvedValue([{ id: 'model-1', versions: [] }]);
+      previewDb.user.findUnique.mockResolvedValue(viewer);
+      previewDb.model.findMany.mockResolvedValue([{ id: 'model-1', versions: [] }]);
 
-      const subjects = await subjectService.getModelSubjectsForViewer(['model-1'], 'viewer-1');
+      const previews = await previewService.getModelPreviewsForViewer(['model-1'], 'viewer-1');
 
-      expect(subjects.get('model-1')).toEqual({
+      expect(previews.get('model-1')).toEqual({
         id: 'model-1',
         title: null,
         previewImageFileKey: null,
@@ -133,11 +133,11 @@ describe('modelService', () => {
     });
 
     it('reads nothing when there are no models', async () => {
-      const subjects = await subjectService.getModelSubjectsForViewer([], 'viewer-1');
+      const previews = await previewService.getModelPreviewsForViewer([], 'viewer-1');
 
-      expect(subjects.size).toBe(0);
-      expect(subjectDb.user.findUnique).not.toHaveBeenCalled();
-      expect(subjectDb.model.findMany).not.toHaveBeenCalled();
+      expect(previews.size).toBe(0);
+      expect(previewDb.user.findUnique).not.toHaveBeenCalled();
+      expect(previewDb.model.findMany).not.toHaveBeenCalled();
     });
   });
 

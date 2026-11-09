@@ -39,6 +39,15 @@ Feature: Model Likes
     When "fan" gets the like summary for "Idempotent"
     And the like summary count should be 1
 
+  Scenario: Concurrent duplicate likes all succeed and count once
+    Given an authenticated user "owner"
+    And a public model "Raced" created by "owner"
+    And an authenticated user "fan"
+    When "fan" likes "Raced" 20 times at once
+    Then every like response status should be 204
+    When "fan" gets the like summary for "Raced"
+    And the like summary count should be 1
+
   Scenario: Unliking a model removes the like
     Given an authenticated user "owner"
     And a public model "Unlikeable" created by "owner"

@@ -1,3 +1,4 @@
+import type { Prisma } from '#prisma/index';
 import type { UserNotificationRecord } from '#src/modules/user-notification/database/user-notification.record.ts';
 import type {
   NotificationCategory,
@@ -10,24 +11,19 @@ export type InsertUserNotificationParams = {
   recipientId: string;
   eventId: string;
   category: string;
-  title: string;
-  body: string;
   url: string;
+  payload: Prisma.InputJsonObject;
   actorUserId?: string | null;
   targetType?: string | null;
   targetId?: string | null;
+  inAppSuppressed: boolean;
 };
 
 export interface UserNotificationRepositoryPort {
   insertTx: (
     ctx: TransactionContext,
     params: InsertUserNotificationParams,
-  ) => Promise<UserNotificationRecord | undefined>;
-  findOneByDeliveryKey: (
-    eventId: string,
-    recipientId: string,
-    category: NotificationCategory,
-  ) => Promise<UserNotificationRecord | undefined>;
+  ) => Promise<UserNotificationRecord>;
   markEmailSentTx: (
     ids: Array<string>,
     at: Date,

@@ -433,16 +433,13 @@ model ModelCommentLike {
 }
 
 model Event {
-  id           String    @id @default(nanoid())
+  id           String   @id @default(nanoid())
   type         String
   actorId      String
   resourceType String
   resourceId   String
   payload      Json
-  createdAt    DateTime  @default(now())
-  processedAt  DateTime?
-  attempts     Int       @default(0)
-  lastError    String?   @db.Text
+  createdAt    DateTime @default(now())
 
   actor User @relation(fields: [actorId], references: [id])
 
@@ -451,35 +448,22 @@ model Event {
   @@index([actorId])
   @@index([resourceType, resourceId])
   @@index([type])
-  @@index([processedAt])
-}
-
-model EmailQueue {
-  id            String    @id @default(nanoid())
-  content       Json
-  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
-  sentAt        DateTime? @db.Timestamptz(3)
-  attempts      Int       @default(0)
-  lastError     String?   @db.Text
-  nextAttemptAt DateTime? @db.Timestamptz(3)
-
-  @@index([sentAt, createdAt])
 }
 
 model UserNotification {
-  id          String    @id @default(nanoid())
-  recipientId String
-  eventId     String
-  category    String
-  title       String
-  body        String    @db.Text
-  url         String
-  actorUserId String?
-  targetType  String?
-  targetId    String?
-  emailSentAt DateTime? @db.Timestamptz(3)
-  readAt      DateTime? @db.Timestamptz(3)
-  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  id              String    @id @default(nanoid())
+  recipientId     String
+  eventId         String
+  category        String
+  url             String
+  payload         Json      @default("{}")
+  actorUserId     String?
+  targetType      String?
+  targetId        String?
+  emailSentAt     DateTime? @db.Timestamptz(3)
+  readAt          DateTime? @db.Timestamptz(3)
+  inAppSuppressed Boolean   @default(false)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(3)
 
   recipient User  @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)

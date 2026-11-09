@@ -1,16 +1,13 @@
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
-import { modelCommentNotificationCategories } from '#src/modules/model-comment/notifications/model-comment.categories.ts';
+import type { NotificationCategory } from '#src/modules/notification-producers.ts';
 import type Mail from 'nodemailer/lib/mailer/index.js';
 import { EmailMode } from '#prisma/index';
+import type { Prisma } from '#prisma/index';
 
 export { EmailMode };
 
-export type NotificationCategory = keyof typeof modelCommentNotificationCategories;
-
-export const NOTIFICATION_CATEGORIES = Object.keys(
-  modelCommentNotificationCategories,
-) as ReadonlyArray<NotificationCategory>;
+export type { NotificationCategory };
 
 export const NOTIFICATION_TARGET_TYPES = ['model'] as const;
 
@@ -18,14 +15,13 @@ export type NotificationTargetType = (typeof NOTIFICATION_TARGET_TYPES)[number];
 
 export type NotificationTargetRef = { type: NotificationTargetType; id: string };
 
-// What the feed renders once a stored reference is resolved. Title and body are frozen
-// at delivery time, but identity is read live, so a renamed model, a new avatar or a
-// deleted account is reflected the next time the feed is opened.
-export type NotificationSubject = { name: string | null; thumbnailUrl: string | null; url: string };
+// What the feed renders once a stored reference is resolved. Identity is read live, so a
+// renamed model, a new avatar or a deleted account is reflected the next time the feed is opened.
+export type NotificationPreview = { name: string | null; thumbnailUrl: string | null; url: string };
 
-export type ResolvedNotificationSubjects = {
-  actor: NotificationSubject | null;
-  target: NotificationSubject | null;
+export type NotificationPreviews = {
+  actor: NotificationPreview | null;
+  target: NotificationPreview | null;
 };
 
 export type NotificationChannels = {
@@ -50,11 +46,11 @@ export type NotificationFeedFilters = {
 
 export type EmailModeByCategory = Partial<Record<NotificationCategory, EmailMode>>;
 
-export type DigestRow = {
+export type NotificationRow = {
   id: string;
   category: string;
-  title: string;
   url: string;
+  payload: Prisma.JsonValue;
   actorUserId: string | null;
   targetType: string | null;
   targetId: string | null;
@@ -66,10 +62,10 @@ export type NotificationGroupActor = { userId: string; rowId: string };
 export type NotificationGroup = {
   target: { type: string; id: string } | null;
   actors: Array<NotificationGroupActor>;
-  rowIds: Array<string>;
-  title: string;
-  url: string;
+  rows: Array<NotificationRow>;
 };
+
+export type NotificationDescription = { title: string; body: string };
 
 export type DigestItem = { text: string; url: string };
 
@@ -83,19 +79,32 @@ export type NotificationRecipient = { id: string; email: string; name: string | 
 
 export type NotificationLinks = { unsubscribeUrl: string; preferencesUrl: string };
 
-export type NotificationIntent = {
+export type NotificationRowFacts = {
   recipientUserId: string;
   category: NotificationCategory;
-  title: string;
-  body: string;
   url: string;
+  payload: Prisma.InputJsonObject;
   // References, not URLs: the feed resolves them on read so identity stays current.
   actorUserId?: string;
   target?: NotificationTargetRef;
-  buildEmail: (recipient: NotificationRecipient, links: NotificationLinks) => Promise<Mail.Options>;
 };
 
-export type Notifier = {
+export type UserNotificationCreatedJobData = { recipientIds: Array<string> };
+
+export type NotificationProducer = {
+  name: string;
   eventTypes: ReadonlyArray<string>;
-  resolve: (event: EventRecord) => Promise<Array<NotificationIntent>>;
+  categories: Readonly<Partial<Record<NotificationCategory, NotificationCategoryDefinition>>>;
+  resolve: (event: EventRecord) => Promise<Array<NotificationRowFacts>>;
+  describeRow: (row: NotificationRow, preview: NotificationPreviews) => NotificationDescription;
+  renderEmail: (
+    row: NotificationRow,
+    recipient: NotificationRecipient,
+    preview: NotificationPreviews,
+    links: NotificationLinks,
+  ) => Promise<Mail.Options>;
+  describeGroup: (
+    group: NotificationGroup,
+    previews: ReadonlyMap<string, NotificationPreviews>,
+  ) => DigestItem | undefined;
 };

@@ -1,27 +1,29 @@
 import { describe, it, expect } from 'vitest';
 import notificationsConfig from '#src/config/notifications.ts';
+import { mockNotificationProducer } from '#src/modules/user-notification/domain/notification-producer.mock.ts';
 import {
   buildDigest,
-  describeGroup,
   groupNotifications,
 } from '#src/modules/user-notification/domain/user-notification.grouping.ts';
 import type {
-  DigestRow,
-  ResolvedNotificationSubjects,
+  NotificationRow,
+  NotificationGroup,
+  NotificationPreviews,
+  NotificationProducer,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 
 describe('userNotificationGrouping', () => {
-  function makeDigestRow(
+  function makeNotificationRow(
     id: string,
     category: string,
     createdAt: string,
-    overrides: Partial<DigestRow> = {},
-  ): DigestRow {
+    overrides: Partial<NotificationRow> = {},
+  ): NotificationRow {
     return {
       id,
       category,
-      title: `title ${id}`,
       url: `https://example.test/${id}`,
+      payload: {},
       actorUserId: null,
       targetType: null,
       targetId: null,
@@ -35,10 +37,11 @@ describe('userNotificationGrouping', () => {
     modelId: string,
     actorUserId: string,
     minute: number,
-  ): DigestRow {
-    return makeDigestRow(
+    category = 'comment.on_your_model',
+  ): NotificationRow {
+    return makeNotificationRow(
       id,
-      'comment.on_your_model',
+      category,
       `2026-01-01T08:${String(minute).padStart(2, '0')}:00Z`,
       {
         actorUserId,
@@ -48,78 +51,84 @@ describe('userNotificationGrouping', () => {
     );
   }
 
-  const userNames: Record<string, string | null> = {
-    alice: 'Alice',
-    bob: 'Bob',
-    carol: 'Carol',
-    dave: 'Dave',
-    nameless: null,
-  };
-  const modelNames: Record<string, string | null> = {
-    wolf: 'Wolf Sheep',
-    virus: 'Virus',
-    hidden: null,
-  };
-
-  function resolveSubjects(
-    rows: ReadonlyArray<DigestRow>,
-  ): Map<string, ResolvedNotificationSubjects> {
-    return new Map(
-      rows.map((row) => {
-        const actorName = row.actorUserId ? userNames[row.actorUserId] : undefined;
-        const modelName = row.targetId ? modelNames[row.targetId] : undefined;
-        return [
-          row.id,
-          {
-            actor:
-              actorName === undefined
-                ? null
-                : {
-                    name: actorName,
-                    thumbnailUrl: null,
-                    url: `https://example.test/users/${row.actorUserId}`,
-                  },
-            target:
-              modelName === undefined
-                ? null
-                : {
-                    name: modelName,
-                    thumbnailUrl: null,
-                    url: `https://example.test/models/${row.targetId}`,
-                  },
-          },
-        ];
-      }),
-    );
+  function describeByIds(name: string) {
+    return (group: NotificationGroup) =>
+      group.target?.id === 'hidden'
+        ? undefined
+        : {
+            text: `${name} ${group.target?.id ?? 'none'} ${group.rows.map((row) => row.id).join(',')}`,
+            url: `https://example.test/${name}`,
+          };
   }
 
-  function describeRows(rows: ReadonlyArray<DigestRow>) {
-    const subjects = resolveSubjects(rows);
-    return groupNotifications(rows).map((group) => describeGroup(group, subjects));
+  const comments = mockNotificationProducer({
+    name: 'model-comment',
+    describeGroup: describeByIds('model-comment'),
+  });
+  const likes = mockNotificationProducer({
+    name: 'model-like',
+    describeGroup: describeByIds('model-like'),
+  });
+  const producerByCategory = new Map<string, NotificationProducer>([
+    ['comment.on_your_model', comments],
+    ['comment.reply_to_you', comments],
+    ['like.on_your_model', likes],
+  ]);
+
+  function groupRows(rows: ReadonlyArray<NotificationRow>) {
+    return groupNotifications(rows, producerByCategory).map(({ group }) => group);
   }
+
+  const noPreviews = new Map<string, NotificationPreviews>();
 
   describe('groupNotifications', () => {
     it('returns no groups for no rows', () => {
-      expect(groupNotifications([])).toEqual([]);
+      expect(groupNotifications([], producerByCategory)).toEqual([]);
     });
 
-    it('merges comments and replies on one model into one group, across categories', () => {
+    it('merges comments and replies on one model into one group, across categories, newest row first', () => {
       const rows = [
         makeModelRow('c1', 'wolf', 'alice', 1),
         makeModelRow('c2', 'wolf', 'bob', 2),
-        { ...makeModelRow('r1', 'wolf', 'carol', 3), category: 'comment.reply_to_you' },
+        makeModelRow('r1', 'wolf', 'carol', 3, 'comment.reply_to_you'),
       ];
 
-      const groups = groupNotifications(rows);
+      const groups = groupRows(rows);
 
       expect(groups).toHaveLength(1);
       expect(groups[0]!.target).toEqual({ type: 'model', id: 'wolf' });
-      expect(groups[0]!.rowIds).toEqual(['r1', 'c2', 'c1']);
+      expect(groups[0]!.rows.map((row) => row.id)).toEqual(['r1', 'c2', 'c1']);
       expect(groups[0]!.actors.map((actor) => actor.userId)).toEqual(['carol', 'bob', 'alice']);
     });
 
+    it('keeps the rows of two producers on one model in two groups, each with its producer', () => {
+      const rows = [
+        makeModelRow('c1', 'wolf', 'alice', 1),
+        makeModelRow('l1', 'wolf', 'bob', 2, 'like.on_your_model'),
+        makeModelRow('c2', 'wolf', 'carol', 3),
+      ];
+
+      const groups = groupNotifications(rows, producerByCategory);
+
+      expect(
+        groups.map(({ producer, group }) => [producer.name, group.rows.map((row) => row.id)]),
+      ).toEqual([
+        ['model-comment', ['c2', 'c1']],
+        ['model-like', ['l1']],
+      ]);
+    });
+
+    it('leaves out a row whose category no producer claims', () => {
+      const groups = groupRows([
+        makeModelRow('c1', 'wolf', 'alice', 1),
+        makeModelRow('x1', 'wolf', 'bob', 2, 'comment.mentions_you'),
+      ]);
+
+      expect(groups.map((group) => group.rows.map((row) => row.id))).toEqual([['c1']]);
+    });
+
     it('lists an actor once, at their newest row', () => {
-      const groups = groupNotifications([
+      const groups = groupRows([
         makeModelRow('a-old', 'wolf', 'alice', 1),
         makeModelRow('b', 'wolf', 'bob', 2),
         makeModelRow('a-new', 'wolf', 'alice', 3),
@@ -132,7 +141,7 @@ describe('userNotificationGrouping', () => {
     });
 
     it('orders groups by their newest row, newest first', () => {
-      const groups = groupNotifications([
+      const groups = groupRows([
         makeModelRow('w1', 'wolf', 'alice', 1),
         makeModelRow('v1', 'virus', 'alice', 2),
         makeModelRow('w2', 'wolf', 'bob', 3),
@@ -142,121 +151,70 @@ describe('userNotificationGrouping', () => {
     });
 
     it('keeps every row without a target in a group of its own', () => {
-      const groups = groupNotifications([
-        makeDigestRow('a', 'comment.on_your_model', '2026-01-01T08:00:00Z'),
-        makeDigestRow('b', 'comment.on_your_model', '2026-01-01T09:00:00Z'),
+      const groups = groupRows([
+        makeNotificationRow('a', 'comment.on_your_model', '2026-01-01T08:00:00Z'),
+        makeNotificationRow('b', 'comment.on_your_model', '2026-01-01T09:00:00Z'),
       ]);
 
-      expect(groups.map((group) => [group.target, group.rowIds])).toEqual([
+      expect(groups.map((group) => [group.target, group.rows.map((row) => row.id)])).toEqual([
         [null, ['b']],
         [null, ['a']],
       ]);
     });
   });
 
-  describe('describeGroup', () => {
-    it('names at most two of three people commenting and replying on one model', () => {
-      const rows = [
-        makeModelRow('c1', 'wolf', 'alice', 1),
-        makeModelRow('c2', 'wolf', 'bob', 2),
-        { ...makeModelRow('r1', 'wolf', 'carol', 3), category: 'comment.reply_to_you' },
-      ];
-
-      expect(describeRows(rows)).toEqual([
-        {
-          text: 'Carol, Bob, and 1 other commented on Wolf Sheep',
-          url: 'https://example.test/models/wolf',
-        },
-      ]);
-    });
-
-    it('counts one person commenting several times once', () => {
-      const rows = [
-        makeModelRow('a1', 'wolf', 'alice', 1),
-        makeModelRow('a2', 'wolf', 'alice', 2),
-        makeModelRow('a3', 'wolf', 'alice', 3),
-      ];
-
-      expect(describeRows(rows).map((item) => item?.text)).toEqual([
-        'Alice commented on Wolf Sheep',
-      ]);
-    });
-
-    it('counts an actor who no longer resolves without naming them', () => {
-      const rows = [
-        makeModelRow('gone', 'wolf', 'deleted-user', 2),
-        makeModelRow('a', 'wolf', 'alice', 1),
-      ];
-
-      expect(describeRows(rows).map((item) => item?.text)).toEqual([
-        'Alice and 1 other commented on Wolf Sheep',
-      ]);
-    });
-
-    it('counts an actor without a name without naming them', () => {
-      expect(
-        describeRows([makeModelRow('n', 'wolf', 'nameless', 1)]).map((item) => item?.text),
-      ).toEqual(['One person commented on Wolf Sheep']);
-    });
-
-    it('returns nothing for a group whose model no longer resolves', () => {
-      expect(describeRows([makeModelRow('a', 'deleted-model', 'alice', 1)])).toEqual([undefined]);
-    });
-
-    it('falls back to the stored title, linking the model, when the model has no visible name', () => {
-      const row = makeModelRow('a', 'hidden', 'alice', 1);
-
-      expect(describeRows([row])).toEqual([
-        { text: row.title, url: 'https://example.test/models/hidden' },
-      ]);
-    });
-
-    it('uses the stored title and url of a row without a target', () => {
-      const row = makeDigestRow('a', 'comment.on_your_model', '2026-01-01T08:00:00Z');
-
-      expect(describeRows([row])).toEqual([{ text: row.title, url: row.url }]);
-    });
-  });
-
   describe('buildDigest', () => {
     it('returns no items for no rows', () => {
-      expect(buildDigest([], new Map())).toEqual({ items: [], moreCount: 0 });
+      expect(buildDigest([], noPreviews, producerByCategory)).toEqual({ items: [], moreCount: 0 });
     });
 
-    it('builds one line per model, newest first, and leaves out a model that no longer resolves', () => {
+    it('asks the producer of each group for its line, newest first, and leaves out a group without one', () => {
       const rows = [
-        makeModelRow('w1', 'wolf', 'alice', 1),
-        makeModelRow('gone', 'deleted-model', 'alice', 2),
-        makeModelRow('v1', 'virus', 'bob', 3),
-        makeModelRow('w2', 'wolf', 'bob', 4),
+        makeModelRow('c1', 'wolf', 'alice', 1),
+        makeModelRow('h1', 'hidden', 'alice', 2),
+        makeModelRow('l1', 'wolf', 'bob', 3, 'like.on_your_model'),
       ];
 
-      expect(buildDigest(rows, resolveSubjects(rows))).toEqual({
+      expect(buildDigest(rows, noPreviews, producerByCategory)).toEqual({
         items: [
-          {
-            text: 'Bob and Alice commented on Wolf Sheep',
-            url: 'https://example.test/models/wolf',
-          },
-          { text: 'Bob commented on Virus', url: 'https://example.test/models/virus' },
+          { text: 'model-like wolf l1', url: 'https://example.test/model-like' },
+          { text: 'model-comment wolf c1', url: 'https://example.test/model-comment' },
         ],
         moreCount: 0,
       });
     });
 
+    it('passes the previews to the producer', () => {
+      const previews = new Map<string, NotificationPreviews>([
+        ['c1', { actor: null, target: { name: 'Wolf', thumbnailUrl: null, url: 'u' } }],
+      ]);
+      const seen: Array<ReadonlyMap<string, NotificationPreviews>> = [];
+      const recording = mockNotificationProducer({
+        describeGroup: (_group, received) => {
+          seen.push(received);
+          return undefined;
+        },
+      });
+
+      buildDigest(
+        [makeModelRow('c1', 'wolf', 'alice', 1)],
+        previews,
+        new Map([['comment.on_your_model', recording]]),
+      );
+
+      expect(seen).toEqual([previews]);
+    });
+
     it('caps the lines at maxDigestItems and counts the rest', () => {
       const cap = notificationsConfig.maxDigestItems;
       const rows = Array.from({ length: cap + 3 }, (_, index) =>
-        makeDigestRow(
-          `row-${index}`,
-          'comment.on_your_model',
-          new Date(Date.UTC(2026, 0, 1, 0, index)).toISOString(),
-        ),
+        makeModelRow(`row-${index}`, `model-${index}`, 'alice', index),
       );
 
-      const digest = buildDigest(rows, resolveSubjects(rows));
+      const digest = buildDigest(rows, noPreviews, producerByCategory);
 
       expect(digest.items).toHaveLength(cap);
-      expect(digest.items[0]!.text).toBe(`title row-${cap + 2}`);
+      expect(digest.items[0]!.text).toBe(`model-comment model-${cap + 2} row-${cap + 2}`);
       expect(digest.moreCount).toBe(3);
     });
 
@@ -264,16 +222,12 @@ describe('userNotificationGrouping', () => {
       const cap = notificationsConfig.maxDigestItems;
       const rows = [
         ...Array.from({ length: cap }, (_, index) =>
-          makeDigestRow(
-            `row-${index}`,
-            'comment.on_your_model',
-            new Date(Date.UTC(2026, 0, 1, 0, index)).toISOString(),
-          ),
+          makeModelRow(`row-${index}`, `model-${index}`, 'alice', index + 1),
         ),
-        makeModelRow('gone', 'deleted-model', 'alice', 1),
+        makeModelRow('h1', 'hidden', 'alice', 0),
       ];
 
-      expect(buildDigest(rows, resolveSubjects(rows)).moreCount).toBe(0);
+      expect(buildDigest(rows, noPreviews, producerByCategory).moreCount).toBe(0);
     });
   });
 });

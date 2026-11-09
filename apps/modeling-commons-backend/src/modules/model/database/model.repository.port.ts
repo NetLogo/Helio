@@ -10,7 +10,7 @@ import type {
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
 
-export type ModelSubjectRecord = {
+export type ModelPreviewRecord = {
   id: string;
   title: string | null;
   previewImageFileKey: string | null;
@@ -48,10 +48,10 @@ export interface ModelRepository extends RepositoryPort<Model> {
   findInteractionCounts: (modelId: string) => Promise<ModelInteractionCounts | null>;
   findChildren: (modelId: string, params: PaginatedQueryParams) => Promise<Paginated<Model>>;
   findCard: (modelId: string) => Promise<ModelCardRecord | null>;
-  findSubjectsReadableBy: (
+  findPreviewsReadableBy: (
     modelIds: Array<string>,
     viewer: ViewerContext | null,
-  ) => Promise<Array<ModelSubjectRecord>>;
+  ) => Promise<Array<ModelPreviewRecord>>;
   insertTx: (ctx: TransactionContext, entity: Model) => Promise<void>;
   updateFieldsTx: (
     ctx: TransactionContext,

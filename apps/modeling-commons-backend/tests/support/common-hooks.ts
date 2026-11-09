@@ -27,6 +27,14 @@ AfterAll(async function () {
   }
 });
 
+// A TRUNCATE of the whole job table locks every partition while the in-process workers poll
+// them, and Postgres then picks it as a deadlock victim; a per-queue DELETE only takes row locks.
+async function deleteAllJobs(server: FastifyInstance): Promise<void> {
+  const { boss } = server.diContainer.cradle;
+  const queues = await boss.getQueues();
+  await Promise.all(queues.map(async ({ name }) => boss.deleteAllJobs(name)));
+}
+
 // Note: "pickle" below is a Cucumber concept (test case), not Python's pickle module.
 
 Before({ tags: '@pending' }, () => 'skipped' as unknown as undefined);
@@ -53,6 +61,7 @@ Before(async function (this: ICustomWorld, hookParam: ITestCaseHookParameter) {
 // silently reintroduce it: the two hooks' tag expressions are complements.
 Before({ tags: 'not @data-integrity' }, async function (this: ICustomWorld) {
   await cleanDatabase(this.server);
+  await deleteAllJobs(this.server);
 });
 
 Before({ tags: '@data-integrity' }, async function (this: ICustomWorld) {

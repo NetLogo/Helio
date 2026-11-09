@@ -177,6 +177,16 @@ Feature: Model Comments
     When "fan" gets comment "target" on "Likeable Comments"
     Then comment "target" in the response should have property "likes" equal to "0"
 
+  Scenario: Concurrent duplicate comment likes all succeed and count once
+    Given an authenticated user "owner"
+    And a public model "Raced Comments" created by "owner"
+    And "owner" has commented "Race me" on "Raced Comments" as "raced"
+    And an authenticated user "fan"
+    When "fan" likes comment "raced" on "Raced Comments" 20 times at once
+    Then every comment like response status should be 204
+    When "fan" gets comment "raced" on "Raced Comments"
+    Then comment "raced" in the response should have property "likes" equal to "1"
+
   Scenario: Sibling parents at the same level are limited independently
     Given an authenticated user "owner"
     And a public model "Siblings" created by "owner"

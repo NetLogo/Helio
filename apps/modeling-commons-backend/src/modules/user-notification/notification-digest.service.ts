@@ -2,7 +2,7 @@ import links from '#src/config/links.ts';
 import type { NotificationPreferenceRecord } from '#src/modules/user-notification/database/notification-preference.record.ts';
 import type {
   DeliverableRecipient,
-  DigestRow,
+  NotificationRow,
   NotificationCategory,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type Mail from 'nodemailer/lib/mailer/index.js';
@@ -13,21 +13,19 @@ export default function makeNotificationDigestService({
   notificationPreferenceRepository,
   userNotificationRepository,
   userNotificationDomain,
-  resolveNotificationSubjectsQuery,
+  getNotificationPreviewsQuery,
   notificationEmailService,
   mailDomain,
 }: Dependencies) {
   async function buildDigestEmail(
     recipient: DeliverableRecipient,
-    emailable: ReadonlyArray<DigestRow>,
+    emailable: ReadonlyArray<NotificationRow>,
     rowIds: ReadonlyArray<string>,
   ): Promise<Mail.Options | null> {
     const rowIdSet = new Set(rowIds);
     const rows = emailable.filter((row) => rowIdSet.has(row.id));
-    const subjects = await resolveNotificationSubjectsQuery.execute(rows, recipient.id, {
-      includeThumbnails: false,
-    });
-    const digest = userNotificationDomain.buildDigest(rows, subjects);
+    const previews = await getNotificationPreviewsQuery.execute(rows, recipient.id);
+    const digest = userNotificationDomain.buildDigest(rows, previews);
     if (digest.items.length === 0) return null;
 
     return mailDomain.createNotificationSummaryEmail(
@@ -43,7 +41,7 @@ export default function makeNotificationDigestService({
 
   async function queueDigest(
     recipientId: string,
-    rows: ReadonlyArray<DigestRow>,
+    rows: ReadonlyArray<NotificationRow>,
     preferences: ReadonlyArray<NotificationPreferenceRecord>,
   ): Promise<void> {
     const recipient = await userRepository.findOneById(recipientId);

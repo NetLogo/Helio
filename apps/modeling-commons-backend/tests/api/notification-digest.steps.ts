@@ -1,25 +1,20 @@
 import assert from 'node:assert';
 import { After, Given, Then, When } from '@cucumber/cucumber';
 import { HOUR_MS, MINUTE_MS } from '#src/shared/utils/consts.ts';
-import {
-  queuePendingDigests,
-  type DigestProcessorDependencies,
-} from '#src/workers/digest-processor.ts';
+import type { JobWithMetadata } from 'pg-boss';
+import workersConfig from '#src/config/workers.ts';
+import type { SendDigestJobData } from '#src/workers/digest-processor.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
+import { listEmailJobs } from '../support/email-jobs.ts';
 import type { TestUser } from '../support/auth-helper.ts';
 
+const { queueNotificationDigests, sendDigest } = workersConfig;
+
+type DigestJob = JobWithMetadata<SendDigestJobData>;
+
 interface DigestCradle {
-  userNotificationRepository: DigestProcessorDependencies['userNotificationRepository'];
-  notificationPreferenceRepository: DigestProcessorDependencies['notificationPreferenceRepository'];
-  userNotificationDomain: DigestProcessorDependencies['userNotificationDomain'];
-  notificationDigestService: DigestProcessorDependencies['notificationDigestService'];
-  mailService: { enqueue: (content: { to?: unknown }, ctx?: unknown) => Promise<void> };
+  notificationDigestService: Dependencies['notificationDigestService'];
   prisma: {
-    emailQueue: {
-      findMany: (args: {
-        where: { content: { path: Array<string>; equals: string } };
-      }) => Promise<Array<{ content: unknown }>>;
-    };
     event: {
       create: (args: { data: Record<string, unknown> }) => Promise<{ id: string }>;
     };
@@ -79,15 +74,15 @@ async function findSeededNotification(
 
 async function listQueuedDigests(world: ICustomWorld, name: string): Promise<Array<string>> {
   const { email } = getUser(world, name);
-  const rows = await getCradle(world).prisma.emailQueue.findMany({
-    where: { content: { path: ['to'], equals: email } },
-  });
-  return rows.map((row) => JSON.stringify(row.content));
+  const jobs = await listEmailJobs(world.server, [email]);
+  return jobs.map((job) => JSON.stringify(job.data));
 }
 
 const DIGEST_CATEGORY = 'comment.on_your_model';
 
-type SeededSubject = { targetId: string; actorUserId: string };
+const DIGEST_MODEL_TITLE = 'Digest Model';
+
+type SeededSubject = { targetId: string; actorUserId?: string };
 
 function getModelId(world: ICustomWorld, title: string): string {
   const id = (world.context['models'] as Map<string, string> | undefined)?.get(title);
@@ -102,7 +97,7 @@ async function seedNotification(
   age: number,
   unit: string,
   category = DIGEST_CATEGORY,
-  subject?: SeededSubject,
+  subject: SeededSubject = { targetId: getModelId(world, DIGEST_MODEL_TITLE) },
 ): Promise<void> {
   const unitMs = AGE_UNITS_MS[unit];
   assert.ok(unitMs, `unknown age unit "${unit}"`);
@@ -120,7 +115,6 @@ async function seedNotification(
       resourceType: 'test',
       resourceId: recipient.id,
       payload: {},
-      processedAt: new Date(),
     },
   });
   const notification = await prisma.userNotification.create({
@@ -128,36 +122,52 @@ async function seedNotification(
       recipientId: recipient.id,
       eventId: event.id,
       category,
-      title: 'Digest item',
-      body: 'Digest item',
       url: 'https://example.test',
-      ...(subject ? { targetType: 'model', ...subject } : {}),
+      targetType: 'model',
+      ...subject,
       createdAt: new Date(Date.now() - age * unitMs),
     },
   });
   getSeededIds(world).set(getSeededKey(recipientName, age, unit), notification.id);
 }
 
-Given('digest mail delivery to {string} fails once', function (this: ICustomWorld, name: string) {
-  const { email } = getUser(this, name);
-  const { mailService } = getCradle(this);
-  const original = mailService.enqueue.bind(mailService);
-  let hasFailed = false;
-  mailService.enqueue = async (content, ctx) => {
-    if (!hasFailed && content.to === email) {
-      hasFailed = true;
-      throw new Error(`notification-digest.feature: rigged failure to ${email}`);
-    }
-    return original(content, ctx);
-  };
-  this.context['restoreDigestMail'] = () => {
-    mailService.enqueue = original;
-  };
-});
+Given(
+  'digest delivery to {string} is rigged to fail once',
+  function (this: ICustomWorld, name: string) {
+    const { id } = getUser(this, name);
+    const { notificationDigestService } = getCradle(this);
+    const original = notificationDigestService.queueDigest;
+    let hasFailed = false;
+    notificationDigestService.queueDigest = async (recipientId, rows, preferences) => {
+      if (recipientId === id && !hasFailed) {
+        hasFailed = true;
+        throw new Error(`notification-digest.feature: rigged failure to ${name}`);
+      }
+      return original(recipientId, rows, preferences);
+    };
+    this.context['restoreDigestDelivery'] = () => {
+      notificationDigestService.queueDigest = original;
+    };
+  },
+);
 
-After(function (this: ICustomWorld) {
-  const restore = this.context['restoreDigestMail'] as (() => void) | undefined;
-  restore?.();
+Given(
+  'send-digest jobs retry after {int} second(s)',
+  async function (this: ICustomWorld, seconds: number) {
+    const { boss } = this.server.diContainer.cradle;
+    await boss.updateQueue(sendDigest.queueName, { retryDelay: seconds });
+    this.context['restoreSendDigestRetryDelay'] = async () =>
+      boss.updateQueue(sendDigest.queueName, { retryDelay: sendDigest.queue.retryDelay });
+  },
+);
+
+After(async function (this: ICustomWorld) {
+  const restoreDelivery = this.context['restoreDigestDelivery'] as (() => void) | undefined;
+  restoreDelivery?.();
+  const restoreRetryDelay = this.context['restoreSendDigestRetryDelay'] as
+    | (() => Promise<void>)
+    | undefined;
+  await restoreRetryDelay?.();
 });
 
 Given(
@@ -200,33 +210,126 @@ Given(
 );
 
 Given(
+  'a {string} notification in category {string} for {string} about {string} from {string} created {int} {word} ago',
+  async function (
+    this: ICustomWorld,
+    mode: string,
+    category: string,
+    name: string,
+    modelTitle: string,
+    actorName: string,
+    age: number,
+    unit: string,
+  ) {
+    await seedNotification(this, name, mode, age, unit, category, {
+      targetId: getModelId(this, modelTitle),
+      actorUserId: getUser(this, actorName).id,
+    });
+  },
+);
+
+Given(
   'a notification without email for {string} created {int} {word} ago',
   async function (this: ICustomWorld, name: string, age: number, unit: string) {
     await seedNotification(this, name, 'off', age, unit);
   },
 );
 
+async function pollUntil<T>(
+  read: () => Promise<T>,
+  isDone: (value: T) => boolean,
+  timeoutMs = 15_000,
+): Promise<T | undefined> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const value = await read();
+    if (isDone(value)) return value;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  return undefined;
+}
+
+const SETTLED_STATES = new Set(['completed', 'retry', 'failed']);
+
+async function listDigestJobs(world: ICustomWorld): Promise<Array<DigestJob>> {
+  const { boss } = world.server.diContainer.cradle;
+  return boss.findJobs<SendDigestJobData>(sendDigest.queueName);
+}
+
+function findDigestJobs(world: ICustomWorld, name: string): Array<DigestJob> {
+  const { id } = getUser(world, name);
+  const jobs = world.context['digestJobs'] as Array<DigestJob> | undefined;
+  assert.ok(jobs, 'the digest job has not run');
+  return jobs.filter((job) => job.data.recipientId === id);
+}
+
+function findDigestJob(world: ICustomWorld, name: string): DigestJob {
+  const jobs = findDigestJobs(world, name);
+  assert.strictEqual(jobs.length, 1, `expected one send-digest job for "${name}"`);
+  return jobs[0]!;
+}
+
 When('the digest job runs', async function (this: ICustomWorld) {
-  const cradle = getCradle(this);
-  this.context['digestJobError'] = await queuePendingDigests({
-    userNotificationRepository: cradle.userNotificationRepository,
-    notificationPreferenceRepository: cradle.notificationPreferenceRepository,
-    userNotificationDomain: cradle.userNotificationDomain,
-    notificationDigestService: cradle.notificationDigestService,
-    logger: this.server.log,
-  }).then(
-    () => undefined,
-    (error: unknown) => error,
+  const { boss } = this.server.diContainer.cradle;
+  const fanOutJobId = await boss.send(queueNotificationDigests.queueName);
+  assert.ok(fanOutJobId, 'the fan-out job was not created');
+  const fanOutJob = await pollUntil(
+    async () => boss.getJobById(queueNotificationDigests.queueName, fanOutJobId),
+    (job) => job?.state === 'completed',
   );
+  assert.ok(fanOutJob, 'the fan-out job did not complete within 15s');
+  const digestJobs = await pollUntil(
+    async () => listDigestJobs(this),
+    (jobs) => jobs.every((job) => SETTLED_STATES.has(job.state)),
+  );
+  assert.ok(digestJobs, 'the send-digest jobs did not settle within 15s');
+  this.context['digestJobs'] = digestJobs;
 });
 
 Then('the digest job should have succeeded', function (this: ICustomWorld) {
-  assert.strictEqual(this.context['digestJobError'], undefined);
+  const jobs = this.context['digestJobs'] as Array<DigestJob>;
+  assert.deepStrictEqual(
+    jobs.filter((job) => job.state !== 'completed').map((job) => job.state),
+    [],
+  );
 });
 
-Then('the digest job should have failed', function (this: ICustomWorld) {
-  assert.ok(this.context['digestJobError'] instanceof AggregateError);
-});
+Then(
+  'the send-digest job for {string} should complete on its second attempt',
+  async function (this: ICustomWorld, name: string) {
+    const { boss } = this.server.diContainer.cradle;
+    const { id } = findDigestJob(this, name);
+    const job = await pollUntil(
+      async () => boss.getJobById<SendDigestJobData>(sendDigest.queueName, id),
+      (current) => current?.state === 'completed',
+    );
+    assert.ok(job, `the send-digest job for "${name}" did not complete within 15s`);
+    assert.strictEqual(job.retryCount, 1);
+  },
+);
+
+Then(
+  'the send-digest job for {string} should have completed',
+  function (this: ICustomWorld, name: string) {
+    assert.strictEqual(findDigestJob(this, name).state, 'completed');
+  },
+);
+
+Then(
+  'the send-digest job for {string} should carry the same window as the one for {string}',
+  function (this: ICustomWorld, name: string, otherName: string) {
+    const { since, until } = findDigestJob(this, name).data;
+    const other = findDigestJob(this, otherName).data;
+    assert.deepStrictEqual({ since, until }, { since: other.since, until: other.until });
+  },
+);
+
+Then(
+  'there should be exactly {int} send-digest job(s) for {string}',
+  function (this: ICustomWorld, count: number, name: string) {
+    assert.strictEqual(findDigestJobs(this, name).length, count);
+  },
+);
 
 Then(
   '{string} should have received {int} digest(s)',

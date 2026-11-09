@@ -49,6 +49,21 @@ Feature: Security Regressions
     When an anonymous viewer sends a GET request to "/api-docs/auth/openapi.json"
     Then the response status should not be 401
 
+  # Fastify client errors keep their 4xx status and never echo Fastify codes
+  # or parser detail back to the client.
+  @security
+  Scenario Outline: Unparseable request bodies return a generic 4xx
+    Given an authenticated user
+    When the current user PATCHes their own profile with body "<body>" as "<contentType>"
+    Then the response status should be <status>
+    And the response body property "message" should equal "<text>"
+    And the response body property "error" should equal "<text>"
+
+    Examples:
+      | body     | contentType      | status | text                   |
+      | {bad     | application/json | 400    | Bad Request            |
+      | <a/>     | text/xml         | 415    | Unsupported Media Type |
+
   # H-23: avatar magic-byte verification. Declaring image/png but
   # sending an SVG body must be rejected by resolveFile.
   @security

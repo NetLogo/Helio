@@ -11,3 +11,13 @@ export class NotificationRowsAlreadySentError extends ConflictException {
     super('Some of these notifications were already emailed. Try again.');
   }
 }
+
+export class NotificationCategoryClaimError extends Error {
+  constructor(category: string, producerNames: ReadonlyArray<string>) {
+    super(
+      producerNames.length === 0
+        ? `Notification category ${category} is claimed by no producer`
+        : `Notification category ${category} is claimed by ${producerNames.length} producers: ${producerNames.join(', ')}`,
+    );
+  }
+}

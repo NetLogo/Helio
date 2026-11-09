@@ -1,6 +1,9 @@
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { EventSearchFilters } from '#src/modules/event/domain/event.types.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+import type { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
+
+type ModelCommentEventType = (typeof modelCommentEventTypes)[keyof typeof modelCommentEventTypes];
 
 export type KnownEvents =
   | 'model.created'
@@ -14,9 +17,7 @@ export type KnownEvents =
   | 'model_author.added'
   | 'model_author.ownership_transferred'
   | 'model_author.removed'
-  | 'model_comment.created'
-  | 'model_comment.deleted'
-  | 'model_comment.updated'
+  | ModelCommentEventType
   | 'model_permission.granted'
   | 'model_permission.revoked'
   | 'model_version.created'
@@ -34,10 +35,9 @@ export type EventRecord = {
   resourceId: string;
   payload: Record<string, unknown>;
   createdAt: Date;
-  processedAt: Date | null;
-  attempts: number;
-  lastError: string | null;
 };
+
+export type EventJobData = { eventId: string };
 
 export type InsertEventParams = {
   type: string;
@@ -49,11 +49,7 @@ export type InsertEventParams = {
 
 export interface EventRepositoryPort {
   insertTx: (ctx: TransactionContext, params: InsertEventParams) => Promise<void>;
-  // `maxAttempts` caps how often a poison event is retried; omitting it selects regardless of
-  // how many times dispatch has already failed.
-  findUnprocessed: (limit: number, maxAttempts?: number) => Promise<Array<EventRecord>>;
-  markProcessed: (id: string) => Promise<void>;
-  markFailed: (id: string, error: unknown) => Promise<void>;
+  findOneById: (id: string) => Promise<EventRecord | null>;
   search: (
     filters: EventSearchFilters,
     params: PaginatedQueryParams,

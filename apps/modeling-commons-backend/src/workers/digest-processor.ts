@@ -1,35 +1,42 @@
 import workersConfig from '#src/config/workers.ts';
 import type { NotificationPreferenceRepositoryPort } from '#src/modules/user-notification/database/notification-preference.repository.port.ts';
-import { handleFailedDeliveries } from '#src/modules/user-notification/delivery-failures.ts';
 import type { UserNotificationRepositoryPort } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
+import { registerQueue } from '#src/workers/queues.ts';
 import type { FastifyBaseLogger } from 'fastify';
-import { PgBoss } from 'pg-boss';
+import type { PgBoss } from 'pg-boss';
 
-const config = workersConfig.digestProcessor;
+const fanOutConfig = workersConfig.queueNotificationDigests;
+const sendDigestConfig = workersConfig.sendDigest;
 
-export type DigestProcessorDependencies = {
-  userNotificationRepository: Pick<
-    UserNotificationRepositoryPort,
-    'findDigestRecipients' | 'findPendingForRecipient'
-  >;
-  notificationPreferenceRepository: Pick<NotificationPreferenceRepositoryPort, 'findAllByUser'>;
+export type SendDigestJobData = { recipientId: string; since: string; until: string };
+
+export type DigestFanOutDependencies = {
+  boss: Pick<PgBoss, 'send'>;
+  userNotificationRepository: Pick<UserNotificationRepositoryPort, 'findDigestRecipients'>;
   userNotificationDomain: Pick<
     Dependencies['userNotificationDomain'],
     'getDigestWindow' | 'listDailyCategories'
   >;
-  notificationDigestService: Pick<Dependencies['notificationDigestService'], 'queueDigest'>;
   logger: FastifyBaseLogger;
 };
 
+export type DigestProcessorDependencies = {
+  userNotificationRepository: Pick<UserNotificationRepositoryPort, 'findPendingForRecipient'>;
+  notificationPreferenceRepository: Pick<NotificationPreferenceRepositoryPort, 'findAllByUser'>;
+  userNotificationDomain: Pick<Dependencies['userNotificationDomain'], 'listDailyCategories'>;
+  notificationDigestService: Pick<Dependencies['notificationDigestService'], 'queueDigest'>;
+};
+
 export async function queuePendingDigests({
+  boss,
   userNotificationRepository,
-  notificationPreferenceRepository,
   userNotificationDomain,
-  notificationDigestService,
   logger,
-}: DigestProcessorDependencies): Promise<void> {
+}: DigestFanOutDependencies): Promise<void> {
   const { since, until } = userNotificationDomain.getDigestWindow(new Date());
   const dailyByDefault = userNotificationDomain.listDailyCategories([]);
+  const window = { since: since.toISOString(), until: until.toISOString() };
+  const utcDay = window.until.slice(0, 10);
 
   const listRecipientPage = async (afterRecipientId: string | null) =>
     userNotificationRepository.findDigestRecipients(
@@ -37,58 +44,122 @@ export async function queuePendingDigests({
       until,
       dailyByDefault,
       afterRecipientId,
-      config.recipientBatchSize,
+      fanOutConfig.recipientBatchSize,
     );
 
-  const queueRecipientDigest = async (recipientId: string) => {
-    const preferences = await notificationPreferenceRepository.findAllByUser(recipientId);
-    const rows = await userNotificationRepository.findPendingForRecipient(
-      recipientId,
-      userNotificationDomain.listDailyCategories(preferences),
-      since,
-      until,
-    );
-    await notificationDigestService.queueDigest(recipientId, rows, preferences);
-  };
+  const sendRecipientDigest = async (recipientId: string) =>
+    boss
+      .send(sendDigestConfig.queueName, { recipientId, ...window } satisfies SendDigestJobData, {
+        singletonKey: `${recipientId}:${utcDay}`,
+        singletonSeconds: sendDigestConfig.singletonSeconds,
+      })
+      .then(
+        () => true,
+        (error: unknown) => {
+          logger.error({ recipientId, error }, 'Failed to send a digest job');
+          return false;
+        },
+      );
 
-  const results: Array<PromiseSettledResult<void>> = [];
+  let recipientCount = 0;
+  let failureCount = 0;
   let recipientIds: Array<string> = [];
 
   do {
     recipientIds = await listRecipientPage(recipientIds.at(-1) ?? null);
-    results.push(...(await Promise.allSettled(recipientIds.map(queueRecipientDigest))));
-  } while (recipientIds.length === config.recipientBatchSize);
+    const sent = await Promise.all(recipientIds.map(sendRecipientDigest));
+    failureCount += sent.filter((isSent) => !isSent).length;
+    recipientCount += recipientIds.length;
+  } while (recipientIds.length === fanOutConfig.recipientBatchSize);
 
-  const recipientCount = results.length;
-  const failureCount = results.filter((result) => result.status === 'rejected').length;
-  logger.info({ recipientCount, failureCount }, 'Queued notification digests');
-  handleFailedDeliveries([{ results, message: 'Failed to queue a notification digest' }], logger, {
-    name: 'DigestProcessor',
-    summary: `${failureCount} of ${recipientCount} notification digests failed`,
-  });
+  logger.info({ recipientCount, failureCount, utcDay }, 'Fanned out notification digests');
+  if (failureCount > 0) throw new Error(`${failureCount} digest sends failed`);
+}
+
+function parseWindowDate(value: string, data: SendDigestJobData): Date {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw new Error(`Invalid send-digest window in job data ${JSON.stringify(data)}`);
+  }
+  return date;
+}
+
+export async function processDigest(
+  {
+    userNotificationRepository,
+    notificationPreferenceRepository,
+    userNotificationDomain,
+    notificationDigestService,
+  }: DigestProcessorDependencies,
+  data: SendDigestJobData,
+): Promise<void> {
+  const { recipientId } = data;
+  const since = parseWindowDate(data.since, data);
+  const until = parseWindowDate(data.until, data);
+  const preferences = await notificationPreferenceRepository.findAllByUser(recipientId);
+  const rows = await userNotificationRepository.findPendingForRecipient(
+    recipientId,
+    userNotificationDomain.listDailyCategories(preferences),
+    since,
+    until,
+  );
+  await notificationDigestService.queueDigest(recipientId, rows, preferences);
 }
 
 export async function startDigestProcessor({
-  connectionString,
-  ...dependencies
-}: DigestProcessorDependencies & { connectionString: string }): Promise<PgBoss> {
-  const boss = new PgBoss(connectionString);
+  boss,
+  userNotificationRepository,
+  notificationPreferenceRepository,
+  userNotificationDomain,
+  notificationDigestService,
+  logger,
+}: {
+  boss: PgBoss;
+  userNotificationRepository: DigestFanOutDependencies['userNotificationRepository'] &
+    DigestProcessorDependencies['userNotificationRepository'];
+  notificationPreferenceRepository: DigestProcessorDependencies['notificationPreferenceRepository'];
+  userNotificationDomain: DigestFanOutDependencies['userNotificationDomain'];
+  notificationDigestService: DigestProcessorDependencies['notificationDigestService'];
+  logger: FastifyBaseLogger;
+}): Promise<void> {
+  await registerQueue(boss, fanOutConfig);
+  await registerQueue(boss, sendDigestConfig);
 
-  boss.on('error', (error) => {
-    dependencies.logger.error(error, 'pg-boss error (digest processor)');
-  });
+  await boss.work(
+    fanOutConfig.queueName,
+    { batchSize: 1, pollingIntervalSeconds: workersConfig.polling.intervalSeconds },
+    async () =>
+      queuePendingDigests({ boss, userNotificationRepository, userNotificationDomain, logger }),
+  );
 
-  await boss.start();
-  await boss.createQueue(config.queueName);
+  await boss.work<SendDigestJobData>(
+    sendDigestConfig.queueName,
+    {
+      batchSize: 1,
+      localConcurrency: sendDigestConfig.work.localConcurrency,
+      pollingIntervalSeconds: workersConfig.polling.intervalSeconds,
+    },
+    async (jobs) => {
+      for (const { data } of jobs) {
+        await processDigest(
+          {
+            userNotificationRepository,
+            notificationPreferenceRepository,
+            userNotificationDomain,
+            notificationDigestService,
+          },
+          data,
+        );
+      }
+    },
+  );
 
-  await boss.work(config.queueName, async () => queuePendingDigests(dependencies));
+  await boss.schedule(
+    fanOutConfig.queueName,
+    fanOutConfig.cronExpression,
+    null,
+    fanOutConfig.queue,
+  );
 
-  await boss.schedule(config.queueName, config.cronExpression, null, {
-    retryLimit: config.retryLimit,
-    retryDelay: config.retryDelaySeconds,
-    expireInSeconds: config.expireInSeconds,
-  });
-
-  dependencies.logger.info('Digest processor scheduled');
-  return boss;
+  logger.info('Digest processor scheduled');
 }

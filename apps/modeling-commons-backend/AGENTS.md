@@ -29,6 +29,7 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 - Always go through `transactionManager.run(async (ctx) => { ... })`.
 - Use `repository.insertTx(ctx, entity)` / `updateFieldsTx(ctx, ...)` / `softDeleteTx(ctx, ...)` inside the txn. Repository methods that take a `TransactionContext` end in `Tx`.
 - Emit domain audit via `eventRepository.insertTx(ctx, { type, actorId, resourceType, resourceId, payload })` in the same txn. Event types are dotted (`model.created`, `model.deleted`).
+- `eventRepository.insertTx` also publishes the event type through `jobQueue.publishTx` in the same transaction, which sends one `{ eventId }` job to every queue subscribed to that type (`subscribesTo` in `src/config/workers.ts`), so a committed event always reaches its subscribers and a rolled back one never does.
 - For child aggregates (e.g. comments on a model), set `resourceType` to the *parent* (`model`), not the child. Per-resource audit queries surface child activity that way.
 - Soft delete, don't hard delete: models/users carry `deletedAt`. Call `modelDomain.assertNotDeleted(entity)` before mutating.
 - **Models are written through drafts**, not directly. Flow: `POST /v1/model-drafts` → `PATCH /v1/model-drafts/:id` → multipart upload to `/v1/model-drafts/:id/files` → `POST /v1/model-drafts/:id/publish`. There is no `POST /v1/models`. Publish auto-creates `v1`; a model never has zero versions.
@@ -69,18 +70,28 @@ Use path aliases, never relative `../../`:
 
 ## Email
 
-- Send: queue with `mailService.enqueue(content, ctx?)` from `src/modules/mail/mail.service.ts`. Only the `email-sender` worker calls `sendMailAsync`; only `src/lib/auth.ts` uses the transporter directly.
+- Send: queue with `mailService.enqueue(content, ctx?)` from `src/modules/mail/mail.service.ts`, which sends a `send-email` pg-boss job whose data is the rendered `Mail.Options`. Only the `send-email` worker (`src/workers/email-sender.ts`) calls `sendMailAsync`; only `src/lib/auth.ts` uses the transporter directly.
 - Build content: `mailDomain.create*Email(...)` factories in `src/modules/mail/domain/mail.domain.ts`. New MVP notifications can reuse `createNotificationEmail`; dedicated templates are polish.
 - Templates: React Email components at `packages/emails/src/templates/` (`@repo/emails`).
-- Enqueue inside the same `transactionManager.run` as the write, passing `ctx`, so the email is queued only if the write commits. The `email-sender` worker retries SMTP failures with backoff; they never roll back the write.
+- Enqueue inside the same `transactionManager.run` as the write, passing `ctx` (the job goes in through `jobQueue.sendTx`), so the email is queued only if the write commits. SMTP failures are retried by pg-boss and never roll back the write; retry limit, backoff, the `send-email-dead` dead letter and the 30 day retention live in `workersConfig.sendEmail` (`src/config/workers.ts`).
 - Local SMTP: Mailpit container (port 1025, web UI 8025) via `docker-compose.dev.yml`. No auth, no TLS.
+
+## Workers
+
+- One pg-boss instance per process, from DI: `boss` (`src/shared/jobs/boss.ts`) and the `jobQueue` port over it (`src/shared/jobs/pg-boss.job-queue.ts`).
+- `SERVER_ROLE=api` is send-only: its own 2-connection pool, no migrate, supervise or schedule. Every role creates the queues it sends to (`registerSendQueues` in `src/workers/queues.ts`, called after `boss.start()` in `src/server/index.ts`). `worker` and `standalone` own the pg-boss schema, every other queue, the schedules and the workers (`src/workers/index.ts`).
+- Queue policies (retries, backoff, the `<queue>-dead` dead letter, retention) live per queue in `src/config/workers.ts` and are applied by `registerQueue` (`src/workers/queues.ts`). Workers poll every `workers.polling.intervalSeconds` (2 s).
+- Queues: `user-notifications` and `realtime` (event subscribers, one job per published event each), `send-email` (one job per email), `queue-notification-digests` (cron 17:00 UTC, fan-out only), `send-digest` (one job per recipient per UTC day), `purge-notifications` and `purge-stale-model-drafts` (weekly crons).
+- Enqueue from a transaction with `jobQueue.sendTx(ctx, ...)`; never plain `send` inside `transactionManager.run`, or the job outlives a rollback.
+- A worker handler that throws is retried by pg-boss and ends in the queue's dead letter after the last retry, so do not catch to swallow in handlers; the digest fan-out logs a failed per-recipient send and continues the page, then throws after the last page so the whole run retries.
 
 ## Testing
 
 - `yarn run test:unit` (vitest) · `yarn run test:e2e` (cucumber, needs `yarn run svc` running for postgres/object-storage/mailpit/netlogo-services).
 - During iteration run `yarn run test:e2e:sanity` plus the feature files you touched; run the full `yarn run test:e2e` once before review or merge.
-- `test:unit` is fully mocked (no DB). `test:e2e` runs against its own `test_e2e` database on the same Postgres, which `cucumber.mjs` creates if missing and migrates (`prisma migrate deploy`) at the start of every run, so it never truncates the dev database or shares its pg-boss queues. Only `test:e2e:data` reads the database in `.env`. Diagnose e2e failures from `reports/cucumber-report.json`.
+- `test:unit` is fully mocked (no DB). `test:e2e` runs against its own `test_e2e` database on the same Postgres, which `cucumber.mjs` creates if missing and migrates (`prisma migrate deploy`) at the start of every run, so it never truncates the dev database or shares its pg-boss queues. Every scenario starts with `boss.deleteAllJobs()`; assert queued or sent email through the `send-email` jobs (`tests/support/email-jobs.ts`). Only `test:e2e:data` reads the database in `.env`. Diagnose e2e failures from `reports/cucumber-report.json`.
 - In vitest specs, import `beforeEach`/`afterEach` from `vitest`, never `node:test` — wrong import silently no-ops the hook.
+- Specs for `src/shared/<area>/` live in `src/shared/<area>/__tests__/` and import their subject through `#src/...` aliases, not relative paths.
 - Tests should never enforce an implementation detail; they should focus on observable behavior and outcomes.
 - Enforce constraints through tests, ensuring that the system behaves correctly under expected and edge-case scenarios.
 
@@ -88,7 +99,7 @@ Use path aliases, never relative `../../`:
 
 - Limits (file size, allowed MIME types, rate caps, …) live in `src/config/rules.ts`. Don't redeclare module-local constants.
 - App-level env (`SMTP_*`, `STORAGE_*`, …) flows through `src/config/env.ts`. Services receive derived values via awilix DI (`storagePublicBaseUrl`, `bucket`), not direct `env.*` reads.
-- Worker schedules and cron expressions are defined in `src/config/workers.ts`. Tests validate that each cron expression is well-formed and adheres to the expected five-field format.
+- Worker settings live in `src/config/workers.ts`, one entry per queue: queue name (the dead-letter queue is always `<queueName>-dead`, from `getDeadLetterQueueName` in `src/workers/queues.ts`), queue policy, worker concurrency and, for scheduled queues, the cron expression. Tests validate that each cron expression is well-formed and adheres to the expected five-field format.
 
 ## Dev servers
 

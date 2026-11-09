@@ -11,6 +11,7 @@ import UnderPressure from '@fastify/under-pressure';
 import env from '#src/config/env.ts';
 import { di } from '#src/server/di/index.ts';
 import { startWorkers } from '#src/workers/index.ts';
+import { registerSendQueues, registerSubscriptions } from '#src/workers/queues.ts';
 
 export default async function createServer(fastify: FastifyInstance): Promise<FastifyInstance> {
   // Announce server mode and environment
@@ -84,6 +85,14 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
 
   // Configure Dependency Injection
   await di(fastify);
+
+  const { boss } = fastify.diContainer.cradle;
+  await boss.start();
+  await registerSendQueues(boss);
+  await registerSubscriptions(boss);
+  fastify.addHook('onClose', async () => {
+    await boss.stop({ graceful: true });
+  });
 
   await startWorkers(fastify);
 

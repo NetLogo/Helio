@@ -1,3 +1,4 @@
+import type { NotificationCategory } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type { UserNotificationPaginatedResponse } from '#src/modules/user-notification/dtos/user-notification.paginated.response.dto.ts';
 import type { ListUserNotificationsQueryDto } from '#src/modules/user-notification/dtos/user-notifications.request.dto.ts';
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
@@ -7,7 +8,7 @@ export default function makeListUserNotificationsQuery({
   notificationPreferenceRepository,
   userNotificationDomain,
   userNotificationMapper,
-  resolveNotificationSubjectsQuery,
+  getNotificationPreviewsQuery,
 }: Dependencies) {
   return {
     async execute(
@@ -35,20 +36,19 @@ export default function makeListUserNotificationsQuery({
         userNotificationRepository.countUnread(userId, categories),
       ]);
 
-      const subjects = await resolveNotificationSubjectsQuery.execute(page.data, userId, {
-        includeThumbnails: true,
-      });
+      const previews = await getNotificationPreviewsQuery.execute(page.data, userId);
 
       return {
         count: page.count,
         limit: page.limit,
         page: page.page,
-        data: page.data.map((record) =>
-          userNotificationMapper.toResponse(
-            record,
-            subjects.get(record.id) ?? { actor: null, target: null },
-          ),
-        ),
+        data: page.data.map((record) => {
+          const preview = previews.get(record.id) ?? { actor: null, target: null };
+          const description = userNotificationDomain
+            .getProducer(record.category as NotificationCategory)
+            .describeRow(record, preview);
+          return userNotificationMapper.toResponse(record, preview, description);
+        }),
         unreadCount,
       };
     },

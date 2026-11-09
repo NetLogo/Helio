@@ -4,7 +4,10 @@ import {
   fakeMarkEmailSent,
   mockUserNotificationRepository,
 } from '#src/modules/user-notification/database/user-notification.repository.mock.ts';
-import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
+import {
+  mockTransactionManager,
+  stageCommitEffect,
+} from '#src/shared/test/mock-transaction-manager.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { NotificationRowsAlreadySentError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 
@@ -30,7 +33,7 @@ describe('notificationEmailService queueRows', () => {
     mailService.enqueue
       .mockReset()
       .mockImplementation(async (email: unknown, ctx: TransactionContext) => {
-        ctx.onCommit(() => {
+        stageCommitEffect(ctx, () => {
           queued.push(email);
         });
       });

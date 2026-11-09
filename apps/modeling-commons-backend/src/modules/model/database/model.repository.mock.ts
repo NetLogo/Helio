@@ -17,7 +17,7 @@ export function mockModelRepository(): { [K in keyof ModelRepository]: ReturnTyp
     findInteractionCounts: vi.fn(),
     findChildren: vi.fn(),
     findCard: vi.fn(),
-    findSubjectsReadableBy: vi.fn(),
+    findPreviewsReadableBy: vi.fn(),
     insertTx: vi.fn(),
     updateFieldsTx: vi.fn(),
     resolveLegacyId: vi.fn(),

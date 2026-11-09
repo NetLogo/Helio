@@ -1,6 +1,7 @@
 import { Given, When } from '@cucumber/cucumber';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
+import { newId } from '#src/shared/utils/id.ts';
 
 function getUsers(context: Record<string, unknown>): Map<string, TestUser> {
   return context['users'] as Map<string, TestUser>;
@@ -61,6 +62,19 @@ When(
     this.context.latestResponse = await this.server.inject({
       method: 'DELETE',
       url: `/api/v1/models/${modelId}/tags/${tagId}`,
+      headers: { cookie: user.cookie },
+    });
+  },
+);
+
+When(
+  'I remove an unknown tag from model {string}',
+  async function (this: ICustomWorld, modelTitle: string) {
+    const user = this.context['currentUser'] as TestUser;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    this.context.latestResponse = await this.server.inject({
+      method: 'DELETE',
+      url: `/api/v1/models/${modelId}/tags/${newId()}`,
       headers: { cookie: user.cookie },
     });
   },

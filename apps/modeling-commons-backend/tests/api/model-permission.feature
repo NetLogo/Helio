@@ -84,3 +84,9 @@ Feature: Model Permissions
     And an authenticated user "third"
     When "delegate" grants "read" permission on "Delegated Model" to "third"
     Then the response status should be 201
+
+  Scenario: Cannot grant permission to an unknown user
+    Given an authenticated user "owner"
+    And a private model "Unknown Grantee Model" created by "owner"
+    When "owner" grants "read" permission on "Unknown Grantee Model" to an unknown user
+    Then the response status should be 404

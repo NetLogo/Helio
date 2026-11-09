@@ -1,47 +1,122 @@
-import { DAY_MS, MINUTE_MS } from '#src/shared/utils/consts.ts';
+import {
+  modelCommentEventTypes,
+  userNotificationEventTypes,
+} from '#src/modules/event/domain/event-types.ts';
+import { notificationEventTypes } from '#src/modules/notification-producers.ts';
+import { DAY_MS, DAY_S } from '#src/shared/utils/consts.ts';
 
 const workersConfig = {
+  schema: 'pgboss',
+  apiPoolSize: 2,
+  polling: {
+    intervalSeconds: 2,
+  },
+  deadLetter: {
+    retentionSeconds: 30 * DAY_S,
+    deleteAfterSeconds: 30 * DAY_S,
+  },
+  retiredQueueNames: [
+    'send-notification-digests',
+    'process-events',
+    'send-emails',
+    'event-dispatch',
+  ],
+  userNotifications: {
+    queueName: 'user-notifications',
+    subscribesTo: notificationEventTypes,
+    queue: {
+      retryLimit: 5,
+      retryDelay: 60,
+      retryBackoff: true,
+      retryDelayMax: 60 * 60,
+      expireInSeconds: 5 * 60,
+      deleteAfterSeconds: 7 * DAY_S,
+    },
+    work: {
+      localConcurrency: 4,
+    },
+  },
+  realtime: {
+    queueName: 'realtime',
+    subscribesTo: [
+      modelCommentEventTypes.created,
+      modelCommentEventTypes.updated,
+      modelCommentEventTypes.deleted,
+      userNotificationEventTypes.created,
+    ],
+    queue: {
+      retryLimit: 1,
+      retryDelay: 1,
+      retryBackoff: false,
+      expireInSeconds: 30,
+      deleteAfterSeconds: 60 * 60,
+    },
+    work: {
+      localConcurrency: 4,
+      pollingIntervalSeconds: 0.5,
+    },
+  },
+  sendEmail: {
+    queueName: 'send-email',
+    queue: {
+      retryLimit: 8,
+      retryDelay: 60,
+      retryBackoff: true,
+      retryDelayMax: 2 * 60 * 60,
+      expireInSeconds: 2 * 60,
+      deleteAfterSeconds: 30 * DAY_S,
+    },
+    work: {
+      localConcurrency: 4,
+    },
+  },
+  queueNotificationDigests: {
+    queueName: 'queue-notification-digests',
+    queue: {
+      retryLimit: 3,
+      retryDelay: 30 * 60,
+      retryBackoff: false,
+      expireInSeconds: 60 * 60,
+      deleteAfterSeconds: 7 * DAY_S,
+    },
+    cronExpression: '0 17 * * *', // 17:00 UTC daily
+    recipientBatchSize: 25,
+  },
+  sendDigest: {
+    queueName: 'send-digest',
+    queue: {
+      retryLimit: 3,
+      retryDelay: 10 * 60,
+      retryBackoff: true,
+      retryDelayMax: 60 * 60,
+      expireInSeconds: 5 * 60,
+      deleteAfterSeconds: 7 * DAY_S,
+    },
+    work: {
+      localConcurrency: 4,
+    },
+    singletonSeconds: DAY_S,
+  },
+  // Janitors for cleaning up stale or old data
   modelDraftJanitor: {
     queueName: 'purge-stale-model-drafts',
+    queue: {
+      retryLimit: 2,
+      retryDelay: 5 * 60,
+      deleteAfterSeconds: 7 * DAY_S,
+    },
     cronExpression: '0 3 * * 0', // Sunday 03:00 UTC
     staleMs: 90 * DAY_MS,
   },
-  eventProcessor: {
-    queueName: 'process-events',
-    cronExpression: '*/1 * * * *',
-    // A drain is a drain: with at most one job queued, a burst of writes collapses into a single
-    // pass instead of one redundant scan per event. The cron send collapses into it too.
-    queuePolicy: 'short',
-    // A full batch means more is waiting, so keep going rather than leave it for the next tick.
-    // Bounded because a batch of poison events keeps coming back until `attempts` catches up.
-    maxDrainPasses: 10,
-    eventBatchSize: 50,
-    maxEventAttempts: 5,
-  },
-  emailSender: {
-    queueName: 'send-emails',
-    cronExpression: '*/1 * * * *',
-    queuePolicy: 'short',
-    maxDrainPasses: 10,
-    emailBatchSize: 50,
-    // Doubling from one minute, eight attempts span about two hours of SMTP outage.
-    maxEmailAttempts: 8,
-    retryBaseMs: MINUTE_MS,
-  },
-  digestProcessor: {
-    queueName: 'send-notification-digests',
-    cronExpression: '0 17 * * *',
-    recipientBatchSize: 25,
-    retryLimit: 3,
-    retryDelaySeconds: 30 * 60,
-    expireInSeconds: 60 * 60,
-  },
   notificationJanitor: {
     queueName: 'purge-notifications',
-    cronExpression: '0 4 * * 0',
+    queue: {
+      retryLimit: 2,
+      retryDelay: 5 * 60,
+      deleteAfterSeconds: 7 * DAY_S,
+    },
+    cronExpression: '0 4 * * 0', // Sunday 04:00 UTC
     retentionMs: 90 * DAY_MS,
-    sentEmailRetentionMs: 30 * DAY_MS,
-    failedEmailRetentionMs: 90 * DAY_MS,
   },
 } as const;
 

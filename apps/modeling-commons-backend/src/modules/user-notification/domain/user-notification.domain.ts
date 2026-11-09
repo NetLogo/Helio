@@ -1,29 +1,32 @@
 import notificationsConfig from '#src/config/notifications.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
-import { modelCommentNotificationCategories } from '#src/modules/model-comment/notifications/model-comment.categories.ts';
+import { notificationCategoryCatalog } from '#src/modules/notification-producers.ts';
 import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
 import type { InsertUserNotificationParams } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
-import { NotificationNotFoundError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
+import {
+  NotificationCategoryClaimError,
+  NotificationNotFoundError,
+} from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import {
   buildDigest,
-  describeGroup,
   groupNotifications,
 } from '#src/modules/user-notification/domain/user-notification.grouping.ts';
 import type {
   DeliverableRecipient,
-  DigestRow,
+  NotificationRow,
   DigestWindow,
   EmailModeByCategory,
   NotificationCategory,
   NotificationCategoryDefinition,
   NotificationCategoryInfo,
   NotificationChannels,
-  NotificationIntent,
+  NotificationRowFacts,
+  NotificationPreviews,
+  NotificationProducer,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 
-const catalog = {
-  ...modelCommentNotificationCategories,
-} as const satisfies Record<NotificationCategory, NotificationCategoryDefinition>;
+const catalog: Readonly<Record<NotificationCategory, NotificationCategoryDefinition>> =
+  notificationCategoryCatalog;
 
 const categories: Array<NotificationCategoryInfo> = (
   Object.keys(catalog) as Array<NotificationCategory>
@@ -50,9 +53,41 @@ function mapOverridesByCategory<T extends { category: string }>(
   return new Map(overrides.map((override) => [override.category, override] as const));
 }
 
-export default function userNotificationDomain() {
+export function mapProducersByCategory<P extends Pick<NotificationProducer, 'name' | 'categories'>>(
+  categoryIds: ReadonlyArray<NotificationCategory>,
+  producers: ReadonlyArray<P>,
+): ReadonlyMap<NotificationCategory, P> {
+  return new Map(
+    categoryIds.map((category) => {
+      const claimants = producers.filter((claimant) => category in claimant.categories);
+      const [producer] = claimants;
+      if (claimants.length !== 1 || !producer) {
+        throw new NotificationCategoryClaimError(
+          category,
+          claimants.map((claimant) => claimant.name),
+        );
+      }
+      return [category, producer] as const;
+    }),
+  );
+}
+
+export default function userNotificationDomain({
+  notificationProducers,
+}: Pick<Dependencies, 'notificationProducers'>) {
+  const producerByCategory = mapProducersByCategory(
+    categories.map((info) => info.category),
+    notificationProducers,
+  );
+
   return {
     categories,
+
+    getProducer(category: NotificationCategory): NotificationProducer {
+      const producer = producerByCategory.get(category);
+      if (!producer) throw new NotificationCategoryClaimError(category, []);
+      return producer;
+    },
 
     isKnownCategory,
 
@@ -98,19 +133,28 @@ export default function userNotificationDomain() {
     createLedgerRow(
       event: EventRecord,
       recipientId: string,
-      intent: NotificationIntent,
+      facts: NotificationRowFacts,
+      channels: NotificationChannels,
     ): InsertUserNotificationParams {
       return {
         recipientId,
         eventId: event.id,
-        category: intent.category,
-        title: intent.title,
-        body: intent.body,
-        url: intent.url,
-        actorUserId: intent.actorUserId ?? null,
-        targetType: intent.target?.type ?? null,
-        targetId: intent.target?.id ?? null,
+        category: facts.category,
+        url: facts.url,
+        payload: facts.payload,
+        actorUserId: facts.actorUserId ?? null,
+        targetType: facts.target?.type ?? null,
+        targetId: facts.target?.id ?? null,
+        inAppSuppressed: !channels.inApp,
       };
+    },
+
+    listInAppRecipientIds(
+      ledgerRows: ReadonlyArray<{ recipientId: string; inAppSuppressed: boolean }>,
+    ): Array<string> {
+      return [
+        ...new Set(ledgerRows.filter((row) => !row.inAppSuppressed).map((row) => row.recipientId)),
+      ];
     },
 
     listInAppEnabledCategories(
@@ -124,7 +168,7 @@ export default function userNotificationDomain() {
         .map((info) => info.category);
     },
 
-    listEmailEnabledRows<T extends DigestRow>(
+    listEmailEnabledRows<T extends NotificationRow>(
       rows: ReadonlyArray<T>,
       overrides: ReadonlyArray<Partial<NotificationChannels> & { category: string }>,
     ): Array<T> {
@@ -161,10 +205,15 @@ export default function userNotificationDomain() {
         .map((info) => info.category);
     },
 
-    groupNotifications,
+    groupNotifications(rows: ReadonlyArray<NotificationRow>) {
+      return groupNotifications(rows, producerByCategory);
+    },
 
-    describeGroup,
-
-    buildDigest,
+    buildDigest(
+      rows: ReadonlyArray<NotificationRow>,
+      previews: ReadonlyMap<string, NotificationPreviews>,
+    ) {
+      return buildDigest(rows, previews, producerByCategory);
+    },
   };
 }

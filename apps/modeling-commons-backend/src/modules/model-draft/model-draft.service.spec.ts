@@ -20,6 +20,7 @@ import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-dra
 import type { DraftDataV1 } from '#src/modules/model-draft/schemas/v1.ts';
 import type { Model } from '#prisma/index';
 import { ID_PATTERN } from '#src/shared/utils/id.ts';
+import { PREVIEW_IMAGE_PATH_PREFIX } from '#src/modules/model-draft/model-draft.storage.ts';
 
 function makeDraft(
   data: DraftDataV1 = {},
@@ -634,6 +635,78 @@ describe('modelDraftService', () => {
 
       expect(result.createdNewVersion).toBe(true);
       expect(modelVersionRepository.insertTx).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('publish preview image key', () => {
+    const stagedPreview = {
+      s3Key: 'files/public/staging/user-1/draft-1/abc-preview.png',
+      filename: 'preview.png',
+      sizeBytes: 3,
+      mimeType: 'image/png',
+    };
+
+    function makeCopyingStorage() {
+      return {
+        ...makeStorageMock(),
+        copyStagedToPermanent: vi.fn().mockResolvedValue('uploads/models/permanent.nlogo'),
+      };
+    }
+
+    function previewCopyCall(copy: ReturnType<typeof vi.fn>) {
+      return copy.mock.calls
+        .map(([params]) => params as { stagingKey: string })
+        .find((params) => params.stagingKey === stagedPreview.s3Key);
+    }
+
+    it('copies the preview with the bare preview prefix on a new version', async () => {
+      const modelDraftStorage = makeCopyingStorage();
+      const { service } = buildPublishService({ modelDraftStorage });
+
+      await service.publish(makeDraft({ ...publishableDraftData, previewImage: stagedPreview }));
+
+      expect(previewCopyCall(modelDraftStorage.copyStagedToPermanent)).toMatchObject({
+        pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
+        acl: 'public-read',
+      });
+    });
+
+    it('copies a changed preview with the bare preview prefix on a metadata edit', async () => {
+      const modelDraftStorage = makeCopyingStorage();
+      const { service, modelRepository, modelVersionRepository } = buildPublishService({
+        modelDraftStorage,
+        modelVersionTagRepository: { findByVersion: vi.fn().mockResolvedValue([]) },
+      });
+      modelRepository.findOneById.mockResolvedValue(
+        makeModel({ id: 'model-1', visibility: 'public', deletedAt: null }),
+      );
+      modelVersionRepository.findLatestByModelTx.mockResolvedValue({
+        modelId: 'model-1',
+        versionNumber: 1,
+        finalizedAt: null,
+      } as never);
+
+      const result = await service.publish(
+        makeDraft(
+          {
+            ...publishableDraftData,
+            previewImage: stagedPreview,
+            seededFrom: {
+              versionNumber: 1,
+              primaryFileS3Key: validPrimary.s3Key,
+              modelFileS3Keys: [],
+              additionalFileS3Keys: [],
+            },
+          },
+          { modelId: 'model-1' },
+        ),
+      );
+
+      expect(result.createdNewVersion).toBe(false);
+      expect(previewCopyCall(modelDraftStorage.copyStagedToPermanent)).toMatchObject({
+        pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
+        acl: 'public-read',
+      });
     });
   });
 

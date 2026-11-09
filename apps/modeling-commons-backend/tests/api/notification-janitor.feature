@@ -26,18 +26,3 @@ Feature: Notification janitor
     When the notification janitor runs
     Then the notification for "alice" on model "live" created 89 days ago should remain
     And the notification for "alice" on model "live" created 91 days ago should be gone
-
-  Scenario: A janitor run removes long-sent and long-failed queued emails and keeps recent or pending ones
-    Given a queued email "sent-31" sent 31 days ago
-    And a queued email "sent-29" sent 29 days ago
-    And a queued email "capped-91" that hit the attempt cap 91 days ago
-    And a queued email "capped-89" that hit the attempt cap 89 days ago
-    And a queued email "retrying-91" that last failed 91 days ago below the attempt cap
-    And a queued email "pending-91" created 91 days ago and never tried
-    When the notification janitor runs
-    Then the queued email "sent-31" should be gone
-    And the queued email "capped-91" should be gone
-    And the queued email "sent-29" should remain
-    And the queued email "capped-89" should remain
-    And the queued email "retrying-91" should remain
-    And the queued email "pending-91" should remain

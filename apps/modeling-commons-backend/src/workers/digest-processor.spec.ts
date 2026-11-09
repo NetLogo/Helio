@@ -1,36 +1,35 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { FastifyBaseLogger } from 'fastify';
+import type { PgBoss } from 'pg-boss';
 
 const bossInstance = {
-  on: vi.fn(),
-  start: vi.fn().mockResolvedValue(undefined),
+  send: vi.fn().mockResolvedValue('job-id'),
   work: vi.fn().mockResolvedValue(undefined),
   schedule: vi.fn().mockResolvedValue(undefined),
-  stop: vi.fn().mockResolvedValue(undefined),
   createQueue: vi.fn().mockResolvedValue(undefined),
+  updateQueue: vi.fn().mockResolvedValue(undefined),
 };
 
-vi.mock('pg-boss', () => ({
-  PgBoss: class {
-    constructor() {
-      return bossInstance;
-    }
-  },
-}));
+const boss = bossInstance as unknown as PgBoss;
 
 import notificationsConfig from '#src/config/notifications.ts';
 import workersConfig from '#src/config/workers.ts';
+import { getDeadLetterQueueName } from '#src/workers/queues.ts';
 import type { NotificationPreferenceRecord } from '#src/modules/user-notification/database/notification-preference.record.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import { mockNotificationProducer } from '#src/modules/user-notification/domain/notification-producer.mock.ts';
 import type {
-  DigestRow,
+  NotificationRow,
   EmailMode,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
-import { MINUTE_MS } from '#src/shared/utils/consts.ts';
+import { DAY_S, MINUTE_MS } from '#src/shared/utils/consts.ts';
 import {
+  processDigest,
   queuePendingDigests,
   startDigestProcessor,
+  type DigestFanOutDependencies,
   type DigestProcessorDependencies,
+  type SendDigestJobData,
 } from '#src/workers/digest-processor.ts';
 
 const logger = {
@@ -40,9 +39,11 @@ const logger = {
   warn: vi.fn(),
 } as unknown as FastifyBaseLogger;
 
-const batchSize = workersConfig.digestProcessor.recipientBatchSize;
+const fanOutConfig = workersConfig.queueNotificationDigests;
+const sendDigestConfig = workersConfig.sendDigest;
+const batchSize = fanOutConfig.recipientBatchSize;
 
-type StoredRow = DigestRow & { recipientId: string; emailSentAt: Date | null };
+type StoredRow = NotificationRow & { recipientId: string; emailSentAt: Date | null };
 
 type StoredPreference = { userId: string; category: string; email: EmailMode; inApp: boolean };
 
@@ -55,8 +56,8 @@ function createRow(
     id: `${recipientId}-${category}-${ageMs}`,
     recipientId,
     category,
-    title: 't',
     url: 'https://example.test',
+    payload: {},
     actorUserId: null,
     targetType: null,
     targetId: null,
@@ -85,7 +86,8 @@ function createRepositories(rows: Array<StoredRow>, preferences: Array<StoredPre
     return preference ? preference.email === 'daily' : dailyByDefault.includes(row.category);
   }
 
-  const userNotificationRepository: DigestProcessorDependencies['userNotificationRepository'] = {
+  const userNotificationRepository: DigestFanOutDependencies['userNotificationRepository'] &
+    DigestProcessorDependencies['userNotificationRepository'] = {
     findDigestRecipients: vi.fn(
       async (
         since: Date,
@@ -133,34 +135,55 @@ function createRepositories(rows: Array<StoredRow>, preferences: Array<StoredPre
   return { userNotificationRepository, notificationPreferenceRepository };
 }
 
-function createDailyPreferences(recipientIds: Array<string>): Array<StoredPreference> {
-  return recipientIds.map((id) => createPreference(id, 'daily'));
-}
-
-function createService(failingRecipientIds: ReadonlySet<string> = new Set()) {
-  const sentTo: Array<string> = [];
+function createService() {
   const sentRowIds: Array<string> = [];
   const service = {
     queueDigest: vi.fn(
       async (
-        recipientId: string,
-        rows: ReadonlyArray<DigestRow>,
+        _recipientId: string,
+        rows: ReadonlyArray<NotificationRow>,
         _preferences: ReadonlyArray<NotificationPreferenceRecord>,
       ) => {
-        if (failingRecipientIds.has(recipientId)) throw new Error(`send to ${recipientId} failed`);
         for (const row of rows as ReadonlyArray<StoredRow>) {
           row.emailSentAt = new Date();
           sentRowIds.push(row.id);
         }
-        sentTo.push(recipientId);
       },
     ),
   };
-  return { service, sentTo, sentRowIds };
+  return { service, sentRowIds };
 }
 
 function createRecipients(count: number): Array<string> {
   return Array.from({ length: count }, (_, index) => `user-${String(index).padStart(3, '0')}`);
+}
+
+function fanOut(rows: Array<StoredRow>) {
+  const dailyPreferences = [...new Set(rows.map((row) => row.recipientId))].map((id) =>
+    createPreference(id, 'daily'),
+  );
+  const { userNotificationRepository } = createRepositories(rows, dailyPreferences);
+  return queuePendingDigests({
+    boss,
+    userNotificationRepository,
+    userNotificationDomain: userNotificationDomain({
+      notificationProducers: [mockNotificationProducer()],
+    }),
+    logger,
+  });
+}
+
+function listSentRecipientIds(): Array<string> {
+  return bossInstance.send.mock.calls
+    .map(([, data]) => (data as SendDigestJobData).recipientId)
+    .sort();
+}
+
+function createWindow(): { since: string; until: string } {
+  const { since, until } = userNotificationDomain({
+    notificationProducers: [mockNotificationProducer()],
+  }).getDigestWindow(new Date());
+  return { since: since.toISOString(), until: until.toISOString() };
 }
 
 const inWindowAgeMs = notificationsConfig.minAgeMs + MINUTE_MS;
@@ -168,33 +191,14 @@ const inWindowAgeMs = notificationsConfig.minAgeMs + MINUTE_MS;
 describe('queuePendingDigests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    bossInstance.send.mockResolvedValue('job-id');
   });
 
-  it('loads each recipient preferences once per run and hands them to the digest service', async () => {
-    const recipients = createRecipients(batchSize + 2);
-    const rows = recipients.map((id) => createRow(id, inWindowAgeMs));
-    const preferences = createDailyPreferences(recipients);
-    const repositories = createRepositories(rows, preferences);
-    const { service } = createService();
-
-    await queuePendingDigests({
-      ...repositories,
-      userNotificationDomain: userNotificationDomain(),
-      notificationDigestService: service,
-      logger,
-    });
-
-    const loadedFor = vi
-      .mocked(repositories.notificationPreferenceRepository.findAllByUser)
-      .mock.calls.map(([userId]) => userId);
-    expect(loadedFor.sort()).toEqual(recipients);
-    for (const [recipientId, , passed] of service.queueDigest.mock.calls) {
-      expect(passed).toEqual(preferences.filter((entry) => entry.userId === recipientId));
-    }
-    expect(service.queueDigest).toHaveBeenCalledTimes(recipients.length);
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  it('queues one digest for each recipient with pending in-window rows, across pages, and none to others', async () => {
+  it('sends one send-digest job per pending recipient, across pages, and none to others', async () => {
     const recipients = createRecipients(batchSize * 2 + 3);
     const rows = recipients.flatMap((id) => [
       createRow(id, inWindowAgeMs),
@@ -202,86 +206,214 @@ describe('queuePendingDigests', () => {
     ]);
     rows.push(createRow('user-too-old', notificationsConfig.windowMs + MINUTE_MS));
     rows.push(createRow('user-too-young', notificationsConfig.minAgeMs - MINUTE_MS));
-    const preferences = createDailyPreferences([...recipients, 'user-too-old', 'user-too-young']);
-    const { service, sentTo } = createService();
 
-    await queuePendingDigests({
-      ...createRepositories(rows, preferences),
-      userNotificationDomain: userNotificationDomain(),
-      notificationDigestService: service,
-      logger,
-    });
+    await fanOut(rows);
 
-    expect([...sentTo].sort()).toEqual(recipients);
+    expect(listSentRecipientIds()).toEqual(recipients);
   });
 
-  it('keeps sending to the others when one recipient fails, then throws', async () => {
-    const recipients = createRecipients(batchSize * 2);
+  it('keys each job by recipient and UTC day of the window end, deduplicated for a day', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-11-02T17:00:00Z'));
+    const window = createWindow();
+
+    await fanOut([createRow('user-a', inWindowAgeMs)]);
+
+    expect(bossInstance.send).toHaveBeenCalledExactlyOnceWith(
+      sendDigestConfig.queueName,
+      { recipientId: 'user-a', ...window },
+      { singletonKey: `user-a:${window.until.slice(0, 10)}`, singletonSeconds: DAY_S },
+    );
+    expect(window.until.slice(0, 10)).toBe('2026-11-02');
+  });
+
+  it('keeps sending to the others when one send fails, then rejects so the deduplicated run retries', async () => {
+    const recipients = createRecipients(batchSize + 2);
     const failing = recipients[0]!;
-    const rows = recipients.map((id) => createRow(id, inWindowAgeMs));
-    const { service, sentTo } = createService(new Set([failing]));
+    bossInstance.send.mockImplementation(async (_name: string, data: SendDigestJobData) => {
+      if (data.recipientId === failing) throw new Error('send failed');
+      return 'job-id';
+    });
+
+    await expect(fanOut(recipients.map((id) => createRow(id, inWindowAgeMs)))).rejects.toThrow(
+      '1 digest sends failed',
+    );
+
+    expect(listSentRecipientIds()).toEqual(recipients);
+    expect(logger.error).toHaveBeenCalledOnce();
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.objectContaining({ recipientId: failing }),
+      expect.any(String),
+    );
+  });
+
+  it('throws when listing recipients fails', async () => {
+    const error = new Error('query failed');
 
     await expect(
       queuePendingDigests({
-        ...createRepositories(rows, createDailyPreferences(recipients)),
-        userNotificationDomain: userNotificationDomain(),
-        notificationDigestService: service,
+        boss,
+        userNotificationRepository: { findDigestRecipients: vi.fn().mockRejectedValue(error) },
+        userNotificationDomain: userNotificationDomain({
+          notificationProducers: [mockNotificationProducer()],
+        }),
         logger,
       }),
-    ).rejects.toBeInstanceOf(AggregateError);
+    ).rejects.toBe(error);
+    expect(bossInstance.send).not.toHaveBeenCalled();
+  });
+});
 
-    expect([...sentTo].sort()).toEqual(recipients.filter((id) => id !== failing));
+describe('processDigest', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('emails only rows in categories currently daily for their recipient', async () => {
+  it('hands the recipient pending rows in categories currently daily and their preferences to queueDigest', async () => {
     const rows = [
-      createRow('user-daily', inWindowAgeMs),
-      createRow('user-immediate', inWindowAgeMs),
-      createRow('user-off', inWindowAgeMs),
-      createRow('user-default', inWindowAgeMs),
       createRow('user-mixed', inWindowAgeMs),
       createRow('user-mixed', inWindowAgeMs, 'comment.reply_to_you'),
+      createRow('user-mixed', notificationsConfig.windowMs + MINUTE_MS),
+      createRow('user-other', inWindowAgeMs),
     ];
     const preferences = [
-      createPreference('user-daily', 'daily'),
-      createPreference('user-immediate', 'immediate'),
-      createPreference('user-off', 'off'),
       createPreference('user-mixed', 'daily'),
       createPreference('user-mixed', 'immediate', 'comment.reply_to_you'),
+      createPreference('user-other', 'daily'),
     ];
-    const { service, sentTo, sentRowIds } = createService();
+    const { service, sentRowIds } = createService();
 
-    await queuePendingDigests({
-      ...createRepositories(rows, preferences),
-      userNotificationDomain: userNotificationDomain(),
+    await processDigest(
+      {
+        ...createRepositories(rows, preferences),
+        userNotificationDomain: userNotificationDomain({
+          notificationProducers: [mockNotificationProducer()],
+        }),
+        notificationDigestService: service,
+      },
+      { recipientId: 'user-mixed', ...createWindow() },
+    );
+
+    expect(sentRowIds).toEqual([rows[0]!.id]);
+    expect(service.queueDigest).toHaveBeenCalledExactlyOnceWith(
+      'user-mixed',
+      [rows[0]],
+      preferences.filter((entry) => entry.userId === 'user-mixed'),
+    );
+  });
+
+  it.each([
+    ['since', { since: 'not-a-date', until: new Date().toISOString() }],
+    ['until', { since: new Date().toISOString(), until: 'not-a-date' }],
+  ])(
+    'rejects job data with an invalid %s, naming the data, before reading anything',
+    async (_field, window) => {
+      const repositories = createRepositories([createRow('user-a', inWindowAgeMs)], []);
+      const queueDigest = vi.fn().mockResolvedValue(undefined);
+      const data = { recipientId: 'user-a', ...window };
+
+      await expect(
+        processDigest(
+          {
+            ...repositories,
+            userNotificationDomain: userNotificationDomain({
+              notificationProducers: [mockNotificationProducer()],
+            }),
+            notificationDigestService: { queueDigest },
+          },
+          data,
+        ),
+      ).rejects.toThrow(JSON.stringify(data));
+      expect(
+        repositories.userNotificationRepository.findPendingForRecipient,
+      ).not.toHaveBeenCalled();
+      expect(queueDigest).not.toHaveBeenCalled();
+    },
+  );
+
+  it('lets a queueDigest error propagate so pg-boss retries that recipient', async () => {
+    const error = new Error('enqueue failed');
+
+    await expect(
+      processDigest(
+        {
+          ...createRepositories([createRow('user-a', inWindowAgeMs)], []),
+          userNotificationDomain: userNotificationDomain({
+            notificationProducers: [mockNotificationProducer()],
+          }),
+          notificationDigestService: { queueDigest: vi.fn().mockRejectedValue(error) },
+        },
+        { recipientId: 'user-a', ...createWindow() },
+      ),
+    ).rejects.toBe(error);
+  });
+});
+
+describe('startDigestProcessor', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  async function start(service = { queueDigest: vi.fn().mockResolvedValue(undefined) }) {
+    await startDigestProcessor({
+      boss,
+      ...createRepositories([createRow('user-a', inWindowAgeMs)], []),
+      userNotificationDomain: userNotificationDomain({
+        notificationProducers: [mockNotificationProducer()],
+      }),
       notificationDigestService: service,
       logger,
     });
+    const sendDigestCall = bossInstance.work.mock.calls.find(
+      ([name]) => name === sendDigestConfig.queueName,
+    )!;
+    const handler = sendDigestCall[2] as (
+      jobs: Array<{ id: string; data: SendDigestJobData }>,
+    ) => Promise<void>;
+    return { sendDigestCall, handler, service };
+  }
 
-    expect([...sentTo].sort()).toEqual(['user-daily', 'user-mixed']);
-    expect(sentRowIds.sort()).toEqual([rows[0]!.id, rows[4]!.id].sort());
+  it('registers both queues with their dead letters', async () => {
+    await start();
+
+    for (const entry of [fanOutConfig, sendDigestConfig]) {
+      expect(bossInstance.createQueue).toHaveBeenCalledWith(entry.queueName, {
+        ...entry.queue,
+        deadLetter: getDeadLetterQueueName(entry.queueName),
+      });
+    }
+  });
+
+  it('schedules the fan-out cron with its queue options', async () => {
+    await start();
+
+    expect(bossInstance.schedule).toHaveBeenCalledExactlyOnceWith(
+      'queue-notification-digests',
+      fanOutConfig.cronExpression,
+      null,
+      fanOutConfig.queue,
+    );
+  });
+
+  it('works send-digest one job at a time with local concurrency', async () => {
+    const { sendDigestCall } = await start();
+
+    expect(sendDigestCall[1]).toEqual({
+      batchSize: 1,
+      localConcurrency: sendDigestConfig.work.localConcurrency,
+      pollingIntervalSeconds: workersConfig.polling.intervalSeconds,
+    });
   });
 
   it('calls the service method present when the job runs, not the one present at startup', async () => {
-    const rows = [createRow('user-a', inWindowAgeMs)];
-    const service = {
-      queueDigest: vi.fn().mockResolvedValue(undefined),
-    };
-    await startDigestProcessor({
-      connectionString: 'postgres://test',
-      ...createRepositories(rows, createDailyPreferences(['user-a'])),
-      userNotificationDomain: userNotificationDomain(),
-      notificationDigestService: service,
-      logger,
-    });
-    const handler = bossInstance.work.mock.calls[0]![1] as () => Promise<void>;
+    const { handler, service } = await start();
     const startupQueueDigest = service.queueDigest;
     const replacedQueueDigest = vi.fn().mockResolvedValue(undefined);
     service.queueDigest = replacedQueueDigest;
 
-    await handler();
+    await handler([{ id: 'job-1', data: { recipientId: 'user-a', ...createWindow() } }]);
 
-    expect(replacedQueueDigest).toHaveBeenCalledTimes(1);
+    expect(replacedQueueDigest).toHaveBeenCalledOnce();
     expect(startupQueueDigest).not.toHaveBeenCalled();
   });
 });

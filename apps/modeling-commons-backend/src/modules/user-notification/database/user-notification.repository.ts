@@ -11,6 +11,7 @@ import type {
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 import type { PaginatedQueryParams, Paginated } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+import { newId } from '#src/shared/utils/id.ts';
 
 function feedWhere(
   recipientId: string,
@@ -19,42 +20,51 @@ function feedWhere(
   return {
     recipientId,
     category: { in: filters.categories },
+    inAppSuppressed: false,
     ...(filters.since ? { createdAt: { gte: filters.since } } : {}),
     ...(filters.unreadOnly ? { readAt: null } : {}),
   };
+}
+
+// Raw SQL: Prisma create cannot express ON CONFLICT DO NOTHING with RETURNING, and a caught
+// P2002 leaves the surrounding Postgres transaction aborted.
+export function buildInsertLedgerRowQuery(
+  id: string,
+  params: InsertUserNotificationParams,
+): Prisma.Sql {
+  return Prisma.sql`
+    INSERT INTO "UserNotification"
+      ("id", "recipientId", "eventId", "category", "url", "payload", "actorUserId", "targetType", "targetId", "inAppSuppressed")
+    VALUES
+      (${id}, ${params.recipientId}, ${params.eventId}, ${params.category}, ${params.url}, ${JSON.stringify(params.payload)}::jsonb, ${params.actorUserId ?? null}, ${params.targetType ?? null}, ${params.targetId ?? null}, ${params.inAppSuppressed})
+    ON CONFLICT ("eventId", "recipientId", "category") DO NOTHING
+    RETURNING *
+  `;
 }
 
 export default function userNotificationRepository({
   db,
 }: Dependencies): UserNotificationRepositoryPort {
   return {
-    // Swallowing P2002 leaves the surrounding transaction aborted in Postgres, so this must
-    // stay the last write of its transaction; read the existing row with
-    // findOneByDeliveryKey after the transaction returns, never on this connection.
     async insertTx(
       ctx: TransactionContext,
       params: InsertUserNotificationParams,
-    ): Promise<UserNotificationRecord | undefined> {
+    ): Promise<UserNotificationRecord> {
       const client = resolveTransaction(ctx);
-      try {
-        return await client.userNotification.create({ data: params });
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-          return undefined;
-        }
-        throw error;
-      }
-    },
-
-    async findOneByDeliveryKey(
-      eventId: string,
-      recipientId: string,
-      category: NotificationCategory,
-    ): Promise<UserNotificationRecord | undefined> {
+      const [inserted] = await client.$queryRaw<Array<UserNotificationRecord>>(
+        buildInsertLedgerRowQuery(newId(), params),
+      );
       return (
-        (await db.userNotification.findUnique({
-          where: { eventId_recipientId_category: { eventId, recipientId, category } },
-        })) ?? undefined
+        inserted ??
+        client.userNotification.findUniqueOrThrow({
+          where: {
+            eventId_recipientId_category: {
+              eventId: params.eventId,
+              recipientId: params.recipientId,
+              category: params.category,
+            },
+          },
+        })
       );
     },
 

@@ -22,6 +22,8 @@ export interface paths {
                     type?: string;
                     /** @description Filter by resource type */
                     resourceType?: string;
+                    /** @description Filter by the state of the dispatch job */
+                    dispatchState?: "retry" | "dead";
                 };
                 header?: never;
                 path?: never;
@@ -69,7 +71,12 @@ export interface paths {
                                 };
                                 /** Format: date-time */
                                 createdAt: string;
-                                processedAt: string | null;
+                                dispatch: {
+                                    subscriber: string;
+                                    state: "created" | "retry" | "active" | "completed" | "cancelled" | "failed" | "dead";
+                                    attempts: number | null;
+                                    lastError: string | null;
+                                }[];
                             }[];
                         };
                     };

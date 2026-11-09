@@ -8,6 +8,7 @@ const ExceptionError = {
   NOT_FOUND: 'Not Found',
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
   DATABASE_ERROR: 'Database Error',
+  SERVICE_UNAVAILABLE: 'Service Unavailable',
 } as const;
 
 /**
@@ -53,8 +54,8 @@ export class NotFoundException extends ExceptionBase {
   readonly error = ExceptionError.NOT_FOUND;
   readonly statusCode = 404;
 
-  constructor(message: string = NotFoundException.message) {
-    super(message);
+  constructor(message: string = NotFoundException.message, cause?: Error, metadata?: unknown) {
+    super(message, cause, metadata);
   }
 }
 
@@ -77,11 +78,20 @@ export class InternalServerErrorException extends ExceptionBase {
 export class DatabaseErrorException extends ExceptionBase {
   static readonly message = 'Database error';
   readonly error = ExceptionError.INTERNAL_SERVER_ERROR;
-  constructor(message: string = InternalServerErrorException.message, cause?: Error) {
-    super(message, cause);
+  constructor(
+    message: string = InternalServerErrorException.message,
+    cause?: Error,
+    metadata?: unknown,
+  ) {
+    super(message, cause, metadata);
   }
 
   readonly statusCode = 500;
+}
+
+export class ServiceUnavailableException extends ExceptionBase {
+  readonly error = ExceptionError.SERVICE_UNAVAILABLE;
+  readonly statusCode = 503;
 }
 
 export class ProviderErrorException extends ExceptionBase {

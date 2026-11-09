@@ -1,3 +1,4 @@
+import { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
 import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
 import type {
   CommentAuthCaller,
@@ -71,7 +72,7 @@ export default function makeModelCommentService({
       await transactionManager.run(async (ctx) => {
         await modelCommentRepository.insertTx(ctx, entity);
         await eventRepository.insertTx(ctx, {
-          type: 'model_comment.created',
+          type: modelCommentEventTypes.created,
           actorId: userId,
           resourceType: 'model',
           resourceId: modelId,
@@ -96,7 +97,7 @@ export default function makeModelCommentService({
       await transactionManager.run(async (ctx) => {
         await modelCommentRepository.updateContentTx(ctx, commentId, content, now);
         await eventRepository.insertTx(ctx, {
-          type: 'model_comment.updated',
+          type: modelCommentEventTypes.updated,
           actorId: callerId,
           resourceType: 'model',
           resourceId: modelId,
@@ -114,7 +115,7 @@ export default function makeModelCommentService({
       await transactionManager.run(async (ctx) => {
         await modelCommentRepository.softDeleteTx(ctx, commentId, now);
         await eventRepository.insertTx(ctx, {
-          type: 'model_comment.deleted',
+          type: modelCommentEventTypes.deleted,
           actorId: caller.id,
           resourceType: 'model',
           resourceId: modelId,

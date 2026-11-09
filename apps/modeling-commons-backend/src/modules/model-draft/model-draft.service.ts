@@ -35,7 +35,10 @@ import { CopyObjectCommand, HeadObjectCommand } from '#src/shared/storage/index.
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
 import { newId } from '#src/shared/utils/id.ts';
 import { nanoid } from 'nanoid';
-import { STAGING_KEY_RANDOM_SEGMENT_LENGTH } from './model-draft.storage.ts';
+import {
+  PREVIEW_IMAGE_PATH_PREFIX,
+  STAGING_KEY_RANDOM_SEGMENT_LENGTH,
+} from './model-draft.storage.ts';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
@@ -180,7 +183,7 @@ export default function makeModelDraftService({
         modelId: params.modelId,
         filename: params.data.previewImage.filename,
         contentType: params.data.previewImage.mimeType,
-        pathPrefix: 'files/public/preview-images',
+        pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
         acl: 'public-read',
         userId: params.userId,
       });
@@ -195,7 +198,7 @@ export default function makeModelDraftService({
         filename: 'preview.png',
         contentType,
         access: 'public-read',
-        pathPrefix: `preview-images/${params.modelId}`,
+        pathPrefix: `${PREVIEW_IMAGE_PATH_PREFIX}/${params.modelId}`,
         userId: params.userId,
       });
     } catch (error) {
@@ -634,7 +637,7 @@ export default function makeModelDraftService({
                 modelId: model.id,
                 filename: data.previewImage.filename,
                 contentType: data.previewImage.mimeType,
-                pathPrefix: 'files/public/preview-images',
+                pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
                 acl: 'public-read',
                 userId,
               })

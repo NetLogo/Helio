@@ -298,6 +298,41 @@ When(
 );
 
 When(
+  '{string} likes comment {string} on {string} {int} times at once',
+  async function (
+    this: ICustomWorld,
+    actorName: string,
+    label: string,
+    modelTitle: string,
+    times: number,
+  ) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    const id = commentId.call(this, label);
+    this.context['commentLikeResponses'] = await Promise.all(
+      Array.from({ length: times }, () =>
+        this.server.inject({
+          method: 'POST',
+          url: `/api/v1/models/${modelId}/comments/${id}/like`,
+          headers: { cookie: actor.cookie },
+        }),
+      ),
+    );
+  },
+);
+
+Then(
+  'every comment like response status should be {int}',
+  function (this: ICustomWorld, expected: number) {
+    const responses = this.context['commentLikeResponses'] as Array<{ statusCode: number }>;
+    assert.deepStrictEqual(
+      responses.map((r) => r.statusCode),
+      responses.map(() => expected),
+    );
+  },
+);
+
+When(
   '{string} unlikes comment {string} on {string}',
   async function (this: ICustomWorld, actorName: string, label: string, modelTitle: string) {
     const actor = getUsers(this.context).get(actorName)!;

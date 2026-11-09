@@ -149,7 +149,6 @@ Given(
         resourceType: 'test',
         resourceId: recipient.id,
         payload: {},
-        processedAt: new Date(),
       },
     });
     await prisma.userNotification.create({
@@ -157,8 +156,6 @@ Given(
         recipientId: recipient.id,
         eventId: event.id,
         category,
-        title: 'Digest candidate',
-        body: 'Digest candidate',
         url: 'https://example.test',
         createdAt: resolveCreatedAt(getWindow(this), position),
         ...(state === 'sent' ? { emailSentAt: new Date() } : {}),

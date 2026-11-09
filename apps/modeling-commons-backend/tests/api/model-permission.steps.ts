@@ -1,6 +1,7 @@
 import { Given, When } from '@cucumber/cucumber';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
+import { newId } from '#src/shared/utils/id.ts';
 
 function getUsers(context: Record<string, unknown>): Map<string, TestUser> {
   return context['users'] as Map<string, TestUser>;
@@ -27,6 +28,21 @@ When(
       method: 'POST',
       url: `/api/v1/models/${modelId}/permissions`,
       payload: { granteeUserId: grantee.id, permissionLevel: level },
+      headers: { cookie: granter.cookie, 'content-type': 'application/json' },
+    });
+  },
+);
+
+When(
+  '{string} grants {string} permission on {string} to an unknown user',
+  async function (this: ICustomWorld, granterName: string, level: string, modelTitle: string) {
+    const granter = getUsers(this.context).get(granterName)!;
+    const modelId = getModels(this.context).get(modelTitle)!;
+
+    this.context.latestResponse = await this.server.inject({
+      method: 'POST',
+      url: `/api/v1/models/${modelId}/permissions`,
+      payload: { granteeUserId: newId(), permissionLevel: level },
       headers: { cookie: granter.cookie, 'content-type': 'application/json' },
     });
   },

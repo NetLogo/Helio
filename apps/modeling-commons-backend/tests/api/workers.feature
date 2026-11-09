@@ -1,71 +1,86 @@
 Feature: Background workers
   As an operator
-  I want background workers to pick up audit events
-  So that side-effects fire off the events table asynchronously
+  I want background workers to hand published events to their subscribers and send queued email
+  So that side-effects run asynchronously
 
   @sanity
-  Scenario: Event processor marks an unprocessed event as processed
+  Scenario: A committed event is handled by the user-notifications subscriber
     Given an authenticated user "actor"
-    And an unprocessed event of type "test.event" exists for "actor"
-    When the event processor queue is triggered
-    Then the event should be marked processed within 10 seconds
+    And events of type "test.event" are published to the user-notifications queue
+    And an event of type "test.event" is recorded for "actor"
+    Then the user-notifications job of that event should complete within 10 seconds
 
-  Scenario: A failing handler increments attempts and records the error instead of processing
+  Scenario: A failing handler leaves the user-notifications job waiting to retry
     Given an authenticated user "actor"
-    And an unprocessed event of type "test.event" exists for "actor"
-    And handling that event is rigged to fail once
-    When the event processor queue is triggered
-    Then the event should have 1 attempt and a recorded error within 10 seconds
-    And the event should still be unprocessed
+    And events of type "test.event" are published to the user-notifications queue
+    And handling events is rigged to fail once
+    And an event of type "test.event" is recorded for "actor"
+    Then the user-notifications job of that event should wait to retry after 1 attempt within 10 seconds
 
-  Scenario: An event at the retry ceiling is not picked up again
+  Scenario: A user-notifications job that keeps failing reaches the dead-letter queue
     Given an authenticated user "actor"
-    And an unprocessed event of type "test.event" exists for "actor" with 5 prior attempts
-    When the event processor queue is triggered
-    Then the event should still have 5 attempts after 3 seconds
-    And the event should still be unprocessed
+    And events of type "test.event" are published to the user-notifications queue
+    And handling events is rigged to always fail
+    And an event of type "test.event" is recorded for "actor"
+    When a user-notifications job for that event is sent with a retry limit of 1 and a retry delay of 1 second
+    Then a copy of the user-notifications job should reach the dead-letter queue within 10 seconds
+
+  Scenario: A comment signals its model and the notified author on the realtime channels
+    Given an authenticated user "owner"
+    And a public model "Signal Model" created by "owner"
+    And an authenticated user "commenter"
+    And the realtime channels are listened to
+    When "commenter" comments "Ping" on "Signal Model"
+    Then the response status should be 201
+    And the model channel should carry the id of "Signal Model" once within 5 seconds
+    And the user channel should carry the id of "owner" once within 5 seconds
+    And the user channel should not carry the id of "commenter"
 
   @sanity
-  Scenario: Email sender sends a queued email and marks it sent
+  Scenario: A queued email is sent by the send-email worker
     Given an authenticated user "recipient"
-    And a queued email to "recipient" exists
-    When the email sender queue is triggered
-    Then the queued email to "recipient" should be marked sent within 10 seconds
+    And email sending is recorded
+    When an email to "recipient" is queued
+    Then the email job to "recipient" should complete within 10 seconds
+    And exactly 1 email should have been sent to "recipient"
 
-  Scenario: A failing email records its error and the other queued emails still go out
+  Scenario: A failing email waits to retry and the other queued emails still go out
     Given an authenticated user "unreachable"
     And an authenticated user "reachable"
-    And a queued email to "unreachable" exists
-    And a queued email to "reachable" exists
     And sending email to "unreachable" is rigged to fail
-    When the email sender queue is triggered
-    Then the queued email to "unreachable" should have 1 attempt and a recorded error within 10 seconds
-    And the queued email to "unreachable" should still be unsent
-    And the queued email to "reachable" should be marked sent within 10 seconds
+    When an email to "unreachable" is queued
+    And an email to "reachable" is queued
+    Then the email job to "unreachable" should wait to retry after 1 attempt within 10 seconds
+    And the email job to "reachable" should complete within 10 seconds
+    And no email should have been sent to "unreachable"
+    And exactly 1 email should have been sent to "reachable"
 
-  Scenario: A queued email that failed is sent once after SMTP recovers
+  Scenario: A failed email is sent once when its retry succeeds
     Given an authenticated user "recipient"
-    And a queued email to "recipient" exists
+    And sending email to "recipient" is rigged to fail once
+    When an email to "recipient" is sent with a retry delay of 1 second
+    Then the email job to "recipient" should complete within 10 seconds
+    And the email job to "recipient" should have been retried 1 time
+    And exactly 1 email should have been sent to "recipient"
+
+  Scenario: An email waiting to retry is not sent again before its retry delay
+    Given an authenticated user "recipient"
     And sending email to "recipient" is rigged to fail
-    When the email sender queue is triggered
-    Then the queued email to "recipient" should have 1 attempt and a recorded error within 10 seconds
-    When sending email is restored
-    And the queued email to "recipient" is due for retry
-    And the email sender queue is triggered
-    Then the queued email to "recipient" should be marked sent within 10 seconds
-    When the email sender queue is triggered
-    Then the queued email to "recipient" should keep its sent time and 1 attempt after 3 seconds
+    When an email to "recipient" is queued
+    Then the email job to "recipient" should wait to retry after 1 attempt within 10 seconds
+    And the email job to "recipient" should stay waiting to retry with 1 attempt for 3 seconds
 
-  Scenario: A queued email waiting out its retry delay is not picked up early
+  Scenario: An email that keeps failing reaches the dead-letter queue
     Given an authenticated user "recipient"
-    And a queued email to "recipient" exists that is not due for another hour
-    When the email sender queue is triggered
-    Then the queued email to "recipient" should still have 0 attempts after 3 seconds
-    And the queued email to "recipient" should still be unsent
+    And sending email to "recipient" is rigged to fail
+    When an email to "recipient" is sent with a retry limit of 1 and a retry delay of 1 second
+    Then a copy of the email job to "recipient" should reach the dead-letter queue within 10 seconds
+    And no email should have been sent to "recipient"
 
-  Scenario: A queued email at the retry ceiling is not picked up again
+  @sanity
+  Scenario: Concurrent pollers send each queued email exactly once
     Given an authenticated user "recipient"
-    And a queued email to "recipient" exists with 8 prior attempts
-    When the email sender queue is triggered
-    Then the queued email to "recipient" should still have 8 attempts after 3 seconds
-    And the queued email to "recipient" should still be unsent
+    And email sending is recorded
+    When 6 emails to "recipient" are queued
+    Then every email job to "recipient" should complete within 10 seconds
+    And each of the 6 emails to "recipient" should have been sent exactly once

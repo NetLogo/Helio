@@ -1,5 +1,5 @@
 import type { Model } from '#prisma/index';
-import type { ModelSubjectRecord } from '#src/modules/model/database/model.repository.port.ts';
+import type { ModelPreviewRecord } from '#src/modules/model/database/model.repository.port.ts';
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
 import type { UpdateModelProps } from '#src/modules/model/domain/model.types.ts';
 import { loadViewer } from '#src/shared/permissions/model-access.viewer.ts';
@@ -50,13 +50,13 @@ export default function makeModelService({
       return model;
     },
 
-    async getModelSubjectsForViewer(
+    async getModelPreviewsForViewer(
       modelIds: Array<string>,
       viewerId: string | null,
-    ): Promise<Map<string, ModelSubjectRecord>> {
+    ): Promise<Map<string, ModelPreviewRecord>> {
       if (modelIds.length === 0) return new Map();
       const viewer = await loadViewer(db, viewerId);
-      const records = await modelRepository.findSubjectsReadableBy(modelIds, viewer);
+      const records = await modelRepository.findPreviewsReadableBy(modelIds, viewer);
       return new Map(records.map((record) => [record.id, record]));
     },
 

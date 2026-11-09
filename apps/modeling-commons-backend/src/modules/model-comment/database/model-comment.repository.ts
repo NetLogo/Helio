@@ -183,14 +183,11 @@ export default function modelCommentRepository({ db }: Dependencies): ModelComme
 
     async addLikeTx(ctx: TransactionContext, commentId: string, userId: string): Promise<boolean> {
       const client = resolveTransaction(ctx);
-      try {
-        await client.modelCommentLike.create({ data: { modelCommentId: commentId, userId } });
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-          return false;
-        }
-        throw error;
-      }
+      const inserted = await client.modelCommentLike.createMany({
+        data: { modelCommentId: commentId, userId },
+        skipDuplicates: true,
+      });
+      if (inserted.count === 0) return false;
 
       await client.modelComment.update({
         where: { id: commentId },

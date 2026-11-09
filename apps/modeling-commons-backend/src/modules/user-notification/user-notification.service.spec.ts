@@ -7,6 +7,10 @@ import makeUserNotificationService, {
 import makeNotificationEmailService from '#src/modules/user-notification/notification-email.service.ts';
 import makeNotificationDigestService from '#src/modules/user-notification/notification-digest.service.ts';
 import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import {
+  describeGroupByTarget,
+  mockNotificationProducer,
+} from '#src/modules/user-notification/domain/notification-producer.mock.ts';
 import userNotificationMapper from '#src/modules/user-notification/user-notification.mapper.ts';
 import { NotificationNotFoundError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import { mockNotificationPreferenceRepository } from '#src/modules/user-notification/database/notification-preference.repository.mock.ts';
@@ -22,8 +26,10 @@ import type { UserNotificationRecord } from '#src/modules/user-notification/data
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import type {
   EmailMode,
-  NotificationIntent,
-  Notifier,
+  NotificationPreviews,
+  NotificationProducer,
+  NotificationRecipient,
+  NotificationRowFacts,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 
 function makeRecord(
@@ -43,7 +49,7 @@ function makeRecord(
 describe('userNotificationService', () => {
   const notificationPreferenceRepository = mockNotificationPreferenceRepository();
   const transactionManager = mockTransactionManager();
-  const domain = userNotificationDomain();
+  const domain = userNotificationDomain({ notificationProducers: [mockNotificationProducer()] });
 
   const service = makeUserNotificationService({
     transactionManager,
@@ -174,30 +180,28 @@ function makeEvent(overrides: Partial<EventRecord> = {}): EventRecord {
     resourceId: 'model-1',
     payload: {},
     createdAt: new Date('2026-01-01'),
-    processedAt: null,
-    attempts: 0,
-    lastError: null,
     ...overrides,
   };
 }
 
-function makeIntent(overrides: Partial<NotificationIntent> = {}): NotificationIntent {
+function makeRowFacts(overrides: Partial<NotificationRowFacts> = {}): NotificationRowFacts {
   return {
     recipientUserId: 'recipient-1',
     category: 'comment.on_your_model',
-    title: 'New comment',
-    body: 'Someone commented on your model',
     url: 'https://example.test/models/model-1',
-    buildEmail: vi.fn().mockResolvedValue({ to: 'recipient@example.test', subject: 'New comment' }),
+    payload: {},
     ...overrides,
   };
 }
 
-function makeNotifier(intents: Array<NotificationIntent>): Notifier {
-  return {
-    eventTypes: ['model_comment.created'],
-    resolve: vi.fn().mockResolvedValue(intents),
-  };
+function makeProducer(rowFacts: Array<NotificationRowFacts>): NotificationProducer {
+  return mockNotificationProducer({
+    resolve: vi.fn().mockResolvedValue(rowFacts),
+    renderEmail: vi.fn().mockImplementation(async (_row, recipient: NotificationRecipient) => ({
+      to: recipient.email,
+      subject: 'New comment',
+    })),
+  });
 }
 
 function makeUserRecord(overrides: Record<string, unknown> = {}): Record<string, unknown> {
@@ -219,14 +223,14 @@ function makeInsertedNotification(
     recipientId: 'recipient-1',
     eventId: 'event-1',
     category: 'comment.on_your_model',
-    title: 'New comment',
-    body: 'Someone commented on your model',
     url: 'https://example.test/models/model-1',
+    payload: {},
     actorUserId: null,
     targetType: null,
     targetId: null,
     emailSentAt: null,
     readAt: null,
+    inAppSuppressed: false,
     createdAt: new Date('2026-01-01'),
     ...overrides,
   } as UserNotificationRecord;
@@ -237,12 +241,18 @@ describe('userNotificationService handleEvent', () => {
   const userNotificationRepository = mockUserNotificationRepository();
   const userRepository = mockUserRepository();
   const transactionManager = mockTransactionManager();
-  const domain = userNotificationDomain();
+  const domain = userNotificationDomain({ notificationProducers: [mockNotificationProducer()] });
   const mailService = { enqueue: vi.fn() };
+  const jobQueue = { publish: vi.fn() };
   const logger = { error: vi.fn(), info: vi.fn(), warn: vi.fn(), debug: vi.fn() };
+  const getNotificationPreviewsQuery = { execute: vi.fn() };
+  const recipientPreview: NotificationPreviews = {
+    actor: { name: 'Alicia', thumbnailUrl: null, url: 'https://example.test/users/alice' },
+    target: { name: null, thumbnailUrl: null, url: 'https://example.test/models/model-1' },
+  };
 
-  function build(notifiers: Array<Notifier>) {
-    return createUserNotificationService(notifiers, {
+  function build(producers: Array<NotificationProducer>) {
+    return createUserNotificationService(producers, {
       transactionManager,
       notificationPreferenceRepository,
       userNotificationRepository,
@@ -255,6 +265,8 @@ describe('userNotificationService handleEvent', () => {
         mailService,
         transactionManager,
       } as never),
+      getNotificationPreviewsQuery,
+      jobQueue,
       logger,
     } as never);
   }
@@ -265,18 +277,24 @@ describe('userNotificationService handleEvent', () => {
     sentIds.clear();
     notificationPreferenceRepository.findAllByUser.mockReset().mockResolvedValue([]);
     userNotificationRepository.insertTx.mockReset().mockResolvedValue(makeInsertedNotification());
-    userNotificationRepository.findOneByDeliveryKey.mockReset().mockResolvedValue(undefined);
     userNotificationRepository.markEmailSentTx
       .mockReset()
       .mockImplementation(fakeMarkEmailSent(sentIds));
     userRepository.findOneById.mockReset().mockResolvedValue(makeUserRecord());
     mailService.enqueue.mockReset().mockResolvedValue(undefined);
+    jobQueue.publish.mockReset().mockResolvedValue(['job-1']);
     logger.error.mockReset();
+    getNotificationPreviewsQuery.execute
+      .mockReset()
+      .mockImplementation(
+        async (rows: Array<{ id: string }>) =>
+          new Map(rows.map((row) => [row.id, recipientPreview])),
+      );
   });
 
   describe('handleEvent', () => {
     it('is a no-op when no notifier handles the event type', async () => {
-      const notifier = makeNotifier([makeIntent()]);
+      const notifier = makeProducer([makeRowFacts()]);
       const service = build([notifier]);
 
       await service.handleEvent(makeEvent({ type: 'model.deleted' }));
@@ -286,8 +304,8 @@ describe('userNotificationService handleEvent', () => {
     });
 
     it("still delivers a healthy notifier's intents when another notifier throws, then rethrows", async () => {
-      const healthy = makeNotifier([makeIntent()]);
-      const broken = makeNotifier([]);
+      const healthy = makeProducer([makeRowFacts()]);
+      const broken = makeProducer([]);
       (broken.resolve as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('notifier down'));
       const service = build([broken, healthy]);
 
@@ -298,8 +316,8 @@ describe('userNotificationService handleEvent', () => {
     });
 
     it('inserts a ledger row and sends mail for a fully opted-in recipient', async () => {
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await service.handleEvent(makeEvent());
 
@@ -311,8 +329,10 @@ describe('userNotificationService handleEvent', () => {
           category: 'comment.on_your_model',
         }),
       );
-      expect(intent.buildEmail).toHaveBeenCalledWith(
+      expect(producer.renderEmail).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'notification-1' }),
         { id: 'recipient-1', email: 'recipient@example.test', name: 'Recipient' },
+        recipientPreview,
         expect.objectContaining({
           unsubscribeUrl: expect.stringMatching(/^mailto:/),
           preferencesUrl: expect.stringContaining('/settings/notifications'),
@@ -322,12 +342,52 @@ describe('userNotificationService handleEvent', () => {
       expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
-    it('stores the references an intent carries, not resolved urls', async () => {
-      const intent = makeIntent({
+    // Catches an email built from anything but the stored row and the recipient's own preview.
+    it("renders the email from the ledger row and the recipient's preview", async () => {
+      const ledger = makeInsertedNotification({
         actorUserId: 'commenter-1',
-        target: { type: 'model', id: 'model-1' },
+        targetType: 'model',
+        targetId: 'model-1',
       });
-      const service = build([makeNotifier([intent])]);
+      userNotificationRepository.insertTx.mockResolvedValue(ledger);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(getNotificationPreviewsQuery.execute).toHaveBeenCalledWith([ledger], 'recipient-1');
+      expect(producer.renderEmail).toHaveBeenCalledWith(
+        ledger,
+        expect.objectContaining({ id: 'recipient-1' }),
+        recipientPreview,
+        expect.anything(),
+      );
+    });
+
+    // Catches a lookup failure that is swallowed and leaves the row marked sent without an email.
+    it('fails the delivery, leaves the row unsent and rethrows when the preview lookup rejects', async () => {
+      const lookupError = new Error('previews unavailable');
+      getNotificationPreviewsQuery.execute.mockRejectedValue(lookupError);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
+
+      const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
+
+      expect((rejection as AggregateError).errors).toEqual([lookupError]);
+      expect(producer.renderEmail).not.toHaveBeenCalled();
+      expect(mailService.enqueue).not.toHaveBeenCalled();
+      expect(sentIds.size).toBe(0);
+      expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({ error: lookupError }));
+    });
+
+    it('stores the references an intent carries, not resolved urls', async () => {
+      const producer = makeProducer([
+        makeRowFacts({
+          actorUserId: 'commenter-1',
+          target: { type: 'model', id: 'model-1' },
+        }),
+      ]);
+      const service = build([producer]);
 
       await service.handleEvent(makeEvent());
 
@@ -342,7 +402,7 @@ describe('userNotificationService handleEvent', () => {
     });
 
     it('writes null columns for an intent that references neither', async () => {
-      const service = build([makeNotifier([makeIntent()])]);
+      const service = build([makeProducer([makeRowFacts()])]);
 
       await service.handleEvent(makeEvent());
 
@@ -353,8 +413,8 @@ describe('userNotificationService handleEvent', () => {
     });
 
     it('stores a target reference for an intent with no actor', async () => {
-      const intent = makeIntent({ target: { type: 'model', id: 'model-1' } });
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts({ target: { type: 'model', id: 'model-1' } })]);
+      const service = build([producer]);
 
       await service.handleEvent(makeEvent());
 
@@ -368,12 +428,12 @@ describe('userNotificationService handleEvent', () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
         makeRecord({ category: 'comment.on_your_model', email: 'off', inApp: false }),
       ]);
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
-      expect(intent.buildEmail).not.toHaveBeenCalled();
+      expect(producer.renderEmail).not.toHaveBeenCalled();
       expect(userNotificationRepository.insertTx).not.toHaveBeenCalled();
       expect(mailService.enqueue).not.toHaveBeenCalled();
     });
@@ -382,7 +442,7 @@ describe('userNotificationService handleEvent', () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
         makeRecord({ category: 'comment.on_your_model', email: 'immediate', inApp: true }),
       ]);
-      const service = build([makeNotifier([makeIntent()])]);
+      const service = build([makeProducer([makeRowFacts()])]);
 
       await service.handleEvent(makeEvent());
 
@@ -394,12 +454,12 @@ describe('userNotificationService handleEvent', () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
         makeRecord({ category: 'comment.on_your_model', email: 'daily', inApp: true }),
       ]);
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await service.handleEvent(makeEvent());
 
-      expect(intent.buildEmail).not.toHaveBeenCalled();
+      expect(producer.renderEmail).not.toHaveBeenCalled();
       expect(mailService.enqueue).not.toHaveBeenCalled();
       expect(sentIds.size).toBe(0);
     });
@@ -408,13 +468,13 @@ describe('userNotificationService handleEvent', () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
         makeRecord({ category: 'comment.on_your_model', email: 'off', inApp: true }),
       ]);
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await service.handleEvent(makeEvent());
 
       expect(userNotificationRepository.insertTx).toHaveBeenCalled();
-      expect(intent.buildEmail).not.toHaveBeenCalled();
+      expect(producer.renderEmail).not.toHaveBeenCalled();
       expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
@@ -422,7 +482,7 @@ describe('userNotificationService handleEvent', () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
         makeRecord({ category: 'comment.on_your_model', email: 'immediate', inApp: false }),
       ]);
-      const service = build([makeNotifier([makeIntent()])]);
+      const service = build([makeProducer([makeRowFacts()])]);
 
       await service.handleEvent(makeEvent());
 
@@ -431,46 +491,68 @@ describe('userNotificationService handleEvent', () => {
       expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
+    it('stamps the row as suppressed in-app when the in-app channel is off at delivery', async () => {
+      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+        makeRecord({ category: 'comment.on_your_model', email: 'immediate', inApp: false }),
+      ]);
+      const service = build([makeProducer([makeRowFacts()])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ inAppSuppressed: true }),
+      );
+    });
+
+    it('leaves the row visible in-app when the in-app channel is on at delivery', async () => {
+      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+        makeRecord({ category: 'comment.on_your_model', email: 'immediate', inApp: true }),
+      ]);
+      const service = build([makeProducer([makeRowFacts()])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ inAppSuppressed: false }),
+      );
+    });
+
     it.each([
       ['a missing recipient', undefined],
       ['a soft-deleted recipient', makeUserRecord({ deletedAt: new Date('2026-01-02') })],
       ['a banned recipient', makeUserRecord({ banned: true })],
       ['a recipient without an email', makeUserRecord({ email: null })],
-    ])('skips %s without writing a ledger row or invoking buildEmail', async (_label, record) => {
+    ])('skips %s without writing a ledger row or rendering an email', async (_label, record) => {
       userRepository.findOneById.mockResolvedValue(record);
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
-      expect(intent.buildEmail).not.toHaveBeenCalled();
+      expect(producer.renderEmail).not.toHaveBeenCalled();
       expect(userNotificationRepository.insertTx).not.toHaveBeenCalled();
       expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
     it('skips without mailing when a retry finds a ledger row already marked sent', async () => {
-      userNotificationRepository.insertTx.mockResolvedValue(undefined);
-      userNotificationRepository.findOneByDeliveryKey.mockResolvedValue(
+      userNotificationRepository.insertTx.mockResolvedValue(
         makeInsertedNotification({ emailSentAt: new Date('2026-01-02') }),
       );
       userNotificationRepository.markEmailSentTx.mockResolvedValue([]);
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
-      expect(userNotificationRepository.findOneByDeliveryKey).toHaveBeenCalledWith(
-        'event-1',
-        'recipient-1',
-        'comment.on_your_model',
-      );
       expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
     it('queues nothing when another path already marked the row sent', async () => {
       sentIds.add('notification-1');
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
@@ -479,49 +561,39 @@ describe('userNotificationService handleEvent', () => {
     });
 
     it('resumes and mails when a retry finds a ledger row whose email was never sent', async () => {
-      userNotificationRepository.insertTx.mockResolvedValue(undefined);
-      userNotificationRepository.findOneByDeliveryKey.mockResolvedValue(
+      userNotificationRepository.insertTx.mockResolvedValue(
         makeInsertedNotification({ id: 'existing-1', emailSentAt: null }),
       );
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await service.handleEvent(makeEvent());
 
-      expect(intent.buildEmail).toHaveBeenCalledTimes(1);
+      expect(producer.renderEmail).toHaveBeenCalledTimes(1);
       expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(sentIds).toEqual(new Set(['existing-1']));
-    });
-
-    it('does not read the ledger back when the insert wrote a fresh row', async () => {
-      const service = build([makeNotifier([makeIntent()])]);
-
-      await service.handleEvent(makeEvent());
-
-      expect(userNotificationRepository.findOneByDeliveryKey).not.toHaveBeenCalled();
     });
 
     it('skips without mailing when the email channel is off and the ledger row already exists', async () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
         makeRecord({ category: 'comment.on_your_model', email: 'off', inApp: true }),
       ]);
-      userNotificationRepository.insertTx.mockResolvedValue(undefined);
-      userNotificationRepository.findOneByDeliveryKey.mockResolvedValue(
+      userNotificationRepository.insertTx.mockResolvedValue(
         makeInsertedNotification({ emailSentAt: null }),
       );
-      const intent = makeIntent();
-      const service = build([makeNotifier([intent])]);
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
 
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
 
-      expect(intent.buildEmail).not.toHaveBeenCalled();
+      expect(producer.renderEmail).not.toHaveBeenCalled();
       expect(mailService.enqueue).not.toHaveBeenCalled();
     });
 
     it('leaves the row unsent, logs, and rethrows when queueing the email rejects', async () => {
       const queueError = new Error('database unreachable');
       mailService.enqueue.mockRejectedValue(queueError);
-      const service = build([makeNotifier([makeIntent()])]);
+      const service = build([makeProducer([makeRowFacts()])]);
 
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
@@ -534,7 +606,7 @@ describe('userNotificationService handleEvent', () => {
     it('rethrows and queues nothing when marking the row sent fails', async () => {
       const dbError = new Error('database unreachable');
       userNotificationRepository.markEmailSentTx.mockRejectedValue(dbError);
-      const service = build([makeNotifier([makeIntent()])]);
+      const service = build([makeProducer([makeRowFacts()])]);
 
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
@@ -543,13 +615,12 @@ describe('userNotificationService handleEvent', () => {
     });
 
     it('leaves the row unsent on a failed enqueue so the retry queues exactly once', async () => {
-      const service = build([makeNotifier([makeIntent()])]);
+      const service = build([makeProducer([makeRowFacts()])]);
       mailService.enqueue.mockRejectedValueOnce(new Error('database unreachable'));
 
       await expect(service.handleEvent(makeEvent())).rejects.toThrow(AggregateError);
 
-      userNotificationRepository.insertTx.mockResolvedValue(undefined);
-      userNotificationRepository.findOneByDeliveryKey.mockResolvedValue(
+      userNotificationRepository.insertTx.mockResolvedValue(
         makeInsertedNotification({ emailSentAt: null }),
       );
       await expect(service.handleEvent(makeEvent())).resolves.toBeUndefined();
@@ -566,7 +637,7 @@ describe('userNotificationService handleEvent', () => {
     ])('rethrows when %s fails and sends no mail', async (_label, getMock) => {
       const dbError = new Error('connection reset');
       getMock().mockRejectedValue(dbError);
-      const service = build([makeNotifier([makeIntent()])]);
+      const service = build([makeProducer([makeRowFacts()])]);
 
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
@@ -589,15 +660,12 @@ describe('userNotificationService handleEvent', () => {
       mailService.enqueue.mockImplementation(async (content: { to: string }) => {
         if (content.to === 'b@example.test') throw failingError;
       });
-      const intentA = makeIntent({
-        recipientUserId: 'a',
-        buildEmail: vi.fn().mockResolvedValue({ to: 'a@example.test', subject: 'A' }),
-      });
-      const intentB = makeIntent({
-        recipientUserId: 'b',
-        buildEmail: vi.fn().mockResolvedValue({ to: 'b@example.test', subject: 'B' }),
-      });
-      const service = build([makeNotifier([intentA, intentB])]);
+      const service = build([
+        makeProducer([
+          makeRowFacts({ recipientUserId: 'a' }),
+          makeRowFacts({ recipientUserId: 'b' }),
+        ]),
+      ]);
 
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
@@ -605,9 +673,8 @@ describe('userNotificationService handleEvent', () => {
       expect(sentIds).toEqual(new Set(['row-a']));
 
       mailService.enqueue.mockReset().mockResolvedValue(undefined);
-      userNotificationRepository.insertTx.mockResolvedValue(undefined);
-      userNotificationRepository.findOneByDeliveryKey.mockImplementation(
-        async (_eventId: string, recipientId: string) =>
+      userNotificationRepository.insertTx.mockImplementation(
+        async (_ctx: unknown, { recipientId }: { recipientId: string }) =>
           makeInsertedNotification({
             id: `row-${recipientId}`,
             recipientId,
@@ -619,7 +686,7 @@ describe('userNotificationService handleEvent', () => {
 
       expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(mailService.enqueue).toHaveBeenCalledWith(
-        { to: 'b@example.test', subject: 'B' },
+        { to: 'b@example.test', subject: 'New comment' },
         expect.anything(),
       );
       expect(sentIds).toEqual(new Set(['row-a', 'row-b']));
@@ -628,15 +695,104 @@ describe('userNotificationService handleEvent', () => {
     it('rethrows resolution and delivery failures together after every intent is attempted', async () => {
       const resolveError = new Error('notifier down');
       const queueError = new Error('database unreachable');
-      const broken = makeNotifier([]);
+      const broken = makeProducer([]);
       (broken.resolve as ReturnType<typeof vi.fn>).mockRejectedValue(resolveError);
       mailService.enqueue.mockRejectedValue(queueError);
-      const service = build([broken, makeNotifier([makeIntent()])]);
+      const service = build([broken, makeProducer([makeRowFacts()])]);
 
       const rejection = await service.handleEvent(makeEvent()).catch((error: unknown) => error);
 
       expect((rejection as AggregateError).errors).toEqual([resolveError, queueError]);
       expect(logger.error).toHaveBeenCalledTimes(2);
+    });
+
+    it('publishes one created signal listing the recipients whose row shows in-app', async () => {
+      notificationPreferenceRepository.findAllByUser.mockImplementation(async (userId: string) =>
+        userId === 'email-only'
+          ? [makeRecord({ category: 'comment.on_your_model', email: 'immediate', inApp: false })]
+          : [],
+      );
+      userRepository.findOneById.mockImplementation(async (id: string) =>
+        makeUserRecord({ id, email: `${id}@example.test` }),
+      );
+      userNotificationRepository.insertTx.mockImplementation(
+        async (_ctx: unknown, params: { recipientId: string; inAppSuppressed: boolean }) =>
+          makeInsertedNotification({
+            id: `notification-${params.recipientId}`,
+            recipientId: params.recipientId,
+            inAppSuppressed: params.inAppSuppressed,
+          }),
+      );
+      const service = build([
+        makeProducer([
+          makeRowFacts({ recipientUserId: 'in-app-a' }),
+          makeRowFacts({ recipientUserId: 'email-only' }),
+          makeRowFacts({ recipientUserId: 'in-app-b' }),
+        ]),
+      ]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(jobQueue.publish).toHaveBeenCalledOnce();
+      expect(jobQueue.publish).toHaveBeenCalledWith('user_notification.created', {
+        recipientIds: ['in-app-a', 'in-app-b'],
+      });
+    });
+
+    it('publishes nothing when every delivered row has in-app off', async () => {
+      notificationPreferenceRepository.findAllByUser.mockResolvedValue([
+        makeRecord({ category: 'comment.on_your_model', email: 'immediate', inApp: false }),
+      ]);
+      userNotificationRepository.insertTx.mockResolvedValue(
+        makeInsertedNotification({ inAppSuppressed: true }),
+      );
+      const service = build([makeProducer([makeRowFacts()])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.insertTx).toHaveBeenCalledOnce();
+      expect(jobQueue.publish).not.toHaveBeenCalled();
+    });
+
+    it('publishes nothing when no recipient is delivered to', async () => {
+      const service = build([makeProducer([])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(jobQueue.publish).not.toHaveBeenCalled();
+    });
+
+    it('still signals the rows it delivered when another delivery fails, then rethrows', async () => {
+      userRepository.findOneById.mockImplementation(async (id: string) =>
+        id === 'broken' ? Promise.reject(new Error('lookup failed')) : makeUserRecord({ id }),
+      );
+      userNotificationRepository.insertTx.mockImplementation(
+        async (_ctx: unknown, params: { recipientId: string }) =>
+          makeInsertedNotification({ recipientId: params.recipientId }),
+      );
+      const service = build([
+        makeProducer([
+          makeRowFacts({ recipientUserId: 'broken' }),
+          makeRowFacts({ recipientUserId: 'healthy' }),
+        ]),
+      ]);
+
+      await expect(service.handleEvent(makeEvent())).rejects.toThrow(AggregateError);
+
+      expect(jobQueue.publish).toHaveBeenCalledWith('user_notification.created', {
+        recipientIds: ['healthy'],
+      });
+    });
+
+    it('fails the event job when the created signal cannot be published', async () => {
+      const error = new Error('No realtime job was created');
+      jobQueue.publish.mockRejectedValue(error);
+      const service = build([makeProducer([makeRowFacts()])]);
+
+      const rejection = await service.handleEvent(makeEvent()).catch((caught: unknown) => caught);
+
+      expect((rejection as AggregateError).errors).toEqual([error]);
+      expect(mailService.enqueue).toHaveBeenCalledOnce();
     });
 
     it('applies preferences and recipient checks independently per intent', async () => {
@@ -648,21 +804,26 @@ describe('userNotificationService handleEvent', () => {
       userRepository.findOneById.mockImplementation(async (id: string) =>
         makeUserRecord({ id, email: `${id}@example.test` }),
       );
-      const allowedIntent = makeIntent({ recipientUserId: 'allowed-recipient' });
-      const blockedIntent = makeIntent({ recipientUserId: 'blocked-recipient' });
-      const service = build([makeNotifier([allowedIntent, blockedIntent])]);
+      const producer = makeProducer([
+        makeRowFacts({ recipientUserId: 'allowed-recipient' }),
+        makeRowFacts({ recipientUserId: 'blocked-recipient' }),
+      ]);
+      const service = build([producer]);
 
       await service.handleEvent(makeEvent());
 
-      expect(allowedIntent.buildEmail).toHaveBeenCalledTimes(1);
-      expect(blockedIntent.buildEmail).not.toHaveBeenCalled();
+      expect(mailService.enqueue).toHaveBeenCalledOnce();
+      expect(mailService.enqueue).toHaveBeenCalledWith(
+        expect.objectContaining({ to: 'allowed-recipient@example.test' }),
+        expect.anything(),
+      );
     });
   });
 });
 
 describe('userNotificationService markRead', () => {
   const userNotificationRepository = mockUserNotificationRepository();
-  const domain = userNotificationDomain();
+  const domain = userNotificationDomain({ notificationProducers: [mockNotificationProducer()] });
 
   const service = makeUserNotificationService({
     userNotificationRepository,
@@ -718,12 +879,14 @@ describe('userNotificationService digest', () => {
   const notificationPreferenceRepository = mockNotificationPreferenceRepository();
   const userNotificationRepository = mockUserNotificationRepository();
   const userRepository = mockUserRepository();
-  const domain = userNotificationDomain();
+  const domain = userNotificationDomain({
+    notificationProducers: [mockNotificationProducer({ describeGroup: describeGroupByTarget })],
+  });
   const mailService = { enqueue: vi.fn() };
   const mailDomain = { createNotificationSummaryEmail: vi.fn() };
   const logger = { error: vi.fn(), info: vi.fn(), warn: vi.fn(), debug: vi.fn() };
   const existingModels = new Map<string, string>();
-  const resolveNotificationSubjectsQuery = {
+  const getNotificationPreviewsQuery = {
     execute: vi.fn(async (rows: ReadonlyArray<UserNotificationRecord>) => {
       return new Map(
         rows.map((row) => {
@@ -748,7 +911,7 @@ describe('userNotificationService digest', () => {
     userNotificationDomain: domain,
     userDomain: userDomain(),
     userRepository,
-    resolveNotificationSubjectsQuery,
+    getNotificationPreviewsQuery,
     notificationEmailService: makeNotificationEmailService({
       userNotificationRepository,
       mailService,
@@ -785,7 +948,7 @@ describe('userNotificationService digest', () => {
     category = 'comment.on_your_model',
     createdAt = new Date('2026-01-01T12:00:00Z'),
   ): UserNotificationRecord {
-    return makeInsertedNotification({ id, category, title: id, createdAt });
+    return makeInsertedNotification({ id, category, createdAt });
   }
 
   function makeRecentRow(id: string, ageMs: number, category = 'comment.on_your_model') {

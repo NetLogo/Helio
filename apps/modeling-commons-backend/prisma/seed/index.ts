@@ -46,7 +46,6 @@ async function main() {
   const notifications = await loadNotifications(
     COMMENTS,
     MODELS,
-    USERS,
     NOTIFICATION_PREFERENCES,
     users,
     modelIds,

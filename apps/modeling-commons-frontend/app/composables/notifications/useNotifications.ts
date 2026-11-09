@@ -107,7 +107,8 @@ function useNotificationsImpl() {
     () => POLL_INTERVAL_ACTIVE_MS * Math.min(2 ** failures.value, MAX_BACKOFF_FACTOR),
   );
 
-  // Rows can commit after a newer createdAt was already seen; re-reading a short window behind the cursor catches them and aggregate dedupes by id.
+  // Rows can commit after a newer createdAt was already seen; re-reading a short
+  // window behind the cursor catches them and aggregate dedupes by id.
   const computePollSince = () =>
     cursor.value === null
       ? undefined

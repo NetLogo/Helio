@@ -6,7 +6,7 @@ import {
 import type {
   ModelInteractionCounts,
   ModelRepository,
-  ModelSubjectRecord,
+  ModelPreviewRecord,
 } from '#src/modules/model/database/model.repository.port.ts';
 import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
@@ -147,10 +147,10 @@ export default function modelRepository({
       });
     },
 
-    async findSubjectsReadableBy(
+    async findPreviewsReadableBy(
       modelIds: Array<string>,
       viewer: ViewerContext | null,
-    ): Promise<Array<ModelSubjectRecord>> {
+    ): Promise<Array<ModelPreviewRecord>> {
       if (modelIds.length === 0) return [];
       const records = await db.model.findMany({
         where: {

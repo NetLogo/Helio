@@ -3,55 +3,51 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('#src/lib/mail.ts', () => ({ default: { sendMail: vi.fn() } }));
 
 import makeMailService from '#src/modules/mail/mail.service.ts';
-import { mockEmailQueueRepository } from '#src/modules/mail/database/email-queue.repository.mock.ts';
-import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
+import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 describe('mailService.enqueue', () => {
-  const emailQueueRepository = mockEmailQueueRepository();
-  const emailQueueNotifier = { bind: vi.fn(), nudge: vi.fn().mockResolvedValue(undefined) };
+  const jobQueue = {
+    send: vi.fn().mockResolvedValue('job-1'),
+    sendTx: vi.fn().mockResolvedValue('job-1'),
+  };
   const logger = { error: vi.fn(), info: vi.fn() };
-  const service = makeMailService({ emailQueueRepository, emailQueueNotifier, logger } as never);
+  const service = makeMailService({ jobQueue, logger } as never);
   const content = { to: 'recipient@example.test', subject: 'New comment' };
+  const ctx = Object.create(null) as TransactionContext;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    emailQueueRepository.insertTx.mockResolvedValue({ id: 'email-1', content });
-    emailQueueNotifier.nudge.mockResolvedValue(undefined);
   });
 
-  it('inserts inside the caller transaction and nudges the sender only after commit', async () => {
-    const nudgedBeforeCommit = await mockTransactionManager().run(async (ctx) => {
-      await service.enqueue(content, ctx);
-      expect(emailQueueRepository.insertTx).toHaveBeenCalledWith(content, ctx);
-      return emailQueueNotifier.nudge.mock.calls.length;
-    });
+  it('sends a send-email job inside the caller transaction', async () => {
+    await service.enqueue(content, ctx);
 
-    expect(nudgedBeforeCommit).toBe(0);
-    expect(emailQueueNotifier.nudge).toHaveBeenCalledTimes(1);
+    expect(jobQueue.sendTx).toHaveBeenCalledWith(ctx, 'send-email', content);
+    expect(jobQueue.send).not.toHaveBeenCalled();
   });
 
-  it('nudges right away when there is no transaction', async () => {
+  it('sends a send-email job on its own when there is no transaction', async () => {
     await service.enqueue(content);
 
-    expect(emailQueueRepository.insertTx).toHaveBeenCalledWith(content, undefined);
-    expect(emailQueueNotifier.nudge).toHaveBeenCalledTimes(1);
+    expect(jobQueue.send).toHaveBeenCalledWith('send-email', content);
+    expect(jobQueue.sendTx).not.toHaveBeenCalled();
   });
 
-  it('does not nudge when the insert fails', async () => {
-    const dbError = new Error('database unreachable');
-    emailQueueRepository.insertTx.mockRejectedValue(dbError);
+  it.each([
+    ['inside the caller transaction', ctx, 'sendTx'],
+    ['on its own', undefined, 'send'],
+  ] as const)('fails the enqueue when no job was created %s', async (_label, context, method) => {
+    jobQueue[method].mockResolvedValueOnce(null);
 
-    await expect(service.enqueue(content)).rejects.toBe(dbError);
-    expect(emailQueueNotifier.nudge).not.toHaveBeenCalled();
+    await expect(service.enqueue(content, context)).rejects.toThrow(
+      'No send-email job was created',
+    );
   });
 
-  it('logs a failed nudge instead of failing the enqueue, since the cron still drains the row', async () => {
+  it('fails the enqueue when the job cannot be sent', async () => {
     const queueError = new Error('queue unreachable');
-    emailQueueNotifier.nudge.mockRejectedValue(queueError);
+    jobQueue.sendTx.mockRejectedValueOnce(queueError);
 
-    await expect(service.enqueue(content)).resolves.toBeUndefined();
-    await vi.waitFor(() => {
-      expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({ error: queueError }));
-    });
+    await expect(service.enqueue(content, ctx)).rejects.toBe(queueError);
   });
 });

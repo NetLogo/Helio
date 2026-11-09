@@ -1,24 +1,18 @@
+import workersConfig from '#src/config/workers.ts';
 import transporter from '#src/lib/mail.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import type { SentMessageInfo } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer/index.js';
 
-export default function makeMailService({
-  logger,
-  emailQueueRepository,
-  emailQueueNotifier,
-}: Dependencies) {
-  function nudgeEmailQueue(): void {
-    void emailQueueNotifier.nudge().catch((error: unknown) => {
-      logger.error({ name: 'Mail Service', message: 'Failed to nudge the email queue', error });
-    });
-  }
+const { queueName } = workersConfig.sendEmail;
 
+export default function makeMailService({ logger, jobQueue }: Dependencies) {
   return {
     async enqueue(content: Mail.Options, ctx?: TransactionContext): Promise<void> {
-      await emailQueueRepository.insertTx(content, ctx);
-      if (ctx) ctx.onCommit(nudgeEmailQueue);
-      else nudgeEmailQueue();
+      const jobId = ctx
+        ? await jobQueue.sendTx(ctx, queueName, content)
+        : await jobQueue.send(queueName, content);
+      if (!jobId) throw new Error(`No ${queueName} job was created`);
     },
 
     async sendMailAsync(content: Mail.Options): Promise<SentMessageInfo> {

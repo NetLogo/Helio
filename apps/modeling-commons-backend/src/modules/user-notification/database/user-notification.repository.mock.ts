@@ -1,13 +1,13 @@
 import { vi } from 'vitest';
 import type { UserNotificationRepositoryPort } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+import { stageCommitEffect } from '#src/shared/test/mock-transaction-manager.ts';
 
 export function mockUserNotificationRepository(): {
   [K in keyof UserNotificationRepositoryPort]: ReturnType<typeof vi.fn>;
 } {
   return {
     insertTx: vi.fn(),
-    findOneByDeliveryKey: vi.fn(),
     markEmailSentTx: vi.fn().mockResolvedValue([]),
     findPendingForRecipient: vi.fn().mockResolvedValue([]),
     findDigestRecipients: vi.fn().mockResolvedValue([]),
@@ -23,7 +23,7 @@ export function mockUserNotificationRepository(): {
 export function fakeMarkEmailSent(sentIds: Set<string>) {
   return async (ids: Array<string>, _at: Date, ctx: TransactionContext): Promise<Array<string>> => {
     const marked = ids.filter((id) => !sentIds.has(id));
-    ctx.onCommit(() => {
+    stageCommitEffect(ctx, () => {
       for (const id of marked) sentIds.add(id);
     });
     return marked;

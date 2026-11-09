@@ -1,10 +1,12 @@
 import assert from 'node:assert';
-import { After, Given, Then } from '@cucumber/cucumber';
+import { After, Given, Then, When } from '@cucumber/cucumber';
 import env from '#src/config/env.ts';
-import { targetPhrases } from '#src/modules/user-notification/domain/user-notification.grouping.ts';
+import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
+import { modelCommentLiterals } from '#src/modules/model-comment/notifications/model-comment.literals.ts';
 import { formatUserList } from '#src/shared/utils/formatters.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
+import { haveAllCompleted, waitForEmailJobs } from '../support/email-jobs.ts';
 
 const MAILPIT_API = `${env.smtp.mailpitUrl}/api/v1`;
 
@@ -17,6 +19,7 @@ interface MailpitSummary {
 interface MailpitMessage {
   Subject: string;
   Text: string;
+  HTML: string;
 }
 
 interface SummaryEmailCradle {
@@ -85,6 +88,15 @@ Given('Mailpit holds no messages to {string}', async function (this: ICustomWorl
   await deleteMessagesTo(email);
 });
 
+When(
+  'the email sender has sent the queued emails to {string}',
+  async function (this: ICustomWorld, name: string) {
+    const { email } = getUser(this, name);
+    const jobs = await waitForEmailJobs(this.server, [email], haveAllCompleted);
+    assert.ok(jobs, `The send-email jobs to ${email} did not all complete within 10s`);
+  },
+);
+
 After({ tags: '@mailpit' }, async function (this: ICustomWorld) {
   const addresses = (this.context['mailpitAddresses'] as Set<string> | undefined) ?? new Set();
   for (const address of addresses) await deleteMessagesTo(address);
@@ -127,8 +139,67 @@ Then(
     modelTitle: string,
   ) {
     const actors = [getUser(this, firstActor).name, getUser(this, secondActor).name];
-    const line = `${formatUserList(actors, actors.length)} ${targetPhrases.model} ${modelTitle}`;
+    const line = modelCommentLiterals.formatGroupLine(
+      formatUserList(actors, actors.length),
+      modelTitle,
+    );
     const message = await findOnlyMessageTo(getUser(this, name).email);
     assert.ok(message.Text.includes(line), `the digest text does not contain "${line}"`);
+  },
+);
+
+Given(
+  'the model {string} has a public preview image',
+  async function (this: ICustomWorld, title: string) {
+    const modelId = (this.context['models'] as Map<string, string> | undefined)?.get(title);
+    assert.ok(modelId, `no model "${title}"`);
+    const { prisma } = this.server.diContainer.cradle;
+    await prisma.modelVersion.updateMany({
+      where: { modelId },
+      data: { previewImageFileKey: `${PUBLIC_PREFIX}/e2e/${modelId}.png` },
+    });
+    this.context['previewImageKeys'] = {
+      ...(this.context['previewImageKeys'] as Record<string, string> | undefined),
+      [title]: `${PUBLIC_PREFIX}/e2e/${modelId}.png`,
+    };
+  },
+);
+
+Then(
+  'the Mailpit message to {string} should show {string} with its preview image',
+  async function (this: ICustomWorld, name: string, title: string) {
+    const key = (this.context['previewImageKeys'] as Record<string, string> | undefined)?.[title];
+    assert.ok(key, `no preview image for "${title}"`);
+    const { fileService } = this.server.diContainer.cradle;
+    const imageUrl = fileService.getPublicUrl(key);
+    assert.ok(imageUrl, `the preview image key ${key} is not public`);
+    const message = await findOnlyMessageTo(getUser(this, name).email);
+    assert.ok(message.Subject.includes(title), `the subject does not name "${title}"`);
+    assert.ok(message.HTML.includes(title), `the html does not name "${title}"`);
+    assert.ok(message.HTML.includes(`src="${imageUrl}"`), `the html has no image ${imageUrl}`);
+  },
+);
+
+Then(
+  'the Mailpit message to {string} should not mention {string}',
+  async function (this: ICustomWorld, name: string, text: string) {
+    const message = await findOnlyMessageTo(getUser(this, name).email);
+    for (const [part, content] of Object.entries({
+      subject: message.Subject,
+      html: message.HTML,
+      text: message.Text,
+    })) {
+      assert.ok(!content.includes(text), `the ${part} mentions "${text}"`);
+    }
+  },
+);
+
+Then(
+  'the Mailpit message to {string} should not show the preview image of {string}',
+  async function (this: ICustomWorld, name: string, title: string) {
+    const key = (this.context['previewImageKeys'] as Record<string, string> | undefined)?.[title];
+    assert.ok(key, `no preview image for "${title}"`);
+    const message = await findOnlyMessageTo(getUser(this, name).email);
+    assert.ok(!message.HTML.includes(key), `the html shows the preview image ${key}`);
   },
 );

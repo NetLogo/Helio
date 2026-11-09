@@ -3,7 +3,8 @@ import type {
   NotificationCategory,
   NotificationCategoryInfo,
   NotificationChannels,
-  ResolvedNotificationSubjects,
+  NotificationDescription,
+  NotificationPreviews,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type { CategoryPreferenceDto } from '#src/modules/user-notification/dtos/notification-preference.response.dto.ts';
 import type { UserNotificationResponseDto } from '#src/modules/user-notification/dtos/user-notification.response.dto.ts';
@@ -15,7 +16,8 @@ export type UserNotificationMapper = {
   ) => CategoryPreferenceDto;
   toResponse: (
     record: UserNotificationRecord,
-    subjects: ResolvedNotificationSubjects,
+    previews: NotificationPreviews,
+    description: NotificationDescription,
   ) => UserNotificationResponseDto;
 };
 
@@ -31,15 +33,15 @@ export default function userNotificationMapper(): UserNotificationMapper {
       };
     },
 
-    toResponse(record, subjects) {
+    toResponse(record, previews, description) {
       return {
         id: record.id,
         category: record.category as NotificationCategory,
-        title: record.title,
-        body: record.body,
+        title: description.title,
+        body: description.body,
         url: record.url,
-        actor: subjects.actor,
-        target: subjects.target,
+        actor: previews.actor,
+        target: previews.target,
         createdAt: record.createdAt.toISOString(),
         readAt: record.readAt?.toISOString() ?? null,
       };

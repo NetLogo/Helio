@@ -1,15 +1,19 @@
 import links from '#src/config/links.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
+import { userNotificationEventTypes } from '#src/modules/event/domain/event-types.ts';
 import { handleFailedDeliveries } from '#src/modules/user-notification/delivery-failures.ts';
 import type {
   DeliverableRecipient,
   EmailMode,
   EmailModeByCategory,
   NotificationCategory,
-  NotificationIntent,
+  NotificationChannels,
+  NotificationRowFacts,
   NotificationLinks,
-  Notifier,
+  NotificationProducer,
+  UserNotificationCreatedJobData,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
+import type { UserNotificationRecord } from '#src/modules/user-notification/database/user-notification.record.ts';
 import type { NotificationPreferenceResponseDto } from '#src/modules/user-notification/dtos/notification-preference.response.dto.ts';
 
 export type UpdatePreferenceInput = {
@@ -18,8 +22,10 @@ export type UpdatePreferenceInput = {
   inApp?: boolean;
 };
 
+type ResolvedRowFacts = { producer: NotificationProducer; facts: NotificationRowFacts };
+
 export function createUserNotificationService(
-  notifiers: ReadonlyArray<Notifier>,
+  producers: ReadonlyArray<NotificationProducer>,
   {
     transactionManager,
     notificationPreferenceRepository,
@@ -29,16 +35,18 @@ export function createUserNotificationService(
     userRepository,
     notificationEmailService,
     notificationDigestService,
+    getNotificationPreviewsQuery,
+    jobQueue,
     logger,
   }: Dependencies,
 ) {
-  async function findDeliverableRecipient(intent: NotificationIntent) {
-    const recipient = await userRepository.findOneById(intent.recipientUserId);
+  async function findDeliverableRecipient(facts: NotificationRowFacts) {
+    const recipient = await userRepository.findOneById(facts.recipientUserId);
     if (!userNotificationDomain.isDeliverableRecipient(recipient)) return undefined;
 
     const preferences = await notificationPreferenceRepository.findAllByUser(recipient.id);
-    const override = preferences.find((preference) => preference.category === intent.category);
-    const channels = userNotificationDomain.resolvePreference(intent.category, override);
+    const override = preferences.find((preference) => preference.category === facts.category);
+    const channels = userNotificationDomain.resolvePreference(facts.category, override);
     if (userNotificationDomain.isSuppressed(channels)) return undefined;
 
     return { recipient, channels };
@@ -47,51 +55,70 @@ export function createUserNotificationService(
   async function recordLedgerRow(
     event: EventRecord,
     recipient: DeliverableRecipient,
-    intent: NotificationIntent,
+    facts: NotificationRowFacts,
+    channels: NotificationChannels,
   ) {
     // The row is the delivery ledger, not the feed entry, so it is written even when
     // `inApp` is off, its unique key is what stops a retried event resending the email.
-    const inserted = await transactionManager.run(async (ctx) =>
+    return transactionManager.run(async (ctx) =>
       userNotificationRepository.insertTx(
         ctx,
-        userNotificationDomain.createLedgerRow(event, recipient.id, intent),
+        userNotificationDomain.createLedgerRow(event, recipient.id, facts, channels),
       ),
     );
-    return (
-      inserted ??
-      userNotificationRepository.findOneByDeliveryKey(event.id, recipient.id, intent.category)
+  }
+
+  async function renderLedgerEmail(
+    producer: NotificationProducer,
+    ledger: UserNotificationRecord,
+    recipient: DeliverableRecipient,
+    emailLinks: NotificationLinks,
+  ) {
+    const previews = await getNotificationPreviewsQuery.execute([ledger], recipient.id);
+    return producer.renderEmail(
+      ledger,
+      { id: recipient.id, email: recipient.email, name: recipient.name },
+      previews.get(ledger.id) ?? { actor: null, target: null },
+      emailLinks,
     );
   }
 
   async function deliver(
     event: EventRecord,
-    intent: NotificationIntent,
+    { producer, facts }: ResolvedRowFacts,
     emailLinks: NotificationLinks,
-  ): Promise<void> {
-    const deliverable = await findDeliverableRecipient(intent);
-    if (!deliverable) return;
+  ): Promise<UserNotificationRecord | undefined> {
+    const deliverable = await findDeliverableRecipient(facts);
+    if (!deliverable) return undefined;
 
     const { recipient, channels } = deliverable;
-    const ledger = await recordLedgerRow(event, recipient, intent);
-    if (!ledger || !userNotificationDomain.isSendableNow(channels)) return;
+    const ledger = await recordLedgerRow(event, recipient, facts, channels);
+    if (!userNotificationDomain.isSendableNow(channels)) return ledger;
 
     await notificationEmailService.queueRows([ledger.id], async () =>
-      intent.buildEmail(
-        { id: recipient.id, email: recipient.email, name: recipient.name },
-        emailLinks,
-      ),
+      renderLedgerEmail(producer, ledger, recipient, emailLinks),
     );
+    return ledger;
+  }
+
+  async function publishCreated(recipientIds: Array<string>): Promise<void> {
+    if (recipientIds.length === 0) return;
+    const data: UserNotificationCreatedJobData = { recipientIds };
+    await jobQueue.publish(userNotificationEventTypes.created, data);
   }
 
   return {
     async handleEvent(event: EventRecord): Promise<void> {
-      const applicable = notifiers.filter((notifier) => notifier.eventTypes.includes(event.type));
+      const applicable = producers.filter((producer) => producer.eventTypes.includes(event.type));
       if (applicable.length === 0) return;
 
       const resolutions = await Promise.allSettled(
-        applicable.map(async (notifier) => notifier.resolve(event)),
+        applicable.map(async (producer) => {
+          const rowFacts = await producer.resolve(event);
+          return rowFacts.map((facts): ResolvedRowFacts => ({ producer, facts }));
+        }),
       );
-      const intents = resolutions
+      const resolved = resolutions
         .filter((result) => result.status === 'fulfilled')
         .flatMap((result) => result.value);
 
@@ -101,12 +128,19 @@ export function createUserNotificationService(
       };
 
       const deliveries = await Promise.allSettled(
-        intents.map(async (intent) => deliver(event, intent, emailLinks)),
+        resolved.map(async (entry) => deliver(event, entry, emailLinks)),
       );
+      const ledgerRows = deliveries.flatMap((result) =>
+        result.status === 'fulfilled' && result.value ? [result.value] : [],
+      );
+      const publications = await Promise.allSettled([
+        publishCreated(userNotificationDomain.listInAppRecipientIds(ledgerRows)),
+      ]);
       handleFailedDeliveries(
         [
-          { results: resolutions, message: 'A notifier failed to resolve intents' },
+          { results: resolutions, message: 'A producer failed to resolve intents' },
           { results: deliveries, message: 'Failed to deliver a notification' },
+          { results: publications, message: 'Failed to publish the created notifications' },
         ],
         logger,
         {
@@ -188,5 +222,5 @@ export function createUserNotificationService(
 }
 
 export default function makeUserNotificationService(deps: Dependencies) {
-  return createUserNotificationService([deps.modelCommentNotifier], deps);
+  return createUserNotificationService(deps.notificationProducers, deps);
 }

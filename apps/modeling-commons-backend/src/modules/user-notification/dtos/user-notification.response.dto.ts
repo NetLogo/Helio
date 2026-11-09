@@ -1,9 +1,9 @@
 import { Type, type Static } from 'typebox';
 import { idSchema } from '#src/shared/utils/id.ts';
 
-import { NOTIFICATION_CATEGORIES } from '#src/modules/user-notification/domain/user-notification.types.ts';
+import { NOTIFICATION_CATEGORIES } from '#src/modules/notification-producers.ts';
 
-const notificationSubjectSchema = Type.Object({
+const notificationPreviewSchema = Type.Object({
   name: Type.Union([Type.String(), Type.Null()]),
   thumbnailUrl: Type.Union([Type.String(), Type.Null()]),
   url: Type.String({ format: 'uri' }),
@@ -15,8 +15,8 @@ export const userNotificationResponseDtoSchema = Type.Object({
   title: Type.String(),
   body: Type.String(),
   url: Type.String({ format: 'uri' }),
-  actor: Type.Union([notificationSubjectSchema, Type.Null()]),
-  target: Type.Union([notificationSubjectSchema, Type.Null()]),
+  actor: Type.Union([notificationPreviewSchema, Type.Null()]),
+  target: Type.Union([notificationPreviewSchema, Type.Null()]),
   createdAt: Type.String({ format: 'date-time' }),
   readAt: Type.Union([Type.String({ format: 'date-time' }), Type.Null()]),
 });

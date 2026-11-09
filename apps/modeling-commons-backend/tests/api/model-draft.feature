@@ -128,6 +128,7 @@ Feature: Model Drafts
     When I fetch the card for the published model
     Then the response status should be 200
     And the card preview image url should be public and unsigned
+    And the response body property "previewImageUrl" should not contain "files/public/files/public/"
 
   Scenario: Uploading a preview image returns a public unsigned URL
     Given an authenticated user

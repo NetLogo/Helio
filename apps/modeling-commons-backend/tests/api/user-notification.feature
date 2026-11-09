@@ -93,7 +93,7 @@ Feature: Notification Preferences and Feed
     And an authenticated user "commenter"
     When "commenter" comments "Great work!" on "Notify Model"
     Then the response status should be 201
-    When the event processor queue is triggered
+    When the pending events have been dispatched
     Then mail should have been sent to 2 recipients
     And mail should have been sent to "owner"
     And mail should have been sent to "contributor"
@@ -104,7 +104,7 @@ Feature: Notification Preferences and Feed
     And a public model "Solo Model" created by "owner"
     When "owner" comments "Talking to myself" on "Solo Model"
     Then the response status should be 201
-    When the event processor queue is triggered
+    When the pending events have been dispatched
     Then no mail should have been sent
 
   @sanity
@@ -158,24 +158,29 @@ Feature: Notification Preferences and Feed
     And an authenticated user "commenter"
     When "commenter" comments "Still emailed" on "Quiet Model"
     Then the response status should be 201
-    When the event processor queue is triggered
+    When the pending events have been dispatched
     Then mail should have been sent to 1 recipients
     When "owner" lists their notifications
     Then the response status should be 200
     And the notification feed should contain 0 notifications
 
-  Scenario: A new comment nudges the event processor instead of waiting for the cron
+  @sanity
+  Scenario: A notification muted in-app at delivery stays hidden after in-app is turned back on
     Given an authenticated user "owner"
-    And a public model "Nudge Model" created by "owner"
+    And a public model "Muted Model" created by "owner"
+    And "owner" mutes the in-app channel for category "comment.on_your_model"
     And an authenticated user "commenter"
-    And the event queue nudge is captured
-    When "commenter" comments "No cron, please" on "Nudge Model"
+    When "commenter" comments "Quietly" on "Muted Model"
     Then the response status should be 201
-    And the event queue should have been nudged
-    When the comment notification arrives within 20 seconds
+    When the comment notification has been delivered
+    Then the ledger should hold 1 in-app suppressed notification for "owner"
+    When "owner" lists their notifications
+    Then the notification feed should contain 0 notifications
+    And the notification feed should report 0 unread
+    When "owner" unmutes the in-app channel for category "comment.on_your_model"
     And "owner" lists their notifications
-    Then the response status should be 200
-    And the notification feed should contain 1 notification
+    Then the notification feed should contain 0 notifications
+    And the notification feed should report 0 unread
 
   Scenario: Reading the notification feed requires authentication
     When an anonymous viewer lists notifications
@@ -188,7 +193,7 @@ Feature: Notification Preferences and Feed
     And an authenticated user "commenter"
     When "commenter" comments "Anyone home?" on "Muted Model"
     Then the response status should be 201
-    When the event processor queue is triggered
+    When the pending events have been dispatched
     Then no mail should have been sent
 
   Scenario: A recipient on the daily email mode gets no immediate email
@@ -198,7 +203,7 @@ Feature: Notification Preferences and Feed
     And an authenticated user "commenter"
     When "commenter" comments "Save it for later" on "Daily Model"
     Then the response status should be 201
-    When the event processor queue is triggered
+    When the pending events have been dispatched
     Then no mail should have been sent
 
   Scenario: Switching a daily category to immediate emails its pending notifications in one summary
@@ -207,9 +212,9 @@ Feature: Notification Preferences and Feed
     And "owner" sets email to "daily" for category "comment.on_your_model"
     And an authenticated user "commenter"
     When "commenter" comments "Held for the digest" on "Flush Model"
-    And the event processor queue is triggered
+    And the pending events have been dispatched
     And "commenter" comments "Still holding" on "Flush Model"
-    And the event processor queue is triggered
+    And the pending events have been dispatched
     Then no mail should have been sent
     When "owner" sets email to "immediate" for category "comment.on_your_model"
     Then the response status should be 204
@@ -222,7 +227,7 @@ Feature: Notification Preferences and Feed
     And "owner" turns off email for category "comment.on_your_model"
     And an authenticated user "commenter"
     When "commenter" comments "You missed this" on "Missed Model"
-    And the event processor queue is triggered
+    And the pending events have been dispatched
     Then no mail should have been sent
     When "owner" sets email to "daily" for category "comment.on_your_model"
     Then the response status should be 204
@@ -234,7 +239,7 @@ Feature: Notification Preferences and Feed
     And "owner" sets email to "daily" for category "comment.on_your_model"
     And an authenticated user "commenter"
     When "commenter" comments "Still daily" on "Same Model"
-    And the event processor queue is triggered
+    And the pending events have been dispatched
     Then no mail should have been sent
     When "owner" sets email to "daily" for category "comment.on_your_model"
     Then the response status should be 204
@@ -246,9 +251,92 @@ Feature: Notification Preferences and Feed
     And "owner" sets email to "daily" for category "comment.on_your_model"
     And an authenticated user "commenter"
     When "commenter" comments "Long ago" on "Stale Model"
-    And the event processor queue is triggered
+    And the pending events have been dispatched
     Then no mail should have been sent
     Given the notifications of "owner" are older than the flush window
     When "owner" sets email to "immediate" for category "comment.on_your_model"
     Then the response status should be 204
     And no notification summary should be emailed
+
+  Scenario: Recording an existing ledger row keeps its transaction usable
+    Given an authenticated user "ledger"
+    And a ledger notification already exists for "ledger"
+    When the same ledger notification is recorded again followed by another write in one transaction
+    Then the transaction should commit both writes on the one existing ledger row
+    And the ledger row should keep the payload it was recorded with
+
+  Scenario: The feed names the actor and the model as they are now, not as they were at delivery
+    Given an authenticated user "owner"
+    And a public model "Original Title" created by "owner"
+    And an authenticated user "commenter"
+    When "commenter" comments "Nice model!" on "Original Title"
+    Then the response status should be 201
+    When the comment notification has been delivered
+    And "commenter" renames themselves to "Renamed Commenter"
+    And "owner" updates the current version of "Original Title" with title "Renamed Title"
+    And "owner" lists their notifications
+    Then the response status should be 200
+    And the first feed notification should have title "Renamed Commenter commented on your model"
+    And the first feed notification should link its actor to "commenter"
+    And the first feed notification should target a model named "Renamed Title"
+
+  Scenario: The feed keeps the excerpt the comment had when it was delivered
+    Given an authenticated user "owner"
+    And a public model "Excerpt Model" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented "First thoughts" on "Excerpt Model" as "thought"
+    When the comment notification has been delivered
+    And "commenter" edits comment "thought" on "Excerpt Model" with content "Second thoughts"
+    Then the response status should be 204
+    When "owner" lists their notifications
+    Then the response status should be 200
+    And the first feed notification should have body "First thoughts"
+
+  Scenario: The feed never names a model the recipient can no longer read
+    Given an authenticated user "owner"
+    And a public model "Vanishing Model" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented "Hello there" on "Vanishing Model" as "question"
+    And "owner" has replied "Thanks" to comment "question" as "answer"
+    When the comment notification has been delivered
+    And "owner" updates the model "Vanishing Model" with visibility "private"
+    Then the response status should be 204
+    When "commenter" lists their notifications
+    Then the response status should be 200
+    And the notification feed should contain 1 notification
+    And the first feed notification should have category "comment.reply_to_you"
+    And the first feed notification should have title "owner replied to your comment"
+    And no field of the notification feed should contain "Vanishing Model"
+
+  @mailpit
+  Scenario: The comment email shows a readable model with its title and preview image
+    Given Mailpit is reachable
+    And an authenticated user "owner"
+    And a public model "Pictured Model" created by "owner"
+    And the model "Pictured Model" has a public preview image
+    And an authenticated user "commenter"
+    And Mailpit holds no messages to "owner"
+    When "commenter" comments "Lovely picture" on "Pictured Model"
+    Then the response status should be 201
+    When the pending events have been dispatched
+    And the email sender has sent the queued emails to "owner"
+    Then Mailpit should hold exactly 1 message to "owner"
+    And the Mailpit message to "owner" should show "Pictured Model" with its preview image
+
+  @mailpit
+  Scenario: The reply email never names a model the recipient can no longer read
+    Given Mailpit is reachable
+    And an authenticated user "owner"
+    And a public model "Hidden Model" created by "owner"
+    And the model "Hidden Model" has a public preview image
+    And an authenticated user "commenter"
+    And "commenter" has commented "Hello there" on "Hidden Model" as "question"
+    And the comment notification has been delivered
+    And "owner" updates the model "Hidden Model" with visibility "private"
+    And Mailpit holds no messages to "commenter"
+    When "owner" has replied "Thanks" to comment "question" as "answer"
+    And the pending events have been dispatched
+    And the email sender has sent the queued emails to "commenter"
+    Then Mailpit should hold exactly 1 message to "commenter"
+    And the Mailpit message to "commenter" should not mention "Hidden Model"
+    And the Mailpit message to "commenter" should not show the preview image of "Hidden Model"

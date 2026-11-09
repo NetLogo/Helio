@@ -6,9 +6,7 @@ export function mockEventRepository(): {
 } {
   return {
     insertTx: vi.fn(),
-    findUnprocessed: vi.fn(),
-    markProcessed: vi.fn(),
-    markFailed: vi.fn(),
+    findOneById: vi.fn(),
     search: vi.fn(),
   };
 }
