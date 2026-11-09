@@ -323,7 +323,7 @@ energy, from having just eaten.
 
 Next, let's make the movement of turtles use up some of the turtle's energy.
 
-> - Rewrite `move-turtles` as follows:
+> - Rewrite the `move-turtles` procedure as follows, leaving `go` untouched:
 >
 >         to move-turtles
 >           ask turtles [
