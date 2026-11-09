@@ -6930,12 +6930,12 @@ entries:
         ```
         random-seed 47822
         show random 100
-        => 50
+        => 98
         show random 100
         => 35
         random-seed 47822
         show random 100
-        => 50
+        => 98
         show random 100
         => 35
         ```

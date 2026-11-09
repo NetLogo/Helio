@@ -2428,7 +2428,7 @@ For example, if you run these commands:
     show random 100
     show random 100
 
-You will always get the numbers 79, 89, and 61 in that order.
+You will always get the numbers 27, 89, and 61 in that order.
 
 Note, however, that you're only guaranteed to get those same numbers if you're
 using the same version of NetLogo. Sometimes when we make a new version of
