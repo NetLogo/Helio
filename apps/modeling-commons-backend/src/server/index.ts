@@ -8,8 +8,13 @@ import Cors from '@fastify/cors';
 import Helmet from '@fastify/helmet';
 import UnderPressure from '@fastify/under-pressure';
 
+import pg from 'pg';
+
 import env from '#src/config/env.ts';
+import realtimeConfig from '#src/config/realtime.ts';
 import { di } from '#src/server/di/index.ts';
+import { isRouteFileServed } from '#src/server/route-files.ts';
+import { startPgListener } from '#src/shared/realtime/pg-listener.ts';
 import { startWorkers } from '#src/workers/index.ts';
 import { registerSendQueues, registerSubscriptions } from '#src/workers/queues.ts';
 
@@ -96,8 +101,24 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
 
   await startWorkers(fastify);
 
+  if (env.sse.enabled) {
+    const listener = startPgListener({
+      createClient: () =>
+        new pg.Client({
+          connectionString: env.db.url,
+          application_name: realtimeConfig.listener.applicationName,
+        }),
+      broker: fastify.diContainer.cradle.realtimeBroker,
+      logger: fastify.log,
+      random: Math.random,
+    });
+    fastify.addHook('onClose', async () => {
+      await listener.stop();
+    });
+  }
+
   // Auto-load routes
-  if (env.api.enabled) {
+  if (env.api.enabled || env.sse.enabled) {
     await fastify.register(AutoLoad, {
       dir: path.join(import.meta.dirname, '../modules'),
       dirNameRoutePrefix: false,
@@ -105,7 +126,8 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
         prefix: '/api',
       },
       indexPattern: /^$/, // Ignore index files
-      matchFilter: (thisPath) => /\.(route|resolver)\.ts$/.test(thisPath),
+      matchFilter: (thisPath) =>
+        isRouteFileServed(thisPath, { api: env.api.enabled, sse: env.sse.enabled }),
     });
   }
 

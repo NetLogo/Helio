@@ -1,8 +1,33 @@
+import { MINUTE_MS, SECOND_MS } from '#src/shared/utils/consts.ts';
+
 const realtimeConfig = {
   channels: {
     model: 'mc_model',
     user: 'mc_user',
   },
+  topicPrefixes: {
+    model: 'model',
+    user: 'user',
+  },
+  events: {
+    notifications: 'notifications',
+    comments: 'comments',
+    resync: 'resync',
+  },
+  streams: {
+    maxPerUser: 16,
+    heartbeatIntervalMs: 25 * SECOND_MS,
+    clientRetryMs: 10 * SECOND_MS,
+    maxStreamLifetimeMs: 15 * MINUTE_MS,
+    closingRetryMs: SECOND_MS,
+  },
+  listener: {
+    applicationName: 'mc-sse-listener',
+    reconnectBaseDelayMs: 500,
+    reconnectMaxDelayMs: 30 * SECOND_MS,
+  },
 } as const;
+
+export type RealtimeEvent = (typeof realtimeConfig.events)[keyof typeof realtimeConfig.events];
 
 export default realtimeConfig;

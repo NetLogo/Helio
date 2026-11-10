@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { hashPassword } from 'better-auth/crypto';
 import { prisma } from './providers.js';
 import { seedId, seededRandom } from './id.js';
 import { AssetUploader, loadNlogox, fakeNlogox, textAsset, type NlogoxAsset } from './assets.js';
@@ -61,8 +62,9 @@ const pick = <T>(rng: () => number, pool: readonly T[]): T =>
 
 // Users
 
-export async function loadUsers(users: UserSeed[]): Promise<IdMap> {
+export async function loadUsers(users: UserSeed[], password: string): Promise<IdMap> {
   const map: IdMap = new Map();
+  const passwordHash = await hashPassword(password);
 
   for (const u of users) {
     const id = seedId('user', u.key);
@@ -98,8 +100,14 @@ export async function loadUsers(users: UserSeed[]): Promise<IdMap> {
     const accountId = seedId('account', u.key);
     await prisma.account.upsert({
       where: { id: accountId },
-      update: {},
-      create: { id: accountId, userId: id, accountId: id, providerId: 'credential' },
+      update: { password: passwordHash },
+      create: {
+        id: accountId,
+        userId: id,
+        accountId: id,
+        providerId: 'credential',
+        password: passwordHash,
+      },
     });
 
     if (u.devSession) {

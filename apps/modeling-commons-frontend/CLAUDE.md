@@ -26,7 +26,7 @@ Nuxt 3 frontend for Modeling Commons. TypeScript, Vue 3 `<script setup>`, Nuxt U
   - **SSR: a fresh client is created per call and forwards the incoming request's `cookie` header** so the backend can resolve the session. Don't "optimize" this into a module-level singleton — session cookies are per-request.
 - Typed calls: `api.GET("/api/v1/models/{id}/card", { params: { path: { id } } })`.
 - Query params go under `params: { query }`, e.g. `api.GET("/api/v1/me/notifications", { params: { query } })`. A top-level `query` option type-checks but openapi-fetch silently drops it.
-- For routes not yet in `shared/types/api.d.ts` (e.g. just added on backend), fall back to raw `fetch(apiBase + path, { credentials: "include" })` — see `composables/useModelInteractions.ts` — and migrate to `api.METHOD(...)` after regenerating types.
+- For routes not yet in `shared/types/api.d.ts` (e.g. just added on backend), regenerate the types (`yarn generate:types` in the backend) and use the typed client. No raw `fetch`.
 - Regenerate types by running `yarn generate:types` in `apps/modeling-commons-backend` (boots the server, dumps OpenAPI, writes `shared/types/api.d.ts` via `CLIENT_TYPES_OUTPUT_DIR`).
 
 ## Data fetching
@@ -62,6 +62,7 @@ When a parent passes server data and the child mutates a derived view of it (e.g
 
 ## Testing
 
+- Component tests live in `app/components/<area>/__tests__/` and import through `~/` aliases.
 - Upload/edit interaction logic lives in `tests/nuxt/composables/*` (`vitest --project=nuxt`) with `useApi` mocked via `tests/helpers/mockApi` (`makeApiClientMock`/`apiResult`). Mounting the editor stepper in component tests requires replacing `UStepper` via `mockComponent` with a flat slot renderer; mounting the real one hits a recursive-update flake under `@nuxt/test-utils`.
 - Request-shape tests (query params, paths, bodies) run a real openapi-fetch client over a recording `fetch` (`makeRecordingApi` in `tests/helpers/notifications.ts`) and assert the recorded URL, not the mocked client's call arguments.
 - Full journeys go in `tests/e2e` (real backend + Chromium): they need the backend + Mailpit running and use `signUpAndVerify` for a verified session.

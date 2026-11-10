@@ -69,6 +69,43 @@ Feature: Model Drafts
     And the response body should have property "modelId"
     And the response body should have property "versionNumber"
 
+  Scenario: Publishing a .nlogo model stores its version without the NetLogo prefix
+    Given an authenticated user
+    And an empty draft
+    When I patch the draft with title "Sectioned Model" and visibility "public"
+    And I upload a sectioned primary file "model.nlogo" with version section "NetLogo 6.4.0" to the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the published version should have NetLogo version "6.4.0"
+
+  Scenario: Publishing a .nlogox model stores its version without the NetLogo prefix
+    Given an authenticated user
+    And an empty draft
+    When I patch the draft with title "Ants" and visibility "public"
+    And I upload the seed model "ants.nlogox" as the primary file of the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the published version should have NetLogo version "7.0.0-beta0"
+
+  Scenario: Publishing an unparseable primary file stores no NetLogo version
+    Given an authenticated user
+    And an empty draft
+    When I patch the draft with title "Unparseable Model" and visibility "public"
+    And I upload a primary file to the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the published version should have no NetLogo version
+
+  Scenario: A new version of a seeded model stores the version of its new primary file
+    Given an authenticated user
+    And a public model "Versioned Ants" created by the current user
+    And a draft seeded from the model "Versioned Ants"
+    When I upload the seed model "ants.nlogox" as the primary file of the draft
+    And I publish the draft
+    Then the response status should be 201
+    And the response body property "versionNumber" should equal "2"
+    And the published version should have NetLogo version "7.0.0-beta0"
+
   Scenario: Uploading a primary file with a valid NetLogo extension succeeds
     Given an authenticated user
     And an empty draft

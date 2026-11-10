@@ -10,8 +10,21 @@ import {
   NOTIFICATION_PAGINATION_KEY,
   type Notification,
 } from "~/components/notifications/shared";
+import { STREAM_EVENTS } from "~/components/shared/event-stream";
 
 import { createSharedComposable } from "@vueuse/core";
+
+type PollDecision = "start" | "rerun" | "skip";
+
+function decidePoll(state: {
+  force: boolean;
+  inFlight: boolean;
+  withinGap: boolean;
+}): PollDecision {
+  if (state.inFlight) return state.force ? "rerun" : "skip";
+  if (!state.force && state.withinGap) return "skip";
+  return "start";
+}
 
 function useNotificationsImpl() {
   const api = useApi();
@@ -114,32 +127,60 @@ function useNotificationsImpl() {
       ? undefined
       : new Date(new Date(cursor.value).getTime() - POLL_SINCE_OVERLAP_MS).toISOString();
 
-  const poll = async () => {
+  let pollInFlight = false;
+  let rerunPending = false;
+
+  const requestPoll = (startedAt: number) => {
+    const epoch = resetEpoch.value;
+    return pollNotifications(computePollSince())
+      .then((res) => {
+        if (resetEpoch.value !== epoch) return;
+        unreadCount.value = res.unreadCount;
+        lastPolled.value = startedAt;
+        aggregate(res.data);
+        failures.value = 0;
+        pollError.value = null;
+      })
+      .catch((err: unknown) => {
+        failures.value++;
+        pollError.value = err;
+      });
+  };
+
+  const poll = async ({ force = false }: { force?: boolean } = {}): Promise<void> => {
     if (!user.value.isLoggedIn) return;
     const startedAt = Date.now();
-    if (startedAt - lastPolled.value < MIN_POLL_GAP_MS) return;
-    const epoch = resetEpoch.value;
-    try {
-      const res = await pollNotifications(computePollSince());
-      if (resetEpoch.value !== epoch) return;
-      unreadCount.value = res.unreadCount;
-      lastPolled.value = startedAt;
-      aggregate(res.data);
-      failures.value = 0;
-      pollError.value = null;
-    } catch (err) {
-      failures.value++;
-      pollError.value = err;
+    const decision = decidePoll({
+      force,
+      inFlight: pollInFlight,
+      withinGap: startedAt - lastPolled.value < MIN_POLL_GAP_MS,
+    });
+    if (decision === "skip") return;
+    if (decision === "rerun") {
+      rerunPending = true;
+      return;
     }
+    pollInFlight = true;
+    await requestPoll(startedAt);
+    pollInFlight = false;
+    if (!rerunPending) return;
+    rerunPending = false;
+    return poll({ force: true });
   };
 
   const polling = ref(false);
   let pausePolling = () => {};
 
   if (import.meta.client) {
-    const { isActive, pause } = useActivePoll(poll, backoffInterval, {
+    const stream = useEventStream();
+    const pollNow = () => void poll({ force: true });
+    stream.on(STREAM_EVENTS.notifications, pollNow);
+    stream.on(STREAM_EVENTS.resync, pollNow);
+
+    const { isActive, pause } = useActivePoll(() => poll(), backoffInterval, {
       idleTimeout: IDLE_TIMEOUT_MS,
       requireFocus: false, // deliver while visible even if another app has focus
+      enabled: () => stream.status.value !== "open",
     });
     polling.value = isActive.value;
     watch(isActive, (v) => (polling.value = v));

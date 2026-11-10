@@ -13,8 +13,6 @@ CREATE TABLE "UserNotification" (
     "recipientId" TEXT NOT NULL,
     "eventId" TEXT NOT NULL,
     "category" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "body" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "emailSentAt" TIMESTAMPTZ(3),
     "readAt" TIMESTAMPTZ(3),
@@ -23,6 +21,7 @@ CREATE TABLE "UserNotification" (
     "targetType" TEXT,
     "targetId" TEXT,
     "inAppSuppressed" BOOLEAN NOT NULL DEFAULT false,
+    "payload" JSONB NOT NULL DEFAULT '{}',
 
     CONSTRAINT "UserNotification_pkey" PRIMARY KEY ("id")
 );

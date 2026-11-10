@@ -58,7 +58,7 @@ describe('modelVersionService', () => {
 
   describe('create', () => {
     it('uploads file and creates first version', async () => {
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue(undefined);
+      modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
       modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(1);
 
       const versionNumber = await service.create('model-1', 'user-1', nlogoxFile, { title: 'V1' });
@@ -71,7 +71,7 @@ describe('modelVersionService', () => {
     });
 
     it('finalizes previous version when creating new one', async () => {
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue(makeVersion());
+      modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
       modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
 
       await service.create('model-1', 'user-1', nlogoxFile, {});
@@ -84,7 +84,7 @@ describe('modelVersionService', () => {
     });
 
     it('uses previous title as fallback', async () => {
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue(
+      modelVersionRepository.findLatestByModel.mockResolvedValue(
         makeVersion({ title: 'Previous' }),
       );
       modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
@@ -96,11 +96,56 @@ describe('modelVersionService', () => {
         expect.objectContaining({ title: 'Previous' }),
       );
     });
+
+    it('stores the NetLogo version read from the uploaded file', async () => {
+      modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
+      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(1);
+      const file = {
+        ...nlogoxFile,
+        buffer: Buffer.from(
+          '<?xml version="1.0"?><model version="NetLogo 7.0.0"></model>',
+        ) as Buffer<ArrayBuffer>,
+      };
+
+      await service.create('model-1', 'user-1', file, {});
+
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ netlogoVersion: '7.0.0' }),
+      );
+    });
+
+    it('reads the NetLogo version before the transaction opens', async () => {
+      modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
+      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(1);
+      const file = { ...nlogoxFile, buffer: Buffer.from('<?xml ?>') as Buffer<ArrayBuffer> };
+      const readContents = vi.spyOn(file.buffer, 'toString');
+      const openTransaction = vi.spyOn(transactionManager, 'run');
+
+      await service.create('model-1', 'user-1', file, {});
+
+      expect(readContents.mock.invocationCallOrder[0]).toBeLessThan(
+        openTransaction.mock.invocationCallOrder[0] ?? 0,
+      );
+      openTransaction.mockRestore();
+    });
+
+    it('creates the version with no NetLogo version when the file cannot be parsed', async () => {
+      modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
+      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(1);
+
+      await service.create('model-1', 'user-1', nlogoxFile, {});
+
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ netlogoVersion: null }),
+      );
+    });
   });
 
   describe('updateCurrent', () => {
     it('updates current non-finalized version', async () => {
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue(makeVersion());
+      modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
 
       await service.updateCurrent('model-1', 'user-1', { title: 'Updated' });
 
@@ -113,7 +158,7 @@ describe('modelVersionService', () => {
     });
 
     it('throws VersionNotFoundError if no version exists', async () => {
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue(undefined);
+      modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
 
       await expect(service.updateCurrent('model-1', 'user-1', { title: 'X' })).rejects.toThrow(
         VersionNotFoundError,
@@ -121,7 +166,7 @@ describe('modelVersionService', () => {
     });
 
     it('throws VersionFinalizedError if version is finalized', async () => {
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue(
+      modelVersionRepository.findLatestByModel.mockResolvedValue(
         makeVersion({ finalizedAt: new Date() }),
       );
 

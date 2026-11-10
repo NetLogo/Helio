@@ -83,7 +83,7 @@ function buildPublishService(overrides: Record<string, unknown> = {}) {
   const modelRepository = mockModelRepository();
   const modelVersionRepository = mockModelVersionRepository();
   modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(1);
-  modelVersionRepository.findLatestByModelTx.mockResolvedValue(null);
+  modelVersionRepository.findLatestByModel.mockResolvedValue(null);
 
   const modelDraftStorage = {
     ...makeStorageMock(),
@@ -109,7 +109,7 @@ function buildPublishService(overrides: Record<string, unknown> = {}) {
     modelAdditionalFileRepository: { insertTx: vi.fn() },
     tagService: { upsertByName: vi.fn() },
     tagRepository: { findOneById: vi.fn() },
-    fileService: { upload: vi.fn() },
+    fileService: { upload: vi.fn(), download: vi.fn().mockRejectedValue(new Error('no file')) },
     eventRepository: { insertTx: vi.fn() },
     ...overrides,
   });
@@ -531,7 +531,7 @@ describe('modelDraftService', () => {
         eventRepository,
         modelDraftRepository,
       } = buildEditPublishService();
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue({
+      modelVersionRepository.findLatestByModel.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
         title: 'Old',
@@ -567,7 +567,7 @@ describe('modelDraftService', () => {
     it('bumps the version when the primary file changes', async () => {
       const { service, modelVersionRepository, eventRepository } = buildEditPublishService();
       modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue({
+      modelVersionRepository.findLatestByModel.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
         finalizedAt: null,
@@ -595,7 +595,7 @@ describe('modelDraftService', () => {
     it('bumps the version when a model-file is added', async () => {
       const { service, modelVersionRepository } = buildEditPublishService();
       modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue({
+      modelVersionRepository.findLatestByModel.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
         finalizedAt: null,
@@ -635,6 +635,75 @@ describe('modelDraftService', () => {
 
       expect(result.createdNewVersion).toBe(true);
       expect(modelVersionRepository.insertTx).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('publish NetLogo version', () => {
+    const sectionedNlogo = ['code', 'ui', 'info', 'shapes', 'NetLogo 6.4.0'].join('@#$#@#$#@');
+
+    function makeFileService(contents: string) {
+      return {
+        upload: vi.fn(),
+        download: vi.fn().mockResolvedValue({
+          blob: Buffer.from(contents),
+          contentType: 'text/plain',
+          filename: 'file.nlogo',
+        }),
+      };
+    }
+
+    it('stores the version read from the published primary file on a new model', async () => {
+      const fileService = makeFileService(sectionedNlogo);
+      const { service, modelVersionRepository } = buildPublishService({ fileService });
+
+      await service.publish(makeDraft(publishableDraftData));
+
+      expect(fileService.download).toHaveBeenCalledWith('uploads/models/permanent.nlogo');
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ netlogoVersion: '6.4.0' }),
+      );
+    });
+
+    it('stores the version read from the new primary file on a new version of a model', async () => {
+      const fileService = makeFileService(sectionedNlogo);
+      const { service, modelRepository, modelVersionRepository } = buildPublishService({
+        fileService,
+      });
+      modelRepository.findOneById.mockResolvedValue(makeModel({ id: 'model-1' }));
+      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
+
+      await service.publish(makeDraft(publishableDraftData, { modelId: 'model-1' }));
+
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ versionNumber: 2, netlogoVersion: '6.4.0' }),
+      );
+    });
+
+    it('publishes with no version when the primary file is not a NetLogo model', async () => {
+      const fileService = makeFileService('to setup clear-all end');
+      const { service, modelVersionRepository } = buildPublishService({ fileService });
+
+      const result = await service.publish(makeDraft(publishableDraftData));
+
+      expect(result.createdNewVersion).toBe(true);
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ netlogoVersion: null }),
+      );
+    });
+
+    it('publishes with no version when the primary file cannot be read', async () => {
+      const { service, modelVersionRepository } = buildPublishService();
+
+      const result = await service.publish(makeDraft(publishableDraftData));
+
+      expect(result.createdNewVersion).toBe(true);
+      expect(modelVersionRepository.insertTx).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ netlogoVersion: null }),
+      );
     });
   });
 
@@ -680,7 +749,7 @@ describe('modelDraftService', () => {
       modelRepository.findOneById.mockResolvedValue(
         makeModel({ id: 'model-1', visibility: 'public', deletedAt: null }),
       );
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue({
+      modelVersionRepository.findLatestByModel.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
         finalizedAt: null,

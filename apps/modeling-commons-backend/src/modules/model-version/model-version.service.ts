@@ -3,6 +3,7 @@ import type {
   CreateVersionProps,
   UpdateCurrentVersionProps,
 } from '#src/modules/model-version/domain/model-version.types.ts';
+import { detectNetlogoVersion } from '#src/shared/utils/netlogo-file.ts';
 
 export default function makeModelVersionService({
   transactionManager,
@@ -26,9 +27,10 @@ export default function makeModelVersionService({
         access: 'private',
         pathPrefix: `uploads/models/${modelId}/versions`,
       });
+      const netlogoVersion = detectNetlogoVersion(nlogoxFile);
 
       return transactionManager.run(async (ctx) => {
-        const previous = await modelVersionRepository.findLatestByModelTx(modelId);
+        const previous = await modelVersionRepository.findLatestByModel(modelId);
         if (previous) {
           await modelVersionRepository.finalizeTx(ctx, previous.modelId, previous.versionNumber);
         }
@@ -41,6 +43,7 @@ export default function makeModelVersionService({
           description: input.description,
           previewImageFileKey: input.previewImageFileKey,
           netlogoFileKey,
+          netlogoVersion,
         });
 
         await modelVersionRepository.insertTx(ctx, entity);
@@ -63,7 +66,7 @@ export default function makeModelVersionService({
       userId: string,
       input: UpdateCurrentVersionProps,
     ): Promise<void> {
-      const current = await modelVersionRepository.findLatestByModelTx(modelId);
+      const current = await modelVersionRepository.findLatestByModel(modelId);
       if (!current) throw new VersionNotFoundError(modelId);
       modelVersionDomain.assertNotFinalized(current);
 

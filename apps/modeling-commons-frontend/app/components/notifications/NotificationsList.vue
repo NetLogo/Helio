@@ -8,7 +8,7 @@ const emit = defineEmits<{ read: [id: Notification["id"]] }>();
 
 <template>
   <div
-    class="flex flex-col gap-3 w-full max-h-120 overflow-y-auto scrollbar-hidden rounded gradient-boundary-scroll"
+    class="space-y-3 w-full max-h-[min(30rem,60dvh)] overflow-y-auto overscroll-contain scrollbar-hidden rounded gradient-boundary-scroll"
   >
     <NotificationsItem
       v-for="notification in notifications"

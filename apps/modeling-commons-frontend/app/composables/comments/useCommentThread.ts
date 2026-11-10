@@ -1,12 +1,19 @@
 import type { MaybeRefOrGetter } from "vue";
+import { useDebounceFn, useDocumentVisibility } from "@vueuse/core";
 import {
   findCommentById,
   insertReply,
+  mergePinnedComments,
   nextPageToLoad,
   updateCommentById,
 } from "~/components/comment/comment-tree";
-import type { Comment, CommentPagination } from "~/components/comment/types";
-import useComments, { commentsApiBase, fetchComment, fetchModelComments } from "./useComments";
+import {
+  COMMENT_STREAM_REFRESH_DEBOUNCE_MS,
+  type Comment,
+  type CommentPagination,
+} from "~/components/comment/types";
+import { STREAM_EVENTS } from "~/components/shared/event-stream";
+import useComments, { fetchComment, fetchModelComments } from "./useComments";
 import type { CommentSort, CommentsPayload, CommentsSource } from "./useComments";
 
 type UseCommentThreadOptions = {
@@ -20,6 +27,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     pagination: sourcePagination,
     status,
     refresh,
+    loaded,
   } = useComments(options.source, options.sort);
 
   const modelId = computed(() => toValue(options.source).modelId);
@@ -34,19 +42,35 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     pagination: { count: 0, lastPage: null },
   });
 
+  const pinnedIds = new Set<string>();
   watch(
-    snapshot,
-    (next) => {
-      Object.assign(local, {
-        comments: next.comments,
-        pagination: { ...next.pagination },
-      });
-    },
-    { immediate: true },
+    () => [modelId.value, toValue(options.source).commentId, toValue(options.sort)],
+    () => pinnedIds.clear(),
   );
 
+  const applySnapshot = (next: CommentsPayload) => {
+    Object.assign(local, {
+      comments: mergePinnedComments(
+        local.comments,
+        next.comments,
+        pinnedIds,
+        next.pagination.count <= next.comments.length,
+      ),
+      pagination: { ...next.pagination },
+    });
+  };
+
+  watch(snapshot, applySnapshot, { immediate: true });
+
+  if (import.meta.server) {
+    onServerPrefetch(async () => {
+      await loaded;
+      applySnapshot(snapshot.value);
+    });
+  }
+
   const toast = useToast();
-  const apiBase = commentsApiBase();
+  const api = useApi();
   const mutations = useCommentMutations(() => modelId.value);
 
   const notifyFailure = () =>
@@ -99,7 +123,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     persistedId: string,
     place: (created: Comment) => void,
   ): Promise<void> => {
-    const created = await fetchComment(apiBase, modelId.value, persistedId, {});
+    const created = await fetchComment(api, modelId.value, persistedId, {});
     if (created) place(created);
     else await refresh();
   };
@@ -109,6 +133,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
       const { id } = await mutations.create({ content });
       await confirmCreated(id, (created) => {
         local.comments = [created, ...local.comments];
+        pinnedIds.add(created.id);
         local.pagination = { ...local.pagination, count: local.pagination.count + 1 };
       });
     });
@@ -118,6 +143,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
       const { id } = await mutations.create({ content, parentId: commentId });
       await confirmCreated(id, (created) => {
         local.comments = insertReply(local.comments, commentId, created);
+        pinnedIds.add(created.id);
       });
     });
 
@@ -177,7 +203,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     try {
       const loaded = target.replyPagination;
       const nextPage = nextPageToLoad(loaded);
-      const root = await fetchComment(apiBase, modelId.value, commentId, {
+      const root = await fetchComment(api, modelId.value, commentId, {
         page: nextPage,
         limit: loaded?.limit,
       });
@@ -207,7 +233,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     if (busy.value || pending.value || !modelId.value) return;
     busy.value = true;
     try {
-      const next = await fetchModelComments(apiBase, modelId.value, {
+      const next = await fetchModelComments(api, modelId.value, {
         page: nextPageToLoad(current),
         limit: current.limit,
         sort: toValue(options.sort),
@@ -222,6 +248,30 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
       busy.value = false;
     }
   };
+
+  if (import.meta.client) {
+    const stream = useEventStream();
+    const visibility = useDocumentVisibility();
+    let missedWhileBusy = false;
+    const debouncedRefresh = useDebounceFn(() => {
+      if (!busy.value && !pending.value) return refresh();
+      missedWhileBusy = true;
+    }, COMMENT_STREAM_REFRESH_DEBOUNCE_MS);
+    watch(
+      () => busy.value || pending.value,
+      (active) => {
+        if (active || !missedWhileBusy) return;
+        missedWhileBusy = false;
+        void refresh();
+      },
+    );
+    const refreshFromStream = () => void debouncedRefresh();
+    stream.on(STREAM_EVENTS.comments, refreshFromStream);
+    stream.on(STREAM_EVENTS.resync, refreshFromStream);
+    watch(visibility, (state) => {
+      if (state === "visible" && stream.status.value !== "open") refreshFromStream();
+    });
+  }
 
   return {
     comments: computed(() => local.comments),

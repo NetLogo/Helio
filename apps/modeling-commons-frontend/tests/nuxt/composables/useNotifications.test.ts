@@ -1,7 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { effectScope, ref, type EffectScope, type Ref } from "vue";
+import { effectScope, ref, toValue, type EffectScope, type MaybeRefOrGetter, type Ref } from "vue";
 import {
   MAX_BACKOFF_FACTOR,
   MIN_POLL_GAP_MS,
@@ -12,9 +12,17 @@ import {
   resetNotificationState,
   type Notification,
 } from "~/components/notifications/shared";
+import { STREAM_EVENTS } from "~/components/shared/event-stream";
 import useApiPagination, { DEFAULT_INITIAL_PAGE } from "~/composables/api/useApiPagination";
 import { useNotifications } from "~/composables/notifications/useNotifications";
-import { setLoggedIn, useToastMock, useUserMock, toastAddMock } from "~~/tests/helpers";
+import {
+  installFakeEventSource,
+  latestEventSource,
+  setLoggedIn,
+  useToastMock,
+  useUserMock,
+  toastAddMock,
+} from "~~/tests/helpers";
 import {
   jsonResponse,
   makeNotification,
@@ -28,17 +36,28 @@ const { apiState, poller } = vi.hoisted(() => ({
   poller: {
     run: null as null | (() => Promise<void> | void),
     interval: null as null | Ref<number>,
+    enabled: undefined as MaybeRefOrGetter<boolean> | undefined,
   },
 }));
 
 mockNuxtImport("useApi", () => () => apiState.current!.client);
 mockNuxtImport("useUser", () => () => useUserMock());
 mockNuxtImport("useToast", () => () => useToastMock());
-mockNuxtImport("useActivePoll", () => (run: () => Promise<void>, interval: Ref<number>) => {
-  poller.run = run;
-  poller.interval = interval;
-  return { isActive: ref(false), pause: () => {} };
-});
+mockNuxtImport("useConnectionHealth", () => () => ({ isOffline: ref(false) }));
+mockNuxtImport(
+  "useActivePoll",
+  () =>
+    (
+      run: () => Promise<void>,
+      interval: Ref<number>,
+      opts: { enabled?: MaybeRefOrGetter<boolean> } = {},
+    ) => {
+      poller.run = run;
+      poller.interval = interval;
+      poller.enabled = opts.enabled;
+      return { isActive: ref(false), pause: () => {} };
+    },
+);
 
 let scope: EffectScope | null = null;
 
@@ -495,5 +514,125 @@ describe("useNotifications after a reset", () => {
     expect(notifications.value).toEqual([]);
     expect(unreadCount.value).toBe(0);
     expect(useState(NOTIFICATION_STATE_KEYS.cursor).value).toBeNull();
+  });
+});
+
+describe("useNotifications with the event stream", () => {
+  const seen = makeNotification({ id: "seen", createdAt: "2026-10-02T08:30:00.000Z" });
+
+  beforeEach(() => {
+    installFakeEventSource();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  const timerPollEnabled = () => toValue(poller.enabled ?? true);
+
+  it("pauses the timer poll while the stream is open and resumes it when it is not", async () => {
+    await mountWith(makeNotificationPage([]));
+    expect(timerPollEnabled()).toBe(true);
+
+    latestEventSource()!.simulateOpen();
+    expect(timerPollEnabled()).toBe(false);
+
+    latestEventSource()!.simulateDrop();
+    expect(timerPollEnabled()).toBe(true);
+  });
+
+  it.each([STREAM_EVENTS.resync, STREAM_EVENTS.notifications])(
+    "polls on %s inside the poll gap and keeps the overlap cursor",
+    async (event) => {
+      await mountWith(makeNotificationPage([seen]));
+      latestEventSource()!.simulateOpen();
+      await flushPromises();
+      const before = api().requests.length;
+      api().respondWith(() => jsonResponse(makeNotificationPage([])));
+
+      latestEventSource()!.simulateEvent(event);
+      await vi.waitFor(() => expect(api().requests).toHaveLength(before + 1));
+
+      expect(lastQuery()).toEqual({ since: shiftBack(seen.createdAt), limit: "100" });
+    },
+  );
+
+  it("fires one poll when the stream opens", async () => {
+    await mountWith(makeNotificationPage([seen]));
+    api().respondWith(() => jsonResponse(makeNotificationPage([])));
+
+    latestEventSource()!.simulateOpen();
+    await vi.waitFor(() => expect(api().requests).toHaveLength(2));
+    await flushPromises();
+
+    expect(api().requests).toHaveLength(2);
+    expect(lastQuery().since).toBe(shiftBack(seen.createdAt));
+  });
+
+  async function openStreamWithHeldPoll(first: Promise<Response>, rest: () => Response) {
+    const state = await mountWith(makeNotificationPage([seen]));
+    api().respondWith(() => jsonResponse(makeNotificationPage([])));
+    latestEventSource()!.simulateOpen();
+    await vi.waitFor(() => expect(api().requests).toHaveLength(2));
+    await flushPromises();
+    let held = false;
+    api().respondWith(() => {
+      if (held) return rest();
+      held = true;
+      return first;
+    });
+    return state;
+  }
+
+  it("coalesces stream events during an in-flight poll into one follow-up that sets the newer count", async () => {
+    let releaseFirst = (_: Response) => {};
+    const first = new Promise<Response>((resolve) => (releaseFirst = resolve));
+    const { unreadCount } = await openStreamWithHeldPoll(first, () =>
+      jsonResponse(makeNotificationPage([], { unreadCount: 3 })),
+    );
+
+    latestEventSource()!.simulateEvent(STREAM_EVENTS.notifications);
+    await vi.waitFor(() => expect(api().requests).toHaveLength(3));
+    latestEventSource()!.simulateEvent(STREAM_EVENTS.notifications);
+    latestEventSource()!.simulateEvent(STREAM_EVENTS.resync);
+    await flushPromises();
+    expect(api().requests).toHaveLength(3);
+
+    releaseFirst(jsonResponse(makeNotificationPage([], { unreadCount: 1 })));
+    await vi.waitFor(() => expect(api().requests).toHaveLength(4));
+    await flushPromises();
+
+    expect(api().requests).toHaveLength(4);
+    expect(unreadCount.value).toBe(3);
+  });
+
+  it("runs the pending follow-up after the in-flight poll fails", async () => {
+    let releaseFirst = (_: Response) => {};
+    const first = new Promise<Response>((resolve) => (releaseFirst = resolve));
+    const { unreadCount, pollError } = await openStreamWithHeldPoll(first, () =>
+      jsonResponse(makeNotificationPage([], { unreadCount: 2 })),
+    );
+
+    latestEventSource()!.simulateEvent(STREAM_EVENTS.notifications);
+    await vi.waitFor(() => expect(api().requests).toHaveLength(3));
+    latestEventSource()!.simulateEvent(STREAM_EVENTS.notifications);
+
+    releaseFirst(jsonResponse({ message: "boom" }, 500));
+    await vi.waitFor(() => expect(api().requests).toHaveLength(4));
+    await flushPromises();
+
+    expect(api().requests).toHaveLength(4);
+    expect(unreadCount.value).toBe(2);
+    expect(pollError.value).toBeNull();
+  });
+
+  it("still skips a timer-driven poll inside the poll gap", async () => {
+    await mountWith(makeNotificationPage([seen]));
+    latestEventSource()!.simulateDrop();
+
+    await poller.run!();
+    await flushPromises();
+
+    expect(api().requests).toHaveLength(1);
   });
 });

@@ -9,6 +9,10 @@ function ok<T>(data: T): Result<T> {
   };
 }
 
+function noContent(): Result<never> {
+  return { response: new Response(null, { status: 204 }) };
+}
+
 function err(status = 500, message = "error"): Result<never> {
   return {
     error: { message },
@@ -26,5 +30,5 @@ export function makeApiClientMock() {
   return { client, GET, POST, PUT, PATCH, DELETE };
 }
 
-export const apiResult = { ok, err };
+export const apiResult = { ok, noContent, err };
 export type ApiClientMock = ReturnType<typeof makeApiClientMock>;

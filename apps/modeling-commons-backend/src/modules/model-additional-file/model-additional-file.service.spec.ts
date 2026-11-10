@@ -50,7 +50,7 @@ describe('modelAdditionalFileService', () => {
 
   describe('add', () => {
     it('uploads file and attaches it to the current version', async () => {
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue(makeVersion());
+      modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
 
       const result = await service.add(
         'model-1',
@@ -69,7 +69,7 @@ describe('modelAdditionalFileService', () => {
     });
 
     it('throws VersionNotFoundError if no version', async () => {
-      modelVersionRepository.findLatestByModelTx.mockResolvedValue(undefined);
+      modelVersionRepository.findLatestByModel.mockResolvedValue(undefined);
 
       await expect(
         service.add(

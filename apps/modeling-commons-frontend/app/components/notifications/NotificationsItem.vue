@@ -7,6 +7,12 @@ const props = defineProps<{ notification: Notification; wide?: boolean }>();
 const emit = defineEmits<{ read: [] }>();
 
 const target = computed(() => props.notification.target);
+const thumbnailFailed = ref(false);
+const showThumbnail = computed(() => Boolean(target.value?.thumbnailUrl) && !thumbnailFailed.value);
+watch(
+  () => target.value?.thumbnailUrl,
+  () => (thumbnailFailed.value = false),
+);
 const targetLabel = computed(() =>
   target.value?.name
     ? labels.viewNamedLabel.replace("{name}", target.value.name)
@@ -23,8 +29,8 @@ const targetLabel = computed(() =>
 
     <NuxtLink
       :to="notification.url"
-      class="text-sm text-gray-700 line-clamp-5 text-ellipsis text-pretty after:absolute after:inset-0 after:content-['']"
-      :class="wide ? 'flex-1 min-w-0' : 'w-60'"
+      class="flex-1 min-w-0 text-sm text-gray-700 text-pretty after:absolute after:inset-0 after:content-['']"
+      :class="wide ? 'line-clamp-5' : 'max-w-60 line-clamp-3'"
       @click="emit('read')"
     >
       {{ notification.title }}: "{{ notification.body }}"<span
@@ -35,18 +41,22 @@ const targetLabel = computed(() =>
     </NuxtLink>
 
     <NuxtLink
-      v-if="target?.thumbnailUrl"
+      v-if="target"
       :to="target.url"
       :aria-label="targetLabel"
-      class="relative z-10 shrink-0"
+      data-testid="notification-target"
+      class="relative z-10 shrink-0 size-10 flex justify-center items-center rounded bg-royal-blue-lightest outline-neutral outline-2 outline-offset-1 overflow-hidden"
     >
       <NuxtImg
-        :src="target.thumbnailUrl"
+        v-if="showThumbnail"
+        :src="target.thumbnailUrl ?? undefined"
         width="40"
         height="40"
         :alt="target.name ?? ''"
-        class="rounded outline-neutral outline-2 outline-offset-1 size-10 object-cover"
+        class="size-full object-cover"
+        @error="thumbnailFailed = true"
       />
+      <UIcon v-else name="i-lucide-box" class="size-4 text-royal-blue" />
     </NuxtLink>
   </div>
 </template>

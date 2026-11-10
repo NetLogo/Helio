@@ -138,7 +138,7 @@ export function createUserNotificationService(
       ]);
       handleFailedDeliveries(
         [
-          { results: resolutions, message: 'A producer failed to resolve intents' },
+          { results: resolutions, message: 'A producer failed to resolve row facts' },
           { results: deliveries, message: 'Failed to deliver a notification' },
           { results: publications, message: 'Failed to publish the created notifications' },
         ],

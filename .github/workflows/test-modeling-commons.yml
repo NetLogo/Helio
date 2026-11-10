@@ -82,6 +82,10 @@ jobs:
         env:
           HELIO_HEADLESS: 1
 
+      - name: Validate backend dependency rules
+        run: yarn run deps:validate
+        working-directory: apps/modeling-commons-backend
+
       - name: Run services
         run: docker compose -f docker-compose.dev.yml up -d --wait
         working-directory: apps/modeling-commons-backend

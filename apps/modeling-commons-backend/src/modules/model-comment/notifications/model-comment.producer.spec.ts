@@ -82,20 +82,20 @@ describe('modelCommentProducer', () => {
     ).rejects.toThrow(CommentNotFoundError);
   });
 
-  it('resolves an intent for every model author except the commenter', async () => {
+  it('resolves row facts for every model author except the commenter', async () => {
     modelAuthorRepository.findAllByModel.mockResolvedValue([
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
       { modelId: 'model-1', userId: 'commenter-1', role: 'contributor' },
     ]);
 
-    const intents = await producer.resolve(makeEvent());
+    const rowFacts = await producer.resolve(makeEvent());
 
-    expect(intents).toHaveLength(1);
-    expect(intents[0]!.recipientUserId).toBe('author-1');
-    expect(intents[0]!.category).toBe('comment.on_your_model');
+    expect(rowFacts).toHaveLength(1);
+    expect(rowFacts[0]!.recipientUserId).toBe('author-1');
+    expect(rowFacts[0]!.category).toBe('comment.on_your_model');
   });
 
-  it('references the commenter and the model on every intent', async () => {
+  it('references the commenter and the model in all row facts', async () => {
     const parent = makeComment({ id: 'parent-1', modelId: 'model-1', userId: 'author-1' });
     const reply = makeComment({ id: 'reply-1', userId: 'commenter-1', parentId: 'parent-1' });
     modelCommentRepository.findById.mockImplementation(async (id: string) =>
@@ -105,32 +105,32 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'owner-1', role: 'owner' },
     ]);
 
-    const intents = await producer.resolve(
+    const rowFacts = await producer.resolve(
       makeEvent({ payload: { commentId: 'reply-1', parentId: 'parent-1' } }),
     );
 
-    expect(intents).toHaveLength(2);
-    for (const intent of intents) {
-      expect(intent.actorUserId).toBe('commenter-1');
-      expect(intent.target).toEqual({ type: 'model', id: 'model-1' });
+    expect(rowFacts).toHaveLength(2);
+    for (const facts of rowFacts) {
+      expect(facts.actorUserId).toBe('commenter-1');
+      expect(facts.target).toEqual({ type: 'model', id: 'model-1' });
     }
   });
 
-  // Catches an intent that stores rendered text, which would freeze the actor name in the row.
+  // Catches row facts that store rendered text, which would freeze the actor name in the row.
   it('stores the comment id and its excerpt as the payload and no rendered text', async () => {
     modelCommentRepository.findById.mockResolvedValue(makeComment({ content: 'x'.repeat(400) }));
     modelAuthorRepository.findAllByModel.mockResolvedValue([
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
     ]);
 
-    const [intent] = await producer.resolve(makeEvent());
+    const [facts] = await producer.resolve(makeEvent());
 
-    expect(intent!.payload).toEqual({
+    expect(facts!.payload).toEqual({
       commentId: 'comment-1',
       excerpt: truncatePreview('x'.repeat(400)),
     });
-    expect(intent).not.toHaveProperty('title');
-    expect(intent).not.toHaveProperty('body');
+    expect(facts).not.toHaveProperty('title');
+    expect(facts).not.toHaveProperty('body');
   });
 
   it('leaves the actor unset for a comment with no author', async () => {
@@ -139,10 +139,10 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
     ]);
 
-    const intents = await producer.resolve(makeEvent());
+    const rowFacts = await producer.resolve(makeEvent());
 
-    expect(intents[0]!.actorUserId).toBeUndefined();
-    expect(intents[0]!.target).toEqual({ type: 'model', id: 'model-1' });
+    expect(rowFacts[0]!.actorUserId).toBeUndefined();
+    expect(rowFacts[0]!.target).toEqual({ type: 'model', id: 'model-1' });
   });
 
   it('opens a reply notification on the parent thread with the reply highlighted', async () => {
@@ -162,19 +162,19 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'owner-1', role: 'owner' },
     ]);
 
-    const intents = await producer.resolve(
+    const rowFacts = await producer.resolve(
       makeEvent({ payload: { commentId: 'reply-1', parentId: 'parent-1' } }),
     );
 
-    const replyIntent = intents.find((intent) => intent.category === 'comment.reply_to_you')!;
-    const modelIntent = intents.find((intent) => intent.category === 'comment.on_your_model')!;
-    expect(replyIntent.recipientUserId).toBe('author-1');
-    expect(modelIntent.recipientUserId).toBe('owner-1');
+    const replyFacts = rowFacts.find((facts) => facts.category === 'comment.reply_to_you')!;
+    const modelFacts = rowFacts.find((facts) => facts.category === 'comment.on_your_model')!;
+    expect(replyFacts.recipientUserId).toBe('author-1');
+    expect(modelFacts.recipientUserId).toBe('owner-1');
 
-    const replyUrl = new URL(replyIntent.url);
+    const replyUrl = new URL(replyFacts.url);
     expect(replyUrl.pathname).toBe('/models/model-1/comments/parent-1');
     expect(replyUrl.searchParams.get('highlightedCommentId')).toBe('reply-1');
-    expect(modelIntent.url).toBe(replyUrl.toString());
+    expect(modelFacts.url).toBe(replyUrl.toString());
   });
 
   it('opens a top-level comment notification on the comment itself', async () => {
@@ -183,9 +183,9 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
     ]);
 
-    const intents = await producer.resolve(makeEvent());
+    const rowFacts = await producer.resolve(makeEvent());
 
-    const url = new URL(intents[0]!.url);
+    const url = new URL(rowFacts[0]!.url);
     expect(url.origin).toBe(new URL(env.product.website).origin);
     expect(url.pathname).toBe('/models/model-1/comments/comment-1');
     expect(url.searchParams.get('highlightedCommentId')).toBe('comment-1');

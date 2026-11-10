@@ -26,8 +26,7 @@ export function hasVisibleReplies(comment: Comment, maximumNested: number): bool
 
 export function hasSpine(comment: Comment, maximumNested: number): boolean {
   return (
-    hasVisibleReplies(comment, maximumNested) ||
-    remainingReplyCount(comment, maximumNested) > 0
+    hasVisibleReplies(comment, maximumNested) || remainingReplyCount(comment, maximumNested) > 0
   );
 }
 
@@ -110,4 +109,43 @@ export function removeCommentById(comments: Array<Comment>, id: string): Array<C
     };
   });
   return changed ? next : comments;
+}
+
+// Comments created in this tab hold the slot they were shown in across a
+// refetch, using the refetched copy. A pinned comment missing from a complete
+// list was deleted; missing from a truncated list it may sit on an unloaded
+// page, so the shown copy stays.
+export function mergePinnedComments(
+  previous: Array<Comment>,
+  fetched: Array<Comment>,
+  pinnedIds: ReadonlySet<string>,
+  fetchedIsComplete: boolean,
+): Array<Comment> {
+  if (pinnedIds.size === 0) return fetched;
+  const previousById = new Map(previous.map((comment) => [comment.id, comment]));
+  const fetchedById = new Map(fetched.map((comment) => [comment.id, comment]));
+
+  const mergeReplies = (comment: Comment): Comment => {
+    const before = previousById.get(comment.id);
+    const replies = comment.replies ?? [];
+    if (!before?.replies?.length) return comment;
+    const merged = mergePinnedComments(
+      before.replies,
+      replies,
+      pinnedIds,
+      (comment.replyPagination?.count ?? 0) <= replies.length,
+    );
+    return merged === replies ? comment : { ...comment, replies: merged };
+  };
+
+  const merged = fetched
+    .filter((comment) => !(pinnedIds.has(comment.id) && previousById.has(comment.id)))
+    .map(mergeReplies);
+  previous.forEach((before, index) => {
+    if (!pinnedIds.has(before.id)) return;
+    const refreshed = fetchedById.get(before.id);
+    if (refreshed) merged.splice(index, 0, mergeReplies(refreshed));
+    else if (!fetchedIsComplete) merged.splice(index, 0, before);
+  });
+  return merged;
 }

@@ -9,6 +9,7 @@ const ExceptionError = {
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
   DATABASE_ERROR: 'Database Error',
   SERVICE_UNAVAILABLE: 'Service Unavailable',
+  TOO_MANY_REQUESTS: 'Too Many Requests',
 } as const;
 
 /**
@@ -112,6 +113,16 @@ export class LimitExceededException extends ExceptionBase {
   }
 
   readonly statusCode = 400;
+}
+
+export class TooManyRequestsException extends ExceptionBase {
+  static readonly message = 'Too many requests';
+  readonly error = ExceptionError.TOO_MANY_REQUESTS;
+  constructor(message: string = TooManyRequestsException.message) {
+    super(message);
+  }
+
+  readonly statusCode = 429;
 }
 
 /**

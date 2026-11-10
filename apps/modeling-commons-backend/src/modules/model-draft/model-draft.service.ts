@@ -42,6 +42,7 @@ import {
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
+import { detectNetlogoVersion } from '#src/shared/utils/netlogo-file.ts';
 import rules from '#src/config/rules.ts';
 
 const LEGACY_UUID_PREFIX_PATTERN =
@@ -521,6 +522,19 @@ export default function makeModelDraftService({
           userId,
         });
 
+        const netlogoVersion = await fileService
+          .download(netlogoFileKey)
+          .then(({ blob }) =>
+            detectNetlogoVersion({ buffer: blob, filename: data.primaryFile.filename }),
+          )
+          .catch((error: unknown) => {
+            logger.warn(
+              { err: error, modelId: model.id, netlogoFileKey },
+              'Failed to read the NetLogo version on publish',
+            );
+            return null;
+          });
+
         const attachmentCopies = await Promise.all(
           (data.attachments ?? []).map(async (att) => ({
             ...att,
@@ -556,7 +570,7 @@ export default function makeModelDraftService({
           }
 
           const previousVersion = existingModel
-            ? await modelVersionRepository.findLatestByModelTx(model.id, ctx)
+            ? await modelVersionRepository.findLatestByModel(model.id, ctx)
             : null;
           if (previousVersion) {
             await modelVersionRepository.finalizeTx(
@@ -573,6 +587,7 @@ export default function makeModelDraftService({
             title: data.title,
             description: data.description,
             netlogoFileKey,
+            netlogoVersion,
             previewImageFileKey,
           });
 
@@ -624,7 +639,7 @@ export default function makeModelDraftService({
         const model = existingModel;
         const baseline = seededFrom;
 
-        const current = await modelVersionRepository.findLatestByModelTx(model.id);
+        const current = await modelVersionRepository.findLatestByModel(model.id);
         if (!current) throw new ModelDraftNotFoundError(draftId);
         modelVersionDomain.assertNotFinalized(current);
         const versionNumber = current.versionNumber;

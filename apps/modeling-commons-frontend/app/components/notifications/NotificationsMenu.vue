@@ -27,7 +27,7 @@ const showSeeAll = computed(() => notifications.value.length > 0 || hasMore.valu
 
     <template #content-top>
       <div
-        class="flex flex-col justify-center gap-2 px-4 pt-6 pb-4 max-w-lg sm:min-w-sm tabular-nums"
+        class="flex flex-col justify-center gap-2 px-4 pt-6 pb-4 max-w-[min(32rem,calc(100vw-1rem))] sm:min-w-sm tabular-nums"
       >
         <NotificationsHeader :unread-count="unreadCount" />
 

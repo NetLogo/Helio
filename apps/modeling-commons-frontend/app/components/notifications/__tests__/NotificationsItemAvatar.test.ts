@@ -1,0 +1,46 @@
+import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { describe, expect, it } from "vitest";
+import labels from "~/data/notifications.json";
+import { makeNotification } from "~~/tests/helpers/notifications";
+import NotificationsItemAvatar from "~/components/notifications/NotificationsItemAvatar.vue";
+import type { Notification } from "~/components/notifications/shared";
+
+const mountAvatar = (notification: Notification) =>
+  mountSuspended(NotificationsItemAvatar, { props: { notification } });
+
+describe("NotificationsItemAvatar", () => {
+  it("links the actor thumbnail to the actor with a labelled anchor", async () => {
+    const wrapper = await mountAvatar(makeNotification());
+
+    const link = wrapper.find(
+      `a[aria-label="${labels.viewNamedLabel.replace("{name}", "Ada Lovelace")}"]`,
+    );
+    expect(link.attributes("href")).toBe("https://mc.test/users/ada");
+    expect(link.find("img").attributes("alt")).toBe("Ada Lovelace");
+  });
+
+  it("falls back to the generic actor label when the actor has no name", async () => {
+    const wrapper = await mountAvatar(
+      makeNotification({
+        actor: {
+          name: null,
+          thumbnailUrl: "http://cdn.test/ada.png",
+          url: "https://mc.test/users/ada",
+        },
+      }),
+    );
+
+    const link = wrapper.find(`a[aria-label="${labels.actorFallbackLabel}"]`);
+    expect(link.attributes("href")).toBe("https://mc.test/users/ada");
+  });
+
+  it("renders no link when the actor has no thumbnail", async () => {
+    const wrapper = await mountAvatar(
+      makeNotification({
+        actor: { name: "Ada", thumbnailUrl: null, url: "https://mc.test/users/ada" },
+      }),
+    );
+
+    expect(wrapper.find("a").exists()).toBe(false);
+  });
+});

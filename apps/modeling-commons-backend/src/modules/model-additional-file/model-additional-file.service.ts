@@ -18,7 +18,7 @@ export default function makeModelAdditionalFileService({
       filename: string,
       contentType: string,
     ): Promise<ModelAdditionalFileEntity> {
-      const currentVersion = await modelVersionRepository.findLatestByModelTx(modelId);
+      const currentVersion = await modelVersionRepository.findLatestByModel(modelId);
       if (!currentVersion) throw new VersionNotFoundError(modelId);
 
       const fileKey = await fileService.upload({

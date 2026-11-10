@@ -28,7 +28,7 @@ export default function modelVersionRepository({
         : undefined;
     },
 
-    async findLatestByModelTx(
+    async findLatestByModel(
       modelId: string,
       ctx?: TransactionContext,
     ): Promise<ModelVersionEntity | undefined> {

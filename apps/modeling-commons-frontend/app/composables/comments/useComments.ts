@@ -1,8 +1,6 @@
 import type { MaybeRefOrGetter } from "vue";
 import type { Comment, CommentAuthor, CommentPagination } from "~/components/comment/types";
 
-export type CommentSort = "createdAt" | "newest" | "likes";
-
 type CommentsSource = { modelId: string; commentId?: string };
 
 type CommentsPayload = {
@@ -10,47 +8,19 @@ type CommentsPayload = {
   pagination: CommentPagination;
 };
 
-type ReplyPageQuery = {
-  page?: number;
-  limit?: number;
-};
+type ApiClient = ReturnType<typeof useApi>;
 
-type CommentQuery = ReplyPageQuery & {
-  sort?: CommentSort;
-};
+type ApiComment = ResponseSuccessData<"GET", "/api/v1/models/{id}/comments/{commentId}">;
 
-type ApiCommentAuthor = { id: string; name: string; image: string };
+type ApiCommentPage = ResponseSuccessData<"GET", "/api/v1/models/{id}/comments">;
 
-type ApiRepliesPage = {
-  count: number;
-  limit: number;
-  page: number;
-  data: Array<ApiComment>;
-};
+type ApiRepliesPage = NonNullable<ApiComment["replies"]>;
 
-type ApiComment = {
-  id: string;
-  modelId: string;
-  parentId?: string;
-  versionNumber?: number;
-  legacyId?: number;
-  author: ApiCommentAuthor;
-  content: string;
-  createdAt: string;
-  edited?: boolean;
-  deleted?: boolean;
-  likes: number;
-  likedByMe?: boolean;
-  permissions?: { canEdit?: boolean; canDelete?: boolean };
-  replies?: ApiRepliesPage;
-};
+type ReplyPageQuery = NonNullable<QueryParams<"GET", "/api/v1/models/{id}/comments/{commentId}">>;
 
-type ApiPaginated = {
-  count: number;
-  limit: number;
-  page: number;
-  data: Array<ApiComment>;
-};
+type CommentQuery = NonNullable<QueryParams<"GET", "/api/v1/models/{id}/comments">>;
+
+export type CommentSort = NonNullable<CommentQuery["sort"]>;
 
 const emptyPagination = (): CommentPagination => ({ count: 0, lastPage: null });
 
@@ -63,7 +33,7 @@ const emptyPayload = (): CommentsPayload => ({
 // on it: a comment at the nesting limit reports its reply `count` with an empty
 // `data`, and paging it has to start at 0. The pagination helpers derive
 // "load N more" from `count` minus the number of items already in hand.
-function toPagination(page: ApiRepliesPage | ApiPaginated): CommentPagination {
+function toPagination(page: ApiRepliesPage | ApiCommentPage): CommentPagination {
   return {
     count: page.count,
     limit: page.limit,
@@ -71,7 +41,7 @@ function toPagination(page: ApiRepliesPage | ApiPaginated): CommentPagination {
   };
 }
 
-function mapAuthor(author: ApiCommentAuthor): CommentAuthor {
+function mapAuthor(author: ApiComment["author"]): CommentAuthor {
   return {
     name: author.name,
     image: author.image,
@@ -97,70 +67,55 @@ export function mapApiComment(dto: ApiComment): Comment {
   };
 }
 
-export function commentsApiBase(): string {
-  return useRuntimeConfig().public.apiBase as string;
+type ApiResult<T> = { data?: T; response: Response };
+
+export function throwUnlessOk(response: Response, request: string): void {
+  if (!response.ok) throw new Error(`${request} failed with ${response.status}`);
 }
 
-function commentFetchInit(): RequestInit {
-  const init: RequestInit = { credentials: "include" };
-  if (import.meta.server) {
-    const cookie = useRequestHeaders(["cookie"]).cookie;
-    if (cookie) init.headers = { cookie };
-  }
-  return init;
-}
-
-function buildQuery(query: CommentQuery): string {
-  const params = new URLSearchParams();
-  if (query.page !== undefined) params.set("page", String(query.page));
-  if (query.limit !== undefined) params.set("limit", String(query.limit));
-  if (query.sort !== undefined) params.set("sort", query.sort);
-  const qs = params.toString();
-  return qs ? `?${qs}` : "";
-}
-
-async function commentGet<T>(base: string, path: string, query: CommentQuery): Promise<T> {
-  const response = await fetch(`${base}${path}${buildQuery(query)}`, commentFetchInit());
-  if (!response.ok) throw new Error(`GET ${path} failed with ${response.status}`);
-  return (await response.json()) as T;
+export function getResponseData<T>({ data, response }: ApiResult<T>, request: string): T {
+  throwUnlessOk(response, request);
+  if (data === undefined) throw new Error(`${request} returned no body`);
+  return data;
 }
 
 export async function fetchModelComments(
-  base: string,
+  api: ApiClient,
   modelId: string,
   query: CommentQuery,
 ): Promise<CommentsPayload> {
-  const page = await commentGet<ApiPaginated>(base, `/api/v1/models/${modelId}/comments`, query);
+  const result = await api.GET("/api/v1/models/{id}/comments", {
+    params: { path: { id: modelId }, query },
+  });
+  const page = getResponseData(result, `GET comments of model ${modelId}`);
   return { comments: page.data.map(mapApiComment), pagination: toPagination(page) };
 }
 
 // Re-rooted single comment with a bounded reply tree. Used both to render a
 // standalone thread and to page a node's replies inline (append `.replies`).
 export async function fetchComment(
-  base: string,
+  api: ApiClient,
   modelId: string,
   commentId: string,
   query: ReplyPageQuery,
 ): Promise<Comment | null> {
-  const response = await fetch(
-    `${base}/api/v1/models/${modelId}/comments/${commentId}${buildQuery(query)}`,
-    commentFetchInit(),
-  );
-  if (response.status === 404) return null;
-  if (!response.ok) throw new Error(`GET comment ${commentId} failed with ${response.status}`);
-  return mapApiComment((await response.json()) as ApiComment);
+  const result = await api.GET("/api/v1/models/{id}/comments/{commentId}", {
+    params: { path: { id: modelId, commentId }, query },
+  });
+  if (result.response.status === 404) return null;
+  return mapApiComment(getResponseData(result, `GET comment ${commentId}`));
 }
 
 async function fetchComments(source: CommentsSource, sort?: CommentSort): Promise<CommentsPayload> {
   if (!source.modelId) return emptyPayload();
-  const base = commentsApiBase();
+  const api = useApi();
 
   if (source.commentId) {
-    const root = await fetchComment(base, source.modelId, source.commentId, {});
+    const root = await fetchComment(api, source.modelId, source.commentId, {});
     return root ? { comments: [root], pagination: { count: 1, lastPage: 0 } } : emptyPayload();
   }
 
-  return fetchModelComments(base, source.modelId, { sort });
+  return fetchModelComments(api, source.modelId, { sort });
 }
 
 export default function useComments(
@@ -176,16 +131,18 @@ export default function useComments(
       : `comments:model:${value.modelId}:${resolvedSort.value}`;
   });
 
-  const { data, status, error, refresh } = useAsyncData<CommentsPayload>(
+  const asyncData = useAsyncData<CommentsPayload>(
     () => key.value,
     () => fetchComments(resolved.value, resolvedSort.value),
     { watch: [key] },
   );
+  const { data, status, error, refresh } = asyncData;
+  const loaded = asyncData.then(() => undefined);
 
   const comments = computed(() => data.value?.comments ?? []);
   const pagination = computed<CommentPagination>(() => data.value?.pagination ?? emptyPagination());
 
-  return { comments, pagination, status, error, refresh };
+  return { comments, pagination, status, error, refresh, loaded };
 }
 
 export type { CommentsPayload, CommentsSource, CommentQuery };

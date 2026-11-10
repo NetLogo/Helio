@@ -177,4 +177,7 @@ export default {
   api: {
     enabled: serverCapabilities.api,
   },
+  sse: {
+    enabled: serverCapabilities.sse,
+  },
 };

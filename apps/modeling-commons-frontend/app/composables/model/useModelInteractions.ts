@@ -1,35 +1,35 @@
 type InteractionKind = "views" | "runs" | "downloads" | "shares";
 
+const INTERACTION_PATHS = {
+  views: "/api/v1/models/{id}/views",
+  runs: "/api/v1/models/{id}/runs",
+  downloads: "/api/v1/models/{id}/downloads",
+  shares: "/api/v1/models/{id}/shares",
+} as const;
+
+async function ignoreFailure(request: Promise<unknown>): Promise<void> {
+  await request.catch(() => null);
+}
+
 export default function useModelInteractions() {
-  const apiBase = useRuntimeConfig().public.apiBase as string;
-
-  async function post(path: string, body?: Record<string, unknown>): Promise<void> {
-    await fetch(`${apiBase}${path}`, {
-      method: "POST",
-      credentials: "include",
-      headers: body ? { "Content-Type": "application/json" } : undefined,
-      body: body ? JSON.stringify(body) : undefined,
-    }).catch(() => null);
-  }
-
-  async function del(path: string): Promise<void> {
-    await fetch(`${apiBase}${path}`, {
-      method: "DELETE",
-      credentials: "include",
-    }).catch(() => null);
-  }
+  const api = useApi();
 
   function record(modelId: string, kind: InteractionKind, versionNumber?: number) {
-    return post(
-      `/api/v1/models/${modelId}/${kind}`,
-      versionNumber ? { versionNumber } : {},
+    return ignoreFailure(
+      api.POST(INTERACTION_PATHS[kind], {
+        params: { path: { id: modelId } },
+        body: versionNumber ? { versionNumber } : {},
+      }),
     );
   }
 
   return {
-    like: (modelId: string) => post(`/api/v1/models/${modelId}/like`),
-    unlike: (modelId: string) => del(`/api/v1/models/${modelId}/like`),
-    recordView: (modelId: string, versionNumber?: number) => record(modelId, "views", versionNumber),
+    like: (modelId: string) =>
+      ignoreFailure(api.POST("/api/v1/models/{id}/like", { params: { path: { id: modelId } } })),
+    unlike: (modelId: string) =>
+      ignoreFailure(api.DELETE("/api/v1/models/{id}/like", { params: { path: { id: modelId } } })),
+    recordView: (modelId: string, versionNumber?: number) =>
+      record(modelId, "views", versionNumber),
     recordRun: (modelId: string, versionNumber?: number) => record(modelId, "runs", versionNumber),
     recordDownload: (modelId: string, versionNumber?: number) =>
       record(modelId, "downloads", versionNumber),

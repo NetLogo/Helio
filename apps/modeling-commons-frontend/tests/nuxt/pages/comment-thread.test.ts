@@ -5,10 +5,16 @@ import { nextTick } from "vue";
 import CommentsSection from "~/components/comment/CommentsSection.vue";
 import { findCommentById } from "~/components/comment/comment-tree";
 import { deepThread } from "~/components/comment/fixtures";
-import { installCommentFetchMock, useProfileMock, useUserMock } from "~~/tests/helpers";
+import {
+  installCommentApiMock,
+  useCommentApiMock,
+  useProfileMock,
+  useUserMock,
+} from "~~/tests/helpers";
 
 mockNuxtImport("useUser", () => () => useUserMock());
 mockNuxtImport("useProfile", () => () => useProfileMock());
+mockNuxtImport("useApi", () => () => useCommentApiMock());
 
 const routeState = vi.hoisted(() => ({ commentId: "100" }));
 
@@ -25,7 +31,7 @@ mockNuxtImport("useRoute", () => () => ({
 
 beforeEach(() => {
   routeState.commentId = "100";
-  installCommentFetchMock();
+  installCommentApiMock();
 });
 
 afterEach(() => {
@@ -75,9 +81,7 @@ describe("models/[id]/comments/[commentId].vue", () => {
     const nested = findCommentById([deepThread], "103");
     const wrapper = await mountThreadPage("103");
 
-    expect(wrapper.find('[data-testid="thread-subtitle"]').text()).toContain(
-      nested!.author.name,
-    );
+    expect(wrapper.find('[data-testid="thread-subtitle"]').text()).toContain(nested!.author.name);
   });
 
   it("falls back to a generic subtitle when the thread cannot be found", async () => {

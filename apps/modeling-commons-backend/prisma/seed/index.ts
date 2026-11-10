@@ -1,6 +1,7 @@
 import { prisma } from './providers.js';
 import { AssetUploader } from './assets.js';
 import {
+  DEV_PASSWORD,
   USERS,
   TAGS,
   MODELS,
@@ -20,11 +21,19 @@ import {
 } from './loaders.js';
 
 async function main() {
+  if (process.env['NODE_ENV'] === 'production') {
+    throw new Error(
+      'Refusing to seed: the seed sets a shared dev password on every seeded account.',
+    );
+  }
   console.log('Seeding database from manifest...');
   const uploader = new AssetUploader();
 
-  const users = await loadUsers(USERS);
+  const users = await loadUsers(USERS, DEV_PASSWORD);
   console.log(`  ✓ ${users.size} users (+ credential accounts, dev sessions)`);
+  console.log(
+    `    sign in as any seeded user, e.g. uri@example.com, with password "${DEV_PASSWORD}"`,
+  );
 
   const tags = await loadTags(TAGS);
   console.log(`  ✓ ${tags.size} tags`);

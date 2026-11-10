@@ -1,40 +1,47 @@
 import type { MaybeRefOrGetter } from "vue";
-import { commentsApiBase } from "~/composables/comments/useComments";
+import { getResponseData, throwUnlessOk } from "~/composables/comments/useComments";
 
-type CreateInput = { content: string; parentId?: string; versionNumber?: number };
+type CreateInput = RequestBody<"POST", "/api/v1/models/{id}/comments">;
+type Created = ResponseSuccessData<"POST", "/api/v1/models/{id}/comments">;
 type TargetInput = { commentId: string; content?: string };
 
 export default function useCommentMutations(modelId: MaybeRefOrGetter<string>) {
-  const base = commentsApiBase();
-  const commentsPath = () => `${base}/api/v1/models/${toValue(modelId)}/comments`;
-
-  async function send(url: string, method: string, body?: Record<string, unknown>): Promise<Response> {
-    const response = await fetch(url, {
-      method,
-      credentials: "include",
-      headers: body ? { "Content-Type": "application/json" } : undefined,
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    if (!response.ok) throw new Error(`${method} ${url} failed with ${response.status}`);
-    return response;
-  }
+  const api = useApi();
+  const getModelPath = () => ({ id: toValue(modelId) });
+  const getCommentPath = (commentId: string) => ({ id: toValue(modelId), commentId });
 
   return {
-    async create({ content, parentId, versionNumber }: CreateInput): Promise<{ id: string }> {
-      const response = await send(commentsPath(), "POST", { content, parentId, versionNumber });
-      return (await response.json()) as { id: string };
+    async create(body: CreateInput): Promise<Created> {
+      const result = await api.POST("/api/v1/models/{id}/comments", {
+        params: { path: getModelPath() },
+        body,
+      });
+      return getResponseData(result, "POST comment");
     },
     async edit({ commentId, content }: Required<TargetInput>): Promise<void> {
-      await send(`${commentsPath()}/${commentId}`, "PATCH", { content });
+      const { response } = await api.PATCH("/api/v1/models/{id}/comments/{commentId}", {
+        params: { path: getCommentPath(commentId) },
+        body: { content },
+      });
+      throwUnlessOk(response, `PATCH comment ${commentId}`);
     },
     async like({ commentId }: TargetInput): Promise<void> {
-      await send(`${commentsPath()}/${commentId}/like`, "POST");
+      const { response } = await api.POST("/api/v1/models/{id}/comments/{commentId}/like", {
+        params: { path: getCommentPath(commentId) },
+      });
+      throwUnlessOk(response, `POST like on comment ${commentId}`);
     },
     async unlike({ commentId }: TargetInput): Promise<void> {
-      await send(`${commentsPath()}/${commentId}/like`, "DELETE");
+      const { response } = await api.DELETE("/api/v1/models/{id}/comments/{commentId}/like", {
+        params: { path: getCommentPath(commentId) },
+      });
+      throwUnlessOk(response, `DELETE like on comment ${commentId}`);
     },
     async remove({ commentId }: TargetInput): Promise<void> {
-      await send(`${commentsPath()}/${commentId}`, "DELETE");
+      const { response } = await api.DELETE("/api/v1/models/{id}/comments/{commentId}", {
+        params: { path: getCommentPath(commentId) },
+      });
+      throwUnlessOk(response, `DELETE comment ${commentId}`);
     },
   };
 }

@@ -12,7 +12,7 @@ export default function makeModelVersionTagService({
 }: Dependencies) {
   return {
     async add(modelId: string, userId: string, tagName: string): Promise<ModelVersionTagEntity> {
-      const currentVersion = await modelVersionRepository.findLatestByModelTx(modelId);
+      const currentVersion = await modelVersionRepository.findLatestByModel(modelId);
       if (!currentVersion) throw new VersionNotFoundError(modelId);
       modelVersionTagDomain.assertNotFinalized(currentVersion);
 
@@ -50,7 +50,7 @@ export default function makeModelVersionTagService({
     },
 
     async remove(modelId: string, userId: string, tagId: string): Promise<void> {
-      const currentVersion = await modelVersionRepository.findLatestByModelTx(modelId);
+      const currentVersion = await modelVersionRepository.findLatestByModel(modelId);
       if (!currentVersion) throw new VersionNotFoundError(modelId);
       modelVersionTagDomain.assertNotFinalized(currentVersion);
 

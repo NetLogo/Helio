@@ -1,16 +1,20 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, ref } from "vue";
 import { comments as fixtureComments } from "~/components/comment/fixtures";
 import useComments from "~/composables/comments/useComments";
 import type { CommentsSource } from "~/composables/comments/useComments";
-import { commentFetchCalls, installCommentFetchMock } from "~~/tests/helpers";
+import {
+  COMMENT_ROUTES,
+  getCommentApiCalls,
+  installCommentApiMock,
+  useCommentApiMock,
+} from "~~/tests/helpers";
+
+mockNuxtImport("useApi", () => () => useCommentApiMock());
 
 beforeEach(() => {
-  installCommentFetchMock();
-});
-
-afterEach(() => {
-  vi.unstubAllGlobals();
+  installCommentApiMock();
 });
 
 describe("useComments with a modelId source", () => {
@@ -47,13 +51,18 @@ describe("useComments with a modelId source", () => {
     const { refresh } = useComments({ modelId: "m-1" }, "likes");
     await refresh();
 
-    const listCall = commentFetchCalls().find((call) => call.method === "GET");
-    expect(listCall?.url).toContain("sort=likes");
+    const listCall = getCommentApiCalls().find((call) => call.route === COMMENT_ROUTES.list);
+    expect(listCall).toMatchObject({ pathParams: { id: "m-1" }, query: { sort: "likes" } });
   });
 
   it("keeps the server's reply page size and marks a counted-but-unloaded page", async () => {
-    const counted = { ...fixtureComments[0]!, id: "c-1", replies: [], replyPagination: { count: 4, lastPage: null } };
-    installCommentFetchMock({ roots: [counted] });
+    const counted = {
+      ...fixtureComments[0]!,
+      id: "c-1",
+      replies: [],
+      replyPagination: { count: 4, lastPage: null },
+    };
+    installCommentApiMock({ roots: [counted] });
     const { comments, refresh } = useComments({ modelId: "m-counted" });
     await refresh();
 
@@ -68,7 +77,7 @@ describe("useComments with a modelId source", () => {
 
     expect(comments.value).toEqual([]);
     expect(pagination.value).toEqual({ count: 0, lastPage: null });
-    expect(commentFetchCalls()).toHaveLength(0);
+    expect(getCommentApiCalls()).toHaveLength(0);
   });
 });
 

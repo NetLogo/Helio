@@ -26,8 +26,8 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 
 ## Writes (Database mutations)
 
-- Always go through `transactionManager.run(async (ctx) => { ... })`.
-- Use `repository.insertTx(ctx, entity)` / `updateFieldsTx(ctx, ...)` / `softDeleteTx(ctx, ...)` inside the txn. Repository methods that take a `TransactionContext` end in `Tx`.
+- Use a transaction (`transactionManager.run(async (ctx) => { ... })`) for multi-write units and for a write paired with an event or job; a single-statement write may skip it.
+- Use `repository.insertTx(ctx, entity)` / `updateFieldsTx(ctx, ...)` / `softDeleteTx(ctx, ...)` inside the txn. A method that takes a required `TransactionContext` ends in `Tx`; a method whose context is optional has no suffix.
 - Emit domain audit via `eventRepository.insertTx(ctx, { type, actorId, resourceType, resourceId, payload })` in the same txn. Event types are dotted (`model.created`, `model.deleted`).
 - `eventRepository.insertTx` also publishes the event type through `jobQueue.publishTx` in the same transaction, which sends one `{ eventId }` job to every queue subscribed to that type (`subscribesTo` in `src/config/workers.ts`), so a committed event always reaches its subscribers and a rolled back one never does.
 - For child aggregates (e.g. comments on a model), set `resourceType` to the *parent* (`model`), not the child. Per-resource audit queries surface child activity that way.
@@ -48,7 +48,6 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 - Admin-only: `[requireAuth, requireRole('admin')]`.
 - All routes versioned under `/v1/...`.
 - Use Typebox schemas for `body` / `params` / `querystring` / `response`. For querystring-heavy routes.
-- Use `fastify.withTypeProvider<TypeBoxTypeProvider>().route({ ... })`.
 - Return shapes: `201 { id }` on create (see `idDtoSchema`), `204` on update/delete, full DTO on read.
 
 ## Imports
@@ -79,7 +78,8 @@ Use path aliases, never relative `../../`:
 ## Workers
 
 - One pg-boss instance per process, from DI: `boss` (`src/shared/jobs/boss.ts`) and the `jobQueue` port over it (`src/shared/jobs/pg-boss.job-queue.ts`).
-- `SERVER_ROLE=api` is send-only: its own 2-connection pool, no migrate, supervise or schedule. Every role creates the queues it sends to (`registerSendQueues` in `src/workers/queues.ts`, called after `boss.start()` in `src/server/index.ts`). `worker` and `standalone` own the pg-boss schema, every other queue, the schedules and the workers (`src/workers/index.ts`).
+- `SERVER_ROLE=api` is send-only: its own 2-connection pool, no supervise or schedule. Every role installs the pg-boss schema on `boss.start()` under pg-boss's advisory lock, so the api can send before any worker starts. Every role creates the queues it sends to (`registerSendQueues` in `src/workers/queues.ts`, called after `boss.start()` in `src/server/index.ts`), then runs `registerSubscriptions`, which creates the subscriber queues and subscribes them to their event types. `worker` and `standalone` own every other queue, the schedules and the workers (`src/workers/index.ts`).
+- `SERVER_ROLE=sse` is send-only like `api` and never consumes jobs. It serves only `realtime.route.ts` (`isRouteFileServed` in `src/server/route-files.ts`) plus whatever the plugins in `src/server/plugins/` register, since they load for every role, and holds one Postgres LISTEN connection (`startPgListener` in `src/shared/realtime/pg-listener.ts`). `standalone` also serves the realtime routes.
 - Queue policies (retries, backoff, the `<queue>-dead` dead letter, retention) live per queue in `src/config/workers.ts` and are applied by `registerQueue` (`src/workers/queues.ts`). Workers poll every `workers.polling.intervalSeconds` (2 s).
 - Queues: `user-notifications` and `realtime` (event subscribers, one job per published event each), `send-email` (one job per email), `queue-notification-digests` (cron 17:00 UTC, fan-out only), `send-digest` (one job per recipient per UTC day), `purge-notifications` and `purge-stale-model-drafts` (weekly crons).
 - Enqueue from a transaction with `jobQueue.sendTx(ctx, ...)`; never plain `send` inside `transactionManager.run`, or the job outlives a rollback.
@@ -92,13 +92,13 @@ Use path aliases, never relative `../../`:
 - `test:unit` is fully mocked (no DB). `test:e2e` runs against its own `test_e2e` database on the same Postgres, which `cucumber.mjs` creates if missing and migrates (`prisma migrate deploy`) at the start of every run, so it never truncates the dev database or shares its pg-boss queues. Every scenario starts with `boss.deleteAllJobs()`; assert queued or sent email through the `send-email` jobs (`tests/support/email-jobs.ts`). Only `test:e2e:data` reads the database in `.env`. Diagnose e2e failures from `reports/cucumber-report.json`.
 - In vitest specs, import `beforeEach`/`afterEach` from `vitest`, never `node:test` — wrong import silently no-ops the hook.
 - Specs for `src/shared/<area>/` live in `src/shared/<area>/__tests__/` and import their subject through `#src/...` aliases, not relative paths.
-- Tests should never enforce an implementation detail; they should focus on observable behavior and outcomes.
+- Tests should never enforce an implementation detail; they should focus on observable behavior and outcomes. Existing specs that pin implementation details get fixed incrementally.
 - Enforce constraints through tests, ensuring that the system behaves correctly under expected and edge-case scenarios.
 
 ## Config & limits
 
 - Limits (file size, allowed MIME types, rate caps, …) live in `src/config/rules.ts`. Don't redeclare module-local constants.
-- App-level env (`SMTP_*`, `STORAGE_*`, …) flows through `src/config/env.ts`. Services receive derived values via awilix DI (`storagePublicBaseUrl`, `bucket`), not direct `env.*` reads.
+- App-level env (`SMTP_*`, `STORAGE_*`, …) flows through `src/config/env.ts`. Importing `env` directly is fine; passing env-derived values through awilix DI is not required.
 - Worker settings live in `src/config/workers.ts`, one entry per queue: queue name (the dead-letter queue is always `<queueName>-dead`, from `getDeadLetterQueueName` in `src/workers/queues.ts`), queue policy, worker concurrency and, for scheduled queues, the cron expression. Tests validate that each cron expression is well-formed and adheres to the expected five-field format.
 
 ## Dev servers

@@ -151,7 +151,11 @@ export default defineNuxtConfig({
       },
     },
 
-    "/models/**/edit": {
+    "/models/*/edit": {
+      ssr: false,
+    },
+
+    "/models/*/*/edit": {
       ssr: false,
     },
 

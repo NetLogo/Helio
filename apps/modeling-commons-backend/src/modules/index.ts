@@ -10,6 +10,8 @@ import makeBoss from '#src/shared/jobs/boss.ts';
 import type { JobQueue } from '#src/shared/jobs/job-queue.port.ts';
 import makePgBossJobQueue from '#src/shared/jobs/pg-boss.job-queue.ts';
 import env from '#src/config/env.ts';
+import realtimeConfig from '#src/config/realtime.ts';
+import { makeRealtimeBroker, type RealtimeBroker } from '#src/shared/realtime/broker.ts';
 import { asFunction, asValue, type Resolver } from 'awilix';
 import type { PgBoss } from 'pg-boss';
 import type { FastifyBaseLogger } from 'fastify';
@@ -34,6 +36,7 @@ declare global {
     transactionManager: TransactionManager;
     boss: PgBoss;
     jobQueue: JobQueue;
+    realtimeBroker: RealtimeBroker;
   }
 }
 
@@ -56,6 +59,12 @@ export function makeDependencies({
     boss: asFunction(() => makeBoss({ logger, workersEnabled: env.workers.enabled })).singleton(),
     jobQueue: asFunction(makePgBossJobQueue).singleton(),
     notificationProducers: asFunction(makeNotificationProducers).singleton(),
+    realtimeBroker: asFunction(() =>
+      makeRealtimeBroker({
+        maxStreamsPerUser: realtimeConfig.streams.maxPerUser,
+        heartbeatIntervalMs: realtimeConfig.streams.heartbeatIntervalMs,
+      }),
+    ).singleton(),
     ...makeFileDependencies(),
   };
 }

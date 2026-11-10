@@ -7,7 +7,7 @@ export function mockModelVersionRepository(): {
   return {
     insertTx: vi.fn(),
     findByModelAndVersion: vi.fn(),
-    findLatestByModelTx: vi.fn(),
+    findLatestByModel: vi.fn(),
     finalizeTx: vi.fn(),
     updateFieldsTx: vi.fn(),
     listByModel: vi.fn(),

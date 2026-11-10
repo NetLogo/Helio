@@ -48,6 +48,8 @@ export const COMMENT_VIEW_DEFAULTS = {
   maximumNested: 3,
 } as const;
 
+export const COMMENT_STREAM_REFRESH_DEBOUNCE_MS = 300;
+
 export type CommentViewSettings = {
   maximumNested?: number;
   isNested?: boolean;

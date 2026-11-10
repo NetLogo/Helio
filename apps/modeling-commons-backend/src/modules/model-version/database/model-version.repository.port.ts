@@ -8,7 +8,7 @@ export interface ModelVersionRepository {
     modelId: string,
     versionNumber: number,
   ) => Promise<ModelVersionEntity | undefined>;
-  findLatestByModelTx: (
+  findLatestByModel: (
     modelId: string,
     ctx?: TransactionContext,
   ) => Promise<ModelVersionEntity | undefined>;

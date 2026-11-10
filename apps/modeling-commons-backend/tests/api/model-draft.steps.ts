@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import { readFileSync } from 'node:fs';
 import { Given, Then, When } from '@cucumber/cucumber';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import { type TestUser } from '../support/auth-helper.ts';
@@ -356,6 +357,69 @@ When(
     });
   },
 );
+
+async function uploadPrimaryFile(world: ICustomWorld, filename: string, content: string) {
+  const user = world.context['currentUser'] as TestUser;
+  const draftId = world.context['currentDraftId'] as string;
+  const { payload, contentType } = buildNamedPrimaryFileMultipart(filename, content);
+  world.context.latestResponse = await world.server.inject({
+    method: 'POST',
+    url: `/api/v1/model-drafts/${draftId}/files`,
+    payload,
+    headers: { cookie: user.cookie, 'content-type': contentType },
+  });
+}
+
+When(
+  'I upload the seed model {string} as the primary file of the draft',
+  async function (this: ICustomWorld, filename: string) {
+    const fixture = new URL(`../../prisma/seed/files/${filename}`, import.meta.url);
+    await uploadPrimaryFile(this, filename, readFileSync(fixture, 'utf-8'));
+  },
+);
+
+When(
+  'I upload a sectioned primary file {string} with version section {string} to the draft',
+  async function (this: ICustomWorld, filename: string, versionSection: string) {
+    const sections = [
+      'to setup\nclear-all\nend',
+      'GRAPHICS-WINDOW',
+      '## WHAT IS IT?',
+      '',
+      versionSection,
+    ];
+    await uploadPrimaryFile(this, filename, sections.join('\n@#$#@#$#@\n'));
+  },
+);
+
+async function fetchPublishedVersion(world: ICustomWorld): Promise<{ netlogoVersion: unknown }> {
+  const user = world.context['currentUser'] as TestUser;
+  const { modelId, versionNumber } = JSON.parse(world.context.latestResponse!.body);
+  const res = await world.server.inject({
+    method: 'GET',
+    url: `/api/v1/models/${modelId}/versions/${versionNumber}`,
+    headers: { cookie: user.cookie },
+  });
+  assert.strictEqual(
+    res.statusCode,
+    200,
+    `Failed to read the version (${res.statusCode}): ${res.body}`,
+  );
+  return JSON.parse(res.body);
+}
+
+Then(
+  'the published version should have NetLogo version {string}',
+  async function (this: ICustomWorld, expected: string) {
+    const version = await fetchPublishedVersion(this);
+    assert.strictEqual(version.netlogoVersion, expected);
+  },
+);
+
+Then('the published version should have no NetLogo version', async function (this: ICustomWorld) {
+  const version = await fetchPublishedVersion(this);
+  assert.strictEqual(version.netlogoVersion, null);
+});
 
 When('I upload a denied primary file to the draft', async function (this: ICustomWorld) {
   const user = this.context['currentUser'] as TestUser;

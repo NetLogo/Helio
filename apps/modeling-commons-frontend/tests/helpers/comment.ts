@@ -9,6 +9,8 @@ import { findCommentById } from "~/components/comment/comment-tree";
 import { comments as fixtureComments, deepThread } from "~/components/comment/fixtures";
 import type { Comment, CommentViewSettings, CommentsPanelProps } from "~/components/comment/types";
 import { makeSession, makeUser } from "./fixtures";
+import type { ResponseSuccessData } from "~/utils/openapi";
+import { apiResult, makeApiClientMock } from "./mockApi";
 
 const loggedIn = ref(true);
 
@@ -107,19 +109,7 @@ export async function mountCommentsSection(props: {
   return wrapper;
 }
 
-type ApiComment = {
-  id: string;
-  modelId: string;
-  parentId?: string;
-  author: { id: string; name: string; image: string };
-  content: string;
-  createdAt: string;
-  edited?: boolean;
-  likes: number;
-  likedByMe: boolean;
-  permissions?: { canEdit?: boolean; canDelete?: boolean };
-  replies?: { count: number; limit: number; page: number; data: Array<ApiComment> };
-};
+type ApiComment = ResponseSuccessData<"GET", "/api/v1/models/{id}/comments/{commentId}">;
 
 const SERVER_REPLY_EMBED_LIMIT = 2;
 const SERVER_DEFAULT_LIMIT = 20;
@@ -161,29 +151,61 @@ export function toApiComment(
   };
 }
 
-function jsonResponse(data: unknown, status = 200): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}
+export const COMMENT_ROUTES = {
+  list: "/api/v1/models/{id}/comments",
+  single: "/api/v1/models/{id}/comments/{commentId}",
+  like: "/api/v1/models/{id}/comments/{commentId}/like",
+} as const;
 
-type FetchCall = { url: string; method: string; body?: Record<string, unknown> };
+type ApiMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
-let fetchCallLog: Array<FetchCall> = [];
-
-export function commentFetchCalls(): Array<FetchCall> {
-  return fetchCallLog;
-}
-
-type FetchMockConfig = {
-  listCount?: number;
-  roots?: Array<Comment>;
-  fail?: (ctx: { method: string; path: string }) => boolean;
+type CommentRequestInit = {
+  params?: { path?: Record<string, string>; query?: Record<string, unknown> };
+  body?: Record<string, unknown>;
 };
 
-export function installCommentFetchMock(config: FetchMockConfig = {}) {
-  fetchCallLog = [];
+export type CommentApiCall = {
+  method: ApiMethod;
+  route: string;
+  pathParams: Record<string, string>;
+  query: Record<string, unknown>;
+  body?: Record<string, unknown>;
+};
+
+type CommentApiConfig = {
+  listCount?: number;
+  roots?: Array<Comment>;
+  fail?: (call: CommentApiCall) => boolean;
+};
+
+const commentApiState = { mock: makeApiClientMock(), calls: [] as Array<CommentApiCall> };
+
+export function useCommentApiMock() {
+  return commentApiState.mock.client;
+}
+
+export function getCommentApiCalls(): Array<CommentApiCall> {
+  return commentApiState.calls;
+}
+
+function makeCreatedComment(call: CommentApiCall, id: string): ApiComment {
+  return {
+    id,
+    modelId: call.pathParams.id ?? "model-demo",
+    parentId: call.body?.parentId as string | undefined,
+    author: { id: "user-ada", name: "Ada Lovelace", image: "" },
+    content: (call.body?.content as string | undefined) ?? "",
+    createdAt: "2024-01-01T00:00:00.000Z",
+    likes: 0,
+    likedByMe: false,
+    permissions: { canEdit: true, canDelete: true },
+  };
+}
+
+export function installCommentApiMock(config: CommentApiConfig = {}) {
+  const mock = makeApiClientMock();
+  commentApiState.mock = mock;
+  commentApiState.calls = [];
   let createSeq = 0;
   const roots = config.roots ?? fixtureComments;
   const trees = [...roots, deepThread];
@@ -191,63 +213,61 @@ export function installCommentFetchMock(config: FetchMockConfig = {}) {
   // mock has to serve what a POST just minted.
   const created = new Map<string, ApiComment>();
 
-  const mock = vi.fn(async (input: string, init?: RequestInit) => {
-    const method = init?.method ?? "GET";
-    const url = new URL(input);
-    const path = url.pathname;
-    const body = init?.body ? JSON.parse(init.body as string) : undefined;
-    fetchCallLog.push({ url: input, method, body });
+  function serveComment(call: CommentApiCall) {
+    const id = call.pathParams.commentId!;
+    const fresh = created.get(id);
+    if (fresh) return apiResult.ok(fresh);
+    const root = findCommentById(trees, id);
+    if (!root) return apiResult.err(404);
+    return apiResult.ok(
+      toApiComment(root, {
+        page: Number(call.query.page ?? 0),
+        limit: Number(call.query.limit ?? SERVER_DEFAULT_LIMIT),
+      }),
+    );
+  }
 
-    if (config.fail?.({ method, path })) return new Response(null, { status: 500 });
+  function serveList(call: CommentApiCall) {
+    const data = roots.map((root) => toApiComment(root));
+    return apiResult.ok({
+      count: config.listCount ?? data.length,
+      limit: SERVER_DEFAULT_LIMIT,
+      page: Number(call.query.page ?? 0),
+      data,
+    });
+  }
 
-    if (method === "PATCH") return new Response(null, { status: 204 });
-    if (method === "DELETE") return new Response(null, { status: 204 });
-    if (method === "POST" && path.endsWith("/like")) return new Response(null, { status: 204 });
-    if (method === "POST" && path.endsWith("/comments")) {
-      const id = `server-${++createSeq}`;
-      const modelId = path.match(/\/models\/([^/]+)\/comments/)?.[1] ?? "model-demo";
-      created.set(id, {
-        id,
-        modelId,
-        parentId: body?.parentId,
-        author: { id: "user-ada", name: "Ada Lovelace", image: "" },
-        content: body?.content ?? "",
-        createdAt: "2024-01-01T00:00:00.000Z",
-        likes: 0,
-        likedByMe: false,
-        permissions: { canEdit: true, canDelete: true },
-      });
-      return jsonResponse({ id }, 201);
-    }
+  function serveCreate(call: CommentApiCall) {
+    const id = `server-${++createSeq}`;
+    created.set(id, makeCreatedComment(call, id));
+    return apiResult.ok({ id });
+  }
 
-    const threadMatch = path.match(/\/comments\/([^/]+)$/);
-    if (method === "GET" && threadMatch) {
-      const id = threadMatch[1]!;
-      const fresh = created.get(id);
-      if (fresh) return jsonResponse(fresh);
-      const root = findCommentById(trees, id);
-      if (!root) return new Response(null, { status: 404 });
-      return jsonResponse(
-        toApiComment(root, {
-          page: Number(url.searchParams.get("page") ?? 0),
-          limit: Number(url.searchParams.get("limit") ?? SERVER_DEFAULT_LIMIT),
-        }),
-      );
-    }
+  function serve(call: CommentApiCall) {
+    if (config.fail?.(call)) return apiResult.err(500);
+    if (call.method === "GET" && call.route === COMMENT_ROUTES.single) return serveComment(call);
+    if (call.method === "GET") return serveList(call);
+    if (call.method === "POST" && call.route === COMMENT_ROUTES.list) return serveCreate(call);
+    return apiResult.noContent();
+  }
 
-    if (method === "GET") {
-      const data = roots.map((root) => toApiComment(root));
-      return jsonResponse({
-        count: config.listCount ?? data.length,
-        limit: 20,
-        page: Number(url.searchParams.get("page") ?? 0),
-        data,
-      });
-    }
+  function recordAndServe(method: ApiMethod) {
+    return async (route: string, init: CommentRequestInit = {}) => {
+      const call: CommentApiCall = {
+        method,
+        route,
+        pathParams: init.params?.path ?? {},
+        query: init.params?.query ?? {},
+        body: init.body,
+      };
+      commentApiState.calls.push(call);
+      return serve(call);
+    };
+  }
 
-    return new Response(null, { status: 204 });
-  });
-
-  vi.stubGlobal("fetch", mock);
+  mock.GET.mockImplementation(recordAndServe("GET"));
+  mock.POST.mockImplementation(recordAndServe("POST"));
+  mock.PATCH.mockImplementation(recordAndServe("PATCH"));
+  mock.DELETE.mockImplementation(recordAndServe("DELETE"));
   return mock;
 }

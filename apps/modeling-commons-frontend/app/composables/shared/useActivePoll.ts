@@ -18,6 +18,7 @@ export function useActivePoll(
     requireFocus = false,
     requireOnline = true,
     immediate = true,
+    enabled = true,
   } = opts;
 
   const visibility = useDocumentVisibility();
@@ -27,6 +28,7 @@ export function useActivePoll(
 
   const active = computed(
     () =>
+      toValue(enabled) &&
       visibility.value === "visible" &&
       !idle.value &&
       (!requireFocus || focused.value) &&
@@ -58,4 +60,6 @@ export interface ActivePollOptions {
   requireOnline?: boolean;
   /** Start polling immediately if conditions are met. Default true. */
   immediate?: boolean;
+  /** Pause while false, e.g. while another channel delivers the same data. Default true. */
+  enabled?: MaybeRefOrGetter<boolean>;
 }
