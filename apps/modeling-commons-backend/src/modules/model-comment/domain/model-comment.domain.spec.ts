@@ -104,6 +104,24 @@ describe('modelCommentDomain', () => {
     });
   });
 
+  describe('parseContent', () => {
+    it('returns the content without surrounding whitespace', () => {
+      expect(domain.parseContent('  edited \n')).toBe('edited');
+    });
+
+    it('throws CommentBodyInvalidError for whitespace-only content', () => {
+      expect(() => domain.parseContent(' \n\t ')).toThrow(CommentBodyInvalidError);
+    });
+
+    it('throws CommentBodyInvalidError for content over 10,000 characters', () => {
+      expect(() => domain.parseContent('a'.repeat(10_001))).toThrow(CommentBodyInvalidError);
+    });
+
+    it('measures the bound after trimming', () => {
+      expect(domain.parseContent(`  ${'a'.repeat(10_000)}  `)).toHaveLength(10_000);
+    });
+  });
+
   describe('assertNotDeleted', () => {
     it('passes when not deleted', () => {
       expect(() => domain.assertNotDeleted(makeComment())).not.toThrow();

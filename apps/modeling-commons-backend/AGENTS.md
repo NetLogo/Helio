@@ -98,6 +98,7 @@ Use path aliases, never relative `../../`:
 ## Config & limits
 
 - Limits (file size, allowed MIME types, rate caps, …) live in `src/config/rules.ts`. Don't redeclare module-local constants.
+- Rules shared with the frontend (comment content length and trimming) live in `packages/modeling-commons-shared`, and `rules.ts` reads them from there. The package is consumed from its built `dist`: after changing it, run `yarn workspace @repo/modeling-commons-shared build` (or keep root `yarn dev` running) before testing.
 - App-level env (`SMTP_*`, `STORAGE_*`, …) flows through `src/config/env.ts`. Importing `env` directly is fine; passing env-derived values through awilix DI is not required.
 - Worker settings live in `src/config/workers.ts`, one entry per queue: queue name (the dead-letter queue is always `<queueName>-dead`, from `getDeadLetterQueueName` in `src/workers/queues.ts`), queue policy, worker concurrency and, for scheduled queues, the cron expression. Tests validate that each cron expression is well-formed and adheres to the expected five-field format.
 

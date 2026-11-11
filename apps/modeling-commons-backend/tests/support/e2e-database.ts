@@ -19,11 +19,7 @@ async function createDatabaseIfMissing(adminUrl: string, database: string): Prom
   await client.end();
 }
 
-/*
- * Must run before anything imports src/config/env.ts: env reads POSTGRES_DB once at import,
- * and dotenv never overrides a variable that is already set.
- */
-export async function useE2eDatabase(): Promise<void> {
+export async function useE2eDatabaseBeforeEnvImport(): Promise<void> {
   config({ quiet: true });
   await createDatabaseIfMissing(buildDatabaseUrl(process.env['POSTGRES_DB'] ?? ''), E2E_DATABASE);
   const e2eUrl = buildDatabaseUrl(E2E_DATABASE);

@@ -1,4 +1,8 @@
-import { ConflictException, NotFoundException } from '#src/shared/exceptions/index.ts';
+import {
+  ArgumentInvalidException,
+  ConflictException,
+  NotFoundException,
+} from '#src/shared/exceptions/index.ts';
 
 export class NotificationNotFoundError extends NotFoundException {
   constructor(notificationId: string) {
@@ -19,5 +23,11 @@ export class NotificationCategoryClaimError extends Error {
         ? `Notification category ${category} is claimed by no producer`
         : `Notification category ${category} is claimed by ${producerNames.length} producers: ${producerNames.join(', ')}`,
     );
+  }
+}
+
+export class InvalidUnsubscribeTokenError extends ArgumentInvalidException {
+  constructor() {
+    super('This unsubscribe link is invalid.');
   }
 }

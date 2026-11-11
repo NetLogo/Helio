@@ -29,7 +29,7 @@ const links = {
 
   notificationPreferences: () => absolute('/settings/notifications'),
 
-  support: () => `mailto:${env.product.supportEmail}`,
+  notificationUnsubscribe: (token: string) => absolute('/unsubscribe', { token }),
 };
 
 export default links;

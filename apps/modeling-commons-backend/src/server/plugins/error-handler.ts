@@ -92,7 +92,6 @@ async function errorHandlerPlugin(fastify: FastifyInstance) {
       return sendException(res, databaseException);
     }
 
-    // Catch all other errors
     fastify.log.error(error);
     if (error instanceof ExceptionBase) {
       return sendException(res, error);

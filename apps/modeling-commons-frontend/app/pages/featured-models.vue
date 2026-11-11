@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelsFilters } from "~/forms/models";
+import type { ModelsFilters } from "~/features/models/types";
 
 useSeoMeta({
   title: "Featured Models",

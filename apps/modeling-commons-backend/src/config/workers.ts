@@ -97,7 +97,6 @@ const workersConfig = {
     },
     singletonSeconds: DAY_S,
   },
-  // Janitors for cleaning up stale or old data
   modelDraftJanitor: {
     queueName: 'purge-stale-model-drafts',
     queue: {

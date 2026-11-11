@@ -446,7 +446,6 @@ describe('mapProducersByCategory', () => {
   });
   const both = ['comment.on_your_model', 'comment.reply_to_you'] as const;
 
-  // Catches a lookup that picks a producer without checking it declares the category.
   it('maps each category to the one producer that claims it', () => {
     const byCategory = mapProducersByCategory(both, [onYourModel, replyToYou]);
 
@@ -454,14 +453,12 @@ describe('mapProducersByCategory', () => {
     expect(byCategory.get('comment.reply_to_you')).toBe(replyToYou);
   });
 
-  // Catches a category added to the catalog without a producer.
   it('throws when a category is claimed by no producer', () => {
     expect(() => mapProducersByCategory(both, [onYourModel])).toThrow(
       NotificationCategoryClaimError,
     );
   });
 
-  // Catches two producers both claiming one category, where delivery would pick one silently.
   it('throws when a category is claimed by two producers', () => {
     const alsoReplyToYou = { ...replyToYou, name: 'also-reply-to-you' };
 
@@ -470,7 +467,6 @@ describe('mapProducersByCategory', () => {
     );
   });
 
-  // Catches a domain that builds without checking its producers, so startup would not fail.
   it('makes the domain fail to build when its producers leave a category unclaimed', () => {
     expect(() => userNotificationDomain({ notificationProducers: [] })).toThrow(
       NotificationCategoryClaimError,

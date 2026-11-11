@@ -62,7 +62,6 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from "#ui/types";
-import { modelActions } from "~/forms/model-detail";
 import { formatRelativeDate } from "~/utils/formatters";
 import type { Author } from "../ModelAuthors.vue";
 
@@ -92,30 +91,30 @@ const visibility = getModelVisibilityDisplayInfo(props.modelVisibility || "");
 const modelActionsDropdownItems = computed(() => [
   { type: "label", label: "Actions" },
   {
-    ...modelActions.edit,
-    onClick: () => emit(modelActions.edit.action),
+    ...modelLiterals.actions.edit,
+    onClick: () => emit(modelLiterals.actions.edit.action),
     class: !props.permissions.canEdit ? 'hidden' : '',
   },
   {
-    ...modelActions.embed,
-    onClick: () => emit(modelActions.embed.action),
+    ...modelLiterals.actions.embed,
+    onClick: () => emit(modelLiterals.actions.embed.action),
     class: "flex md:hidden",
   },
   {
-    ...modelActions.download,
-    onClick: () => emit(modelActions.download.action),
+    ...modelLiterals.actions.download,
+    onClick: () => emit(modelLiterals.actions.download.action),
     class: "flex md:hidden",
     disabled: !props.downloadUrl,
   },
   {
-    ...modelActions.fork,
-    onClick: () => emit(modelActions.fork.action),
+    ...modelLiterals.actions.fork,
+    onClick: () => emit(modelLiterals.actions.fork.action),
     class: !props.permissions.canFork ? 'hidden' : '',
   },
   {
-    ...modelActions.delete,
+    ...modelLiterals.actions.delete,
     color: "error",
-    onClick: () => emit(modelActions.delete.action),
+    onClick: () => emit(modelLiterals.actions.delete.action),
     class: !props.permissions.canDelete ? 'hidden' : '',
   },
 ] satisfies Array<DropdownMenuItem>);

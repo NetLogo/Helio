@@ -69,6 +69,7 @@
 
 <script lang="ts" setup>
 import type { UTextarea } from "#components";
+import { isCommentContentValid, normalizeCommentContent } from "@repo/modeling-commons-shared";
 import { cn } from "@repo/vue-ui/utils";
 
 const props = withDefaults(
@@ -99,7 +100,9 @@ const { profile } = useProfile();
 
 const comment = ref(props.initialText);
 const focus = ref(false);
-const collapsed = computed(() => !focus.value && !comment.value.trim().length && !props.isEditing);
+const collapsed = computed(
+  () => !focus.value && !normalizeCommentContent(comment.value) && !props.isEditing,
+);
 const placeholder = computed(() => {
   switch (true) {
     case Boolean(props.isEditing && props.target):
@@ -116,7 +119,7 @@ const placeholder = computed(() => {
 // Clearing is parent-owned: text must survive a rejected submission, so the
 // parent calls clear() only once it accepts the submit.
 const handleSubmit = () => {
-  if (props.pending || !comment.value.trim()) return;
+  if (props.pending || !isCommentContentValid(comment.value)) return;
   emit("submit", comment.value);
 };
 

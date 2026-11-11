@@ -45,8 +45,6 @@ type CommentTreeDeps = {
   modelCommentMapper: Dependencies['modelCommentMapper'];
 };
 
-// Breadth-first: one batched `listRepliesByParents` call per level instead of
-// one `listReplies` call per node.
 export async function expandCommentForest(
   deps: CommentTreeDeps,
   roots: Array<ModelCommentEntity>,

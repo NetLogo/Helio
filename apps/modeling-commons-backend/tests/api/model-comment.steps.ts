@@ -248,24 +248,36 @@ When(
   },
 );
 
+async function editComment(
+  this: ICustomWorld,
+  actorName: string,
+  label: string,
+  modelTitle: string,
+  content: string,
+) {
+  const actor = getUsers(this.context).get(actorName)!;
+  const modelId = getModels(this.context).get(modelTitle)!;
+  const id = commentId.call(this, label);
+  this.context.latestResponse = await this.server.inject({
+    method: 'PATCH',
+    url: `/api/v1/models/${modelId}/comments/${id}`,
+    payload: { content },
+    headers: { cookie: actor.cookie, 'content-type': 'application/json' },
+  });
+}
+
+When('{string} edits comment {string} on {string} with content {string}', editComment);
+
 When(
-  '{string} edits comment {string} on {string} with content {string}',
+  '{string} edits comment {string} on {string} with content of {int} characters',
   async function (
     this: ICustomWorld,
     actorName: string,
     label: string,
     modelTitle: string,
-    content: string,
+    length: number,
   ) {
-    const actor = getUsers(this.context).get(actorName)!;
-    const modelId = getModels(this.context).get(modelTitle)!;
-    const id = commentId.call(this, label);
-    this.context.latestResponse = await this.server.inject({
-      method: 'PATCH',
-      url: `/api/v1/models/${modelId}/comments/${id}`,
-      payload: { content },
-      headers: { cookie: actor.cookie, 'content-type': 'application/json' },
-    });
+    await editComment.call(this, actorName, label, modelTitle, 'a'.repeat(length));
   },
 );
 
@@ -371,6 +383,16 @@ Then(
     const node = findCommentNode(body, commentId.call(this, label));
     assert.ok(node, `Expected comment "${label}" to appear in the response`);
     assert.strictEqual(String(node![property]), expected);
+  },
+);
+
+Then(
+  'comment {string} in the response should not have property {string}',
+  function (this: ICustomWorld, label: string, property: string) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const node = findCommentNode(body, commentId.call(this, label));
+    assert.ok(node, `Expected comment "${label}" to appear in the response`);
+    assert.ok(!(property in node!), `Expected comment "${label}" to not have "${property}"`);
   },
 );
 

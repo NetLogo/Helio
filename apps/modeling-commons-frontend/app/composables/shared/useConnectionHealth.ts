@@ -1,5 +1,3 @@
-import { useApi } from "~/composables/api/useApi";
-
 export type ConnectionStatus = "online" | "offline";
 
 const INTERVAL_MS: Record<ConnectionStatus, number> = {
@@ -35,21 +33,10 @@ function getState(): HealthState {
 }
 
 async function pingHealth(): Promise<boolean> {
-  const api = useApi();
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
-    const { response, error } = await (
-      api as unknown as {
-        GET: (
-          path: string,
-          init: { signal: AbortSignal },
-        ) => Promise<{
-          response?: Response;
-          error?: unknown;
-        }>;
-      }
-    ).GET("/api/health", { signal: controller.signal });
+    const { response, error } = await fetchHealth(controller.signal);
     if (error) return false;
     return !!response && response.ok;
   } catch {

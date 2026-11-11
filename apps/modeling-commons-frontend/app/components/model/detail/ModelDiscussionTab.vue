@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CommentSort } from "~/composables/comments/useComments";
+import type { CommentSort } from "~/features/comments/types";
 
 defineProps<{
   modelId: string;

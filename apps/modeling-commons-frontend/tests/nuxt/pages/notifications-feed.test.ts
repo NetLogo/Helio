@@ -2,14 +2,14 @@ import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
-import type { Notification } from "~/components/notifications/shared";
-import labels from "~/data/notifications.json";
+import type { UserNotification } from "~/features/notifications/types";
+import { notificationLiterals as labels } from "~/features/notifications/literals";
 import { makeNotification } from "~~/tests/helpers/notifications";
 
 function makeState() {
   const unreadOnly = ref(false);
   return {
-    notifications: ref<Notification[]>([]),
+    notifications: ref<UserNotification[]>([]),
     unreadCount: ref(0),
     unreadOnly,
     setUnreadOnly: vi.fn((value: boolean) => {

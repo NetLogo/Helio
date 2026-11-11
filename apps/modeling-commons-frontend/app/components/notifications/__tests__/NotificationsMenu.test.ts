@@ -1,14 +1,14 @@
 import { mockComponent, mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
-import labels from "~/data/notifications.json";
+import { notificationLiterals as labels } from "~/features/notifications/literals";
 import { makeNotification } from "~~/tests/helpers/notifications";
 import NotificationsMenu from "~/components/notifications/NotificationsMenu.vue";
-import type { Notification } from "~/components/notifications/shared";
+import type { UserNotification } from "~/features/notifications/types";
 
 function makeState() {
   return {
-    notifications: ref<Notification[]>([]),
+    notifications: ref<UserNotification[]>([]),
     unreadCount: ref(0),
     pending: ref(false),
     error: ref<unknown>(null),

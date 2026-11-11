@@ -16,9 +16,7 @@ const clientOnlyPatterns = () =>
     .map(([pattern]) => pattern);
 
 describe("client-only route rules", () => {
-  // Nuxt marks every page under `/a/**` as client-only when a rule reads `/a/**/b`, so the
-  // server renders an empty stub for pages the client renders in full.
-  it("never puts a catch-all before another segment", () => {
+  it("never puts a catch-all before another segment, which makes every page under it client-only", () => {
     for (const pattern of clientOnlyPatterns()) {
       expect(pattern, pattern).not.toMatch(/\*\*\/./);
     }

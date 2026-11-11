@@ -1,4 +1,5 @@
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
+import { commentContentRules } from "@repo/modeling-commons-shared";
 import { describe, expect, it } from "vitest";
 import { defineComponent, h, ref } from "vue";
 import CommentInput from "~/components/comment/CommentInput.vue";
@@ -96,12 +97,35 @@ describe("CommentInput submission", () => {
     expect(wrapper.emitted("submit")).toEqual([["Enter submit"]]);
   });
 
-  it("ignores whitespace-only submissions", async () => {
-    const wrapper = await mountInput();
+  it.each([
+    ["a new comment", {}],
+    ["an edit", { isEditing: true, initialText: "Original text" }],
+  ])("ignores whitespace-only submissions for %s", async (_label, props) => {
+    const wrapper = await mountInput(props);
     await wrapper.find("textarea").setValue("   ");
     await wrapper.find("[title='Post']").trigger("click");
 
     expect(wrapper.emitted("submit")).toBeUndefined();
+  });
+
+  it.each([
+    ["a new comment", {}],
+    ["an edit", { isEditing: true, initialText: "Original text" }],
+  ])("ignores over-length submissions for %s", async (_label, props) => {
+    const wrapper = await mountInput(props);
+    await wrapper.find("textarea").setValue("a".repeat(commentContentRules.length.max + 1));
+    await wrapper.find("[title='Post']").trigger("click");
+
+    expect(wrapper.emitted("submit")).toBeUndefined();
+  });
+
+  it("accepts content at the length limit once surrounding whitespace is trimmed", async () => {
+    const wrapper = await mountInput();
+    const atLimit = `  ${"a".repeat(commentContentRules.length.max)}  `;
+    await wrapper.find("textarea").setValue(atLimit);
+    await wrapper.find("[title='Post']").trigger("click");
+
+    expect(wrapper.emitted("submit")).toEqual([[atLimit]]);
   });
 
   it("seeds the textarea from initialText", async () => {

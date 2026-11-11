@@ -1,21 +1,11 @@
 import type { MaybeRefOrGetter } from "vue";
 
-type UserModelPermissions = ResponseSuccessData<"GET", "/api/v1/models/{id}/me/permissions">;
-
 export default function useUserModelPermissions(modelId: MaybeRefOrGetter<string>) {
-  const { GET } = useApi();
   const id = computed(() => toValue(modelId));
 
   const result = useAsyncData<UserModelPermissions | null>(
     () => `user-model-permissions-${id.value}`,
-    async () => {
-      if (!id.value) return null;
-      const { data, error } = await GET("/api/v1/models/{id}/me/permissions", {
-        params: { path: { id: id.value } },
-      });
-      if (error) throw error;
-      return data ?? null;
-    },
+    () => (id.value ? fetchModelPermissions(id.value) : Promise.resolve(null)),
     { watch: [id], immediate: true, dedupe: "cancel" },
   );
 
@@ -30,5 +20,3 @@ export default function useUserModelPermissions(modelId: MaybeRefOrGetter<string
 
   return { ...result, data };
 }
-
-export type { UserModelPermissions };

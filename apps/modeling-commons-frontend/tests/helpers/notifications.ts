@@ -1,9 +1,9 @@
 import createClient from "openapi-fetch";
 import { vi } from "vitest";
-import type { Notification, NotificationResponse } from "~/components/notifications/shared";
+import type { UserNotification, NotificationResponse } from "~/features/notifications/types";
 import type { paths } from "~~/shared/types/api";
 
-export function makeNotification(overrides: Partial<Notification> = {}): Notification {
+export function makeNotification(overrides: Partial<UserNotification> = {}): UserNotification {
   return {
     id: "n-1",
     category: "comment.on_your_model",
@@ -27,7 +27,7 @@ export function makeNotification(overrides: Partial<Notification> = {}): Notific
 }
 
 export function makeNotificationPage(
-  data: Notification[],
+  data: UserNotification[],
   overrides: Partial<NotificationResponse> = {},
 ): NotificationResponse {
   return {

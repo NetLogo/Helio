@@ -1,4 +1,3 @@
-// composables/useActivePoll.ts
 import { computed, watch, toValue, type MaybeRefOrGetter } from "vue";
 import {
   useDocumentVisibility,
@@ -60,6 +59,5 @@ export interface ActivePollOptions {
   requireOnline?: boolean;
   /** Start polling immediately if conditions are met. Default true. */
   immediate?: boolean;
-  /** Pause while false, e.g. while another channel delivers the same data. Default true. */
   enabled?: MaybeRefOrGetter<boolean>;
 }

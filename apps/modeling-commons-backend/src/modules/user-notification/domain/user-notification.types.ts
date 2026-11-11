@@ -15,8 +15,6 @@ export type NotificationTargetType = (typeof NOTIFICATION_TARGET_TYPES)[number];
 
 export type NotificationTargetRef = { type: NotificationTargetType; id: string };
 
-// What the feed renders once a stored reference is resolved. Identity is read live, so a
-// renamed model, a new avatar or a deleted account is reflected the next time the feed is opened.
 export type NotificationPreview = { name: string | null; thumbnailUrl: string | null; url: string };
 
 export type NotificationPreviews = {
@@ -77,7 +75,11 @@ export type DeliverableRecipient = UserEntity & { email: string };
 
 export type NotificationRecipient = { id: string; email: string; name: string | null };
 
-export type NotificationLinks = { unsubscribeUrl: string; preferencesUrl: string };
+export type NotificationLinks = {
+  unsubscribeUrl: string;
+  oneClickUnsubscribeUrl: string;
+  preferencesUrl: string;
+};
 
 export type NotificationRowFacts = {
   recipientUserId: string;

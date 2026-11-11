@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import labels from "~/data/notifications.json";
-import type { Notification } from "./shared";
+import type { UserNotification } from "~/features/notifications/types";
 
-const props = defineProps<{ notification: Notification; wide?: boolean }>();
+const props = defineProps<{ notification: UserNotification; wide?: boolean }>();
 
 const emit = defineEmits<{ read: [] }>();
 
@@ -15,8 +14,8 @@ watch(
 );
 const targetLabel = computed(() =>
   target.value?.name
-    ? labels.viewNamedLabel.replace("{name}", target.value.name)
-    : labels.targetFallbackLabel,
+    ? notificationLiterals.viewNamedLabel.replace("{name}", target.value.name)
+    : notificationLiterals.targetFallbackLabel,
 );
 </script>
 

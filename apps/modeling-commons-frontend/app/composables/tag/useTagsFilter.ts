@@ -14,7 +14,7 @@ export function useTagsFilter(
       if (tagNames?.length) {
         const tagList = await Promise.all(
           tagNames.map(async (name) => {
-            const tag = await fetchTagByIdOrName(useApi(), name);
+            const tag = await fetchTagByIdOrName(name);
             return toTagSelectMenuItem(tag ?? { displayName: name, name });
           }),
         );

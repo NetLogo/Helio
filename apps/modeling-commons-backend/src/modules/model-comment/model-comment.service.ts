@@ -92,10 +92,11 @@ export default function makeModelCommentService({
       const comment = await loadForModel(modelId, commentId);
       modelCommentDomain.assertNotDeleted(comment);
       modelCommentDomain.assertCanEdit(comment, callerId);
+      const parsedContent = modelCommentDomain.parseContent(content);
 
       const now = new Date();
       await transactionManager.run(async (ctx) => {
-        await modelCommentRepository.updateContentTx(ctx, commentId, content, now);
+        await modelCommentRepository.updateContentTx(ctx, commentId, parsedContent, now);
         await eventRepository.insertTx(ctx, {
           type: modelCommentEventTypes.updated,
           actorId: callerId,

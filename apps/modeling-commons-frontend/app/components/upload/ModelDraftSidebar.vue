@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelCard as ModelCardType } from "~/composables/model/useModelCard";
+import type { ModelCard as ModelCardType } from "~/features/models/types";
 
 defineProps<{
   currentFileName: string | null;

@@ -1,6 +1,4 @@
 import {
-  fetchNotifications,
-  pollNotifications,
   POLL_INTERVAL_ACTIVE_MS,
   IDLE_TIMEOUT_MS,
   MIN_POLL_GAP_MS,
@@ -8,7 +6,6 @@ import {
   MAX_BACKOFF_FACTOR,
   NOTIFICATION_STATE_KEYS,
   NOTIFICATION_PAGINATION_KEY,
-  type Notification,
 } from "~/components/notifications/shared";
 import { STREAM_EVENTS } from "~/components/shared/event-stream";
 
@@ -27,11 +24,9 @@ function decidePoll(state: {
 }
 
 function useNotificationsImpl() {
-  const api = useApi();
-
   const unreadCount = useState<number>(NOTIFICATION_STATE_KEYS.unreadCount, () => 0);
   const lastPolled = useState<number>(NOTIFICATION_STATE_KEYS.lastPolled, () => 0);
-  const aggregatedNotifications = useState<Notification[]>(
+  const aggregatedNotifications = useState<UserNotification[]>(
     NOTIFICATION_STATE_KEYS.aggregated,
     () => [],
   );
@@ -70,18 +65,17 @@ function useNotificationsImpl() {
     resetPagination();
   };
 
-  // A response fetched before a local markRead still carries the older readAt; keep the newer local one.
-  const reconcileReadAt = (incoming: Notification, known: Notification | undefined) => {
+  const keepNewestReadAt = (incoming: UserNotification, known: UserNotification | undefined) => {
     if (!known?.readAt) return incoming;
     if (incoming.readAt && new Date(incoming.readAt) >= new Date(known.readAt)) return incoming;
     return { ...incoming, readAt: known.readAt };
   };
 
-  const aggregate = (incoming: Notification[]) => {
+  const aggregate = (incoming: UserNotification[]) => {
     if (!incoming?.length) return;
-    const byId = new Map<string, Notification>();
+    const byId = new Map<string, UserNotification>();
     for (const n of toRaw(aggregatedNotifications.value)) byId.set(n.id, n);
-    const reconciled = incoming.map((n) => reconcileReadAt(n, byId.get(n.id)));
+    const reconciled = incoming.map((n) => keepNewestReadAt(n, byId.get(n.id)));
     const hasNewOrChangedRow = reconciled.some((n) => {
       const known = byId.get(n.id);
       return !known || known.readAt !== n.readAt;
@@ -95,7 +89,7 @@ function useNotificationsImpl() {
     advanceCursor(incoming);
   };
 
-  const advanceCursor = (incoming: Notification[]) => {
+  const advanceCursor = (incoming: UserNotification[]) => {
     let newest = cursor.value;
     for (const n of incoming) {
       if (newest === null || new Date(n.createdAt).getTime() > new Date(newest).getTime()) {
@@ -120,9 +114,7 @@ function useNotificationsImpl() {
     () => POLL_INTERVAL_ACTIVE_MS * Math.min(2 ** failures.value, MAX_BACKOFF_FACTOR),
   );
 
-  // Rows can commit after a newer createdAt was already seen; re-reading a short
-  // window behind the cursor catches them and aggregate dedupes by id.
-  const computePollSince = () =>
+  const getPollSinceWithOverlap = () =>
     cursor.value === null
       ? undefined
       : new Date(new Date(cursor.value).getTime() - POLL_SINCE_OVERLAP_MS).toISOString();
@@ -132,7 +124,7 @@ function useNotificationsImpl() {
 
   const requestPoll = (startedAt: number) => {
     const epoch = resetEpoch.value;
-    return pollNotifications(computePollSince())
+    return pollNotifications(getPollSinceWithOverlap())
       .then((res) => {
         if (resetEpoch.value !== epoch) return;
         unreadCount.value = res.unreadCount;
@@ -192,9 +184,7 @@ function useNotificationsImpl() {
     const target = aggregatedNotifications.value.find((n) => n.id === notificationId);
     if (!target || target.readAt) return; // guard double-decrement
 
-    const res = await api.PATCH(`/api/v1/me/notifications/{id}/read`, {
-      params: { path: { id: notificationId } },
-    });
+    const res = await markNotificationRead(notificationId);
     if (res.error) {
       showActionFailedToast("Failed to mark notification as read");
       return;

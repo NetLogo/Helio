@@ -308,6 +308,38 @@ Feature: Notification Preferences and Feed
     And the first feed notification should have title "owner replied to your comment"
     And no field of the notification feed should contain "Vanishing Model"
 
+  Scenario: The one-click unsubscribe in a comment email turns off that category for that recipient only
+    Given an authenticated user "owner"
+    And a public model "Unsubscribe Model" created by "owner"
+    And an authenticated user "contributor"
+    And "owner" has added "contributor" as a contributor to "Unsubscribe Model"
+    And an authenticated user "commenter"
+    When "commenter" comments "Great work!" on "Unsubscribe Model"
+    Then the response status should be 201
+    When the pending events have been dispatched
+    Then the email to "owner" should carry a one-click unsubscribe for category "comment.on_your_model"
+    When "owner" gets their notification preferences
+    And "contributor" gets their notification preferences
+    And the mail client of "owner" posts its one-click unsubscribe
+    Then the response status should be 204
+    When the mail client of "owner" posts its one-click unsubscribe
+    Then the response status should be 204
+    When "contributor" gets their notification preferences
+    Then every category should be unchanged from before
+    When "owner" gets their notification preferences
+    Then category "comment.on_your_model" should have email "off"
+    And every category other than "comment.on_your_model" should be unchanged from before
+
+  Scenario: A tampered unsubscribe token is refused and changes nothing
+    Given an authenticated user "owner"
+    And "owner" gets their notification preferences
+    When a mail client posts a one-click unsubscribe for "owner" whose category was tampered to "comment.on_your_model"
+    Then the response status should be 400
+    When a mail client posts a one-click unsubscribe with a malformed token
+    Then the response status should be 400
+    When "owner" gets their notification preferences
+    Then every category should be unchanged from before
+
   @mailpit
   Scenario: The comment email shows a readable model with its title and preview image
     Given Mailpit is reachable

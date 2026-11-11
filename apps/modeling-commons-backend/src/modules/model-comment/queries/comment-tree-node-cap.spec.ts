@@ -130,8 +130,6 @@ describe('comment tree node cap (rules.limits.comment.tree.maxNodes)', () => {
     modelCommentRepository.findById.mockResolvedValue(target);
     modelCommentRepository.countRepliesByParent.mockResolvedValue(new Map([['target-1', 12]]));
 
-    // budget = 10 - 1 root = 9; worst case at level 0 is 1 parent * caller limit 5 = 5... use a
-    // caller limit large enough that the worst case (1 * limit) alone exceeds the budget.
     const result = await query.execute('target-1', { page: 1, limit: 12 });
 
     expect(modelCommentRepository.listRepliesByParents).not.toHaveBeenCalled();

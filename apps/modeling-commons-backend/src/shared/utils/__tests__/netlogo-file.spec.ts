@@ -205,7 +205,6 @@ describe('detectNetlogoVersion', () => {
 
   test('reads a megabyte of unterminated model tags in linear time', () => {
     const crafted = '<?xml ' + '<model '.repeat(150_000);
-    // An unbounded scan per occurrence takes about 30 s on this input; the bounded one takes milliseconds.
     const startedAt = performance.now();
     expect(detectNetlogoVersion(file('model.nlogox', crafted))).toBeNull();
     expect(performance.now() - startedAt).toBeLessThan(1000);

@@ -13,8 +13,8 @@ import {
   type CommentPagination,
 } from "~/components/comment/types";
 import { STREAM_EVENTS } from "~/components/shared/event-stream";
-import useComments, { fetchComment, fetchModelComments } from "./useComments";
-import type { CommentSort, CommentsPayload, CommentsSource } from "./useComments";
+import useComments from "./useComments";
+import type { CommentsSource } from "./useComments";
 
 type UseCommentThreadOptions = {
   source: MaybeRefOrGetter<CommentsSource>;
@@ -70,7 +70,6 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
   }
 
   const toast = useToast();
-  const api = useApi();
   const mutations = useCommentMutations(() => modelId.value);
 
   const notifyFailure = () =>
@@ -123,7 +122,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     persistedId: string,
     place: (created: Comment) => void,
   ): Promise<void> => {
-    const created = await fetchComment(api, modelId.value, persistedId, {});
+    const created = await fetchComment(modelId.value, persistedId, {});
     if (created) place(created);
     else await refresh();
   };
@@ -203,7 +202,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     try {
       const loaded = target.replyPagination;
       const nextPage = nextPageToLoad(loaded);
-      const root = await fetchComment(api, modelId.value, commentId, {
+      const root = await fetchComment(modelId.value, commentId, {
         page: nextPage,
         limit: loaded?.limit,
       });
@@ -233,7 +232,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
     if (busy.value || pending.value || !modelId.value) return;
     busy.value = true;
     try {
-      const next = await fetchModelComments(api, modelId.value, {
+      const next = await fetchModelComments(modelId.value, {
         page: nextPageToLoad(current),
         limit: current.limit,
         sort: toValue(options.sort),

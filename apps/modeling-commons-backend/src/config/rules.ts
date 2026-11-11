@@ -1,4 +1,5 @@
 import { MEGABYTE, MINUTE_MS } from '#src/shared/utils/consts.ts';
+import { authRules, commentContentRules } from '@repo/modeling-commons-shared';
 import type { FastifyRateLimitOptions } from '@fastify/rate-limit';
 import type { BetterAuthRateLimitOptions } from 'better-auth';
 
@@ -164,7 +165,7 @@ const rules = {
     } as BetterAuthRateLimitOptions,
 
     comment: {
-      content: { min: 1, max: 10_000 } as MinMax,
+      content: commentContentRules.length as MinMax,
       // Hard ceiling on nodes materialized per tree request. maximumShownRepliesPerLevel ^
       // maximumNested is unbounded fan-out on paper; this is the backstop, not a target.
       // At the default limit=20 the dense worst case is 20 + 40 + 80 + 160 = 300, well clear.
@@ -211,26 +212,9 @@ const rules = {
     maxFileSize: 5 * MEGABYTE,
     allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
   },
-  auth: {
-    name: {
-      length: { min: 2, max: 50 } as MinMax,
-    },
-    password: {
-      length: { min: 8, max: 128 } as MinMax,
-      complexity: [
-        { pattern: /[A-Z]/, description: 'at least one uppercase letter' },
-        { pattern: /[a-z]/, description: 'at least one lowercase letter' },
-        { pattern: /[0-9]/, description: 'at least one digit' },
-        {
-          pattern: /[!@#$%^&*(),.?":{}|<>]/,
-          description: 'at least one special character',
-        },
-      ] as Array<RegexRule>,
-    },
-  },
+  auth: authRules,
 };
 
 type MinMax = { min?: number; max?: number };
-type RegexRule = { pattern: RegExp; description: string };
 
 export default rules;

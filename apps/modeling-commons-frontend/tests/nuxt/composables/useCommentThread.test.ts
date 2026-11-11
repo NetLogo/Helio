@@ -7,7 +7,7 @@ import { findCommentById } from "~/components/comment/comment-tree";
 import { COMMENT_STREAM_REFRESH_DEBOUNCE_MS, type Comment } from "~/components/comment/types";
 import { STREAM_EVENTS } from "~/components/shared/event-stream";
 import useCommentThread from "~/composables/comments/useCommentThread";
-import type { CommentSort } from "~/composables/comments/useComments";
+import type { CommentSort } from "~/features/comments/types";
 import {
   COMMENT_ROUTES,
   getCommentApiCalls,

@@ -1,22 +1,10 @@
-import strings from "~/data/notification-preferences.json";
-
-type NotificationPreferences = ResponseSuccessData<"GET", "/api/v1/me/notification-preferences">;
-export type NotificationPreferenceCategory = NotificationPreferences["categories"][number];
-export type NotificationCategoryKey = NotificationPreferenceCategory["category"];
-export type NotificationEmailMode = NotificationPreferenceCategory["email"];
-export type NotificationPreferencePatch = Partial<
-  Pick<NotificationPreferenceCategory, "email" | "inApp">
->;
-
 export default function useNotificationPreferences() {
-  const api = useApi();
   const saving = ref(new Set<NotificationCategoryKey>());
 
-  const { data, pending, error, refresh } = useAsyncData("notification-preferences", async () => {
-    const { data, error } = await api.GET("/api/v1/me/notification-preferences");
-    if (error) throw error;
-    return data;
-  });
+  const { data, pending, error, refresh } = useAsyncData(
+    "notification-preferences",
+    fetchNotificationPreferences,
+  );
 
   const categories = computed(() => data.value?.categories ?? []);
 
@@ -40,15 +28,13 @@ export default function useNotificationPreferences() {
     saving.value.add(category);
     replaceCategory({ ...previous, ...patch });
 
-    const res = await api.PATCH("/api/v1/me/notification-preferences", {
-      body: { preferences: [{ category, ...patch }] },
-    });
+    const res = await updateNotificationPreference(category, patch);
 
     saving.value.delete(category);
 
     if (res.error) {
       replaceCategory(previous);
-      showActionFailedToast(strings.saveFailedAction);
+      showActionFailedToast(notificationPreferenceLiterals.saveFailedAction);
     }
   }
 

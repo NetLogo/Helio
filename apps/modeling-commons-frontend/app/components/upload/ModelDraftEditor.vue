@@ -127,7 +127,6 @@
 
 <script setup lang="ts">
 import type { StepperItem } from "#ui/types";
-import { AddDetailsCardSchema } from "~/forms/upload";
 
 type Mode = "create" | "edit";
 

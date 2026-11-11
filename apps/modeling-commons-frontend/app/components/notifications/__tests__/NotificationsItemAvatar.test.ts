@@ -1,11 +1,11 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, expect, it } from "vitest";
-import labels from "~/data/notifications.json";
+import { notificationLiterals as labels } from "~/features/notifications/literals";
 import { makeNotification } from "~~/tests/helpers/notifications";
 import NotificationsItemAvatar from "~/components/notifications/NotificationsItemAvatar.vue";
-import type { Notification } from "~/components/notifications/shared";
+import type { UserNotification } from "~/features/notifications/types";
 
-const mountAvatar = (notification: Notification) =>
+const mountAvatar = (notification: UserNotification) =>
   mountSuspended(NotificationsItemAvatar, { props: { notification } });
 
 describe("NotificationsItemAvatar", () => {

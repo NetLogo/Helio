@@ -40,8 +40,7 @@
 
 <script lang="ts">
 import { useInfiniteScroll } from "@vueuse/core";
-import type { ApiUser } from "~/composables/user/useUsers";
-export const toUserSelectMenuItem = (user: ApiUser) => ({
+export const toUserSelectMenuItem = (user: UserProfile) => ({
   label: user.name ?? "Unknown User",
   value: user.id,
   avatar: {
@@ -63,7 +62,7 @@ export type UserSelectMenuItem = {
 };
 
 const props = defineProps<{
-  users: Array<ApiUser>;
+  users: Array<UserProfile>;
   loading: boolean;
   loadNextPage: () => void;
   canLoadMore: boolean;

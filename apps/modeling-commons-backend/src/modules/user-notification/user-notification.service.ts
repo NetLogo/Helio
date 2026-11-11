@@ -1,7 +1,7 @@
-import links from '#src/config/links.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import { userNotificationEventTypes } from '#src/modules/event/domain/event-types.ts';
 import { handleFailedDeliveries } from '#src/modules/user-notification/delivery-failures.ts';
+import { InvalidUnsubscribeTokenError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import type {
   DeliverableRecipient,
   EmailMode,
@@ -9,7 +9,6 @@ import type {
   NotificationCategory,
   NotificationChannels,
   NotificationRowFacts,
-  NotificationLinks,
   NotificationProducer,
   UserNotificationCreatedJobData,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
@@ -36,6 +35,7 @@ export function createUserNotificationService(
     notificationEmailService,
     notificationDigestService,
     getNotificationPreviewsQuery,
+    mailDomain,
     jobQueue,
     logger,
   }: Dependencies,
@@ -58,8 +58,6 @@ export function createUserNotificationService(
     facts: NotificationRowFacts,
     channels: NotificationChannels,
   ) {
-    // The row is the delivery ledger, not the feed entry, so it is written even when
-    // `inApp` is off, its unique key is what stops a retried event resending the email.
     return transactionManager.run(async (ctx) =>
       userNotificationRepository.insertTx(
         ctx,
@@ -72,21 +70,22 @@ export function createUserNotificationService(
     producer: NotificationProducer,
     ledger: UserNotificationRecord,
     recipient: DeliverableRecipient,
-    emailLinks: NotificationLinks,
+    category: NotificationCategory,
   ) {
     const previews = await getNotificationPreviewsQuery.execute([ledger], recipient.id);
-    return producer.renderEmail(
+    const emailLinks = userNotificationDomain.getEmailLinks(recipient.id, [category]);
+    const content = await producer.renderEmail(
       ledger,
       { id: recipient.id, email: recipient.email, name: recipient.name },
       previews.get(ledger.id) ?? { actor: null, target: null },
       emailLinks,
     );
+    return mailDomain.withOneClickUnsubscribe(content, emailLinks.oneClickUnsubscribeUrl);
   }
 
   async function deliver(
     event: EventRecord,
     { producer, facts }: ResolvedRowFacts,
-    emailLinks: NotificationLinks,
   ): Promise<UserNotificationRecord | undefined> {
     const deliverable = await findDeliverableRecipient(facts);
     if (!deliverable) return undefined;
@@ -96,9 +95,51 @@ export function createUserNotificationService(
     if (!userNotificationDomain.isSendableNow(channels)) return ledger;
 
     await notificationEmailService.queueRows([ledger.id], async () =>
-      renderLedgerEmail(producer, ledger, recipient, emailLinks),
+      renderLedgerEmail(producer, ledger, recipient, facts.category),
     );
     return ledger;
+  }
+
+  async function updatePreferences(
+    userId: string,
+    preferences: Array<UpdatePreferenceInput>,
+  ): Promise<void> {
+    const { previous, next } = await transactionManager.run(async (ctx) => {
+      const existing = await notificationPreferenceRepository.findAllByUserTx(ctx, userId);
+      const existingByCategory = new Map(existing.map((row) => [row.category, row]));
+      const previousModes: EmailModeByCategory = {};
+      const nextModes: EmailModeByCategory = {};
+
+      for (const preference of preferences) {
+        const resolved = userNotificationDomain.resolvePreference(
+          preference.category,
+          existingByCategory.get(preference.category),
+        );
+        const email = preference.email ?? resolved.email;
+
+        await notificationPreferenceRepository.upsertTx(ctx, {
+          userId,
+          category: preference.category,
+          email,
+          inApp: preference.inApp ?? resolved.inApp,
+        });
+        previousModes[preference.category] = resolved.email;
+        nextModes[preference.category] = email;
+      }
+
+      return { previous: previousModes, next: nextModes };
+    });
+
+    const flushed = userNotificationDomain.listFlushedCategories(previous, next);
+    if (flushed.length === 0) return;
+
+    void notificationDigestService.queueFlushedDigest(userId, flushed).catch((error: unknown) => {
+      logger.error({
+        name: 'UserNotificationService',
+        message: 'Failed to flush the notification digest',
+        error,
+      });
+    });
   }
 
   async function publishCreated(recipientIds: Array<string>): Promise<void> {
@@ -122,13 +163,8 @@ export function createUserNotificationService(
         .filter((result) => result.status === 'fulfilled')
         .flatMap((result) => result.value);
 
-      const emailLinks: NotificationLinks = {
-        unsubscribeUrl: links.support(),
-        preferencesUrl: links.notificationPreferences(),
-      };
-
       const deliveries = await Promise.allSettled(
-        resolved.map(async (entry) => deliver(event, entry, emailLinks)),
+        resolved.map(async (entry) => deliver(event, entry)),
       );
       const ledgerRows = deliveries.flatMap((result) =>
         result.status === 'fulfilled' && result.value ? [result.value] : [],
@@ -177,46 +213,16 @@ export function createUserNotificationService(
       return { categories };
     },
 
-    async updatePreferences(
-      userId: string,
-      preferences: Array<UpdatePreferenceInput>,
-    ): Promise<void> {
-      const { previous, next } = await transactionManager.run(async (ctx) => {
-        const existing = await notificationPreferenceRepository.findAllByUserTx(ctx, userId);
-        const existingByCategory = new Map(existing.map((row) => [row.category, row]));
-        const previousModes: EmailModeByCategory = {};
-        const nextModes: EmailModeByCategory = {};
+    updatePreferences,
 
-        for (const preference of preferences) {
-          const resolved = userNotificationDomain.resolvePreference(
-            preference.category,
-            existingByCategory.get(preference.category),
-          );
-          const email = preference.email ?? resolved.email;
+    async unsubscribe(token: string): Promise<void> {
+      const claims = userNotificationDomain.readUnsubscribeToken(token);
+      if (!claims) throw new InvalidUnsubscribeTokenError();
 
-          await notificationPreferenceRepository.upsertTx(ctx, {
-            userId,
-            category: preference.category,
-            email,
-            inApp: preference.inApp ?? resolved.inApp,
-          });
-          previousModes[preference.category] = resolved.email;
-          nextModes[preference.category] = email;
-        }
-
-        return { previous: previousModes, next: nextModes };
-      });
-
-      const flushed = userNotificationDomain.listFlushedCategories(previous, next);
-      if (flushed.length === 0) return;
-
-      void notificationDigestService.queueFlushedDigest(userId, flushed).catch((error: unknown) => {
-        logger.error({
-          name: 'UserNotificationService',
-          message: 'Failed to flush the notification digest',
-          error,
-        });
-      });
+      await updatePreferences(
+        claims.userId,
+        claims.categories.map((category) => ({ category, email: 'off' })),
+      );
     },
   };
 }

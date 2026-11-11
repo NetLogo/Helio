@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeModelCommentService from '#src/modules/model-comment/model-comment.service.ts';
 import modelCommentDomain from '#src/modules/model-comment/domain/model-comment.domain.ts';
 import {
+  CommentBodyInvalidError,
   CommentDeletedError,
   CommentNotFoundError,
   ParentCommentMismatchError,
@@ -147,6 +148,42 @@ describe('modelCommentService', () => {
         expect.anything(),
         expect.objectContaining({ type: 'model_comment.updated', actorId: 'author-1' }),
       );
+    });
+
+    it('stores the edited content without surrounding whitespace', async () => {
+      modelCommentRepository.findById.mockResolvedValue(makeComment({ userId: 'author-1' }));
+
+      await service.updateContent({
+        modelId: 'model-1',
+        commentId: 'comment-1',
+        callerId: 'author-1',
+        content: '  new content \n',
+      });
+
+      expect(modelCommentRepository.updateContentTx).toHaveBeenCalledWith(
+        expect.anything(),
+        'comment-1',
+        'new content',
+        expect.any(Date),
+      );
+    });
+
+    it.each([
+      ['whitespace-only', ' \n\t '],
+      ['over-length', 'a'.repeat(10_001)],
+    ])('rejects %s content and writes nothing', async (_label, content) => {
+      modelCommentRepository.findById.mockResolvedValue(makeComment({ userId: 'author-1' }));
+
+      await expect(
+        service.updateContent({
+          modelId: 'model-1',
+          commentId: 'comment-1',
+          callerId: 'author-1',
+          content,
+        }),
+      ).rejects.toThrow(CommentBodyInvalidError);
+      expect(modelCommentRepository.updateContentTx).not.toHaveBeenCalled();
+      expect(eventRepository.insertTx).not.toHaveBeenCalled();
     });
 
     it('throws CommentNotFoundError when the comment belongs to a different model', async () => {

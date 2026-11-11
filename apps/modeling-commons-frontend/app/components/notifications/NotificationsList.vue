@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { Notification } from "./shared";
+import type { UserNotification } from "~/features/notifications/types";
 
-defineProps<{ notifications: Notification[] }>();
+defineProps<{ notifications: UserNotification[] }>();
 
-const emit = defineEmits<{ read: [id: Notification["id"]] }>();
+const emit = defineEmits<{ read: [id: UserNotification["id"]] }>();
 </script>
 
 <template>

@@ -23,10 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelsFilters } from "~/forms/models";
+import type { ModelsFilters } from "~/features/models/types";
 
 const route = useRoute();
-const api = useApi();
 
 const name = computed(() => decodeURIComponent(route.params.name as string));
 
@@ -36,7 +35,7 @@ const {
   status: tagStatus,
 } = await useAsyncData(
   () => `tag-${name.value}`,
-  () => fetchTagByIdOrName(api, name.value),
+  () => fetchTagByIdOrName(name.value),
   { watch: [name] },
 );
 

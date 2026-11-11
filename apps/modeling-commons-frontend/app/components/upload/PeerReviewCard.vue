@@ -31,7 +31,7 @@
                 >Best Usecases</span
               >
             </template>
-            <UCheckboxGroup v-model="state.peerReviewKinds" :items="peerReviewKindOptions" />
+            <UCheckboxGroup v-model="state.peerReviewKinds" :items="[...draftLiterals.peerReviewKindOptions]" />
           </UFormField>
         </UFormField>
 
@@ -52,8 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import type { UploadFormInput } from "~/forms/upload";
-import { peerReviewKindOptions } from "~/forms/upload";
+import type { UploadFormInput } from "~/features/drafts/validators";
 
 const state = defineModel<UploadFormInput>({ required: true });
 </script>

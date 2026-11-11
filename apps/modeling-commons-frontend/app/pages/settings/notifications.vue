@@ -1,19 +1,25 @@
 <template>
   <div class="grid gap-8">
     <div v-if="error" class="grid gap-4">
-      <Error :title="strings.loadErrorTitle" :message="strings.loadErrorMessage">
+      <Error
+        :title="notificationPreferenceLiterals.loadErrorTitle"
+        :message="notificationPreferenceLiterals.loadErrorMessage"
+      >
         <UButton variant="outline" @click="refresh()">Try again</UButton>
       </Error>
     </div>
 
     <section v-else class="grid items-start gap-6 mt-1">
-      <ProfileSettingsCard :title="strings.title" :description="strings.description">
+      <ProfileSettingsCard
+        :title="notificationPreferenceLiterals.title"
+        :description="notificationPreferenceLiterals.description"
+      >
         <div v-if="pending && !categories.length" class="grid gap-4">
           <USkeleton v-for="index in 3" :key="index" class="h-16 w-full" />
         </div>
 
         <p v-else-if="!categories.length" class="m-0 text-sm text-muted">
-          {{ strings.emptyMessage }}
+          {{ notificationPreferenceLiterals.emptyMessage }}
         </p>
 
         <ul v-else class="m-0 grid list-none gap-0 p-0 divide-y divide-default">
@@ -30,11 +36,15 @@
             <div class="flex flex-wrap items-center gap-5">
               <USwitch
                 :model-value="preference.inApp"
-                :label="strings.inAppLabel"
+                :label="notificationPreferenceLiterals.inAppLabel"
                 :disabled="isSaving(preference.category)"
                 @update:model-value="updatePreference(preference.category, { inApp: $event })"
               />
-              <UFormField :label="strings.emailLabel" orientation="horizontal" class="items-center">
+              <UFormField
+                :label="notificationPreferenceLiterals.emailLabel"
+                orientation="horizontal"
+                class="items-center"
+              >
                 <USelectMenu
                   :model-value="preference.email"
                   :items="emailModes"
@@ -55,21 +65,18 @@
 </template>
 
 <script setup lang="ts">
-import strings from "~/data/notification-preferences.json";
-import type { NotificationEmailMode } from "~/composables/notifications/useNotificationPreferences";
-
 definePageMeta({
   middleware: "auth",
   layout: "profile",
 });
 
 useSeoMeta({
-  title: strings.seoTitle,
-  description: strings.seoDescription,
+  title: notificationPreferenceLiterals.seoTitle,
+  description: notificationPreferenceLiterals.seoDescription,
   robots: "noindex, nofollow",
 });
 
-const emailModes = strings.emailModes as { value: NotificationEmailMode; label: string }[];
+const emailModes = [...notificationPreferenceLiterals.emailModes];
 
 const { categories, pending, error, refresh, isSaving, updatePreference } =
   useNotificationPreferences();

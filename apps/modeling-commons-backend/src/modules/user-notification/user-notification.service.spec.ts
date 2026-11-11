@@ -11,8 +11,12 @@ import {
   describeGroupByTarget,
   mockNotificationProducer,
 } from '#src/modules/user-notification/domain/notification-producer.mock.ts';
+import makeMailDomain from '#src/modules/mail/domain/mail.domain.ts';
 import userNotificationMapper from '#src/modules/user-notification/user-notification.mapper.ts';
-import { NotificationNotFoundError } from '#src/modules/user-notification/domain/user-notification.errors.ts';
+import {
+  InvalidUnsubscribeTokenError,
+  NotificationNotFoundError,
+} from '#src/modules/user-notification/domain/user-notification.errors.ts';
 import { mockNotificationPreferenceRepository } from '#src/modules/user-notification/database/notification-preference.repository.mock.ts';
 import {
   fakeMarkEmailSent,
@@ -123,6 +127,50 @@ describe('userNotificationService', () => {
       );
     });
   });
+
+  describe('unsubscribe', () => {
+    function readToken(url: string): string {
+      return new URL(url).searchParams.get('token') ?? '';
+    }
+
+    it('turns email off for exactly the signed categories of the signed user', async () => {
+      notificationPreferenceRepository.findAllByUserTx.mockResolvedValue([
+        makeRecord({ userId: 'user-1', category: 'comment.on_your_model', inApp: false }),
+      ]);
+      const token = readToken(
+        domain.getEmailLinks('user-1', ['comment.on_your_model']).unsubscribeUrl,
+      );
+
+      await service.unsubscribe(token);
+
+      expect(notificationPreferenceRepository.upsertTx).toHaveBeenCalledTimes(1);
+      expect(notificationPreferenceRepository.upsertTx).toHaveBeenCalledWith(expect.anything(), {
+        userId: 'user-1',
+        category: 'comment.on_your_model',
+        email: 'off',
+        inApp: false,
+      });
+    });
+
+    it('refuses a tampered token and writes nothing', async () => {
+      const token = readToken(
+        domain.getEmailLinks('user-1', ['comment.on_your_model']).unsubscribeUrl,
+      );
+      const [payload] = token.split('.');
+      const forged = Buffer.from(
+        JSON.stringify({ u: 'user-2', c: ['comment.on_your_model'] }),
+      ).toString('base64url');
+
+      await expect(service.unsubscribe(token.replace(payload!, forged))).rejects.toBeInstanceOf(
+        InvalidUnsubscribeTokenError,
+      );
+      await expect(service.unsubscribe('not-a-token')).rejects.toBeInstanceOf(
+        InvalidUnsubscribeTokenError,
+      );
+      expect(notificationPreferenceRepository.upsertTx).not.toHaveBeenCalled();
+    });
+  });
+
   describe('getPreferences', () => {
     function expectedDefaults() {
       return domain.categories.map((info) => ({
@@ -266,6 +314,7 @@ describe('userNotificationService handleEvent', () => {
         transactionManager,
       } as never),
       getNotificationPreviewsQuery,
+      mailDomain: makeMailDomain(),
       jobQueue,
       logger,
     } as never);
@@ -334,7 +383,6 @@ describe('userNotificationService handleEvent', () => {
         { id: 'recipient-1', email: 'recipient@example.test', name: 'Recipient' },
         recipientPreview,
         expect.objectContaining({
-          unsubscribeUrl: expect.stringMatching(/^mailto:/),
           preferencesUrl: expect.stringContaining('/settings/notifications'),
         }),
       );
@@ -342,7 +390,32 @@ describe('userNotificationService handleEvent', () => {
       expect(sentIds).toEqual(new Set(['notification-1']));
     });
 
-    // Catches an email built from anything but the stored row and the recipient's own preview.
+    it("links the email to an unsubscribe for the recipient and the row's category only", async () => {
+      const producer = makeProducer([makeRowFacts()]);
+      const service = build([producer]);
+
+      await service.handleEvent(makeEvent());
+
+      const [, , , emailLinks] = vi.mocked(producer.renderEmail).mock.calls[0]!;
+      const pageToken = new URL(emailLinks.unsubscribeUrl).searchParams.get('token') ?? '';
+      expect(domain.readUnsubscribeToken(pageToken)).toEqual({
+        userId: 'recipient-1',
+        categories: ['comment.on_your_model'],
+      });
+
+      const [content] = mailService.enqueue.mock.calls[0]!;
+      expect(content.headers).toEqual({
+        'List-Unsubscribe': `<${emailLinks.oneClickUnsubscribeUrl}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      });
+      const oneClickToken =
+        new URL(emailLinks.oneClickUnsubscribeUrl).searchParams.get('token') ?? '';
+      expect(domain.readUnsubscribeToken(oneClickToken)).toEqual({
+        userId: 'recipient-1',
+        categories: ['comment.on_your_model'],
+      });
+    });
+
     it("renders the email from the ledger row and the recipient's preview", async () => {
       const ledger = makeInsertedNotification({
         actorUserId: 'commenter-1',
@@ -364,7 +437,6 @@ describe('userNotificationService handleEvent', () => {
       );
     });
 
-    // Catches a lookup failure that is swallowed and leaves the row marked sent without an email.
     it('fails the delivery, leaves the row unsent and rethrows when the preview lookup rejects', async () => {
       const lookupError = new Error('previews unavailable');
       getNotificationPreviewsQuery.execute.mockRejectedValue(lookupError);
@@ -686,7 +758,7 @@ describe('userNotificationService handleEvent', () => {
 
       expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(mailService.enqueue).toHaveBeenCalledWith(
-        { to: 'b@example.test', subject: 'New comment' },
+        expect.objectContaining({ to: 'b@example.test', subject: 'New comment' }),
         expect.anything(),
       );
       expect(sentIds).toEqual(new Set(['row-a', 'row-b']));
@@ -883,7 +955,10 @@ describe('userNotificationService digest', () => {
     notificationProducers: [mockNotificationProducer({ describeGroup: describeGroupByTarget })],
   });
   const mailService = { enqueue: vi.fn() };
-  const mailDomain = { createNotificationSummaryEmail: vi.fn() };
+  const mailDomain = {
+    createNotificationSummaryEmail: vi.fn(),
+    withOneClickUnsubscribe: makeMailDomain().withOneClickUnsubscribe,
+  };
   const logger = { error: vi.fn(), info: vi.fn(), warn: vi.fn(), debug: vi.fn() };
   const existingModels = new Map<string, string>();
   const getNotificationPreviewsQuery = {

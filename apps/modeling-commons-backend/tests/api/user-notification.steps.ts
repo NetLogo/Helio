@@ -1,6 +1,7 @@
 import assert from 'node:assert';
 import { Given, Then, When } from '@cucumber/cucumber';
 import env from '#src/config/env.ts';
+import links from '#src/config/links.ts';
 import notificationsConfig from '#src/config/notifications.ts';
 import { HOUR_MS } from '#src/shared/utils/consts.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
@@ -613,5 +614,104 @@ Then(
     const raw = (this.context['latestResponse'] as { body: string }).body;
     assert.ok(raw.length > 0, 'the notification feed response is empty');
     assert.ok(!raw.includes(text), `the notification feed mentions "${text}": ${raw}`);
+  },
+);
+
+const ONE_CLICK_BODY = 'List-Unsubscribe=One-Click';
+
+type UnsubscribeLinks = { oneClickUrl: string; pageUrl: string };
+
+function getUnsubscribeLinks(context: Record<string, unknown>): Map<string, UnsubscribeLinks> {
+  if (!context['unsubscribeLinks']) context['unsubscribeLinks'] = new Map();
+  return context['unsubscribeLinks'] as Map<string, UnsubscribeLinks>;
+}
+
+function readToken(url: string): string {
+  return new URL(url).searchParams.get('token') ?? '';
+}
+
+async function postOneClickUnsubscribe(world: ICustomWorld, url: URL): Promise<void> {
+  const { pathname, search } = url;
+  world.context.latestResponse = await world.server.inject({
+    method: 'POST',
+    url: `${pathname}${search}`,
+    payload: ONE_CLICK_BODY,
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+  });
+}
+
+Then(
+  'the email to {string} should carry a one-click unsubscribe for category {string}',
+  async function (this: ICustomWorld, name: string, category: string) {
+    const user = getUsers(this.context).get(name)!;
+    const [job] = await listEmailJobs(this.server, [user.email]);
+    assert.ok(job, `Expected an email to be queued for ${user.email}`);
+    const headers = (job.data.headers ?? {}) as Record<string, string>;
+
+    assert.strictEqual(headers['List-Unsubscribe-Post'], ONE_CLICK_BODY);
+    const match = /^<(.+)>$/.exec(headers['List-Unsubscribe'] ?? '');
+    assert.ok(match, `Expected a List-Unsubscribe URL, got ${headers['List-Unsubscribe']}`);
+    const oneClickUrl = match[1]!;
+
+    const { userNotificationDomain } = this.server.diContainer.cradle;
+    assert.deepStrictEqual(userNotificationDomain.readUnsubscribeToken(readToken(oneClickUrl)), {
+      userId: user.id,
+      categories: [category],
+    });
+    const pageUrl = links.notificationUnsubscribe(readToken(oneClickUrl));
+    assert.ok(
+      String(job.data.html ?? '').includes(pageUrl),
+      `Expected the email body to link to ${pageUrl}`,
+    );
+    getUnsubscribeLinks(this.context).set(name, { oneClickUrl, pageUrl });
+  },
+);
+
+When(
+  'the mail client of {string} posts its one-click unsubscribe',
+  async function (this: ICustomWorld, name: string) {
+    const { oneClickUrl } = getUnsubscribeLinks(this.context).get(name)!;
+    await postOneClickUnsubscribe(this, new URL(oneClickUrl));
+  },
+);
+
+When(
+  'a mail client posts a one-click unsubscribe for {string} whose category was tampered to {string}',
+  async function (this: ICustomWorld, name: string, category: string) {
+    const user = getUsers(this.context).get(name)!;
+    const { userNotificationDomain } = this.server.diContainer.cradle;
+    const signed = userNotificationDomain.getEmailLinks(user.id, ['comment.reply_to_you']);
+    const [, signature] = readToken(signed.oneClickUnsubscribeUrl).split('.');
+    const forgedPayload = Buffer.from(JSON.stringify({ u: user.id, c: [category] })).toString(
+      'base64url',
+    );
+    const url = new URL(signed.oneClickUnsubscribeUrl);
+    url.searchParams.set('token', `${forgedPayload}.${signature}`);
+    await postOneClickUnsubscribe(this, url);
+  },
+);
+
+When(
+  'a mail client posts a one-click unsubscribe with a malformed token',
+  async function (this: ICustomWorld) {
+    const url = new URL('/api/v1/notification-unsubscribe', 'http://localhost');
+    url.searchParams.set('token', 'not-a-token');
+    await postOneClickUnsubscribe(this, url);
+  },
+);
+
+Then(
+  'every category other than {string} should be unchanged from before',
+  function (this: ICustomWorld, touched: string) {
+    const name = this.context['lastNotificationUser'] as string;
+    const before = getSnapshots(this.context).get(name)!;
+    const body = JSON.parse(this.context.latestResponse!.body) as {
+      categories: Array<CategoryPreference>;
+    };
+    for (const beforeEntry of before.filter((entry) => entry.category !== touched)) {
+      const afterEntry = findCategory(body.categories, beforeEntry.category);
+      assert.strictEqual(afterEntry.email, beforeEntry.email);
+      assert.strictEqual(afterEntry.inApp, beforeEntry.inApp);
+    }
   },
 );

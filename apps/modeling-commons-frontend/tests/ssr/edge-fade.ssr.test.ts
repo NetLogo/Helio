@@ -13,12 +13,10 @@ function readFadeRule() {
   throw new Error("gradient-boundary-scroll rule not found");
 }
 
-// The fades were absolutely positioned against the dropdown, so they covered the
-// footer link and whole rows instead of the scroll edges.
 describe("scroll edge fade", () => {
   const rule = readFadeRule();
 
-  it("pins the fades to the scroll container edges", () => {
+  it("pins the fades to the scroll container edges so they cover no rows or footer link", () => {
     expect(rule).toMatch(/position:\s*sticky/);
     expect(rule).not.toMatch(/position:\s*absolute/);
   });

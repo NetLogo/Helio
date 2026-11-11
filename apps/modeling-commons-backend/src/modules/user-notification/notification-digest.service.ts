@@ -28,15 +28,20 @@ export default function makeNotificationDigestService({
     const digest = userNotificationDomain.buildDigest(rows, previews);
     if (digest.items.length === 0) return null;
 
-    return mailDomain.createNotificationSummaryEmail(
+    const emailLinks = userNotificationDomain.getEmailLinks(
+      recipient.id,
+      userNotificationDomain.listRowCategories(rows),
+    );
+    const content = await mailDomain.createNotificationSummaryEmail(
       recipient.email,
       userDomain.formatGreetingName(recipient),
       digest.items,
       digest.moreCount,
       links.notifications(),
-      links.support(),
-      links.notificationPreferences(),
+      emailLinks.unsubscribeUrl,
+      emailLinks.preferencesUrl,
     );
+    return mailDomain.withOneClickUnsubscribe(content, emailLinks.oneClickUnsubscribeUrl);
   }
 
   async function queueDigest(

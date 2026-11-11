@@ -20,7 +20,7 @@ import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-dra
 import type { DraftDataV1 } from '#src/modules/model-draft/schemas/v1.ts';
 import type { Model } from '#prisma/index';
 import { ID_PATTERN } from '#src/shared/utils/id.ts';
-import { PREVIEW_IMAGE_PATH_PREFIX } from '#src/modules/model-draft/model-draft.storage.ts';
+import { PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX } from '#src/modules/model-draft/model-draft.storage.ts';
 
 function makeDraft(
   data: DraftDataV1 = {},
@@ -735,7 +735,7 @@ describe('modelDraftService', () => {
       await service.publish(makeDraft({ ...publishableDraftData, previewImage: stagedPreview }));
 
       expect(previewCopyCall(modelDraftStorage.copyStagedToPermanent)).toMatchObject({
-        pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
+        pathPrefix: PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
         acl: 'public-read',
       });
     });
@@ -773,7 +773,7 @@ describe('modelDraftService', () => {
 
       expect(result.createdNewVersion).toBe(false);
       expect(previewCopyCall(modelDraftStorage.copyStagedToPermanent)).toMatchObject({
-        pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
+        pathPrefix: PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
         acl: 'public-read',
       });
     });

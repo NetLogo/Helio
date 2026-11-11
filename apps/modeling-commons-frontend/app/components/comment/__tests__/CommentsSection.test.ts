@@ -405,3 +405,31 @@ describe("CommentsSection pagination seams", () => {
     expect(panelPagination(wrapper).lastPage).toBe(1);
   });
 });
+
+describe("CommentsSection refresh", () => {
+  it("keeps the loaded comment rows on screen while a refresh is in flight", async () => {
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+    const rowsBefore = wrapper.findAllComponents(CommentView).map((row) => row.vm.$.uid);
+    expect(rowsBefore.length).toBeGreaterThan(0);
+
+    const serve = useCommentApiMock().GET.getMockImplementation()!;
+    let release: () => void = () => undefined;
+    const gate = new Promise<void>((resolve) => (release = resolve));
+    useCommentApiMock().GET.mockImplementation(async (...args: Parameters<typeof serve>) => {
+      await gate;
+      return serve(...args);
+    });
+
+    const refreshing = refreshNuxtData();
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="comments-loading"]').exists()).toBe(false);
+    expect(wrapper.findAllComponents(CommentView).map((row) => row.vm.$.uid)).toEqual(rowsBefore);
+
+    release();
+    await refreshing;
+    await flushPromises();
+
+    expect(wrapper.findAllComponents(CommentView).map((row) => row.vm.$.uid)).toEqual(rowsBefore);
+  });
+});

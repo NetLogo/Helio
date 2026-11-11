@@ -134,13 +134,9 @@ useSeoMeta({
   robots: "noindex, nofollow",
 });
 
-const api = useApi();
 const toast = useToast();
 
-const { data, pending, error, refresh } = await useAsyncData("my-drafts", async () => {
-  const { data, error } = await api.GET("/api/v1/model-drafts");
-  return handleApiError(data, error, "loading drafts");
-});
+const { data, pending, error, refresh } = await useAsyncData("my-drafts", fetchDrafts);
 
 const drafts = computed(() => data.value?.data ?? []);
 const deletingId = ref<string | null>(null);
@@ -148,9 +144,7 @@ const deletingId = ref<string | null>(null);
 async function onDelete(id: string) {
   deletingId.value = id;
   try {
-    const { response } = await api.DELETE("/api/v1/model-drafts/{id}", {
-      params: { path: { id } },
-    });
+    const { response } = await deleteDraft(id);
     if (!response.ok) throw new Error(`Request failed (${response.status})`);
     await refresh();
     toast.add({

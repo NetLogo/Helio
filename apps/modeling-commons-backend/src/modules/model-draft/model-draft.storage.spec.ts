@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeModelDraftStorage, {
-  PREVIEW_IMAGE_PATH_PREFIX,
+  PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
 } from '#src/modules/model-draft/model-draft.storage.ts';
 import makeFileDomain from '#src/modules/file/domain/file.domain.ts';
 import { isPublicKey, PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
@@ -68,7 +68,7 @@ describe('modelDraftStorage', () => {
         modelId: 'm1',
         filename: 'preview.png',
         contentType: 'image/png',
-        pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
+        pathPrefix: PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
         acl: 'public-read',
       });
 

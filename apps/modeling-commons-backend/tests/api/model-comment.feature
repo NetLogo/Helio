@@ -112,6 +112,38 @@ Feature: Model Comments
     And comment "mine" in the response should have property "content" equal to "Updated text"
     And comment "mine" in the response should have property "edited" equal to "true"
 
+  Scenario: An edit is stored without surrounding whitespace
+    Given an authenticated user "owner"
+    And a public model "Editable Trimmed" created by "owner"
+    And "owner" has commented "Original text" on "Editable Trimmed" as "mine"
+    When "owner" edits comment "mine" on "Editable Trimmed" with content "  Updated text  "
+    Then the response status should be 204
+    When "owner" gets comment "mine" on "Editable Trimmed"
+    Then the response status should be 200
+    And comment "mine" in the response should have property "content" equal to "Updated text"
+
+  Scenario: An edit to whitespace only is refused and leaves the comment unchanged
+    Given an authenticated user "owner"
+    And a public model "Editable Blank" created by "owner"
+    And "owner" has commented "Original text" on "Editable Blank" as "mine"
+    When "owner" edits comment "mine" on "Editable Blank" with content "   "
+    Then the response status should be 400
+    When "owner" gets comment "mine" on "Editable Blank"
+    Then the response status should be 200
+    And comment "mine" in the response should have property "content" equal to "Original text"
+    And comment "mine" in the response should not have property "edited"
+
+  Scenario: An over-length edit is refused and leaves the comment unchanged
+    Given an authenticated user "owner"
+    And a public model "Editable Long" created by "owner"
+    And "owner" has commented "Original text" on "Editable Long" as "mine"
+    When "owner" edits comment "mine" on "Editable Long" with content of 10001 characters
+    Then the response status should be 400
+    When "owner" gets comment "mine" on "Editable Long"
+    Then the response status should be 200
+    And comment "mine" in the response should have property "content" equal to "Original text"
+    And comment "mine" in the response should not have property "edited"
+
   Scenario: Deleting a comment with no replies leaves a tombstone
     Given an authenticated user "owner"
     And a public model "Deletable" created by "owner"

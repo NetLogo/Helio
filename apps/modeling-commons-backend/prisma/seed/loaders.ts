@@ -60,8 +60,6 @@ function mustGet(map: IdMap, key: string, kind: string): string {
 const pick = <T>(rng: () => number, pool: readonly T[]): T =>
   pool[Math.floor(rng() * pool.length)]!;
 
-// Users
-
 export async function loadUsers(users: UserSeed[], password: string): Promise<IdMap> {
   const map: IdMap = new Map();
   const passwordHash = await hashPassword(password);

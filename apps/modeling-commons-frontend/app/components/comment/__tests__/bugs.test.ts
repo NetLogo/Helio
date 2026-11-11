@@ -156,10 +156,6 @@ describe("CommentView bugs", () => {
     expect(wrapper.findComponent(CommentInput).exists()).toBe(false);
   });
 
-  // CommentView consumes CommentSeeMore's declared
-  // see-more-replies emit. `load` fires once all loaded replies are revealed
-  // and only a server remainder is left. (The former attribute-fallthrough
-  // companion test is retired — the @click wiring it proved no longer exists.)
   it("emits load when CommentSeeMore fires its declared see-more-replies event", async () => {
     const partiallyLoaded = { ...longComment, replyPagination: { count: 5, lastPage: 1 } };
     const wrapper = await mountCommentView(partiallyLoaded);
@@ -243,8 +239,6 @@ describe("ConfirmDeleteCommentDialog bugs", () => {
     expect(wrapper.emitted("cancel")).toBeTruthy();
   });
 
-  // BUG-10 (fixed) companion: a confirm-driven close must not fire a spurious
-  // cancel on top of the confirm.
   it("does not emit cancel when the close follows a confirm", async () => {
     const wrapper = await mountSuspended(ConfirmDeleteCommentDialog, {
       props: { deleting: false, open: true },

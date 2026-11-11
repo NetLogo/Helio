@@ -1,5 +1,10 @@
+import {
+  commentContentRules,
+  getCommentContentIssue,
+  normalizeCommentContent,
+  type CommentContentIssue,
+} from '@repo/modeling-commons-shared';
 import { newId } from '#src/shared/utils/id.ts';
-import rules from '#src/config/rules.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import {
   CommentBodyInvalidError,
@@ -12,22 +17,25 @@ import type {
   ModelCommentEntity,
 } from '#src/modules/model-comment/domain/model-comment.types.ts';
 
-const CONTENT_LENGTH = rules.limits.comment.content;
+const contentIssueReasons: Record<CommentContentIssue, string> = {
+  tooShort: 'content is empty',
+  tooLong: `content exceeds ${commentContentRules.length.max} characters`,
+};
+
+function parseContent(content: string): string {
+  const issue = getCommentContentIssue(content);
+  if (issue) {
+    throw new CommentBodyInvalidError(contentIssueReasons[issue]);
+  }
+  return normalizeCommentContent(content);
+}
 
 export default function modelCommentDomain() {
   return {
+    parseContent,
+
     createComment(props: CreateCommentProps): ModelCommentEntity {
-      const content = props.content.trim();
-      const min = CONTENT_LENGTH.min ?? 0;
-      const max = CONTENT_LENGTH.max ?? Infinity;
-
-      if (content.length < min) {
-        throw new CommentBodyInvalidError('content is empty');
-      }
-      if (content.length > max) {
-        throw new CommentBodyInvalidError(`content exceeds ${max} characters`);
-      }
-
+      const content = parseContent(props.content);
       const now = new Date();
       return {
         id: newId(),

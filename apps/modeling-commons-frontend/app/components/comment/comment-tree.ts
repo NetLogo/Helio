@@ -111,10 +111,6 @@ export function removeCommentById(comments: Array<Comment>, id: string): Array<C
   return changed ? next : comments;
 }
 
-// Comments created in this tab hold the slot they were shown in across a
-// refetch, using the refetched copy. A pinned comment missing from a complete
-// list was deleted; missing from a truncated list it may sit on an unloaded
-// page, so the shown copy stays.
 export function mergePinnedComments(
   previous: Array<Comment>,
   fetched: Array<Comment>,

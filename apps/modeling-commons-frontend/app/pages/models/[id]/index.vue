@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelCard } from "~/composables/model/useModelCard";
+import type { ModelCard } from "~/features/models/types";
 
 const route = useRoute();
 const modelId = computed(() => route.params.id as string);

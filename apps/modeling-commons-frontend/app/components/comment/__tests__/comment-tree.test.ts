@@ -80,8 +80,6 @@ describe("remainingCommentCount", () => {
     expect(remainingCommentCount([shortComment], { count: 10, lastPage: 4 })).toBe(9);
   });
 
-  // BUGS.md #1 (fixed): the total lives in pagination.count, so the props
-  // CommentsPanel actually passes yield a positive remainder.
   it("counts the remainder for the props CommentsPanel actually passes", () => {
     const panelProps: CommentsPanelProps = {
       comments: [shortComment, editedComment, noRepliesComment],

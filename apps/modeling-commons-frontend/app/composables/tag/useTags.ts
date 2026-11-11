@@ -1,6 +1,4 @@
-export type Tag = ResponseSuccessData<"GET", "/api/v1/tags">["data"][number];
 export default function useTags() {
-  const { GET } = useApi();
   const { query, debouncedQuery } = useSearchQuery({
     transform: (q) => (q.trim().length === 0 ? undefined : q.trim()),
   });
@@ -13,15 +11,7 @@ export default function useTags() {
     loadNextPage,
     canLoadMore,
     count,
-  } = useApiPagination(key, async (page: number) => {
-    const { data, error } = await GET("/api/v1/tags", {
-      params: { query: { limit: 20, page, q: debouncedQuery.value } },
-    });
-
-    const parsed = handleApiError(data, error, "fetching tags");
-
-    return parsed;
-  });
+  } = useApiPagination(key, (page: number) => fetchTags(page, debouncedQuery.value));
 
   return {
     prefix: query,

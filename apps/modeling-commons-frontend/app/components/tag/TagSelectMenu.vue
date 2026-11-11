@@ -32,7 +32,6 @@
 
 <script lang="ts">
 import { useInfiniteScroll } from "@vueuse/core";
-import { areTagsEqual } from "~/forms/tags";
 export type TagItem = { label: string; value: string; name: string } & Partial<Tag>;
 export const toTagSelectMenuItem = (tag: Partial<Tag> & { name: string }): TagItem => ({
   ...tag,

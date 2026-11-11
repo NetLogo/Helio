@@ -20,14 +20,13 @@ export function listCommentNotificationRecipients({
 }: CommentNotificationParticipants): Array<CommentNotificationRecipient> {
   const repliedToId = parentAuthorId && parentAuthorId !== commenterId ? parentAuthorId : null;
 
-  // The parent's author already gets the more specific reply, so the model notice skips them.
-  const authorIds = new Set(modelAuthorIds);
-  if (commenterId) authorIds.delete(commenterId);
-  if (repliedToId) authorIds.delete(repliedToId);
+  const modelNoticeRecipientIds = new Set(modelAuthorIds);
+  if (commenterId) modelNoticeRecipientIds.delete(commenterId);
+  if (repliedToId) modelNoticeRecipientIds.delete(repliedToId);
 
   const recipients: Array<CommentNotificationRecipient> = [];
   if (repliedToId) recipients.push({ recipientId: repliedToId, category: 'comment.reply_to_you' });
-  for (const recipientId of authorIds) {
+  for (const recipientId of modelNoticeRecipientIds) {
     recipients.push({ recipientId, category: 'comment.on_your_model' });
   }
 

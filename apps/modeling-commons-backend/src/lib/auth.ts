@@ -5,6 +5,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { admin, openAPI } from 'better-auth/plugins';
 
 import rules from '#src/config/rules.ts';
+import { passwordPolicyHook } from '#src/lib/auth-password-policy.ts';
 import { newId } from '#src/shared/utils/id.ts';
 import transporter, { mailDomain } from './mail.ts';
 import { prisma } from './prisma.ts';
@@ -105,6 +106,10 @@ export const auth = betterAuth({
         console.error('Failed to send verification email', err);
       });
     },
+  },
+
+  hooks: {
+    before: passwordPolicyHook,
   },
 
   rateLimit: {

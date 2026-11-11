@@ -48,10 +48,8 @@ export default function makeModelCommentProducer({
         ? await modelCommentRepository.findById(entity.parentId)
         : undefined;
 
-      // A reply's own deep link opens it detached from the exchange it belongs to,
-      // so the thread opens one level up and the new comment is highlighted inside it.
-      const threadCommentId = parent?.id ?? entity.id;
-      const commentUrl = links.modelComment(entity.modelId, threadCommentId, entity.id);
+      const enclosingThreadId = parent?.id ?? entity.id;
+      const commentUrl = links.modelComment(entity.modelId, enclosingThreadId, entity.id);
       const excerpt = truncatePreview(entity.content ?? '');
 
       const target: NotificationTargetRef = { type: 'model', id: entity.modelId };

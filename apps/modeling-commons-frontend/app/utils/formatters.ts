@@ -187,3 +187,9 @@ export const numberFormatter = new Intl.NumberFormat("en-US", {
   localeMatcher: "best fit",
   maximumFractionDigits: 1,
 });
+
+export function fillTemplate(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (placeholder, key: string) =>
+    key in values ? String(values[key]) : placeholder,
+  );
+}

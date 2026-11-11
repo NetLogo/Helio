@@ -24,7 +24,10 @@ describe('links', () => {
     expect(links.user('../admin')).toBe(`${origin}/users/..%2Fadmin`);
   });
 
-  it('points unsubscribe at the support mailbox', () => {
-    expect(links.support()).toBe(`mailto:${env.product.supportEmail}`);
+  it('carries the unsubscribe token as a query parameter of the web page', () => {
+    const url = new URL(links.notificationUnsubscribe('a.b+c/d'));
+    expect(url.origin).toBe(origin);
+    expect(url.pathname).toBe('/unsubscribe');
+    expect(url.searchParams.get('token')).toBe('a.b+c/d');
   });
 });

@@ -2,7 +2,8 @@ import { clearNuxtData } from "#app";
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
-import useUserModelPermissions, { type UserModelPermissions } from "~/composables/model/useModelPermissions";
+import useUserModelPermissions from "~/composables/model/useModelPermissions";
+import type { UserModelPermissions } from "~/features/models/types";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState } = vi.hoisted(() => ({

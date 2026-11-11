@@ -11,10 +11,19 @@ import {
 } from '#src/modules/user-notification/dtos/update-notification-preferences.request.dto.ts';
 import { listUserNotificationsQueryDtoSchema } from '#src/modules/user-notification/dtos/user-notifications.request.dto.ts';
 import { userNotificationPaginatedResponseSchema } from '#src/modules/user-notification/dtos/user-notification.paginated.response.dto.ts';
+import { notificationUnsubscribeQueryDtoSchema } from '#src/modules/user-notification/dtos/notification-unsubscribe.request.dto.ts';
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
 
 export default async function userNotificationRoutes(fastify: FastifyInstance) {
   const { listUserNotificationsQuery, userNotificationService } = fastify.diContainer.cradle;
+
+  fastify.addContentTypeParser(
+    'application/x-www-form-urlencoded',
+    { parseAs: 'string' },
+    (_request, _body, done) => {
+      done(null, undefined);
+    },
+  );
 
   fastify.get(
     '/v1/me/notification-preferences',
@@ -75,6 +84,20 @@ export default async function userNotificationRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await userNotificationService.markRead(request.user!.id, request.params.id);
+      return reply.code(204).send();
+    },
+  );
+
+  fastify.withTypeProvider<TypeBoxTypeProvider>().post(
+    '/v1/notification-unsubscribe',
+    {
+      schema: {
+        querystring: notificationUnsubscribeQueryDtoSchema,
+        tags: ['UserNotification'],
+      },
+    },
+    async (request, reply) => {
+      await userNotificationService.unsubscribe(request.query.token);
       return reply.code(204).send();
     },
   );

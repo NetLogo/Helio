@@ -50,7 +50,8 @@ function makeEvent(overrides: Partial<EventRecord> = {}): EventRecord {
 
 const recipient: NotificationRecipient = { id: 'author-1', email: 'author@x.com', name: 'Author' };
 const emailLinks: NotificationLinks = {
-  unsubscribeUrl: 'mailto:support@example.test',
+  unsubscribeUrl: 'https://example.test/unsubscribe?token=t',
+  oneClickUnsubscribeUrl: 'https://api.example.test/api/v1/notification-unsubscribe?token=t',
   preferencesUrl: 'https://example.test/settings/notifications',
 };
 
@@ -116,7 +117,6 @@ describe('modelCommentProducer', () => {
     }
   });
 
-  // Catches row facts that store rendered text, which would freeze the actor name in the row.
   it('stores the comment id and its excerpt as the payload and no rendered text', async () => {
     modelCommentRepository.findById.mockResolvedValue(makeComment({ content: 'x'.repeat(400) }));
     modelAuthorRepository.findAllByModel.mockResolvedValue([
@@ -218,7 +218,6 @@ describe('modelCommentProducer', () => {
 
     const readable = { name: 'Wolf Sheep', thumbnailUrl: 'https://cdn.example.test/wolf.png' };
 
-    // Catches an email that renders anything but the names in the preview read at send time.
     it('shows the actor and model names current when the email is rendered', async () => {
       const row = makeEmailRow();
 
@@ -242,7 +241,6 @@ describe('modelCommentProducer', () => {
       expect(after.html).not.toContain('Alice ');
     });
 
-    // Catches a reply rendered with the comment template, or the other way around.
     it('renders a reply with the reply template', async () => {
       const email = await producer.renderEmail(
         makeEmailRow({ category: 'comment.reply_to_you' }),
@@ -254,7 +252,6 @@ describe('modelCommentProducer', () => {
       expect(email.subject).toBe('Alice replied to your comment');
     });
 
-    // Catches an email that leaks a private model's title or image to a recipient who cannot read it.
     it.each(['comment.on_your_model', 'comment.reply_to_you'])(
       'says "a model", keeps the link and shows no image for an unreadable model in %s',
       async (category) => {
@@ -274,7 +271,6 @@ describe('modelCommentProducer', () => {
       },
     );
 
-    // Catches an email for a readable model that drops its thumbnail.
     it('shows the thumbnail of a readable model', async () => {
       const email = await producer.renderEmail(
         makeEmailRow(),
@@ -286,8 +282,7 @@ describe('modelCommentProducer', () => {
       expect(email.html).toContain('src="https://cdn.example.test/wolf.png"');
     });
 
-    // Catches a missing fallback for an actor who was deleted or has no name.
-    it('names an unknown actor neutrally', async () => {
+    it('names an actor who no longer resolves "Someone"', async () => {
       const email = await producer.renderEmail(
         makeEmailRow(),
         recipient,
@@ -298,7 +293,6 @@ describe('modelCommentProducer', () => {
       expect(email.subject).toBe('Someone commented on your model "Wolf Sheep"');
     });
 
-    // Catches an email that drops the stored excerpt, the comment link or the recipient address.
     it('sends the stored excerpt and comment link to the recipient', async () => {
       const row = makeEmailRow();
 
@@ -343,8 +337,7 @@ describe('modelCommentProducer', () => {
       };
     }
 
-    // Catches a title built from anything but the live actor name, or the wrong verb per category.
-    it('titles a comment and a reply with the actor name from the preview', () => {
+    it('titles a comment and a reply with the preview actor name and the verb of each category', () => {
       expect(producer.describeRow(makeFeedRow(), makePreview('Alicia'))).toEqual({
         title: 'Alicia commented on your model',
         body: 'Nice model',
@@ -357,8 +350,7 @@ describe('modelCommentProducer', () => {
       ).toEqual({ title: 'Alicia replied to your comment', body: 'Nice model' });
     });
 
-    // Catches a missing fallback when the actor was deleted or never had a name.
-    it('names an unknown actor neutrally', () => {
+    it('names a deleted or nameless actor "Someone"', () => {
       expect(producer.describeRow(makeFeedRow(), makePreview(undefined)).title).toBe(
         'Someone commented on your model',
       );
@@ -367,7 +359,6 @@ describe('modelCommentProducer', () => {
       );
     });
 
-    // Catches a description that leaks the target name, which the preview hides only from its own field.
     it('never mentions the model, readable or not', () => {
       for (const modelName of ['Wolf Sheep', null]) {
         const description = producer.describeRow(makeFeedRow(), makePreview('Alice', modelName));
@@ -375,7 +366,6 @@ describe('modelCommentProducer', () => {
       }
     });
 
-    // Catches a reader that throws or renders junk on a payload it does not recognise.
     it.each([
       ['an empty object', {}],
       ['null', null],

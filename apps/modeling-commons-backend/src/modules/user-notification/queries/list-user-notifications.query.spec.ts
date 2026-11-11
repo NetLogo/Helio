@@ -124,7 +124,6 @@ describe('listUserNotificationsQuery', () => {
     });
   });
 
-  // Catches a feed that reads frozen text instead of describing the row with its live preview.
   it('describes each row through its producer with the row and its live preview', async () => {
     getNotificationPreviewsQuery.execute.mockResolvedValue(
       new Map([

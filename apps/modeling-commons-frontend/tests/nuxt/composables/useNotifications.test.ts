@@ -10,8 +10,8 @@ import {
   POLL_INTERVAL_ACTIVE_MS,
   POLL_SINCE_OVERLAP_MS,
   resetNotificationState,
-  type Notification,
 } from "~/components/notifications/shared";
+import type { UserNotification } from "~/features/notifications/types";
 import { STREAM_EVENTS } from "~/components/shared/event-stream";
 import useApiPagination, { DEFAULT_INITIAL_PAGE } from "~/composables/api/useApiPagination";
 import { useNotifications } from "~/composables/notifications/useNotifications";
@@ -96,7 +96,7 @@ async function pollWith(response: Response) {
   await flushPromises();
 }
 
-const ids = (list: Notification[]) => list.map((n) => n.id);
+const ids = (list: UserNotification[]) => list.map((n) => n.id);
 const shiftBack = (iso: string) =>
   new Date(new Date(iso).getTime() - POLL_SINCE_OVERLAP_MS).toISOString();
 

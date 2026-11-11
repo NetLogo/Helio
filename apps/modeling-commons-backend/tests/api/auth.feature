@@ -13,6 +13,15 @@ Feature: Authentication
     When I sign up with name "Weak" email "weak@test.local" and password "short"
     Then the signup should be rejected
 
+  Scenario: Sign up with a lowercase password that has a number and a special character
+    When I sign up with name "Lower" email "lower@test.local" and password "lowercase1!"
+    Then the response status should be 200
+    And the response body should have property "user"
+
+  Scenario: Sign up with a password that has no number
+    When I sign up with name "NoNumber" email "nonumber@test.local" and password "NoNumber!"
+    Then the signup should be rejected
+
   @sanity
   Scenario: Sign in with valid credentials
     Given a verified user with email "bob@test.local" and password "StrongPass1!"

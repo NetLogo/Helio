@@ -70,12 +70,14 @@ export default defineNuxtConfig({
   },
 
   fonts: {
-    families: [{ name: "Epilogue", provider: "google", weights: [400, 500, 600, 700], global: true }],
+    families: [
+      { name: "Epilogue", provider: "google", weights: [400, 500, 600, 700], global: true },
+    ],
   },
 
   imports: {
     autoImport: true,
-    dirs: ["composables/**"],
+    dirs: ["composables/**", "features/**"],
   },
 
   hooks: {

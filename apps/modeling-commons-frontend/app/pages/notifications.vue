@@ -2,7 +2,7 @@
   <UContainer class="max-w-3xl py-8">
     <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
       <div class="flex items-center gap-3">
-        <h1 class="text-2xl font-semibold m-0">{{ labels.pageTitle }}</h1>
+        <h1 class="text-2xl font-semibold m-0">{{ notificationLiterals.pageTitle }}</h1>
         <UBadge
           v-if="unreadCount > 0"
           variant="solid"
@@ -15,7 +15,7 @@
       </div>
       <USwitch
         :model-value="unreadOnly"
-        :label="labels.unreadOnlyLabel"
+        :label="notificationLiterals.unreadOnlyLabel"
         @update:model-value="setUnreadOnly"
       />
     </div>
@@ -28,7 +28,7 @@
       <template #empty>
         <Empty
           icon="i-lucide-bell-off"
-          :title="unreadOnly ? labels.emptyUnread : labels.emptyAll"
+          :title="unreadOnly ? notificationLiterals.emptyUnread : notificationLiterals.emptyAll"
         />
       </template>
 
@@ -48,22 +48,21 @@
       class="flex justify-center mt-6"
     >
       <UButton variant="outline" :loading="pending" :disabled="pending" @click="nextPage()">
-        {{ labels.loadMore }}
+        {{ notificationLiterals.loadMore }}
       </UButton>
     </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import labels from "~/data/notifications.json";
 
 definePageMeta({
   middleware: "auth",
 });
 
 useSeoMeta({
-  title: labels.pageTitle,
-  description: labels.seoDescription,
+  title: notificationLiterals.pageTitle,
+  description: notificationLiterals.seoDescription,
   robots: "noindex, nofollow",
 });
 

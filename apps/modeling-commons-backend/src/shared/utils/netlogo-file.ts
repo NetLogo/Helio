@@ -67,8 +67,6 @@ export function parseNetlogoContents(contents: string, format: string): NlogoMet
   return format.startsWith('nlogox') ? parseNlogox(contents) : parseNlogo(contents);
 }
 
-// The info tab is skipped because decoding it can throw on an out-of-range
-// numeric entity, and an upload must never fail on its NetLogo version.
 export function detectNetlogoVersion(file: { buffer: Buffer; filename: string }): string | null {
   if (!isValidNetlogoFilename(file.filename)) return null;
   const contents = file.buffer.toString('utf8');

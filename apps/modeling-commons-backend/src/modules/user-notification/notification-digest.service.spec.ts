@@ -1,6 +1,7 @@
 import userDomain from '#src/modules/user/domain/user.domain.ts';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import links from '#src/config/links.ts';
+import makeMailDomain from '#src/modules/mail/domain/mail.domain.ts';
 import notificationsConfig from '#src/config/notifications.ts';
 import makeNotificationDigestService from '#src/modules/user-notification/notification-digest.service.ts';
 import makeNotificationEmailService from '#src/modules/user-notification/notification-email.service.ts';
@@ -73,7 +74,10 @@ describe('notificationDigestService', () => {
     notificationProducers: [mockNotificationProducer({ describeGroup: describeGroupByTarget })],
   });
   const mailService = { enqueue: vi.fn() };
-  const mailDomain = { createNotificationSummaryEmail: vi.fn() };
+  const mailDomain = {
+    createNotificationSummaryEmail: vi.fn(),
+    withOneClickUnsubscribe: makeMailDomain().withOneClickUnsubscribe,
+  };
   const existingModels = new Map<string, string>();
   const getNotificationPreviewsQuery = {
     execute: vi.fn(async (rows: ReadonlyArray<UserNotificationRecord>) => {
@@ -111,6 +115,7 @@ describe('notificationDigestService', () => {
 
   type SentDigest = {
     to: string;
+    headers?: Record<string, string>;
     items: Array<{ text: string; url: string }>;
     moreCount: number;
     feedUrl: string;
@@ -167,6 +172,21 @@ describe('notificationDigestService', () => {
       expect(sentDigests).toHaveLength(1);
       expect(sentDigests[0]!.items.map((item) => item.text).sort()).toEqual(['a', 'b']);
       expect([...sentIds].sort()).toEqual(['a', 'b']);
+    });
+
+    it('unsubscribes from exactly the categories of the emailed rows, for the recipient', async () => {
+      const rows = [makeRow('a'), makeRow('b'), makeRow('c', 'comment.reply_to_you')];
+      const replyEmailOff = makeRecord({ category: 'comment.reply_to_you', email: 'off' });
+
+      await service.queueDigest('recipient-1', rows, [replyEmailOff]);
+
+      const header = sentDigests[0]!.headers?.['List-Unsubscribe'] ?? '';
+      const token = new URL(header.slice(1, -1)).searchParams.get('token') ?? '';
+      expect(domain.readUnsubscribeToken(token)).toEqual({
+        userId: 'recipient-1',
+        categories: ['comment.on_your_model'],
+      });
+      expect(sentDigests[0]!.headers?.['List-Unsubscribe-Post']).toBe('List-Unsubscribe=One-Click');
     });
 
     it('sends no email when every row was already sent', async () => {

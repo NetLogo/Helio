@@ -39,9 +39,6 @@ export default defineNitroPlugin((nitroApp) => {
     const start = event.context._start as number | undefined;
     const url = event.path ?? event.node.req.url ?? "";
 
-    // Skip probes and Nuxt's build output; they'd swamp everything else.
-    // if (/^\/(healthz?|_nuxt\/|__nuxt|favicon\.ico)/.test(url)) return;
-
     logger.info({
       method: event.method ?? event.node.req.method,
       url,

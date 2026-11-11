@@ -1,3 +1,6 @@
+import apiLinks from '#src/config/api-links.ts';
+import env from '#src/config/env.ts';
+import links from '#src/config/links.ts';
 import notificationsConfig from '#src/config/notifications.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import { notificationCategoryCatalog } from '#src/modules/notification-producers.ts';
@@ -11,6 +14,12 @@ import {
   buildDigest,
   groupNotifications,
 } from '#src/modules/user-notification/domain/user-notification.grouping.ts';
+import {
+  deriveUnsubscribeKey,
+  signUnsubscribeToken,
+  verifyUnsubscribeToken,
+  type UnsubscribeClaims,
+} from '#src/modules/user-notification/domain/unsubscribe-token.ts';
 import type {
   DeliverableRecipient,
   NotificationRow,
@@ -20,6 +29,7 @@ import type {
   NotificationCategoryDefinition,
   NotificationCategoryInfo,
   NotificationChannels,
+  NotificationLinks,
   NotificationRowFacts,
   NotificationPreviews,
   NotificationProducer,
@@ -35,6 +45,11 @@ const categories: Array<NotificationCategoryInfo> = (
 function isKnownCategory(value: string): value is NotificationCategory {
   return value in catalog;
 }
+
+const unsubscribeKey = deriveUnsubscribeKey(
+  env.auth.secret,
+  notificationsConfig.unsubscribeTokenPurpose,
+);
 
 function resolvePreference(
   category: NotificationCategory,
@@ -118,6 +133,29 @@ export default function userNotificationDomain({
     },
 
     resolvePreference,
+
+    getEmailLinks(
+      recipientId: string,
+      emailedCategories: ReadonlyArray<NotificationCategory>,
+    ): NotificationLinks {
+      const token = signUnsubscribeToken(unsubscribeKey, {
+        userId: recipientId,
+        categories: [...emailedCategories],
+      });
+      return {
+        unsubscribeUrl: links.notificationUnsubscribe(token),
+        oneClickUnsubscribeUrl: apiLinks.notificationUnsubscribe(token),
+        preferencesUrl: links.notificationPreferences(),
+      };
+    },
+
+    readUnsubscribeToken(token: string): UnsubscribeClaims<NotificationCategory> | undefined {
+      return verifyUnsubscribeToken(unsubscribeKey, token, isKnownCategory);
+    },
+
+    listRowCategories(rows: ReadonlyArray<{ category: string }>): Array<NotificationCategory> {
+      return [...new Set(rows.map((row) => row.category).filter(isKnownCategory))];
+    },
 
     getDigestWindow(now: Date): DigestWindow {
       return {

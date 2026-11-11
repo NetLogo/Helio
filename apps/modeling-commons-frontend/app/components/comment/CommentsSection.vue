@@ -50,7 +50,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { CommentSort, CommentsSource } from "~/composables/comments/useComments";
+import type { CommentsSource } from "~/composables/comments/useComments";
+import type { CommentSort } from "~/features/comments/types";
 
 const props = defineProps<{
   modelId?: string;
@@ -87,7 +88,17 @@ const {
   loadMore,
 } = useCommentThread({ source, sort: () => props.sort });
 
-const isLoading = computed(() => status.value === "pending" || status.value === "idle");
+const hasLoaded = ref(false);
+watch(
+  status,
+  (value) => {
+    if (value === "success" || value === "error") hasLoaded.value = true;
+  },
+  { immediate: true },
+);
+const isLoading = computed(
+  () => !hasLoaded.value && (status.value === "pending" || status.value === "idle"),
+);
 
 const user = useUser();
 const isReadOnly = computed(() => props.readOnly || !user.value.isLoggedIn);

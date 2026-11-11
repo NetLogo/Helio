@@ -37,6 +37,19 @@ function useAsyncDataOnServer<T>(_key: () => string, handler: () => Promise<T>) 
   );
 }
 
+async function stubFeatureImports() {
+  const modules = await Promise.all([
+    import("~/features/comments/api"),
+    import("~/features/comments/errors"),
+    import("~/features/comments/literals"),
+    import("~/features/comments/mappers"),
+    import("~/utils/formatters"),
+  ]);
+  modules.forEach((module) =>
+    Object.entries(module).forEach(([name, value]) => vi.stubGlobal(name, value)),
+  );
+}
+
 function stubAutoImports() {
   const api = makeApiClientMock();
   api.GET.mockResolvedValue(apiResult.ok({ count: 1, limit: 20, page: 0, data: [apiComment] }));
@@ -49,9 +62,10 @@ function stubAutoImports() {
   vi.stubGlobal("useCommentMutations", () => ({}));
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.resetModules();
   stubAutoImports();
+  await stubFeatureImports();
 });
 
 afterEach(() => {

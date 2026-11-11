@@ -54,10 +54,6 @@ function attachPreviewsToNotifications(
   );
 }
 
-/*
-  Resolves each notification's actor and target to a preview suitable for the
-  viewer, enforcing view permissions for each subject.
-*/
 export default function makeGetNotificationPreviewsQuery({
   userRepository,
   modelService,

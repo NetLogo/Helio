@@ -5,6 +5,7 @@ import {
   type EmailRenderer,
   type NotificationSummaryItem,
 } from '@repo/emails';
+import type Mail from 'nodemailer/lib/mailer/index.js';
 
 let _renderer: EmailRenderer | null = null;
 function getRenderer(): EmailRenderer {
@@ -38,6 +39,16 @@ export default function mailDomain() {
     };
 
   return {
+    withOneClickUnsubscribe(content: Mail.Options, unsubscribeUrl: string): Mail.Options {
+      return {
+        ...content,
+        headers: {
+          'List-Unsubscribe': `<${unsubscribeUrl}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        },
+      };
+    },
+
     async createVerificationEmail(userEmail: string, userName: string, verificationLink: string) {
       return wrap(userEmail)(renderer.renderVerifyEmail({ userName, verificationLink }));
     },
@@ -62,7 +73,11 @@ export default function mailDomain() {
       return wrap(userEmail)(renderer.renderAccountBannedEmail({ userName }));
     },
 
-    async createAccountInactiveEmail(userEmail: string, userName: string, inactivityPeriod: string) {
+    async createAccountInactiveEmail(
+      userEmail: string,
+      userName: string,
+      inactivityPeriod: string,
+    ) {
       return wrap(userEmail)(renderer.renderAccountInactiveEmail({ userName, inactivityPeriod }));
     },
 

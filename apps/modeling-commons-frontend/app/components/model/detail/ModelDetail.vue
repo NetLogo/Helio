@@ -327,11 +327,7 @@ async function handleDelete() {
   if (!modelId.value) return;
   deleting.value = true;
   try {
-    const api = useApi();
-    const { data, error } = await api.DELETE("/api/v1/models/{id}", {
-      params: { path: { id: modelId.value } },
-    });
-    handleApiError(data, error, "deleting model");
+    await deleteModelById(modelId.value);
     deleteOpen.value = false;
     toast.add({ title: "Model deleted", color: "success", icon: "i-lucide-trash-2" });
     await navigateTo(getAuthorUrl(getPrimaryAuthor(props.card.authors)));

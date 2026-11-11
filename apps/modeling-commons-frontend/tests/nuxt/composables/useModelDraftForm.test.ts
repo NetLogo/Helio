@@ -2,7 +2,7 @@ import { computed, nextTick } from "vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import useModelDraftForm from "~/composables/model/useModelDraftForm";
-import type { DraftData } from "~/composables/model/useModelDraft";
+import type { DraftData } from "~/features/drafts/types";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState, userState, toastAdd, infoTabState, additionalFilesState } = vi.hoisted(() => ({
@@ -33,11 +33,7 @@ mockNuxtImport("useModelAdditionalFiles", () => () => ({
   data: computed(() => additionalFilesState.current),
 }));
 
-function makeDraftDto(
-  data: DraftData,
-  id = "draft-1",
-  previewImageUrl: string | null = null,
-) {
+function makeDraftDto(data: DraftData, id = "draft-1", previewImageUrl: string | null = null) {
   return {
     id,
     userId: "user-1",
@@ -99,10 +95,9 @@ describe("useModelDraftForm", () => {
       const form = useModelDraftForm({ initialDraftId: "draft-1" });
       await form.init();
 
-      expect(apiState.current!.GET).toHaveBeenCalledWith(
-        "/api/v1/model-drafts/{id}",
-        { params: { path: { id: "draft-1" } } },
-      );
+      expect(apiState.current!.GET).toHaveBeenCalledWith("/api/v1/model-drafts/{id}", {
+        params: { path: { id: "draft-1" } },
+      });
       expect(form.formState.value.title).toBe("Wolf Sheep");
       expect(form.formState.value.description).toBe("predator-prey");
       expect(form.formState.value.permission).toBe("public");
@@ -198,19 +193,19 @@ describe("useModelDraftForm", () => {
   describe("init with seedModelId", () => {
     it("creates a draft seeded by modelId then loads it", async () => {
       apiState.current!.POST.mockResolvedValue(apiResult.ok({ id: "draft-2" }));
-      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData, "draft-2")));
+      apiState.current!.GET.mockResolvedValue(
+        apiResult.ok(makeDraftDto(sampleDraftData, "draft-2")),
+      );
 
       const form = useModelDraftForm({ seedModelId: "model-1" });
       await form.init();
 
-      expect(apiState.current!.POST).toHaveBeenCalledWith(
-        "/api/v1/model-drafts",
-        { body: { modelId: "model-1" } },
-      );
-      expect(apiState.current!.GET).toHaveBeenCalledWith(
-        "/api/v1/model-drafts/{id}",
-        { params: { path: { id: "draft-2" } } },
-      );
+      expect(apiState.current!.POST).toHaveBeenCalledWith("/api/v1/model-drafts", {
+        body: { modelId: "model-1" },
+      });
+      expect(apiState.current!.GET).toHaveBeenCalledWith("/api/v1/model-drafts/{id}", {
+        params: { path: { id: "draft-2" } },
+      });
       expect(form.formState.value.title).toBe("Wolf Sheep");
     });
   });
@@ -227,7 +222,10 @@ describe("useModelDraftForm", () => {
       apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
       const form = useModelDraftForm({ initialDraftId: "draft-1" });
       await form.init();
-      form.primaryFile.value = { ...form.primaryFile.value!, s3Key: "staging/u/d/NEW-model.nlogox" };
+      form.primaryFile.value = {
+        ...form.primaryFile.value!,
+        s3Key: "staging/u/d/NEW-model.nlogox",
+      };
       expect(form.primaryFileChanged.value).toBe(true);
     });
   });
@@ -282,17 +280,18 @@ describe("useModelDraftForm", () => {
   describe("deleteModel", () => {
     it("calls DELETE /api/v1/models/{id} when seedModelId is set", async () => {
       apiState.current!.POST.mockResolvedValue(apiResult.ok({ id: "draft-3" }));
-      apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData, "draft-3")));
+      apiState.current!.GET.mockResolvedValue(
+        apiResult.ok(makeDraftDto(sampleDraftData, "draft-3")),
+      );
       apiState.current!.DELETE.mockResolvedValue(apiResult.ok(undefined as never));
 
       const form = useModelDraftForm({ seedModelId: "model-1" });
       await form.init();
       await form.deleteModel();
 
-      expect(apiState.current!.DELETE).toHaveBeenCalledWith(
-        "/api/v1/models/{id}",
-        { params: { path: { id: "model-1" } } },
-      );
+      expect(apiState.current!.DELETE).toHaveBeenCalledWith("/api/v1/models/{id}", {
+        params: { path: { id: "model-1" } },
+      });
     });
 
     it("throws when no model is seeded (upload mode)", async () => {
@@ -398,7 +397,7 @@ describe("useModelDraftForm", () => {
 
     it("no-ops when an upload is already in flight", async () => {
       apiState.current!.GET.mockResolvedValue(apiResult.ok(makeDraftDto(sampleDraftData)));
-      let resolveUpload: ((value: unknown) => void) = () => {};
+      let resolveUpload: (value: unknown) => void = () => {};
       apiState.current!.POST.mockImplementation(
         () =>
           new Promise((res) => {
@@ -775,10 +774,9 @@ describe("useModelDraftForm", () => {
       const result = await form.submit("public");
 
       expect(result).toEqual({ id: "model-99" });
-      expect(apiState.current!.POST).toHaveBeenCalledWith(
-        "/api/v1/model-drafts/{id}/publish",
-        { params: { path: { id: "draft-1" } } },
-      );
+      expect(apiState.current!.POST).toHaveBeenCalledWith("/api/v1/model-drafts/{id}/publish", {
+        params: { path: { id: "draft-1" } },
+      });
       expect(form.saveStatusLabel.value).toBe("Saved");
     });
 

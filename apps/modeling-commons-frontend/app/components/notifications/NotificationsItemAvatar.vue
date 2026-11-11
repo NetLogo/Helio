@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import labels from "~/data/notifications.json";
 import { iconFor } from "./shared";
-import type { Notification } from "./shared";
+import type { UserNotification } from "~/features/notifications/types";
 
-const props = defineProps<{ notification: Notification }>();
+const props = defineProps<{ notification: UserNotification }>();
 
 const actor = computed(() => props.notification.actor);
 const actorLabel = computed(() =>
   actor.value?.name
-    ? labels.viewNamedLabel.replace("{name}", actor.value.name)
-    : labels.actorFallbackLabel,
+    ? notificationLiterals.viewNamedLabel.replace("{name}", actor.value.name)
+    : notificationLiterals.actorFallbackLabel,
 );
 const icon = computed(() => iconFor(props.notification.category));
 </script>

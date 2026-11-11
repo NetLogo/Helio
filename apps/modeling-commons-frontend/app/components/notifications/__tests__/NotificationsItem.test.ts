@@ -1,11 +1,11 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, expect, it } from "vitest";
-import labels from "~/data/notifications.json";
+import { notificationLiterals as labels } from "~/features/notifications/literals";
 import { makeNotification } from "~~/tests/helpers/notifications";
 import NotificationsItem from "~/components/notifications/NotificationsItem.vue";
-import type { Notification } from "~/components/notifications/shared";
+import type { UserNotification } from "~/features/notifications/types";
 
-const mountItem = (notification: Notification, wide = false) =>
+const mountItem = (notification: UserNotification, wide = false) =>
   mountSuspended(NotificationsItem, { props: { notification, wide } });
 
 const targetLink = (wrapper: Awaited<ReturnType<typeof mountItem>>) =>
@@ -54,7 +54,6 @@ describe("NotificationsItem", () => {
     expect(wrapper.element.tagName).toBe("DIV");
   });
 
-  // The unread highlight is only exposed as a background class.
   it("highlights the row only while unread", async () => {
     const unread = await mountItem(makeNotification({ readAt: null }));
     const read = await mountItem(makeNotification({ readAt: "2026-10-02T00:00:00.000Z" }));
@@ -85,8 +84,7 @@ describe("NotificationsItem", () => {
     expect(targetLink(wrapper).find("img").exists()).toBe(false);
   });
 
-  // In the menu a fixed width text column pushed the thumbnail past the row edge.
-  it("lets the menu text shrink and clamps it to whole lines", async () => {
+  it("lets the menu text shrink so the thumbnail stays inside the row, and clamps it to whole lines", async () => {
     const menu = await mountItem(makeNotification());
     const feed = await mountItem(makeNotification(), true);
     const body = (wrapper: Awaited<ReturnType<typeof mountItem>>) =>

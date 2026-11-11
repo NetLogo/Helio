@@ -1,8 +1,8 @@
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { NotificationPreferenceCategory } from "~/composables/notifications/useNotificationPreferences";
-import strings from "~/data/notification-preferences.json";
+import type { NotificationPreferenceCategory } from "~/features/notification-preferences/types";
+import { notificationPreferenceLiterals as strings } from "~/features/notification-preferences/literals";
 import { toastAddMock, useToastMock } from "~~/tests/helpers";
 import {
   jsonResponse,

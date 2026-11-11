@@ -36,7 +36,7 @@ import { sanitizeFilename } from '#src/shared/storage/utils.ts';
 import { newId } from '#src/shared/utils/id.ts';
 import { nanoid } from 'nanoid';
 import {
-  PREVIEW_IMAGE_PATH_PREFIX,
+  PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
   STAGING_KEY_RANDOM_SEGMENT_LENGTH,
 } from './model-draft.storage.ts';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
@@ -184,7 +184,7 @@ export default function makeModelDraftService({
         modelId: params.modelId,
         filename: params.data.previewImage.filename,
         contentType: params.data.previewImage.mimeType,
-        pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
+        pathPrefix: PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
         acl: 'public-read',
         userId: params.userId,
       });
@@ -199,7 +199,7 @@ export default function makeModelDraftService({
         filename: 'preview.png',
         contentType,
         access: 'public-read',
-        pathPrefix: `${PREVIEW_IMAGE_PATH_PREFIX}/${params.modelId}`,
+        pathPrefix: `${PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX}/${params.modelId}`,
         userId: params.userId,
       });
     } catch (error) {
@@ -652,7 +652,7 @@ export default function makeModelDraftService({
                 modelId: model.id,
                 filename: data.previewImage.filename,
                 contentType: data.previewImage.mimeType,
-                pathPrefix: PREVIEW_IMAGE_PATH_PREFIX,
+                pathPrefix: PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
                 acl: 'public-read',
                 userId,
               })
