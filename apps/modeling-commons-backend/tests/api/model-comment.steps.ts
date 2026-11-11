@@ -93,6 +93,32 @@ When(
   },
 );
 
+function buildPaddedContent(length: number, padding: number): string {
+  const spaces = ' '.repeat(padding);
+  return `${spaces}${'a'.repeat(length)}${spaces}`;
+}
+
+When(
+  '{string} comments {int} characters padded with {int} spaces on {string} as {string}',
+  async function (
+    this: ICustomWorld,
+    actorName: string,
+    length: number,
+    padding: number,
+    modelTitle: string,
+    label: string,
+  ) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    const content = buildPaddedContent(length, padding);
+    const res = await postComment(this.server, actor, modelId, { content });
+    this.context.latestResponse = res;
+    if (res.statusCode === 201) {
+      getComments(this.context).set(label, { id: JSON.parse(res.body).id, modelId });
+    }
+  },
+);
+
 When(
   'an anonymous viewer comments {string} on {string}',
   async function (this: ICustomWorld, content: string, modelTitle: string) {
@@ -282,6 +308,21 @@ When(
 );
 
 When(
+  '{string} edits comment {string} on {string} with {int} characters padded with {int} spaces',
+  async function (
+    this: ICustomWorld,
+    actorName: string,
+    label: string,
+    modelTitle: string,
+    length: number,
+    padding: number,
+  ) {
+    const content = buildPaddedContent(length, padding);
+    await editComment.call(this, actorName, label, modelTitle, content);
+  },
+);
+
+When(
   '{string} deletes comment {string} on {string}',
   async function (this: ICustomWorld, actorName: string, label: string, modelTitle: string) {
     const actor = getUsers(this.context).get(actorName)!;
@@ -383,6 +424,16 @@ Then(
     const node = findCommentNode(body, commentId.call(this, label));
     assert.ok(node, `Expected comment "${label}" to appear in the response`);
     assert.strictEqual(String(node![property]), expected);
+  },
+);
+
+Then(
+  'comment {string} in the response should have unpadded content of {int} characters',
+  function (this: ICustomWorld, label: string, length: number) {
+    const body = JSON.parse(this.context.latestResponse!.body);
+    const node = findCommentNode(body, commentId.call(this, label));
+    assert.ok(node, `Expected comment "${label}" to appear in the response`);
+    assert.strictEqual(node!['content'], 'a'.repeat(length));
   },
 );
 

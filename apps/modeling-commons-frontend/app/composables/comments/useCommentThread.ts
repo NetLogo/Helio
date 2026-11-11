@@ -12,7 +12,6 @@ import {
   type Comment,
   type CommentPagination,
 } from "~/components/comment/types";
-import { STREAM_EVENTS } from "~/components/shared/event-stream";
 import useComments from "./useComments";
 import type { CommentsSource } from "./useComments";
 
@@ -249,7 +248,6 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
   };
 
   if (import.meta.client) {
-    const stream = useEventStream();
     const visibility = useDocumentVisibility();
     let missedWhileBusy = false;
     const debouncedRefresh = useDebounceFn(() => {
@@ -265,8 +263,10 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
       },
     );
     const refreshFromStream = () => void debouncedRefresh();
-    stream.on(STREAM_EVENTS.comments, refreshFromStream);
-    stream.on(STREAM_EVENTS.resync, refreshFromStream);
+    const stream = useStreamTopic(
+      () => (modelId.value ? { type: "model", id: modelId.value } : null),
+      refreshFromStream,
+    );
     watch(visibility, (state) => {
       if (state === "visible" && stream.status.value !== "open") refreshFromStream();
     });

@@ -19,6 +19,8 @@ import type { Bucket, S3Client } from '@aws-sdk/client-s3';
 import storage, { bucket } from '#src/lib/storage.ts';
 import { makeFileDependencies } from '#src/modules/file/index.ts';
 import makeNotificationProducers from '#src/modules/notification-producers.ts';
+import { realtimeTopics } from '#src/modules/realtime-topics.ts';
+import type { AnyRealtimeTopic } from '#src/shared/realtime/realtime-topic.ts';
 
 type Resolvers<T> = {
   [K in keyof T]: Resolver<T[K]>;
@@ -37,6 +39,7 @@ declare global {
     boss: PgBoss;
     jobQueue: JobQueue;
     realtimeBroker: RealtimeBroker;
+    realtimeTopics: ReadonlyArray<AnyRealtimeTopic>;
   }
 }
 
@@ -62,9 +65,11 @@ export function makeDependencies({
     realtimeBroker: asFunction(() =>
       makeRealtimeBroker({
         maxStreamsPerUser: realtimeConfig.streams.maxPerUser,
+        maxTopicsPerStream: realtimeConfig.streams.maxTopicsPerStream,
         heartbeatIntervalMs: realtimeConfig.streams.heartbeatIntervalMs,
       }),
     ).singleton(),
+    realtimeTopics: asValue(realtimeTopics),
     ...makeFileDependencies(),
   };
 }

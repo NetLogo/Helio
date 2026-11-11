@@ -144,6 +144,41 @@ Feature: Model Comments
     And comment "mine" in the response should have property "content" equal to "Original text"
     And comment "mine" in the response should not have property "edited"
 
+  Scenario: A comment within the limit after trimming is accepted and stored trimmed
+    Given an authenticated user "owner"
+    And a public model "Padded Create" created by "owner"
+    When "owner" comments 10000 characters padded with 5 spaces on "Padded Create" as "padded"
+    Then the response status should be 201
+    When "owner" gets comment "padded" on "Padded Create"
+    Then the response status should be 200
+    And comment "padded" in the response should have unpadded content of 10000 characters
+
+  Scenario: A comment over the limit after trimming is refused
+    Given an authenticated user "owner"
+    And a public model "Padded Create Long" created by "owner"
+    When "owner" comments 10001 characters padded with 5 spaces on "Padded Create Long" as "padded"
+    Then the response status should be 400
+
+  Scenario: An edit within the limit after trimming is accepted and stored trimmed
+    Given an authenticated user "owner"
+    And a public model "Padded Edit" created by "owner"
+    And "owner" has commented "Original text" on "Padded Edit" as "mine"
+    When "owner" edits comment "mine" on "Padded Edit" with 10000 characters padded with 5 spaces
+    Then the response status should be 204
+    When "owner" gets comment "mine" on "Padded Edit"
+    Then the response status should be 200
+    And comment "mine" in the response should have unpadded content of 10000 characters
+
+  Scenario: An edit over the limit after trimming is refused
+    Given an authenticated user "owner"
+    And a public model "Padded Edit Long" created by "owner"
+    And "owner" has commented "Original text" on "Padded Edit Long" as "mine"
+    When "owner" edits comment "mine" on "Padded Edit Long" with 10001 characters padded with 5 spaces
+    Then the response status should be 400
+    When "owner" gets comment "mine" on "Padded Edit Long"
+    Then the response status should be 200
+    And comment "mine" in the response should have property "content" equal to "Original text"
+
   Scenario: Deleting a comment with no replies leaves a tombstone
     Given an authenticated user "owner"
     And a public model "Deletable" created by "owner"

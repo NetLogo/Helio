@@ -9,6 +9,7 @@ import type { JobStateRow } from '#src/shared/jobs/job-queue.port.ts';
 import type Mail from 'nodemailer/lib/mailer/index.js';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
+import type { StreamMessage, StreamTopic } from '@repo/modeling-commons-shared';
 import {
   emailDeadLetterQueueName,
   emailQueueName,
@@ -364,19 +365,17 @@ Then(
 
 type RealtimeListener = {
   client: pg.Client;
-  received: Array<{ channel: string; payload: string }>;
+  received: Array<StreamMessage>;
 };
 
-Given('the realtime channels are listened to', async function (this: ICustomWorld) {
+Given('the realtime channel is listened to', async function (this: ICustomWorld) {
   const client = new pg.Client({ connectionString: env.db.url });
   const listener: RealtimeListener = { client, received: [] };
-  client.on('notification', ({ channel, payload }) => {
-    listener.received.push({ channel, payload: payload ?? '' });
+  client.on('notification', ({ payload }) => {
+    listener.received.push(JSON.parse(payload ?? 'null') as StreamMessage);
   });
   await client.connect();
-  for (const channel of Object.values(realtimeConfig.channels)) {
-    await client.query(`LISTEN ${channel}`);
-  }
+  await client.query(`LISTEN ${realtimeConfig.channel}`);
   this.context['realtimeListener'] = listener;
 });
 
@@ -385,58 +384,60 @@ After(async function (this: ICustomWorld) {
   await listener?.client.end();
 });
 
-async function waitForSignal(
+function countTopicMessages(world: ICustomWorld, topic: StreamTopic, event?: string): number {
+  const listener = world.context['realtimeListener'] as RealtimeListener;
+  return listener.received.filter(
+    (message) =>
+      message.topic.type === topic.type &&
+      message.topic.id === topic.id &&
+      (event === undefined || message.event === event),
+  ).length;
+}
+
+async function waitForTopicMessage(
   world: ICustomWorld,
-  channel: string,
-  payload: string,
+  topic: StreamTopic,
+  event: string,
   seconds: number,
 ): Promise<number> {
-  const listener = world.context['realtimeListener'] as RealtimeListener;
-  const count = () =>
-    listener.received.filter((signal) => signal.channel === channel && signal.payload === payload)
-      .length;
   const deadline = Date.now() + seconds * 1000;
-  while (Date.now() < deadline && count() === 0) {
+  while (Date.now() < deadline && countTopicMessages(world, topic, event) === 0) {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  return count();
+  return countTopicMessages(world, topic, event);
+}
+
+function getTestUser(world: ICustomWorld, userName: string): TestUser {
+  const user = getUsers(world.context).get(userName);
+  assert.ok(user, `no user "${userName}"`);
+  return user;
 }
 
 Then(
-  'the model channel should carry the id of {string} once within {int} seconds',
-  async function (this: ICustomWorld, modelTitle: string, seconds: number) {
+  'the realtime channel should carry {string} for model {string} once within {int} seconds',
+  async function (this: ICustomWorld, event: string, modelTitle: string, seconds: number) {
     const models = this.context['models'] as Map<string, string>;
     const modelId = models.get(modelTitle);
     assert.ok(modelId, `no model "${modelTitle}"`);
     assert.strictEqual(
-      await waitForSignal(this, realtimeConfig.channels.model, modelId, seconds),
+      await waitForTopicMessage(this, { type: 'model', id: modelId }, event, seconds),
       1,
     );
   },
 );
 
 Then(
-  'the user channel should carry the id of {string} once within {int} seconds',
-  async function (this: ICustomWorld, userName: string, seconds: number) {
-    const user = getUsers(this.context).get(userName);
-    assert.ok(user, `no user "${userName}"`);
-    assert.strictEqual(
-      await waitForSignal(this, realtimeConfig.channels.user, user.id, seconds),
-      1,
-    );
+  'the realtime channel should carry {string} for user {string} once within {int} seconds',
+  async function (this: ICustomWorld, event: string, userName: string, seconds: number) {
+    const { id } = getTestUser(this, userName);
+    assert.strictEqual(await waitForTopicMessage(this, { type: 'user', id }, event, seconds), 1);
   },
 );
 
 Then(
-  'the user channel should not carry the id of {string}',
+  'the realtime channel should carry nothing for user {string}',
   function (this: ICustomWorld, userName: string) {
-    const listener = this.context['realtimeListener'] as RealtimeListener;
-    const user = getUsers(this.context).get(userName);
-    assert.ok(user, `no user "${userName}"`);
-    assert.ok(
-      !listener.received.some(
-        (signal) => signal.channel === realtimeConfig.channels.user && signal.payload === user.id,
-      ),
-    );
+    const { id } = getTestUser(this, userName);
+    assert.strictEqual(countTopicMessages(this, { type: 'user', id }), 0);
   },
 );

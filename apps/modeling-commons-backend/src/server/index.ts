@@ -109,6 +109,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
           application_name: realtimeConfig.listener.applicationName,
         }),
       broker: fastify.diContainer.cradle.realtimeBroker,
+      topics: fastify.diContainer.cradle.realtimeTopics,
       logger: fastify.log,
       random: Math.random,
     });

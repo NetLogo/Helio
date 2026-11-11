@@ -103,7 +103,6 @@ export default function makeModelDraftService({
 
     const ctx = await loadModelAccessContext(db, userId, modelId);
     if (!ctx.viewer) throw new UserNotFoundError(userId);
-    if (!ctx.model) throw new ModelNotFoundError(modelId);
     if (!canWrite(ctx))
       throw new UnauthorizedException('User does not have write access to the associated model');
     return;

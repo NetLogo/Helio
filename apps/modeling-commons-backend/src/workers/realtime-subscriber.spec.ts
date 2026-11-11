@@ -4,8 +4,7 @@ import type { PgBoss } from 'pg-boss';
 import workersConfig from '#src/config/workers.ts';
 import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import {
-  listEventSignals,
-  listRecipientSignals,
+  listRecipientEvents,
   startRealtimeSubscriber,
   type RealtimeJobData,
 } from '#src/workers/realtime-subscriber.ts';
@@ -40,30 +39,17 @@ async function start() {
   const handler = bossInstance.work.mock.calls[0]![2] as Handler;
   const run = async (data: RealtimeJobData) => handler([{ id: 'job-1', data }]);
   const notified = () =>
-    db.$executeRaw.mock.calls.map(([, channel, payload]) => [channel, payload] as const);
+    db.$executeRaw.mock.calls.flatMap(([, channel, payloads]) =>
+      (payloads as Array<string>).map((payload) => [channel, JSON.parse(payload)] as const),
+    );
   return { run, eventRepository, db, notified };
 }
 
-describe('listEventSignals', () => {
-  it.each(['model_comment.created', 'model_comment.updated', 'model_comment.deleted'])(
-    'signals the model channel with the model id for %s',
-    (type) => {
-      expect(listEventSignals({ type, resourceId: 'model-1' })).toEqual([
-        { channel: 'mc_model', payload: 'model-1' },
-      ]);
-    },
-  );
-
-  it('signals nothing for an event type it does not know', () => {
-    expect(listEventSignals({ type: 'model.created', resourceId: 'model-1' })).toEqual([]);
-  });
-});
-
-describe('listRecipientSignals', () => {
-  it('signals the user channel once per distinct recipient', () => {
-    expect(listRecipientSignals(['u1', 'u2', 'u1'])).toEqual([
-      { channel: 'mc_user', payload: 'u1' },
-      { channel: 'mc_user', payload: 'u2' },
+describe('listRecipientEvents', () => {
+  it('turns each distinct recipient into one created notification event', () => {
+    expect(listRecipientEvents(['u1', 'u2', 'u1'])).toEqual([
+      { type: 'user_notification.created', resourceId: 'u1' },
+      { type: 'user_notification.created', resourceId: 'u2' },
     ]);
   });
 });
@@ -100,39 +86,55 @@ describe('startRealtimeSubscriber', () => {
     );
   });
 
-  it('notifies the model channel with the model id of a comment event', async () => {
-    const { run, eventRepository, notified } = await start();
+  it.each(['model_comment.created', 'model_comment.updated', 'model_comment.deleted'])(
+    'notifies the realtime channel once with the model topic of a %s event',
+    async (type) => {
+      const { run, eventRepository, notified } = await start();
+      eventRepository.findOneById.mockResolvedValue({ id: 'event-1', type, resourceId: 'model-1' });
+
+      await run({ eventId: 'event-1' });
+
+      expect(eventRepository.findOneById).toHaveBeenCalledWith('event-1');
+      expect(notified()).toEqual([
+        ['mc_realtime', { topic: { type: 'model', id: 'model-1' }, event: type }],
+      ]);
+    },
+  );
+
+  it('notifies nothing for an event type no topic declares', async () => {
+    const { run, eventRepository, db } = await start();
     eventRepository.findOneById.mockResolvedValue({
       id: 'event-1',
-      type: 'model_comment.created',
+      type: 'model.created',
       resourceId: 'model-1',
     });
 
     await run({ eventId: 'event-1' });
 
-    expect(eventRepository.findOneById).toHaveBeenCalledWith('event-1');
-    expect(notified()).toEqual([['mc_model', 'model-1']]);
+    expect(db.$executeRaw).not.toHaveBeenCalled();
   });
 
-  it('notifies the user channel once per recipient of created notifications', async () => {
-    const { run, eventRepository, notified } = await start();
+  it('notifies the user topic once per distinct recipient of created notifications', async () => {
+    const { run, eventRepository, db, notified } = await start();
 
-    await run({ recipientIds: ['u1', 'u2'] });
+    await run({ recipientIds: ['u1', 'u2', 'u1'] });
 
     expect(eventRepository.findOneById).not.toHaveBeenCalled();
+    expect(db.$executeRaw).toHaveBeenCalledOnce();
+    const created = 'user_notification.created';
     expect(notified()).toEqual([
-      ['mc_user', 'u1'],
-      ['mc_user', 'u2'],
+      ['mc_realtime', { topic: { type: 'user', id: 'u1' }, event: created }],
+      ['mc_realtime', { topic: { type: 'user', id: 'u2' }, event: created }],
     ]);
   });
 
   it('completes without notifying when the event no longer exists', async () => {
-    const { run, eventRepository, notified } = await start();
+    const { run, eventRepository, db } = await start();
     eventRepository.findOneById.mockResolvedValue(null);
 
     await expect(run({ eventId: 'gone' })).resolves.toBeUndefined();
 
-    expect(notified()).toEqual([]);
+    expect(db.$executeRaw).not.toHaveBeenCalled();
     expect(logger.warn).toHaveBeenCalledOnce();
   });
 

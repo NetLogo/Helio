@@ -1,6 +1,7 @@
 import realtimeConfig from '#src/config/realtime.ts';
 import type { RealtimeBroker } from '#src/shared/realtime/broker.ts';
-import { resolveChannelSignal } from '#src/shared/realtime/topics.ts';
+import { parseRealtimeMessage } from '#src/shared/realtime/realtime-message.ts';
+import type { AnyRealtimeTopic } from '#src/shared/realtime/realtime-topic.ts';
 import type { FastifyBaseLogger } from 'fastify';
 
 export type ListenerNotification = { channel: string; payload?: string };
@@ -18,9 +19,7 @@ export type ListenerClient = {
 
 export type PgListener = { stop: () => Promise<void> };
 
-const listenSql = Object.values(realtimeConfig.channels)
-  .map((channel) => `LISTEN ${channel};`)
-  .join(' ');
+const listenSql = `LISTEN ${realtimeConfig.channel};`;
 
 export function computeReconnectDelayMs(
   attempt: number,
@@ -39,11 +38,13 @@ async function listen(client: ListenerClient): Promise<void> {
 export function startPgListener({
   createClient,
   broker,
+  topics,
   logger,
   random,
 }: {
   createClient: () => ListenerClient;
   broker: Pick<RealtimeBroker, 'publish' | 'broadcast'>;
+  topics: ReadonlyArray<AnyRealtimeTopic>;
   logger: FastifyBaseLogger;
   random: () => number;
 }): PgListener {
@@ -75,9 +76,10 @@ export function startPgListener({
       retry.unref();
     }
 
-    client.on('notification', ({ channel, payload }) => {
-      const signal = resolveChannelSignal(channel, payload);
-      if (signal) broker.publish(signal.topic, signal.event);
+    client.on('notification', ({ payload }) => {
+      const message = parseRealtimeMessage(payload, topics);
+      if (message) broker.publish(message);
+      else logger.warn({ name: 'realtime', payload }, 'Dropped an unreadable realtime message');
     });
     client.on('error', handleLoss);
     client.on('end', () => {
@@ -89,7 +91,7 @@ export function startPgListener({
         if (lost || stopped) return;
         attempt = 0;
         logger.info({ name: 'realtime' }, 'Realtime listener is listening');
-        if (isReconnect) broker.broadcast(realtimeConfig.events.resync);
+        if (isReconnect) broker.broadcast({ event: 'resync' });
       })
       .catch(handleLoss);
   }

@@ -12,12 +12,13 @@ import {
   resetNotificationState,
 } from "~/components/notifications/shared";
 import type { UserNotification } from "~/features/notifications/types";
-import { STREAM_EVENTS } from "~/components/shared/event-stream";
 import useApiPagination, { DEFAULT_INITIAL_PAGE } from "~/composables/api/useApiPagination";
 import { useNotifications } from "~/composables/notifications/useNotifications";
 import {
+  FakeEventSource,
   installFakeEventSource,
   latestEventSource,
+  makeUser,
   setLoggedIn,
   useToastMock,
   useUserMock,
@@ -77,6 +78,8 @@ afterEach(() => {
 });
 
 const api = () => apiState.current!;
+const notificationRequests = () =>
+  api().requests.filter((request) => request.url.pathname === "/api/v1/me/notifications");
 const lastRequest = () => api().requests.at(-1)!;
 const lastQuery = () => Object.fromEntries(lastRequest().url.searchParams);
 
@@ -519,6 +522,14 @@ describe("useNotifications after a reset", () => {
 
 describe("useNotifications with the event stream", () => {
   const seen = makeNotification({ id: "seen", createdAt: "2026-10-02T08:30:00.000Z" });
+  const userTopic = { type: "user", id: makeUser().id } as const;
+  const notificationCreated = {
+    topic: userTopic,
+    event: "user_notification.created",
+  } as const;
+  const resync = { event: "resync" } as const;
+  const subscriptionRequests = () =>
+    api().requests.filter((request) => request.url.pathname === "/api/v1/events/subscriptions");
 
   beforeEach(() => {
     installFakeEventSource();
@@ -541,31 +552,70 @@ describe("useNotifications with the event stream", () => {
     expect(timerPollEnabled()).toBe(true);
   });
 
-  it.each([STREAM_EVENTS.resync, STREAM_EVENTS.notifications])(
+  it.each([
+    ["resync", resync],
+    ["a notification event", notificationCreated],
+  ] as const)(
     "polls on %s inside the poll gap and keeps the overlap cursor",
-    async (event) => {
+    async (_label, message) => {
       await mountWith(makeNotificationPage([seen]));
       latestEventSource()!.simulateOpen();
       await flushPromises();
-      const before = api().requests.length;
+      const before = notificationRequests().length;
       api().respondWith(() => jsonResponse(makeNotificationPage([])));
 
-      latestEventSource()!.simulateEvent(event);
-      await vi.waitFor(() => expect(api().requests).toHaveLength(before + 1));
+      latestEventSource()!.simulateMessage(message);
+      await vi.waitFor(() => expect(notificationRequests()).toHaveLength(before + 1));
 
       expect(lastQuery()).toEqual({ since: shiftBack(seen.createdAt), limit: "100" });
     },
   );
+
+  it("subscribes the stream to the signed-in user's own topic", async () => {
+    await mountWith(makeNotificationPage([]));
+
+    latestEventSource()!.simulateOpen("connection-a");
+    await vi.waitFor(() => expect(subscriptionRequests()).toHaveLength(1));
+
+    expect(subscriptionRequests()[0]).toMatchObject({
+      method: "POST",
+      body: { connectionId: "connection-a", topic: userTopic },
+    });
+  });
+
+  it("ignores an event for another user's topic", async () => {
+    await mountWith(makeNotificationPage([seen]));
+    latestEventSource()!.simulateOpen();
+    await vi.waitFor(() => expect(notificationRequests()).toHaveLength(2));
+    await flushPromises();
+
+    latestEventSource()!.simulateMessage({
+      topic: { type: "user", id: "someone-else" },
+      event: "user_notification.created",
+    });
+    await flushPromises();
+
+    expect(notificationRequests()).toHaveLength(2);
+  });
+
+  it("opens no stream while signed out", async () => {
+    setLoggedIn(false);
+    scope = effectScope();
+    scope.run(() => useNotifications());
+    await flushPromises();
+
+    expect(FakeEventSource.instances).toHaveLength(0);
+  });
 
   it("fires one poll when the stream opens", async () => {
     await mountWith(makeNotificationPage([seen]));
     api().respondWith(() => jsonResponse(makeNotificationPage([])));
 
     latestEventSource()!.simulateOpen();
-    await vi.waitFor(() => expect(api().requests).toHaveLength(2));
+    await vi.waitFor(() => expect(notificationRequests()).toHaveLength(2));
     await flushPromises();
 
-    expect(api().requests).toHaveLength(2);
+    expect(notificationRequests()).toHaveLength(2);
     expect(lastQuery().since).toBe(shiftBack(seen.createdAt));
   });
 
@@ -573,7 +623,7 @@ describe("useNotifications with the event stream", () => {
     const state = await mountWith(makeNotificationPage([seen]));
     api().respondWith(() => jsonResponse(makeNotificationPage([])));
     latestEventSource()!.simulateOpen();
-    await vi.waitFor(() => expect(api().requests).toHaveLength(2));
+    await vi.waitFor(() => expect(notificationRequests()).toHaveLength(2));
     await flushPromises();
     let held = false;
     api().respondWith(() => {
@@ -591,18 +641,18 @@ describe("useNotifications with the event stream", () => {
       jsonResponse(makeNotificationPage([], { unreadCount: 3 })),
     );
 
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.notifications);
-    await vi.waitFor(() => expect(api().requests).toHaveLength(3));
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.notifications);
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.resync);
+    latestEventSource()!.simulateMessage(notificationCreated);
+    await vi.waitFor(() => expect(notificationRequests()).toHaveLength(3));
+    latestEventSource()!.simulateMessage(notificationCreated);
+    latestEventSource()!.simulateMessage(resync);
     await flushPromises();
-    expect(api().requests).toHaveLength(3);
+    expect(notificationRequests()).toHaveLength(3);
 
     releaseFirst(jsonResponse(makeNotificationPage([], { unreadCount: 1 })));
-    await vi.waitFor(() => expect(api().requests).toHaveLength(4));
+    await vi.waitFor(() => expect(notificationRequests()).toHaveLength(4));
     await flushPromises();
 
-    expect(api().requests).toHaveLength(4);
+    expect(notificationRequests()).toHaveLength(4);
     expect(unreadCount.value).toBe(3);
   });
 
@@ -613,15 +663,15 @@ describe("useNotifications with the event stream", () => {
       jsonResponse(makeNotificationPage([], { unreadCount: 2 })),
     );
 
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.notifications);
-    await vi.waitFor(() => expect(api().requests).toHaveLength(3));
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.notifications);
+    latestEventSource()!.simulateMessage(notificationCreated);
+    await vi.waitFor(() => expect(notificationRequests()).toHaveLength(3));
+    latestEventSource()!.simulateMessage(notificationCreated);
 
     releaseFirst(jsonResponse({ message: "boom" }, 500));
-    await vi.waitFor(() => expect(api().requests).toHaveLength(4));
+    await vi.waitFor(() => expect(notificationRequests()).toHaveLength(4));
     await flushPromises();
 
-    expect(api().requests).toHaveLength(4);
+    expect(notificationRequests()).toHaveLength(4);
     expect(unreadCount.value).toBe(2);
     expect(pollError.value).toBeNull();
   });
@@ -633,6 +683,6 @@ describe("useNotifications with the event stream", () => {
     await poller.run!();
     await flushPromises();
 
-    expect(api().requests).toHaveLength(1);
+    expect(notificationRequests()).toHaveLength(1);
   });
 });

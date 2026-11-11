@@ -25,16 +25,16 @@ Feature: Background workers
     When a user-notifications job for that event is sent with a retry limit of 1 and a retry delay of 1 second
     Then a copy of the user-notifications job should reach the dead-letter queue within 10 seconds
 
-  Scenario: A comment signals its model and the notified author on the realtime channels
+  Scenario: A comment signals its model and the notified author on the realtime channel
     Given an authenticated user "owner"
     And a public model "Signal Model" created by "owner"
     And an authenticated user "commenter"
-    And the realtime channels are listened to
+    And the realtime channel is listened to
     When "commenter" comments "Ping" on "Signal Model"
     Then the response status should be 201
-    And the model channel should carry the id of "Signal Model" once within 5 seconds
-    And the user channel should carry the id of "owner" once within 5 seconds
-    And the user channel should not carry the id of "commenter"
+    And the realtime channel should carry "model_comment.created" for model "Signal Model" once within 5 seconds
+    And the realtime channel should carry "user_notification.created" for user "owner" once within 5 seconds
+    And the realtime channel should carry nothing for user "commenter"
 
   @sanity
   Scenario: A queued email is sent by the send-email worker

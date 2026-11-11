@@ -51,6 +51,7 @@ Nuxt 3 frontend for Modeling Commons. TypeScript, Vue 3 `<script setup>`, Nuxt U
 - Read endpoints: wrap the feature's fetch function in a `useAsyncData` composable with a stable key, e.g. `useModelCard(modelId)` over `fetchModelCard`. Watch refs in the input so navigation refetches.
 - Derive response types in the feature's `types.ts`: `type X = ResponseSuccessData<"GET", "/api/v1/...">` — `ResponseSuccessData` is a global helper.
 - Mutations: functions in the feature's `api.ts`, exposed by a composable and called via `await` from event handlers. Don't use `useAsyncData` for writes.
+- Live updates: `useStreamTopic(topic, onChange)` holds a `StreamTopic` (`@repo/modeling-commons-shared`) on the tab's one stream (`useServerStreamConnection`, `features/server-stream/`) and swaps it when the topic changes. `onChange` gets the topic's events, `"live"` once each subscription request succeeds and `"resync"`; it calls the read's existing refresh. A topic type must first exist in the shared package.
 
 ## URL-synced filters (useModels pattern)
 

@@ -3,7 +3,6 @@ import {
   ModelDraftNotFoundError,
 } from '#src/modules/model-draft/domain/model-draft.errors.ts';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
-import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
 import { ForbiddenException, UnauthorizedException } from '#src/shared/exceptions/index.ts';
 import { canWrite } from '#src/shared/permissions/model-access.policy.ts';
 import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
@@ -23,7 +22,6 @@ export function resolveModelDraft(): preHandlerHookHandler {
 
     if (draft.modelId) {
       const ctx = await loadModelAccessContext(db, userId, draft.modelId);
-      if (!ctx.model) throw new ModelNotFoundError(draft.modelId);
       if (!canWrite(ctx)) {
         throw new ForbiddenException('No write access to the model linked to this draft');
       }

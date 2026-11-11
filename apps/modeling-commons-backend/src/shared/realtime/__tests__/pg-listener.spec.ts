@@ -7,9 +7,17 @@ import {
   startPgListener,
   type ListenerClient,
 } from '#src/shared/realtime/pg-listener.ts';
-import { buildModelTopic, buildUserTopic } from '#src/shared/realtime/topics.ts';
+import type { AnyRealtimeTopic } from '#src/shared/realtime/realtime-topic.ts';
 
-const { channels, events } = realtimeConfig;
+const topics: ReadonlyArray<AnyRealtimeTopic> = [
+  {
+    type: 'model',
+    events: ['model_comment.created'],
+    getTopic: (event) => ({ type: 'model', id: event.resourceId }),
+    canSubscribe: async () => true,
+  },
+];
+const resync = { event: 'resync' };
 const delays = { baseDelayMs: 500, maxDelayMs: 30_000 };
 
 class StubClient extends EventEmitter implements ListenerClient {
@@ -31,7 +39,7 @@ class StubClient extends EventEmitter implements ListenerClient {
   };
 }
 
-const logger = { info: vi.fn(), warn: vi.fn() } as unknown as FastifyBaseLogger;
+const logger = { info: vi.fn(), warn: vi.fn() };
 
 function setup(connectFailures: Array<boolean> = []) {
   const clients: Array<StubClient> = [];
@@ -43,7 +51,8 @@ function setup(connectFailures: Array<boolean> = []) {
       return client;
     },
     broker,
-    logger,
+    topics,
+    logger: logger as unknown as FastifyBaseLogger,
     random: () => 0.5,
   });
   return { clients, broker, listener };
@@ -71,6 +80,7 @@ describe('computeReconnectDelayMs', () => {
 
 describe('startPgListener', () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.useFakeTimers();
   });
 
@@ -78,22 +88,44 @@ describe('startPgListener', () => {
     vi.useRealTimers();
   });
 
-  it('listens on both channels and publishes each notification to its topic', async () => {
+  it('listens on the one configured channel and publishes each parsed message', async () => {
     const { clients, broker } = setup();
     await vi.advanceTimersByTimeAsync(0);
     const [client] = clients;
+    const message = { topic: { type: 'model', id: 'm1' }, event: 'model_comment.created' };
 
-    expect(listenedChannels(client!).sort()).toEqual([channels.model, channels.user].sort());
+    expect(listenedChannels(client!)).toEqual([realtimeConfig.channel]);
 
-    client!.emit('notification', { channel: channels.model, payload: 'm1' });
-    client!.emit('notification', { channel: channels.user, payload: 'u1' });
-    client!.emit('notification', { channel: 'unrelated', payload: 'x' });
+    client!.emit('notification', {
+      channel: realtimeConfig.channel,
+      payload: JSON.stringify(message),
+    });
 
-    expect(broker.publish.mock.calls).toEqual([
-      [buildModelTopic('m1'), events.comments],
-      [buildUserTopic('u1'), events.notifications],
-    ]);
+    expect(broker.publish.mock.calls).toEqual([[message]]);
     expect(broker.broadcast).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['is not JSON', '{"topic":'],
+    ['names an unregistered topic type', '{"topic":{"type":"user","id":"u1"},"event":"x"}'],
+  ])('logs and drops a payload that %s, then keeps publishing', async (_, payload) => {
+    const { clients, broker } = setup();
+    await vi.advanceTimersByTimeAsync(0);
+    const [client] = clients;
+    const message = { topic: { type: 'model', id: 'm1' }, event: 'model_comment.created' };
+
+    client!.emit('notification', { channel: realtimeConfig.channel, payload });
+    client!.emit('notification', {
+      channel: realtimeConfig.channel,
+      payload: JSON.stringify(message),
+    });
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.objectContaining({ payload }),
+      expect.any(String),
+    );
+    expect(broker.publish.mock.calls).toEqual([[message]]);
+    expect(clients).toHaveLength(1);
   });
 
   it('reconnects after a lost connection, listens again, then broadcasts one resync', async () => {
@@ -108,8 +140,8 @@ describe('startPgListener', () => {
     await vi.advanceTimersByTimeAsync(computeReconnectDelayMs(0, () => 0.5, delays));
 
     expect(clients).toHaveLength(2);
-    expect(listenedChannels(clients[1]!).sort()).toEqual([channels.model, channels.user].sort());
-    expect(broker.broadcast.mock.calls).toEqual([[events.resync]]);
+    expect(listenedChannels(clients[1]!)).toEqual([realtimeConfig.channel]);
+    expect(broker.broadcast.mock.calls).toEqual([[resync]]);
   });
 
   it('keeps retrying with a growing delay while the database refuses connections', async () => {
@@ -126,7 +158,7 @@ describe('startPgListener', () => {
     await vi.advanceTimersByTimeAsync(1);
 
     expect(clients).toHaveLength(3);
-    expect(broker.broadcast.mock.calls).toEqual([[events.resync]]);
+    expect(broker.broadcast.mock.calls).toEqual([[resync]]);
   });
 
   it('ends the connection on stop and never reconnects', async () => {

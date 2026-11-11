@@ -1,8 +1,5 @@
-import {
-  modelCommentEventTypes,
-  userNotificationEventTypes,
-} from '#src/modules/event/domain/event-types.ts';
 import { notificationEventTypes } from '#src/modules/notification-producers.ts';
+import { realtimeEventTypes } from '#src/modules/realtime-topics.ts';
 import { DAY_MS, DAY_S } from '#src/shared/utils/consts.ts';
 
 const workersConfig = {
@@ -38,12 +35,7 @@ const workersConfig = {
   },
   realtime: {
     queueName: 'realtime',
-    subscribesTo: [
-      modelCommentEventTypes.created,
-      modelCommentEventTypes.updated,
-      modelCommentEventTypes.deleted,
-      userNotificationEventTypes.created,
-    ],
+    subscribesTo: realtimeEventTypes,
     queue: {
       retryLimit: 1,
       retryDelay: 1,

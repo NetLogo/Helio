@@ -1,3 +1,4 @@
+import type { StreamControlMessage, StreamMessage } from "@repo/modeling-commons-shared";
 import { vi } from "vitest";
 
 type Listener = (event: Event) => void;
@@ -29,27 +30,28 @@ export class FakeEventSource {
     this.readyState = FakeEventSource.CLOSED;
   }
 
-  simulateOpen() {
+  simulateOpen(connectionId = `connection-${FakeEventSource.instances.indexOf(this) + 1}`) {
     this.readyState = FakeEventSource.OPEN;
-    this.dispatch("open");
+    this.dispatch(new Event("open"));
+    this.simulateMessage({ event: "connection", connectionId });
   }
 
-  simulateEvent(name: string) {
-    this.dispatch(name);
+  simulateMessage(message: StreamMessage | StreamControlMessage) {
+    this.dispatch(new MessageEvent("message", { data: JSON.stringify(message) }));
   }
 
   simulateDrop() {
     this.readyState = FakeEventSource.CONNECTING;
-    this.dispatch("error");
+    this.dispatch(new Event("error"));
   }
 
   simulateGiveUp() {
     this.readyState = FakeEventSource.CLOSED;
-    this.dispatch("error");
+    this.dispatch(new Event("error"));
   }
 
-  private dispatch(name: string) {
-    for (const listener of this.listeners.get(name) ?? []) listener(new Event(name));
+  private dispatch(event: Event) {
+    for (const listener of this.listeners.get(event.type) ?? []) listener(event);
   }
 }
 

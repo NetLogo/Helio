@@ -102,6 +102,22 @@ describe('modelCommentDomain', () => {
       });
       expect(comment.content).toHaveLength(10_000);
     });
+
+    it('measures the bound after trimming', () => {
+      const comment = domain.createComment({
+        modelId: 'model-1',
+        userId: 'user-1',
+        content: `  ${'a'.repeat(10_000)}  `,
+      });
+      expect(comment.content).toBe('a'.repeat(10_000));
+    });
+
+    it('throws CommentBodyInvalidError for content over 10,000 characters after trimming', () => {
+      const tooLong = `  ${'a'.repeat(10_001)}  `;
+      expect(() =>
+        domain.createComment({ modelId: 'model-1', userId: 'user-1', content: tooLong }),
+      ).toThrow(CommentBodyInvalidError);
+    });
   });
 
   describe('parseContent', () => {

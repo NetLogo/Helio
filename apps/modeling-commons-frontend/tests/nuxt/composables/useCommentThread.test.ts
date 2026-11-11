@@ -5,7 +5,6 @@ import { effectScope, ref, type EffectScope, type Ref } from "vue";
 import { comments as fixtureComments } from "~/components/comment/fixtures";
 import { findCommentById } from "~/components/comment/comment-tree";
 import { COMMENT_STREAM_REFRESH_DEBOUNCE_MS, type Comment } from "~/components/comment/types";
-import { STREAM_EVENTS } from "~/components/shared/event-stream";
 import useCommentThread from "~/composables/comments/useCommentThread";
 import type { CommentSort } from "~/features/comments/types";
 import {
@@ -28,6 +27,11 @@ mockNuxtImport("useConnectionHealth", () => () => ({ isOffline: ref(false) }));
 mockNuxtImport("useApi", () => () => useCommentApiMock());
 
 const MODEL_ID = "m-1";
+const commentCreated = {
+  topic: { type: "model", id: MODEL_ID },
+  event: "model_comment.created",
+} as const;
+const resync = { event: "resync" } as const;
 
 let scope: EffectScope | null = null;
 
@@ -77,24 +81,46 @@ afterEach(() => {
 });
 
 describe("useCommentThread with the event stream", () => {
-  it.each([STREAM_EVENTS.comments, STREAM_EVENTS.resync])(
-    "refetches once after the debounce on bursts of %s",
-    async (event) => {
-      await mountThread();
-      latestEventSource()!.simulateOpen();
-      await advancePastDebounce();
-      const before = listFetches();
+  it.each([
+    ["a comment event", commentCreated],
+    ["resync", resync],
+  ] as const)("refetches once after the debounce on bursts of %s", async (_label, message) => {
+    await mountThread();
+    latestEventSource()!.simulateOpen();
+    await advancePastDebounce();
+    const before = listFetches();
 
-      latestEventSource()!.simulateEvent(event);
-      latestEventSource()!.simulateEvent(event);
+    latestEventSource()!.simulateMessage(message);
+    latestEventSource()!.simulateMessage(message);
 
-      await vi.advanceTimersByTimeAsync(COMMENT_STREAM_REFRESH_DEBOUNCE_MS - 1);
-      expect(listFetches()).toBe(before);
+    await vi.advanceTimersByTimeAsync(COMMENT_STREAM_REFRESH_DEBOUNCE_MS - 1);
+    expect(listFetches()).toBe(before);
 
-      await advancePastDebounce();
-      expect(listFetches()).toBe(before + 1);
-    },
-  );
+    await advancePastDebounce();
+    expect(listFetches()).toBe(before + 1);
+  });
+
+  it("subscribes the stream to its model and ignores events for another model", async () => {
+    await mountThread();
+    latestEventSource()!.simulateOpen("conn-1");
+    await advancePastDebounce();
+    const before = listFetches();
+
+    latestEventSource()!.simulateMessage({
+      topic: { type: "model", id: "m-2" },
+      event: "model_comment.created",
+    });
+    await advancePastDebounce();
+
+    expect(getCommentApiCalls()).toContainEqual(
+      expect.objectContaining({
+        method: "POST",
+        route: "/api/v1/events/subscriptions",
+        body: { connectionId: "conn-1", topic: { type: "model", id: MODEL_ID } },
+      }),
+    );
+    expect(listFetches()).toBe(before);
+  });
 
   it("skips the pushed refetch while an edit is pending", async () => {
     const release = holdRequests("PATCH", COMMENT_ROUTES.single);
@@ -105,7 +131,7 @@ describe("useCommentThread with the event stream", () => {
 
     const editing = thread.edit({ commentId: fixtureComments[0]!.id, content: "edited" });
     expect(thread.pending.value).toBe(true);
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.comments);
+    latestEventSource()!.simulateMessage(commentCreated);
     await advancePastDebounce();
     expect(listFetches()).toBe(before);
 
@@ -122,7 +148,7 @@ describe("useCommentThread with the event stream", () => {
 
     thread.like({ commentId: fixtureComments[0]!.id });
     expect(thread.busy.value).toBe(true);
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.comments);
+    latestEventSource()!.simulateMessage(commentCreated);
     await advancePastDebounce();
     expect(listFetches()).toBe(before);
 
@@ -138,8 +164,8 @@ describe("useCommentThread with the event stream", () => {
     const before = listFetches();
 
     thread.like({ commentId: fixtureComments[0]!.id });
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.comments);
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.resync);
+    latestEventSource()!.simulateMessage(commentCreated);
+    latestEventSource()!.simulateMessage(resync);
     await advancePastDebounce();
     expect(listFetches()).toBe(before);
 
@@ -218,7 +244,7 @@ describe("useCommentThread keeps comments posted in this tab in place", () => {
   }
 
   async function signalOwnWrite() {
-    latestEventSource()!.simulateEvent(STREAM_EVENTS.comments);
+    latestEventSource()!.simulateMessage(commentCreated);
     await advancePastDebounce();
   }
 

@@ -1,14 +1,8 @@
 import { Type, type Static } from 'typebox';
 import { idSchema } from '#src/shared/utils/id.ts';
-import rules from '#src/config/rules.ts';
-
-const CONTENT_LENGTH = rules.limits.comment.content;
 
 export const createCommentRequestDtoSchema = Type.Object({
-  content: Type.String({
-    minLength: CONTENT_LENGTH.min,
-    maxLength: CONTENT_LENGTH.max,
-  }),
+  content: Type.String(),
   parentId: Type.Optional(idSchema()),
   versionNumber: Type.Optional(Type.Integer({ minimum: 1 })),
 });

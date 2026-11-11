@@ -3,33 +3,26 @@ import workersConfig from '#src/config/workers.ts';
 import type { ExtendedPrismaClient } from '#src/lib/prisma.ts';
 import type {
   EventJobData,
-  EventRecord,
   EventRepositoryPort,
 } from '#src/modules/event/database/event.repository.port.ts';
-import { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
+import { userNotificationEventTypes } from '#src/modules/event/domain/event-types.ts';
+import { realtimeTopics } from '#src/modules/realtime-topics.ts';
 import type { UserNotificationCreatedJobData } from '#src/modules/user-notification/domain/user-notification.types.ts';
+import { buildTopicMessages } from '#src/shared/realtime/realtime-message.ts';
+import type { PublishedEvent } from '#src/shared/realtime/realtime-topic.ts';
 import { registerQueue } from '#src/workers/queues.ts';
+import type { StreamMessage } from '@repo/modeling-commons-shared';
 import type { FastifyBaseLogger } from 'fastify';
 import type { PgBoss } from 'pg-boss';
 
 const config = workersConfig.realtime;
-const modelCommentTypes: ReadonlyArray<string> = Object.values(modelCommentEventTypes);
 
 export type RealtimeJobData = EventJobData | UserNotificationCreatedJobData;
 
-export type RealtimeSignal = { channel: string; payload: string };
-
-export function listEventSignals(
-  event: Pick<EventRecord, 'type' | 'resourceId'>,
-): Array<RealtimeSignal> {
-  if (!modelCommentTypes.includes(event.type)) return [];
-  return [{ channel: realtimeConfig.channels.model, payload: event.resourceId }];
-}
-
-export function listRecipientSignals(recipientIds: ReadonlyArray<string>): Array<RealtimeSignal> {
+export function listRecipientEvents(recipientIds: ReadonlyArray<string>): Array<PublishedEvent> {
   return [...new Set(recipientIds)].map((id) => ({
-    channel: realtimeConfig.channels.user,
-    payload: id,
+    type: userNotificationEventTypes.created,
+    resourceId: id,
   }));
 }
 
@@ -44,11 +37,25 @@ export async function startRealtimeSubscriber({
   eventRepository: EventRepositoryPort;
   logger: FastifyBaseLogger;
 }): Promise<void> {
-  async function loadEventSignals(eventId: string, jobId: string): Promise<Array<RealtimeSignal>> {
+  async function loadEvents(eventId: string, jobId: string): Promise<Array<PublishedEvent>> {
     const event = await eventRepository.findOneById(eventId);
-    if (event) return listEventSignals(event);
+    if (event) return [event];
     logger.warn({ eventId, jobId }, 'Published event no longer exists');
     return [];
+  }
+
+  async function listJobMessages(data: RealtimeJobData, jobId: string) {
+    const events =
+      'recipientIds' in data
+        ? listRecipientEvents(data.recipientIds)
+        : await loadEvents(data.eventId, jobId);
+    return events.flatMap((event) => buildTopicMessages(event, realtimeTopics));
+  }
+
+  async function notify(messages: ReadonlyArray<StreamMessage>): Promise<void> {
+    if (messages.length === 0) return;
+    const payloads = messages.map((message) => JSON.stringify(message));
+    await db.$executeRaw`SELECT pg_notify(${realtimeConfig.channel}, payload) FROM unnest(${payloads}::text[]) AS payload`;
   }
 
   await registerQueue(boss, config);
@@ -62,13 +69,7 @@ export async function startRealtimeSubscriber({
     },
     async (jobs) => {
       for (const { id: jobId, data } of jobs) {
-        const signals =
-          'recipientIds' in data
-            ? listRecipientSignals(data.recipientIds)
-            : await loadEventSignals(data.eventId, jobId);
-        for (const signal of signals) {
-          await db.$executeRaw`SELECT pg_notify(${signal.channel}, ${signal.payload})`;
-        }
+        await notify(await listJobMessages(data, jobId));
       }
     },
   );

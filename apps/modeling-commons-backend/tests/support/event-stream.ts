@@ -7,9 +7,24 @@ export type EventStream = {
   headers: http.IncomingHttpHeaders;
   received: () => string;
   countEvents: (event: string) => number;
+  listMessages: () => Array<StreamFrameMessage>;
   ended: () => boolean;
   close: () => void;
 };
+
+export type StreamFrameMessage = {
+  event?: unknown;
+  connectionId?: unknown;
+  topic?: { type?: unknown; id?: unknown };
+};
+
+function listMessages(text: string): Array<StreamFrameMessage> {
+  return text
+    .split('\n\n')
+    .slice(0, -1)
+    .filter((frame) => frame.startsWith('data: '))
+    .map((frame) => JSON.parse(frame.slice('data: '.length)) as StreamFrameMessage);
+}
 
 export async function listenOnEphemeralPort(server: FastifyInstance): Promise<number> {
   if (!server.server.listening) await server.listen({ port: 0, host: '127.0.0.1' });
@@ -39,7 +54,9 @@ export function openEventStream(
         statusCode: response.statusCode ?? 0,
         headers: response.headers,
         received: () => text,
-        countEvents: (event) => text.split(`event: ${event}\n`).length - 1,
+        countEvents: (event) =>
+          listMessages(text).filter((message) => message.event === event).length,
+        listMessages: () => listMessages(text),
         ended: () => ended,
         close: () => request.destroy(),
       });

@@ -1,4 +1,5 @@
 import workersConfig from '#src/config/workers.ts';
+import { isRecord } from '#src/shared/utils/json.ts';
 import type { PgBoss, QueueOptions } from 'pg-boss';
 
 export type QueueEntry = {
@@ -34,8 +35,7 @@ export async function registerSendQueues(
 
 export function listSubscriberEntries(config: object = workersConfig): Array<SubscriberEntry> {
   return Object.values(config).filter(
-    (value): value is SubscriberEntry =>
-      typeof value === 'object' && value !== null && 'subscribesTo' in value,
+    (value): value is SubscriberEntry => isRecord(value) && 'subscribesTo' in value,
   );
 }
 

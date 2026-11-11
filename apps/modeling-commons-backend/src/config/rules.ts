@@ -1,5 +1,5 @@
 import { MEGABYTE, MINUTE_MS } from '#src/shared/utils/consts.ts';
-import { authRules, commentContentRules } from '@repo/modeling-commons-shared';
+import { authRules } from '@repo/modeling-commons-shared';
 import type { FastifyRateLimitOptions } from '@fastify/rate-limit';
 import type { BetterAuthRateLimitOptions } from 'better-auth';
 
@@ -165,7 +165,6 @@ const rules = {
     } as BetterAuthRateLimitOptions,
 
     comment: {
-      content: commentContentRules.length as MinMax,
       // Hard ceiling on nodes materialized per tree request. maximumShownRepliesPerLevel ^
       // maximumNested is unbounded fan-out on paper; this is the backstop, not a target.
       // At the default limit=20 the dense worst case is 20 + 40 + 80 + 160 = 300, well clear.

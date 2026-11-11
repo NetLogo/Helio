@@ -5708,24 +5708,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/events/models/{id}": {
+    "/api/v1/events/subscriptions": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: {
+        get?: never;
+        put?: never;
+        post: {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    /** @description Entity's id */
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /**
+                         * Format: nanoid
+                         * @description The id the stream sent in its connection message
+                         * @example uAce-eANwFXi-tACAe9w1
+                         */
+                        connectionId: string;
+                        topic: {
+                            /** @description A topic type registered by a module, such as model or user */
+                            type: string;
+                            /**
+                             * Format: nanoid
+                             * @description The id of the resource the topic follows
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
+                            id: string;
+                        };
+                    };
+                };
+            };
             responses: {
                 /** @description Default Response */
                 400: {
@@ -5774,9 +5794,83 @@ export interface paths {
                 };
             };
         };
-        put?: never;
-        post?: never;
-        delete?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /**
+                         * Format: nanoid
+                         * @description The id the stream sent in its connection message
+                         * @example uAce-eANwFXi-tACAe9w1
+                         */
+                        connectionId: string;
+                        topic: {
+                            /** @description A topic type registered by a module, such as model or user */
+                            type: string;
+                            /**
+                             * Format: nanoid
+                             * @description The id of the resource the topic follows
+                             * @example uAce-eANwFXi-tACAe9w1
+                             */
+                            id: string;
+                        };
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"];
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;

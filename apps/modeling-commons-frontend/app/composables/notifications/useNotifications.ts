@@ -7,7 +7,6 @@ import {
   NOTIFICATION_STATE_KEYS,
   NOTIFICATION_PAGINATION_KEY,
 } from "~/components/notifications/shared";
-import { STREAM_EVENTS } from "~/components/shared/event-stream";
 
 import { createSharedComposable } from "@vueuse/core";
 
@@ -164,10 +163,11 @@ function useNotificationsImpl() {
   let pausePolling = () => {};
 
   if (import.meta.client) {
-    const stream = useEventStream();
     const pollNow = () => void poll({ force: true });
-    stream.on(STREAM_EVENTS.notifications, pollNow);
-    stream.on(STREAM_EVENTS.resync, pollNow);
+    const stream = useStreamTopic(
+      () => (user.value.isLoggedIn ? { type: "user", id: user.value.user.id } : null),
+      pollNow,
+    );
 
     const { isActive, pause } = useActivePoll(() => poll(), backoffInterval, {
       idleTimeout: IDLE_TIMEOUT_MS,

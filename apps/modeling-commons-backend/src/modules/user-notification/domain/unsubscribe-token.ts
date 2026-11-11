@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { isRecord, parseJson } from '#src/shared/utils/json.ts';
 
 export type UnsubscribeClaims<Category extends string = string> = {
   userId: string;
@@ -24,7 +25,7 @@ function normalizeCategories<Category extends string>(
 }
 
 function isEncodedClaims(value: unknown): value is EncodedClaims {
-  if (typeof value !== 'object' || value === null) return false;
+  if (!isRecord(value)) return false;
   const { u, c } = value as Partial<EncodedClaims>;
   return (
     typeof u === 'string' &&
@@ -33,14 +34,6 @@ function isEncodedClaims(value: unknown): value is EncodedClaims {
     c.length > 0 &&
     c.every((category) => typeof category === 'string')
   );
-}
-
-function parsePayload(payload: string): unknown {
-  try {
-    return JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
-  } catch {
-    return undefined;
-  }
 }
 
 export function signUnsubscribeToken<Category extends string>(
@@ -65,7 +58,7 @@ export function verifyUnsubscribeToken<Category extends string>(
   const given = Buffer.from(signature, 'utf8');
   if (given.length !== expected.length || !timingSafeEqual(given, expected)) return undefined;
 
-  const claims = parsePayload(payload);
+  const claims = parseJson(Buffer.from(payload, 'base64url').toString('utf8'));
   if (!isEncodedClaims(claims)) return undefined;
   const categories = claims.c.filter(isCategory);
   if (categories.length === 0) return undefined;

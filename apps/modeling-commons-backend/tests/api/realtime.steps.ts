@@ -3,10 +3,15 @@ import { After, Given, Then, When } from '@cucumber/cucumber';
 import pg from 'pg';
 import env from '#src/config/env.ts';
 import realtimeConfig from '#src/config/realtime.ts';
-import { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
+import {
+  modelCommentEventTypes,
+  userNotificationEventTypes,
+} from '#src/modules/event/domain/event-types.ts';
+import type { StreamMessage } from '@repo/modeling-commons-shared';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
 import { formatRetryFrame } from '#src/shared/realtime/sse-frame.ts';
+import { newId } from '#src/shared/utils/id.ts';
 import {
   type EventStream,
   listenOnEphemeralPort,
@@ -15,8 +20,7 @@ import {
 } from '../support/event-stream.ts';
 import { type RoleProcess, startRoleProcess } from '../support/role-process.ts';
 
-const notificationStreamPath = '/api/v1/events';
-const modelStreamPath = (modelId: string) => `/api/v1/events/models/${modelId}`;
+const streamPath = '/api/v1/events';
 const roleProcessStartTimeoutMs = 30_000;
 
 function getUser(world: ICustomWorld, name: string): TestUser {
@@ -106,46 +110,31 @@ Then(
   },
 );
 
-When('an anonymous viewer opens the notification stream', async function (this: ICustomWorld) {
+When('an anonymous viewer opens an event stream', async function (this: ICustomWorld) {
   this.context.latestResponse = await this.server.inject({
     method: 'GET',
-    url: notificationStreamPath,
+    url: streamPath,
   });
 });
 
 When(
-  '{string} opens the stream of model {string} and lists its comments',
-  async function (this: ICustomWorld, userName: string, modelTitle: string) {
-    const { cookie } = getUser(this, userName);
-    const modelId = getModelId(this, modelTitle);
-    const [stream, comments] = await Promise.all([
-      this.server.inject({ method: 'GET', url: modelStreamPath(modelId), headers: { cookie } }),
-      this.server.inject({
-        method: 'GET',
-        url: `/api/v1/models/${modelId}/comments`,
-        headers: { cookie },
-      }),
-    ]);
-    this.context['streamStatus'] = stream.statusCode;
-    this.context['commentsStatus'] = comments.statusCode;
-  },
-);
-
-Then(
-  'both answers should have the same status, and it should not be 200',
-  function (this: ICustomWorld) {
-    assert.notStrictEqual(this.context['commentsStatus'], 200);
-    assert.strictEqual(this.context['streamStatus'], this.context['commentsStatus']);
+  'a removed model stream is requested by {string}',
+  async function (this: ICustomWorld, userName: string) {
+    this.context.latestResponse = await this.server.inject({
+      method: 'GET',
+      url: `${streamPath}/models/${newId()}`,
+      headers: { cookie: getUser(this, userName).cookie },
+    });
   },
 );
 
 When(
-  '{string} opens the notification stream from an allowed origin as {string}',
+  '{string} opens an event stream from an allowed origin as {string}',
   async function (this: ICustomWorld, userName: string, label: string) {
     const origin = env.cors.allowedOrigins[0];
     assert.ok(origin, 'no allowed origin is configured');
     this.context['streamOrigin'] = origin;
-    await openStream(this, label, notificationStreamPath, {
+    await openStream(this, label, streamPath, {
       cookie: getUser(this, userName).cookie,
       origin,
     });
@@ -153,18 +142,9 @@ When(
 );
 
 Given(
-  '{string} opens the notification stream as {string}',
+  '{string} opens an event stream as {string}',
   async function (this: ICustomWorld, userName: string, label: string) {
-    await openStream(this, label, notificationStreamPath, {
-      cookie: getUser(this, userName).cookie,
-    });
-  },
-);
-
-Given(
-  '{string} opens the stream of model {string} as {string}',
-  async function (this: ICustomWorld, userName: string, modelTitle: string, label: string) {
-    await openStream(this, label, modelStreamPath(getModelId(this, modelTitle)), {
+    await openStream(this, label, streamPath, {
       cookie: getUser(this, userName).cookie,
     });
   },
@@ -262,23 +242,29 @@ When(
   },
 );
 
+async function notifyRealtimeChannel(message: StreamMessage): Promise<void> {
+  await withDatabaseClient((client) =>
+    client.query('SELECT pg_notify($1, $2)', [realtimeConfig.channel, JSON.stringify(message)]),
+  );
+}
+
 When(
-  'the model channel is notified with the id of {string}',
+  'the realtime channel is notified of a comment on {string}',
   async function (this: ICustomWorld, modelTitle: string) {
-    const modelId = getModelId(this, modelTitle);
-    await withDatabaseClient((client) =>
-      client.query('SELECT pg_notify($1, $2)', [realtimeConfig.channels.model, modelId]),
-    );
+    await notifyRealtimeChannel({
+      topic: { type: 'model', id: getModelId(this, modelTitle) },
+      event: modelCommentEventTypes.created,
+    });
   },
 );
 
 When(
-  'the user channel is notified with the id of {string}',
+  'the realtime channel is notified of a notification for {string}',
   async function (this: ICustomWorld, userName: string) {
-    const { id } = getUser(this, userName);
-    await withDatabaseClient((client) =>
-      client.query('SELECT pg_notify($1, $2)', [realtimeConfig.channels.user, id]),
-    );
+    await notifyRealtimeChannel({
+      topic: { type: 'user', id: getUser(this, userName).id },
+      event: userNotificationEventTypes.created,
+    });
   },
 );
 
@@ -341,5 +327,169 @@ Then(
   async function (this: ICustomWorld, count: number) {
     const expected = (this.context['listenerBaseline'] as number) + count;
     assert.strictEqual(await countListenerConnections(), expected);
+  },
+);
+
+const subscriptionsPath = '/api/v1/events/subscriptions';
+
+function getConnectionId(world: ICustomWorld, label: string): string {
+  const connection = getStream(world, label)
+    .listMessages()
+    .find((message) => message.event === 'connection');
+  assert.ok(
+    typeof connection?.connectionId === 'string',
+    `stream "${label}" sent no connection id`,
+  );
+  return connection.connectionId;
+}
+
+async function sendSubscription(
+  world: ICustomWorld,
+  method: 'POST' | 'DELETE',
+  userName: string,
+  payload: { connectionId: string; topic: { type: string; id: string } },
+): Promise<void> {
+  world.context.latestResponse = await world.server.inject({
+    method,
+    url: subscriptionsPath,
+    headers: { cookie: getUser(world, userName).cookie },
+    payload,
+  });
+}
+
+function countTopicEvents(world: ICustomWorld, label: string, modelId: string): number {
+  return getStream(world, label)
+    .listMessages()
+    .filter((message) => message.topic?.type === 'model' && message.topic.id === modelId).length;
+}
+
+Then(
+  'the {string} and {string} streams should carry different connection ids',
+  function (this: ICustomWorld, first: string, second: string) {
+    assert.notStrictEqual(getConnectionId(this, first), getConnectionId(this, second));
+  },
+);
+
+Then(
+  'the first message on the {string} stream should be its connection message',
+  function (this: ICustomWorld, label: string) {
+    const [first] = getStream(this, label).listMessages();
+    assert.strictEqual(first?.event, 'connection');
+    assert.strictEqual(typeof first.connectionId, 'string');
+  },
+);
+
+When(
+  '{string} subscribes the {string} stream to model {string}',
+  async function (this: ICustomWorld, userName: string, label: string, modelTitle: string) {
+    await sendSubscription(this, 'POST', userName, {
+      connectionId: getConnectionId(this, label),
+      topic: { type: 'model', id: getModelId(this, modelTitle) },
+    });
+  },
+);
+
+When(
+  '{string} unsubscribes the {string} stream from model {string}',
+  async function (this: ICustomWorld, userName: string, label: string, modelTitle: string) {
+    await sendSubscription(this, 'DELETE', userName, {
+      connectionId: getConnectionId(this, label),
+      topic: { type: 'model', id: getModelId(this, modelTitle) },
+    });
+  },
+);
+
+When(
+  '{string} subscribes the {string} stream to a model that does not exist',
+  async function (this: ICustomWorld, userName: string, label: string) {
+    await sendSubscription(this, 'POST', userName, {
+      connectionId: getConnectionId(this, label),
+      topic: { type: 'model', id: newId() },
+    });
+  },
+);
+
+When(
+  '{string} subscribes the {string} stream to the user topic of {string}',
+  async function (this: ICustomWorld, userName: string, label: string, topicUserName: string) {
+    await sendSubscription(this, 'POST', userName, {
+      connectionId: getConnectionId(this, label),
+      topic: { type: 'user', id: getUser(this, topicUserName).id },
+    });
+  },
+);
+
+When(
+  '{string} subscribes the {string} stream to a {string} topic',
+  async function (this: ICustomWorld, userName: string, label: string, topicType: string) {
+    await sendSubscription(this, 'POST', userName, {
+      connectionId: getConnectionId(this, label),
+      topic: { type: topicType, id: newId() },
+    });
+  },
+);
+
+When(
+  '{string} subscribes an unknown connection to model {string}',
+  async function (this: ICustomWorld, userName: string, modelTitle: string) {
+    await sendSubscription(this, 'POST', userName, {
+      connectionId: newId(),
+      topic: { type: 'model', id: getModelId(this, modelTitle) },
+    });
+  },
+);
+
+Then(
+  'the {string} stream should carry {int} event(s) for model {string} within {int} seconds',
+  async function (
+    this: ICustomWorld,
+    label: string,
+    count: number,
+    modelTitle: string,
+    seconds: number,
+  ) {
+    const modelId = getModelId(this, modelTitle);
+    await waitUntil(() => countTopicEvents(this, label, modelId) >= count, seconds * 1000);
+    assert.strictEqual(
+      countTopicEvents(this, label, modelId),
+      count,
+      getStream(this, label).received(),
+    );
+  },
+);
+
+Then(
+  'the {string} stream should carry no event for model {string}',
+  function (this: ICustomWorld, label: string, modelTitle: string) {
+    const modelId = getModelId(this, modelTitle);
+    assert.strictEqual(
+      countTopicEvents(this, label, modelId),
+      0,
+      getStream(this, label).received(),
+    );
+  },
+);
+
+Given(
+  '{string} opens an event stream subscribed to model {string} as {string}',
+  async function (this: ICustomWorld, userName: string, modelTitle: string, label: string) {
+    await openStream(this, label, streamPath, { cookie: getUser(this, userName).cookie });
+    await sendSubscription(this, 'POST', userName, {
+      connectionId: getConnectionId(this, label),
+      topic: { type: 'model', id: getModelId(this, modelTitle) },
+    });
+    assert.strictEqual(this.context.latestResponse?.statusCode, 204);
+  },
+);
+
+Given(
+  '{string} opens an event stream subscribed to their notifications as {string}',
+  async function (this: ICustomWorld, userName: string, label: string) {
+    await openStream(this, label, streamPath, { cookie: getUser(this, userName).cookie });
+    await sendSubscription(this, 'POST', userName, {
+      connectionId: getConnectionId(this, label),
+      topic: { type: 'user', id: getUser(this, userName).id },
+    });
+    assert.strictEqual(this.context.latestResponse?.statusCode, 204);
   },
 );
