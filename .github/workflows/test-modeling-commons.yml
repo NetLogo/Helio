@@ -66,8 +66,9 @@ jobs:
       - name: Assert the beta host is gone
         run: |
           if git grep -In "beta\.modelingcommons" -- \
-               ':!doc/' ':!*/doc/' ':!.ongoing/' ':!*/.ongoing/'; then
-            echo "::error::The retired beta host appears at the paths above. The app is served from www.modelingcommons.org; only doc/ and .ongoing/ may still mention it."
+               ':!doc/' ':!*/doc/' ':!.ongoing/' ':!*/.ongoing/' \
+               ':!apps/modeling-commons-backend/prisma/legacy-migration/'; then
+            echo "::error::The retired beta host appears at the paths above. The app is served from www.modelingcommons.org; only doc/, .ongoing/ and the legacy migration scripts may still mention it."
             exit 1
           fi
 
