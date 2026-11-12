@@ -102,9 +102,9 @@ describe("useCommentThread with the event stream", () => {
     expect(listFetches()).toBe(before + 1);
   });
 
-  it("subscribes the stream to its model and ignores events for another model", async () => {
+  it("opens the stream on its model and ignores events for another model", async () => {
     await mountThread();
-    latestEventSource()!.simulateOpen("conn-1");
+    latestEventSource()!.simulateOpen();
     await advancePastDebounce();
     const before = listFetches();
 
@@ -114,14 +114,21 @@ describe("useCommentThread with the event stream", () => {
     });
     await advancePastDebounce();
 
-    expect(getCommentApiCalls()).toContainEqual(
-      expect.objectContaining({
-        method: "POST",
-        route: "/api/v1/events/subscriptions",
-        body: { connectionId: "conn-1", topic: { type: "model", id: MODEL_ID } },
-      }),
+    expect(new URL(latestEventSource()!.url).searchParams.get("topics")).toBe(
+      `model:${MODEL_ID}`,
     );
     expect(listFetches()).toBe(before);
+  });
+
+  it("refetches once when the stream opens to catch up on missed events", async () => {
+    await mountThread();
+    await advancePastDebounce();
+    const before = listFetches();
+
+    latestEventSource()!.simulateOpen();
+    await advancePastDebounce();
+
+    expect(listFetches()).toBe(before + 1);
   });
 
   it("skips the pushed refetch while an edit is pending", async () => {

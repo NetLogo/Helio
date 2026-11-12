@@ -3,6 +3,7 @@ import type { ModelPreviewRecord } from '#src/modules/model/database/model.repos
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
 import type { UpdateModelProps } from '#src/modules/model/domain/model.types.ts';
 import { loadViewer } from '#src/shared/permissions/model-access.viewer.ts';
+import { modelEventTypes } from '#src/modules/model/model.events.ts';
 
 export default function makeModelService({
   transactionManager,
@@ -32,7 +33,7 @@ export default function makeModelService({
         await modelRepository.softDeleteTx(ctx, modelId);
         const drafts = await modelDraftService.purgeForModelTx(ctx, modelId);
         await eventRepository.insertTx(ctx, {
-          type: 'model.deleted',
+          type: modelEventTypes.deleted,
           actorId: userId,
           resourceType: 'model',
           resourceId: modelId,

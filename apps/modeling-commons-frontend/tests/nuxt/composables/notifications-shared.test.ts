@@ -38,4 +38,15 @@ describe("toInAppLink", () => {
       "https://mc.test:8443/models/m-1",
     );
   });
+
+  it("keeps the url as given when the app url is unset or malformed", () => {
+    expect(toInAppLink("https://mc.test/models/m-1", undefined as unknown as string)).toBe(
+      "https://mc.test/models/m-1",
+    );
+    expect(toInAppLink("/models/m-1", "not a url")).toBe("/models/m-1");
+  });
+
+  it("keeps a malformed notification url as given", () => {
+    expect(toInAppLink("http://[bad", appUrl)).toBe("http://[bad");
+  });
 });

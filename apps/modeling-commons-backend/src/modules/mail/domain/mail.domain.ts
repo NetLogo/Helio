@@ -27,6 +27,16 @@ export type MailContent = {
   text: string;
 };
 
+type CommentEmailOptions = {
+  userEmail: string;
+  userName: string;
+  actorName: string;
+  model: EmailModel;
+  commentPreview: string;
+  commentUrl: string;
+  unsubscribeUrl: string;
+};
+
 export default function mailDomain() {
   const sender = `${env.product.name} <${env.smtp.senderAddress}>`;
   const renderer = getRenderer();
@@ -57,30 +67,6 @@ export default function mailDomain() {
       return wrap(userEmail)(renderer.renderPasswordResetEmail({ userName, resetLink }));
     },
 
-    async createWelcomeEmail(userEmail: string, userName: string) {
-      return wrap(userEmail)(renderer.renderWelcomeEmail({ userName }));
-    },
-
-    async createAccountDeletedEmail(userEmail: string, userName: string) {
-      return wrap(userEmail)(renderer.renderAccountDeletedEmail({ userName }));
-    },
-
-    async createAccountDeletedByAdminEmail(userEmail: string, userName: string) {
-      return wrap(userEmail)(renderer.renderAccountDeletedByAdminEmail({ userName }));
-    },
-
-    async createAccountBannedEmail(userEmail: string, userName: string) {
-      return wrap(userEmail)(renderer.renderAccountBannedEmail({ userName }));
-    },
-
-    async createAccountInactiveEmail(
-      userEmail: string,
-      userName: string,
-      inactivityPeriod: string,
-    ) {
-      return wrap(userEmail)(renderer.renderAccountInactiveEmail({ userName, inactivityPeriod }));
-    },
-
     async createAccountEmailChangeRequestEmail(
       userEmail: string,
       userName: string,
@@ -89,21 +75,6 @@ export default function mailDomain() {
     ) {
       return wrap(userEmail)(
         renderer.renderAccountEmailChangeRequestEmail({ userName, newEmail, approveLink }),
-      );
-    },
-
-    async createAccountEmailChangedEmail(userEmail: string, userName: string, newEmail: string) {
-      return wrap(userEmail)(renderer.renderAccountEmailChangedEmail({ userName, newEmail }));
-    },
-
-    async createNotificationEmail(
-      userEmail: string,
-      userName: string,
-      notificationContent: string,
-      unsubscribeUrl: string,
-    ) {
-      return wrap(userEmail)(
-        renderer.renderNotificationEmail({ userName, notificationContent, unsubscribeUrl }),
       );
     },
 
@@ -128,19 +99,19 @@ export default function mailDomain() {
       );
     },
 
-    async createCommentedOnModelEmail(
-      userEmail: string,
-      userName: string,
-      commenterName: string,
-      model: EmailModel,
-      commentPreview: string,
-      commentUrl: string,
-      unsubscribeUrl: string,
-    ) {
+    async createCommentedOnModelEmail({
+      userEmail,
+      userName,
+      actorName,
+      model,
+      commentPreview,
+      commentUrl,
+      unsubscribeUrl,
+    }: CommentEmailOptions) {
       return wrap(userEmail)(
         renderer.renderCommentedOnModelEmail({
           userName,
-          commenterName,
+          commenterName: actorName,
           model,
           commentPreview,
           commentUrl,
@@ -149,21 +120,21 @@ export default function mailDomain() {
       );
     },
 
-    async createRepliedToCommentEmail(
-      userEmail: string,
-      userName: string,
-      replierName: string,
-      model: EmailModel,
-      replyPreview: string,
-      commentUrl: string,
-      unsubscribeUrl: string,
-    ) {
+    async createRepliedToCommentEmail({
+      userEmail,
+      userName,
+      actorName,
+      model,
+      commentPreview,
+      commentUrl,
+      unsubscribeUrl,
+    }: CommentEmailOptions) {
       return wrap(userEmail)(
         renderer.renderRepliedToCommentEmail({
           userName,
-          replierName,
+          replierName: actorName,
           model,
-          replyPreview,
+          replyPreview: commentPreview,
           commentUrl,
           unsubscribeUrl,
         }),

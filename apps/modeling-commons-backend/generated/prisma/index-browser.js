@@ -349,12 +349,18 @@ exports.Prisma.UserNotificationScalarFieldEnum = {
   category: 'category',
   url: 'url',
   payload: 'payload',
-  actorUserId: 'actorUserId',
+  actorId: 'actorId',
   targetType: 'targetType',
   targetId: 'targetId',
   emailSentAt: 'emailSentAt',
   readAt: 'readAt',
   inAppSuppressed: 'inAppSuppressed',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.NotificationDigestScalarFieldEnum = {
+  recipientId: 'recipientId',
+  day: 'day',
   createdAt: 'createdAt'
 };
 
@@ -465,6 +471,7 @@ exports.Prisma.ModelName = {
   ModelCommentLike: 'ModelCommentLike',
   Event: 'Event',
   UserNotification: 'UserNotification',
+  NotificationDigest: 'NotificationDigest',
   UserNotificationPreference: 'UserNotificationPreference'
 };
 

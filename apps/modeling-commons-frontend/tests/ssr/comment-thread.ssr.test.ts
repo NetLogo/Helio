@@ -59,7 +59,6 @@ function stubAutoImports() {
   vi.stubGlobal("useAsyncData", useAsyncDataOnServer);
   vi.stubGlobal("useApi", () => api.client);
   vi.stubGlobal("useToast", () => ({ add: vi.fn() }));
-  vi.stubGlobal("useCommentMutations", () => ({}));
 }
 
 beforeEach(async () => {

@@ -1,6 +1,4 @@
 import type { Model } from '#prisma/index';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
-import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import makeModelRepository from '#src/modules/model/database/model.repository.ts';
 import modelDomain from '#src/modules/model/domain/model.domain.ts';
 import {
@@ -12,6 +10,9 @@ import { readableModelFilter } from '#src/shared/permissions/model-access.filter
 import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
 
 function makeModel(overrides: Partial<Model> = {}): Model {
   return {
@@ -35,8 +36,8 @@ function makeModel(overrides: Partial<Model> = {}): Model {
 }
 
 describe('modelService', () => {
-  const modelRepository = mockModelRepository();
-  const eventRepository = mockEventRepository();
+  const modelRepository = mockPort<ModelRepository>();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const domain = modelDomain();
   const modelDraftService = {

@@ -1,6 +1,7 @@
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { FastifyInstance } from 'fastify';
+import { pollUntil } from './poll.ts';
 
 export type EventStream = {
   statusCode: number;
@@ -14,7 +15,6 @@ export type EventStream = {
 
 export type StreamFrameMessage = {
   event?: unknown;
-  connectionId?: unknown;
   topic?: { type?: unknown; id?: unknown };
 };
 
@@ -67,11 +67,6 @@ export function openEventStream(
 export async function waitUntil(
   predicate: () => boolean | Promise<boolean>,
   timeoutMs: number,
-): Promise<boolean> {
-  const deadline = Date.now() + timeoutMs;
-  while (!(await predicate())) {
-    if (Date.now() > deadline) return false;
-    await new Promise((resolve) => setTimeout(resolve, 50));
-  }
-  return true;
+): Promise<void> {
+  await pollUntil(predicate, Boolean, { timeoutMs, intervalMs: 50 });
 }

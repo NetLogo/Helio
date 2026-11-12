@@ -2,7 +2,7 @@ import { Prisma } from '#prisma/index';
 import { trace, type Span } from '@opentelemetry/api';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { mapPrismaError } from '#src/shared/db/prisma-error.ts';
+import { mapPrismaError, rethrowUniqueViolation } from '#src/shared/db/prisma-error.ts';
 import {
   ArgumentInvalidException,
   ConflictException,
@@ -159,5 +159,29 @@ describe('mapPrismaError', () => {
       }),
     );
     expect(mapped).toBeInstanceOf(DatabaseErrorException);
+  });
+});
+
+describe('rethrowUniqueViolation', () => {
+  it('replaces a unique violation with the given error', async () => {
+    const replacement = new Error('already exists');
+
+    await expect(
+      rethrowUniqueViolation(Promise.reject(makeKnownError('P2002')), () => replacement),
+    ).rejects.toBe(replacement);
+  });
+
+  it('rethrows any other error unchanged', async () => {
+    const error = makeKnownError('P2003');
+
+    await expect(
+      rethrowUniqueViolation(Promise.reject(error), () => new Error('already exists')),
+    ).rejects.toBe(error);
+  });
+
+  it('resolves with the value of a successful operation', async () => {
+    await expect(
+      rethrowUniqueViolation(Promise.resolve('ok'), () => new Error('already exists')),
+    ).resolves.toBe('ok');
   });
 });

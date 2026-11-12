@@ -69,14 +69,6 @@ export default function modelCommentRepository({ db }: Dependencies): ModelComme
       return record ? toEntity(record) : undefined;
     },
 
-    async findByIdTx(ctx: TransactionContext, id: string): Promise<ModelCommentEntity | undefined> {
-      const client = resolveTransaction(ctx);
-      const record = await client.modelComment.findUnique({
-        where: { id },
-        include: modelCommentInclude(),
-      });
-      return record ? toEntity(record) : undefined;
-    },
 
     async listTopLevel(
       modelId: string,

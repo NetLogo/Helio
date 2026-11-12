@@ -8,7 +8,13 @@
         :src="author.userImage ?? undefined"
         size="sm"
         :alt="author.userName ?? 'Anonymous'"
-      />
+      >
+        <AvatarFallback
+          :seed="author.userName ?? ''"
+          :initials="createAvatarInitials(author.userName)"
+          :label="author.userName ?? 'Anonymous'"
+        />
+      </UAvatar>
     </UAvatarGroup>
     <NuxtLink
       class="font-medium hover:underline text-royal-blue-dark"

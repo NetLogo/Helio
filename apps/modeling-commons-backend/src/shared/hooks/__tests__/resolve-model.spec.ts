@@ -1,8 +1,9 @@
-import { mockPermissionRepository } from '#src/modules/model-permission/database/permission.repository.mock.ts';
 import { ForbiddenException, NotFoundException } from '#src/shared/exceptions/index.ts';
 import { resolveModel } from '#src/shared/hooks/resolve-model.ts';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockPort, type MockedPort } from '#src/shared/test/mock-port.ts';
+import type { PermissionRepository } from '#src/modules/model-permission/database/permission.repository.port.ts';
 
 const reply = {} as FastifyReply;
 
@@ -22,9 +23,9 @@ function makeRequest(opts: {
     banned: boolean;
     deletedAt: Date | null;
   } | null;
-  permissionRepository?: ReturnType<typeof mockPermissionRepository>;
-}): { request: FastifyRequest; permissionRepository: ReturnType<typeof mockPermissionRepository> } {
-  const permissionRepository = opts.permissionRepository ?? mockPermissionRepository();
+  permissionRepository?: MockedPort<PermissionRepository>;
+}): { request: FastifyRequest; permissionRepository: MockedPort<PermissionRepository> } {
+  const permissionRepository = opts.permissionRepository ?? mockPort<PermissionRepository>();
   const db = {
     model: { findUnique: vi.fn().mockResolvedValue(opts.model ?? null) },
     user: { findUnique: vi.fn().mockResolvedValue(opts.user ?? null) },
@@ -76,7 +77,7 @@ describe('resolveModel', () => {
   });
 
   it('looks up authorship and grants for an authenticated viewer', async () => {
-    const permissionRepository = mockPermissionRepository();
+    const permissionRepository = mockPort<PermissionRepository>();
     permissionRepository.findAuthor.mockResolvedValue({ role: 'owner' });
     permissionRepository.findByModelAndUser.mockResolvedValue({ permissionLevel: 'admin' });
 
@@ -100,7 +101,7 @@ describe('resolveModel', () => {
   });
 
   it('denies write on a public model for an unrelated authenticated viewer', async () => {
-    const permissionRepository = mockPermissionRepository();
+    const permissionRepository = mockPort<PermissionRepository>();
     permissionRepository.findAuthor.mockResolvedValue(undefined);
     permissionRepository.findByModelAndUser.mockResolvedValue(undefined);
 

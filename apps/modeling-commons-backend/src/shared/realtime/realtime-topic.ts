@@ -21,7 +21,3 @@ export function findRealtimeTopic(
 export function isTopicEvent(topic: AnyRealtimeTopic, eventType: unknown): boolean {
   return (topic.events as ReadonlyArray<unknown>).includes(eventType);
 }
-
-export function listTopicEventTypes(topics: ReadonlyArray<AnyRealtimeTopic>): Array<string> {
-  return [...new Set(topics.flatMap((topic) => topic.events))];
-}

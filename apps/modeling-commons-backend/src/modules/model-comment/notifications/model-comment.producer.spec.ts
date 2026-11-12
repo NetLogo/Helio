@@ -1,20 +1,24 @@
+import { makeSubjectsByNotificationId } from '#src/modules/user-notification/core/subjects.domain.ts';
+import { modelCommentCategories } from '#src/modules/model-comment/notifications/model-comment.categories.ts';
 import userDomain from '#src/modules/user/domain/user.domain.ts';
 import { describe, it, expect, beforeEach } from 'vitest';
 import env from '#src/config/env.ts';
 import makeModelCommentProducer from '#src/modules/model-comment/notifications/model-comment.producer.ts';
-import { mockModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.mock.ts';
-import { mockModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.mock.ts';
+import { modelCommentNotifications } from '#src/modules/model-comment/notifications/model-comment.notifications.ts';
 import mailDomain from '#src/modules/mail/domain/mail.domain.ts';
 import type { ModelCommentEntity } from '#src/modules/model-comment/domain/model-comment.types.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
-import { buildDigest } from '#src/modules/user-notification/domain/user-notification.grouping.ts';
+import { buildDigest } from '#src/modules/user-notification/digest/digest.domain.ts';
 import { truncatePreview } from '#src/shared/utils/formatters.ts';
 import type {
-  NotificationRow,
-  NotificationLinks,
-  NotificationPreviews,
-  NotificationRecipient,
-} from '#src/modules/user-notification/domain/user-notification.types.ts';
+  Email,
+  Notification,
+  NotificationSubjects,
+  SubjectsByNotificationId,
+} from '#src/modules/user-notification/core/types/index.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.port.ts';
+import type { ModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.port.ts';
 
 function makeComment(overrides: Partial<ModelCommentEntity> = {}): ModelCommentEntity {
   return {
@@ -44,19 +48,19 @@ function makeEvent(overrides: Partial<EventRecord> = {}): EventRecord {
     payload: { commentId: 'comment-1', parentId: null },
     createdAt: new Date('2026-01-01'),
     ...overrides,
-  };
+  } as EventRecord;
 }
 
-const recipient: NotificationRecipient = { id: 'author-1', email: 'author@x.com', name: 'Author' };
-const emailLinks: NotificationLinks = {
+const recipient: Email.Recipient = { id: 'author-1', email: 'author@x.com', name: 'Author' };
+const emailLinks: Email.Links = {
   unsubscribeUrl: 'https://example.test/unsubscribe?token=t',
   oneClickUnsubscribeUrl: 'https://api.example.test/api/v1/notification-unsubscribe?token=t',
   preferencesUrl: 'https://example.test/settings/notifications',
 };
 
 describe('modelCommentProducer', () => {
-  const modelCommentRepository = mockModelCommentRepository();
-  const modelAuthorRepository = mockModelAuthorRepository();
+  const modelCommentRepository = mockPort<ModelCommentRepository>();
+  const modelAuthorRepository = mockPort<ModelAuthorRepository>();
 
   const producer = makeModelCommentProducer({
     modelCommentRepository,
@@ -70,34 +74,33 @@ describe('modelCommentProducer', () => {
     modelAuthorRepository.findAllByModel.mockReset();
   });
 
-  it('declares the comment created and deleted event types', () => {
-    expect(producer.eventTypes).toEqual(['model_comment.created', 'model_comment.deleted']);
-  });
-
-  it('resolves no row facts for a deleted event', async () => {
-    const rowFacts = await producer.resolve(
-      makeEvent({ type: 'model_comment.deleted', payload: { commentId: 'comment-1' } }),
+  it('resolves no notification newNotification for a deleted event', async () => {
+    const newNotifications = await producer.buildNotifications(
+      makeEvent({
+        type: 'model_comment.deleted',
+        payload: { commentId: 'comment-1', byAdmin: false },
+      }),
     );
 
-    expect(rowFacts).toEqual([]);
+    expect(newNotifications).toEqual([]);
     expect(modelCommentRepository.findById).not.toHaveBeenCalled();
   });
 
-  describe('redact', () => {
-    it('drops the excerpt from every row about the deleted comment', () => {
+  describe('findRedaction', () => {
+    it('drops the excerpt from every notification about the deleted comment', () => {
       const event = makeEvent({
         type: 'model_comment.deleted',
         payload: { commentId: 'comment-1', byAdmin: false },
       });
 
-      expect(producer.redact(event)).toEqual({
-        match: { key: 'commentId', value: 'comment-1' },
-        fields: ['excerpt'],
+      expect(producer.findRedaction(event)).toEqual({
+        match: { payloadKey: 'commentId', value: 'comment-1' },
+        payloadFields: ['excerpt'],
       });
     });
 
     it('redacts nothing for a created event', () => {
-      expect(producer.redact(makeEvent())).toBeUndefined();
+      expect(producer.findRedaction(makeEvent())).toBeUndefined();
     });
   });
 
@@ -107,11 +110,11 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
     ]);
 
-    const rowFacts = await producer.resolve(
+    const newNotifications = await producer.buildNotifications(
       makeEvent({ payload: { commentId: 'missing', parentId: null } }),
     );
 
-    expect(rowFacts).toEqual([]);
+    expect(newNotifications).toEqual([]);
   });
 
   it('notifies no one when the comment was deleted before the event was handled', async () => {
@@ -122,25 +125,25 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
     ]);
 
-    const rowFacts = await producer.resolve(makeEvent());
+    const newNotifications = await producer.buildNotifications(makeEvent());
 
-    expect(rowFacts).toEqual([]);
+    expect(newNotifications).toEqual([]);
   });
 
-  it('resolves row facts for every model author except the commenter', async () => {
+  it('resolves notification newNotification for every model author except the commenter', async () => {
     modelAuthorRepository.findAllByModel.mockResolvedValue([
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
       { modelId: 'model-1', userId: 'commenter-1', role: 'contributor' },
     ]);
 
-    const rowFacts = await producer.resolve(makeEvent());
+    const newNotifications = await producer.buildNotifications(makeEvent());
 
-    expect(rowFacts).toHaveLength(1);
-    expect(rowFacts[0]!.recipientUserId).toBe('author-1');
-    expect(rowFacts[0]!.category).toBe('comment.on_your_model');
+    expect(newNotifications).toHaveLength(1);
+    expect(newNotifications[0]!.recipientId).toBe('author-1');
+    expect(newNotifications[0]!.category).toBe(modelCommentCategories.onYourModel);
   });
 
-  it('references the commenter and the model in all row facts', async () => {
+  it('references the commenter and the model in all notification newNotification', async () => {
     const parent = makeComment({ id: 'parent-1', modelId: 'model-1', userId: 'author-1' });
     const reply = makeComment({ id: 'reply-1', userId: 'commenter-1', parentId: 'parent-1' });
     modelCommentRepository.findById.mockImplementation(async (id: string) =>
@@ -150,14 +153,14 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'owner-1', role: 'owner' },
     ]);
 
-    const rowFacts = await producer.resolve(
+    const newNotifications = await producer.buildNotifications(
       makeEvent({ payload: { commentId: 'reply-1', parentId: 'parent-1' } }),
     );
 
-    expect(rowFacts).toHaveLength(2);
-    for (const facts of rowFacts) {
-      expect(facts.actorUserId).toBe('commenter-1');
-      expect(facts.target).toEqual({ type: 'model', id: 'model-1' });
+    expect(newNotifications).toHaveLength(2);
+    for (const newNotification of newNotifications) {
+      expect(newNotification.actorId).toBe('commenter-1');
+      expect(newNotification.target).toEqual({ type: 'model', id: 'model-1' });
     }
   });
 
@@ -167,14 +170,14 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
     ]);
 
-    const [facts] = await producer.resolve(makeEvent());
+    const [newNotification] = await producer.buildNotifications(makeEvent());
 
-    expect(facts!.payload).toEqual({
+    expect(newNotification!.payload).toEqual({
       commentId: 'comment-1',
       excerpt: truncatePreview('x'.repeat(400)),
     });
-    expect(facts).not.toHaveProperty('title');
-    expect(facts).not.toHaveProperty('body');
+    expect(newNotification).not.toHaveProperty('title');
+    expect(newNotification).not.toHaveProperty('body');
   });
 
   it('leaves the actor unset for a comment with no author', async () => {
@@ -183,10 +186,10 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
     ]);
 
-    const rowFacts = await producer.resolve(makeEvent());
+    const newNotifications = await producer.buildNotifications(makeEvent());
 
-    expect(rowFacts[0]!.actorUserId).toBeUndefined();
-    expect(rowFacts[0]!.target).toEqual({ type: 'model', id: 'model-1' });
+    expect(newNotifications[0]!.actorId).toBeUndefined();
+    expect(newNotifications[0]!.target).toEqual({ type: 'model', id: 'model-1' });
   });
 
   it('opens a reply notification on the parent thread with the reply highlighted', async () => {
@@ -206,19 +209,23 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'owner-1', role: 'owner' },
     ]);
 
-    const rowFacts = await producer.resolve(
+    const newNotifications = await producer.buildNotifications(
       makeEvent({ payload: { commentId: 'reply-1', parentId: 'parent-1' } }),
     );
 
-    const replyFacts = rowFacts.find((facts) => facts.category === 'comment.reply_to_you')!;
-    const modelFacts = rowFacts.find((facts) => facts.category === 'comment.on_your_model')!;
-    expect(replyFacts.recipientUserId).toBe('author-1');
-    expect(modelFacts.recipientUserId).toBe('owner-1');
+    const replyNewNotification = newNotifications.find(
+      (newNotification) => newNotification.category === modelCommentCategories.replyToYou,
+    )!;
+    const modelNewNotification = newNotifications.find(
+      (newNotification) => newNotification.category === modelCommentCategories.onYourModel,
+    )!;
+    expect(replyNewNotification.recipientId).toBe('author-1');
+    expect(modelNewNotification.recipientId).toBe('owner-1');
 
-    const replyUrl = new URL(replyFacts.url);
+    const replyUrl = new URL(replyNewNotification.url);
     expect(replyUrl.pathname).toBe('/models/model-1/comments/parent-1');
     expect(replyUrl.searchParams.get('highlightedCommentId')).toBe('reply-1');
-    expect(modelFacts.url).toBe(replyUrl.toString());
+    expect(modelNewNotification.url).toBe(replyUrl.toString());
   });
 
   it('opens a top-level comment notification on the comment itself', async () => {
@@ -227,22 +234,22 @@ describe('modelCommentProducer', () => {
       { modelId: 'model-1', userId: 'author-1', role: 'owner' },
     ]);
 
-    const rowFacts = await producer.resolve(makeEvent());
+    const newNotifications = await producer.buildNotifications(makeEvent());
 
-    const url = new URL(rowFacts[0]!.url);
+    const url = new URL(newNotifications[0]!.url);
     expect(url.origin).toBe(new URL(env.product.website).origin);
     expect(url.pathname).toBe('/models/model-1/comments/comment-1');
     expect(url.searchParams.get('highlightedCommentId')).toBe('comment-1');
   });
 
   describe('renderEmail', () => {
-    function makeEmailRow(overrides: Partial<NotificationRow> = {}): NotificationRow {
+    function makeEmailNotification(overrides: Partial<Notification> = {}): Notification {
       return {
-        id: 'row-1',
-        category: 'comment.on_your_model',
+        id: 'notification-1',
+        category: modelCommentCategories.onYourModel,
         url: 'https://example.test/models/wolf/comments/comment-1',
         payload: { commentId: 'comment-1', excerpt: 'Nice model' },
-        actorUserId: 'alice',
+        actorId: 'alice',
         targetType: 'model',
         targetId: 'wolf',
         createdAt: new Date('2026-01-01T08:00:00Z'),
@@ -250,10 +257,10 @@ describe('modelCommentProducer', () => {
       };
     }
 
-    function makeEmailPreview(
+    function makeEmailSubjects(
       actorName: string | null,
       model: { name: string | null; thumbnailUrl: string | null },
-    ): NotificationPreviews {
+    ): NotificationSubjects {
       return {
         actor: { name: actorName, thumbnailUrl: null, url: 'https://example.test/users/alice' },
         target: { ...model, url: 'https://example.test/models/wolf' },
@@ -263,18 +270,18 @@ describe('modelCommentProducer', () => {
     const readable = { name: 'Wolf Sheep', thumbnailUrl: 'https://cdn.example.test/wolf.png' };
 
     it('shows the actor and model names current when the email is rendered', async () => {
-      const row = makeEmailRow();
+      const notification = makeEmailNotification();
 
       const before = await producer.renderEmail(
-        row,
+        notification,
         recipient,
-        makeEmailPreview('Alice', readable),
+        makeEmailSubjects('Alice', readable),
         emailLinks,
       );
       const after = await producer.renderEmail(
-        row,
+        notification,
         recipient,
-        makeEmailPreview('Alicia', { ...readable, name: 'Wolf Sheep Predation' }),
+        makeEmailSubjects('Alicia', { ...readable, name: 'Wolf Sheep Predation' }),
         emailLinks,
       );
 
@@ -287,22 +294,22 @@ describe('modelCommentProducer', () => {
 
     it('renders a reply with the reply template', async () => {
       const email = await producer.renderEmail(
-        makeEmailRow({ category: 'comment.reply_to_you' }),
+        makeEmailNotification({ category: modelCommentCategories.replyToYou }),
         recipient,
-        makeEmailPreview('Alice', readable),
+        makeEmailSubjects('Alice', readable),
         emailLinks,
       );
 
       expect(email.subject).toBe('Alice replied to your comment');
     });
 
-    it.each(['comment.on_your_model', 'comment.reply_to_you'])(
+    it.each([modelCommentCategories.onYourModel, modelCommentCategories.replyToYou])(
       'says "a model", keeps the link and shows no image for an unreadable model in %s',
       async (category) => {
         const email = await producer.renderEmail(
-          makeEmailRow({ category }),
+          makeEmailNotification({ category }),
           recipient,
-          makeEmailPreview('Alice', { name: null, thumbnailUrl: null }),
+          makeEmailSubjects('Alice', { name: null, thumbnailUrl: null }),
           emailLinks,
         );
 
@@ -317,9 +324,9 @@ describe('modelCommentProducer', () => {
 
     it('shows the thumbnail of a readable model', async () => {
       const email = await producer.renderEmail(
-        makeEmailRow(),
+        makeEmailNotification(),
         recipient,
-        makeEmailPreview('Alice', readable),
+        makeEmailSubjects('Alice', readable),
         emailLinks,
       );
 
@@ -328,7 +335,7 @@ describe('modelCommentProducer', () => {
 
     it('names an actor who no longer resolves "Someone"', async () => {
       const email = await producer.renderEmail(
-        makeEmailRow(),
+        makeEmailNotification(),
         recipient,
         { actor: null, target: { ...readable, url: 'https://example.test/models/wolf' } },
         emailLinks,
@@ -338,29 +345,29 @@ describe('modelCommentProducer', () => {
     });
 
     it('sends the stored excerpt and comment link to the recipient', async () => {
-      const row = makeEmailRow();
+      const notification = makeEmailNotification();
 
       const email = await producer.renderEmail(
-        row,
+        notification,
         recipient,
-        makeEmailPreview('Alice', readable),
+        makeEmailSubjects('Alice', readable),
         emailLinks,
       );
 
       expect(email.to).toBe(recipient.email);
       expect(email.text).toContain('Nice model');
-      expect(email.html).toContain(`href="${row.url}"`);
+      expect(email.html).toContain(`href="${notification.url}"`);
     });
   });
 
-  describe('describeRow', () => {
-    function makeFeedRow(overrides: Partial<NotificationRow> = {}): NotificationRow {
+  describe('describeFeedItem', () => {
+    function makeFeedNotification(overrides: Partial<Notification> = {}): Notification {
       return {
-        id: 'row-1',
-        category: 'comment.on_your_model',
-        url: 'https://example.test/comments/row-1',
+        id: 'notification-1',
+        category: modelCommentCategories.onYourModel,
+        url: 'https://example.test/comments/notification-1',
         payload: { commentId: 'comment-1', excerpt: 'Nice model' },
-        actorUserId: 'alice',
+        actorId: 'alice',
         targetType: 'model',
         targetId: 'wolf',
         createdAt: new Date('2026-01-01T08:00:00Z'),
@@ -368,43 +375,50 @@ describe('modelCommentProducer', () => {
       };
     }
 
-    function makePreview(
+    function makeFeedSubjects(
       actorName: string | null | undefined,
       modelName: string | null = 'Wolf Sheep',
-    ): NotificationPreviews {
+    ): NotificationSubjects {
       return {
         actor:
           actorName === undefined
             ? null
             : { name: actorName, thumbnailUrl: null, url: 'https://example.test/users/alice' },
-        target: { name: modelName, thumbnailUrl: null, url: 'https://example.test/models/wolf' },
+        target:
+          modelName === null
+            ? null
+            : { name: modelName, thumbnailUrl: null, url: 'https://example.test/models/wolf' },
       };
     }
 
-    it('titles a comment and a reply with the preview actor name and the verb of each category', () => {
-      expect(producer.describeRow(makeFeedRow(), makePreview('Alicia'))).toEqual({
-        title: 'Alicia commented on your model',
-        body: 'Nice model',
-      });
+    it('titles a comment and a reply with the subject actor name and the verb of each category', () => {
+      expect(producer.describeFeedItem(makeFeedNotification(), makeFeedSubjects('Alicia'))).toEqual(
+        {
+          title: 'Alicia commented on your model',
+          body: 'Nice model',
+        },
+      );
       expect(
-        producer.describeRow(
-          makeFeedRow({ category: 'comment.reply_to_you' }),
-          makePreview('Alicia'),
+        producer.describeFeedItem(
+          makeFeedNotification({ category: modelCommentCategories.replyToYou }),
+          makeFeedSubjects('Alicia'),
         ),
       ).toEqual({ title: 'Alicia replied to your comment', body: 'Nice model' });
     });
 
     it('names a deleted or nameless actor "Someone"', () => {
-      expect(producer.describeRow(makeFeedRow(), makePreview(undefined)).title).toBe(
-        'Someone commented on your model',
-      );
-      expect(producer.describeRow(makeFeedRow(), makePreview(null)).title).toBe(
+      expect(
+        producer.describeFeedItem(makeFeedNotification(), makeFeedSubjects(undefined)).title,
+      ).toBe('Someone commented on your model');
+      expect(producer.describeFeedItem(makeFeedNotification(), makeFeedSubjects(null)).title).toBe(
         'Someone commented on your model',
       );
     });
 
     it('quotes no excerpt when the recipient can no longer read the model', () => {
-      expect(producer.describeRow(makeFeedRow(), makePreview('Alicia', null))).toEqual({
+      expect(
+        producer.describeFeedItem(makeFeedNotification(), makeFeedSubjects('Alicia', null)),
+      ).toEqual({
         title: 'Alicia commented on your model',
         body: '',
       });
@@ -412,43 +426,45 @@ describe('modelCommentProducer', () => {
 
     it('never mentions the model, readable or not', () => {
       for (const modelName of ['Wolf Sheep', null]) {
-        const description = producer.describeRow(makeFeedRow(), makePreview('Alice', modelName));
+        const description = producer.describeFeedItem(
+          makeFeedNotification(),
+          makeFeedSubjects('Alice', modelName),
+        );
         expect(JSON.stringify(description)).not.toContain('Wolf Sheep');
       }
     });
 
-    it.each([
-      ['an empty object', {}],
-      ['null', null],
-      ['an array', ['Nice model']],
-      ['a string', 'Nice model'],
-      ['a non-string excerpt', { commentId: 'comment-1', excerpt: 42 }],
-    ])('renders an empty body for a payload that is %s', (_label, payload) => {
-      expect(producer.describeRow(makeFeedRow({ payload }), makePreview('Alice'))).toEqual({
+    it('renders an empty body for a redacted excerpt', () => {
+      const payload = { commentId: 'comment-1', excerpt: '' };
+
+      expect(
+        producer.describeFeedItem(makeFeedNotification({ payload }), makeFeedSubjects('Alice')),
+      ).toEqual({
         title: 'Alice commented on your model',
         body: '',
       });
     });
   });
 
-  describe('describeGroup', () => {
-    const producerByCategory = new Map([
-      ['comment.on_your_model', producer],
-      ['comment.reply_to_you', producer],
-    ]);
+  describe('describeDigestItem', () => {
+    const registered = { ...modelCommentNotifications, producer };
+    const moduleByCategory = {
+      [modelCommentCategories.onYourModel]: registered,
+      [modelCommentCategories.replyToYou]: registered,
+    };
 
-    function makeRow(
+    function makeNotification(
       id: string,
-      actorUserId: string | null,
+      actorId: string | null,
       minute: number,
-      overrides: Partial<NotificationRow> = {},
-    ): NotificationRow {
+      overrides: Partial<Notification> = {},
+    ): Notification {
       return {
         id,
-        category: 'comment.on_your_model',
+        category: modelCommentCategories.onYourModel,
         url: `https://example.test/comments/${id}`,
         payload: { commentId: id, excerpt: 'Nice model' },
-        actorUserId,
+        actorId,
         targetType: 'model',
         targetId: 'wolf',
         createdAt: new Date(`2026-01-01T08:${String(minute).padStart(2, '0')}:00Z`),
@@ -456,16 +472,16 @@ describe('modelCommentProducer', () => {
       };
     }
 
-    function makePreviews(
-      rows: ReadonlyArray<NotificationRow>,
+    function makeDigestSubjects(
+      notifications: ReadonlyArray<Notification>,
       actorNames: Record<string, string | null>,
       modelName: string | null,
-    ): Map<string, NotificationPreviews> {
-      return new Map(
-        rows.map((row) => {
-          const actorName = row.actorUserId ? actorNames[row.actorUserId] : undefined;
+    ): SubjectsByNotificationId {
+      return makeSubjectsByNotificationId(
+        notifications.map((notification) => {
+          const actorName = notification.actorId ? actorNames[notification.actorId] : undefined;
           return [
-            row.id,
+            notification.id,
             {
               actor:
                 actorName === undefined
@@ -483,21 +499,25 @@ describe('modelCommentProducer', () => {
     }
 
     function describeLines(
-      rows: ReadonlyArray<NotificationRow>,
+      notifications: ReadonlyArray<Notification>,
       actorNames: Record<string, string | null>,
       modelName: string | null = 'Wolf Sheep',
     ) {
-      return buildDigest(rows, makePreviews(rows, actorNames, modelName), producerByCategory).items;
+      return buildDigest(
+        notifications,
+        makeDigestSubjects(notifications, actorNames, modelName),
+        moduleByCategory,
+      ).items;
     }
 
     it('names at most two of three people commenting and replying on one model, newest first', () => {
-      const rows = [
-        makeRow('c1', 'alice', 1),
-        makeRow('c2', 'bob', 2),
-        makeRow('r1', 'carol', 3, { category: 'comment.reply_to_you' }),
+      const notifications = [
+        makeNotification('c1', 'alice', 1),
+        makeNotification('c2', 'bob', 2),
+        makeNotification('r1', 'carol', 3, { category: modelCommentCategories.replyToYou }),
       ];
 
-      expect(describeLines(rows, { alice: 'Alice', bob: 'Bob', carol: 'Carol' })).toEqual([
+      expect(describeLines(notifications, { alice: 'Alice', bob: 'Bob', carol: 'Carol' })).toEqual([
         {
           text: 'Carol, Bob, and 1 other commented on Wolf Sheep',
           url: 'https://example.test/models/wolf',
@@ -506,60 +526,67 @@ describe('modelCommentProducer', () => {
     });
 
     it('counts one person commenting several times once', () => {
-      const rows = [
-        makeRow('a1', 'alice', 1),
-        makeRow('a2', 'alice', 2),
-        makeRow('a3', 'alice', 3),
+      const notifications = [
+        makeNotification('a1', 'alice', 1),
+        makeNotification('a2', 'alice', 2),
+        makeNotification('a3', 'alice', 3),
       ];
 
-      expect(describeLines(rows, { alice: 'Alice' }).map((item) => item.text)).toEqual([
+      expect(describeLines(notifications, { alice: 'Alice' }).map((item) => item.text)).toEqual([
         'Alice commented on Wolf Sheep',
       ]);
     });
 
     it('counts an actor who no longer resolves without naming them', () => {
-      const rows = [makeRow('gone', 'deleted-user', 2), makeRow('a', 'alice', 1)];
+      const notifications = [
+        makeNotification('gone', 'deleted-user', 2),
+        makeNotification('a', 'alice', 1),
+      ];
 
-      expect(describeLines(rows, { alice: 'Alice' }).map((item) => item.text)).toEqual([
+      expect(describeLines(notifications, { alice: 'Alice' }).map((item) => item.text)).toEqual([
         'Alice and 1 other commented on Wolf Sheep',
       ]);
     });
 
     it('counts an actor without a name without naming them', () => {
       expect(
-        describeLines([makeRow('n', 'nameless', 1)], { nameless: null }).map((item) => item.text),
+        describeLines([makeNotification('n', 'nameless', 1)], { nameless: null }).map(
+          (item) => item.text,
+        ),
       ).toEqual(['One person commented on Wolf Sheep']);
     });
 
-    it('speaks of one person when no row has a known actor', () => {
-      expect(describeLines([makeRow('n', null, 1)], {}).map((item) => item.text)).toEqual([
+    it('speaks of one person when no notification has a known actor', () => {
+      expect(describeLines([makeNotification('n', null, 1)], {}).map((item) => item.text)).toEqual([
         'One person commented on Wolf Sheep',
       ]);
     });
 
     it('has no line for a model that no longer resolves', () => {
-      const rows = [makeRow('a', 'alice', 1)];
+      const notifications = [makeNotification('a', 'alice', 1)];
 
-      expect(buildDigest(rows, new Map(), producerByCategory).items).toEqual([]);
+      const unresolved = makeSubjectsByNotificationId([['a', { actor: null, target: null }]]);
+
+      expect(buildDigest(notifications, unresolved, moduleByCategory).items).toEqual([]);
     });
 
     it('shows the names current when the digest is built, after the user and the model are renamed', () => {
-      const rows = [makeRow('a', 'alice', 1)];
+      const notifications = [makeNotification('a', 'alice', 1)];
 
-      const before = describeLines(rows, { alice: 'Alice' }, 'Wolf Sheep');
-      const after = describeLines(rows, { alice: 'Alicia' }, 'Wolf Sheep Predation');
+      const before = describeLines(notifications, { alice: 'Alice' }, 'Wolf Sheep');
+      const after = describeLines(notifications, { alice: 'Alicia' }, 'Wolf Sheep Predation');
 
       expect(before.map((item) => item.text)).toEqual(['Alice commented on Wolf Sheep']);
       expect(after.map((item) => item.text)).toEqual(['Alicia commented on Wolf Sheep Predation']);
     });
 
     it('has no line, and no trace of the model title, for a model the recipient cannot read', () => {
-      const rows = [makeRow('a', 'alice', 1), makeRow('b', 'bob', 2)];
+      const notifications = [makeNotification('a', 'alice', 1), makeNotification('b', 'bob', 2)];
 
       const digest = buildDigest(
-        rows,
-        makePreviews(rows, { alice: 'Alice', bob: 'Bob' }, null),
-        producerByCategory,
+        notifications,
+        makeDigestSubjects(notifications, { alice: 'Alice', bob: 'Bob' }, null),
+        moduleByCategory,
       );
 
       expect(digest).toEqual({ items: [], moreCount: 0 });

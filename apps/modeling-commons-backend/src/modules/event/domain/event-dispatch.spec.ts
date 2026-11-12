@@ -1,13 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import {
-  summarizeDispatches,
-  type DispatchSubscriber,
-} from '#src/modules/event/domain/event-dispatch.ts';
+import { summarizeDispatches } from '#src/modules/event/domain/event-dispatch.ts';
 
-const subscribers: Array<DispatchSubscriber> = [
-  { subscriber: 'first', queueName: 'first', deadLetterQueueName: 'first-dead' },
-  { subscriber: 'second', queueName: 'second', deadLetterQueueName: 'second-dead' },
-];
+const subscribers = ['first', 'second'].map((queueName) => ({
+  queueName,
+  deadLetterQueueName: `${queueName}-dead`,
+}));
 
 function makeRow(queue: string, state: string, retryCount = 0, output: unknown = null) {
   return { value: 'e1', queue, state, retryCount, output };

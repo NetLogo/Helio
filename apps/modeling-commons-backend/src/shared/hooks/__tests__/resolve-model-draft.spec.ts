@@ -1,4 +1,3 @@
-import { mockModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.mock.ts';
 import {
   ModelDraftAccessDeniedError,
   ModelDraftNotFoundError,
@@ -8,6 +7,8 @@ import { ForbiddenException, UnauthorizedException } from '#src/shared/exception
 import { resolveModelDraft } from '#src/shared/hooks/resolve-model-draft.ts';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockPort, type MockedPort } from '#src/shared/test/mock-port.ts';
+import type { ModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.port.ts';
 
 const reply = {} as FastifyReply;
 
@@ -27,7 +28,7 @@ function makeDraft(overrides: Partial<ModelDraftEntity> = {}): ModelDraftEntity 
 function buildRequest(opts: {
   draftId: string;
   userId?: string;
-  draftRepo?: ReturnType<typeof mockModelDraftRepository>;
+  draftRepo?: MockedPort<ModelDraftRepository>;
   modelRow?: {
     id: string;
     visibility: 'public' | 'private' | 'unlisted';
@@ -41,8 +42,8 @@ function buildRequest(opts: {
     banned: boolean;
     deletedAt: Date | null;
   } | null;
-}): { request: FastifyRequest; draftRepo: ReturnType<typeof mockModelDraftRepository> } {
-  const draftRepo = opts.draftRepo ?? mockModelDraftRepository();
+}): { request: FastifyRequest; draftRepo: MockedPort<ModelDraftRepository> } {
+  const draftRepo = opts.draftRepo ?? mockPort<ModelDraftRepository>();
   const db = {
     user: { findUnique: vi.fn().mockResolvedValue(opts.viewer ?? null) },
     model: { findUnique: vi.fn().mockResolvedValue(opts.modelRow ?? null) },
@@ -69,7 +70,7 @@ describe('resolveModelDraft', () => {
   });
 
   it('throws ModelDraftNotFoundError when the draft does not exist', async () => {
-    const draftRepo = mockModelDraftRepository();
+    const draftRepo = mockPort<ModelDraftRepository>();
     draftRepo.findById.mockResolvedValue(undefined);
     const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
 
@@ -78,7 +79,7 @@ describe('resolveModelDraft', () => {
   });
 
   it('throws ModelDraftAccessDeniedError when the draft belongs to another user', async () => {
-    const draftRepo = mockModelDraftRepository();
+    const draftRepo = mockPort<ModelDraftRepository>();
     draftRepo.findById.mockResolvedValue(makeDraft({ userId: 'other' }));
     const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
 
@@ -87,7 +88,7 @@ describe('resolveModelDraft', () => {
   });
 
   it('attaches the draft when the caller owns it and no model is linked', async () => {
-    const draftRepo = mockModelDraftRepository();
+    const draftRepo = mockPort<ModelDraftRepository>();
     const draft = makeDraft({ userId: 'u1' });
     draftRepo.findById.mockResolvedValue(draft);
     const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
@@ -99,7 +100,7 @@ describe('resolveModelDraft', () => {
   });
 
   it('rejects when the draft references a missing model', async () => {
-    const draftRepo = mockModelDraftRepository();
+    const draftRepo = mockPort<ModelDraftRepository>();
     draftRepo.findById.mockResolvedValue(makeDraft({ userId: 'u1', modelId: 'm1' }));
     const { request } = buildRequest({
       draftId: 'd1',
@@ -114,7 +115,7 @@ describe('resolveModelDraft', () => {
   });
 
   it('throws ForbiddenException when the linked model exists but the user cannot write', async () => {
-    const draftRepo = mockModelDraftRepository();
+    const draftRepo = mockPort<ModelDraftRepository>();
     draftRepo.findById.mockResolvedValue(makeDraft({ userId: 'u1', modelId: 'm1' }));
     const { request } = buildRequest({
       draftId: 'd1',
@@ -135,7 +136,7 @@ describe('resolveModelDraft', () => {
   });
 
   it('attaches the draft when the user has write access to the linked model (owner)', async () => {
-    const draftRepo = mockModelDraftRepository();
+    const draftRepo = mockPort<ModelDraftRepository>();
     const draft = makeDraft({ userId: 'u1', modelId: 'm1' });
     draftRepo.findById.mockResolvedValue(draft);
     const { request } = buildRequest({

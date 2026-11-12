@@ -4,6 +4,7 @@ import type {
   UpdateCurrentVersionProps,
 } from '#src/modules/model-version/domain/model-version.types.ts';
 import { detectNetlogoVersion } from '#src/shared/utils/netlogo-file.ts';
+import { modelVersionEventTypes } from '#src/modules/model-version/model-version.events.ts';
 
 export default function makeModelVersionService({
   transactionManager,
@@ -30,12 +31,12 @@ export default function makeModelVersionService({
       const netlogoVersion = detectNetlogoVersion(nlogoxFile);
 
       return transactionManager.run(async (ctx) => {
-        const previous = await modelVersionRepository.findLatestByModel(modelId);
+        const previous = await modelVersionRepository.findLatestByModel(modelId, ctx);
         if (previous) {
           await modelVersionRepository.finalizeTx(ctx, previous.modelId, previous.versionNumber);
         }
 
-        const versionNumber = await modelVersionRepository.getNextVersionNumberTx(ctx, modelId);
+        const versionNumber = (previous?.versionNumber ?? 0) + 1;
         const entity = modelVersionDomain.createVersion({
           modelId,
           versionNumber,
@@ -50,7 +51,7 @@ export default function makeModelVersionService({
         await modelRepository.setLatestVersionTx(ctx, modelId, versionNumber);
 
         await eventRepository.insertTx(ctx, {
-          type: 'model_version.created',
+          type: modelVersionEventTypes.created,
           actorId: userId,
           resourceType: 'model_version',
           resourceId: `${modelId}:${versionNumber}`,
@@ -78,7 +79,7 @@ export default function makeModelVersionService({
           input,
         );
         await eventRepository.insertTx(ctx, {
-          type: 'model_version.updated',
+          type: modelVersionEventTypes.updated,
           actorId: userId,
           resourceType: 'model_version',
           resourceId: `${modelId}:${current.versionNumber}`,

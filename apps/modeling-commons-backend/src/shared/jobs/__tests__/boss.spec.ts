@@ -6,7 +6,7 @@ const constructed: Array<ConstructorOptions> = [];
 const errorListeners: Array<(error: Error) => void> = [];
 
 vi.mock('#src/config/env.ts', () => ({
-  default: { db: { url: 'postgres://shared' } },
+  default: { db: { url: 'postgres://shared' }, product: { website: 'https://example.test' } },
 }));
 
 vi.mock('pg-boss', () => ({

@@ -1,30 +1,29 @@
-import { getDeadLetterQueueName, listSubscriberEntries } from '#src/workers/queues.ts';
+import rules from '#src/config/rules.ts';
+import { subscriberQueues } from '#src/config/workers.ts';
+import { getDeadLetterQueueName } from '#src/workers/queues.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
-import {
-  summarizeDispatches,
-  type DispatchSubscriber,
-} from '#src/modules/event/domain/event-dispatch.ts';
+import { summarizeDispatches } from '#src/modules/event/domain/event-dispatch.ts';
 import type { EventDispatch, EventListFilters } from '#src/modules/event/domain/event.types.ts';
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
 import type { Paginated } from '#src/shared/db/repository.port.ts';
 
-export type ListedEvent = EventRecord & { dispatch: Array<EventDispatch> };
+export type EventWithDispatches = EventRecord & { dispatches: Array<EventDispatch> };
 
-const subscribers: Array<DispatchSubscriber> = listSubscriberEntries().map(({ queueName }) => ({
-  subscriber: queueName,
+const subscribers = subscriberQueues.map(({ queueName }) => ({
   queueName,
   deadLetterQueueName: getDeadLetterQueueName(queueName),
 }));
 
 export default function makeListEventsQuery({ eventRepository, jobQueue }: Dependencies) {
-  async function findIdsInDispatchState(
+  async function findEventIdsByDispatchState(
     state: NonNullable<EventListFilters['dispatchState']>,
   ): Promise<Array<string>> {
+    const limit = rules.limits.eventAdmin.dispatchStateMaxEventIdsPerQueue;
     const idLists = await Promise.all(
       subscribers.map(async ({ queueName, deadLetterQueueName }) =>
         state === 'dead'
-          ? jobQueue.findJobValues(deadLetterQueueName, 'eventId')
-          : jobQueue.findJobValues(queueName, 'eventId', state),
+          ? jobQueue.findJobValues(deadLetterQueueName, 'eventId', { limit })
+          : jobQueue.findJobValues(queueName, 'eventId', { limit, state }),
       ),
     );
     return [...new Set(idLists.flat())];
@@ -34,16 +33,16 @@ export default function makeListEventsQuery({ eventRepository, jobQueue }: Depen
     async execute(
       filters: EventListFilters,
       query: { limit?: number; page?: number },
-    ): Promise<Paginated<ListedEvent>> {
-      const params = paginatedQueryBase(query);
+    ): Promise<Paginated<EventWithDispatches>> {
+      const pagination = paginatedQueryBase(query);
       const { dispatchState, ...searchFilters } = filters;
-      const ids = dispatchState ? await findIdsInDispatchState(dispatchState) : undefined;
+      const eventIds = dispatchState ? await findEventIdsByDispatchState(dispatchState) : undefined;
 
       const page = await eventRepository.search(
-        ids ? { ...searchFilters, ids } : searchFilters,
-        params,
+        eventIds ? { ...searchFilters, ids: eventIds } : searchFilters,
+        pagination,
       );
-      const rows = await jobQueue.findJobStates(
+      const jobStates = await jobQueue.findJobStates(
         subscribers.flatMap(({ queueName, deadLetterQueueName }) => [
           queueName,
           deadLetterQueueName,
@@ -56,8 +55,8 @@ export default function makeListEventsQuery({ eventRepository, jobQueue }: Depen
         ...page,
         data: page.data.map((event) => ({
           ...event,
-          dispatch: summarizeDispatches(
-            rows.filter((row) => row.value === event.id),
+          dispatches: summarizeDispatches(
+            jobStates.filter((jobState) => jobState.value === event.id),
             subscribers,
           ),
         })),

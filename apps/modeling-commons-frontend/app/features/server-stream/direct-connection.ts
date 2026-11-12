@@ -1,15 +1,6 @@
-import { computed, readonly, ref, watch, type Ref } from "vue";
-import { cancelSubscription, requestSubscription } from "~/features/server-stream/api";
+import { buildTopicKey } from "@repo/modeling-commons-shared";
+import { computed, readonly, ref, shallowReactive, watch, type Ref } from "vue";
 import { parseStreamMessage } from "~/features/server-stream/mappers";
-import {
-  classifySubscriptionResponse,
-  computeReconnectDelay,
-} from "~/features/server-stream/reconnect";
-import { serverStreamRules } from "~/features/server-stream/rules";
-import {
-  createTopicRegistry,
-  type TopicSignalHandler,
-} from "~/features/server-stream/topic-registry";
 import type {
   ServerStreamConnection,
   StreamControlMessage,
@@ -20,66 +11,42 @@ import type {
 
 export type DirectConnection = ServerStreamConnection & { close: () => void };
 
+type SignalHandler = (signal: string) => void;
+
 type StreamSourceOptions = {
-  url: string;
-  isWanted: () => boolean;
-  onStatus: (status: Exclude<StreamStatus, "open">) => void;
+  onStatus: (status: StreamStatus) => void;
   onMessage: (message: StreamMessage | StreamControlMessage) => void;
 };
 
-function createStreamSource({ url, isWanted, onStatus, onMessage }: StreamSourceOptions) {
+function createStreamSource({ onStatus, onMessage }: StreamSourceOptions) {
   let source: EventSource | null = null;
-  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-  let failedAttempts = 0;
 
   const close = () => {
-    if (reconnectTimer) clearTimeout(reconnectTimer);
-    reconnectTimer = null;
     source?.close();
     source = null;
     onStatus("closed");
   };
 
-  const scheduleReconnect = () => {
-    close();
-    const delay = computeReconnectDelay(failedAttempts, Math.random);
-    failedAttempts += 1;
-    reconnectTimer = setTimeout(() => {
-      reconnectTimer = null;
-      if (isWanted()) open();
-    }, delay);
-  };
-
-  const open = () => {
+  const open = (url: string) => {
     close();
     const next = new EventSource(url, { withCredentials: true });
     source = next;
     onStatus("connecting");
+    next.addEventListener("open", () => {
+      if (source === next) onStatus("open");
+    });
     next.addEventListener("message", (event) => {
       const message = source === next ? parseStreamMessage(event.data) : null;
-      if (!message) return;
-      if (message.event === "connection") failedAttempts = 0;
-      onMessage(message);
+      if (message) onMessage(message);
     });
     next.addEventListener("error", () => {
       if (source !== next) return;
-      if (next.readyState === EventSource.CLOSED) scheduleReconnect();
+      if (next.readyState === EventSource.CLOSED) close();
       else onStatus("connecting");
     });
   };
 
   return { open, close };
-}
-
-function createRequestQueue(getConnectionId: () => string | null) {
-  let tail: Promise<unknown> = Promise.resolve();
-  return (send: (connectionId: string) => Promise<unknown>) => {
-    const connectionId = getConnectionId();
-    if (!connectionId) return;
-    tail = tail
-      .then(() => (getConnectionId() === connectionId ? send(connectionId) : undefined))
-      .catch(() => undefined);
-  };
 }
 
 export function createDirectConnection({
@@ -90,55 +57,43 @@ export function createDirectConnection({
   allowed: Readonly<Ref<boolean>>;
 }): DirectConnection {
   const status = ref<StreamStatus>("closed");
-  const registry = createTopicRegistry();
-  let connectionId: string | null = null;
+  const handlersByTopic = shallowReactive(new Map<string, Set<SignalHandler>>());
 
-  const enqueue = createRequestQueue(() => connectionId);
-  const sendSubscribe = (topic: StreamTopic, isRetry: boolean) =>
-    enqueue(async (id) => {
-      const status = await requestSubscription(id, topic).catch(() => null);
-      if (connectionId !== id) return;
-      const outcome = classifySubscriptionResponse(status);
-      if (outcome === "live") registry.notify(topic, "live");
-      else if (outcome === "retry" && !isRetry) scheduleRetry(topic, id);
-    });
-  const scheduleRetry = (topic: StreamTopic, id: string) =>
-    setTimeout(() => {
-      if (connectionId === id && registry.hasTopic(topic)) sendSubscribe(topic, true);
-    }, serverStreamRules.subscriptionRetryMs);
-  const sendUnsubscribe = (topic: StreamTopic) => enqueue((id) => cancelSubscription(id, topic));
-
-  const handleMessage = (message: StreamMessage | StreamControlMessage) => {
-    if (message.event === "connection") {
-      connectionId = message.connectionId;
-      status.value = "open";
-      registry.listTopics().forEach((topic) => sendSubscribe(topic, false));
-    } else if (message.event === "resync") {
-      registry.notifyAll("resync");
-    } else {
-      registry.notify(message.topic, message.event);
-    }
+  const notify = (key: string, signal: string) => {
+    for (const handler of [...(handlersByTopic.get(key) ?? [])]) handler(signal);
+  };
+  const notifyAll = (signal: string) => {
+    for (const key of [...handlersByTopic.keys()]) notify(key, signal);
   };
 
-  const wanted = computed(() => allowed.value && registry.topicCount.value > 0);
-  const source = createStreamSource({
-    url,
-    isWanted: () => wanted.value,
-    onStatus: (next) => {
-      connectionId = null;
-      status.value = next;
-    },
-    onMessage: handleMessage,
+  const streamUrl = computed(() => {
+    if (!allowed.value || handlersByTopic.size === 0) return null;
+    const topics = [...handlersByTopic.keys()].sort().join(",");
+    return `${url}?topics=${topics}`;
   });
-  watch(wanted, (isWanted) => (isWanted ? source.open() : source.close()), { immediate: true });
+
+  const source = createStreamSource({
+    onStatus: (next) => {
+      status.value = next;
+      if (next === "open") notifyAll("resync");
+    },
+    onMessage: (message) => {
+      if (message.event === "resync") notifyAll("resync");
+      else notify(buildTopicKey(message.topic), message.event);
+    },
+  });
+  watch(streamUrl, (next) => (next ? source.open(next) : source.close()), { immediate: true });
 
   return {
     status: readonly(status),
-    subscribe(topic, onChange) {
-      const handler = onChange as TopicSignalHandler;
-      if (registry.addHandler(topic, handler).isFirst) sendSubscribe(topic, false);
+    subscribe(topic: StreamTopic, onChange) {
+      const key = buildTopicKey(topic);
+      const handler = onChange as SignalHandler;
+      const handlers = handlersByTopic.get(key) ?? new Set<SignalHandler>();
+      handlers.add(handler);
+      if (!handlersByTopic.has(key)) handlersByTopic.set(key, handlers);
       return () => {
-        if (registry.removeHandler(topic, handler).wasLast) sendUnsubscribe(topic);
+        if (handlers.delete(handler) && handlers.size === 0) handlersByTopic.delete(key);
       };
     },
     close: source.close,

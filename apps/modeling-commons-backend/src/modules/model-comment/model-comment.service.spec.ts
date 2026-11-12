@@ -9,9 +9,10 @@ import {
 } from '#src/modules/model-comment/domain/model-comment.errors.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.mock.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import type { ModelCommentEntity } from '#src/modules/model-comment/domain/model-comment.types.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
 
 function makeComment(overrides: Partial<ModelCommentEntity> = {}): ModelCommentEntity {
   return {
@@ -32,8 +33,8 @@ function makeComment(overrides: Partial<ModelCommentEntity> = {}): ModelCommentE
 }
 
 describe('modelCommentService', () => {
-  const modelCommentRepository = mockModelCommentRepository();
-  const eventRepository = mockEventRepository();
+  const modelCommentRepository = mockPort<ModelCommentRepository>();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const domain = modelCommentDomain();
 
@@ -92,7 +93,12 @@ describe('modelCommentService', () => {
       modelCommentRepository.findById.mockResolvedValue(parent);
 
       await expect(
-        service.create({ modelId: 'model-1', userId: 'commenter-1', parentId: 'parent-1', content: 'x' }),
+        service.create({
+          modelId: 'model-1',
+          userId: 'commenter-1',
+          parentId: 'parent-1',
+          content: 'x',
+        }),
       ).rejects.toThrow(ParentCommentMismatchError);
     });
 
@@ -101,7 +107,12 @@ describe('modelCommentService', () => {
       modelCommentRepository.findById.mockResolvedValue(parent);
 
       await expect(
-        service.create({ modelId: 'model-1', userId: 'commenter-1', parentId: 'parent-1', content: 'x' }),
+        service.create({
+          modelId: 'model-1',
+          userId: 'commenter-1',
+          parentId: 'parent-1',
+          content: 'x',
+        }),
       ).rejects.toThrow(CommentDeletedError);
     });
 
@@ -109,7 +120,12 @@ describe('modelCommentService', () => {
       modelCommentRepository.findById.mockResolvedValue(undefined);
 
       await expect(
-        service.create({ modelId: 'model-1', userId: 'commenter-1', parentId: 'missing', content: 'x' }),
+        service.create({
+          modelId: 'model-1',
+          userId: 'commenter-1',
+          parentId: 'missing',
+          content: 'x',
+        }),
       ).rejects.toThrow(CommentNotFoundError);
     });
   });
@@ -204,7 +220,11 @@ describe('modelCommentService', () => {
     it('lets the author delete their own comment with byAdmin:false', async () => {
       modelCommentRepository.findById.mockResolvedValue(makeComment({ userId: 'author-1' }));
 
-      await service.softDelete({ modelId: 'model-1', commentId: 'comment-1', caller: { id: 'author-1' } });
+      await service.softDelete({
+        modelId: 'model-1',
+        commentId: 'comment-1',
+        caller: { id: 'author-1' },
+      });
 
       expect(modelCommentRepository.softDeleteTx).toHaveBeenCalledOnce();
       expect(eventRepository.insertTx).toHaveBeenCalledWith(
@@ -216,7 +236,7 @@ describe('modelCommentService', () => {
       );
     });
 
-    it('lets an admin delete someone else\'s comment with byAdmin:true', async () => {
+    it("lets an admin delete someone else's comment with byAdmin:true", async () => {
       modelCommentRepository.findById.mockResolvedValue(makeComment({ userId: 'author-1' }));
 
       await service.softDelete({
@@ -235,7 +255,11 @@ describe('modelCommentService', () => {
       modelCommentRepository.findById.mockResolvedValue(makeComment({ userId: 'author-1' }));
 
       await expect(
-        service.softDelete({ modelId: 'model-1', commentId: 'comment-1', caller: { id: 'random-user' } }),
+        service.softDelete({
+          modelId: 'model-1',
+          commentId: 'comment-1',
+          caller: { id: 'random-user' },
+        }),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -243,7 +267,11 @@ describe('modelCommentService', () => {
       modelCommentRepository.findById.mockResolvedValue(makeComment({ modelId: 'other-model' }));
 
       await expect(
-        service.softDelete({ modelId: 'model-1', commentId: 'comment-1', caller: { id: 'author-1' } }),
+        service.softDelete({
+          modelId: 'model-1',
+          commentId: 'comment-1',
+          caller: { id: 'author-1' },
+        }),
       ).rejects.toThrow(CommentNotFoundError);
     });
   });

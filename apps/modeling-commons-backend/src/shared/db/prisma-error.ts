@@ -59,3 +59,19 @@ export function mapPrismaError(error: unknown): ExceptionBase | undefined {
   const [Exception, message] = selectRow(prismaCode, meta);
   return new Exception(message, error, { prismaCode, meta });
 }
+
+export function isUniqueViolation(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
+}
+
+export async function rethrowUniqueViolation<T>(
+  operation: Promise<T>,
+  toError: () => Error,
+): Promise<T> {
+  try {
+    return await operation;
+  } catch (error) {
+    if (isUniqueViolation(error)) throw toError();
+    throw error;
+  }
+}

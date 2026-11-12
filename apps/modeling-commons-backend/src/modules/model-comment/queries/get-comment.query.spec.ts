@@ -1,16 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import makeGetCommentQuery from '#src/modules/model-comment/queries/get-comment.query.ts';
 import modelCommentMapper from '#src/modules/model-comment/model-comment.mapper.ts';
-import { mockModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.mock.ts';
 import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
+import rules from '#src/config/rules.ts';
+import type { ModelCommentEntity } from '#src/modules/model-comment/domain/model-comment.types.ts';
 import {
-  COMMENT_TREE_DEFAULTS,
-  type ModelCommentEntity,
-} from '#src/modules/model-comment/domain/model-comment.types.ts';
-import { EMBED_ORDER_BY, EMBED_PARAMS } from '#src/modules/model-comment/queries/list-comments.query.ts';
+  EMBED_ORDER_BY,
+  EMBED_PARAMS,
+} from '#src/modules/model-comment/queries/list-comments.query.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.port.ts';
 
-const EMBED_LIMIT = COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel;
+const EMBED_LIMIT = rules.limits.comment.thread.maximumShownRepliesPerLevel;
 
 function makeEntity(overrides: Partial<ModelCommentEntity> = {}): ModelCommentEntity {
   return {
@@ -41,7 +43,7 @@ function pages<T>(entries: Array<[string, Paginated<T>]>): Map<string, Paginated
 }
 
 function buildQuery() {
-  const modelCommentRepository = mockModelCommentRepository();
+  const modelCommentRepository = mockPort<ModelCommentRepository>();
   const mapper = modelCommentMapper();
   const query = makeGetCommentQuery({
     modelCommentRepository,
@@ -66,9 +68,7 @@ describe('getCommentQuery', () => {
     modelCommentRepository.findById.mockResolvedValue(target);
     modelCommentRepository.listRepliesByParents.mockImplementation(
       async (parentIds: Array<string>) =>
-        parentIds.includes('target-1')
-          ? pages([['target-1', page([reply], 1, 20, 0)]])
-          : pages([]),
+        parentIds.includes('target-1') ? pages([['target-1', page([reply], 1, 20, 0)]]) : pages([]),
     );
 
     const result = await query.execute('target-1', {});
@@ -250,9 +250,7 @@ describe('getCommentQuery', () => {
     modelCommentRepository.findById.mockResolvedValue(target);
     modelCommentRepository.listRepliesByParents.mockImplementation(
       async (parentIds: Array<string>) =>
-        parentIds.includes('target-1')
-          ? pages([['target-1', page([child], 1, 7, 3)]])
-          : pages([]),
+        parentIds.includes('target-1') ? pages([['target-1', page([child], 1, 7, 3)]]) : pages([]),
     );
 
     await query.execute('target-1', { page: 3, limit: 7 });

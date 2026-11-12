@@ -13,6 +13,8 @@ export default function makeBoss({
   schema?: string;
 }): PgBoss {
   const connection = { connectionString: env.db.url, schema };
+  // API-only processes just publish jobs: a small pool, and maintenance and
+  // cron scheduling are left to the worker process.
   const boss = workersEnabled
     ? new PgBoss(connection)
     : new PgBoss({

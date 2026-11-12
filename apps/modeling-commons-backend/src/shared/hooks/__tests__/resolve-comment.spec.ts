@@ -1,15 +1,16 @@
 import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
-import { mockModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.mock.ts';
 import { resolveComment } from '#src/shared/hooks/resolve-comment.ts';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockPort, type MockedPort } from '#src/shared/test/mock-port.ts';
+import type { ModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.port.ts';
 
 const reply = {} as FastifyReply;
 
 function makeRequest(opts: {
   modelId: string;
   commentId: string;
-  modelCommentRepository: ReturnType<typeof mockModelCommentRepository>;
+  modelCommentRepository: MockedPort<ModelCommentRepository>;
 }): FastifyRequest {
   return {
     params: { id: opts.modelId, commentId: opts.commentId },
@@ -25,7 +26,7 @@ describe('resolveComment', () => {
   });
 
   it('throws CommentNotFoundError when the comment does not exist', async () => {
-    const modelCommentRepository = mockModelCommentRepository();
+    const modelCommentRepository = mockPort<ModelCommentRepository>();
     modelCommentRepository.findById.mockResolvedValue(undefined);
 
     const request = makeRequest({ modelId: 'm1', commentId: 'c1', modelCommentRepository });
@@ -35,7 +36,7 @@ describe('resolveComment', () => {
   });
 
   it('throws CommentNotFoundError when the comment belongs to a different model', async () => {
-    const modelCommentRepository = mockModelCommentRepository();
+    const modelCommentRepository = mockPort<ModelCommentRepository>();
     modelCommentRepository.findById.mockResolvedValue({ id: 'c1', modelId: 'other' });
 
     const request = makeRequest({ modelId: 'm1', commentId: 'c1', modelCommentRepository });
@@ -47,7 +48,7 @@ describe('resolveComment', () => {
 
   it('attaches the comment to the request when the model id matches', async () => {
     const comment = { id: 'c1', modelId: 'm1', content: 'hello' };
-    const modelCommentRepository = mockModelCommentRepository();
+    const modelCommentRepository = mockPort<ModelCommentRepository>();
     modelCommentRepository.findById.mockResolvedValue(comment);
 
     const request = makeRequest({ modelId: 'm1', commentId: 'c1', modelCommentRepository });

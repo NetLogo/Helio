@@ -10,9 +10,6 @@ declare global {
     modelCommentService: ReturnType<
       typeof import('#src/modules/model-comment/model-comment.service.ts').default
     >;
-    modelCommentProducer: ReturnType<
-      typeof import('#src/modules/model-comment/notifications/model-comment.producer.ts').default
-    >;
     listCommentsQuery: ReturnType<
       typeof import('#src/modules/model-comment/queries/list-comments.query.ts').default
     >;

@@ -9,6 +9,7 @@ import type { Paginated } from '#src/shared/db/repository.port.ts';
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import { SystemRole } from './database/user.record.ts';
+import { userEventTypes } from '#src/modules/user/user.events.ts';
 
 export type FindByIdResult =
   | { canViewFullProfile: true; user: UserEntity }
@@ -48,7 +49,7 @@ export default function makeUserService({
       await transactionManager.run(async (ctx) => {
         await userRepository.updateFieldsTx(ctx, userId, updateData);
         await eventRepository.insertTx(ctx, {
-          type: 'user.updated',
+          type: userEventTypes.updated,
           actorId: requesterId,
           resourceType: 'user',
           resourceId: userId,
@@ -69,7 +70,7 @@ export default function makeUserService({
       await transactionManager.run(async (ctx) => {
         await userRepository.softDeleteTx(ctx, userId);
         await eventRepository.insertTx(ctx, {
-          type: 'user.deleted',
+          type: userEventTypes.deleted,
           actorId: requesterId,
           resourceType: 'user',
           resourceId: userId,

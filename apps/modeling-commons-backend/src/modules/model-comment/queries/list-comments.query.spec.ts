@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import makeListCommentsQuery from '#src/modules/model-comment/queries/list-comments.query.ts';
 import modelCommentMapper from '#src/modules/model-comment/model-comment.mapper.ts';
-import { mockModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.mock.ts';
 import type { ModelCommentEntity } from '#src/modules/model-comment/domain/model-comment.types.ts';
 import type { Paginated } from '#src/shared/db/repository.port.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.port.ts';
 
 function makeEntity(overrides: Partial<ModelCommentEntity> = {}): ModelCommentEntity {
   return {
@@ -34,7 +35,7 @@ function pages<T>(entries: Array<[string, Paginated<T>]>): Map<string, Paginated
 }
 
 function buildQuery() {
-  const modelCommentRepository = mockModelCommentRepository();
+  const modelCommentRepository = mockPort<ModelCommentRepository>();
   const mapper = modelCommentMapper();
   const query = makeListCommentsQuery({
     modelCommentRepository,
@@ -133,10 +134,12 @@ describe('listCommentsQuery', () => {
     const c2 = makeEntity({ id: 'c2', parentId: 'root-1' });
 
     modelCommentRepository.listTopLevel.mockResolvedValue(page([root], 1));
-    modelCommentRepository.listRepliesByParents.mockImplementation(async (parentIds: Array<string>) => {
-      if (parentIds.includes('root-1')) return pages([['root-1', page([c1, c2], 5, 2, 0)]]);
-      return pages([]);
-    });
+    modelCommentRepository.listRepliesByParents.mockImplementation(
+      async (parentIds: Array<string>) => {
+        if (parentIds.includes('root-1')) return pages([['root-1', page([c1, c2], 5, 2, 0)]]);
+        return pages([]);
+      },
+    );
 
     const result = await query.execute('model-1', {});
 
@@ -171,7 +174,9 @@ describe('listCommentsQuery', () => {
         pages(
           parentIds
             .filter((id) => id in childrenByRoot)
-            .map((id) => [id, page(childrenByRoot[id]!, childrenByRoot[id]!.length, 2, 0)] as const),
+            .map(
+              (id) => [id, page(childrenByRoot[id]!, childrenByRoot[id]!.length, 2, 0)] as const,
+            ),
         ),
     );
     modelCommentRepository.countRepliesByParent.mockResolvedValue(new Map());
@@ -304,9 +309,7 @@ describe('listCommentsQuery', () => {
     modelCommentRepository.listTopLevel.mockResolvedValue(page([tombstone], 1));
     modelCommentRepository.listRepliesByParents.mockImplementation(
       async (parentIds: Array<string>) =>
-        parentIds.includes('dead-root')
-          ? pages([['dead-root', page([reply], 1)]])
-          : pages([]),
+        parentIds.includes('dead-root') ? pages([['dead-root', page([reply], 1)]]) : pages([]),
     );
 
     const result = await query.execute('model-1', {});

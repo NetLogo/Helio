@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   isStreamAllowed,
-  isTopicAllowed,
   makeRealtimeBroker,
   type RealtimeBroker,
   type RealtimeStream,
@@ -11,13 +10,8 @@ import type { StreamMessage } from '@repo/modeling-commons-shared';
 
 const heartbeatIntervalMs = 25_000;
 const maxStreamsPerUser = 16;
-const maxTopicsPerStream = 16;
 const commentOnA: StreamMessage = {
   topic: { type: 'model', id: 'a' },
-  event: 'model_comment.created',
-};
-const commentOnB: StreamMessage = {
-  topic: { type: 'model', id: 'b' },
   event: 'model_comment.created',
 };
 const notificationForU1: StreamMessage = {
@@ -27,13 +21,10 @@ const notificationForU1: StreamMessage = {
 
 type RecordingStream = RealtimeStream & { frames: Array<string>; ended: boolean; open: boolean };
 
-let nextConnection = 0;
-
-function makeStream(userId: string): RecordingStream {
-  nextConnection += 1;
+function makeStream(userId: string, topics: Array<string> = []): RecordingStream {
   const stream: RecordingStream = {
-    connectionId: `c${nextConnection}`,
     userId,
+    topics: new Set(topics),
     frames: [],
     ended: false,
     open: true,
@@ -50,15 +41,12 @@ function makeStream(userId: string): RecordingStream {
 }
 
 function makeBroker() {
-  return makeRealtimeBroker({ maxStreamsPerUser, maxTopicsPerStream, heartbeatIntervalMs });
+  return makeRealtimeBroker({ maxStreamsPerUser, heartbeatIntervalMs });
 }
 
 function openWithTopics(broker: RealtimeBroker, userId: string, topics: Array<string>) {
-  const stream = makeStream(userId);
+  const stream = makeStream(userId, topics);
   const close = broker.openStream(stream);
-  for (const topic of topics) {
-    broker.addTopic({ connectionId: stream.connectionId, userId, topic });
-  }
   return { stream, close };
 }
 
@@ -66,14 +54,6 @@ describe('isStreamAllowed', () => {
   it('allows streams below the cap and refuses at the cap', () => {
     expect(isStreamAllowed(15, 16)).toBe(true);
     expect(isStreamAllowed(16, 16)).toBe(false);
-  });
-});
-
-describe('isTopicAllowed', () => {
-  it('allows a new topic below the cap, refuses one at the cap, and always allows a held one', () => {
-    expect(isTopicAllowed(new Set(['model:a']), 'model:b', 2)).toBe(true);
-    expect(isTopicAllowed(new Set(['model:a', 'model:b']), 'model:c', 2)).toBe(false);
-    expect(isTopicAllowed(new Set(['model:a', 'model:b']), 'model:a', 2)).toBe(true);
   });
 });
 
@@ -99,19 +79,7 @@ describe('makeRealtimeBroker', () => {
     expect(modelB.frames).toEqual([]);
   });
 
-  it('delivers nothing to a stream until its topic is added', () => {
-    const broker = makeBroker();
-    const { stream } = openWithTopics(broker, 'u1', []);
-
-    broker.publish(commentOnA);
-    expect(stream.frames).toEqual([]);
-
-    broker.addTopic({ connectionId: stream.connectionId, userId: 'u1', topic: 'model:a' });
-    broker.publish(commentOnA);
-    expect(stream.frames).toHaveLength(1);
-  });
-
-  it('keeps one subscription when a topic is added twice', () => {
+  it('keeps one subscription when a topic is listed twice', () => {
     const broker = makeBroker();
     const { stream } = openWithTopics(broker, 'u1', ['user:u1', 'user:u1']);
 
@@ -120,74 +88,16 @@ describe('makeRealtimeBroker', () => {
     expect(stream.frames).toHaveLength(1);
   });
 
-  it('adds nothing for an unknown connection id or a connection of another user', () => {
-    const broker = makeBroker();
-    const { stream } = openWithTopics(broker, 'u1', []);
-
-    expect(broker.addTopic({ connectionId: 'unknown', userId: 'u1', topic: 'model:a' })).toBe(
-      false,
-    );
-    expect(
-      broker.addTopic({ connectionId: stream.connectionId, userId: 'u2', topic: 'model:a' }),
-    ).toBe(false);
-    broker.publish(commentOnA);
-
-    expect(stream.frames).toEqual([]);
-  });
-
-  it('refuses a topic past the per-stream cap and still accepts a held one', () => {
-    const broker = makeBroker();
-    const held = Array.from({ length: maxTopicsPerStream }, (_, index) => `model:${index}`);
-    const { stream } = openWithTopics(broker, 'u1', held);
-    const request = { connectionId: stream.connectionId, userId: 'u1' };
-
-    expect(broker.addTopic({ ...request, topic: 'model:a' })).toBe(false);
-    expect(broker.addTopic({ ...request, topic: 'model:0' })).toBe(true);
-    broker.publish(commentOnA);
-
-    expect(stream.frames).toEqual([]);
-  });
-
-  it('removes one topic and keeps delivering the others', () => {
-    const broker = makeBroker();
-    const { stream } = openWithTopics(broker, 'u1', ['model:a', 'model:b']);
-
-    expect(
-      broker.removeTopic({ connectionId: stream.connectionId, userId: 'u1', topic: 'model:a' }),
-    ).toBe(true);
-    broker.publish(commentOnA);
-    broker.publish(commentOnB);
-
-    expect(stream.frames).toHaveLength(1);
-    expect(stream.frames[0]).toContain('"id":"b"');
-  });
-
-  it('removes nothing for a connection of another user or a topic the stream does not hold', () => {
-    const broker = makeBroker();
-    const { stream } = openWithTopics(broker, 'u1', ['model:a']);
-
-    expect(
-      broker.removeTopic({ connectionId: stream.connectionId, userId: 'u2', topic: 'model:a' }),
-    ).toBe(false);
-    expect(
-      broker.removeTopic({ connectionId: stream.connectionId, userId: 'u1', topic: 'model:b' }),
-    ).toBe(false);
-    broker.publish(commentOnA);
-
-    expect(stream.frames).toHaveLength(1);
-  });
-
-  it('forgets the topics and the connection id of a closed stream', () => {
+  it('forgets the topics of a closed stream and keeps them for the others', () => {
     const broker = makeBroker();
     const { stream, close } = openWithTopics(broker, 'u1', ['model:a']);
+    const { stream: other } = openWithTopics(broker, 'u2', ['model:a']);
 
     close?.();
     broker.publish(commentOnA);
 
     expect(stream.frames).toEqual([]);
-    expect(
-      broker.addTopic({ connectionId: stream.connectionId, userId: 'u1', topic: 'model:a' }),
-    ).toBe(false);
+    expect(other.frames).toHaveLength(1);
   });
 
   it('broadcasts to every stream', () => {

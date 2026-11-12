@@ -44,6 +44,7 @@ import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
 import { detectNetlogoVersion } from '#src/shared/utils/netlogo-file.ts';
 import rules from '#src/config/rules.ts';
+import { modelDraftEventTypes } from '#src/modules/model-draft/model-draft.events.ts';
 
 const LEGACY_UUID_PREFIX_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i;
@@ -579,7 +580,7 @@ export default function makeModelDraftService({
             );
           }
 
-          const versionNumber = await modelVersionRepository.getNextVersionNumberTx(ctx, model.id);
+          const versionNumber = (previousVersion?.versionNumber ?? 0) + 1;
           const version = modelVersionDomain.createVersion({
             modelId: model.id,
             versionNumber,
@@ -620,7 +621,9 @@ export default function makeModelDraftService({
           }
 
           await eventRepository.insertTx(ctx, {
-            type: existingModel ? 'model.version.created' : 'model.created',
+            type: existingModel
+              ? modelDraftEventTypes.versionCreated
+              : modelDraftEventTypes.modelCreated,
             actorId: userId,
             resourceType: 'model',
             resourceId: model.id,
@@ -722,7 +725,7 @@ export default function makeModelDraftService({
           }
 
           await eventRepository.insertTx(ctx, {
-            type: 'model.version.updated',
+            type: modelDraftEventTypes.versionUpdated,
             actorId: userId,
             resourceType: 'model',
             resourceId: model.id,

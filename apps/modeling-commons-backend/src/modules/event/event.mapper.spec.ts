@@ -11,10 +11,10 @@ function makeRecord(overrides: Partial<EventRecord> = {}): EventRecord {
     actorId: 'user-1',
     resourceType: 'model',
     resourceId: 'model-1',
-    payload: { draftId: 'd1' },
+    payload: { draftId: 'd1', versionId: 'model-1:1' },
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     ...overrides,
-  };
+  } as EventRecord;
 }
 
 describe('eventMapper', () => {
@@ -24,7 +24,7 @@ describe('eventMapper', () => {
       const domain = mapper.toDomain(record);
       expect(domain.id).toBe('evt-1');
       expect(domain.type).toBe('model.created');
-      expect(domain.payload).toEqual({ draftId: 'd1' });
+      expect(domain.payload).toEqual({ draftId: 'd1', versionId: 'model-1:1' });
     });
   });
 

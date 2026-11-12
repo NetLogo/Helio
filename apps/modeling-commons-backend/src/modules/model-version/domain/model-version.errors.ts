@@ -15,9 +15,3 @@ export class VersionFinalizedError extends ConflictException {
     super(`Version ${versionNumber} of model ${modelId} is finalized and cannot be modified`);
   }
 }
-
-export class NoFileUploadedError extends ConflictException {
-  constructor() {
-    super('File upload required');
-  }
-}

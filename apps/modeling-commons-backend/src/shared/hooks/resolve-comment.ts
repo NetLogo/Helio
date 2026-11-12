@@ -4,8 +4,9 @@ import type { FastifyReply, FastifyRequest, preHandlerHookHandler } from 'fastif
 
 // `resolveModel` only authorizes the path model (`:id`); it never checks that
 // `:commentId` actually belongs to it. Without this hook, a caller with read
-// access to model P could fetch/mutate a comment that belongs to a different
-// model M by pointing `:id` at P and `:commentId` at M's comment (IDOR).
+// access to model P could fetch a comment that belongs to a different model M
+// by pointing `:id` at P and `:commentId` at M's comment (IDOR). Mutations get
+// the same check from the comment service, which loads the comment itself.
 export function resolveComment(): preHandlerHookHandler {
   return async (request: FastifyRequest, _reply: FastifyReply) => {
     const { id, commentId } = request.params as { id: string; commentId: string };

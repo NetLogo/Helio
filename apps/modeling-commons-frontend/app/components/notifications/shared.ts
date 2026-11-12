@@ -11,6 +11,7 @@ export const NOTIFICATION_STATE_KEYS = {
 } as const;
 
 export function toInAppLink(url: string, appUrl: string): string {
+  if (!URL.canParse(appUrl) || !URL.canParse(url, appUrl)) return url;
   const parsed = new URL(url, appUrl);
   if (parsed.origin !== new URL(appUrl).origin) return url;
   return `${parsed.pathname}${parsed.search}${parsed.hash}`;

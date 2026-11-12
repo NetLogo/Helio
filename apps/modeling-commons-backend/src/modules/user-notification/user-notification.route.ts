@@ -4,18 +4,23 @@ import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import {
   notificationPreferenceResponseDtoSchema,
   type NotificationPreferenceResponseDto,
-} from '#src/modules/user-notification/dtos/notification-preference.response.dto.ts';
+} from '#src/modules/user-notification/preferences/dtos/notification-preference.response.dto.ts';
 import {
   updateNotificationPreferencesRequestDtoSchema,
   type UpdateNotificationPreferencesRequestDto,
-} from '#src/modules/user-notification/dtos/update-notification-preferences.request.dto.ts';
-import { listUserNotificationsQueryDtoSchema } from '#src/modules/user-notification/dtos/user-notifications.request.dto.ts';
-import { userNotificationPaginatedResponseSchema } from '#src/modules/user-notification/dtos/user-notification.paginated.response.dto.ts';
-import { notificationUnsubscribeQueryDtoSchema } from '#src/modules/user-notification/dtos/notification-unsubscribe.request.dto.ts';
+} from '#src/modules/user-notification/preferences/dtos/update-notification-preferences.request.dto.ts';
+import { listUserNotificationsQueryDtoSchema } from '#src/modules/user-notification/feed/dtos/user-notifications.request.dto.ts';
+import { userNotificationPaginatedResponseSchema } from '#src/modules/user-notification/feed/dtos/user-notification.paginated.response.dto.ts';
+import { notificationUnsubscribeQueryDtoSchema } from '#src/modules/user-notification/preferences/dtos/notification-unsubscribe.request.dto.ts';
 import { idDtoSchema } from '#src/shared/api/id.response.dto.ts';
 
 export default async function userNotificationRoutes(fastify: FastifyInstance) {
-  const { listUserNotificationsQuery, userNotificationService } = fastify.diContainer.cradle;
+  const {
+    listNotificationsQuery,
+    feedService,
+    notificationPreferencesService,
+    notificationPreferenceUpdateService,
+  } = fastify.diContainer.cradle;
 
   fastify.addContentTypeParser(
     'application/x-www-form-urlencoded',
@@ -36,7 +41,7 @@ export default async function userNotificationRoutes(fastify: FastifyInstance) {
     },
     async (request): Promise<NotificationPreferenceResponseDto> => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return userNotificationService.getPreferences(request.user!.id);
+      return notificationPreferencesService.getPreferences(request.user!.id);
     },
   );
 
@@ -50,8 +55,11 @@ export default async function userNotificationRoutes(fastify: FastifyInstance) {
       preHandler: [requireAuth],
     },
     async (request, reply) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await userNotificationService.updatePreferences(request.user!.id, request.body.preferences);
+      await notificationPreferenceUpdateService.updatePreferences(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        request.user!.id,
+        request.body.preferences,
+      );
       return reply.code(204).send();
     },
   );
@@ -68,7 +76,7 @@ export default async function userNotificationRoutes(fastify: FastifyInstance) {
     },
     async (request) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return listUserNotificationsQuery.execute(request.user!.id, request.query);
+      return listNotificationsQuery.execute(request.user!.id, request.query);
     },
   );
 
@@ -83,7 +91,7 @@ export default async function userNotificationRoutes(fastify: FastifyInstance) {
     },
     async (request, reply) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await userNotificationService.markRead(request.user!.id, request.params.id);
+      await feedService.markRead(request.user!.id, request.params.id);
       return reply.code(204).send();
     },
   );
@@ -97,7 +105,7 @@ export default async function userNotificationRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      await userNotificationService.unsubscribe(request.query.token);
+      await notificationPreferencesService.unsubscribe(request.query.token);
       return reply.code(204).send();
     },
   );

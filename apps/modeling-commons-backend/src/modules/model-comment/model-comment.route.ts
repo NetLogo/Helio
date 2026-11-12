@@ -106,7 +106,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
         body: updateCommentRequestDtoSchema,
         tags: ['Comment'],
       },
-      preHandler: [requireAuth, resolveModel('read'), resolveComment()],
+      preHandler: [requireAuth, resolveModel('read')],
     },
     async (request, reply) => {
       await modelCommentService.updateContent({
@@ -124,7 +124,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
     '/v1/models/:id/comments/:commentId',
     {
       schema: { params: modelCommentDetailParamsSchema, tags: ['Comment'] },
-      preHandler: [requireAuth, resolveModel('read'), resolveComment()],
+      preHandler: [requireAuth, resolveModel('read')],
     },
     async (request, reply) => {
       await modelCommentService.softDelete({
@@ -141,7 +141,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
     '/v1/models/:id/comments/:commentId/like',
     {
       schema: { params: modelCommentDetailParamsSchema, tags: ['Comment'] },
-      preHandler: [requireAuth, resolveModel('read'), resolveComment()],
+      preHandler: [requireAuth, resolveModel('read')],
     },
     async (request, reply) => {
       await modelCommentService.like({
@@ -158,7 +158,7 @@ export default async function modelCommentRoutes(fastify: FastifyInstance) {
     '/v1/models/:id/comments/:commentId/like',
     {
       schema: { params: modelCommentDetailParamsSchema, tags: ['Comment'] },
-      preHandler: [requireAuth, resolveModel('read'), resolveComment()],
+      preHandler: [requireAuth, resolveModel('read')],
     },
     async (request, reply) => {
       await modelCommentService.unlike({

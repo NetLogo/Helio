@@ -25,8 +25,8 @@ Feature: Daily notification digest
     And "alice" should have received 1 digest
     And "bob" should have received 1 digest
 
-  Scenario: A digest run skips rows outside the window, without email, or in a category now off
-    Given a "daily" notification for "alice" created 26 hours ago
+  Scenario: A digest run skips notifications outside the window, without email, or in a category now off
+    Given a "daily" notification for "alice" created 49 hours ago
     And a "daily" notification for "alice" created 2 minutes ago
     And a notification without email for "bob" created 2 hours ago
     And a "daily" notification for "carol" created 2 hours ago
@@ -37,16 +37,23 @@ Feature: Daily notification digest
     And "bob" should have received 0 digests
     And "carol" should have received 0 digests
 
-  Scenario: A digest run sends only the in-window row when a recipient also has an old row
+  Scenario: A digest run sends only the in-window notification when a recipient also has an old notification
     Given a "daily" notification for "alice" created 3 hours ago
-    And a "daily" notification for "alice" created 26 hours ago
+    And a "daily" notification for "alice" created 49 hours ago
     When the digest job runs
     Then the digest job should have succeeded
     And "alice" should have received 1 digest
     And the notification for "alice" created 3 hours ago should be sent
-    And the notification for "alice" created 26 hours ago should be unsent
+    And the notification for "alice" created 49 hours ago should be unsent
 
-  Scenario: A recipient with one daily and one off category gets one digest with only the daily row
+  Scenario: A digest run still sends a notification left over from a missed daily run
+    Given a "daily" notification for "alice" created 30 hours ago
+    When the digest job runs
+    Then the digest job should have succeeded
+    And "alice" should have received 1 digest
+    And the notification for "alice" created 30 hours ago should be sent
+
+  Scenario: A recipient with one daily and one off category gets one digest with only the daily notification
     Given a "daily" notification in category "comment.on_your_model" for "alice" created 2 hours ago
     And a "off" notification in category "comment.reply_to_you" for "alice" created 3 hours ago
     When the digest job runs
@@ -55,27 +62,24 @@ Feature: Daily notification digest
     And the notification for "alice" created 2 hours ago should be sent
     And the notification for "alice" created 3 hours ago should be unsent
 
-  Scenario: A failing digest recipient retries alone with its window and then gets exactly one digest
+  Scenario: A failing digest recipient does not stop the others, and the retried run sends each exactly one digest
     Given a "daily" notification for "alice" created 2 hours ago
     And a "daily" notification for "bob" created 2 hours ago
-    And send-digest jobs retry after 1 second
+    And the daily digest job retries after 1 second
     And digest delivery to "alice" is rigged to fail once
     When the digest job runs
-    Then the send-digest job for "alice" should complete on its second attempt
-    And the send-digest job for "bob" should have completed
-    And the send-digest job for "alice" should carry the same window as the one for "bob"
+    Then the digest job should have completed on its second attempt
     And "alice" should have received 1 digest
     And "bob" should have received 1 digest
 
   @sanity
-  Scenario: A second fan-out on the same UTC day sends no second digest job to a recipient
+  Scenario: A second digest run on the same UTC day sends no second digest to a recipient
     Given a "daily" notification for "alice" created 2 hours ago
     When the digest job runs
     Then the digest job should have succeeded
     Given a "daily" notification for "alice" created 3 hours ago
     When the digest job runs
     Then the digest job should have succeeded
-    And there should be exactly 1 send-digest job for "alice"
     And "alice" should have received 1 digest
     And the notification for "alice" created 3 hours ago should be unsent
 

@@ -1,4 +1,4 @@
-import { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
+import { modelCommentEventTypes } from '#src/modules/model-comment/model-comment.events.ts';
 import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
 import type {
   CommentAuthCaller,

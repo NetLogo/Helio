@@ -106,6 +106,15 @@ describe("CommentInput submission", () => {
     expect(wrapper.emitted("submit")).toBeUndefined();
   });
 
+  it("does not submit on the Enter that confirms an IME composition in Safari", async () => {
+    const wrapper = await mountInput();
+    const textarea = wrapper.find("textarea");
+    await textarea.setValue("にほん");
+    await textarea.trigger("keydown", { key: "Enter", keyCode: 229 });
+
+    expect(wrapper.emitted("submit")).toBeUndefined();
+  });
+
   it.each([
     ["a new comment", {}],
     ["an edit", { isEditing: true, initialText: "Original text" }],

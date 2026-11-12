@@ -1,15 +1,11 @@
 import assert from 'node:assert';
 import { Before, Given, Then, When } from '@cucumber/cucumber';
-import workersConfig from '#src/config/workers.ts';
-import { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
+import workersConfig, { subscriberQueues } from '#src/config/workers.ts';
+import { modelCommentEventTypes } from '#src/modules/model-comment/model-comment.events.ts';
 import makeBoss from '#src/shared/jobs/boss.ts';
 import makePgBossJobQueue from '#src/shared/jobs/pg-boss.job-queue.ts';
 import { newId } from '#src/shared/utils/id.ts';
-import {
-  listSubscriberEntries,
-  registerSendQueues,
-  registerSubscriptions,
-} from '#src/workers/queues.ts';
+import { registerQueues } from '#src/workers/queues.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import { emailDeadLetterQueueName, emailQueueName } from '../support/email-jobs.ts';
 
@@ -49,8 +45,8 @@ When(
 );
 
 When('a probe job is sent outside a transaction', async function (this: ICustomWorld) {
-  const { jobQueue } = this.server.diContainer.cradle;
-  this.context['probeJobId'] = await jobQueue.send(probeQueue, { probe: 'plain' });
+  const { boss } = this.server.diContainer.cradle;
+  this.context['probeJobId'] = await boss.send(probeQueue, { probe: 'plain' });
 });
 
 Then('the probe job should exist', async function (this: ICustomWorld) {
@@ -77,14 +73,14 @@ Given('the send-email queue does not exist', async function (this: ICustomWorld)
 When(
   'an api-role boss sends one email job plainly and one inside a committed transaction',
   async function (this: ICustomWorld) {
-    const { logger, transactionManager } = this.server.diContainer.cradle;
+    const { logger, transactionManager, db } = this.server.diContainer.cradle;
     const apiBoss = makeBoss({ logger, workersEnabled: false });
-    const apiJobQueue = makePgBossJobQueue({ boss: apiBoss, logger });
+    const apiJobQueue = makePgBossJobQueue({ boss: apiBoss, db });
     const probeEmail = { to: 'api-role-probe@example.test', subject: 'api-role probe' };
     const sendBoth = async () => {
       await apiBoss.start();
-      await registerSendQueues(apiBoss);
-      const plainId = await apiJobQueue.send(emailQueueName, { ...probeEmail, text: 'plain' });
+      await registerQueues(apiBoss);
+      const plainId = await apiBoss.send(emailQueueName, { ...probeEmail, text: 'plain' });
       const txId = await transactionManager.run(async (ctx) =>
         apiJobQueue.sendTx(ctx, emailQueueName, { ...probeEmail, text: 'tx' }),
       );
@@ -120,8 +116,8 @@ When(
     const apiBoss = makeBoss({ logger, workersEnabled: false, schema: freshSchema });
     const sendProbe = async () => {
       await apiBoss.start();
-      await registerSendQueues(apiBoss);
-      const id = await makePgBossJobQueue({ boss: apiBoss, logger }).send(emailQueueName, {
+      await registerQueues(apiBoss);
+      const id = await apiBoss.send(emailQueueName, {
         to: 'api-first-probe@example.test',
         subject: 'api-first probe',
       });
@@ -175,7 +171,7 @@ When(
     const { jobQueue, transactionManager } = this.server.diContainer.cradle;
     const marker = newId();
     this.context['publishMarker'] = marker;
-    this.context['publishedJobIds'] = await transactionManager.run(async (ctx) =>
+    await transactionManager.run(async (ctx) =>
       jobQueue.publishTx(ctx, 'e2e.nobody_listens', { marker }),
     );
   },
@@ -196,7 +192,6 @@ Then(
 Then('the publish should have created no job', async function (this: ICustomWorld) {
   const { db } = this.server.diContainer.cradle;
   const marker = this.context['publishMarker'] as string;
-  assert.deepStrictEqual(this.context['publishedJobIds'], []);
   const rows = await db.$queryRawUnsafe<Array<unknown>>(
     `SELECT id FROM ${workersConfig.schema}.job WHERE data->>'marker' = $1`,
     marker,
@@ -216,7 +211,7 @@ When(
     const apiBoss = makeBoss({ logger, workersEnabled: false });
     const register = async () => {
       await apiBoss.start();
-      await registerSubscriptions(apiBoss);
+      await registerQueues(apiBoss);
     };
     await register().finally(async () => apiBoss.stop({ graceful: true }));
   },
@@ -228,7 +223,7 @@ Then('every configured subscription should exist', async function (this: ICustom
     `SELECT event, name FROM ${workersConfig.schema}.subscription`,
   );
   const actual = new Set(rows.map((row) => `${row.event} -> ${row.name}`));
-  const expected = listSubscriberEntries().flatMap(({ queueName, subscribesTo }) =>
+  const expected = subscriberQueues.flatMap(({ queueName, subscribesTo }) =>
     subscribesTo.map((eventType) => `${eventType} -> ${queueName}`),
   );
   assert.ok(expected.length > 0);
@@ -243,7 +238,7 @@ Then(
       where: { type: modelCommentEventTypes.created },
       orderBy: { createdAt: 'desc' },
     });
-    const queueNames = listSubscriberEntries().map(({ queueName }) => queueName);
+    const queueNames = subscriberQueues.map(({ queueName }) => queueName);
     const rows = await jobQueue.findJobStates(queueNames, 'eventId', [event.id]);
     assert.deepStrictEqual(rows.map((row) => row.queue).sort(), [...queueNames].sort());
   },

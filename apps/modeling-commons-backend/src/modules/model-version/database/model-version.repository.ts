@@ -89,16 +89,6 @@ export default function modelVersionRepository({
       };
     },
 
-    async getNextVersionNumberTx(ctx: TransactionContext, modelId: string): Promise<number> {
-      const client = resolveTransaction(ctx);
-      const latest = await client.modelVersion.findFirst({
-        where: { modelId },
-        orderBy: { versionNumber: 'desc' },
-        select: { versionNumber: true },
-      });
-      return (latest?.versionNumber ?? 0) + 1;
-    },
-
     async findNetlogoVersionsByPrefix(prefix: string): Promise<Array<string>> {
       return db.modelVersion
         .findMany({

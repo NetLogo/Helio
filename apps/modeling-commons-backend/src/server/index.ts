@@ -16,7 +16,7 @@ import { di } from '#src/server/di/index.ts';
 import { isRouteFileServed } from '#src/server/route-files.ts';
 import { startPgListener } from '#src/shared/realtime/pg-listener.ts';
 import { startWorkers } from '#src/workers/index.ts';
-import { registerSendQueues, registerSubscriptions } from '#src/workers/queues.ts';
+import { registerQueues } from '#src/workers/queues.ts';
 
 export default async function createServer(fastify: FastifyInstance): Promise<FastifyInstance> {
   // Announce server mode and environment
@@ -93,8 +93,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
 
   const { boss } = fastify.diContainer.cradle;
   await boss.start();
-  await registerSendQueues(boss);
-  await registerSubscriptions(boss);
+  await registerQueues(boss);
   fastify.addHook('onClose', async () => {
     await boss.stop({ graceful: true });
   });
@@ -107,6 +106,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
         new pg.Client({
           connectionString: env.db.url,
           keepAlive: true,
+          keepAliveInitialDelayMillis: realtimeConfig.listener.keepAliveInitialDelayMs,
           application_name: realtimeConfig.listener.applicationName,
         }),
       broker: fastify.diContainer.cradle.realtimeBroker,

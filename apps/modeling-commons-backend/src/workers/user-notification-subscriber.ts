@@ -3,7 +3,6 @@ import type {
   EventJobData,
   EventRepositoryPort,
 } from '#src/modules/event/database/event.repository.port.ts';
-import { registerQueue } from '#src/workers/queues.ts';
 import type { FastifyBaseLogger } from 'fastify';
 import type { PgBoss } from 'pg-boss';
 
@@ -12,22 +11,18 @@ const config = workersConfig.userNotifications;
 export async function startUserNotificationSubscriber({
   boss,
   eventRepository,
-  userNotificationService,
+  notificationDeliveryService,
   logger,
 }: {
   boss: PgBoss;
   eventRepository: EventRepositoryPort;
-  userNotificationService: Dependencies['userNotificationService'];
+  notificationDeliveryService: Dependencies['notificationDeliveryService'];
   logger: FastifyBaseLogger;
 }): Promise<void> {
-  await registerQueue(boss, config);
-
   await boss.work<EventJobData>(
     config.queueName,
     {
-      batchSize: 1,
       localConcurrency: config.work.localConcurrency,
-      pollingIntervalSeconds: workersConfig.polling.intervalSeconds,
     },
     async (jobs) => {
       for (const { id: jobId, data } of jobs) {
@@ -36,7 +31,7 @@ export async function startUserNotificationSubscriber({
           logger.warn({ eventId: data.eventId, jobId }, 'Published event no longer exists');
           continue;
         }
-        await userNotificationService.handleEvent(event);
+        await notificationDeliveryService.handleEvent(event);
       }
     },
   );

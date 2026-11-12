@@ -18,7 +18,7 @@ import type { FastifyBaseLogger } from 'fastify';
 import type { Bucket, S3Client } from '@aws-sdk/client-s3';
 import storage, { bucket } from '#src/lib/storage.ts';
 import { makeFileDependencies } from '#src/modules/file/index.ts';
-import makeNotificationProducers from '#src/modules/notification-producers.ts';
+import makeRegisteredNotificationModules from '#src/modules/notification-catalog.ts';
 import { realtimeTopics } from '#src/modules/realtime-topics.ts';
 import type { AnyRealtimeTopic } from '#src/shared/realtime/realtime-topic.ts';
 
@@ -61,11 +61,10 @@ export function makeDependencies({
     transactionManager: asFunction(makePrismaTransactionManager),
     boss: asFunction(() => makeBoss({ logger, workersEnabled: env.workers.enabled })).singleton(),
     jobQueue: asFunction(makePgBossJobQueue).singleton(),
-    notificationProducers: asFunction(makeNotificationProducers).singleton(),
+    registeredNotificationModules: asFunction(makeRegisteredNotificationModules).singleton(),
     realtimeBroker: asFunction(() =>
       makeRealtimeBroker({
         maxStreamsPerUser: realtimeConfig.streams.maxPerUser,
-        maxTopicsPerStream: realtimeConfig.streams.maxTopicsPerStream,
         heartbeatIntervalMs: realtimeConfig.streams.heartbeatIntervalMs,
       }),
     ).singleton(),

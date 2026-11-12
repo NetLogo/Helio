@@ -12,6 +12,7 @@ const realtimeConfig = {
   },
   listener: {
     applicationName: 'mc-sse-listener',
+    keepAliveInitialDelayMs: 30 * SECOND_MS,
     reconnectBaseDelayMs: 500,
     reconnectMaxDelayMs: 30 * SECOND_MS,
   },

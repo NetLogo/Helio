@@ -172,10 +172,16 @@ const rules = {
       // truncates its deepest level and reports counts there instead - the intended
       // degradation. Retune knowingly if this bites real threads.
       tree: { maxNodes: 1_000 },
+      // Mirrors the frontend's thread shape; a UX setting, not a security bound like tree.maxNodes.
+      thread: { maximumNested: 3, maximumShownRepliesPerLevel: 2 },
     },
 
     notification: {
       previewLength: 280,
+    },
+
+    eventAdmin: {
+      dispatchStateMaxEventIdsPerQueue: 1_000,
     },
   },
   mime: {

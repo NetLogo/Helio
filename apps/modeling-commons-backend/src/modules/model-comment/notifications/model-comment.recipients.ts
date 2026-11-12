@@ -1,6 +1,7 @@
-import type { modelCommentNotifications } from '#src/modules/model-comment/notifications/model-comment.notifications.ts';
-
-export type ModelCommentNotificationCategory = keyof typeof modelCommentNotifications.categories;
+import {
+  modelCommentCategories,
+  type ModelCommentNotificationCategory,
+} from '#src/modules/model-comment/notifications/model-comment.categories.ts';
 
 export type CommentNotificationRecipient = {
   recipientId: string;
@@ -10,24 +11,30 @@ export type CommentNotificationRecipient = {
 export type CommentNotificationParticipants = {
   commenterId: string | null;
   parentAuthorId: string | null;
-  modelAuthorIds: Iterable<string>;
+  modelAuthorIds: ReadonlyArray<string>;
 };
 
-export function listCommentNotificationRecipients({
+export function selectCommentRecipients({
   commenterId,
   parentAuthorId,
   modelAuthorIds,
 }: CommentNotificationParticipants): Array<CommentNotificationRecipient> {
-  const repliedToId = parentAuthorId && parentAuthorId !== commenterId ? parentAuthorId : null;
+  let parentAuthorToNotify: string | null = null;
+  if (parentAuthorId && parentAuthorId !== commenterId) parentAuthorToNotify = parentAuthorId;
 
-  const modelNoticeRecipientIds = new Set(modelAuthorIds);
-  if (commenterId) modelNoticeRecipientIds.delete(commenterId);
-  if (repliedToId) modelNoticeRecipientIds.delete(repliedToId);
+  const modelAuthorsToNotify = new Set(modelAuthorIds);
+  if (commenterId) modelAuthorsToNotify.delete(commenterId);
+  if (parentAuthorToNotify) modelAuthorsToNotify.delete(parentAuthorToNotify);
 
   const recipients: Array<CommentNotificationRecipient> = [];
-  if (repliedToId) recipients.push({ recipientId: repliedToId, category: 'comment.reply_to_you' });
-  for (const recipientId of modelNoticeRecipientIds) {
-    recipients.push({ recipientId, category: 'comment.on_your_model' });
+  if (parentAuthorToNotify) {
+    recipients.push({
+      recipientId: parentAuthorToNotify,
+      category: modelCommentCategories.replyToYou,
+    });
+  }
+  for (const recipientId of modelAuthorsToNotify) {
+    recipients.push({ recipientId, category: modelCommentCategories.onYourModel });
   }
 
   return recipients;

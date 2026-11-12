@@ -6,14 +6,16 @@ import notificationsConfig from '#src/config/notifications.ts';
 import { HOUR_MS } from '#src/shared/utils/consts.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
-import { listEmailJobs } from '../support/email-jobs.ts';
+import { findEmailJobsByRecipient } from '../support/email-jobs.ts';
 import { waitForEventsDispatched } from '../support/subscriber-jobs.ts';
-import type { InsertUserNotificationParams } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
-import { NOTIFICATION_CATEGORIES } from '#src/modules/notification-producers.ts';
+import { getEmailLinks } from '#src/modules/user-notification/email/email-links.domain.ts';
+import { readUnsubscribeToken } from '#src/modules/user-notification/core/unsubscribe-token.domain.ts';
+import type { InsertUserNotificationParams } from '#src/modules/user-notification/core/database/user-notification.repository.port.ts';
+import { notificationCategories } from '#src/modules/notification-catalog.ts';
 
 // The real catalog, not a copy, keeps this suite honest about which categories
 // exist without asserting on their label/description copy.
-const KNOWN_CATEGORIES = NOTIFICATION_CATEGORIES;
+const KNOWN_CATEGORIES = notificationCategories;
 const EMAIL_MODES: ReadonlyArray<unknown> = ['immediate', 'daily', 'off'];
 
 type CategoryPreference = {
@@ -221,7 +223,7 @@ interface PrismaCradle {
 
 async function listQueuedEmails(world: ICustomWorld): Promise<Array<MailCall>> {
   const addresses = [...getUsers(world.context).values()].map((user) => user.email);
-  const jobs = await listEmailJobs(world.server, addresses);
+  const jobs = await findEmailJobsByRecipient(world.server, addresses);
   return jobs.map(({ data }) => ({
     to: String(data.to ?? ''),
     subject: data.subject ?? '',
@@ -231,8 +233,8 @@ async function listQueuedEmails(world: ICustomWorld): Promise<Array<MailCall>> {
 
 async function hasEmailSentNotification(world: ICustomWorld, user: TestUser): Promise<boolean> {
   const { prisma } = world.server.diContainer.cradle as unknown as PrismaCradle;
-  const rows = await prisma.userNotification.findMany({ where: { recipientId: user.id } });
-  return rows.some((row) => row.emailSentAt !== null);
+  const notifications = await prisma.userNotification.findMany({ where: { recipientId: user.id } });
+  return notifications.some((notification) => notification.emailSentAt !== null);
 }
 
 Then(
@@ -279,7 +281,7 @@ Then('no mail should have been sent', async function (this: ICustomWorld) {
 });
 
 Given(
-  'the notifications of {string} are older than the flush window',
+  'the notifications of {string} are older than the pending window',
   async function (this: ICustomWorld, name: string) {
     const user = getUsers(this.context).get(name)!;
     const { prisma } = this.server.diContainer.cradle as unknown as PrismaCradle;
@@ -383,15 +385,17 @@ When(
 );
 
 Then(
-  'the ledger should hold {int} in-app suppressed notification(s) for {string}',
+  'the notifications should hold {int} in-app suppressed notification(s) for {string}',
   async function (this: ICustomWorld, expected: number, name: string) {
     const user = getUsers(this.context).get(name)!;
     const { prisma } = this.server.diContainer.cradle as unknown as PrismaCradle;
-    const rows = await prisma.userNotification.findMany({ where: { recipientId: user.id } });
-    assert.strictEqual(rows.length, expected);
+    const notifications = await prisma.userNotification.findMany({
+      where: { recipientId: user.id },
+    });
+    assert.strictEqual(notifications.length, expected);
     assert.ok(
-      rows.every((row) => row.inAppSuppressed === true),
-      'Expected every ledger row to be stamped inAppSuppressed',
+      notifications.every((notification) => notification.inAppSuppressed === true),
+      'Expected every notification to be stamped inAppSuppressed',
     );
   },
 );
@@ -487,23 +491,23 @@ Then('the first feed notification should be read', function (this: ICustomWorld)
   assert.ok(first.readAt, 'expected the notification to carry a readAt timestamp');
 });
 
-interface LedgerFixture {
+interface ExistingNotificationFixture {
   params: InsertUserNotificationParams;
-  rowId: string;
+  notificationId: string;
 }
 
 Given(
-  'a ledger notification already exists for {string}',
+  'a notification already exists for {string}',
   async function (this: ICustomWorld, name: string) {
     const user = getUsers(this.context).get(name)!;
     const { prisma, transactionManager, userNotificationRepository } =
       this.server.diContainer.cradle;
     const event = await prisma.event.create({
       data: {
-        type: 'test.ledger',
+        type: 'test.notification',
         actorId: user.id,
         resourceType: 'model',
-        resourceId: 'ledger-model',
+        resourceId: 'notification-model',
         payload: {},
       },
     });
@@ -511,56 +515,69 @@ Given(
       recipientId: user.id,
       eventId: event.id,
       category: 'comment.on_your_model',
-      url: 'https://example.test/ledger',
-      payload: { commentId: 'ledger-comment', excerpt: 'Ledger "row" \\ with ünïcode' },
+      url: 'https://example.test/notification',
+      payload: {
+        commentId: 'notification-comment',
+        excerpt: 'Notification "text" \\ with ünïcode',
+      },
       inAppSuppressed: false,
     };
-    const row = await transactionManager.run((ctx) =>
+    const notification = await transactionManager.run((ctx) =>
       userNotificationRepository.insertTx(ctx, params),
     );
-    this.context['ledger'] = { params, rowId: row.id } satisfies LedgerFixture;
+    this.context['existingNotification'] = {
+      params,
+      notificationId: notification.id,
+    } satisfies ExistingNotificationFixture;
   },
 );
 
 When(
-  'the same ledger notification is recorded again followed by another write in one transaction',
+  'the same notification is recorded again followed by another write in one transaction',
   async function (this: ICustomWorld) {
-    const { params, rowId } = this.context['ledger'] as LedgerFixture;
+    const { params, notificationId } = this.context[
+      'existingNotification'
+    ] as ExistingNotificationFixture;
     const { transactionManager, userNotificationRepository } = this.server.diContainer.cradle;
-    this.context['ledgerOutcome'] = await transactionManager
+    this.context['rerecordOutcome'] = await transactionManager
       .run(async (ctx) => {
-        const row = await userNotificationRepository.insertTx(ctx, params);
-        await userNotificationRepository.markEmailSentTx([rowId], new Date(), ctx);
-        return { rowId: row.id };
+        const notification = await userNotificationRepository.insertTx(ctx, params);
+        await userNotificationRepository.markEmailSentTx([notificationId], new Date(), ctx);
+        return { notificationId: notification.id };
       })
       .catch((error: unknown) => ({ error: String(error) }));
   },
 );
 
 Then(
-  'the transaction should commit both writes on the one existing ledger row',
+  'the transaction should commit both writes on the one existing notification',
   async function (this: ICustomWorld) {
-    const { params, rowId } = this.context['ledger'] as LedgerFixture;
-    const outcome = this.context['ledgerOutcome'] as { rowId?: string; error?: string };
+    const { params, notificationId } = this.context[
+      'existingNotification'
+    ] as ExistingNotificationFixture;
+    const outcome = this.context['rerecordOutcome'] as { notificationId?: string; error?: string };
     assert.strictEqual(outcome.error, undefined, outcome.error);
-    assert.strictEqual(outcome.rowId, rowId);
+    assert.strictEqual(outcome.notificationId, notificationId);
 
-    const rows = await this.server.diContainer.cradle.prisma.userNotification.findMany({
+    const notifications = await this.server.diContainer.cradle.prisma.userNotification.findMany({
       where: { eventId: params.eventId, recipientId: params.recipientId },
     });
-    assert.strictEqual(rows.length, 1);
-    assert.ok(rows[0]!.emailSentAt, 'expected the second write to set emailSentAt');
+    assert.strictEqual(notifications.length, 1);
+    assert.ok(notifications[0]!.emailSentAt, 'expected the second write to set emailSentAt');
   },
 );
 
 Then(
-  'the ledger row should keep the payload it was recorded with',
+  'the notification should keep the payload it was recorded with',
   async function (this: ICustomWorld) {
-    const { params, rowId } = this.context['ledger'] as LedgerFixture;
-    const row = await this.server.diContainer.cradle.prisma.userNotification.findUniqueOrThrow({
-      where: { id: rowId },
-    });
-    assert.deepStrictEqual(row.payload, params.payload);
+    const { params, notificationId } = this.context[
+      'existingNotification'
+    ] as ExistingNotificationFixture;
+    const notification =
+      await this.server.diContainer.cradle.prisma.userNotification.findUniqueOrThrow({
+        where: { id: notificationId },
+      });
+    assert.deepStrictEqual(notification.payload, params.payload);
   },
 );
 
@@ -644,7 +661,7 @@ Then(
   'the email to {string} should carry a one-click unsubscribe for category {string}',
   async function (this: ICustomWorld, name: string, category: string) {
     const user = getUsers(this.context).get(name)!;
-    const [job] = await listEmailJobs(this.server, [user.email]);
+    const [job] = await findEmailJobsByRecipient(this.server, [user.email]);
     assert.ok(job, `Expected an email to be queued for ${user.email}`);
     const headers = (job.data.headers ?? {}) as Record<string, string>;
 
@@ -653,8 +670,7 @@ Then(
     assert.ok(match, `Expected a List-Unsubscribe URL, got ${headers['List-Unsubscribe']}`);
     const oneClickUrl = match[1]!;
 
-    const { userNotificationDomain } = this.server.diContainer.cradle;
-    assert.deepStrictEqual(userNotificationDomain.readUnsubscribeToken(readToken(oneClickUrl)), {
+    assert.deepStrictEqual(await readUnsubscribeToken(readToken(oneClickUrl)), {
       userId: user.id,
       categories: [category],
     });
@@ -679,14 +695,17 @@ When(
   'a mail client posts a one-click unsubscribe for {string} whose category was tampered to {string}',
   async function (this: ICustomWorld, name: string, category: string) {
     const user = getUsers(this.context).get(name)!;
-    const { userNotificationDomain } = this.server.diContainer.cradle;
-    const signed = userNotificationDomain.getEmailLinks(user.id, ['comment.reply_to_you']);
-    const [, signature] = readToken(signed.oneClickUnsubscribeUrl).split('.');
-    const forgedPayload = Buffer.from(JSON.stringify({ u: user.id, c: [category] })).toString(
-      'base64url',
-    );
+    const signed = await getEmailLinks(user.id, ['comment.reply_to_you']);
+    const [header, , signature] = readToken(signed.oneClickUnsubscribeUrl).split('.');
+    const forgedPayload = Buffer.from(
+      JSON.stringify({
+        sub: user.id,
+        aud: notificationsConfig.unsubscribeTokenPurpose,
+        categories: [category],
+      }),
+    ).toString('base64url');
     const url = new URL(signed.oneClickUnsubscribeUrl);
-    url.searchParams.set('token', `${forgedPayload}.${signature}`);
+    url.searchParams.set('token', `${header}.${forgedPayload}.${signature}`);
     await postOneClickUnsubscribe(this, url);
   },
 );

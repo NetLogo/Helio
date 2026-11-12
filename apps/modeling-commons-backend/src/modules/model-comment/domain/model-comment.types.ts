@@ -26,10 +26,3 @@ export type CommentAuthCaller = {
   id: string;
   systemRole?: string;
 };
-
-// Mirrors the frontend's `maximumNested` / `maximumShownRepliesPerLevel`
-// (thread-shape/UX config, not a security bound — see rules.ts for that).
-export const COMMENT_TREE_DEFAULTS = {
-  maximumNested: 3,
-  maximumShownRepliesPerLevel: 2,
-};

@@ -16,7 +16,7 @@ export async function loadDependencies(
     [
       path.join(
         import.meta.dirname,
-        '../../modules/**/*.{repository,mapper,service,domain,query,storage,producer}.{js,ts}',
+        '../../modules/**/*.{repository,mapper,service,domain,query,storage}.{js,ts}',
       ),
     ],
     {

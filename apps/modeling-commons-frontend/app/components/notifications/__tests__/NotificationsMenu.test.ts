@@ -73,13 +73,21 @@ describe("NotificationsMenu", () => {
     expect(wrapper.text()).not.toContain("Backend down");
   });
 
-  it("keeps the loaded list when loading more fails", async () => {
+  it("keeps the loaded list and flags the failure inline when loading more fails", async () => {
     state.notifications.value = [makeNotification()];
     state.error.value = new Error("Backend down");
     const wrapper = await mountSuspended(NotificationsMenu);
 
     expect(wrapper.find('a[href="https://mc.test/models/m-1/comments/c-1"]').exists()).toBe(true);
     expect(wrapper.text()).not.toContain(labels.loadErrorTitle);
+    expect(wrapper.find('[role="alert"]').text()).toBe(labels.loadErrorMessage);
+  });
+
+  it("shows no inline failure while the loaded list is healthy", async () => {
+    state.notifications.value = [makeNotification()];
+    const wrapper = await mountSuspended(NotificationsMenu);
+
+    expect(wrapper.find('[role="alert"]').exists()).toBe(false);
   });
 
   it("keeps the loaded list while refreshing", async () => {

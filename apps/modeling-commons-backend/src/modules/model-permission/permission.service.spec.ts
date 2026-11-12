@@ -6,9 +6,11 @@ import {
   PermissionNotFoundError,
 } from '#src/modules/model-permission/domain/permission.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockPermissionRepository } from '#src/modules/model-permission/database/permission.repository.mock.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import type { ModelForPermissionCheck } from '#src/modules/model-permission/domain/permission.types.ts';
+import { makeUniqueViolation } from '#src/shared/test/prisma-errors.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { PermissionRepository } from '#src/modules/model-permission/database/permission.repository.port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
 
 function makeModelForCheck(
   overrides: Partial<ModelForPermissionCheck> = {},
@@ -17,8 +19,8 @@ function makeModelForCheck(
 }
 
 describe('permissionService', () => {
-  const permissionRepository = mockPermissionRepository();
-  const eventRepository = mockEventRepository();
+  const permissionRepository = mockPort<PermissionRepository>();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const domain = permissionDomain();
 
@@ -35,8 +37,6 @@ describe('permissionService', () => {
 
   describe('grant', () => {
     it('creates permission and emits event', async () => {
-      permissionRepository.findByModelAndUser.mockResolvedValue(undefined);
-
       const result = await service.grant('model-1', 'user-2', 'read', 'user-1');
 
       expect(result.modelId).toBe('model-1');
@@ -49,7 +49,7 @@ describe('permissionService', () => {
     });
 
     it('throws if permission already exists', async () => {
-      permissionRepository.findByModelAndUser.mockResolvedValue({ id: 'p1' });
+      permissionRepository.insertTx.mockRejectedValueOnce(makeUniqueViolation());
 
       await expect(service.grant('model-1', 'user-2', 'read', 'user-1')).rejects.toThrow(
         PermissionAlreadyExistsError,

@@ -9,7 +9,9 @@
     :ui="{ ...asRecord(variantProps.avatar.ui), ...asRecord($attrs.ui) }"
     data-variant="compact"
     v-bind="$attrs"
-  />
+  >
+    <AvatarFallback :seed="name ?? ''" :initials="initials" :label="displayAlt" />
+  </UAvatar>
   <div
     v-else-if="variant === 'headline'"
     :class="[variantProps.container, container]"
@@ -26,7 +28,7 @@
       :ui="{ ...asRecord(variantProps.avatar.ui), ...asRecord($attrs.ui) }"
       v-bind="$attrs"
     >
-      {{ initials }}
+      <AvatarFallback :seed="name ?? ''" :initials="initials" :label="displayAlt" />
     </UAvatar>
     <div :class="variantProps.infoContainer">
       <p :class="variantProps.name">{{ name }}</p>
@@ -41,7 +43,9 @@
       :size="variantProps.avatar.size"
       :ui="{ ...asRecord(variantProps.avatar.ui), ...asRecord($attrs.ui) }"
       v-bind="$attrs"
-    />
+    >
+      <AvatarFallback :seed="name ?? ''" :initials="initials" :label="displayAlt" />
+    </UAvatar>
     <span :class="variantProps.name">{{ name }}</span>
   </div>
 </template>
@@ -69,7 +73,7 @@ const props = withDefaults(defineProps<AvatarProps>(), {
 const headlineImagePx = 80;
 
 const displayAlt = computed(() => createAltText(props.alt, props.name));
-const initials = computed(() => createInitials(props.name));
+const initials = computed(() => createAvatarInitials(props.name));
 const variantProps = computed(() => getVariantProps(props.variant));
 </script>
 
@@ -84,17 +88,6 @@ type AvatarProps = {
   pending?: boolean;
   container?: string;
 };
-
-function createInitials(name: string | null): string {
-  return (
-    name
-      ?.split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part: string) => part[0]?.toUpperCase() ?? "")
-      .join("") || "U"
-  );
-}
 
 function createAltText(alt?: string | null, name?: string | null): string {
   return alt ?? `Avatar for ${name ?? "User"}`;

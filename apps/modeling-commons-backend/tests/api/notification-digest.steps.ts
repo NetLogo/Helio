@@ -3,14 +3,11 @@ import { After, Given, Then, When } from '@cucumber/cucumber';
 import { HOUR_MS, MINUTE_MS } from '#src/shared/utils/consts.ts';
 import type { JobWithMetadata } from 'pg-boss';
 import workersConfig from '#src/config/workers.ts';
-import type { SendDigestJobData } from '#src/workers/digest-processor.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
-import { listEmailJobs } from '../support/email-jobs.ts';
+import { findEmailJobsByRecipient } from '../support/email-jobs.ts';
 import type { TestUser } from '../support/auth-helper.ts';
 
-const { queueNotificationDigests, sendDigest } = workersConfig;
-
-type DigestJob = JobWithMetadata<SendDigestJobData>;
+const { dailyDigest } = workersConfig;
 
 interface DigestCradle {
   notificationDigestService: Dependencies['notificationDigestService'];
@@ -74,7 +71,7 @@ async function findSeededNotification(
 
 async function listQueuedDigests(world: ICustomWorld, name: string): Promise<Array<string>> {
   const { email } = getUser(world, name);
-  const jobs = await listEmailJobs(world.server, [email]);
+  const jobs = await findEmailJobsByRecipient(world.server, [email]);
   return jobs.map((job) => JSON.stringify(job.data));
 }
 
@@ -82,7 +79,7 @@ const DIGEST_CATEGORY = 'comment.on_your_model';
 
 const DIGEST_MODEL_TITLE = 'Digest Model';
 
-type SeededSubject = { targetId: string; actorUserId?: string };
+type SeededSubject = { targetId: string; actorId?: string };
 
 function getModelId(world: ICustomWorld, title: string): string {
   const id = (world.context['models'] as Map<string, string> | undefined)?.get(title);
@@ -136,35 +133,35 @@ Given(
   function (this: ICustomWorld, name: string) {
     const { id } = getUser(this, name);
     const { notificationDigestService } = getCradle(this);
-    const original = notificationDigestService.queueDigest;
+    const original = notificationDigestService.sendDailyDigest;
     let hasFailed = false;
-    notificationDigestService.queueDigest = async (recipientId, rows, preferences) => {
+    notificationDigestService.sendDailyDigest = async (recipientId, window) => {
       if (recipientId === id && !hasFailed) {
         hasFailed = true;
         throw new Error(`notification-digest.feature: rigged failure to ${name}`);
       }
-      return original(recipientId, rows, preferences);
+      return original(recipientId, window);
     };
     this.context['restoreDigestDelivery'] = () => {
-      notificationDigestService.queueDigest = original;
+      notificationDigestService.sendDailyDigest = original;
     };
   },
 );
 
 Given(
-  'send-digest jobs retry after {int} second(s)',
+  'the daily digest job retries after {int} second(s)',
   async function (this: ICustomWorld, seconds: number) {
     const { boss } = this.server.diContainer.cradle;
-    await boss.updateQueue(sendDigest.queueName, { retryDelay: seconds });
-    this.context['restoreSendDigestRetryDelay'] = async () =>
-      boss.updateQueue(sendDigest.queueName, { retryDelay: sendDigest.queue.retryDelay });
+    await boss.updateQueue(dailyDigest.queueName, { retryDelay: seconds });
+    this.context['restoreDailyDigestRetryDelay'] = async () =>
+      boss.updateQueue(dailyDigest.queueName, { retryDelay: dailyDigest.options.retryDelay });
   },
 );
 
 After(async function (this: ICustomWorld) {
   const restoreDelivery = this.context['restoreDigestDelivery'] as (() => void) | undefined;
   restoreDelivery?.();
-  const restoreRetryDelay = this.context['restoreSendDigestRetryDelay'] as
+  const restoreRetryDelay = this.context['restoreDailyDigestRetryDelay'] as
     | (() => Promise<void>)
     | undefined;
   await restoreRetryDelay?.();
@@ -204,7 +201,7 @@ Given(
   ) {
     await seedNotification(this, name, mode, age, unit, DIGEST_CATEGORY, {
       targetId: getModelId(this, modelTitle),
-      actorUserId: getUser(this, actorName).id,
+      actorId: getUser(this, actorName).id,
     });
   },
 );
@@ -223,7 +220,7 @@ Given(
   ) {
     await seedNotification(this, name, mode, age, unit, category, {
       targetId: getModelId(this, modelTitle),
-      actorUserId: getUser(this, actorName).id,
+      actorId: getUser(this, actorName).id,
     });
   },
 );
@@ -249,87 +246,32 @@ async function pollUntil<T>(
   return undefined;
 }
 
-const SETTLED_STATES = new Set(['completed', 'retry', 'failed']);
-
-async function listDigestJobs(world: ICustomWorld): Promise<Array<DigestJob>> {
+async function runDailyDigest(world: ICustomWorld): Promise<JobWithMetadata | null | undefined> {
   const { boss } = world.server.diContainer.cradle;
-  return boss.findJobs<SendDigestJobData>(sendDigest.queueName);
-}
-
-function findDigestJobs(world: ICustomWorld, name: string): Array<DigestJob> {
-  const { id } = getUser(world, name);
-  const jobs = world.context['digestJobs'] as Array<DigestJob> | undefined;
-  assert.ok(jobs, 'the digest job has not run');
-  return jobs.filter((job) => job.data.recipientId === id);
-}
-
-function findDigestJob(world: ICustomWorld, name: string): DigestJob {
-  const jobs = findDigestJobs(world, name);
-  assert.strictEqual(jobs.length, 1, `expected one send-digest job for "${name}"`);
-  return jobs[0]!;
+  const jobId = await boss.send(dailyDigest.queueName);
+  assert.ok(jobId, 'the daily digest job was not created');
+  return pollUntil(
+    async () => boss.getJobById(dailyDigest.queueName, jobId),
+    (job) => job?.state === 'completed' || job?.state === 'failed',
+  );
 }
 
 When('the digest job runs', async function (this: ICustomWorld) {
-  const { boss } = this.server.diContainer.cradle;
-  const fanOutJobId = await boss.send(queueNotificationDigests.queueName);
-  assert.ok(fanOutJobId, 'the fan-out job was not created');
-  const fanOutJob = await pollUntil(
-    async () => boss.getJobById(queueNotificationDigests.queueName, fanOutJobId),
-    (job) => job?.state === 'completed',
-  );
-  assert.ok(fanOutJob, 'the fan-out job did not complete within 15s');
-  const digestJobs = await pollUntil(
-    async () => listDigestJobs(this),
-    (jobs) => jobs.every((job) => SETTLED_STATES.has(job.state)),
-  );
-  assert.ok(digestJobs, 'the send-digest jobs did not settle within 15s');
-  this.context['digestJobs'] = digestJobs;
+  const job = await runDailyDigest(this);
+  assert.ok(job, 'the daily digest job did not settle within 15s');
+  this.context['dailyDigestJob'] = job;
 });
 
 Then('the digest job should have succeeded', function (this: ICustomWorld) {
-  const jobs = this.context['digestJobs'] as Array<DigestJob>;
-  assert.deepStrictEqual(
-    jobs.filter((job) => job.state !== 'completed').map((job) => job.state),
-    [],
-  );
+  const job = this.context['dailyDigestJob'] as JobWithMetadata;
+  assert.strictEqual(job.state, 'completed');
 });
 
-Then(
-  'the send-digest job for {string} should complete on its second attempt',
-  async function (this: ICustomWorld, name: string) {
-    const { boss } = this.server.diContainer.cradle;
-    const { id } = findDigestJob(this, name);
-    const job = await pollUntil(
-      async () => boss.getJobById<SendDigestJobData>(sendDigest.queueName, id),
-      (current) => current?.state === 'completed',
-    );
-    assert.ok(job, `the send-digest job for "${name}" did not complete within 15s`);
-    assert.strictEqual(job.retryCount, 1);
-  },
-);
-
-Then(
-  'the send-digest job for {string} should have completed',
-  function (this: ICustomWorld, name: string) {
-    assert.strictEqual(findDigestJob(this, name).state, 'completed');
-  },
-);
-
-Then(
-  'the send-digest job for {string} should carry the same window as the one for {string}',
-  function (this: ICustomWorld, name: string, otherName: string) {
-    const { since, until } = findDigestJob(this, name).data;
-    const other = findDigestJob(this, otherName).data;
-    assert.deepStrictEqual({ since, until }, { since: other.since, until: other.until });
-  },
-);
-
-Then(
-  'there should be exactly {int} send-digest job(s) for {string}',
-  function (this: ICustomWorld, count: number, name: string) {
-    assert.strictEqual(findDigestJobs(this, name).length, count);
-  },
-);
+Then('the digest job should have completed on its second attempt', function (this: ICustomWorld) {
+  const job = this.context['dailyDigestJob'] as JobWithMetadata;
+  assert.strictEqual(job.state, 'completed');
+  assert.strictEqual(job.retryCount, 1);
+});
 
 Then(
   '{string} should have received {int} digest(s)',

@@ -1,6 +1,7 @@
 import envSchema from 'env-schema';
 import { type Static, Type } from 'typebox';
 import { getServerCapabilities, getServerRole, ServerRole } from './role.ts';
+import { assertNoTrustProxyMaxHops } from './trust-proxy.ts';
 
 const NodeEnv = {
   development: 'development',
@@ -73,6 +74,7 @@ const schema = Type.Object({
   ), // comma-separated list of IP address headers
   IP_HASH_SALT: Type.String({ default: 'change-me-ip-hash-salt' }),
   TRUST_PROXY_ADDRESSES: Type.Optional(Type.String({ default: '' })), // comma-separated proxy IPs or CIDRs
+  TRUST_PROXY_MAX_HOPS: Type.Optional(Type.String()),
 });
 
 const env = envSchema<Static<typeof schema>>({
@@ -94,6 +96,8 @@ if (allowedOrigins.length === 0) {
   throw new Error('ALLOWED_ORIGINS cannot include more than 100 origins');
 }
 
+assertNoTrustProxyMaxHops(env.TRUST_PROXY_MAX_HOPS);
+
 const serverRole = getServerRole(env.SERVER_ROLE, env.NODE_ENV === NodeEnv.development);
 const serverCapabilities = getServerCapabilities(serverRole);
 
@@ -101,7 +105,6 @@ export default {
   nodeEnv: env.NODE_ENV,
   isDevelopment: env.NODE_ENV === NodeEnv.development,
   isProduction: env.NODE_ENV === NodeEnv.production,
-  isTest: env.NODE_ENV === NodeEnv.test,
   isStaging: env.NODE_ENV === NodeEnv.staging,
   version: env.PRODUCT_VERSION,
   log: {
@@ -117,7 +120,6 @@ export default {
   },
   db: {
     url: `postgres://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_URL}/${env.POSTGRES_DB}?sslmode=disable`,
-    database: env.POSTGRES_DB,
   },
   cache: {
     host: env.REDIS_HOST,
@@ -152,10 +154,7 @@ export default {
   },
   product: {
     name: env.PRODUCT_NAME,
-    description: env.PRODUCT_DESCRIPTION,
-    keywords: envVariableToList(env.PRODUCT_KEYWORDS),
     version: env.PRODUCT_VERSION,
-    displayName: env.PRODUCT_DISPLAY_NAME ?? env.PRODUCT_NAME,
     website: env.PRODUCT_WEBSITE,
     logoUrl: env.PRODUCT_LOGO_URL,
     brandColor: env.PRODUCT_BRAND_COLOR,
@@ -168,7 +167,6 @@ export default {
     password: env.SMTP_PASSWORD,
     secure: env.SMTP_SECURE,
     senderAddress: env.SENDER_ADDRESS,
-    senderName: env.PRODUCT_NAME,
     mailpitUrl: env.MAILPIT_URL,
   },
   workers: {

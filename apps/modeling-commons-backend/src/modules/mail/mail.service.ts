@@ -8,11 +8,8 @@ const { queueName } = workersConfig.sendEmail;
 
 export default function makeMailService({ logger, jobQueue }: Dependencies) {
   return {
-    async enqueue(content: Mail.Options, ctx?: TransactionContext): Promise<void> {
-      const jobId = ctx
-        ? await jobQueue.sendTx(ctx, queueName, content)
-        : await jobQueue.send(queueName, content);
-      if (!jobId) throw new Error(`No ${queueName} job was created`);
+    async enqueue(content: Mail.Options, ctx: TransactionContext): Promise<void> {
+      await jobQueue.sendTx(ctx, queueName, content);
     },
 
     async sendMailAsync(content: Mail.Options): Promise<SentMessageInfo> {

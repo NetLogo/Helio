@@ -2,10 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeTagService from '#src/modules/tag/tag.service.ts';
 import tagDomain from '#src/modules/tag/domain/tag.domain.ts';
 import { TagNotFoundError } from '#src/modules/tag/domain/tag.errors.ts';
-import { mockTagRepository } from '#src/modules/tag/database/tag.repository.mock.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { TagRepository } from '#src/modules/tag/database/tag.repository.port.ts';
 
 describe('tagService', () => {
-  const tagRepository = mockTagRepository();
+  const tagRepository = mockPort<TagRepository>();
   const domain = tagDomain();
 
   const service = makeTagService({
@@ -46,15 +47,15 @@ describe('tagService', () => {
       expect(tagRepository.findByNameInsensitive).not.toHaveBeenCalled();
     });
 
-    it('finds by name when id lookup misses', async () => {
+    it('finds a value that is not id-shaped by name only', async () => {
       const tag = { id: 't1', name: 'ecology' };
-      tagRepository.findOneById.mockResolvedValue(undefined);
+      tagRepository.findOneById.mockResolvedValue({ id: 'ecology', name: 'other' });
       tagRepository.findByNameInsensitive.mockResolvedValue(tag);
 
       const result = await service.findByIdOrName('ecology');
 
       expect(result).toBe(tag);
-      expect(tagRepository.findOneById).toHaveBeenCalledWith('ecology');
+      expect(tagRepository.findOneById).not.toHaveBeenCalled();
       expect(tagRepository.findByNameInsensitive).toHaveBeenCalledWith('ecology');
     });
 
@@ -74,7 +75,7 @@ describe('tagService', () => {
       tagRepository.findOneById.mockResolvedValue(undefined);
       tagRepository.findByNameInsensitive.mockResolvedValue(undefined);
 
-      await expect(service.findByIdOrName('missing')).rejects.toThrow(TagNotFoundError);
+      await expect(service.findByIdOrName(nanoId)).rejects.toThrow(TagNotFoundError);
       expect(tagRepository.findOneById).toHaveBeenCalledTimes(1);
       expect(tagRepository.findByNameInsensitive).toHaveBeenCalledTimes(1);
     });

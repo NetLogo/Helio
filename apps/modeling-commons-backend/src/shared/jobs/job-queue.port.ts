@@ -12,19 +12,22 @@ export type JobStateRow = {
 };
 
 export type JobQueue = {
-  send: (queue: string, data: object, options?: JobQueueSendOptions) => Promise<string | null>;
   sendTx: (
     ctx: TransactionContext,
     queue: string,
     data: object,
     options?: JobQueueSendOptions,
   ) => Promise<string | null>;
-  publish: (event: string, data: object) => Promise<Array<string>>;
-  publishTx: (ctx: TransactionContext, event: string, data: object) => Promise<Array<string>>;
+  publish: (event: string, data: object) => Promise<void>;
+  publishTx: (ctx: TransactionContext, event: string, data: object) => Promise<void>;
   findJobStates: (
     queues: Array<string>,
     field: string,
     values: Array<string>,
   ) => Promise<Array<JobStateRow>>;
-  findJobValues: (queue: string, field: string, state?: string) => Promise<Array<string>>;
+  findJobValues: (
+    queue: string,
+    field: string,
+    filters: { limit: number; state?: string },
+  ) => Promise<Array<string>>;
 };

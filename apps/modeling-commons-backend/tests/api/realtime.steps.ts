@@ -3,10 +3,8 @@ import { After, Given, Then, When } from '@cucumber/cucumber';
 import pg from 'pg';
 import env from '#src/config/env.ts';
 import realtimeConfig from '#src/config/realtime.ts';
-import {
-  modelCommentEventTypes,
-  userNotificationEventTypes,
-} from '#src/modules/event/domain/event-types.ts';
+import { modelCommentEventTypes } from '#src/modules/model-comment/model-comment.events.ts';
+import { userNotificationEventTypes } from '#src/modules/user-notification/user-notification.events.ts';
 import type { StreamMessage } from '@repo/modeling-commons-shared';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
@@ -57,10 +55,7 @@ async function openStream(
   const stream = await openEventStream(port, path, headers);
   getStreams(world).set(label, stream);
   assert.strictEqual(stream.statusCode, 200, `stream "${label}" answered ${stream.statusCode}`);
-  assert.ok(
-    await waitUntil(() => stream.received().includes(': open'), 5000),
-    `stream "${label}" sent no opening frame`,
-  );
+  await waitUntil(() => stream.received().includes(': open'), 5000);
   return stream;
 }
 
@@ -102,7 +97,7 @@ Then(
   'the {string} stream should end with the closing retry hint within {int} seconds',
   async function (this: ICustomWorld, label: string, seconds: number) {
     const stream = getStream(this, label);
-    assert.ok(await waitUntil(stream.ended, seconds * 1000), `stream "${label}" is still open`);
+    await waitUntil(stream.ended, seconds * 1000);
     assert.ok(
       stream.received().endsWith(formatRetryFrame(realtimeConfig.streams.closingRetryMs)),
       stream.received(),
@@ -134,18 +129,9 @@ When(
     const origin = env.cors.allowedOrigins[0];
     assert.ok(origin, 'no allowed origin is configured');
     this.context['streamOrigin'] = origin;
-    await openStream(this, label, streamPath, {
+    await openStream(this, label, topicPath([userTopic(this, userName)]), {
       cookie: getUser(this, userName).cookie,
       origin,
-    });
-  },
-);
-
-Given(
-  '{string} opens an event stream as {string}',
-  async function (this: ICustomWorld, userName: string, label: string) {
-    await openStream(this, label, streamPath, {
-      cookie: getUser(this, userName).cookie,
     });
   },
 );
@@ -330,31 +316,40 @@ Then(
   },
 );
 
-const subscriptionsPath = '/api/v1/events/subscriptions';
-
-function getConnectionId(world: ICustomWorld, label: string): string {
-  const connection = getStream(world, label)
-    .listMessages()
-    .find((message) => message.event === 'connection');
-  assert.ok(
-    typeof connection?.connectionId === 'string',
-    `stream "${label}" sent no connection id`,
-  );
-  return connection.connectionId;
+function topicPath(topics: Array<{ type: string; id: string }>): string {
+  return `${streamPath}?topics=${topics.map(({ type, id }) => `${type}:${id}`).join(',')}`;
 }
 
-async function sendSubscription(
+function modelTopic(world: ICustomWorld, modelTitle: string) {
+  return { type: 'model', id: getModelId(world, modelTitle) };
+}
+
+function userTopic(world: ICustomWorld, userName: string) {
+  return { type: 'user', id: getUser(world, userName).id };
+}
+
+async function openTopicStream(
   world: ICustomWorld,
-  method: 'POST' | 'DELETE',
   userName: string,
-  payload: { connectionId: string; topic: { type: string; id: string } },
+  label: string,
+  topics: Array<{ type: string; id: string }>,
 ): Promise<void> {
-  world.context.latestResponse = await world.server.inject({
-    method,
-    url: subscriptionsPath,
-    headers: { cookie: getUser(world, userName).cookie },
-    payload,
+  await openStream(world, label, topicPath(topics), { cookie: getUser(world, userName).cookie });
+}
+
+async function requestTopicStream(
+  world: ICustomWorld,
+  userName: string,
+  topic: { type: string; id: string },
+): Promise<void> {
+  const port = await listenOnEphemeralPort(world.server);
+  const stream = await openEventStream(port, topicPath([topic]), {
+    cookie: getUser(world, userName).cookie,
   });
+  stream.close();
+  world.context.latestResponse = { statusCode: stream.statusCode } as NonNullable<
+    ICustomWorld['context']['latestResponse']
+  >;
 }
 
 function countTopicEvents(world: ICustomWorld, label: string, modelId: string): number {
@@ -363,79 +358,31 @@ function countTopicEvents(world: ICustomWorld, label: string, modelId: string): 
     .filter((message) => message.topic?.type === 'model' && message.topic.id === modelId).length;
 }
 
-Then(
-  'the {string} and {string} streams should carry different connection ids',
-  function (this: ICustomWorld, first: string, second: string) {
-    assert.notStrictEqual(getConnectionId(this, first), getConnectionId(this, second));
-  },
-);
-
-Then(
-  'the first message on the {string} stream should be its connection message',
-  function (this: ICustomWorld, label: string) {
-    const [first] = getStream(this, label).listMessages();
-    assert.strictEqual(first?.event, 'connection');
-    assert.strictEqual(typeof first.connectionId, 'string');
-  },
-);
-
 When(
-  '{string} subscribes the {string} stream to model {string}',
-  async function (this: ICustomWorld, userName: string, label: string, modelTitle: string) {
-    await sendSubscription(this, 'POST', userName, {
-      connectionId: getConnectionId(this, label),
-      topic: { type: 'model', id: getModelId(this, modelTitle) },
-    });
-  },
-);
-
-When(
-  '{string} unsubscribes the {string} stream from model {string}',
-  async function (this: ICustomWorld, userName: string, label: string, modelTitle: string) {
-    await sendSubscription(this, 'DELETE', userName, {
-      connectionId: getConnectionId(this, label),
-      topic: { type: 'model', id: getModelId(this, modelTitle) },
-    });
-  },
-);
-
-When(
-  '{string} subscribes the {string} stream to a model that does not exist',
-  async function (this: ICustomWorld, userName: string, label: string) {
-    await sendSubscription(this, 'POST', userName, {
-      connectionId: getConnectionId(this, label),
-      topic: { type: 'model', id: newId() },
-    });
-  },
-);
-
-When(
-  '{string} subscribes the {string} stream to the user topic of {string}',
-  async function (this: ICustomWorld, userName: string, label: string, topicUserName: string) {
-    await sendSubscription(this, 'POST', userName, {
-      connectionId: getConnectionId(this, label),
-      topic: { type: 'user', id: getUser(this, topicUserName).id },
-    });
-  },
-);
-
-When(
-  '{string} subscribes the {string} stream to a {string} topic',
-  async function (this: ICustomWorld, userName: string, label: string, topicType: string) {
-    await sendSubscription(this, 'POST', userName, {
-      connectionId: getConnectionId(this, label),
-      topic: { type: topicType, id: newId() },
-    });
-  },
-);
-
-When(
-  '{string} subscribes an unknown connection to model {string}',
+  '{string} requests an event stream for model {string}',
   async function (this: ICustomWorld, userName: string, modelTitle: string) {
-    await sendSubscription(this, 'POST', userName, {
-      connectionId: newId(),
-      topic: { type: 'model', id: getModelId(this, modelTitle) },
-    });
+    await requestTopicStream(this, userName, modelTopic(this, modelTitle));
+  },
+);
+
+When(
+  '{string} requests an event stream for a model that does not exist',
+  async function (this: ICustomWorld, userName: string) {
+    await requestTopicStream(this, userName, { type: 'model', id: newId() });
+  },
+);
+
+When(
+  '{string} requests an event stream for the user topic of {string}',
+  async function (this: ICustomWorld, userName: string, topicUserName: string) {
+    await requestTopicStream(this, userName, userTopic(this, topicUserName));
+  },
+);
+
+When(
+  '{string} requests an event stream for a {string} topic',
+  async function (this: ICustomWorld, userName: string, topicType: string) {
+    await requestTopicStream(this, userName, { type: topicType, id: newId() });
   },
 );
 
@@ -473,23 +420,23 @@ Then(
 Given(
   '{string} opens an event stream subscribed to model {string} as {string}',
   async function (this: ICustomWorld, userName: string, modelTitle: string, label: string) {
-    await openStream(this, label, streamPath, { cookie: getUser(this, userName).cookie });
-    await sendSubscription(this, 'POST', userName, {
-      connectionId: getConnectionId(this, label),
-      topic: { type: 'model', id: getModelId(this, modelTitle) },
-    });
-    assert.strictEqual(this.context.latestResponse?.statusCode, 204);
+    await openTopicStream(this, userName, label, [modelTopic(this, modelTitle)]);
   },
 );
 
 Given(
   '{string} opens an event stream subscribed to their notifications as {string}',
   async function (this: ICustomWorld, userName: string, label: string) {
-    await openStream(this, label, streamPath, { cookie: getUser(this, userName).cookie });
-    await sendSubscription(this, 'POST', userName, {
-      connectionId: getConnectionId(this, label),
-      topic: { type: 'user', id: getUser(this, userName).id },
-    });
-    assert.strictEqual(this.context.latestResponse?.statusCode, 204);
+    await openTopicStream(this, userName, label, [userTopic(this, userName)]);
+  },
+);
+
+Given(
+  '{string} opens an event stream subscribed to model {string} and their notifications as {string}',
+  async function (this: ICustomWorld, userName: string, modelTitle: string, label: string) {
+    await openTopicStream(this, userName, label, [
+      modelTopic(this, modelTitle),
+      userTopic(this, userName),
+    ]);
   },
 );

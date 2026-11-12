@@ -40,6 +40,20 @@ Feature: Model Comments
     When "owner" gets comment "rootA" on "Model B"
     Then the response status should be 404
 
+  Scenario: A comment cannot be changed through a different model's path
+    Given an authenticated user "owner"
+    And a public model "Model A" created by "owner"
+    And a public model "Model B" created by "owner"
+    And "owner" has commented "Root in A" on "Model A" as "rootA"
+    When "owner" edits comment "rootA" on "Model B" with content "Moved"
+    Then the response status should be 404
+    When "owner" likes comment "rootA" on "Model B"
+    Then the response status should be 404
+    When "owner" unlikes comment "rootA" on "Model B"
+    Then the response status should be 404
+    When "owner" deletes comment "rootA" on "Model B"
+    Then the response status should be 404
+
   Scenario: A page of top-level comments embeds at most 2 replies per node
     Given an authenticated user "owner"
     And a public model "Popular" created by "owner"

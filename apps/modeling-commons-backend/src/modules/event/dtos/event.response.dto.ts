@@ -30,5 +30,5 @@ export const eventDispatchDtoSchema = Type.Object({
 
 export const adminEventResponseDtoSchema = Type.Object({
   ...eventResponseDtoSchema.properties,
-  dispatch: Type.Array(eventDispatchDtoSchema),
+  dispatches: Type.Array(eventDispatchDtoSchema),
 });

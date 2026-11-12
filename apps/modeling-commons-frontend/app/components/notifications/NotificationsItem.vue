@@ -16,7 +16,7 @@ watch(
 );
 const targetLabel = computed(() =>
   target.value?.name
-    ? notificationLiterals.viewNamedLabel.replace("{name}", target.value.name)
+    ? fillTemplate(notificationLiterals.viewNamedLabel, { name: target.value.name })
     : notificationLiterals.targetFallbackLabel,
 );
 </script>

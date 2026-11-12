@@ -40,7 +40,7 @@ Feature: Admin Events
     When the pending events have been dispatched
     And "admin" lists admin events with type "model_comment.created"
     Then the response status should be 200
-    And every listed event should report the subscribers "user-notifications, realtime"
+    And every listed event should report the subscribers "user-notifications"
     And every listed event should report dispatch state "completed" after 1 attempt
 
   Scenario: Admin can filter events to those whose dispatch is waiting to retry

@@ -1,16 +1,20 @@
-import { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
+import { modelCommentEventTypes } from '#src/modules/model-comment/model-comment.events.ts';
 import { modelCommentLiterals } from '#src/modules/model-comment/notifications/model-comment.literals.ts';
 
+import makeModelCommentProducer from '#src/modules/model-comment/notifications/model-comment.producer.ts';
+import { modelCommentCategories } from '#src/modules/model-comment/notifications/model-comment.categories.ts';
+
 export const modelCommentNotifications = {
-  producer: (deps: Dependencies) => deps.modelCommentProducer,
+  name: 'model-comment',
+  producer: makeModelCommentProducer,
   eventTypes: [modelCommentEventTypes.created, modelCommentEventTypes.deleted],
   categories: {
-    'comment.on_your_model': {
-      ...modelCommentLiterals.categories['comment.on_your_model'],
+    [modelCommentCategories.onYourModel]: {
+      ...modelCommentLiterals.categories[modelCommentCategories.onYourModel],
       defaults: { email: 'immediate', inApp: true },
     },
-    'comment.reply_to_you': {
-      ...modelCommentLiterals.categories['comment.reply_to_you'],
+    [modelCommentCategories.replyToYou]: {
+      ...modelCommentLiterals.categories[modelCommentCategories.replyToYou],
       defaults: { email: 'immediate', inApp: true },
     },
   },

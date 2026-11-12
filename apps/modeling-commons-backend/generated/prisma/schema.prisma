@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -97,6 +98,7 @@ model User {
   commentLikes            ModelCommentLike[]
   notifications           UserNotification[]
   notificationPreferences UserNotificationPreference[]
+  notificationDigests     NotificationDigest[]
 
   // Better Auth Admin plugin
   role       String?
@@ -457,7 +459,7 @@ model UserNotification {
   category        String
   url             String
   payload         Json      @default("{}")
-  actorUserId     String?
+  actorId         String?
   targetType      String?
   targetId        String?
   emailSentAt     DateTime? @db.Timestamptz(3)
@@ -471,6 +473,18 @@ model UserNotification {
   @@unique([eventId, recipientId, category])
   @@index([recipientId, readAt, createdAt])
   @@index([createdAt])
+  @@index([recipientId, createdAt], map: "UserNotification_unsent_recipientId_createdAt_idx", where: raw("\"emailSentAt\" IS NULL"))
+}
+
+model NotificationDigest {
+  recipientId String
+  day         DateTime @db.Date
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  recipient User @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@id([recipientId, day])
+  @@index([day])
 }
 
 model UserNotificationPreference {

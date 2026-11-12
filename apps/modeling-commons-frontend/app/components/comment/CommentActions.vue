@@ -38,7 +38,7 @@
       class="whitespace-nowrap"
       @click="$emit('reply')"
     >
-      <span>Reply <span v-if="replyCount" class="text-xs text-muted align-middle tabular-nums">({{  replyCount }})</span></span>
+      <span>{{ commentLiterals.replyTitle }} <span v-if="replyCount" class="text-xs text-muted align-middle tabular-nums">({{  replyCount }})</span></span>
     </UButton>
     <UDropdownMenu
       v-if="dropdownActions.length > 0"

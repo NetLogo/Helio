@@ -3,7 +3,11 @@
     ref="rootEl"
     :data-comment-id="comment.id"
     class="flex gap-4 group/reply"
-    :class="isHighlighted ? 'rounded-lg bg-royal-blue-lightest ring-2 ring-primary/30 px-2 -mx-2 outline-none' : undefined"
+    :class="
+      isHighlighted
+        ? 'rounded-lg bg-royal-blue-lightest ring-2 ring-primary/30 px-2 -mx-2 outline-none'
+        : undefined
+    "
     :tabindex="isHighlighted ? -1 : undefined"
     :style="{
       '--background': isHighlighted ? 'var(--color-royal-blue-lightest)' : undefined,
@@ -11,7 +15,6 @@
     @focusout="handleFocusOut"
   >
     <div class="relative">
-
       <!-- Spine and its parts -->
       <CommentElbowSvg
         v-if="isNested"
@@ -33,7 +36,13 @@
           :alt="comment.author.name"
           size="lg"
           class="self-start my-1 text-xs"
-        />
+        >
+          <AvatarFallback
+            :seed="comment.author.name"
+            :initials="createAvatarInitials(comment.author.name)"
+            :label="comment.author.name"
+          />
+        </UAvatar>
       </NuxtLink>
       <UAvatar
         v-else
@@ -41,7 +50,13 @@
         :alt="comment.author.name"
         size="lg"
         class="self-start my-1 text-xs"
-      />
+      >
+        <AvatarFallback
+          :seed="comment.author.name"
+          :initials="createAvatarInitials(comment.author.name)"
+          :label="comment.author.name"
+        />
+      </UAvatar>
     </div>
 
     <div class="flex-1 flex flex-col gap-1">
@@ -122,7 +137,7 @@
             :comment="reply"
             :parent-author-name="comment.author.name"
             :maximum-nested="maximumNested - 1"
-              is-nested
+            is-nested
             :parent-has-see-more-replies="remainingReplies > 0"
             :is-last-sibling="index === shownReplies.length - 1"
             :read-only="readOnly"
@@ -240,7 +255,10 @@ const threadLink = computed(() =>
 );
 const continueThreadCopy = computed(() => {
   const count = remainingReplies.value;
-  return fillTemplate(count === 1 ? commentLiterals.continueThreadOne : commentLiterals.continueThreadMany, { count });
+  return fillTemplate(
+    count === 1 ? commentLiterals.continueThreadOne : commentLiterals.continueThreadMany,
+    { count },
+  );
 });
 
 const isCollapsed = ref(false);
@@ -321,8 +339,10 @@ watch(
   () => props.pending,
   (now, was) => {
     if (!was || now) return;
-    if (replySubmitting.value && (props.submitToken ?? 0) === replyToken) replySubmitting.value = false;
-    if (editSubmitting.value && (props.submitToken ?? 0) === editToken) editSubmitting.value = false;
+    if (replySubmitting.value && (props.submitToken ?? 0) === replyToken)
+      replySubmitting.value = false;
+    if (editSubmitting.value && (props.submitToken ?? 0) === editToken)
+      editSubmitting.value = false;
   },
 );
 

@@ -19,9 +19,10 @@ vi.mock('#src/config/rules.ts', async (importOriginal) => {
 import makeListCommentsQuery from '#src/modules/model-comment/queries/list-comments.query.ts';
 import makeGetCommentQuery from '#src/modules/model-comment/queries/get-comment.query.ts';
 import modelCommentMapper from '#src/modules/model-comment/model-comment.mapper.ts';
-import { mockModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.mock.ts';
 import type { ModelCommentEntity } from '#src/modules/model-comment/domain/model-comment.types.ts';
 import type { Paginated } from '#src/shared/db/repository.port.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.port.ts';
 
 function makeEntity(overrides: Partial<ModelCommentEntity> = {}): ModelCommentEntity {
   return {
@@ -52,7 +53,7 @@ function pages<T>(entries: Array<[string, Paginated<T>]>): Map<string, Paginated
 }
 
 function buildListQuery() {
-  const modelCommentRepository = mockModelCommentRepository();
+  const modelCommentRepository = mockPort<ModelCommentRepository>();
   const mapper = modelCommentMapper();
   const query = makeListCommentsQuery({
     modelCommentRepository,
@@ -62,7 +63,7 @@ function buildListQuery() {
 }
 
 function buildGetQuery() {
-  const modelCommentRepository = mockModelCommentRepository();
+  const modelCommentRepository = mockPort<ModelCommentRepository>();
   const mapper = modelCommentMapper();
   const query = makeGetCommentQuery({
     modelCommentRepository,

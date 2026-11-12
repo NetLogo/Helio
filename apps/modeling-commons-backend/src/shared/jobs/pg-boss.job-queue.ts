@@ -1,56 +1,21 @@
 import workersConfig from '#src/config/workers.ts';
+import type { ExtendedPrismaClient } from '#src/lib/prisma.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 import type { JobQueue, JobStateRow } from '#src/shared/jobs/job-queue.port.ts';
 import { makePrismaBossDb } from '#src/shared/jobs/prisma-boss-db.ts';
-import type { FastifyBaseLogger } from 'fastify';
-import type { Db, PgBoss } from 'pg-boss';
+import { Prisma } from '#prisma/index';
+import type { PgBoss } from 'pg-boss';
 
-const findSubscribedQueuesSql = `
-  SELECT name FROM ${workersConfig.schema}.subscription WHERE event = $1
-`;
-
-const findJobStatesSql = `
-  SELECT data->>$1 AS "value", name AS "queue", state::text AS "state",
-    retry_count AS "retryCount", output
-  FROM ${workersConfig.schema}.job
-  WHERE name = ANY($2::text[]) AND data->>$1 = ANY($3::text[])
-`;
-
-const findJobValuesSql = `
-  SELECT DISTINCT data->>$1 AS "value"
-  FROM ${workersConfig.schema}.job
-  WHERE name = $2 AND data->>$1 IS NOT NULL AND ($3::text IS NULL OR state::text = $3::text)
-`;
+const jobTable = Prisma.raw(`${workersConfig.schema}.job`);
 
 export default function makePgBossJobQueue({
   boss,
-  logger,
+  db,
 }: {
-  boss: Pick<PgBoss, 'send' | 'getDb'>;
-  logger: Pick<FastifyBaseLogger, 'debug'>;
+  boss: Pick<PgBoss, 'send' | 'publish'>;
+  db: Pick<ExtendedPrismaClient, '$queryRaw'>;
 }): JobQueue {
-  async function publishThrough(db: Db, event: string, data: object): Promise<Array<string>> {
-    const { rows } = await db.executeSql(findSubscribedQueuesSql, [event]);
-    const queueNames = (rows as Array<{ name: string }>).map((row) => row.name);
-    if (queueNames.length === 0) {
-      logger.debug({ event }, 'Published an event that no queue subscribes to');
-      return [];
-    }
-
-    const jobIds: Array<string> = [];
-    for (const queueName of queueNames) {
-      const jobId = await boss.send(queueName, data, { db });
-      if (!jobId) throw new Error(`No ${queueName} job was created for a ${event} publish`);
-      jobIds.push(jobId);
-    }
-    return jobIds;
-  }
-
   return {
-    async send(queue, data, options = {}) {
-      return boss.send(queue, data, options);
-    },
-
     async sendTx(ctx, queue, data, options = {}) {
       return boss.send(queue, data, {
         ...options,
@@ -59,23 +24,37 @@ export default function makePgBossJobQueue({
     },
 
     async publish(event, data) {
-      return publishThrough(boss.getDb(), event, data);
+      await boss.publish(event, data);
     },
 
     async publishTx(ctx, event, data) {
-      return publishThrough(makePrismaBossDb(resolveTransaction(ctx)), event, data);
+      // pg-boss publish swallows send errors (Promise.allSettled). A SQL failure still aborts the
+      // transaction, but a send that throws before SQL (e.g. a subscription to a deleted queue)
+      // commits the event without that job. Accepted: subscriptions only target live queues.
+      await boss.publish(event, data, { db: makePrismaBossDb(resolveTransaction(ctx)) });
     },
 
     async findJobStates(queues, field, values) {
-      const { rows } = await boss.getDb().executeSql(findJobStatesSql, [field, queues, values]);
-      return rows as Array<JobStateRow>;
+      return db.$queryRaw<Array<JobStateRow>>`
+        SELECT data->>${field} AS "value", name AS "queue", state::text AS "state",
+          retry_count AS "retryCount", output
+        FROM ${jobTable}
+        WHERE name = ANY(${queues}::text[]) AND data->>${field} = ANY(${values}::text[])
+      `;
     },
 
-    async findJobValues(queue, field, state) {
-      const { rows } = await boss
-        .getDb()
-        .executeSql(findJobValuesSql, [field, queue, state ?? null]);
-      return (rows as Array<{ value: string }>).map((row) => row.value);
+    async findJobValues(queue, field, { limit, state }) {
+      const stateFilter =
+        state === undefined ? Prisma.empty : Prisma.sql`AND state::text = ${state}`;
+      const rows = await db.$queryRaw<Array<{ value: string }>>`
+        SELECT data->>${field} AS "value"
+        FROM ${jobTable}
+        WHERE name = ${queue} AND data->>${field} IS NOT NULL ${stateFilter}
+        GROUP BY 1
+        ORDER BY MAX(created_on) DESC
+        LIMIT ${limit}
+      `;
+      return rows.map((row) => row.value);
     },
   };
 }

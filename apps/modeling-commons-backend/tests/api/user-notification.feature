@@ -173,7 +173,7 @@ Feature: Notification Preferences and Feed
     When "commenter" comments "Quietly" on "Muted Model"
     Then the response status should be 201
     When the comment notification has been delivered
-    Then the ledger should hold 1 in-app suppressed notification for "owner"
+    Then the notifications should hold 1 in-app suppressed notification for "owner"
     When "owner" lists their notifications
     Then the notification feed should contain 0 notifications
     And the notification feed should report 0 unread
@@ -208,18 +208,18 @@ Feature: Notification Preferences and Feed
 
   Scenario: Switching a daily category to immediate emails its pending notifications in one summary
     Given an authenticated user "owner"
-    And a public model "Flush Model" created by "owner"
+    And a public model "Pending Model" created by "owner"
     And "owner" sets email to "daily" for category "comment.on_your_model"
     And an authenticated user "commenter"
-    When "commenter" comments "Held for the digest" on "Flush Model"
+    When "commenter" comments "Held for the digest" on "Pending Model"
     And the pending events have been dispatched
-    And "commenter" comments "Still holding" on "Flush Model"
+    And "commenter" comments "Still holding" on "Pending Model"
     And the pending events have been dispatched
     Then no mail should have been sent
     When "owner" sets email to "immediate" for category "comment.on_your_model"
     Then the response status should be 204
     And one notification summary should be emailed to "owner"
-    And the notification summary should list "commenter commented on Flush Model" once
+    And the notification summary should list "commenter commented on Pending Model" once
 
   Scenario: Switching an off category to daily emails what was missed in one summary
     Given an authenticated user "owner"
@@ -245,7 +245,7 @@ Feature: Notification Preferences and Feed
     Then the response status should be 204
     And no notification summary should be emailed
 
-  Scenario: Switching to immediate never emails notifications older than the flush window
+  Scenario: Switching to immediate never emails notifications older than the pending window
     Given an authenticated user "owner"
     And a public model "Stale Model" created by "owner"
     And "owner" sets email to "daily" for category "comment.on_your_model"
@@ -253,17 +253,17 @@ Feature: Notification Preferences and Feed
     When "commenter" comments "Long ago" on "Stale Model"
     And the pending events have been dispatched
     Then no mail should have been sent
-    Given the notifications of "owner" are older than the flush window
+    Given the notifications of "owner" are older than the pending window
     When "owner" sets email to "immediate" for category "comment.on_your_model"
     Then the response status should be 204
     And no notification summary should be emailed
 
-  Scenario: Recording an existing ledger row keeps its transaction usable
-    Given an authenticated user "ledger"
-    And a ledger notification already exists for "ledger"
-    When the same ledger notification is recorded again followed by another write in one transaction
-    Then the transaction should commit both writes on the one existing ledger row
-    And the ledger row should keep the payload it was recorded with
+  Scenario: Recording an existing notification keeps its transaction usable
+    Given an authenticated user "recorder"
+    And a notification already exists for "recorder"
+    When the same notification is recorded again followed by another write in one transaction
+    Then the transaction should commit both writes on the one existing notification
+    And the notification should keep the payload it was recorded with
 
   Scenario: The feed names the actor and the model as they are now, not as they were at delivery
     Given an authenticated user "owner"

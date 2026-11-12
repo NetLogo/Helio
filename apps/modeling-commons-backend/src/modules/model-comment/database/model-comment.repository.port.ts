@@ -4,7 +4,6 @@ import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 
 export interface ModelCommentRepository {
   findById: (id: string, viewerId?: string) => Promise<ModelCommentEntity | undefined>;
-  findByIdTx: (ctx: TransactionContext, id: string) => Promise<ModelCommentEntity | undefined>;
 
   // Top-level comments of a model (parentId = null).
   listTopLevel: (

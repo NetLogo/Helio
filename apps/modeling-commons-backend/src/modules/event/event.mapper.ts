@@ -38,7 +38,7 @@ export default function eventMapper(): Mapper<DomainEvent, EventRecord, EventRes
         resourceId: entity.resourceId,
         payload: entity.payload,
         createdAt: entity.createdAt,
-      };
+      } as EventRecord;
     },
   };
 }

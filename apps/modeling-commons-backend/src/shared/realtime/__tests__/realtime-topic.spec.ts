@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   findRealtimeTopic,
   isTopicEvent,
-  listTopicEventTypes,
   type AnyRealtimeTopic,
 } from '#src/shared/realtime/realtime-topic.ts';
 
@@ -31,15 +30,5 @@ describe('isTopicEvent', () => {
   it('accepts only the event types the topic declares', () => {
     expect(isTopicEvent(modelTopic, 'model_comment.updated')).toBe(true);
     expect(isTopicEvent(modelTopic, 'user_notification.created')).toBe(false);
-  });
-});
-
-describe('listTopicEventTypes', () => {
-  it('lists every declared event type once', () => {
-    expect(listTopicEventTypes([modelTopic, userTopic, modelTopic])).toEqual([
-      'model_comment.created',
-      'model_comment.updated',
-      'user_notification.created',
-    ]);
   });
 });

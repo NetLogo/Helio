@@ -1,4 +1,4 @@
-import { userNotificationEventTypes } from '#src/modules/event/domain/event-types.ts';
+import { userNotificationEventTypes } from '#src/modules/user-notification/user-notification.events.ts';
 import type { RealtimeTopic } from '#src/shared/realtime/realtime-topic.ts';
 
 export const userNotificationTopic = {

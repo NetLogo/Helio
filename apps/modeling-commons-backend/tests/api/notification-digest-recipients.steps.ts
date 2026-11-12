@@ -1,8 +1,8 @@
 import assert from 'node:assert';
 import { Given, Then, When } from '@cucumber/cucumber';
 import { HOUR_MS, MINUTE_MS } from '#src/shared/utils/consts.ts';
-import type { UserNotificationRepositoryPort } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
-import type { NotificationCategory } from '#src/modules/user-notification/domain/user-notification.types.ts';
+import type { UserNotificationRepositoryPort } from '#src/modules/user-notification/core/database/user-notification.repository.port.ts';
+import type { NotificationCategory } from '#src/modules/notification-catalog.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
 
@@ -131,7 +131,7 @@ Given(
 );
 
 Given(
-  'a digest row for {string} in {string} that is {string} at {string}',
+  'a digest notification for {string} in {string} that is {string} at {string}',
   async function (
     this: ICustomWorld,
     name: string,
@@ -139,7 +139,7 @@ Given(
     state: string,
     position: string,
   ) {
-    assert.ok(state === 'sent' || state === 'unsent', `unknown row state "${state}"`);
+    assert.ok(state === 'sent' || state === 'unsent', `unknown notification state "${state}"`);
     const recipient = getUser(this, name);
     const { prisma } = getCradle(this);
     const event = await prisma.event.create({

@@ -11,7 +11,7 @@ export type { StreamControlMessage, StreamMessage, StreamTopic, StreamTopicType 
 
 export type StreamStatus = "connecting" | "open" | "closed";
 
-export type TopicSignal<T extends StreamTopicType> = StreamEvent<T> | "live" | "resync";
+export type TopicSignal<T extends StreamTopicType> = StreamEvent<T> | "resync";
 
 export type TopicHandler<T extends StreamTopicType> = (signal: TopicSignal<T>) => void;
 

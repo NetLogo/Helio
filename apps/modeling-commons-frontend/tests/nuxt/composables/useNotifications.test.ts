@@ -1,7 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { effectScope, ref, toValue, type EffectScope, type MaybeRefOrGetter, type Ref } from "vue";
+import { effectScope, ref, type EffectScope, type Ref } from "vue";
 import {
   MAX_BACKOFF_FACTOR,
   MIN_POLL_GAP_MS,
@@ -38,7 +38,7 @@ const { apiState, poller } = vi.hoisted(() => ({
   poller: {
     run: null as null | (() => Promise<void> | void),
     interval: null as null | Ref<number>,
-    enabled: undefined as MaybeRefOrGetter<boolean> | undefined,
+    running: false,
   },
 }));
 
@@ -46,20 +46,19 @@ mockNuxtImport("useApi", () => () => apiState.current!.client);
 mockNuxtImport("useUser", () => () => useUserMock());
 mockNuxtImport("useToast", () => () => useToastMock());
 mockNuxtImport("useConnectionHealth", () => () => ({ isOffline: ref(false) }));
-mockNuxtImport(
-  "useActivePoll",
-  () =>
-    (
-      run: () => Promise<void>,
-      interval: Ref<number>,
-      opts: { enabled?: MaybeRefOrGetter<boolean> } = {},
-    ) => {
-      poller.run = run;
-      poller.interval = interval;
-      poller.enabled = opts.enabled;
-      return { isActive: ref(false), pause: () => {} };
-    },
-);
+vi.mock("@vueuse/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@vueuse/core")>()),
+  useTimeoutPoll: (run: () => Promise<void>, interval: Ref<number>) => {
+    poller.run = run;
+    poller.interval = interval;
+    poller.running = false;
+    return {
+      isActive: ref(false),
+      pause: () => (poller.running = false),
+      resume: () => (poller.running = true),
+    };
+  },
+}));
 
 let scope: EffectScope | null = null;
 
@@ -170,25 +169,16 @@ describe("useNotifications poll backoff", () => {
     await pollWith(jsonResponse(makeNotificationPage([])));
     expect(poller.interval!.value).toBe(POLL_INTERVAL_ACTIVE_MS);
   });
-
-  it("exposes the poll failure and clears it after a success", async () => {
-    const { pollError } = await mountWith(makeNotificationPage([]));
-
-    await pollWith(jsonResponse({ message: "boom" }, 500));
-    expect(pollError.value).toBeTruthy();
-
-    await pollWith(jsonResponse(makeNotificationPage([])));
-    expect(pollError.value).toBeNull();
-  });
 });
 
 describe("useNotifications poll while signed out", () => {
   it("sends nothing and leaves state untouched, then polls once signed in", async () => {
-    const { notifications, unreadCount, lastPolled, pollError } = await mountWith(
+    const { notifications, unreadCount } = await mountWith(
       makeNotificationPage([makeNotification({ id: "a", createdAt: "2026-10-01T12:00:00.000Z" })], {
         unreadCount: 2,
       }),
     );
+    const lastPolled = useState<number>(NOTIFICATION_STATE_KEYS.lastPolled);
     const before = {
       notifications: notifications.value,
       unreadCount: unreadCount.value,
@@ -209,7 +199,6 @@ describe("useNotifications poll while signed out", () => {
     expect(notifications.value).toBe(before.notifications);
     expect(unreadCount.value).toBe(before.unreadCount);
     expect(lastPolled.value).toBe(before.lastPolled);
-    expect(pollError.value).toBeNull();
 
     setLoggedIn(true);
     await pollWith(
@@ -576,8 +565,6 @@ describe("useNotifications with the event stream", () => {
     event: "user_notification.created",
   } as const;
   const resync = { event: "resync" } as const;
-  const subscriptionRequests = () =>
-    api().requests.filter((request) => request.url.pathname === "/api/v1/events/subscriptions");
 
   beforeEach(() => {
     installFakeEventSource();
@@ -587,16 +574,18 @@ describe("useNotifications with the event stream", () => {
     vi.unstubAllGlobals();
   });
 
-  const timerPollEnabled = () => toValue(poller.enabled ?? true);
+  const timerPollEnabled = () => poller.running;
 
   it("pauses the timer poll while the stream is open and resumes it when it is not", async () => {
     await mountWith(makeNotificationPage([]));
     expect(timerPollEnabled()).toBe(true);
 
     latestEventSource()!.simulateOpen();
+    await flushPromises();
     expect(timerPollEnabled()).toBe(false);
 
     latestEventSource()!.simulateDrop();
+    await flushPromises();
     expect(timerPollEnabled()).toBe(true);
   });
 
@@ -619,16 +608,12 @@ describe("useNotifications with the event stream", () => {
     },
   );
 
-  it("subscribes the stream to the signed-in user's own topic", async () => {
+  it("opens the stream on the signed-in user's own topic", async () => {
     await mountWith(makeNotificationPage([]));
 
-    latestEventSource()!.simulateOpen("connection-a");
-    await vi.waitFor(() => expect(subscriptionRequests()).toHaveLength(1));
-
-    expect(subscriptionRequests()[0]).toMatchObject({
-      method: "POST",
-      body: { connectionId: "connection-a", topic: userTopic },
-    });
+    expect(new URL(latestEventSource()!.url).searchParams.get("topics")).toBe(
+      `user:${userTopic.id}`,
+    );
   });
 
   it("ignores an event for another user's topic", async () => {
@@ -707,7 +692,7 @@ describe("useNotifications with the event stream", () => {
   it("runs the pending follow-up after the in-flight poll fails", async () => {
     let releaseFirst = (_: Response) => {};
     const first = new Promise<Response>((resolve) => (releaseFirst = resolve));
-    const { unreadCount, pollError } = await openStreamWithHeldPoll(first, () =>
+    const { unreadCount } = await openStreamWithHeldPoll(first, () =>
       jsonResponse(makeNotificationPage([], { unreadCount: 2 })),
     );
 
@@ -721,7 +706,7 @@ describe("useNotifications with the event stream", () => {
 
     expect(notificationRequests()).toHaveLength(4);
     expect(unreadCount.value).toBe(2);
-    expect(pollError.value).toBeNull();
+    expect(poller.interval!.value).toBe(POLL_INTERVAL_ACTIVE_MS);
   });
 
   it("still skips a timer-driven poll inside the poll gap", async () => {

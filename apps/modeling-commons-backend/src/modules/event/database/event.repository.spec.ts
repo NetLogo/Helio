@@ -1,26 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import eventRepository from '#src/modules/event/database/event.repository.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
+import { realtimeTopics } from '#src/modules/realtime-topics.ts';
+import realtimeConfig from '#src/config/realtime.ts';
 
 const create = vi.fn().mockResolvedValue({ id: 'event-1' });
+const executeRaw = vi.fn().mockResolvedValue(0);
 
 vi.mock('#src/shared/db/prisma-transaction.manager.ts', async (importOriginal) => {
   const actual = await importOriginal<object>();
-  return { ...actual, resolveTransaction: () => ({ event: { create } }) };
+  return { ...actual, resolveTransaction: () => ({ event: { create }, $executeRaw: executeRaw }) };
 });
 
 const params = {
-  type: 'model_comment.created',
+  type: 'model_comment.created' as const,
   actorId: 'actor-1',
   resourceType: 'model',
   resourceId: 'model-1',
-  payload: {},
+  payload: { commentId: 'comment-1', parentId: null },
 };
 
 describe('eventRepository.insertTx', () => {
-  const jobQueue = { publishTx: vi.fn().mockResolvedValue(['job-1', 'job-2']) };
+  const jobQueue = { publishTx: vi.fn().mockResolvedValue(undefined) };
   const transactionManager = mockTransactionManager();
-  const repository = eventRepository({ db: {}, jobQueue } as never);
+  const repository = eventRepository({ db: {}, jobQueue, realtimeTopics } as never);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -47,6 +50,30 @@ describe('eventRepository.insertTx', () => {
       { eventId: 'event-1' },
       { eventId: 'event-2' },
     ]);
+  });
+
+  it('notifies the realtime channel with the topic message on the transaction client', async () => {
+    await transactionManager.run(async (ctx) => repository.insertTx(ctx, params));
+
+    expect(executeRaw).toHaveBeenCalledOnce();
+    expect(executeRaw.mock.calls[0]?.slice(1)).toEqual([
+      realtimeConfig.channel,
+      ['{"topic":{"type":"model","id":"model-1"},"event":"model_comment.created"}'],
+    ]);
+  });
+
+  it('notifies nothing for an event no realtime topic declares', async () => {
+    await transactionManager.run(async (ctx) =>
+      repository.insertTx(ctx, {
+        type: 'model.liked',
+        actorId: 'actor-1',
+        resourceType: 'model',
+        resourceId: 'model-1',
+        payload: {},
+      } as never),
+    );
+
+    expect(executeRaw).not.toHaveBeenCalled();
   });
 
   it('fails the transaction when the publish fails', async () => {

@@ -1,23 +1,22 @@
-import type { UserNotificationRecord } from '#src/modules/user-notification/database/user-notification.record.ts';
+import type { UserNotificationRecord } from '#src/modules/user-notification/core/database/user-notification.record.ts';
+import type { NotificationCategory } from '#src/modules/notification-catalog.ts';
 import type {
-  NotificationCategory,
-  NotificationCategoryInfo,
-  NotificationChannels,
-  NotificationDescription,
-  NotificationPreviews,
-} from '#src/modules/user-notification/domain/user-notification.types.ts';
-import type { CategoryPreferenceDto } from '#src/modules/user-notification/dtos/notification-preference.response.dto.ts';
-import type { UserNotificationResponseDto } from '#src/modules/user-notification/dtos/user-notification.response.dto.ts';
+  Category,
+  Feed,
+  NotificationSubjects,
+} from '#src/modules/user-notification/core/types/index.ts';
+import type { CategoryPreferenceDto } from '#src/modules/user-notification/preferences/dtos/notification-preference.response.dto.ts';
+import type { UserNotificationResponseDto } from '#src/modules/user-notification/feed/dtos/user-notification.response.dto.ts';
 
 export type UserNotificationMapper = {
   toCategoryPreference: (
-    info: NotificationCategoryInfo,
-    resolved: NotificationChannels,
+    info: { category: NotificationCategory } & Category.Config,
+    resolved: Category.ChannelPreferences,
   ) => CategoryPreferenceDto;
   toResponse: (
     record: UserNotificationRecord,
-    previews: NotificationPreviews,
-    description: NotificationDescription,
+    subjects: NotificationSubjects,
+    description: Feed.ItemText,
   ) => UserNotificationResponseDto;
 };
 
@@ -33,15 +32,15 @@ export default function userNotificationMapper(): UserNotificationMapper {
       };
     },
 
-    toResponse(record, previews, description) {
+    toResponse(record, subjects, description) {
       return {
         id: record.id,
-        category: record.category as NotificationCategory,
+        category: record.category,
         title: description.title,
         body: description.body,
         url: record.url,
-        actor: previews.actor,
-        target: previews.target,
+        actor: subjects.actor,
+        target: subjects.target,
         createdAt: record.createdAt.toISOString(),
         readAt: record.readAt?.toISOString() ?? null,
       };

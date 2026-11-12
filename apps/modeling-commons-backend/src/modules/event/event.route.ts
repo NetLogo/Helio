@@ -22,9 +22,9 @@ export default async function eventRoutes(fastify: FastifyInstance) {
       const result = await listEventsQuery.execute(filters, { limit, page });
       return {
         ...result,
-        data: result.data.map(({ dispatch, ...record }) => ({
+        data: result.data.map(({ dispatches, ...record }) => ({
           ...eventMapper.toResponse(eventMapper.toDomain(record)),
-          dispatch,
+          dispatches,
         })),
       };
     },

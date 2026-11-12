@@ -9,20 +9,14 @@ import {
   resetNotificationState,
 } from "~/components/notifications/shared";
 
-import { createSharedComposable } from "@vueuse/core";
+import {
+  createSharedComposable,
+  useDocumentVisibility,
+  useIdle,
+  useOnline,
+  useTimeoutPoll,
+} from "@vueuse/core";
 import { notificationLiterals } from "~/features/notifications/literals";
-
-type PollDecision = "start" | "rerun" | "skip";
-
-function decidePoll(state: {
-  force: boolean;
-  inFlight: boolean;
-  withinGap: boolean;
-}): PollDecision {
-  if (state.inFlight) return state.force ? "rerun" : "skip";
-  if (!state.force && state.withinGap) return "skip";
-  return "start";
-}
 
 function useNotificationsImpl() {
   const unreadCount = useState<number>(NOTIFICATION_STATE_KEYS.unreadCount, () => 0);
@@ -51,7 +45,6 @@ function useNotificationsImpl() {
     data: paginatedNotifications,
     error,
     pending,
-    refresh,
     loadNextPage: nextPage,
     canLoadMore: hasMore,
     reset: resetPagination,
@@ -113,14 +106,11 @@ function useNotificationsImpl() {
 
   watch(
     paginatedNotifications,
-    (val) => {
-      if (val?.length) aggregate(val);
-    },
+    (val) => aggregate(val),
     { deep: true, immediate: true },
   );
 
   const failures = ref(0);
-  const pollError = ref<unknown>(null);
 
   const backoffInterval = computed(
     () => POLL_INTERVAL_ACTIVE_MS * Math.min(2 ** failures.value, MAX_BACKOFF_FACTOR),
@@ -143,27 +133,18 @@ function useNotificationsImpl() {
         lastPolled.value = startedAt;
         aggregate(res.data);
         failures.value = 0;
-        pollError.value = null;
       })
-      .catch((err: unknown) => {
-        failures.value++;
-        pollError.value = err;
-      });
+      .catch(() => failures.value++);
   };
 
   const poll = async ({ force = false }: { force?: boolean } = {}): Promise<void> => {
     if (!user.value.isLoggedIn) return;
     const startedAt = Date.now();
-    const decision = decidePoll({
-      force,
-      inFlight: pollInFlight,
-      withinGap: startedAt - lastPolled.value < MIN_POLL_GAP_MS,
-    });
-    if (decision === "skip") return;
-    if (decision === "rerun") {
-      rerunPending = true;
+    if (pollInFlight) {
+      rerunPending ||= force;
       return;
     }
+    if (!force && startedAt - lastPolled.value < MIN_POLL_GAP_MS) return;
     pollInFlight = true;
     await requestPoll(startedAt);
     pollInFlight = false;
@@ -172,9 +153,6 @@ function useNotificationsImpl() {
     return poll({ force: true });
   };
 
-  const polling = ref(false);
-  let pausePolling = () => {};
-
   if (import.meta.client) {
     const pollNow = () => void poll({ force: true });
     const stream = useStreamTopic(
@@ -182,15 +160,18 @@ function useNotificationsImpl() {
       pollNow,
     );
 
-    const { isActive, pause } = useActivePoll(() => poll(), backoffInterval, {
-      idleTimeout: IDLE_TIMEOUT_MS,
-      requireFocus: false, // deliver while visible even if another app has focus
-      enabled: () => stream.status.value !== "open",
-    });
-    polling.value = isActive.value;
-    watch(isActive, (v) => (polling.value = v));
-    pausePolling = pause;
-    onScopeDispose(pause);
+    const visibility = useDocumentVisibility();
+    const online = useOnline();
+    const { idle } = useIdle(IDLE_TIMEOUT_MS);
+    const timerPollActive = computed(
+      () =>
+        stream.status.value !== "open" &&
+        visibility.value === "visible" &&
+        !idle.value &&
+        online.value,
+    );
+    const { pause, resume } = useTimeoutPoll(() => poll(), backoffInterval, { immediate: false });
+    watch(timerPollActive, (on) => (on ? resume() : pause()), { immediate: true });
   }
 
   const markRead = async (notificationId: string) => {
@@ -212,18 +193,13 @@ function useNotificationsImpl() {
   return {
     notifications: aggregatedNotifications,
     unreadCount,
-    lastPolled,
     error,
-    pollError,
     pending,
-    polling,
-    refresh,
     markRead,
     nextPage,
     hasMore,
     unreadOnly,
     setUnreadOnly,
-    stopPolling: () => pausePolling(),
   };
 }
 

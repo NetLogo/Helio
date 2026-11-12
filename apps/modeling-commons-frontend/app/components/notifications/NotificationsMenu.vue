@@ -5,7 +5,7 @@ const { notifications, unreadCount, pending, error, markRead, hasMore } = useNot
 const hasUnreadNotifications = computed(() => unreadCount.value > 0);
 const bellLabel = computed(() =>
   hasUnreadNotifications.value
-    ? notificationLiterals.bellUnreadLabel.replace("{count}", String(unreadCount.value))
+    ? fillTemplate(notificationLiterals.bellUnreadLabel, { count: unreadCount.value })
     : notificationLiterals.bellLabel,
 );
 const showSeeAll = computed(() => notifications.value.length > 0 || hasMore.value);
@@ -40,7 +40,18 @@ function openNotification(id: UserNotification["id"]) {
       <div
         class="flex flex-col justify-center gap-2 px-4 pt-6 pb-4 max-w-[min(32rem,calc(100vw-1rem))] sm:min-w-sm tabular-nums"
       >
-        <NotificationsHeader :unread-count="unreadCount" />
+        <div class="px-2 mx-2 mt-2 mb-2 flex items-center gap-3">
+          <h6>{{ notificationLiterals.bellLabel }}</h6>
+          <UBadge
+            v-if="hasUnreadNotifications"
+            variant="solid"
+            color="primary"
+            size="sm"
+            class="aspect-square rounded-full"
+          >
+            <span class="number-container">{{ unreadCount }}</span>
+          </UBadge>
+        </div>
 
         <AsyncBoundary
           :pending="pending && !hasNotifications"
@@ -56,8 +67,21 @@ function openNotification(id: UserNotification["id"]) {
               class="text-sm"
             />
           </template>
-          <NotificationsList :notifications="notifications" @read="openNotification" />
+          <div
+            class="space-y-3 w-full max-h-[min(30rem,60dvh)] overflow-y-auto overscroll-contain scrollbar-hidden rounded gradient-boundary-scroll"
+          >
+            <NotificationsItem
+              v-for="notification in notifications"
+              :key="notification.id"
+              :notification="notification"
+              @read="openNotification(notification.id)"
+            />
+          </div>
         </AsyncBoundary>
+
+        <p v-if="hasNotifications && error" role="alert" class="text-xs text-error text-center">
+          {{ notificationLiterals.loadErrorMessage }}
+        </p>
 
         <UButton
           v-if="showSeeAll"

@@ -1,6 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import rules from '#src/config/rules.ts';
 import makeListEventsQuery from '#src/modules/event/queries/list-events.query.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
+
+vi.mock('#src/config/workers.ts', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('#src/config/workers.ts')>();
+  return {
+    ...actual,
+    subscriberQueues: [...actual.subscriberQueues, { queueName: 'second-subscriber' }],
+  };
+});
 
 function makeEvent(id: string) {
   return {
@@ -29,7 +39,7 @@ function makeRow(
 }
 
 describe('listEventsQuery', () => {
-  const eventRepository = mockEventRepository();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const jobQueue = {
     findJobStates: vi.fn().mockResolvedValue([]),
     findJobValues: vi.fn().mockResolvedValue([]),
@@ -73,7 +83,12 @@ describe('listEventsQuery', () => {
     await query.execute({}, {});
 
     expect(jobQueue.findJobStates).toHaveBeenCalledWith(
-      ['user-notifications', 'user-notifications-dead', 'realtime', 'realtime-dead'],
+      [
+        'user-notifications',
+        'user-notifications-dead',
+        'second-subscriber',
+        'second-subscriber-dead',
+      ],
       'eventId',
       ['e1', 'e2'],
     );
@@ -83,19 +98,19 @@ describe('listEventsQuery', () => {
     eventRepository.search.mockResolvedValue(makePage(['e1', 'e2']));
     jobQueue.findJobStates.mockResolvedValue([
       makeRow('e1', 'user-notifications', 'completed'),
-      makeRow('e1', 'realtime', 'failed', 1, { message: 'boom' }),
-      makeRow('e1', 'realtime-dead', 'created', 0, { message: 'boom' }),
-      makeRow('e2', 'realtime', 'completed'),
+      makeRow('e1', 'second-subscriber', 'failed', 1, { message: 'boom' }),
+      makeRow('e1', 'second-subscriber-dead', 'created', 0, { message: 'boom' }),
+      makeRow('e2', 'second-subscriber', 'completed'),
     ]);
 
     const result = await query.execute({}, {});
 
-    expect(result.data[0]!.dispatch).toEqual([
+    expect(result.data[0]!.dispatches).toEqual([
       { subscriber: 'user-notifications', state: 'completed', attempts: 1, lastError: null },
-      { subscriber: 'realtime', state: 'dead', attempts: 2, lastError: 'boom' },
+      { subscriber: 'second-subscriber', state: 'dead', attempts: 2, lastError: 'boom' },
     ]);
-    expect(result.data[1]!.dispatch).toEqual([
-      { subscriber: 'realtime', state: 'completed', attempts: 1, lastError: null },
+    expect(result.data[1]!.dispatches).toEqual([
+      { subscriber: 'second-subscriber', state: 'completed', attempts: 1, lastError: null },
     ]);
   });
 
@@ -104,7 +119,7 @@ describe('listEventsQuery', () => {
 
     const result = await query.execute({}, {});
 
-    expect(result.data[0]!.dispatch).toEqual([]);
+    expect(result.data[0]!.dispatches).toEqual([]);
   });
 
   it('narrows to events whose job is retrying in any subscriber queue', async () => {
@@ -114,20 +129,30 @@ describe('listEventsQuery', () => {
 
     await query.execute({ dispatchState: 'retry' }, {});
 
-    expect(jobQueue.findJobValues).toHaveBeenCalledWith('user-notifications', 'eventId', 'retry');
-    expect(jobQueue.findJobValues).toHaveBeenCalledWith('realtime', 'eventId', 'retry');
+    expect(jobQueue.findJobValues).toHaveBeenCalledWith('user-notifications', 'eventId', {
+      limit: rules.limits.eventAdmin.dispatchStateMaxEventIdsPerQueue,
+      state: 'retry',
+    });
+    expect(jobQueue.findJobValues).toHaveBeenCalledWith('second-subscriber', 'eventId', {
+      limit: rules.limits.eventAdmin.dispatchStateMaxEventIdsPerQueue,
+      state: 'retry',
+    });
     expect(eventRepository.search.mock.calls[0]![0]).toEqual({ ids: ['e1', 'e2', 'e3'] });
   });
 
   it('narrows to events with a copy in any subscriber dead-letter queue', async () => {
     jobQueue.findJobValues.mockImplementation(async (queue: string) =>
-      queue === 'realtime-dead' ? ['e4'] : [],
+      queue === 'second-subscriber-dead' ? ['e4'] : [],
     );
 
     await query.execute({ dispatchState: 'dead' }, {});
 
-    expect(jobQueue.findJobValues).toHaveBeenCalledWith('user-notifications-dead', 'eventId');
-    expect(jobQueue.findJobValues).toHaveBeenCalledWith('realtime-dead', 'eventId');
+    expect(jobQueue.findJobValues).toHaveBeenCalledWith('user-notifications-dead', 'eventId', {
+      limit: rules.limits.eventAdmin.dispatchStateMaxEventIdsPerQueue,
+    });
+    expect(jobQueue.findJobValues).toHaveBeenCalledWith('second-subscriber-dead', 'eventId', {
+      limit: rules.limits.eventAdmin.dispatchStateMaxEventIdsPerQueue,
+    });
     expect(eventRepository.search.mock.calls[0]![0]).toEqual({ ids: ['e4'] });
   });
 });

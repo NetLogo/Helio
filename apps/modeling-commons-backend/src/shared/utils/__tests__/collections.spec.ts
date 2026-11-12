@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { collectUniqueDefined } from '#src/shared/utils/collections.ts';
+import { collectUniqueDefined, lookup } from '#src/shared/utils/collections.ts';
 
 describe('collectUniqueDefined', () => {
   it('drops null and undefined', () => {
@@ -17,5 +17,19 @@ describe('collectUniqueDefined', () => {
 
   it('returns an empty array when nothing is defined', () => {
     expect(collectUniqueDefined([null, undefined])).toEqual([]);
+  });
+});
+
+describe('lookup', () => {
+  const map = new Map([['a', 1]]);
+
+  it('returns the value for a present key', () => {
+    expect(lookup(map, 'a')).toBe(1);
+  });
+
+  it('returns null for a missing, null or undefined key', () => {
+    expect(lookup(map, 'b')).toBeNull();
+    expect(lookup(map, null)).toBeNull();
+    expect(lookup(map, undefined)).toBeNull();
   });
 });

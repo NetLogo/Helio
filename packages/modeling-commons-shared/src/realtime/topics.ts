@@ -13,7 +13,7 @@ export type StreamMessage = {
   [T in StreamTopicType]: { topic: Extract<StreamTopic, { type: T }>; event: StreamEvent<T> }
 }[StreamTopicType]
 
-export type StreamControlMessage = { event: 'resync' } | { event: 'connection'; connectionId: string }
+export type StreamControlMessage = { event: 'resync' }
 
 export function buildTopicKey(topic: StreamTopic): string {
   return `${topic.type}:${topic.id}`

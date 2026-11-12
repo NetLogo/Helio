@@ -12,15 +12,16 @@ import {
   ModelDraftInvalidPayloadError,
 } from '#src/modules/model-draft/domain/model-draft.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.mock.ts';
-import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
-import { mockModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.mock.ts';
-import { mockModelVersionTagRepository } from '#src/modules/model-version-tag/database/model-version-tag.repository.mock.ts';
 import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
 import type { DraftDataV1 } from '#src/modules/model-draft/schemas/v1.ts';
 import type { Model } from '#prisma/index';
 import { ID_PATTERN } from '#src/shared/utils/id.ts';
 import { PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX } from '#src/modules/model-draft/model-draft.storage.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.port.ts';
+import type { ModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.port.ts';
+import type { ModelVersionTagRepository } from '#src/modules/model-version-tag/database/model-version-tag.repository.port.ts';
+import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 
 function makeDraft(
   data: DraftDataV1 = {},
@@ -55,7 +56,7 @@ function makeStorageMock() {
 }
 
 function buildService(overrides: Record<string, unknown> = {}) {
-  const modelDraftRepository = mockModelDraftRepository();
+  const modelDraftRepository = mockPort<ModelDraftRepository>();
   const transactionManager = mockTransactionManager();
   const modelDraftStorage = makeStorageMock();
   const domain = modelDraftDomain();
@@ -80,9 +81,8 @@ function makeModel(overrides: Partial<Model> = {}): Model {
 }
 
 function buildPublishService(overrides: Record<string, unknown> = {}) {
-  const modelRepository = mockModelRepository();
-  const modelVersionRepository = mockModelVersionRepository();
-  modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(1);
+  const modelRepository = mockPort<ModelRepository>();
+  const modelVersionRepository = mockPort<ModelVersionRepository>();
   modelVersionRepository.findLatestByModel.mockResolvedValue(null);
 
   const modelDraftStorage = {
@@ -394,12 +394,10 @@ describe('modelDraftService', () => {
   describe('generatePreviewImage', () => {
     function buildWithPreview() {
       const previewImageService = {
-        generatePreviewFromNetlogoFile: vi
-          .fn()
-          .mockResolvedValue({
-            buffer: new Uint8Array([1, 2, 3]).buffer,
-            contentType: 'image/png',
-          }),
+        generatePreviewFromNetlogoFile: vi.fn().mockResolvedValue({
+          buffer: new Uint8Array([1, 2, 3]).buffer,
+          contentType: 'image/png',
+        }),
       };
       return { previewImageService, ...buildService({ previewImageService }) };
     }
@@ -513,7 +511,7 @@ describe('modelDraftService', () => {
     }
 
     function buildEditPublishService() {
-      const modelVersionTagRepository = mockModelVersionTagRepository();
+      const modelVersionTagRepository = mockPort<ModelVersionTagRepository>();
       modelVersionTagRepository.findByVersion.mockResolvedValue([]);
       const eventRepository = { insertTx: vi.fn() };
       const built = buildPublishService({ modelVersionTagRepository, eventRepository });
@@ -554,7 +552,6 @@ describe('modelDraftService', () => {
         createdNewVersion: false,
       });
       expect(modelVersionRepository.updateFieldsTx).toHaveBeenCalledOnce();
-      expect(modelVersionRepository.getNextVersionNumberTx).not.toHaveBeenCalled();
       expect(modelVersionRepository.insertTx).not.toHaveBeenCalled();
       expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
@@ -566,7 +563,6 @@ describe('modelDraftService', () => {
 
     it('bumps the version when the primary file changes', async () => {
       const { service, modelVersionRepository, eventRepository } = buildEditPublishService();
-      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
       modelVersionRepository.findLatestByModel.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
@@ -594,7 +590,6 @@ describe('modelDraftService', () => {
 
     it('bumps the version when a model-file is added', async () => {
       const { service, modelVersionRepository } = buildEditPublishService();
-      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
       modelVersionRepository.findLatestByModel.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
@@ -671,7 +666,11 @@ describe('modelDraftService', () => {
         fileService,
       });
       modelRepository.findOneById.mockResolvedValue(makeModel({ id: 'model-1' }));
-      modelVersionRepository.getNextVersionNumberTx.mockResolvedValue(2);
+      modelVersionRepository.findLatestByModel.mockResolvedValue({
+        modelId: 'model-1',
+        versionNumber: 1,
+        finalizedAt: null,
+      } as never);
 
       await service.publish(makeDraft(publishableDraftData, { modelId: 'model-1' }));
 
@@ -784,12 +783,12 @@ describe('modelDraftService', () => {
       additionalFiles: Array<{ fileKey: string; kind: 'model' | 'additional' }>,
       versionOverrides: Record<string, unknown> = {},
     ) {
-      const modelRepository = mockModelRepository();
+      const modelRepository = mockPort<ModelRepository>();
       modelRepository.findOneById.mockResolvedValue(
         makeModel({ id: 'model-1', visibility: 'public', latestVersionNumber: 1, deletedAt: null }),
       );
 
-      const modelVersionRepository = mockModelVersionRepository();
+      const modelVersionRepository = mockPort<ModelVersionRepository>();
       modelVersionRepository.findByModelAndVersion.mockResolvedValue({
         modelId: 'model-1',
         versionNumber: 1,
@@ -801,7 +800,7 @@ describe('modelDraftService', () => {
         ...versionOverrides,
       } as never);
 
-      const modelVersionTagRepository = mockModelVersionTagRepository();
+      const modelVersionTagRepository = mockPort<ModelVersionTagRepository>();
       modelVersionTagRepository.findByVersion.mockResolvedValue([]);
 
       const modelAdditionalFileRepository = {
@@ -824,14 +823,12 @@ describe('modelDraftService', () => {
 
       const db = {
         user: {
-          findUnique: vi
-            .fn()
-            .mockResolvedValue({
-              id: 'user-1',
-              systemRole: 'user',
-              banned: false,
-              deletedAt: null,
-            }),
+          findUnique: vi.fn().mockResolvedValue({
+            id: 'user-1',
+            systemRole: 'user',
+            banned: false,
+            deletedAt: null,
+          }),
         },
         model: {
           findUnique: vi.fn().mockResolvedValue({

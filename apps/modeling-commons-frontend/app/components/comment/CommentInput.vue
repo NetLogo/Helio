@@ -133,8 +133,10 @@ const handleSubmit = () => {
   emit("submit", comment.value);
 };
 
+const IME_PROCESS_KEY_CODE = 229;
+
 const handleEnter = (event: KeyboardEvent) => {
-  if (event.isComposing) return;
+  if (event.isComposing || event.keyCode === IME_PROCESS_KEY_CODE) return;
   event.preventDefault();
   handleSubmit();
 };

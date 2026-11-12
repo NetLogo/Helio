@@ -1,3 +1,4 @@
+import type { EventType } from '#src/modules/event-catalog.ts';
 import assert from 'node:assert';
 import { After, Given, When, Then } from '@cucumber/cucumber';
 import pg from 'pg';
@@ -13,8 +14,8 @@ import type { StreamMessage, StreamTopic } from '@repo/modeling-commons-shared';
 import {
   emailDeadLetterQueueName,
   emailQueueName,
-  haveAllCompleted,
-  listEmailJobs,
+  areAllJobsCompleted,
+  findEmailJobsByRecipient,
   waitForEmailJobs,
   type EmailJob,
 } from '../support/email-jobs.ts';
@@ -47,14 +48,14 @@ async function waitForUserNotificationRow(
 }
 
 function rigHandleEvent(world: ICustomWorld, shouldFail: () => boolean): void {
-  const { userNotificationService } = world.server.diContainer.cradle;
-  const original = userNotificationService.handleEvent.bind(userNotificationService);
-  userNotificationService.handleEvent = async (event) => {
+  const { notificationDeliveryService } = world.server.diContainer.cradle;
+  const original = notificationDeliveryService.handleEvent.bind(notificationDeliveryService);
+  notificationDeliveryService.handleEvent = async (event) => {
     if (shouldFail()) throw new Error('workers.feature: rigged handleEvent failure');
     return original(event);
   };
   world.context['restoreHandleEvent'] = () => {
-    userNotificationService.handleEvent = original;
+    notificationDeliveryService.handleEvent = original;
   };
 }
 
@@ -79,7 +80,7 @@ Given(
     const { eventRepository, prisma, transactionManager } = this.server.diContainer.cradle;
     await transactionManager.run(async (ctx) =>
       eventRepository.insertTx(ctx, {
-        type: eventType,
+        type: eventType as EventType,
         actorId: actor.id,
         resourceType: 'test',
         resourceId: actor.id,
@@ -116,8 +117,8 @@ When(
   'a user-notifications job for that event is sent with a retry limit of {int} and a retry delay of {int} second(s)',
   async function (this: ICustomWorld, retryLimit: number, retryDelay: number) {
     const eventId = this.context['pendingEventId'] as string;
-    const { jobQueue } = this.server.diContainer.cradle;
-    await jobQueue.send(queueName, { eventId }, { retryLimit, retryDelay });
+    const { boss } = this.server.diContainer.cradle;
+    await boss.send(queueName, { kind: 'event', eventId }, { retryLimit, retryDelay });
   },
 );
 
@@ -211,14 +212,14 @@ async function waitForEmailJob(
   seconds: number,
   isDone: (job: EmailJob) => boolean,
   queueName: string = emailQueueName,
-): Promise<EmailJob | undefined> {
+): Promise<EmailJob> {
   const jobs = await waitForEmailJobs(
     world.server,
     [getAddress(world, name)],
     (candidates) => candidates.some(isDone),
     { timeoutMs: seconds * 1000, queueName },
   );
-  return jobs?.find(isDone);
+  return jobs.find(isDone) as EmailJob;
 }
 
 Given('email sending is recorded', function (this: ICustomWorld) {
@@ -241,17 +242,21 @@ Given(
 );
 
 When('an email to {string} is queued', async function (this: ICustomWorld, name: string) {
-  const { mailService } = this.server.diContainer.cradle;
-  await mailService.enqueue(buildEmail(getAddress(this, name)));
+  const { mailService, transactionManager } = this.server.diContainer.cradle;
+  await transactionManager.run(async (ctx) =>
+    mailService.enqueue(buildEmail(getAddress(this, name)), ctx),
+  );
 });
 
 When(
   '{int} emails to {string} are queued',
   async function (this: ICustomWorld, count: number, name: string) {
-    const { mailService } = this.server.diContainer.cradle;
+    const { mailService, transactionManager } = this.server.diContainer.cradle;
     const address = getAddress(this, name);
     for (let index = 1; index <= count; index++) {
-      await mailService.enqueue(buildEmail(address, `workers.feature #${index}`));
+      await transactionManager.run(async (ctx) =>
+        mailService.enqueue(buildEmail(address, `workers.feature #${index}`), ctx),
+      );
     }
   },
 );
@@ -259,8 +264,8 @@ When(
 When(
   'an email to {string} is sent with a retry limit of {int} and a retry delay of {int} second(s)',
   async function (this: ICustomWorld, name: string, retryLimit: number, retryDelay: number) {
-    const { jobQueue } = this.server.diContainer.cradle;
-    await jobQueue.send(emailQueueName, buildEmail(getAddress(this, name)), {
+    const { boss } = this.server.diContainer.cradle;
+    await boss.send(emailQueueName, buildEmail(getAddress(this, name)), {
       retryLimit,
       retryDelay,
     });
@@ -270,8 +275,8 @@ When(
 When(
   'an email to {string} is sent with a retry delay of {int} second(s)',
   async function (this: ICustomWorld, name: string, retryDelay: number) {
-    const { jobQueue } = this.server.diContainer.cradle;
-    await jobQueue.send(emailQueueName, buildEmail(getAddress(this, name)), { retryDelay });
+    const { boss } = this.server.diContainer.cradle;
+    await boss.send(emailQueueName, buildEmail(getAddress(this, name)), { retryDelay });
   },
 );
 
@@ -288,7 +293,6 @@ Then(
   'the email job to {string} should wait to retry after {int} attempt(s) within {int} seconds',
   async function (this: ICustomWorld, name: string, attempts: number, seconds: number) {
     const job = await waitForEmailJob(this, name, seconds, (row) => row.state === 'retry');
-    assert.ok(job, `The email job to "${name}" did not reach the retry state within ${seconds}s`);
     assert.strictEqual(job.retryCount + 1, attempts);
     this.context[`emailJob:${name}`] = job;
   },
@@ -313,7 +317,7 @@ Then(
       assert.strictEqual(recorder.attempts.get(address), attempts);
       await new Promise((resolve) => setTimeout(resolve, 250));
     }
-    const [job] = await listEmailJobs(this.server, [address]);
+    const [job] = await findEmailJobsByRecipient(this.server, [address]);
     assert.strictEqual(job?.state, 'retry');
   },
 );
@@ -321,18 +325,16 @@ Then(
 Then(
   'a copy of the email job to {string} should reach the dead-letter queue within {int} seconds',
   async function (this: ICustomWorld, name: string, seconds: number) {
-    const job = await waitForEmailJob(this, name, seconds, () => true, emailDeadLetterQueueName);
-    assert.ok(job, `No dead-letter copy of the email job to "${name}" appeared within ${seconds}s`);
+    await waitForEmailJob(this, name, seconds, () => true, emailDeadLetterQueueName);
   },
 );
 
 Then(
   'every email job to {string} should complete within {int} seconds',
   async function (this: ICustomWorld, name: string, seconds: number) {
-    const jobs = await waitForEmailJobs(this.server, [getAddress(this, name)], haveAllCompleted, {
+    await waitForEmailJobs(this.server, [getAddress(this, name)], areAllJobsCompleted, {
       timeoutMs: seconds * 1000,
     });
-    assert.ok(jobs, `Not every email job to "${name}" completed within ${seconds}s`);
   },
 );
 

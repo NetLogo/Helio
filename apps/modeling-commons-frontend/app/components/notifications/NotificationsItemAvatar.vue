@@ -17,7 +17,7 @@ watch(
 );
 const actorLabel = computed(() =>
   actor.value?.name
-    ? notificationLiterals.viewNamedLabel.replace("{name}", actor.value.name)
+    ? fillTemplate(notificationLiterals.viewNamedLabel, { name: actor.value.name })
     : notificationLiterals.actorFallbackLabel,
 );
 const icon = computed(() => iconFor(props.notification.category));

@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeSearchModelsQuery from '#src/modules/model/queries/search-models-card.query.ts';
-import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 
 describe('searchModelsCardQuery', () => {
-  const modelRepository = mockModelRepository();
+  const modelRepository = mockPort<ModelRepository>();
   const getModelCardQuery = { toDomain: vi.fn((r) => r) };
   const query = makeSearchModelsQuery({ modelRepository, getModelCardQuery } as never);
 

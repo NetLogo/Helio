@@ -1,8 +1,5 @@
 import rules from '#src/config/rules.ts';
-import {
-  COMMENT_TREE_DEFAULTS,
-  type ModelCommentEntity,
-} from '#src/modules/model-comment/domain/model-comment.types.ts';
+import type { ModelCommentEntity } from '#src/modules/model-comment/domain/model-comment.types.ts';
 import type { ModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.port.ts';
 import type { CommentResponseDto } from '#src/modules/model-comment/dtos/comment.response.dto.ts';
 import type { ListCommentsQueryDto } from '#src/modules/model-comment/dtos/list-comments.query.dto.ts';
@@ -15,7 +12,7 @@ import {
 } from '#src/shared/db/repository.port.ts';
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
 
-const EMBED_LIMIT = COMMENT_TREE_DEFAULTS.maximumShownRepliesPerLevel;
+const EMBED_LIMIT = rules.limits.comment.thread.maximumShownRepliesPerLevel;
 
 export const EMBED_ORDER_BY: OrderBy = { field: 'createdAt', param: 'asc' };
 
@@ -76,7 +73,7 @@ export async function expandCommentForest(
     }
   };
 
-  for (let level = 0; level < COMMENT_TREE_DEFAULTS.maximumNested; level++) {
+  for (let level = 0; level < rules.limits.comment.thread.maximumNested; level++) {
     if (frontier.length * params.limit > budget) {
       await countOnly(frontier, params);
       frontier = [];

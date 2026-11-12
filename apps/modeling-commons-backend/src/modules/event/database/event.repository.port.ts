@@ -1,54 +1,35 @@
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { EventSearchFilters } from '#src/modules/event/domain/event.types.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
-import type { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
+import type { EventPayloads, EventType } from '#src/modules/event-catalog.ts';
 
-type ModelCommentEventType = (typeof modelCommentEventTypes)[keyof typeof modelCommentEventTypes];
-
-export type KnownEvents =
-  | 'model.created'
-  | 'model.deleted'
-  | 'model.liked'
-  | 'model.unliked'
-  | 'model.version.created'
-  | 'model.version.updated'
-  | 'model_additional_file.added'
-  | 'model_additional_file.deleted'
-  | 'model_author.added'
-  | 'model_author.ownership_transferred'
-  | 'model_author.removed'
-  | ModelCommentEventType
-  | 'model_permission.granted'
-  | 'model_permission.revoked'
-  | 'model_version.created'
-  | 'model_version.updated'
-  | 'model_version_tag.added'
-  | 'model_version_tag.removed'
-  | 'user.deleted'
-  | 'user.updated';
-
-export type EventRecord = {
+type EventRecordBase = {
   id: string;
-  type: string | KnownEvents;
   actorId: string;
   resourceType: string;
   resourceId: string;
-  payload: Record<string, unknown>;
   createdAt: Date;
 };
 
+export type EventRecord = {
+  [T in EventType]: EventRecordBase & { type: T; payload: EventPayloads[T] };
+}[EventType];
+
 export type EventJobData = { eventId: string };
 
-export type InsertEventParams = {
-  type: string;
+export type InsertEventParams<T extends EventType = EventType> = {
+  type: T;
   actorId: string;
   resourceType: string;
   resourceId: string;
-  payload: Record<string, unknown>;
+  payload: EventPayloads[T];
 };
 
 export interface EventRepositoryPort {
-  insertTx: (ctx: TransactionContext, params: InsertEventParams) => Promise<void>;
+  insertTx: <T extends EventType>(
+    ctx: TransactionContext,
+    params: InsertEventParams<T>,
+  ) => Promise<void>;
   findOneById: (id: string) => Promise<EventRecord | null>;
   search: (
     filters: EventSearchFilters,

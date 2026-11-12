@@ -6,7 +6,7 @@ import { modelCommentLiterals } from '#src/modules/model-comment/notifications/m
 import { formatUserList } from '#src/shared/utils/formatters.ts';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
-import { haveAllCompleted, waitForEmailJobs } from '../support/email-jobs.ts';
+import { areAllJobsCompleted, waitForEmailJobs } from '../support/email-jobs.ts';
 
 const MAILPIT_API = `${env.smtp.mailpitUrl}/api/v1`;
 
@@ -92,8 +92,7 @@ When(
   'the email sender has sent the queued emails to {string}',
   async function (this: ICustomWorld, name: string) {
     const { email } = getUser(this, name);
-    const jobs = await waitForEmailJobs(this.server, [email], haveAllCompleted);
-    assert.ok(jobs, `The send-email jobs to ${email} did not all complete within 10s`);
+    await waitForEmailJobs(this.server, [email], areAllJobsCompleted);
   },
 );
 

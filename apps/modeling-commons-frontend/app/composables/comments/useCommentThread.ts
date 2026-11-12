@@ -86,7 +86,6 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
   }
 
   const toast = useToast();
-  const mutations = useCommentMutations(() => modelId.value);
 
   const notifyFailure = () =>
     toast.add({
@@ -145,7 +144,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
 
   const create = ({ content }: { content: string }) =>
     runSubmission(async () => {
-      const { id } = await mutations.create({ content });
+      const { id } = await createComment(modelId.value, { content });
       await confirmCreated(id, (created) => {
         local.comments = [created, ...local.comments];
         pinnedIds.add(created.id);
@@ -155,7 +154,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
 
   const reply = ({ commentId, content }: { commentId: string; content: string }) =>
     runSubmission(async () => {
-      const { id } = await mutations.create({ content, parentId: commentId });
+      const { id } = await createComment(modelId.value, { content, parentId: commentId });
       await confirmCreated(id, (created) => {
         local.comments = insertReply(local.comments, commentId, created);
         pinnedIds.add(created.id);
@@ -177,14 +176,14 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
 
   const edit = ({ commentId, content }: { commentId: string; content: string }) =>
     runSubmission(async () => {
-      await mutations.edit({ commentId, content });
+      await editComment(modelId.value, commentId, content);
       await reloadComment(commentId);
       await refresh();
     });
 
   const remove = async ({ commentId }: { commentId: string }) => {
     const ok = await runSubmission(async () => {
-      await mutations.remove({ commentId });
+      await deleteComment(modelId.value, commentId);
       await reloadComment(commentId);
       await refresh();
     });
@@ -208,7 +207,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
           likedByMe: true,
         }));
       },
-      () => mutations.like({ commentId }),
+      () => likeComment(modelId.value, commentId),
     );
   };
 
@@ -221,7 +220,7 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
           likedByMe: false,
         }));
       },
-      () => mutations.unlike({ commentId }),
+      () => unlikeComment(modelId.value, commentId),
     );
   };
 

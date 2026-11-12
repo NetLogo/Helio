@@ -1,6 +1,5 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
-import workersConfig from '#src/config/workers.ts';
-import { realtimeEventTypes, realtimeTopics } from '#src/modules/realtime-topics.ts';
+import { realtimeTopics } from '#src/modules/realtime-topics.ts';
 import { buildTopicMessages } from '#src/shared/realtime/realtime-message.ts';
 import type { AnyRealtimeTopic } from '#src/shared/realtime/realtime-topic.ts';
 import { ID_LENGTH } from '#src/shared/utils/id.ts';
@@ -18,18 +17,6 @@ describe('realtime topics', () => {
     expect(
       buildTopicMessages({ type: 'user_notification.created', resourceId: 'u1' }, realtimeTopics),
     ).toEqual([{ topic: { type: 'user', id: 'u1' }, event: 'user_notification.created' }]);
-  });
-
-  it('subscribes the realtime queue to exactly the event types the topics declare', () => {
-    expect([...workersConfig.realtime.subscribesTo].sort()).toEqual(
-      [
-        'model_comment.created',
-        'model_comment.deleted',
-        'model_comment.updated',
-        'user_notification.created',
-      ].sort(),
-    );
-    expect(workersConfig.realtime.subscribesTo).toBe(realtimeEventTypes);
   });
 
   it('keeps the largest message far under the Postgres NOTIFY payload limit', () => {

@@ -39,10 +39,8 @@ const fakeModelTopic: AnyRealtimeTopic = {
   },
 };
 
-function getConnectionId(text: string): string | undefined {
-  const match = /data: (\{"event":"connection"[^\n]*)\n/.exec(text);
-  return match?.[1] ? (JSON.parse(match[1]) as { connectionId: string }).connectionId : undefined;
-}
+const streamPath = (topics: Array<string>) => `/api/v1/events?topics=${topics.join(',')}`;
+const modelKey = (id: string) => `model:${id}`;
 
 async function waitUntil(predicate: () => boolean | Promise<boolean>, timeoutMs = 2000) {
   const deadline = Date.now() + timeoutMs;
@@ -52,9 +50,13 @@ async function waitUntil(predicate: () => boolean | Promise<boolean>, timeoutMs 
   }
 }
 
-function openStream(port: number, headers: Record<string, string>): Promise<OpenStream> {
+function openStream(
+  port: number,
+  path: string,
+  headers: Record<string, string>,
+): Promise<OpenStream> {
   return new Promise((resolve, reject) => {
-    const request = http.get({ host: '127.0.0.1', port, path: '/api/v1/events', headers });
+    const request = http.get({ host: '127.0.0.1', port, path, headers });
     request.on('error', reject);
     request.on('response', (response) => {
       let text = '';
@@ -80,8 +82,15 @@ describe('realtime routes', () => {
   let port: number;
   const streams: Array<OpenStream> = [];
 
-  async function open(userId: string, extraHeaders: Record<string, string> = {}) {
-    const stream = await openStream(port, { [userHeader]: userId, ...extraHeaders });
+  async function open(
+    userId: string,
+    extraHeaders: Record<string, string> = {},
+    topics = [modelKey(readableModel)],
+  ) {
+    const stream = await openStream(port, streamPath(topics), {
+      [userHeader]: userId,
+      ...extraHeaders,
+    });
     streams.push(stream);
     return stream;
   }
@@ -89,7 +98,6 @@ describe('realtime routes', () => {
   beforeEach(async () => {
     broker = makeRealtimeBroker({
       maxStreamsPerUser: realtimeConfig.streams.maxPerUser,
-      maxTopicsPerStream: realtimeConfig.streams.maxTopicsPerStream,
       heartbeatIntervalMs: realtimeConfig.streams.heartbeatIntervalMs,
     });
     app = Fastify({ ajv: { customOptions: { keywords: ['example'] }, onCreate: addIdFormat } });
@@ -121,12 +129,12 @@ describe('realtime routes', () => {
     await app.close();
   });
 
-  it('answers 401 without a session', async () => {
+  it('answers 401 without a session, before checking the topics', async () => {
     const response = await app.inject({ method: 'GET', url: '/api/v1/events' });
     expect(response.statusCode).toBe(401);
   });
 
-  it('opens an event stream with no-buffering headers, no connection header, and the opening frames', async () => {
+  it('opens an event stream with no-buffering headers, no connection header, and only the opening frames', async () => {
     const stream = await open('u1');
 
     expect(stream.response.statusCode).toBe(200);
@@ -137,19 +145,9 @@ describe('realtime routes', () => {
     await waitUntil(() => stream.received().length > 0);
     expect(stream.received()).toMatch(
       new RegExp(
-        `^retry: ${realtimeConfig.streams.clientRetryMs}\\n\\n: open\\n\\ndata: \\{"event":"connection","connectionId":"[A-Za-z0-9_-]{21}"\\}\\n\\n$`,
+        `^retry: ${realtimeConfig.streams.clientRetryMs}\\n\\n: open\\n\\n$`,
       ),
     );
-  });
-
-  it('sends each stream its own connection id', async () => {
-    const first = await open('u1');
-    const second = await open('u1');
-    await waitUntil(() =>
-      Boolean(getConnectionId(first.received()) && getConnectionId(second.received())),
-    );
-
-    expect(getConnectionId(first.received())).not.toBe(getConnectionId(second.received()));
   });
 
   it('refuses the 17th stream of one user with 429 and frees a slot when one closes', async () => {
@@ -181,7 +179,7 @@ describe('realtime routes', () => {
     const response = app
       .inject({
         method: 'GET',
-        url: '/api/v1/events',
+        url: streamPath([modelKey(readableModel)]),
         headers: { [userHeader]: 'u1', [expiresInHeader]: String(2 * maxStreamLifetimeMs) },
       })
       .then((result) => {
@@ -209,186 +207,63 @@ describe('realtime routes', () => {
     expect(Date.now() - started).toBeLessThan(1000);
     await stream.ended;
   });
-  describe('subscriptions', () => {
-    async function openWithConnection(userId: string) {
-      const stream = await open(userId);
-      await waitUntil(() => getConnectionId(stream.received()) !== undefined);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return { stream, connectionId: getConnectionId(stream.received())! };
-    }
-
-    function send(
-      method: 'POST' | 'DELETE',
-      userId: string | null,
-      payload: Record<string, unknown>,
-    ) {
+  describe('topics', () => {
+    function request(topics: string) {
       return app.inject({
-        method,
-        url: '/api/v1/events/subscriptions',
-        headers: userId ? { [userHeader]: userId } : {},
-        payload,
+        method: 'GET',
+        url: `/api/v1/events?topics=${topics}`,
+        headers: { [userHeader]: 'u1' },
       });
     }
 
-    const modelTopic = (id: string) => ({ type: 'model', id });
-
-    async function expectFrames(stream: OpenStream, id: string, count: number) {
+    async function countFrames(stream: OpenStream, id: string) {
       await waitUntil(() => stream.received().includes(': open'));
-      const frame = formatMessageFrame(commentOn(id));
-      expect(stream.received().split(frame).length - 1).toBe(count);
+      return stream.received().split(formatMessageFrame(commentOn(id))).length - 1;
     }
 
-    it.each(['POST', 'DELETE'] as const)(
-      'answers %s with 401 without a session',
-      async (method) => {
-        const response = await send(method, null, {
-          connectionId: 'connection00000000001',
-          topic: modelTopic(readableModel),
-        });
-        expect(response.statusCode).toBe(401);
-      },
-    );
-
-    it.each(['POST', 'DELETE'] as const)(
-      'answers %s with 400 on a body that fails the schema',
-      async (method) => {
-        const response = await send(method, 'u1', { topic: modelTopic(readableModel) });
-        expect(response.statusCode).toBe(400);
-      },
-    );
-
-    it.each(['POST', 'DELETE'] as const)(
-      'answers %s with 400 on a topic type no module registers',
-      async (method) => {
-        const { connectionId } = await openWithConnection('u1');
-        const response = await send(method, 'u1', {
-          connectionId,
-          topic: { type: 'project', id: readableModel },
-        });
-        expect(response.statusCode).toBe(400);
-      },
-    );
-
-    it('opens a stream holding no topic, not even the caller user topic', async () => {
-      const { stream, connectionId } = await openWithConnection('u1');
-      const ownNotification = {
-        topic: { type: 'user', id: 'u1' },
-        event: 'user_notification.created',
-      } as const;
-      broker.publish(ownNotification);
-
-      await send('POST', 'u1', { connectionId, topic: modelTopic(readableModel) });
-      broker.publish(commentOn(readableModel));
-
-      await waitUntil(() =>
-        stream.received().endsWith(formatMessageFrame(commentOn(readableModel))),
-      );
-      expect(stream.received()).not.toContain(formatMessageFrame(ownNotification));
+    it.each([
+      ['no topics', ''],
+      ['a malformed key', 'model'],
+      ['an id of the wrong shape', 'model:short'],
+    ])('answers 400 on %s', async (_case, topics) => {
+      expect((await request(topics)).statusCode).toBe(400);
     });
 
-    it('delivers a topic event only after the topic is subscribed', async () => {
-      const { stream, connectionId } = await openWithConnection('u1');
-      broker.publish(commentOn(readableModel));
-
-      const response = await send('POST', 'u1', { connectionId, topic: modelTopic(readableModel) });
-      broker.publish(commentOn(readableModel));
-
-      expect(response.statusCode).toBe(204);
-      await waitUntil(() =>
-        stream.received().endsWith(formatMessageFrame(commentOn(readableModel))),
-      );
-      await expectFrames(stream, readableModel, 1);
+    it('answers 400 on a topic type no module registers', async () => {
+      expect((await request(`project:${readableModel}`)).statusCode).toBe(400);
     });
 
-    it('answers 403 and adds nothing when the topic refuses the viewer', async () => {
-      const { stream, connectionId } = await openWithConnection('u1');
-      const hidden = 'hiddenModel0000000001';
-
-      const response = await send('POST', 'u1', { connectionId, topic: modelTopic(hidden) });
-      broker.publish(commentOn(hidden));
-
-      expect(response.statusCode).toBe(403);
-      await expectFrames(stream, hidden, 0);
-    });
-
-    it('answers 404 when the topic reports its resource missing', async () => {
-      const { connectionId } = await openWithConnection('u1');
-      const response = await send('POST', 'u1', { connectionId, topic: modelTopic(missingModel) });
-      expect(response.statusCode).toBe(404);
-    });
-
-    it('answers 404 and adds nothing for an unknown connection id or one of another user', async () => {
-      const { stream, connectionId } = await openWithConnection('u1');
-
-      const foreign = await send('POST', 'u2', { connectionId, topic: modelTopic(readableModel) });
-      const unknown = await send('POST', 'u1', {
-        connectionId: 'connection00000000001',
-        topic: modelTopic(readableModel),
-      });
-      broker.publish(commentOn(readableModel));
-
-      expect([foreign.statusCode, unknown.statusCode]).toEqual([404, 404]);
-      await expectFrames(stream, readableModel, 0);
-    });
-
-    it('keeps one subscription when a topic is subscribed twice', async () => {
-      const { stream, connectionId } = await openWithConnection('u1');
-      const body = { connectionId, topic: modelTopic(readableModel) };
-
-      await send('POST', 'u1', body);
-      await send('POST', 'u1', body);
-      broker.publish(commentOn(readableModel));
-
-      await waitUntil(() =>
-        stream.received().endsWith(formatMessageFrame(commentOn(readableModel))),
-      );
-      await expectFrames(stream, readableModel, 1);
-    });
-
-    it('answers 404 to the 17th distinct topic on one stream and does not add it', async () => {
-      const { stream, connectionId } = await openWithConnection('u1');
+    it('answers 400 on more distinct topics than one stream may follow', async () => {
       const { maxTopicsPerStream } = realtimeConfig.streams;
-      const accepted = otherModels.slice(0, maxTopicsPerStream);
+      const keys = otherModels.slice(0, maxTopicsPerStream + 1).map(modelKey);
 
-      const answers = [];
-      for (const id of accepted) {
-        answers.push(
-          (await send('POST', 'u1', { connectionId, topic: modelTopic(id) })).statusCode,
-        );
-      }
-      const extra = otherModels[maxTopicsPerStream] ?? '';
-      const refused = await send('POST', 'u1', { connectionId, topic: modelTopic(extra) });
-      broker.publish(commentOn(extra));
-
-      expect(answers).toEqual(accepted.map(() => 204));
-      expect(refused.statusCode).toBe(404);
-      await expectFrames(stream, extra, 0);
-    });
-
-    it('stops one topic on DELETE and keeps delivering the others', async () => {
-      const { stream, connectionId } = await openWithConnection('u1');
-      const [kept = '', dropped = ''] = otherModels;
-      await send('POST', 'u1', { connectionId, topic: modelTopic(kept) });
-      await send('POST', 'u1', { connectionId, topic: modelTopic(dropped) });
-
-      const response = await send('DELETE', 'u1', { connectionId, topic: modelTopic(dropped) });
-      broker.publish(commentOn(dropped));
-      broker.publish(commentOn(kept));
-
-      expect(response.statusCode).toBe(204);
-      await waitUntil(() => stream.received().endsWith(formatMessageFrame(commentOn(kept))));
-      await expectFrames(stream, dropped, 0);
-    });
-
-    it('forgets the connection id once the stream closes', async () => {
-      const { stream, connectionId } = await openWithConnection('u1');
-
-      stream.destroy();
-      await waitUntil(
-        async () =>
-          (await send('POST', 'u1', { connectionId, topic: modelTopic(readableModel) }))
-            .statusCode === 404,
+      expect((await request(keys.join(','))).statusCode).toBe(400);
+      expect((await open('u1', {}, keys.slice(0, maxTopicsPerStream))).response.statusCode).toBe(
+        200,
       );
+    });
+
+    it('answers 403 when any topic refuses the viewer', async () => {
+      const topics = [modelKey(readableModel), modelKey('hiddenModel0000000001')].join(',');
+      expect((await request(topics)).statusCode).toBe(403);
+    });
+
+    it('answers 404 when a topic reports its resource missing', async () => {
+      expect((await request(modelKey(missingModel))).statusCode).toBe(404);
+    });
+
+    it('delivers events for the topics in the URL and no others', async () => {
+      const [first = '', second = '', unlisted = ''] = otherModels;
+      const stream = await open('u1', {}, [modelKey(first), modelKey(second), modelKey(first)]);
+      await waitUntil(() => stream.received().includes(': open'));
+
+      broker.publish(commentOn(unlisted));
+      broker.publish(commentOn(first));
+      broker.publish(commentOn(second));
+
+      await waitUntil(() => stream.received().endsWith(formatMessageFrame(commentOn(second))));
+      expect(await countFrames(stream, first)).toBe(1);
+      expect(await countFrames(stream, unlisted)).toBe(0);
     });
   });
 });

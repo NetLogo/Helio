@@ -3,21 +3,24 @@ import type Mail from 'nodemailer/lib/mailer/index.js';
 import type { JobWithMetadata } from 'pg-boss';
 import workersConfig from '#src/config/workers.ts';
 import { getDeadLetterQueueName } from '#src/workers/queues.ts';
+import { pollUntil } from './poll.ts';
 
 export const emailQueueName = workersConfig.sendEmail.queueName;
 export const emailDeadLetterQueueName = getDeadLetterQueueName(emailQueueName);
 
 export type EmailJob = JobWithMetadata<Mail.Options>;
 
-export async function listEmailJobs(
+export async function findEmailJobsByRecipient(
   server: FastifyInstance,
   addresses: Array<string>,
   queueName: string = emailQueueName,
 ): Promise<Array<EmailJob>> {
   const { boss } = server.diContainer.cradle;
-  const jobs = await boss.findJobs<Mail.Options>(queueName);
-  return jobs
-    .filter((job) => addresses.includes(String(job.data.to)))
+  const perAddress = await Promise.all(
+    addresses.map((address) => boss.findJobs<Mail.Options>(queueName, { data: { to: address } })),
+  );
+  return perAddress
+    .flat()
     .sort((left, right) => left.createdOn.getTime() - right.createdOn.getTime());
 }
 
@@ -29,16 +32,13 @@ export async function waitForEmailJobs(
     timeoutMs = 10_000,
     queueName = emailQueueName,
   }: { timeoutMs?: number; queueName?: string } = {},
-): Promise<Array<EmailJob> | undefined> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    const jobs = await listEmailJobs(server, addresses, queueName);
-    if (isDone(jobs)) return jobs;
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
-  return undefined;
+): Promise<Array<EmailJob>> {
+  return pollUntil(() => findEmailJobsByRecipient(server, addresses, queueName), isDone, {
+    timeoutMs,
+    intervalMs: 250,
+  });
 }
 
-export function haveAllCompleted(jobs: Array<EmailJob>): boolean {
+export function areAllJobsCompleted(jobs: Array<EmailJob>): boolean {
   return jobs.length > 0 && jobs.every((job) => job.state === 'completed');
 }

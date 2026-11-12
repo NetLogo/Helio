@@ -1,4 +1,4 @@
-import { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
+import { modelCommentEventTypes } from '#src/modules/model-comment/model-comment.events.ts';
 import { policy } from '#src/shared/permissions/model-access.policy.ts';
 import { loadModelAccessContext } from '#src/shared/permissions/model-access.viewer.ts';
 import type { RealtimeTopic } from '#src/shared/realtime/realtime-topic.ts';

@@ -30,10 +30,9 @@ export class FakeEventSource {
     this.readyState = FakeEventSource.CLOSED;
   }
 
-  simulateOpen(connectionId = `connection-${FakeEventSource.instances.indexOf(this) + 1}`) {
+  simulateOpen() {
     this.readyState = FakeEventSource.OPEN;
     this.dispatch(new Event("open"));
-    this.simulateMessage({ event: "connection", connectionId });
   }
 
   simulateMessage(message: StreamMessage | StreamControlMessage) {

@@ -5,13 +5,13 @@ import type { ICustomWorld } from '../support/custom-world.ts';
 import { createAuthenticatedUser, makeAdmin, type TestUser } from '../support/auth-helper.ts';
 import { waitForEventsDispatched } from '../support/subscriber-jobs.ts';
 
-type ListedEvent = {
+type EventWithDispatches = {
   id: string;
-  dispatch: Array<{ subscriber: string; state: string; attempts: number | null }>;
+  dispatches: Array<{ subscriber: string; state: string; attempts: number | null }>;
 };
 
-function listEvents(world: ICustomWorld): Array<ListedEvent> {
-  return (world.context.latestResponse!.json() as { data: Array<ListedEvent> }).data;
+function listEvents(world: ICustomWorld): Array<EventWithDispatches> {
+  return (world.context.latestResponse!.json() as { data: Array<EventWithDispatches> }).data;
 }
 
 function getUsers(context: Record<string, unknown>): Map<string, TestUser> {
@@ -81,7 +81,7 @@ When('one user-notifications job is waiting to retry', async function (this: ICu
   const { queueName } = workersConfig.userNotifications;
   const deadline = Date.now() + 10_000;
   while (Date.now() < deadline) {
-    const retrying = await jobQueue.findJobValues(queueName, 'eventId', 'retry');
+    const retrying = await jobQueue.findJobValues(queueName, 'eventId', { limit: 2, state: 'retry' });
     if (retrying.length === 1) return;
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
@@ -94,8 +94,8 @@ Then(
     const events = listEvents(this);
     assert.ok(events.length > 0, 'expected the admin event list to contain events');
     for (const event of events) {
-      assert.ok(event.dispatch.length > 0, `event ${event.id} reports no dispatch`);
-      for (const dispatch of event.dispatch) {
+      assert.ok(event.dispatches.length > 0, `event ${event.id} reports no dispatch`);
+      for (const dispatch of event.dispatches) {
         assert.deepStrictEqual(
           { state: dispatch.state, attempts: dispatch.attempts },
           { state, attempts },
@@ -114,7 +114,7 @@ Then(
     assert.ok(events.length > 0, 'expected the admin event list to contain events');
     for (const event of events) {
       assert.deepStrictEqual(
-        event.dispatch.map((dispatch) => dispatch.subscriber),
+        event.dispatches.map((dispatch) => dispatch.subscriber),
         expected,
         `event ${event.id}`,
       );
@@ -129,7 +129,7 @@ Then(
     assert.strictEqual(events.length, count);
     for (const event of events) {
       assert.ok(
-        event.dispatch.some((dispatch) => dispatch.state === state),
+        event.dispatches.some((dispatch) => dispatch.state === state),
         `event ${event.id} has no subscriber in state ${state}`,
       );
     }

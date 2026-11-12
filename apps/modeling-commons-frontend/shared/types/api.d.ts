@@ -71,7 +71,7 @@ export interface paths {
                                 };
                                 /** Format: date-time */
                                 createdAt: string;
-                                dispatch: {
+                                dispatches: {
                                     subscriber: string;
                                     state: "created" | "retry" | "active" | "completed" | "cancelled" | "failed" | "dead";
                                     attempts: number | null;
@@ -5646,7 +5646,10 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query: {
+                    /** @description Comma-separated topic keys the stream follows, such as model:<id>,user:<id> */
+                    topics: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -5703,174 +5706,6 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/events/subscriptions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        /**
-                         * Format: nanoid
-                         * @description The id the stream sent in its connection message
-                         * @example uAce-eANwFXi-tACAe9w1
-                         */
-                        connectionId: string;
-                        topic: {
-                            /** @description A topic type registered by a module, such as model or user */
-                            type: string;
-                            /**
-                             * Format: nanoid
-                             * @description The id of the resource the topic follows
-                             * @example uAce-eANwFXi-tACAe9w1
-                             */
-                            id: string;
-                        };
-                    };
-                };
-            };
-            responses: {
-                /** @description Default Response */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-            };
-        };
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        /**
-                         * Format: nanoid
-                         * @description The id the stream sent in its connection message
-                         * @example uAce-eANwFXi-tACAe9w1
-                         */
-                        connectionId: string;
-                        topic: {
-                            /** @description A topic type registered by a module, such as model or user */
-                            type: string;
-                            /**
-                             * Format: nanoid
-                             * @description The id of the resource the topic follows
-                             * @example uAce-eANwFXi-tACAe9w1
-                             */
-                            id: string;
-                        };
-                    };
-                };
-            };
-            responses: {
-                /** @description Default Response */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-                /** @description Default Response */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"];
-                    };
-                };
-            };
-        };
         options?: never;
         head?: never;
         patch?: never;

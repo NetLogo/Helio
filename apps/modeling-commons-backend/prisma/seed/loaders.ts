@@ -5,9 +5,11 @@ import { seedId, seededRandom } from './id.js';
 import { AssetUploader, loadNlogox, fakeNlogox, textAsset, type NlogoxAsset } from './assets.js';
 import type { Prisma } from '#prisma/index';
 import links from '#src/config/links.ts';
-import { listCommentNotificationRecipients } from '#src/modules/model-comment/notifications/model-comment.recipients.ts';
-import makeModelCommentProducer from '#src/modules/model-comment/notifications/model-comment.producer.ts';
-import userNotificationDomain from '#src/modules/user-notification/domain/user-notification.domain.ts';
+import { selectCommentRecipients } from '#src/modules/model-comment/notifications/model-comment.recipients.ts';
+import {
+  isMuted,
+  resolveChannelPreferences,
+} from '#src/modules/user-notification/core/channel-preferences.domain.ts';
 import { truncatePreview } from '#src/shared/utils/formatters.ts';
 import {
   isRealFile,
@@ -532,9 +534,6 @@ export async function loadNotifications(
   users: IdMap,
   modelIds: IdMap,
 ): Promise<{ notifications: number; preferences: number }> {
-  const notificationDomain = userNotificationDomain({
-    notificationProducers: [makeModelCommentProducer({} as Dependencies)],
-  });
   const channelsByPreference = new Map<string, { email: EmailModeLit; inApp: boolean }>();
 
   for (const p of preferences) {
@@ -556,7 +555,7 @@ export async function loadNotifications(
   const authorsByModel = new Map(models.map((m) => [m.key, m.authors.map((a) => a.user)]));
 
   const events: Array<Record<string, unknown>> = [];
-  const rows: Array<Prisma.UserNotificationUncheckedCreateInput & { id: string }> = [];
+  const notifications: Array<Prisma.UserNotificationUncheckedCreateInput & { id: string }> = [];
 
   function collect(node: CommentSeed, modelKey: string, parent: CommentSeed | null) {
     const modelId = mustGet(modelIds, modelKey, 'notification model');
@@ -564,20 +563,20 @@ export async function loadNotifications(
     const parentCommentId = parent ? seedId('comment', parent.key) : null;
     const ageDays = node.createdDaysAgo ?? DEFAULT_COMMENT_AGE_DAYS;
     const createdAt = daysAgo(ageDays);
-    const actorUserId = mustGet(users, node.user, 'notification actor');
+    const actorId = mustGet(users, node.user, 'notification actor');
     const eventId = seedId('event', 'model_comment.created', commentId);
 
     events.push({
       id: eventId,
       type: 'model_comment.created',
-      actorId: actorUserId,
+      actorId: actorId,
       resourceType: 'model',
       resourceId: modelId,
       payload: { commentId, parentId: parentCommentId },
       createdAt,
     });
 
-    const recipients = listCommentNotificationRecipients({
+    const recipients = selectCommentRecipients({
       commenterId: node.user,
       parentAuthorId: parent?.user ?? null,
       modelAuthorIds: authorsByModel.get(modelKey) ?? [],
@@ -585,22 +584,22 @@ export async function loadNotifications(
 
     const read = ageDays >= NOTIFICATION_READ_AFTER_DAYS;
     for (const r of recipients) {
-      const channels = notificationDomain.resolvePreference(
+      const channels = resolveChannelPreferences(
         r.category,
         channelsByPreference.get(`${r.recipientId}:${r.category}`),
       );
-      if (notificationDomain.isSuppressed(channels)) continue;
+      if (isMuted(channels)) continue;
       const mode = channels.email;
       const pendingDigest = mode === 'daily' && ageDays < 1;
       const sentAfterMs = mode === 'daily' ? DAY : 0;
-      rows.push({
+      notifications.push({
         id: seedId('notification', node.key, r.recipientId, r.category),
         recipientId: mustGet(users, r.recipientId, 'notification recipient'),
         eventId,
         category: r.category,
         payload: { commentId, excerpt: truncatePreview(node.content) },
         url: links.modelComment(modelId, parentCommentId ?? commentId, commentId),
-        actorUserId,
+        actorId,
         targetType: 'model',
         targetId: modelId,
         createdAt,
@@ -624,15 +623,15 @@ export async function loadNotifications(
     await prisma.event.createMany({ data: events as never, skipDuplicates: true });
   }
 
-  for (const row of rows) {
+  for (const notification of notifications) {
     await prisma.userNotification.upsert({
-      where: { id: row.id },
+      where: { id: notification.id },
       update: {},
-      create: row,
+      create: notification,
     });
   }
 
-  return { notifications: rows.length, preferences: preferences.length };
+  return { notifications: notifications.length, preferences: preferences.length };
 }
 
 export async function loadDrafts(

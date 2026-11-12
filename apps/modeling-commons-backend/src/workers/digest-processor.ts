@@ -1,79 +1,60 @@
 import workersConfig from '#src/config/workers.ts';
-import type { NotificationPreferenceRepositoryPort } from '#src/modules/user-notification/database/notification-preference.repository.port.ts';
-import type { UserNotificationRepositoryPort } from '#src/modules/user-notification/database/user-notification.repository.port.ts';
-import { registerQueue } from '#src/workers/queues.ts';
+import { listDailyCategories } from '#src/modules/user-notification/core/channel-preferences.domain.ts';
+import type { SendDigestJobData } from '#src/modules/user-notification/user-notification.events.ts';
+import { getDigestWindow } from '#src/modules/user-notification/digest/digest.domain.ts';
+import type { UserNotificationRepositoryPort } from '#src/modules/user-notification/core/database/user-notification.repository.port.ts';
 import type { FastifyBaseLogger } from 'fastify';
 import type { PgBoss } from 'pg-boss';
 
-const fanOutConfig = workersConfig.queueNotificationDigests;
+const dailyDigestConfig = workersConfig.dailyDigest;
 const sendDigestConfig = workersConfig.sendDigest;
 
-export type SendDigestJobData = { recipientId: string; since: string; until: string };
+type DigestService = Pick<
+  Dependencies['notificationDigestService'],
+  'queueDigestFor' | 'sendDailyDigest'
+>;
 
-export type DigestFanOutDependencies = {
-  boss: Pick<PgBoss, 'send'>;
+export type DailyDigestDependencies = {
   userNotificationRepository: Pick<UserNotificationRepositoryPort, 'findDigestRecipients'>;
-  userNotificationDomain: Pick<
-    Dependencies['userNotificationDomain'],
-    'getDigestWindow' | 'listDailyCategories'
-  >;
+  notificationDigestService: Pick<DigestService, 'sendDailyDigest'>;
   logger: FastifyBaseLogger;
 };
 
-export type DigestProcessorDependencies = {
-  userNotificationRepository: Pick<UserNotificationRepositoryPort, 'findPendingForRecipient'>;
-  notificationPreferenceRepository: Pick<NotificationPreferenceRepositoryPort, 'findAllByUser'>;
-  userNotificationDomain: Pick<Dependencies['userNotificationDomain'], 'listDailyCategories'>;
-  notificationDigestService: Pick<Dependencies['notificationDigestService'], 'queueDigest'>;
-};
-
-export async function queuePendingDigests({
-  boss,
+export async function sendDailyDigests({
   userNotificationRepository,
-  userNotificationDomain,
+  notificationDigestService,
   logger,
-}: DigestFanOutDependencies): Promise<void> {
-  const { since, until } = userNotificationDomain.getDigestWindow(new Date());
-  const dailyByDefault = userNotificationDomain.listDailyCategories([]);
-  const window = { since: since.toISOString(), until: until.toISOString() };
-  const utcDay = window.until.slice(0, 10);
-
-  const listRecipientPage = async (afterRecipientId: string | null) =>
-    userNotificationRepository.findDigestRecipients(
-      since,
-      until,
-      dailyByDefault,
-      afterRecipientId,
-      fanOutConfig.recipientBatchSize,
-    );
-
-  const sendRecipientDigest = async (recipientId: string) =>
-    boss
-      .send(sendDigestConfig.queueName, { recipientId, ...window } satisfies SendDigestJobData, {
-        singletonKey: `${recipientId}:${utcDay}`,
-        singletonSeconds: sendDigestConfig.singletonSeconds,
-      })
-      .then(
-        () => true,
-        (error: unknown) => {
-          logger.error({ recipientId, error }, 'Failed to send a digest job');
-          return false;
-        },
-      );
+}: DailyDigestDependencies): Promise<void> {
+  const window = getDigestWindow(new Date());
+  const dailyByDefault = listDailyCategories([]);
 
   let recipientCount = 0;
-  let failureCount = 0;
+  let failedCount = 0;
   let recipientIds: Array<string> = [];
 
   do {
-    recipientIds = await listRecipientPage(recipientIds.at(-1) ?? null);
-    const sent = await Promise.all(recipientIds.map(sendRecipientDigest));
-    failureCount += sent.filter((isSent) => !isSent).length;
+    recipientIds = await userNotificationRepository.findDigestRecipients(
+      window.since,
+      window.until,
+      dailyByDefault,
+      recipientIds.at(-1) ?? null,
+      dailyDigestConfig.recipientBatchSize,
+    );
+    for (const recipientId of recipientIds) {
+      try {
+        await notificationDigestService.sendDailyDigest(recipientId, window);
+      } catch (error) {
+        failedCount += 1;
+        logger.error({ err: error, recipientId }, 'Daily digest failed for recipient');
+      }
+    }
     recipientCount += recipientIds.length;
-  } while (recipientIds.length === fanOutConfig.recipientBatchSize);
+  } while (recipientIds.length === dailyDigestConfig.recipientBatchSize);
 
-  logger.info({ recipientCount, failureCount, utcDay }, 'Fanned out notification digests');
-  if (failureCount > 0) throw new Error(`${failureCount} digest sends failed`);
+  logger.info({ recipientCount, failedCount }, 'Sent daily notification digests');
+  if (failedCount > 0) {
+    throw new Error(`Daily digest failed for ${failedCount} of ${recipientCount} recipients`);
+  }
 }
 
 function parseWindowDate(value: string, data: SendDigestJobData): Date {
@@ -86,80 +67,47 @@ function parseWindowDate(value: string, data: SendDigestJobData): Date {
 
 export async function processDigest(
   {
-    userNotificationRepository,
-    notificationPreferenceRepository,
-    userNotificationDomain,
     notificationDigestService,
-  }: DigestProcessorDependencies,
+  }: { notificationDigestService: Pick<DigestService, 'queueDigestFor'> },
   data: SendDigestJobData,
 ): Promise<void> {
-  const { recipientId } = data;
   const since = parseWindowDate(data.since, data);
   const until = parseWindowDate(data.until, data);
-  const preferences = await notificationPreferenceRepository.findAllByUser(recipientId);
-  const rows = await userNotificationRepository.findPendingForRecipient(
-    recipientId,
-    userNotificationDomain.listDailyCategories(preferences),
-    since,
-    until,
+  await notificationDigestService.queueDigestFor(
+    data.recipientId,
+    { since, until },
+    data.categories,
   );
-  await notificationDigestService.queueDigest(recipientId, rows, preferences);
 }
 
 export async function startDigestProcessor({
   boss,
   userNotificationRepository,
-  notificationPreferenceRepository,
-  userNotificationDomain,
   notificationDigestService,
   logger,
 }: {
   boss: PgBoss;
-  userNotificationRepository: DigestFanOutDependencies['userNotificationRepository'] &
-    DigestProcessorDependencies['userNotificationRepository'];
-  notificationPreferenceRepository: DigestProcessorDependencies['notificationPreferenceRepository'];
-  userNotificationDomain: DigestFanOutDependencies['userNotificationDomain'];
-  notificationDigestService: DigestProcessorDependencies['notificationDigestService'];
+  userNotificationRepository: DailyDigestDependencies['userNotificationRepository'];
+  notificationDigestService: DigestService;
   logger: FastifyBaseLogger;
 }): Promise<void> {
-  await registerQueue(boss, fanOutConfig);
-  await registerQueue(boss, sendDigestConfig);
-
-  await boss.work(
-    fanOutConfig.queueName,
-    { batchSize: 1, pollingIntervalSeconds: workersConfig.polling.intervalSeconds },
-    async () =>
-      queuePendingDigests({ boss, userNotificationRepository, userNotificationDomain, logger }),
+  await boss.work(dailyDigestConfig.queueName, async () =>
+    sendDailyDigests({ userNotificationRepository, notificationDigestService, logger }),
   );
 
   await boss.work<SendDigestJobData>(
     sendDigestConfig.queueName,
     {
-      batchSize: 1,
       localConcurrency: sendDigestConfig.work.localConcurrency,
-      pollingIntervalSeconds: workersConfig.polling.intervalSeconds,
     },
     async (jobs) => {
       for (const { data } of jobs) {
-        await processDigest(
-          {
-            userNotificationRepository,
-            notificationPreferenceRepository,
-            userNotificationDomain,
-            notificationDigestService,
-          },
-          data,
-        );
+        await processDigest({ notificationDigestService }, data);
       }
     },
   );
 
-  await boss.schedule(
-    fanOutConfig.queueName,
-    fanOutConfig.cronExpression,
-    null,
-    fanOutConfig.queue,
-  );
+  await boss.schedule(dailyDigestConfig.queueName, dailyDigestConfig.cronExpression, null);
 
   logger.info('Digest processor scheduled');
 }

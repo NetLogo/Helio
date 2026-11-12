@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeGetModelCardQuery from '#src/modules/model/queries/get-model-card.query.ts';
 import { ModelNotFoundError } from '#src/modules/model/domain/model.errors.ts';
-import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
-import { mockModelLikeRepository } from '#src/modules/model-like/database/model-like.repository.mock.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelLikeRepository } from '#src/modules/model-like/database/model-like.repository.port.ts';
+import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 
 function makeCard(overrides: Record<string, unknown> = {}) {
   return {
@@ -48,14 +49,20 @@ function makeCard(overrides: Record<string, unknown> = {}) {
 }
 
 function buildQuery() {
-  const modelRepository = mockModelRepository();
-  const modelLikeRepository = mockModelLikeRepository();
+  const modelRepository = mockPort<ModelRepository>();
+  const modelLikeRepository = mockPort<ModelLikeRepository>();
   const modelMapper = { toResponse: vi.fn((m: { id: string }) => ({ id: m.id, mapped: true })) };
   const modelVersionMapper = {
-    toResponse: vi.fn((v: { versionNumber: number }) => ({ versionNumber: v.versionNumber, isFinalized: false })),
+    toResponse: vi.fn((v: { versionNumber: number }) => ({
+      versionNumber: v.versionNumber,
+      isFinalized: false,
+    })),
   };
   const modelAuthorMapper = {
-    toResponse: vi.fn((a: { userId: string; role: string }) => ({ userId: a.userId, role: a.role })),
+    toResponse: vi.fn((a: { userId: string; role: string }) => ({
+      userId: a.userId,
+      role: a.role,
+    })),
   };
   const tagMapper = { toResponse: vi.fn((t: { id: string; name: string }) => t) };
   const fileService = { getUrl: vi.fn(async (k: string) => `https://cdn/${k}`) };

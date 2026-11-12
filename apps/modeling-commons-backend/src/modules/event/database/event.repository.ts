@@ -4,14 +4,23 @@ import type {
   EventRepositoryPort,
   InsertEventParams,
 } from '#src/modules/event/database/event.repository.port.ts';
+import type { EventType } from '#src/modules/event-catalog.ts';
 import type { EventSearchFilters } from '#src/modules/event/domain/event.types.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
+import { notifyRealtime } from '#src/shared/realtime/realtime-publisher.ts';
 
-export default function eventRepository({ db, jobQueue }: Dependencies): EventRepositoryPort {
+export default function eventRepository({
+  db,
+  jobQueue,
+  realtimeTopics,
+}: Dependencies): EventRepositoryPort {
   return {
-    async insertTx(ctx: TransactionContext, params: InsertEventParams): Promise<void> {
+    async insertTx<T extends EventType>(
+      ctx: TransactionContext,
+      params: InsertEventParams<T>,
+    ): Promise<void> {
       const client = resolveTransaction(ctx);
       const event = await client.event.create({
         data: {
@@ -24,6 +33,7 @@ export default function eventRepository({ db, jobQueue }: Dependencies): EventRe
       });
       const data: EventJobData = { eventId: event.id };
       await jobQueue.publishTx(ctx, params.type, data);
+      await notifyRealtime(client, [params], realtimeTopics);
     },
 
     async findOneById(id: string): Promise<EventRecord | null> {

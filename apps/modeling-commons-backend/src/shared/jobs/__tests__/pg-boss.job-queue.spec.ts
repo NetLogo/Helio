@@ -1,26 +1,26 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { Db, PgBoss } from 'pg-boss';
+import { Prisma } from '#prisma/index';
 import type { ExtendedPrismaClient } from '#src/lib/prisma.ts';
 import makePrismaTransactionManager from '#src/shared/db/prisma-transaction.manager.ts';
 import makePgBossJobQueue from '#src/shared/jobs/pg-boss.job-queue.ts';
 
 function makeBossStub() {
-  const executeSql = vi.fn().mockResolvedValue({ rows: [] });
   const boss = {
     send: vi.fn().mockResolvedValue('job-1'),
-    getDb: vi.fn().mockReturnValue({ executeSql }),
+    publish: vi.fn().mockResolvedValue(undefined),
   };
-  const logger = { debug: vi.fn() };
-  const jobQueue = makePgBossJobQueue({ boss: boss as unknown as PgBoss, logger });
-  return { boss, executeSql, logger, jobQueue };
+  const db = { $queryRaw: vi.fn().mockResolvedValue([]) };
+  const jobQueue = makePgBossJobQueue({
+    boss: boss as unknown as PgBoss,
+    db: db as unknown as ExtendedPrismaClient,
+  });
+  return { boss, db, jobQueue };
 }
 
-function makeSubscribedTx(queueNames: Array<string>) {
-  return {
-    $queryRawUnsafe: vi.fn(async (sql: string) =>
-      sql.includes('.subscription') ? queueNames.map((name) => ({ name })) : [],
-    ),
-  };
+function capturedQuery(queryRaw: { mock: { calls: Array<Array<unknown>> } }) {
+  const [strings, ...values] = queryRaw.mock.calls[0]!;
+  return Prisma.sql(strings as unknown as TemplateStringsArray, ...values);
 }
 
 function makeTransactionManager(tx: object) {
@@ -31,15 +31,6 @@ function makeTransactionManager(tx: object) {
 }
 
 describe('pgBossJobQueue', () => {
-  it('sends outside a transaction through the boss own connection', async () => {
-    const { boss, jobQueue } = makeBossStub();
-
-    const id = await jobQueue.send('probe', { a: 1 }, { retryLimit: 2 });
-
-    expect(id).toBe('job-1');
-    expect(boss.send).toHaveBeenCalledWith('probe', { a: 1 }, { retryLimit: 2 });
-  });
-
   it('inserts a transactional send through the open transaction', async () => {
     const rows = [{ id: 'job-2' }];
     const tx = { $queryRawUnsafe: vi.fn().mockResolvedValue(rows) };
@@ -79,132 +70,96 @@ describe('pgBossJobQueue', () => {
       { value: 'e1', queue: 'probe', state: 'completed', retryCount: 0, output: null },
       { value: 'e2', queue: 'probe-graveyard', state: 'created', retryCount: 0, output: { a: 1 } },
     ];
-    const { executeSql, jobQueue } = makeBossStub();
-    executeSql.mockResolvedValue({ rows });
+    const { db, jobQueue } = makeBossStub();
+    db.$queryRaw.mockResolvedValue(rows);
 
     const result = await jobQueue.findJobStates(['probe', 'probe-graveyard'], 'eventId', [
       'e1',
       'e2',
     ]);
 
-    expect(executeSql).toHaveBeenCalledWith(expect.stringContaining('FROM pgboss.job'), [
+    const query = capturedQuery(db.$queryRaw);
+    expect(query.sql).toContain('FROM pgboss.job');
+    expect(query.values).toEqual([
       'eventId',
       ['probe', 'probe-graveyard'],
+      'eventId',
       ['e1', 'e2'],
     ]);
     expect(result).toEqual(rows);
   });
 
   it('lists the field values of jobs in one queue, narrowed to a state when given', async () => {
-    const { executeSql, jobQueue } = makeBossStub();
-    executeSql.mockResolvedValue({ rows: [{ value: 'e1' }, { value: 'e2' }] });
+    const { db, jobQueue } = makeBossStub();
+    db.$queryRaw.mockResolvedValue([{ value: 'e1' }, { value: 'e2' }]);
 
-    const values = await jobQueue.findJobValues('probe', 'eventId', 'retry');
+    const values = await jobQueue.findJobValues('probe', 'eventId', { limit: 5, state: 'retry' });
 
-    expect(executeSql).toHaveBeenCalledWith(expect.stringContaining('FROM pgboss.job'), [
-      'eventId',
-      'probe',
-      'retry',
-    ]);
+    const query = capturedQuery(db.$queryRaw);
+    expect(query.sql).toContain('FROM pgboss.job');
+    expect(query.sql).toContain('state::text =');
+    expect(query.values).toEqual(['eventId', 'probe', 'eventId', 'retry', 5]);
     expect(values).toEqual(['e1', 'e2']);
   });
 
-  it('lists the field values of every job in the queue when no state is given', async () => {
-    const { executeSql, jobQueue } = makeBossStub();
+  it('caps the field values at the given limit, newest jobs first', async () => {
+    const { db, jobQueue } = makeBossStub();
 
-    await jobQueue.findJobValues('probe-dead', 'eventId');
+    await jobQueue.findJobValues('probe', 'eventId', { limit: 5 });
 
-    expect(executeSql.mock.calls[0]![1]).toEqual(['eventId', 'probe-dead', null]);
+    const query = capturedQuery(db.$queryRaw);
+    expect(query.sql).toMatch(/ORDER BY MAX\(created_on\) DESC\s+LIMIT \?/);
+    expect(query.values.at(-1)).toBe(5);
   });
 
-  it('publishes inside a transaction to every subscribed queue through the open transaction', async () => {
-    const tx = makeSubscribedTx(['subscriber-a', 'subscriber-b']);
-    const { boss, executeSql, jobQueue } = makeBossStub();
-    boss.send.mockImplementation(async (queue: string, _data: object, options: { db: Db }) => {
-      await options.db.executeSql('INSERT', [queue]);
-      return `job-${queue}`;
+  it('lists the field values of every job in the queue when no state is given', async () => {
+    const { db, jobQueue } = makeBossStub();
+
+    await jobQueue.findJobValues('probe-dead', 'eventId', { limit: 5 });
+
+    const query = capturedQuery(db.$queryRaw);
+    expect(query.sql).not.toContain('state::text');
+    expect(query.values).toEqual(['eventId', 'probe-dead', 'eventId', 5]);
+  });
+
+  it('publishes inside a transaction through the open transaction', async () => {
+    const rows = [{ id: 'job-2' }];
+    const tx = { $queryRawUnsafe: vi.fn().mockResolvedValue(rows) };
+    const { boss, jobQueue } = makeBossStub();
+    boss.publish.mockImplementation(async (_event: string, _data: object, options: { db: Db }) => {
+      await options.db.executeSql('INSERT', ['subscriber-a']);
     });
 
-    const ids = await makeTransactionManager(tx).run(async (ctx) =>
+    await makeTransactionManager(tx).run(async (ctx) =>
       jobQueue.publishTx(ctx, 'probe.happened', { eventId: 'e1' }),
     );
 
-    expect(ids).toEqual(['job-subscriber-a', 'job-subscriber-b']);
-    expect(tx.$queryRawUnsafe).toHaveBeenCalledWith(
-      expect.stringContaining('FROM pgboss.subscription WHERE event = $1'),
+    expect(boss.publish).toHaveBeenCalledWith(
       'probe.happened',
+      { eventId: 'e1' },
+      { db: expect.any(Object) },
     );
-    expect(boss.send.mock.calls.map(([queue, data]) => [queue, data])).toEqual([
-      ['subscriber-a', { eventId: 'e1' }],
-      ['subscriber-b', { eventId: 'e1' }],
-    ]);
     expect(tx.$queryRawUnsafe).toHaveBeenCalledWith('INSERT', 'subscriber-a');
-    expect(tx.$queryRawUnsafe).toHaveBeenCalledWith('INSERT', 'subscriber-b');
-    expect(executeSql).not.toHaveBeenCalled();
   });
 
-  it('fails a transactional publish when a subscribed queue returns no job id', async () => {
-    const tx = makeSubscribedTx(['subscriber-a', 'subscriber-b']);
+  it('rejects a transactional publish with a context that is not open', async () => {
     const { boss, jobQueue } = makeBossStub();
-    boss.send.mockResolvedValueOnce('job-a').mockResolvedValueOnce(null);
+    let closedCtx: Parameters<typeof jobQueue.publishTx>[0] | undefined;
+    await makeTransactionManager({}).run(async (ctx) => {
+      closedCtx = ctx;
+    });
 
-    await expect(
-      makeTransactionManager(tx).run(async (ctx) =>
-        jobQueue.publishTx(ctx, 'probe.happened', { eventId: 'e1' }),
-      ),
-    ).rejects.toThrow('No subscriber-b job was created for a probe.happened publish');
-  });
-
-  it('fails a transactional publish when a send rejects', async () => {
-    const tx = makeSubscribedTx(['subscriber-a']);
-    const { boss, jobQueue } = makeBossStub();
-    const error = new Error('insert failed');
-    boss.send.mockRejectedValue(error);
-
-    await expect(
-      makeTransactionManager(tx).run(async (ctx) =>
-        jobQueue.publishTx(ctx, 'probe.happened', { eventId: 'e1' }),
-      ),
-    ).rejects.toBe(error);
-  });
-
-  it('resolves a publish with no subscriber without sending, logging it at debug', async () => {
-    const tx = makeSubscribedTx([]);
-    const { boss, logger, jobQueue } = makeBossStub();
-
-    const ids = await makeTransactionManager(tx).run(async (ctx) =>
-      jobQueue.publishTx(ctx, 'nobody.listens', { eventId: 'e1' }),
+    await expect(jobQueue.publishTx(closedCtx!, 'probe.happened', {})).rejects.toThrow(
+      'Invalid transaction context',
     );
-
-    expect(ids).toEqual([]);
-    expect(boss.send).not.toHaveBeenCalled();
-    expect(logger.debug).toHaveBeenCalledWith({ event: 'nobody.listens' }, expect.any(String));
+    expect(boss.publish).not.toHaveBeenCalled();
   });
 
   it('publishes outside a transaction through the boss own connection', async () => {
-    const { boss, executeSql, jobQueue } = makeBossStub();
-    executeSql.mockResolvedValue({ rows: [{ name: 'subscriber-a' }] });
+    const { boss, jobQueue } = makeBossStub();
 
-    const ids = await jobQueue.publish('probe.happened', { recipientIds: ['u1'] });
+    await jobQueue.publish('probe.happened', { recipientIds: ['u1'] });
 
-    expect(ids).toEqual(['job-1']);
-    expect(executeSql).toHaveBeenCalledWith(expect.stringContaining('pgboss.subscription'), [
-      'probe.happened',
-    ]);
-    expect(boss.send).toHaveBeenCalledWith(
-      'subscriber-a',
-      { recipientIds: ['u1'] },
-      { db: boss.getDb() },
-    );
-  });
-
-  it('fails a plain publish when a subscribed queue returns no job id', async () => {
-    const { boss, executeSql, jobQueue } = makeBossStub();
-    executeSql.mockResolvedValue({ rows: [{ name: 'subscriber-a' }] });
-    boss.send.mockResolvedValue(null);
-
-    await expect(jobQueue.publish('probe.happened', {})).rejects.toThrow(
-      'No subscriber-a job was created for a probe.happened publish',
-    );
+    expect(boss.publish).toHaveBeenCalledWith('probe.happened', { recipientIds: ['u1'] });
   });
 });

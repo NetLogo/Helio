@@ -1,4 +1,11 @@
-import { After, AfterAll, Before, BeforeAll, type ITestCaseHookParameter, setDefaultTimeout } from '@cucumber/cucumber';
+import {
+  After,
+  AfterAll,
+  Before,
+  BeforeAll,
+  type ITestCaseHookParameter,
+  setDefaultTimeout,
+} from '@cucumber/cucumber';
 import type { FastifyInstance } from 'fastify';
 import type { ICustomWorld } from './custom-world.ts';
 import { buildApp } from './server.ts';

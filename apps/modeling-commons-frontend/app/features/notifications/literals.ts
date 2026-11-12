@@ -3,7 +3,6 @@ export const notificationLiterals = {
   actorFallbackLabel: "View author",
   targetFallbackLabel: "View model",
   bellLabel: "Notifications",
-  unreadIndicatorLabel: "Unread notifications",
   markReadFailed: "Failed to mark notification as read",
   bellUnreadLabel: "Notifications, {count} unread",
   unreadRowLabel: "Unread",

@@ -14,7 +14,7 @@ Feature: Realtime event streams
     When a removed model stream is requested by "viewer"
     Then the response status should be 404
 
-  Scenario: A stream is closed at its lifetime cap and a resubscribe re-checks read permission
+  Scenario: A stream is closed at its lifetime cap and reopening it re-checks read permission
     Given event streams are capped at 1000 milliseconds
     And an authenticated user "owner"
     And a private model "Shared Model" created by "owner"
@@ -23,8 +23,7 @@ Feature: Realtime event streams
     And "reader" opens an event stream subscribed to model "Shared Model" as "s"
     And "owner" has revoked permission on "Shared Model" from "reader"
     Then the "s" stream should end with the closing retry hint within 5 seconds
-    When "reader" opens an event stream as "t"
-    And "reader" subscribes the "t" stream to model "Shared Model"
+    When "reader" requests an event stream for model "Shared Model"
     Then the response status should be 403
 
   @sanity
@@ -77,12 +76,9 @@ Feature: Realtime event streams
     And an authenticated user "bob"
     And a public model "Model A" created by "alice"
     And a public model "Model B" created by "alice"
-    And "alice" opens an event stream subscribed to model "Model A" as "alice-a"
-    And "alice" subscribes the "alice-a" stream to the user topic of "alice"
-    And "bob" opens an event stream subscribed to model "Model A" as "bob-a"
-    And "bob" subscribes the "bob-a" stream to the user topic of "bob"
-    And "bob" opens an event stream subscribed to model "Model B" as "bob-b"
-    And "bob" subscribes the "bob-b" stream to the user topic of "bob"
+    And "alice" opens an event stream subscribed to model "Model A" and their notifications as "alice-a"
+    And "bob" opens an event stream subscribed to model "Model A" and their notifications as "bob-a"
+    And "bob" opens an event stream subscribed to model "Model B" and their notifications as "bob-b"
     When the realtime channel is notified of a comment on "Model A"
     Then the "alice-a" stream should carry 1 "model_comment.created" event within 5 seconds
     And the "bob-a" stream should carry 1 "model_comment.created" event within 5 seconds
