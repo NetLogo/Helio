@@ -7,6 +7,7 @@ import type {
 import type {
   NotificationCategory,
   NotificationFeedFilters,
+  NotificationRedaction,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 import type { PaginatedQueryParams, Paginated } from '#src/shared/db/repository.port.ts';
@@ -128,6 +129,19 @@ export default function userNotificationRepository({
         where: { id },
         data: { readAt: at },
       });
+    },
+
+    async redactPayloads(
+      categories: ReadonlyArray<string>,
+      { match, fields }: NotificationRedaction,
+    ): Promise<number> {
+      // Raw SQL: Prisma updates replace a Json column whole and cannot drop keys from it.
+      return db.$executeRaw`
+        UPDATE "UserNotification"
+        SET "payload" = "payload" - ${fields}::text[]
+        WHERE "category" = ANY(${categories})
+          AND "payload" ->> ${match.key} = ${match.value}
+      `;
     },
 
     async findOneById(id: string): Promise<UserNotificationRecord | undefined> {

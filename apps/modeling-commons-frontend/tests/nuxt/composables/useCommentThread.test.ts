@@ -9,6 +9,7 @@ import useCommentThread from "~/composables/comments/useCommentThread";
 import type { CommentSort } from "~/features/comments/types";
 import {
   COMMENT_ROUTES,
+  apiResult,
   getCommentApiCalls,
   installCommentApiMock,
   installFakeEventSource,
@@ -16,6 +17,7 @@ import {
   resetCommentMocks,
   resetDocumentVisibility,
   setDocumentVisibility,
+  toApiComment,
   useCommentApiMock,
   useToastMock,
   useUserMock,
@@ -306,5 +308,98 @@ describe("useCommentThread keeps comments posted in this tab in place", () => {
 
     expect(findCommentById(thread.comments.value, created.id)).toBeNull();
     expect(ids(thread.comments.value)).toEqual(ids(fixtureComments));
+  });
+});
+
+describe("useCommentThread keeps loaded pages across refreshes", () => {
+  const PAGE_SIZE = 2;
+  let serverRoots: Array<Comment>;
+  const ids = (comments: Array<Comment>) => comments.map((comment) => comment.id);
+  const node = (id: string, overrides: Partial<Comment> = {}): Comment => ({
+    id,
+    modelId: MODEL_ID,
+    author: { name: "Ada", image: "" },
+    content: id,
+    createdAt: "2024-01-01T00:00:00.000Z",
+    likes: 0,
+    replies: [],
+    replyPagination: { count: 0, lastPage: null },
+    ...overrides,
+  });
+
+  async function mountPaged() {
+    const replies = ["r1", "r2", "r3"].map((id) => node(id, { parentId: "a" }));
+    serverRoots = [
+      node("a", { replies, replyPagination: { count: replies.length, lastPage: 0 } }),
+      node("b"),
+      node("c"),
+      node("d"),
+    ];
+    const request = installCommentApiMock({ roots: serverRoots }).GET;
+    const serve = request.getMockImplementation()!;
+    request.mockImplementation(
+      async (route: string, init?: { params?: { query?: { page?: number } } }) => {
+        if (route !== COMMENT_ROUTES.list) return serve(route, init);
+        await serve(route, init);
+        const offset = Number(init?.params?.query?.page ?? 0) * PAGE_SIZE;
+        return apiResult.ok({
+          count: serverRoots.length,
+          limit: PAGE_SIZE,
+          page: Number(init?.params?.query?.page ?? 0),
+          data: serverRoots.slice(offset, offset + PAGE_SIZE).map((root) => toApiComment(root)),
+        });
+      },
+    );
+    const thread = await mountThread();
+    latestEventSource()!.simulateOpen();
+    await advancePastDebounce();
+    await thread.loadMore(thread.pagination.value);
+    await thread.loadReplies({ commentId: "a" });
+    return thread;
+  }
+
+  async function refreshFromStream() {
+    latestEventSource()!.simulateMessage(commentCreated);
+    await advancePastDebounce();
+  }
+
+  it("keeps later comment pages and loaded replies after a stream refresh", async () => {
+    const thread = await mountPaged();
+    expect(ids(thread.comments.value)).toEqual(["a", "b", "c", "d"]);
+    const before = listFetches();
+
+    await refreshFromStream();
+
+    expect(listFetches()).toBe(before + 1);
+    expect(ids(thread.comments.value)).toEqual(["a", "b", "c", "d"]);
+    expect(ids(findCommentById(thread.comments.value, "a")!.replies!)).toEqual([
+      "r1",
+      "r2",
+      "r3",
+    ]);
+    expect(thread.pagination.value.lastPage).toBe(1);
+  });
+
+  it("applies first-page edits and deletions from a stream refresh", async () => {
+    const thread = await mountPaged();
+    serverRoots[0]!.content = "edited";
+    Object.assign(serverRoots[1]!, { deleted: true, content: "[deleted]" });
+
+    await refreshFromStream();
+
+    expect(ids(thread.comments.value)).toEqual(["a", "b", "c", "d"]);
+    expect(thread.comments.value[0]!.content).toBe("edited");
+    expect(thread.comments.value[1]!.deleted).toBe(true);
+    expect(thread.pagination.value.count).toBe(4);
+  });
+
+  it("shows an edit made here to a comment on a later page", async () => {
+    const thread = await mountPaged();
+    Object.assign(serverRoots[3]!, { content: "edited", edited: true });
+
+    await thread.edit({ commentId: "d", content: "edited" });
+
+    expect(ids(thread.comments.value)).toEqual(["a", "b", "c", "d"]);
+    expect(findCommentById(thread.comments.value, "d")!.content).toBe("edited");
   });
 });

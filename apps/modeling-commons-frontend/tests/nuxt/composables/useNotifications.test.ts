@@ -20,6 +20,7 @@ import {
   latestEventSource,
   makeUser,
   setLoggedIn,
+  setSignedInUserId,
   useToastMock,
   useUserMock,
   toastAddMock,
@@ -74,6 +75,7 @@ afterEach(() => {
   scope = null;
   resetNotificationState();
   setLoggedIn(true);
+  setSignedInUserId(undefined);
   vi.useRealTimers();
 });
 
@@ -517,6 +519,52 @@ describe("useNotifications after a reset", () => {
     expect(notifications.value).toEqual([]);
     expect(unreadCount.value).toBe(0);
     expect(useState(NOTIFICATION_STATE_KEYS.cursor).value).toBeNull();
+  });
+});
+
+describe("useNotifications when the signed-in user changes", () => {
+  const previousUserRow = makeNotification({ id: "a", createdAt: "2026-10-02T08:30:00.000Z" });
+  const nextUserRow = makeNotification({ id: "b", createdAt: "2026-10-01T12:00:00.000Z" });
+
+  it("drops the previous user's rows and cursor when another user signs in while mounted", async () => {
+    const { notifications, unreadCount } = await mountWith(
+      makeNotificationPage([previousUserRow], { unreadCount: 3 }),
+    );
+    api().respondWith(() => jsonResponse(makeNotificationPage([nextUserRow], { unreadCount: 1 })));
+
+    setSignedInUserId("user-2");
+    await vi.waitFor(() => expect(api().requests).toHaveLength(2));
+    await flushPromises();
+
+    expect(ids(notifications.value)).toEqual(["b"]);
+    expect(unreadCount.value).toBe(1);
+    await pollWith(jsonResponse(makeNotificationPage([])));
+    expect(lastQuery().since).toBe(shiftBack(nextUserRow.createdAt));
+  });
+
+  it("drops the previous user's rows when the next user mounts after a sign-out elsewhere", async () => {
+    await mountWith(makeNotificationPage([previousUserRow], { unreadCount: 3 }));
+    scope!.stop();
+    setLoggedIn(false);
+    await flushPromises();
+
+    setSignedInUserId("user-2");
+    setLoggedIn(true);
+    const { notifications, unreadCount } = await mountWith(
+      makeNotificationPage([nextUserRow], { unreadCount: 1 }),
+    );
+
+    expect(ids(notifications.value)).toEqual(["b"]);
+    expect(unreadCount.value).toBe(1);
+  });
+
+  it("keeps the rows when the same user mounts again", async () => {
+    await mountWith(makeNotificationPage([previousUserRow]));
+    scope!.stop();
+
+    const { notifications } = await mountWith(makeNotificationPage([nextUserRow]));
+
+    expect(ids(notifications.value)).toEqual(["a", "b"]);
   });
 });
 

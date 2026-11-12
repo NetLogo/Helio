@@ -20,6 +20,7 @@
       :rows="1"
       :class="{ collapsed: collapsed }"
       :placeholder="placeholder"
+      :aria-label="composerLabel"
       :disabled="pending"
       :autofocus="autofocus"
       :ui="{
@@ -28,7 +29,7 @@
       autoresize
       variant="ghost"
       @submit="handleSubmit"
-      @keydown.enter.exact.prevent="handleSubmit"
+      @keydown.enter.exact="handleEnter"
       @focus="focus = true"
       @blur="focus = false"
     >
@@ -45,7 +46,8 @@
         'scale-0': collapsed,
         'scale-100': !collapsed,
       }"
-      title="Cancel"
+      :inert="collapsed"
+      :title="commentLiterals.cancel"
       @click.prevent="emit('cancel')"
     />
     <UButton
@@ -61,7 +63,8 @@
         'scale-0': collapsed,
         'scale-100': !collapsed,
       }"
-      title="Post"
+      :inert="collapsed"
+      :title="commentLiterals.post"
       @click.prevent="handleSubmit"
     />
   </UCard>
@@ -71,6 +74,7 @@
 import type { UTextarea } from "#components";
 import { isCommentContentValid, normalizeCommentContent } from "@repo/modeling-commons-shared";
 import { cn } from "@repo/vue-ui/utils";
+import { commentLiterals } from "~/features/comments/literals";
 
 const props = withDefaults(
   defineProps<{
@@ -106,14 +110,20 @@ const collapsed = computed(
 const placeholder = computed(() => {
   switch (true) {
     case Boolean(props.isEditing && props.target):
-      return `Edit your reply to ${props.target}...`;
+      return fillTemplate(commentLiterals.placeholderEditReply, { target: props.target ?? "" });
     case Boolean(props.isEditing):
-      return "Edit your comment...";
+      return commentLiterals.placeholderEdit;
     case Boolean(props.target):
-      return `Reply to ${props.target}...`;
+      return fillTemplate(commentLiterals.placeholderReply, { target: props.target ?? "" });
     default:
-      return "Leave a comment...";
+      return commentLiterals.placeholderNew;
   }
+});
+
+const composerLabel = computed(() => {
+  if (props.isEditing) return commentLiterals.editComposerLabel;
+  if (props.target) return fillTemplate(commentLiterals.replyComposerLabel, { target: props.target });
+  return commentLiterals.composerLabel;
 });
 
 // Clearing is parent-owned: text must survive a rejected submission, so the
@@ -121,6 +131,12 @@ const placeholder = computed(() => {
 const handleSubmit = () => {
   if (props.pending || !isCommentContentValid(comment.value)) return;
   emit("submit", comment.value);
+};
+
+const handleEnter = (event: KeyboardEvent) => {
+  if (event.isComposing) return;
+  event.preventDefault();
+  handleSubmit();
 };
 
 const clear = () => {

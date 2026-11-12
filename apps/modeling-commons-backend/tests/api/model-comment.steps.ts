@@ -212,6 +212,36 @@ When(
 );
 
 When(
+  '{string} pages through comments on {string} with limit {int}',
+  async function (this: ICustomWorld, actorName: string, modelTitle: string, limit: number) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    const pagedIds: Array<string> = [];
+    for (let page = 0; ; page++) {
+      const res = await this.server.inject({
+        method: 'GET',
+        url: `/api/v1/models/${modelId}/comments?limit=${limit}&page=${page}`,
+        headers: { cookie: actor.cookie },
+      });
+      assert.strictEqual(res.statusCode, 200, res.body);
+      const body = JSON.parse(res.body) as { count: number; data: Array<{ id: string }> };
+      pagedIds.push(...body.data.map((comment) => comment.id));
+      if ((page + 1) * limit >= body.count) break;
+    }
+    this.context['pagedCommentIds'] = pagedIds;
+  },
+);
+
+Then(
+  'the paged comments should be {int} comments {string} each listed once',
+  function (this: ICustomWorld, count: number, label: string) {
+    const pagedIds = this.context['pagedCommentIds'] as Array<string>;
+    const expectedIds = Array.from({ length: count }, (_, i) => commentId.call(this, `${label}-${i + 1}`));
+    assert.deepStrictEqual([...pagedIds].sort(), [...expectedIds].sort());
+  },
+);
+
+When(
   'an anonymous viewer lists comments on {string}',
   async function (this: ICustomWorld, modelTitle: string) {
     const modelId = getModels(this.context).get(modelTitle)!;

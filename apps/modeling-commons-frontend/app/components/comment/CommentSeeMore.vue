@@ -11,6 +11,8 @@
 </template>
 
 <script lang="ts" setup>
+import { commentLiterals } from "~/features/comments/literals";
+
 const props = defineProps<{
   replyCount: number;
 }>();
@@ -20,6 +22,8 @@ defineEmits<{
 }>();
 
 const seeMoreRepliesCopy = computed(() => {
-  return props.replyCount === 1 ? "See 1 more reply" : `See ${props.replyCount} more replies`;
+  return props.replyCount === 1
+    ? commentLiterals.seeOneMoreReply
+    : fillTemplate(commentLiterals.seeMoreReplies, { count: props.replyCount });
 });
 </script>

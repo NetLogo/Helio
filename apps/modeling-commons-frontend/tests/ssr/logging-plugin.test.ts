@@ -164,6 +164,29 @@ describe("request/afterResponse hooks", () => {
       expect.objectContaining({ url: "/api/v1/models" }),
     );
   });
+
+  // Catches reset-password and unsubscribe tokens leaking into access logs.
+  it("logs the path without the query string", () => {
+    const hooks = installPlugin();
+    hooks.afterResponse!(makeEvent({ path: "/reset-password?token=secret&x=1" }));
+    expect(loggerMock.info).toHaveBeenCalledWith(
+      expect.objectContaining({ url: "/reset-password" }),
+    );
+  });
+
+  // Catches the raw request url fallback keeping the query string.
+  it("strips the query string from the raw request url fallback", () => {
+    const hooks = installPlugin();
+    hooks.afterResponse!(
+      makeEvent({
+        path: undefined,
+        node: { req: { url: "/unsubscribe?token=secret", method: "GET" }, res: { statusCode: 200 } },
+      }),
+    );
+    expect(loggerMock.info).toHaveBeenCalledWith(
+      expect.objectContaining({ url: "/unsubscribe" }),
+    );
+  });
 });
 
 describe("error hook", () => {
@@ -180,6 +203,16 @@ describe("error hook", () => {
         statusCode: 500,
         err: { message: "kaput", stack: "STACK", name: "Error" },
       },
+      "unhandled error",
+    );
+  });
+
+  // Catches tokens leaking into error logs through the request path.
+  it("logs the path without the query string", () => {
+    const hooks = installPlugin();
+    hooks.error!(new Error("kaput"), { event: makeEvent({ path: "/unsubscribe?token=secret" }) });
+    expect(loggerMock.error).toHaveBeenCalledWith(
+      expect.objectContaining({ url: "/unsubscribe" }),
       "unhandled error",
     );
   });

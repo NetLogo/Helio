@@ -42,12 +42,13 @@
       class="w-fit"
       @click="loadMoreComments"
     >
-      Load {{ remainingComments }} more comment{{ remainingComments > 1 ? "s" : "" }}
+      {{ fillTemplate(remainingComments > 1 ? commentLiterals.loadMoreMany : commentLiterals.loadMoreOne, { count: remainingComments }) }}
     </UButton>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { commentLiterals } from "~/features/comments/literals";
 import { remainingCommentCount } from "./comment-tree";
 import { COMMENT_VIEW_DEFAULTS } from "./types";
 import type { CommentPagination, CommentsPanelProps } from "./types";

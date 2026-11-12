@@ -17,8 +17,15 @@ describe('getServerRole', () => {
     expect(getServerRole(ServerRole.SSE, true)).toBe(ServerRole.SSE);
   });
 
-  it('defaults to standalone in development and api elsewhere', () => {
+  it('keeps an explicit role outside development', () => {
+    expect(getServerRole(ServerRole.WORKER, false)).toBe(ServerRole.WORKER);
+  });
+
+  it('defaults to standalone in development', () => {
     expect(getServerRole(undefined, true)).toBe(ServerRole.STANDALONE);
-    expect(getServerRole(undefined, false)).toBe(ServerRole.API);
+  });
+
+  it('refuses to pick a role outside development', () => {
+    expect(() => getServerRole(undefined, false)).toThrow('SERVER_ROLE');
   });
 });

@@ -307,6 +307,22 @@ Feature: Notification Preferences and Feed
     And the first feed notification should have category "comment.reply_to_you"
     And the first feed notification should have title "owner replied to your comment"
     And no field of the notification feed should contain "Vanishing Model"
+    And no field of the notification feed should contain "Thanks"
+
+  Scenario: The feed stops quoting a comment once it is deleted
+    Given an authenticated user "owner"
+    And a public model "Retracted Model" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented "Regrettable words" on "Retracted Model" as "regret"
+    When the comment notification has been delivered
+    And "commenter" deletes comment "regret" on "Retracted Model"
+    Then the response status should be 204
+    When the pending events have been dispatched
+    And "owner" lists their notifications
+    Then the response status should be 200
+    And the notification feed should contain 1 notification
+    And the first feed notification should have body ""
+    And no field of the notification feed should contain "Regrettable words"
 
   Scenario: The one-click unsubscribe in a comment email turns off that category for that recipient only
     Given an authenticated user "owner"

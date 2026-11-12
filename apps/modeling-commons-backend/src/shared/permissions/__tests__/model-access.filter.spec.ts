@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { readableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
+import {
+  listableModelFilter,
+  readableModelFilter,
+} from '#src/shared/permissions/model-access.filter.ts';
 import { canRead } from '#src/shared/permissions/model-access.policy.ts';
 import type {
   ModelAccessSubject,
@@ -111,5 +114,45 @@ describe('readableModelFilter', () => {
 
   it('is unconstrained for an active admin', () => {
     expect(readableModelFilter(viewers['admin']!)).toEqual({});
+  });
+});
+
+describe('listableModelFilter', () => {
+  it('lists what canRead allows, except unlisted models for a non-member', () => {
+    const disagreements: string[] = [];
+
+    for (const [viewerName, viewer] of Object.entries(viewers)) {
+      const filter = listableModelFilter(viewer) as Record<string, any>;
+      const isAdmin = viewer?.systemRole === 'admin';
+
+      for (const visibility of visibilities) {
+        for (const deleted of [false, true]) {
+          for (const authorRole of roles) {
+            for (const grant of grants) {
+              const model: ModelAccessSubject = {
+                id: 'model-1',
+                visibility,
+                deletedAt: deleted ? new Date() : null,
+              };
+              const row: Row = { model, authorRole, grant };
+              const ctx: PolicyContext = { viewer, model, ownerRole: authorRole, grantLevel: grant };
+
+              const isMember = viewer !== null && (authorRole !== null || grant !== null);
+              const hiddenAsUnlisted = visibility === 'unlisted' && !isMember && !isAdmin;
+              const expected = canRead(ctx) && !hiddenAsUnlisted;
+              const actual = matches(filter, row, viewer?.id ?? null);
+
+              if (expected !== actual) {
+                disagreements.push(
+                  `${viewerName} / ${visibility} / deleted=${deleted} / role=${authorRole} / grant=${grant}: expected=${expected} filter=${actual}`,
+                );
+              }
+            }
+          }
+        }
+      }
+    }
+
+    expect(disagreements).toEqual([]);
   });
 });

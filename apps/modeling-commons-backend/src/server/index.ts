@@ -106,6 +106,7 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
       createClient: () =>
         new pg.Client({
           connectionString: env.db.url,
+          keepAlive: true,
           application_name: realtimeConfig.listener.applicationName,
         }),
       broker: fastify.diContainer.cradle.realtimeBroker,

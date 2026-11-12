@@ -12,6 +12,7 @@ import {
   mockNotificationProducer,
 } from '#src/modules/user-notification/domain/notification-producer.mock.ts';
 import makeMailDomain from '#src/modules/mail/domain/mail.domain.ts';
+import { notificationCategoryCatalog } from '#src/modules/notification-producers.ts';
 import userNotificationMapper from '#src/modules/user-notification/user-notification.mapper.ts';
 import {
   InvalidUnsubscribeTokenError,
@@ -362,6 +363,46 @@ describe('userNotificationService handleEvent', () => {
 
       expect(mailService.enqueue).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalled();
+    });
+
+    it("redacts the producer's own rows with the redaction it derives from the event", async () => {
+      userNotificationRepository.redactPayloads.mockReset().mockResolvedValue(2);
+      const redaction = { match: { key: 'commentId', value: 'comment-1' }, fields: ['excerpt'] };
+      const producer = mockNotificationProducer({
+        categories: { 'comment.reply_to_you': notificationCategoryCatalog['comment.reply_to_you'] },
+        redact: vi.fn().mockReturnValue(redaction),
+      });
+      const service = build([producer]);
+      const event = makeEvent({ type: 'model_comment.created' });
+
+      await service.handleEvent(event);
+
+      expect(producer.redact).toHaveBeenCalledWith(event);
+      expect(userNotificationRepository.redactPayloads).toHaveBeenCalledExactlyOnceWith(
+        ['comment.reply_to_you'],
+        redaction,
+      );
+    });
+
+    it('redacts nothing when the producer derives no redaction from the event', async () => {
+      userNotificationRepository.redactPayloads.mockReset();
+      const service = build([makeProducer([makeRowFacts()])]);
+
+      await service.handleEvent(makeEvent());
+
+      expect(userNotificationRepository.redactPayloads).not.toHaveBeenCalled();
+    });
+
+    it('rethrows a failed redaction so the event is retried', async () => {
+      userNotificationRepository.redactPayloads.mockReset().mockRejectedValue(new Error('db down'));
+      const producer = mockNotificationProducer({
+        redact: vi
+          .fn()
+          .mockReturnValue({ match: { key: 'commentId', value: 'c' }, fields: ['excerpt'] }),
+      });
+      const service = build([producer]);
+
+      await expect(service.handleEvent(makeEvent())).rejects.toThrow(AggregateError);
     });
 
     it('inserts a ledger row and sends mail for a fully opted-in recipient', async () => {

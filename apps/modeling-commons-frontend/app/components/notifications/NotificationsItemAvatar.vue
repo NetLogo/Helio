@@ -1,10 +1,20 @@
 <script lang="ts" setup>
-import { iconFor } from "./shared";
+import { iconFor, useNotificationLink } from "./shared";
 import type { UserNotification } from "~/features/notifications/types";
 
 const props = defineProps<{ notification: UserNotification }>();
 
+const emit = defineEmits<{ read: [] }>();
+
+const inAppLink = useNotificationLink();
+
 const actor = computed(() => props.notification.actor);
+const thumbnailFailed = ref(false);
+const showThumbnail = computed(() => Boolean(actor.value?.thumbnailUrl) && !thumbnailFailed.value);
+watch(
+  () => actor.value?.thumbnailUrl,
+  () => (thumbnailFailed.value = false),
+);
 const actorLabel = computed(() =>
   actor.value?.name
     ? notificationLiterals.viewNamedLabel.replace("{name}", actor.value.name)
@@ -15,10 +25,11 @@ const icon = computed(() => iconFor(props.notification.category));
 
 <template>
   <NuxtLink
-    v-if="actor?.thumbnailUrl"
-    :to="actor.url"
+    v-if="showThumbnail && actor?.thumbnailUrl"
+    :to="inAppLink(actor.url)"
     :aria-label="actorLabel"
     class="relative z-10 shrink-0"
+    @click="emit('read')"
   >
     <NuxtImg
       :src="actor.thumbnailUrl"
@@ -26,6 +37,7 @@ const icon = computed(() => iconFor(props.notification.category));
       height="40"
       :alt="actor.name ?? ''"
       class="rounded-full size-10 object-cover"
+      @error="thumbnailFailed = true"
     />
   </NuxtLink>
 

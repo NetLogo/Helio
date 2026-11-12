@@ -14,6 +14,7 @@ export function mockNotificationProducer(
     eventTypes: ['model_comment.created'],
     categories: notificationCategoryCatalog,
     resolve: vi.fn().mockResolvedValue([]),
+    redact: vi.fn().mockReturnValue(undefined),
     describeRow: vi.fn().mockReturnValue({ title: '', body: '' }),
     renderEmail: vi.fn().mockResolvedValue({}),
     describeGroup: vi.fn().mockReturnValue(undefined),

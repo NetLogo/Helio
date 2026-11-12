@@ -1,5 +1,5 @@
 <template>
-  <UModal v-model:open="open" title="Delete Comment" class="lg:max-w-lg">
+  <UModal v-model:open="open" :title="commentLiterals.deleteDialogTitle" class="lg:max-w-lg">
     <template #content>
       <div class="p-6 space-y-5">
         <div class="flex gap-4">
@@ -7,15 +7,15 @@
             <UIcon name="i-lucide-trash-2" class="size-5 text-error" />
           </div>
           <div class="space-y-1">
-            <h6 class="font-semibold text-highlighted">Delete this comment?</h6>
+            <h6 class="font-semibold text-highlighted">{{ commentLiterals.deleteDialogHeading }}</h6>
             <p class="text-sm text-muted">
-              This action cannot be undone.
+              {{ commentLiterals.deleteDialogBody }}
             </p>
           </div>
         </div>
 
         <div class="flex justify-end gap-2">
-          <UButton variant="ghost" color="neutral" @click="handleCancel">Cancel</UButton>
+          <UButton variant="ghost" color="neutral" @click="handleCancel">{{ commentLiterals.cancel }}</UButton>
           <UButton
             color="error"
             icon="i-lucide-trash-2"
@@ -23,7 +23,7 @@
             :disabled="deleting"
             @click="handleConfirm"
           >
-            Delete comment
+            {{ commentLiterals.deleteDialogConfirm }}
           </UButton>
         </div>
       </div>
@@ -32,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+import { commentLiterals } from "~/features/comments/literals";
 defineProps<{ deleting: boolean }>();
 const open = defineModel<boolean>("open", { default: false });
 const emit = defineEmits<{ confirm: [], cancel: [] }>();

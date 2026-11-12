@@ -1,4 +1,5 @@
 import type { APIEvent, Faro, TransportItem } from "@grafana/faro-web-sdk";
+import { scrubSpanUrls } from "~/utils/telemetry";
 
 export default defineNuxtPlugin({
   name: "faro",
@@ -111,6 +112,7 @@ export default defineNuxtPlugin({
             if (item.meta?.page?.url) {
               item.meta.page.url = scrubUrl(item.meta.page.url);
             }
+            scrubSpanUrls(payload, (url) => scrubUrl(url) ?? url);
             // Faro records user input as breadcrumbs; keep the element,
             // drop whatever was typed into it.
             if (payload?.attributes?.value) delete payload.attributes.value;

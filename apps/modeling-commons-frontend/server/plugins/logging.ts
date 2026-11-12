@@ -12,6 +12,8 @@ const logger = pino({
   },
 });
 
+const stripQuery = (url: string) => url.split("?", 1)[0] ?? url;
+
 export default defineNitroPlugin((nitroApp) => {
   if (process.env.NODE_ENV === "production") {
     consola.setReporters([
@@ -37,7 +39,7 @@ export default defineNitroPlugin((nitroApp) => {
 
   nitroApp.hooks.hook("afterResponse", (event) => {
     const start = event.context._start as number | undefined;
-    const url = event.path ?? event.node.req.url ?? "";
+    const url = stripQuery(event.path ?? event.node.req.url ?? "");
 
     logger.info({
       method: event.method ?? event.node.req.method,
@@ -51,7 +53,7 @@ export default defineNitroPlugin((nitroApp) => {
     logger.error(
       {
         method: event?.method,
-        url: event?.path,
+        url: event && stripQuery(event.path),
         statusCode: event?.node.res.statusCode,
         err: {
           message: error.message,

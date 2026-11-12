@@ -6,9 +6,11 @@ import {
   MAX_BACKOFF_FACTOR,
   NOTIFICATION_STATE_KEYS,
   NOTIFICATION_PAGINATION_KEY,
+  resetNotificationState,
 } from "~/components/notifications/shared";
 
 import { createSharedComposable } from "@vueuse/core";
+import { notificationLiterals } from "~/features/notifications/literals";
 
 type PollDecision = "start" | "rerun" | "skip";
 
@@ -32,7 +34,18 @@ function useNotificationsImpl() {
   const cursor = useState<string | null>(NOTIFICATION_STATE_KEYS.cursor, () => null);
   const resetEpoch = useState<number>(NOTIFICATION_STATE_KEYS.resetEpoch, () => 0);
   const unreadOnly = useState<boolean>(NOTIFICATION_STATE_KEYS.unreadOnly, () => false);
+  const ownerId = useState<string | null>(NOTIFICATION_STATE_KEYS.ownerId, () => null);
   const user = useUser();
+
+  watch(
+    () => user.value.user?.id ?? null,
+    (userId) => {
+      if (userId === null || userId === ownerId.value) return;
+      if (ownerId.value !== null) resetNotificationState();
+      ownerId.value = userId;
+    },
+    { immediate: true },
+  );
 
   const {
     data: paginatedNotifications,
@@ -186,7 +199,7 @@ function useNotificationsImpl() {
 
     const res = await markNotificationRead(notificationId);
     if (res.error) {
-      showActionFailedToast("Failed to mark notification as read");
+      showActionFailedToast(notificationLiterals.markReadFailed);
       return;
     }
     aggregatedNotifications.value = aggregatedNotifications.value.map((n) =>

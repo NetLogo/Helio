@@ -103,6 +103,14 @@ describe("CommentsSection sources", () => {
     expect(panelPagination(wrapper)).toEqual({ count: 0, lastPage: null });
   });
 
+  it("shows the error alert without the empty state when loading fails", async () => {
+    installCommentApiMock({ fail: (call) => call.method === "GET" });
+    const wrapper = await mountCommentsSection({ modelId: "model-load-fails" });
+
+    expect(wrapper.text()).toContain("Comments failed to load");
+    expect(wrapper.text()).not.toContain("Looks like there are no comments yet.");
+  });
+
   it("renders nothing when no modelId is given", async () => {
     const wrapper = await mountCommentsSection({});
 
@@ -170,6 +178,18 @@ describe("CommentsSection highlight", () => {
     expect(wrapper.getComponent(CommentsPanel).props("highlightedCommentId")).toBeUndefined();
     expect(wrapper.find('[tabindex="-1"]').exists()).toBe(false);
     expect(routerReplaceMock).toHaveBeenCalledWith({ query: { page: "2" } });
+  });
+
+  it("follows a highlight change in the route while mounted", async () => {
+    setRouteQuery({ highlightedCommentId: "5" });
+    const wrapper = await mountCommentsSection({ modelId: "model-1" });
+
+    setRouteQuery({ highlightedCommentId: "1" });
+    await nextTick();
+
+    expect(wrapper.getComponent(CommentsPanel).props("highlightedCommentId")).toBe("1");
+    expect(viewFor(wrapper, "1")!.attributes("tabindex")).toBe("-1");
+    expect(viewFor(wrapper, "5")!.attributes("tabindex")).toBeUndefined();
   });
 
   it("ignores array and empty highlight query values", async () => {

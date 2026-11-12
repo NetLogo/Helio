@@ -3,7 +3,7 @@ import { modelCommentLiterals } from '#src/modules/model-comment/notifications/m
 
 export const modelCommentNotifications = {
   producer: (deps: Dependencies) => deps.modelCommentProducer,
-  eventTypes: [modelCommentEventTypes.created],
+  eventTypes: [modelCommentEventTypes.created, modelCommentEventTypes.deleted],
   categories: {
     'comment.on_your_model': {
       ...modelCommentLiterals.categories['comment.on_your_model'],

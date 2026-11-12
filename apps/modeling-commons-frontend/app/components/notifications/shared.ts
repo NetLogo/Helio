@@ -7,7 +7,19 @@ export const NOTIFICATION_STATE_KEYS = {
   cursor: "notifications-cursor",
   resetEpoch: "notifications-reset-epoch",
   unreadOnly: "notifications-unread-only",
+  ownerId: "notifications-owner-id",
 } as const;
+
+export function toInAppLink(url: string, appUrl: string): string {
+  const parsed = new URL(url, appUrl);
+  if (parsed.origin !== new URL(appUrl).origin) return url;
+  return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+}
+
+export function useNotificationLink() {
+  const appUrl = useRuntimeConfig().public.appUrl as string;
+  return (url: string) => toInAppLink(url, appUrl);
+}
 
 export const NOTIFICATION_PAGINATION_KEY = "user-notifications";
 
@@ -17,6 +29,7 @@ export function resetNotificationState() {
   useState<UserNotification[]>(NOTIFICATION_STATE_KEYS.aggregated).value = [];
   useState<string | null>(NOTIFICATION_STATE_KEYS.cursor).value = null;
   useState<boolean>(NOTIFICATION_STATE_KEYS.unreadOnly).value = false;
+  useState<string | null>(NOTIFICATION_STATE_KEYS.ownerId).value = null;
   useState<number>(NOTIFICATION_STATE_KEYS.resetEpoch, () => 0).value++;
   clearApiPagination(NOTIFICATION_PAGINATION_KEY);
 }

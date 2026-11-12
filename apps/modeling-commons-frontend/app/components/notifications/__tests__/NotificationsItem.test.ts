@@ -1,5 +1,6 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, expect, it } from "vitest";
+import { useRuntimeConfig } from "#imports";
 import { notificationLiterals as labels } from "~/features/notifications/literals";
 import { makeNotification } from "~~/tests/helpers/notifications";
 import NotificationsItem from "~/components/notifications/NotificationsItem.vue";
@@ -62,6 +63,16 @@ describe("NotificationsItem", () => {
     expect(read.classes()).not.toContain("bg-royal-blue-lightest/90");
   });
 
+  it("announces unread rows as unread in the row link", async () => {
+    const unread = await mountItem(makeNotification({ readAt: null }));
+    const read = await mountItem(makeNotification({ readAt: "2026-10-02T00:00:00.000Z" }));
+    const hiddenUnread = (wrapper: Awaited<ReturnType<typeof mountItem>>) =>
+      wrapper.find('a[href="https://mc.test/models/m-1/comments/c-1"] .sr-only');
+
+    expect(hiddenUnread(unread).text()).toBe(labels.unreadRowLabel);
+    expect(hiddenUnread(read).exists()).toBe(false);
+  });
+
   it("shows a fixed size placeholder when the target has no thumbnail", async () => {
     const wrapper = await mountItem(
       makeNotification({
@@ -95,5 +106,38 @@ describe("NotificationsItem", () => {
     );
     expect(body(menu).classes()).not.toContain("w-60");
     expect(body(feed).classes()).toEqual(expect.arrayContaining(["flex-1", "min-w-0"]));
+  });
+
+  it("links same-origin urls in-app so the click stays in the app", async () => {
+    const appUrl = useRuntimeConfig().public.appUrl as string;
+    const wrapper = await mountItem(
+      makeNotification({
+        url: new URL("/models/m-1/comments/c-1#c-1", appUrl).href,
+        target: {
+          name: "Wolf Sheep",
+          thumbnailUrl: null,
+          url: new URL("/models/m-1", appUrl).href,
+        },
+      }),
+    );
+
+    expect(wrapper.find('a[href="/models/m-1/comments/c-1#c-1"]').exists()).toBe(true);
+    expect(targetLink(wrapper).attributes("href")).toBe("/models/m-1");
+  });
+
+  it("emits read when the target thumbnail is clicked", async () => {
+    const wrapper = await mountItem(makeNotification());
+
+    await targetLink(wrapper).trigger("click");
+
+    expect(wrapper.emitted("read")).toHaveLength(1);
+  });
+
+  it("emits read when the actor avatar is clicked", async () => {
+    const wrapper = await mountItem(makeNotification());
+
+    await wrapper.find('a[href="https://mc.test/users/ada"]').trigger("click");
+
+    expect(wrapper.emitted("read")).toHaveLength(1);
   });
 });

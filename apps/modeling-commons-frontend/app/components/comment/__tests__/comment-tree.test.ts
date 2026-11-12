@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   findCommentById,
+  hasLoadedBeyond,
   hasSpine,
   hasVisibleReplies,
   insertReply,
+  mergeLoadedPages,
   mergePinnedComments,
   remainingCommentCount,
   remainingReplyCount,
@@ -323,5 +325,94 @@ describe("mergePinnedComments", () => {
       true,
     );
     expect(ids(merged)).toEqual(["fresh", "other", "6"]);
+  });
+});
+
+describe("mergeLoadedPages", () => {
+  const node = (id: string, overrides: Partial<Comment> = {}): Comment => ({
+    id,
+    author: { name: "Ada", image: "" },
+    content: id,
+    createdAt: "2024-01-01T00:00:00.000Z",
+    likes: 0,
+    replies: [],
+    replyPagination: { count: 0, lastPage: null },
+    ...overrides,
+  });
+  const ids = (comments: Array<Comment>) => comments.map((comment) => comment.id);
+  const loaded = ["a", "b", "c", "d"].map((id) => node(id));
+
+  it("keeps comments from later pages after the first page is refetched", () => {
+    expect(ids(mergeLoadedPages(loaded, [node("a"), node("b")], true))).toEqual([
+      "a",
+      "b",
+      "c",
+      "d",
+    ]);
+  });
+
+  it("keeps a comment a new one pushed off the first page", () => {
+    expect(ids(mergeLoadedPages(loaded, [node("new"), node("a")], true))).toEqual([
+      "new",
+      "a",
+      "b",
+      "c",
+      "d",
+    ]);
+  });
+
+  it("keeps a first-page comment another one's likes pushed to a later page", () => {
+    expect(ids(mergeLoadedPages(loaded, [node("c"), node("a")], true))).toEqual([
+      "c",
+      "a",
+      "b",
+      "d",
+    ]);
+  });
+
+  it("keeps a first-page comment the refetch no longer returns", () => {
+    expect(ids(mergeLoadedPages(loaded, [node("a"), node("c")], true))).toEqual([
+      "a",
+      "c",
+      "b",
+      "d",
+    ]);
+  });
+
+  it("shows the refetched copy of a first-page comment", () => {
+    const merged = mergeLoadedPages(loaded, [node("a", { content: "edited" }), node("b")], true);
+    expect(merged[0]!.content).toBe("edited");
+  });
+
+  it("returns only the refetched page when later pages are not kept", () => {
+    expect(ids(mergeLoadedPages(loaded, [node("a"), node("b")], false))).toEqual(["a", "b"]);
+  });
+
+  it("keeps a comment's later reply pages and their page index", () => {
+    const replies = ["r1", "r2", "r3", "r4"].map((id) => node(id));
+    const before = node("p", { replies, replyPagination: { count: 4, limit: 2, lastPage: 1 } });
+    const refetched = node("p", {
+      replies: replies.slice(0, 2),
+      replyPagination: { count: 4, limit: 2, lastPage: 0 },
+    });
+
+    const [parent] = mergeLoadedPages([before], [refetched], false);
+
+    expect(ids(parent!.replies!)).toEqual(["r1", "r2", "r3", "r4"]);
+    expect(parent!.replyPagination).toEqual({ count: 4, limit: 2, lastPage: 1 });
+  });
+});
+
+describe("hasLoadedBeyond", () => {
+  it("is true when more pages are shown than the incomplete refetch holds", () => {
+    expect(hasLoadedBeyond({ count: 4, lastPage: 1 }, { count: 4, lastPage: 0 }, 2)).toBe(true);
+  });
+
+  it("is false when the refetch holds every comment", () => {
+    expect(hasLoadedBeyond({ count: 4, lastPage: 1 }, { count: 2, lastPage: 0 }, 2)).toBe(false);
+  });
+
+  it("is false when only the first page is shown", () => {
+    expect(hasLoadedBeyond({ count: 4, lastPage: 0 }, { count: 4, lastPage: 0 }, 2)).toBe(false);
   });
 });

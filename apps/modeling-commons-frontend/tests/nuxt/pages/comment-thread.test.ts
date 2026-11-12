@@ -16,6 +16,9 @@ mockNuxtImport("useUser", () => () => useUserMock());
 mockNuxtImport("useProfile", () => () => useProfileMock());
 mockNuxtImport("useApi", () => () => useCommentApiMock());
 
+const { showErrorMock } = vi.hoisted(() => ({ showErrorMock: vi.fn() }));
+mockNuxtImport("showError", () => showErrorMock);
+
 const routeState = vi.hoisted(() => ({ commentId: "100" }));
 
 mockNuxtImport("useRoute", () => () => ({
@@ -30,6 +33,7 @@ mockNuxtImport("useRoute", () => () => ({
 }));
 
 beforeEach(() => {
+  showErrorMock.mockReset();
   routeState.commentId = "100";
   installCommentApiMock();
 });
@@ -69,6 +73,25 @@ describe("models/[id]/comments/[commentId].vue", () => {
     const link = parentLink(wrapper);
     expect(link.exists()).toBe(true);
     expect(link.attributes("href")).toBe(`/models/model-demo/comments/${nested!.parentId}`);
+  });
+
+  it("raises a 404 for a thread that does not exist", async () => {
+    await mountThreadPage("does-not-exist");
+
+    expect(showErrorMock).toHaveBeenCalledWith(expect.objectContaining({ statusCode: 404 }));
+  });
+
+  it("does not raise a 404 for an existing thread", async () => {
+    await mountThreadPage("100");
+
+    expect(showErrorMock).not.toHaveBeenCalled();
+  });
+
+  it("does not raise a 404 when the thread fails to load", async () => {
+    installCommentApiMock({ fail: (call) => call.method === "GET" });
+    await mountThreadPage("101");
+
+    expect(showErrorMock).not.toHaveBeenCalled();
   });
 
   it("shows no parent-thread link for a top-level comment", async () => {

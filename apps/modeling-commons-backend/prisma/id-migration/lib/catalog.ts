@@ -9,9 +9,10 @@ export type Db = {
  * text `id` is a UUID owned by Prisma, can never be dragged in.
  *
  * Verified against prisma/schema.prisma: these are exactly the models
- * declaring `id String @id @default(nanoid())`. The four join tables
- * (ModelVersion, ModelVersionTag, ModelAuthor, ModelLike) carry composite
- * primary keys made of foreign keys and are migrated through the edge walk.
+ * declaring `id String @id @default(nanoid())`. The five join tables
+ * (ModelVersion, ModelVersionTag, ModelAuthor, ModelLike, ModelCommentLike)
+ * carry composite primary keys made of foreign keys and are migrated through
+ * the edge walk.
  */
 export const MAPPED_TABLES = [
   'User',
@@ -26,7 +27,10 @@ export const MAPPED_TABLES = [
   'ModelPermission',
   'ModelInteraction',
   'ModelDraft',
+  'ModelComment',
   'Event',
+  'UserNotification',
+  'UserNotificationPreference',
 ] as const;
 
 /**

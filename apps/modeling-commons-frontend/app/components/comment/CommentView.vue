@@ -174,6 +174,7 @@
 </template>
 
 <script lang="ts" setup>
+import { commentLiterals } from "~/features/comments/literals";
 import * as commentTree from "./comment-tree";
 import { COMMENT_VIEW_DEFAULTS } from "./types";
 import type { CommentViewProps } from "./types";
@@ -239,7 +240,7 @@ const threadLink = computed(() =>
 );
 const continueThreadCopy = computed(() => {
   const count = remainingReplies.value;
-  return `Continue this thread (${count} ${count === 1 ? "reply" : "replies"})`;
+  return fillTemplate(count === 1 ? commentLiterals.continueThreadOne : commentLiterals.continueThreadMany, { count });
 });
 
 const isCollapsed = ref(false);

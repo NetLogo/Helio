@@ -206,6 +206,7 @@ function onTabChange(idx: string | number) {
   }
 
   router.replace({
+    query: router.currentRoute.value.query,
     hash: "#" + key,
   })
 }

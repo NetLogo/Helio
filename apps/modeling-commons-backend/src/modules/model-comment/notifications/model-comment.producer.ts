@@ -1,5 +1,5 @@
 import links from '#src/config/links.ts';
-import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
+import { modelCommentEventTypes } from '#src/modules/event/domain/event-types.ts';
 import { listCommentNotificationRecipients } from '#src/modules/model-comment/notifications/model-comment.recipients.ts';
 import type { EventRecord } from '#src/modules/event/database/event.repository.port.ts';
 import { modelCommentLiterals } from '#src/modules/model-comment/notifications/model-comment.literals.ts';
@@ -8,6 +8,7 @@ import type {
   NotificationRowFacts,
   NotificationPreviews,
   NotificationProducer,
+  NotificationRedaction,
   NotificationRow,
   NotificationTargetRef,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
@@ -20,6 +21,10 @@ function isReply(row: Pick<NotificationRow, 'category'>): boolean {
 
 function getActorName(preview: NotificationPreviews): string {
   return preview.actor?.name ?? modelCommentLiterals.unknownActorName;
+}
+
+function canReadTarget(preview: NotificationPreviews): boolean {
+  return Boolean(preview.target?.name);
 }
 
 function readCommentExcerpt(payload: NotificationRow['payload']): string {
@@ -40,9 +45,10 @@ export default function makeModelCommentProducer({
     categories: modelCommentNotifications.categories,
 
     async resolve(event: EventRecord): Promise<Array<NotificationRowFacts>> {
+      if (event.type !== modelCommentEventTypes.created) return [];
       const commentId = event.payload['commentId'] as string;
       const entity = await modelCommentRepository.findById(commentId);
-      if (!entity) throw new CommentNotFoundError(commentId);
+      if (!entity || entity.deletedAt !== null) return [];
 
       const parent = entity.parentId
         ? await modelCommentRepository.findById(entity.parentId)
@@ -71,13 +77,21 @@ export default function makeModelCommentProducer({
       }));
     },
 
+    redact(event: EventRecord): NotificationRedaction | undefined {
+      if (event.type !== modelCommentEventTypes.deleted) return undefined;
+      return {
+        match: { key: 'commentId', value: event.payload['commentId'] as string },
+        fields: ['excerpt'],
+      };
+    },
+
     describeRow(row, preview) {
       const actorName = getActorName(preview);
       return {
         title: isReply(row)
           ? modelCommentLiterals.formatReplyTitle(actorName)
           : modelCommentLiterals.formatCommentTitle(actorName),
-        body: readCommentExcerpt(row.payload),
+        body: canReadTarget(preview) ? readCommentExcerpt(row.payload) : '',
       };
     },
 

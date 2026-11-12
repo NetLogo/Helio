@@ -14,9 +14,9 @@
       color="error"
       variant="subtle"
       icon="i-lucide-message-circle-off"
-      title="Comments failed to load"
-      description="Something went wrong while loading the discussion."
-      :actions="[{ label: 'Retry', color: 'error', variant: 'outline', onClick: () => refresh() }]"
+      :title="commentLiterals.loadErrorTitle"
+      :description="commentLiterals.loadErrorDescription"
+      :actions="[{ label: commentLiterals.retry, color: 'error', variant: 'outline', onClick: () => refresh() }]"
     />
     <CommentsPanel
       v-else
@@ -39,17 +39,18 @@
       @highlight-dismiss="dismissHighlight"
     />
     <Empty
-      v-if="!isLoading && pagination.count === 0 && comments.length === 0"
+      v-if="!isLoading && status !== 'error' && pagination.count === 0 && comments.length === 0"
       icon="lucide:message-circle-dashed"
-      title="Looks like there are no comments yet."
-      description="Be the first to start the discussion."
+      :title="commentLiterals.emptyTitle"
+      :description="commentLiterals.emptyDescription"
     >
-      <UButton color="primary" variant="outline" size="sm" @click="handleFocusComposer"> Write a comment </UButton>
+      <UButton color="primary" variant="outline" size="sm" @click="handleFocusComposer">{{ commentLiterals.emptyAction }}</UButton>
     </Empty>
   </template>
 </template>
 
 <script lang="ts" setup>
+import { commentLiterals } from "~/features/comments/literals";
 import type { CommentsSource } from "~/composables/comments/useComments";
 import type { CommentSort } from "~/features/comments/types";
 
@@ -119,11 +120,14 @@ const handleFocusComposer = () => {
 const route = useRoute();
 const router = useRouter();
 
-const initialHighlightId = route.query.highlightedCommentId;
-const highlightedCommentId = ref(
-  typeof initialHighlightId === "string" && initialHighlightId !== ""
-    ? initialHighlightId
-    : undefined,
+const highlightFromQuery = (value: unknown) =>
+  typeof value === "string" && value !== "" ? value : undefined;
+const highlightedCommentId = ref(highlightFromQuery(route.query.highlightedCommentId));
+watch(
+  () => route.query.highlightedCommentId,
+  (value) => {
+    highlightedCommentId.value = highlightFromQuery(value);
+  },
 );
 
 const dismissHighlight = () => {

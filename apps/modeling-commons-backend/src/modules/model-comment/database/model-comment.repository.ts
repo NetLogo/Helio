@@ -22,11 +22,9 @@ function toEntity(record: ModelCommentRecord): ModelCommentEntity {
 // this is the one place that reconciles the two. Direction comes from the
 // caller-resolved `orderBy.param` (e.g. `newest` -> createdAt desc, `createdAt`
 // -> asc for chronological thread reading).
-function toOrderBy(orderBy: OrderBy): Prisma.ModelCommentOrderByWithRelationInput {
-  if (orderBy.field === 'likes') {
-    return { likesCount: orderBy.param };
-  }
-  return { [orderBy.field]: orderBy.param };
+function toOrderBy(orderBy: OrderBy): Array<Prisma.ModelCommentOrderByWithRelationInput> {
+  const field = orderBy.field === 'likes' ? 'likesCount' : orderBy.field;
+  return [{ [field]: orderBy.param }, { id: 'asc' }];
 }
 
 // Whitelist mirroring toOrderBy above, but for the raw window query below: only

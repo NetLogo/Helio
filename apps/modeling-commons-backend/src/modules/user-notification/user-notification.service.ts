@@ -100,6 +100,12 @@ export function createUserNotificationService(
     return ledger;
   }
 
+  async function redact(producer: NotificationProducer, event: EventRecord): Promise<void> {
+    const redaction = producer.redact(event);
+    if (!redaction) return;
+    await userNotificationRepository.redactPayloads(Object.keys(producer.categories), redaction);
+  }
+
   async function updatePreferences(
     userId: string,
     preferences: Array<UpdatePreferenceInput>,
@@ -153,6 +159,9 @@ export function createUserNotificationService(
       const applicable = producers.filter((producer) => producer.eventTypes.includes(event.type));
       if (applicable.length === 0) return;
 
+      const redactions = await Promise.allSettled(
+        applicable.map(async (producer) => redact(producer, event)),
+      );
       const resolutions = await Promise.allSettled(
         applicable.map(async (producer) => {
           const rowFacts = await producer.resolve(event);
@@ -174,6 +183,7 @@ export function createUserNotificationService(
       ]);
       handleFailedDeliveries(
         [
+          { results: redactions, message: 'A producer failed to redact its notifications' },
           { results: resolutions, message: 'A producer failed to resolve row facts' },
           { results: deliveries, message: 'Failed to deliver a notification' },
           { results: publications, message: 'Failed to publish the created notifications' },

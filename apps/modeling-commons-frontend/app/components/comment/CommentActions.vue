@@ -7,7 +7,9 @@
       :class="{ 'text-red-600': likedByMe }"
       class="tabular-nums"
       :disabled="pending"
-      title="Like"
+      :title="commentLiterals.likeTitle"
+      :aria-label="fillTemplate(commentLiterals.likeButtonLabel, { count: likes ?? 0 })"
+      :aria-pressed="likedByMe ? 'true' : 'false'"
       @click="$emit('like')"
     >
       <template #leading>
@@ -32,7 +34,7 @@
       icon="lucide:message-circle"
       color="neutral"
       :disabled="pending"
-      title="Reply"
+      :title="commentLiterals.replyTitle"
       class="whitespace-nowrap"
       @click="$emit('reply')"
     >
@@ -52,7 +54,7 @@
         icon="lucide:ellipsis-vertical"
         color="neutral"
         :disabled="pending"
-        title="More actions"
+        :title="commentLiterals.moreActionsTitle"
       />
     </UDropdownMenu>
   </div>
@@ -60,6 +62,8 @@
 
 <script lang="ts" setup>
 import type { DropdownMenuItem } from "#ui/types";
+import { commentLiterals } from "~/features/comments/literals";
+
 const props = defineProps<{
   likes?: number;
   replyCount?: number;
@@ -92,7 +96,7 @@ const dropdownActions = computed<Array<DropdownMenuItem>>(() => {
 
   if (props.canEdit) {
     actions.push({
-      label: "Edit",
+      label: commentLiterals.editAction,
       icon: "lucide:square-pen",
       onSelect: () => {
         openingInput.value = true;
@@ -102,7 +106,7 @@ const dropdownActions = computed<Array<DropdownMenuItem>>(() => {
   }
   if (props.canDelete) {
     actions.push({
-      label: "Delete",
+      label: commentLiterals.deleteAction,
       icon: "lucide:trash-2",
       onSelect: () => emits("delete"),
       color: "error",

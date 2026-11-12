@@ -12,6 +12,7 @@ export function mockUserNotificationRepository(): {
     findPendingForRecipient: vi.fn().mockResolvedValue([]),
     findDigestRecipients: vi.fn().mockResolvedValue([]),
     markRead: vi.fn(),
+    redactPayloads: vi.fn().mockResolvedValue(0),
     findOneById: vi.fn(),
     findAllByRecipient: vi.fn(),
     countUnread: vi.fn(),

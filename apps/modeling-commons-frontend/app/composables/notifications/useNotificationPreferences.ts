@@ -28,14 +28,19 @@ export default function useNotificationPreferences() {
     saving.value.add(category);
     replaceCategory({ ...previous, ...patch });
 
-    const res = await updateNotificationPreference(category, patch);
-
-    saving.value.delete(category);
-
-    if (res.error) {
-      replaceCategory(previous);
-      showActionFailedToast(notificationPreferenceLiterals.saveFailedAction);
+    try {
+      const res = await updateNotificationPreference(category, patch);
+      if (res.error) rollBack(previous);
+    } catch {
+      rollBack(previous);
+    } finally {
+      saving.value.delete(category);
     }
+  }
+
+  function rollBack(previous: NotificationPreferenceCategory) {
+    replaceCategory(previous);
+    showActionFailedToast(notificationPreferenceLiterals.saveFailedAction);
   }
 
   function isSaving(category: NotificationCategoryKey) {

@@ -2,7 +2,6 @@ import userDomain from '#src/modules/user/domain/user.domain.ts';
 import { describe, it, expect, beforeEach } from 'vitest';
 import env from '#src/config/env.ts';
 import makeModelCommentProducer from '#src/modules/model-comment/notifications/model-comment.producer.ts';
-import { CommentNotFoundError } from '#src/modules/model-comment/domain/model-comment.errors.ts';
 import { mockModelCommentRepository } from '#src/modules/model-comment/database/model-comment.repository.mock.ts';
 import { mockModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.mock.ts';
 import mailDomain from '#src/modules/mail/domain/mail.domain.ts';
@@ -71,16 +70,61 @@ describe('modelCommentProducer', () => {
     modelAuthorRepository.findAllByModel.mockReset();
   });
 
-  it('declares model_comment.created as its only event type', () => {
-    expect(producer.eventTypes).toEqual(['model_comment.created']);
+  it('declares the comment created and deleted event types', () => {
+    expect(producer.eventTypes).toEqual(['model_comment.created', 'model_comment.deleted']);
   });
 
-  it('throws when the event refers to a comment that no longer resolves', async () => {
-    modelCommentRepository.findById.mockResolvedValue(undefined);
+  it('resolves no row facts for a deleted event', async () => {
+    const rowFacts = await producer.resolve(
+      makeEvent({ type: 'model_comment.deleted', payload: { commentId: 'comment-1' } }),
+    );
 
-    await expect(
-      producer.resolve(makeEvent({ payload: { commentId: 'missing', parentId: null } })),
-    ).rejects.toThrow(CommentNotFoundError);
+    expect(rowFacts).toEqual([]);
+    expect(modelCommentRepository.findById).not.toHaveBeenCalled();
+  });
+
+  describe('redact', () => {
+    it('drops the excerpt from every row about the deleted comment', () => {
+      const event = makeEvent({
+        type: 'model_comment.deleted',
+        payload: { commentId: 'comment-1', byAdmin: false },
+      });
+
+      expect(producer.redact(event)).toEqual({
+        match: { key: 'commentId', value: 'comment-1' },
+        fields: ['excerpt'],
+      });
+    });
+
+    it('redacts nothing for a created event', () => {
+      expect(producer.redact(makeEvent())).toBeUndefined();
+    });
+  });
+
+  it('notifies no one when the event refers to a comment that no longer resolves', async () => {
+    modelCommentRepository.findById.mockResolvedValue(undefined);
+    modelAuthorRepository.findAllByModel.mockResolvedValue([
+      { modelId: 'model-1', userId: 'author-1', role: 'owner' },
+    ]);
+
+    const rowFacts = await producer.resolve(
+      makeEvent({ payload: { commentId: 'missing', parentId: null } }),
+    );
+
+    expect(rowFacts).toEqual([]);
+  });
+
+  it('notifies no one when the comment was deleted before the event was handled', async () => {
+    modelCommentRepository.findById.mockResolvedValue(
+      makeComment({ deletedAt: new Date('2026-01-02'), content: null }),
+    );
+    modelAuthorRepository.findAllByModel.mockResolvedValue([
+      { modelId: 'model-1', userId: 'author-1', role: 'owner' },
+    ]);
+
+    const rowFacts = await producer.resolve(makeEvent());
+
+    expect(rowFacts).toEqual([]);
   });
 
   it('resolves row facts for every model author except the commenter', async () => {
@@ -357,6 +401,13 @@ describe('modelCommentProducer', () => {
       expect(producer.describeRow(makeFeedRow(), makePreview(null)).title).toBe(
         'Someone commented on your model',
       );
+    });
+
+    it('quotes no excerpt when the recipient can no longer read the model', () => {
+      expect(producer.describeRow(makeFeedRow(), makePreview('Alicia', null))).toEqual({
+        title: 'Alicia commented on your model',
+        body: '',
+      });
     });
 
     it('never mentions the model, readable or not', () => {

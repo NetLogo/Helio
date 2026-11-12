@@ -91,6 +91,11 @@ export type NotificationRowFacts = {
   target?: NotificationTargetRef;
 };
 
+export type NotificationRedaction = {
+  match: { key: string; value: string };
+  fields: Array<string>;
+};
+
 export type UserNotificationCreatedJobData = { recipientIds: Array<string> };
 
 export type NotificationProducer = {
@@ -98,6 +103,7 @@ export type NotificationProducer = {
   eventTypes: ReadonlyArray<string>;
   categories: Readonly<Partial<Record<NotificationCategory, NotificationCategoryDefinition>>>;
   resolve: (event: EventRecord) => Promise<Array<NotificationRowFacts>>;
+  redact: (event: EventRecord) => NotificationRedaction | undefined;
   describeRow: (row: NotificationRow, preview: NotificationPreviews) => NotificationDescription;
   renderEmail: (
     row: NotificationRow,

@@ -2,9 +2,12 @@ import type { MaybeRefOrGetter } from "vue";
 import { useDebounceFn, useDocumentVisibility } from "@vueuse/core";
 import {
   findCommentById,
+  hasLoadedBeyond,
   insertReply,
+  mergeLoadedPages,
   mergePinnedComments,
   nextPageToLoad,
+  removeCommentById,
   updateCommentById,
 } from "~/components/comment/comment-tree";
 import {
@@ -12,6 +15,7 @@ import {
   type Comment,
   type CommentPagination,
 } from "~/components/comment/types";
+import { commentLiterals } from "~/features/comments/literals";
 import useComments from "./useComments";
 import type { CommentsSource } from "./useComments";
 
@@ -42,20 +46,33 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
   });
 
   const pinnedIds = new Set<string>();
+  let sourceChanged = false;
   watch(
     () => [modelId.value, toValue(options.source).commentId, toValue(options.sort)],
-    () => pinnedIds.clear(),
+    () => {
+      pinnedIds.clear();
+      sourceChanged = true;
+    },
   );
 
   const applySnapshot = (next: CommentsPayload) => {
+    const firstPage = mergePinnedComments(
+      local.comments,
+      next.comments,
+      pinnedIds,
+      next.pagination.count <= next.comments.length,
+    );
+    if (sourceChanged) {
+      sourceChanged = false;
+      Object.assign(local, { comments: firstPage, pagination: { ...next.pagination } });
+      return;
+    }
+    const keepLaterPages = hasLoadedBeyond(local.pagination, next.pagination, next.comments.length);
     Object.assign(local, {
-      comments: mergePinnedComments(
-        local.comments,
-        next.comments,
-        pinnedIds,
-        next.pagination.count <= next.comments.length,
-      ),
-      pagination: { ...next.pagination },
+      comments: mergeLoadedPages(local.comments, firstPage, keepLaterPages),
+      pagination: keepLaterPages
+        ? { ...next.pagination, lastPage: local.pagination.lastPage }
+        : { ...next.pagination },
     });
   };
 
@@ -73,8 +90,8 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
 
   const notifyFailure = () =>
     toast.add({
-      title: "Something went wrong",
-      description: "Your change could not be saved. Please try again.",
+      title: commentLiterals.saveFailedToastTitle,
+      description: commentLiterals.saveFailedToastDescription,
       color: "error",
       icon: "i-lucide-triangle-alert",
     });
@@ -145,21 +162,36 @@ export default function useCommentThread(options: UseCommentThreadOptions) {
       });
     });
 
+  // A refresh only refetches the first page, so a changed comment on a later
+  // loaded page is read back by id.
+  const reloadComment = async (commentId: string): Promise<void> => {
+    const fresh = await fetchComment(modelId.value, commentId, {});
+    local.comments = fresh
+      ? updateCommentById(local.comments, commentId, (shown) => ({
+          ...fresh,
+          replies: shown.replies,
+          replyPagination: shown.replyPagination,
+        }))
+      : removeCommentById(local.comments, commentId);
+  };
+
   const edit = ({ commentId, content }: { commentId: string; content: string }) =>
     runSubmission(async () => {
       await mutations.edit({ commentId, content });
+      await reloadComment(commentId);
       await refresh();
     });
 
   const remove = async ({ commentId }: { commentId: string }) => {
     const ok = await runSubmission(async () => {
       await mutations.remove({ commentId });
+      await reloadComment(commentId);
       await refresh();
     });
     if (ok) {
       toast.add({
-        title: "Comment deleted",
-        description: "The comment has been removed from the discussion.",
+        title: commentLiterals.deletedToastTitle,
+        description: commentLiterals.deletedToastDescription,
         color: "success",
         icon: "lucide:message-circle",
       });

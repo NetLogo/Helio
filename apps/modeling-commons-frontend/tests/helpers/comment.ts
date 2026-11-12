@@ -13,12 +13,13 @@ import type { ResponseSuccessData } from "~/utils/openapi";
 import { apiResult, makeApiClientMock } from "./mockApi";
 
 const loggedIn = ref(true);
+const signedInUserId = ref<string>();
 
 const currentUser = computed(() => {
   if (!loggedIn.value) {
     return { session: null, isLoggedIn: false as const, user: null };
   }
-  const user = makeUser();
+  const user = makeUser(signedInUserId.value ? { id: signedInUserId.value } : {});
   return { ...user, session: makeSession(user.id), isLoggedIn: true as const, user };
 });
 
@@ -38,6 +39,10 @@ export function useToastMock() {
 
 export function setLoggedIn(value: boolean) {
   loggedIn.value = value;
+}
+
+export function setSignedInUserId(id: string | undefined) {
+  signedInUserId.value = id;
 }
 
 const routeQuery = ref<Record<string, unknown>>({});
@@ -135,6 +140,7 @@ export function toApiComment(
     content: comment.content,
     createdAt: comment.createdAt,
     edited: comment.edited,
+    deleted: comment.deleted,
     likes: comment.likes,
     likedByMe: comment.likedByMe ?? false,
     permissions: comment.permissions,

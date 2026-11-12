@@ -145,3 +145,46 @@ export function mergePinnedComments(
   });
   return merged;
 }
+
+const loadedPageIndex = (pagination?: CommentPagination) => pagination?.lastPage ?? -1;
+
+export function hasLoadedBeyond(
+  loaded: CommentPagination | undefined,
+  refreshed: CommentPagination | undefined,
+  refreshedLength: number,
+): boolean {
+  const refreshedIsComplete = (refreshed?.count ?? 0) <= refreshedLength;
+  return !refreshedIsComplete && loadedPageIndex(loaded) > loadedPageIndex(refreshed);
+}
+
+// A refresh refetches only the first page. A shown comment missing from it may
+// have been pushed down or reordered rather than deleted, so it is kept; the
+// caller's own deletes already removed it locally.
+export function mergeLoadedPages(
+  previous: Array<Comment>,
+  fetched: Array<Comment>,
+  keepLaterPages: boolean,
+): Array<Comment> {
+  const previousById = new Map(previous.map((comment) => [comment.id, comment]));
+  const merged = fetched.map((comment) => {
+    const before = previousById.get(comment.id);
+    if (!before?.replies?.length) return comment;
+    const replies = comment.replies ?? [];
+    const keepLaterReplies = hasLoadedBeyond(
+      before.replyPagination,
+      comment.replyPagination,
+      replies.length,
+    );
+    return {
+      ...comment,
+      replies: mergeLoadedPages(before.replies, replies, keepLaterReplies),
+      replyPagination:
+        keepLaterReplies && comment.replyPagination
+          ? { ...comment.replyPagination, lastPage: loadedPageIndex(before.replyPagination) }
+          : comment.replyPagination,
+    };
+  });
+  if (!keepLaterPages) return merged;
+  const fetchedIds = new Set(fetched.map((comment) => comment.id));
+  return [...merged, ...previous.filter((comment) => !fetchedIds.has(comment.id))];
+}

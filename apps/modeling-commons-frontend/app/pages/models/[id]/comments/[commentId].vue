@@ -35,6 +35,8 @@
 </template>
 
 <script setup lang="ts">
+import { commentLiterals } from "~/features/comments/literals";
+
 useSeoMeta({
   title: "Comment Thread",
 });
@@ -43,10 +45,15 @@ const route = useRoute();
 const modelId = computed(() => String(route.params.id ?? ""));
 const commentId = computed(() => String(route.params.commentId ?? ""));
 
-const { comments } = useComments(() => ({
+const { comments, status, loaded } = useComments(() => ({
   modelId: modelId.value,
   commentId: commentId.value,
 }));
+await loaded;
+
+if (status.value === "success" && comments.value.length === 0) {
+  showError({ statusCode: 404, message: commentLiterals.threadNotFound });
+}
 const threadRoot = computed(() => comments.value[0]);
 
 const parentThreadLink = computed(() =>

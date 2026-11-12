@@ -85,3 +85,17 @@ describe("CommentActions", () => {
     expect(wrapper.emitted("edit")).toBeUndefined();
   });
 });
+
+describe("CommentActions like button accessibility", () => {
+  it("names the like button with its count instead of a bare number", async () => {
+    const wrapper = await mountSuspended(CommentActions, { props: { likes: 24 } });
+    expect(wrapper.find("[title='Like']").attributes("aria-label")).toBe("Like (24)");
+  });
+
+  it("reports the pressed state from likedByMe", async () => {
+    const liked = await mountSuspended(CommentActions, { props: { likes: 1, likedByMe: true } });
+    const notLiked = await mountSuspended(CommentActions, { props: { likes: 1, likedByMe: false } });
+    expect(liked.find("[title='Like']").attributes("aria-pressed")).toBe("true");
+    expect(notLiked.find("[title='Like']").attributes("aria-pressed")).toBe("false");
+  });
+});

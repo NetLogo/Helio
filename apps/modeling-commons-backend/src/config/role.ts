@@ -19,8 +19,13 @@ export const isWorkerEnabled = (role: ServerRole) =>
 export const isSseEnabled = (role: ServerRole) =>
   role === ServerRole.SSE || role === ServerRole.STANDALONE;
 
-export const getServerRole = (role: ServerRole | undefined, isDevelopment: boolean) =>
-  role ?? (isDevelopment ? ServerRole.STANDALONE : ServerRole.API);
+export const getServerRole = (role: ServerRole | undefined, isDevelopment: boolean): ServerRole => {
+  if (role) return role;
+  if (isDevelopment) return ServerRole.STANDALONE;
+  throw new Error(
+    `SERVER_ROLE must be set outside development to one of: ${Object.values(ServerRole).join(', ')}`,
+  );
+};
 
 export const getServerCapabilities = (role: ServerRole): ServerCapabilities => ({
   api: isApiEnabled(role),

@@ -3,6 +3,7 @@ import type { UserNotificationRecord } from '#src/modules/user-notification/data
 import type {
   NotificationCategory,
   NotificationFeedFilters,
+  NotificationRedaction,
 } from '#src/modules/user-notification/domain/user-notification.types.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
@@ -43,6 +44,10 @@ export interface UserNotificationRepositoryPort {
     limit: number,
   ) => Promise<Array<string>>;
   markRead: (id: string, at: Date) => Promise<void>;
+  redactPayloads: (
+    categories: ReadonlyArray<string>,
+    redaction: NotificationRedaction,
+  ) => Promise<number>;
   findOneById: (id: string) => Promise<UserNotificationRecord | undefined>;
   findAllByRecipient: (
     recipientId: string,

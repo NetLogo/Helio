@@ -97,6 +97,15 @@ describe("CommentInput submission", () => {
     expect(wrapper.emitted("submit")).toEqual([["Enter submit"]]);
   });
 
+  it("does not submit on enter while an IME composition is active", async () => {
+    const wrapper = await mountInput();
+    const textarea = wrapper.find("textarea");
+    await textarea.setValue("にほん");
+    await textarea.trigger("keydown", { key: "Enter", isComposing: true });
+
+    expect(wrapper.emitted("submit")).toBeUndefined();
+  });
+
   it.each([
     ["a new comment", {}],
     ["an edit", { isEditing: true, initialText: "Original text" }],
@@ -138,5 +147,29 @@ describe("CommentInput submission", () => {
     await wrapper.find("[title='Cancel']").trigger("click");
 
     expect(wrapper.emitted("cancel")).toEqual([[]]);
+  });
+});
+
+describe("CommentInput accessibility", () => {
+  it("labels the composer", async () => {
+    const wrapper = await mountInput();
+    expect(wrapper.find("textarea").attributes("aria-label")).toBe("Write a comment");
+  });
+
+  it("labels a reply composer with the target", async () => {
+    const wrapper = await mountInput({ target: "Jane Doe" });
+    expect(wrapper.find("textarea").attributes("aria-label")).toBe("Reply to Jane Doe");
+  });
+
+  it("makes the collapsed buttons inert", async () => {
+    const wrapper = await mountInput();
+    expect(wrapper.find("[title='Cancel']").attributes()).toHaveProperty("inert");
+    expect(wrapper.find("[title='Post']").attributes()).toHaveProperty("inert");
+  });
+
+  it("keeps the buttons reachable when expanded", async () => {
+    const wrapper = await mountInput({ isEditing: true });
+    expect(wrapper.find("[title='Cancel']").attributes()).not.toHaveProperty("inert");
+    expect(wrapper.find("[title='Post']").attributes()).not.toHaveProperty("inert");
   });
 });

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { notificationLiterals } from "~/features/notifications/literals";
 withDefaults(defineProps<{ hasUnread?: boolean }>(), { hasUnread: false });
 </script>
 
@@ -9,11 +10,11 @@ withDefaults(defineProps<{ hasUnread?: boolean }>(), { hasUnread: false });
     color="primary"
     size="xs"
     square
-    title="Notifications"
+    :title="notificationLiterals.bellLabel"
     class="relative"
   >
     <span v-if="hasUnread" class="absolute top-0 right-0 size-2 bg-red-500 rounded-full">
-      <span class="sr-only">Unread notifications</span>
+      <span class="sr-only">{{ notificationLiterals.unreadIndicatorLabel }}</span>
     </span>
   </UButton>
 </template>

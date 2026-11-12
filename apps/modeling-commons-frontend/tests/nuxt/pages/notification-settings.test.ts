@@ -117,6 +117,23 @@ describe("pages/settings/notifications.vue", () => {
     expect(toastAddMock).toHaveBeenCalledWith(expect.objectContaining({ color: "error" }));
   });
 
+  it("restores the previous value, unlocks the row and reports when the request rejects", async () => {
+    apiState.current!.respondWith((request: RecordedRequest) =>
+      request.method === "PATCH"
+        ? Promise.reject(new TypeError("Failed to fetch"))
+        : jsonResponse({ categories }),
+    );
+    const wrapper = await mountSettings();
+    const toggle = () => rows(wrapper)[0]!.find('[role="switch"]');
+
+    await toggle().trigger("click");
+    await flushPromises();
+
+    expect(toggle().attributes("aria-checked")).toBe("true");
+    expect(toggle().attributes("disabled")).toBeUndefined();
+    expect(toastAddMock).toHaveBeenCalledWith(expect.objectContaining({ color: "error" }));
+  });
+
   it("shows the load error and retries the GET from Try again", async () => {
     apiState.current!.respondWith(() => jsonResponse({ message: "boom" }, 500));
     const wrapper = await mountSettings();

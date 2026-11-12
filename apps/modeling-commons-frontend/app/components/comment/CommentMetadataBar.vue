@@ -21,7 +21,7 @@
       size="xs"
       class="p-1"
       :aria-expanded="!collapsed"
-      :aria-label="collapsed ? 'Expand comment' : 'Collapse comment'"
+      :aria-label="collapsed ? commentLiterals.expandLabel : commentLiterals.collapseLabel"
       @click="emit('toggle-collapse')"
     />
     <span v-if="collapsed" class="text-xs text-gray-500">{{ collapsedSummary }}</span>
@@ -30,6 +30,7 @@
 </template>
 
 <script lang="ts" setup>
+import { commentLiterals } from "~/features/comments/literals";
 import type { CommentMetadataBarProps } from "./types";
 
 const props = withDefaults(defineProps<CommentMetadataBarProps>(), {
@@ -44,9 +45,9 @@ const emit = defineEmits<{
 }>();
 
 const collapsedSummary = computed(() => {
-  if (props.hiddenReplyCount === 0) return "· collapsed";
+  if (props.hiddenReplyCount === 0) return commentLiterals.collapsedSummary;
   return props.hiddenReplyCount === 1
-    ? "· 1 reply hidden"
-    : `· ${props.hiddenReplyCount} replies hidden`;
+    ? commentLiterals.oneReplyHidden
+    : fillTemplate(commentLiterals.repliesHidden, { count: props.hiddenReplyCount });
 });
 </script>

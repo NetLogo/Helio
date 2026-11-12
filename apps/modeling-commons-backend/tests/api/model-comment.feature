@@ -281,6 +281,14 @@ Feature: Model Comments
     And comment "root" should have replies count 3
     And comment "root" should have 0 embedded replies
 
+  Scenario: Paging top-level comments with tied likes neither repeats nor skips a comment
+    Given an authenticated user "owner"
+    And a public model "Tied Likes" created by "owner"
+    And an authenticated user "commenter"
+    And "commenter" has commented 10 times on "Tied Likes" as "tied"
+    When "commenter" pages through comments on "Tied Likes" with limit 2
+    Then the paged comments should be 10 comments "tied" each listed once
+
   @sanity
   Scenario: Embedded replies are ordered oldest first
     Given an authenticated user "owner"
