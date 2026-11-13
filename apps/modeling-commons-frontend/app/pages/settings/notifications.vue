@@ -52,32 +52,53 @@
               </div>
 
               <URadioGroup
-                :model-value="preference.inApp ? 'on' : 'off'"
+                :model-value="choices[preference.category]?.inApp ? 'on' : 'off'"
                 :items="inAppModes"
                 :aria-label="`${notificationPreferenceLiterals.inAppLabel}: ${preference.label}`"
-                :disabled="isSaving(preference.category)"
+                :disabled="isSaving"
                 variant="table"
                 indicator="hidden"
                 orientation="horizontal"
                 size="sm"
                 :ui="segmented"
-                @update:model-value="updatePreference(preference.category, { inApp: $event === 'on' })"
+                @update:model-value="choose(preference.category, { inApp: $event === 'on' })"
               />
 
               <URadioGroup
-                :model-value="preference.email"
+                :model-value="choices[preference.category]?.email"
                 :items="emailModes"
                 :aria-label="`${notificationPreferenceLiterals.emailLabel}: ${preference.label}`"
-                :disabled="isSaving(preference.category)"
+                :disabled="isSaving"
                 variant="table"
                 indicator="hidden"
                 orientation="horizontal"
                 size="sm"
                 :ui="segmented"
-                @update:model-value="updatePreference(preference.category, { email: $event as NotificationEmailMode })"
+                @update:model-value="choose(preference.category, { email: $event as NotificationEmailMode })"
               />
             </li>
           </ul>
+
+          <footer
+            class="flex flex-col gap-4 border-t border-default pt-6 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <p class="m-0 text-sm text-muted">
+              {{
+                isDirty
+                  ? notificationPreferenceLiterals.unsavedMessage
+                  : notificationPreferenceLiterals.savedMessage
+              }}
+            </p>
+
+            <div class="flex w-full flex-wrap gap-3 sm:w-auto">
+              <UButton color="neutral" variant="outline" :disabled="!isDirty || isSaving" @click="reset">
+                {{ notificationPreferenceLiterals.resetLabel }}
+              </UButton>
+              <UButton color="primary" variant="solid" :loading="isSaving" :disabled="!isDirty" @click="saveChoices">
+                {{ notificationPreferenceLiterals.saveLabel }}
+              </UButton>
+            </div>
+          </footer>
         </div>
       </ProfileSettingsCard>
     </section>
@@ -106,6 +127,22 @@ const categoryIcon = (category: string) =>
   notificationPreferenceLiterals.categoryIcons[category] ??
   notificationPreferenceLiterals.fallbackCategoryIcon;
 
-const { categories, pending, error, refresh, isSaving, updatePreference } =
+const { categories, choices, isDirty, isSaving, pending, error, refresh, choose, reset, save } =
   useNotificationPreferences();
+
+useUnloadGuard(isDirty);
+
+const toast = useToast();
+
+async function saveChoices() {
+  if (await save()) {
+    toast.add({
+      title: notificationPreferenceLiterals.savedToastTitle,
+      icon: "i-lucide-badge-check",
+      color: "success",
+    });
+    return;
+  }
+  showActionFailedToast(notificationPreferenceLiterals.saveFailedAction);
+}
 </script>

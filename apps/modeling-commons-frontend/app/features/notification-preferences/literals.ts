@@ -25,7 +25,12 @@ export const notificationPreferenceLiterals = {
   loadErrorTitle: "We couldn't load your notification settings",
   loadErrorMessage: "Refresh the page and try again.",
   emptyMessage: "There are no notification settings to manage yet.",
-  saveFailedAction: "Save notification preference",
+  saveFailedAction: "Save notification preferences",
+  unsavedMessage: "You have unsaved changes.",
+  savedMessage: "Your notification settings are up to date.",
+  resetLabel: "Reset",
+  saveLabel: "Save changes",
+  savedToastTitle: "Notification settings saved",
   emailModes: [
     {
       value: "immediate",

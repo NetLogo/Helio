@@ -86,59 +86,85 @@ describe("pages/settings/notifications.vue", () => {
     expect(rows(wrapper)[1]!.text()).toContain("Replies to you");
   });
 
-  it("saves only inApp when in app is turned off", async () => {
+  const button = (wrapper: Awaited<ReturnType<typeof mountSettings>>, label: string) =>
+    wrapper.findAll("button").find((b) => b.text() === label)!;
+
+  it("sends nothing until Save changes, then one PATCH with only the changed fields", async () => {
     const wrapper = await mountSettings();
 
     await radio(wrapper, 0, IN_APP, 1).trigger("click");
+    await radio(wrapper, 1, EMAIL, 1).trigger("click");
+    await flushPromises();
+    expect(patches()).toHaveLength(0);
+    expect(wrapper.text()).toContain(strings.unsavedMessage);
+
+    await button(wrapper, strings.saveLabel).trigger("click");
     await flushPromises();
 
     expect(patches()).toHaveLength(1);
     expect(patches()[0]!.url.pathname).toBe("/api/v1/me/notification-preferences");
     expect(patches()[0]!.body).toEqual({
-      preferences: [{ category: "comment.on_your_model", inApp: false }],
+      preferences: [
+        { category: "comment.on_your_model", inApp: false },
+        { category: "comment.reply_to_you", email: "daily" },
+      ],
     });
+    expect(wrapper.text()).toContain(strings.savedMessage);
+    expect(toastAddMock).toHaveBeenCalledWith(expect.objectContaining({ color: "success" }));
   });
 
-  it("saves only email when an email mode is picked", async () => {
+  it("leaves a choice changed back to its saved value out of the PATCH", async () => {
     const wrapper = await mountSettings();
-
-    await radio(wrapper, 1, EMAIL, 1).trigger("click");
-    await flushPromises();
-
-    expect(patches()[0]!.body).toEqual({
-      preferences: [{ category: "comment.reply_to_you", email: "daily" }],
-    });
-  });
-
-  it("restores the previous value and reports when the save fails", async () => {
-    patchStatus = 500;
-    const wrapper = await mountSettings();
-    const on = () => radio(wrapper, 0, IN_APP, 0);
-    expect(on().attributes("aria-checked")).toBe("true");
 
     await radio(wrapper, 0, IN_APP, 1).trigger("click");
+    await radio(wrapper, 0, IN_APP, 0).trigger("click");
+    await flushPromises();
+
+    expect(wrapper.text()).toContain(strings.savedMessage);
+    expect(button(wrapper, strings.saveLabel).attributes("disabled")).toBeDefined();
+  });
+
+  it("keeps the edits and reports when the save fails", async () => {
+    patchStatus = 500;
+    const wrapper = await mountSettings();
+
+    await radio(wrapper, 0, IN_APP, 1).trigger("click");
+    await button(wrapper, strings.saveLabel).trigger("click");
     await flushPromises();
 
     expect(patches()).toHaveLength(1);
-    expect(on().attributes("aria-checked")).toBe("true");
+    expect(radio(wrapper, 0, IN_APP, 1).attributes("aria-checked")).toBe("true");
+    expect(wrapper.text()).toContain(strings.unsavedMessage);
     expect(toastAddMock).toHaveBeenCalledWith(expect.objectContaining({ color: "error" }));
   });
 
-  it("restores the previous value, unlocks the row and reports when the request rejects", async () => {
+  it("keeps the edits and unlocks the controls when the request rejects", async () => {
     apiState.current!.respondWith((request: RecordedRequest) =>
       request.method === "PATCH"
         ? Promise.reject(new TypeError("Failed to fetch"))
         : jsonResponse({ categories }),
     );
     const wrapper = await mountSettings();
-    const on = () => radio(wrapper, 0, IN_APP, 0);
 
     await radio(wrapper, 0, IN_APP, 1).trigger("click");
+    await button(wrapper, strings.saveLabel).trigger("click");
     await flushPromises();
 
-    expect(on().attributes("aria-checked")).toBe("true");
-    expect(on().attributes("disabled")).toBeUndefined();
+    expect(radio(wrapper, 0, IN_APP, 1).attributes("aria-checked")).toBe("true");
+    expect(radio(wrapper, 0, IN_APP, 0).attributes("disabled")).toBeUndefined();
     expect(toastAddMock).toHaveBeenCalledWith(expect.objectContaining({ color: "error" }));
+  });
+
+  it("Reset puts back the saved values without a request", async () => {
+    const wrapper = await mountSettings();
+
+    await radio(wrapper, 0, IN_APP, 1).trigger("click");
+    await button(wrapper, strings.resetLabel).trigger("click");
+    await flushPromises();
+
+    expect(radio(wrapper, 0, IN_APP, 0).attributes("aria-checked")).toBe("true");
+    expect(wrapper.text()).toContain(strings.savedMessage);
+    expect(patches()).toHaveLength(0);
   });
 
   it("shows the load error and retries the GET from Try again", async () => {
@@ -156,16 +182,15 @@ describe("pages/settings/notifications.vue", () => {
     expect(gets()).toHaveLength(getsBeforeRetry + 1);
   });
 
-  it("sends one PATCH while a save for the same category is in flight", async () => {
+  it("sends one PATCH when Save changes is clicked twice while saving", async () => {
     apiState.current!.respondWith((request: RecordedRequest) =>
       request.method === "PATCH" ? new Promise<Response>(() => {}) : jsonResponse({ categories }),
     );
     const wrapper = await mountSettings();
-    const inApp = wrapper.findAllComponents({ name: "URadioGroup" })[0]!;
 
-    inApp.vm.$emit("update:modelValue", "off");
-    await flushPromises();
-    inApp.vm.$emit("update:modelValue", "on");
+    await radio(wrapper, 0, IN_APP, 1).trigger("click");
+    await button(wrapper, strings.saveLabel).trigger("click");
+    await button(wrapper, strings.saveLabel).trigger("click");
     await flushPromises();
 
     expect(patches()).toHaveLength(1);
