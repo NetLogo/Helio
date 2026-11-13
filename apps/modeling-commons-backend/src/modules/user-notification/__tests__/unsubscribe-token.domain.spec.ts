@@ -12,8 +12,9 @@ const replyToYou = 'comment.reply_to_you';
 const purpose = notificationsConfig.unsubscribeTokenPurpose;
 
 function tamper(token: string): string {
-  const last = token.at(-1) === 'A' ? 'B' : 'A';
-  return `${token.slice(0, -1)}${last}`;
+  const at = token.lastIndexOf('.') + 1;
+  const swapped = token[at] === 'A' ? 'B' : 'A';
+  return `${token.slice(0, at)}${swapped}${token.slice(at + 1)}`;
 }
 
 describe('unsubscribe token', () => {
