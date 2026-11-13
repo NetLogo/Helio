@@ -10,8 +10,7 @@ export const notificationPreferenceLiterals = {
   categoryIcons: {
     "comment.on_your_model": "i-lucide-message-square",
     "comment.reply_to_you": "i-lucide-reply",
-  } as Record<string, string>,
-  fallbackCategoryIcon: "i-lucide-bell",
+  },
   inAppModes: [
     {
       value: "on",

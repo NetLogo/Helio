@@ -8,3 +8,6 @@ export type NotificationEmailMode = NotificationPreferenceCategory["email"];
 export type NotificationPreferencePatch = Partial<
   Pick<NotificationPreferenceCategory, "email" | "inApp">
 >;
+export type NotificationPreferenceChoice = Pick<NotificationPreferenceCategory, "inApp" | "email">;
+export type NotificationPreferenceChoices = Record<NotificationCategoryKey, NotificationPreferenceChoice>;
+export type NotificationPreferenceChange = { category: NotificationCategoryKey } & NotificationPreferencePatch;

@@ -5,7 +5,7 @@ export async function fetchNotificationPreferences(): Promise<NotificationPrefer
 }
 
 export function updateNotificationPreferences(
-  preferences: Array<{ category: NotificationCategoryKey } & NotificationPreferencePatch>,
+  preferences: NotificationPreferenceChange[],
 ) {
   return useApi().PATCH("/api/v1/me/notification-preferences", {
     body: { preferences },

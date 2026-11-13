@@ -10,10 +10,7 @@
     </div>
 
     <section v-else class="grid items-start gap-6 mt-1">
-      <ProfileSettingsCard
-        :title="notificationPreferenceLiterals.title"
-        :description="notificationPreferenceLiterals.description"
-      >
+      <ProfileSettingsCard :description="notificationPreferenceLiterals.description">
         <div v-if="pending && !categories.length" class="grid gap-4">
           <USkeleton v-for="index in 3" :key="index" class="h-16 w-full" />
         </div>
@@ -44,7 +41,7 @@
               class="grid gap-4 py-4 sm:grid-cols-[minmax(0,1fr)_8rem_14rem] sm:gap-6 sm:items-center"
             >
               <div class="flex gap-3">
-                <UIcon :name="categoryIcon(preference.category)" class="size-5 shrink-0 mt-0.5 text-muted" />
+                <UIcon :name="getCategoryIcon(preference.category)" class="size-5 shrink-0 mt-0.5 text-muted" />
                 <div class="grid gap-1">
                   <p class="m-0 font-medium text-highlighted">{{ preference.label }}</p>
                   <p class="m-0 text-xs text-muted">{{ preference.description }}</p>
@@ -121,14 +118,10 @@ useSeoMeta({
 
 const emailModes = [...notificationPreferenceLiterals.emailModes];
 const inAppModes = [...notificationPreferenceLiterals.inAppModes];
-const segmented = { fieldset: "w-full", item: "flex-1 justify-center py-1.5" };
-
-const categoryIcon = (category: string) =>
-  notificationPreferenceLiterals.categoryIcons[category] ??
-  notificationPreferenceLiterals.fallbackCategoryIcon;
+const segmented = { fieldset: "w-full", item: "flex-1 justify-center" };
 
 const { categories, choices, isDirty, isSaving, pending, error, refresh, choose, reset, save } =
-  useNotificationPreferences();
+  await useNotificationPreferences();
 
 useUnloadGuard(isDirty);
 

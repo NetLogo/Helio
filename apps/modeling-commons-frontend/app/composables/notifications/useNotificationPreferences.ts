@@ -1,57 +1,30 @@
-type PreferenceChoice = Pick<NotificationPreferenceCategory, "inApp" | "email">;
-type Choices = Record<NotificationCategoryKey, PreferenceChoice>;
-
-const toChoices = (categories: NotificationPreferenceCategory[]): Choices =>
-  Object.fromEntries(
-    categories.map(({ category, inApp, email }) => [category, { inApp, email }]),
-  ) as Choices;
-
-const sameChoices = (a: Choices, b: Choices) => JSON.stringify(a) === JSON.stringify(b);
-
-function changedFields(draft: PreferenceChoice, saved: PreferenceChoice): NotificationPreferencePatch {
-  const patch: NotificationPreferencePatch = {};
-  if (draft.inApp !== saved.inApp) patch.inApp = draft.inApp;
-  if (draft.email !== saved.email) patch.email = draft.email;
-  return patch;
-}
-
-export default function useNotificationPreferences() {
-  const isSaving = ref(false);
-
-  const { data, pending, error, refresh } = useAsyncData(
+export default async function useNotificationPreferences() {
+  const { data, pending, error, refresh } = await useAsyncData(
     "notification-preferences",
     fetchNotificationPreferences,
   );
-
   const categories = computed(() => data.value?.categories ?? []);
+
   const choices = useTrackedField(
-    () => toChoices(categories.value),
-    sameChoices,
-    (value) => structuredClone(toRaw(value)),
+    () => getPreferenceChoices(categories.value),
+    areChoicesEqual,
+    copyChoices,
   );
+  const isSaving = ref(false);
 
   function choose(category: NotificationCategoryKey, patch: NotificationPreferencePatch) {
-    const current = choices.data.value[category];
-    if (!current || isSaving.value) return;
-    choices.data.value = { ...choices.data.value, [category]: { ...current, ...patch } };
+    choices.data.value[category] = { ...choices.data.value[category]!, ...patch };
   }
 
   async function save(): Promise<boolean> {
-    if (!data.value || !choices.isDirty.value || isSaving.value) return false;
-    const saved = choices.persisted.value;
-    const draft = choices.data.value;
-    const updates = categories.value
-      .map(({ category }) => ({ category, ...changedFields(draft[category]!, saved[category]!) }))
-      .filter((update) => Object.keys(update).length > 1);
+    const changes = getChangedPreferences(choices.data.value, choices.persisted.value);
+    if (!changes.length || isSaving.value) return false;
 
     isSaving.value = true;
     try {
-      const res = await updateNotificationPreferences(updates);
-      if (res.error) return false;
-      data.value = {
-        ...data.value,
-        categories: data.value.categories.map((entry) => ({ ...entry, ...draft[entry.category] })),
-      };
+      const { error } = await updateNotificationPreferences(changes);
+      if (error) return false;
+      await refresh();
       return true;
     } catch {
       return false;
