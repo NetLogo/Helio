@@ -105,6 +105,7 @@ export default defineAppConfig({
                   },
                 },
               },
+              compoundVariants: [{ leading: true, size: "md", class: "ps-11" }],
             },
           ];
         },
