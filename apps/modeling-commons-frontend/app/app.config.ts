@@ -140,8 +140,21 @@ export default defineAppConfig({
           card: {
             item: "rounded-md bg-neutral-darkest/5 [&_p:first-of-type]:mb-0",
           },
+          table: {
+            fieldset: "gap-0.5 rounded-lg bg-neutral-darkest/5 p-0.5",
+            item: "border-0 rounded-md first-of-type:rounded-md  last-of-type:rounded-r-md hover:bg-neutral-darkest/5",
+          },
         },
       },
+      compoundVariants: [
+        {
+          color: "primary",
+          variant: "table",
+          class: {
+            item: "py-1 has-data-[state=checked]:bg-transparent has-data-[state=checked]:border-0 has-[button[data-state=checked]]:bg-primary has-[button[data-state=checked]]:hover:bg-primary has-[button[data-state=checked]]:[&_p]:text-white",
+          },
+        },
+      ],
     },
 
     switch: {
