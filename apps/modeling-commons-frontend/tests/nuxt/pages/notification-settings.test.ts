@@ -67,6 +67,14 @@ async function mountSettings() {
 
 const patches = () => apiState.current!.requests.filter((r) => r.method === "PATCH");
 const rows = (wrapper: Awaited<ReturnType<typeof mountSettings>>) => wrapper.findAll("li");
+const IN_APP = 0;
+const EMAIL = 1;
+const radio = (
+  wrapper: Awaited<ReturnType<typeof mountSettings>>,
+  row: number,
+  group: number,
+  option: number,
+) => rows(wrapper)[row]!.findAll('[role="radiogroup"]')[group]!.findAll('[role="radio"]')[option]!;
 
 describe("pages/settings/notifications.vue", () => {
   it("renders a row per category with its label and description", async () => {
@@ -78,10 +86,10 @@ describe("pages/settings/notifications.vue", () => {
     expect(rows(wrapper)[1]!.text()).toContain("Replies to you");
   });
 
-  it("saves only inApp when the in-app switch is toggled", async () => {
+  it("saves only inApp when in app is turned off", async () => {
     const wrapper = await mountSettings();
 
-    await rows(wrapper)[0]!.find('[role="switch"]').trigger("click");
+    await radio(wrapper, 0, IN_APP, 1).trigger("click");
     await flushPromises();
 
     expect(patches()).toHaveLength(1);
@@ -94,8 +102,7 @@ describe("pages/settings/notifications.vue", () => {
   it("saves only email when an email mode is picked", async () => {
     const wrapper = await mountSettings();
 
-    const select = wrapper.findAllComponents({ name: "USelectMenu" })[1]!;
-    select.vm.$emit("update:modelValue", "daily");
+    await radio(wrapper, 1, EMAIL, 1).trigger("click");
     await flushPromises();
 
     expect(patches()[0]!.body).toEqual({
@@ -106,14 +113,14 @@ describe("pages/settings/notifications.vue", () => {
   it("restores the previous value and reports when the save fails", async () => {
     patchStatus = 500;
     const wrapper = await mountSettings();
-    const toggle = () => rows(wrapper)[0]!.find('[role="switch"]');
-    expect(toggle().attributes("aria-checked")).toBe("true");
+    const on = () => radio(wrapper, 0, IN_APP, 0);
+    expect(on().attributes("aria-checked")).toBe("true");
 
-    await toggle().trigger("click");
+    await radio(wrapper, 0, IN_APP, 1).trigger("click");
     await flushPromises();
 
     expect(patches()).toHaveLength(1);
-    expect(toggle().attributes("aria-checked")).toBe("true");
+    expect(on().attributes("aria-checked")).toBe("true");
     expect(toastAddMock).toHaveBeenCalledWith(expect.objectContaining({ color: "error" }));
   });
 
@@ -124,13 +131,13 @@ describe("pages/settings/notifications.vue", () => {
         : jsonResponse({ categories }),
     );
     const wrapper = await mountSettings();
-    const toggle = () => rows(wrapper)[0]!.find('[role="switch"]');
+    const on = () => radio(wrapper, 0, IN_APP, 0);
 
-    await toggle().trigger("click");
+    await radio(wrapper, 0, IN_APP, 1).trigger("click");
     await flushPromises();
 
-    expect(toggle().attributes("aria-checked")).toBe("true");
-    expect(toggle().attributes("disabled")).toBeUndefined();
+    expect(on().attributes("aria-checked")).toBe("true");
+    expect(on().attributes("disabled")).toBeUndefined();
     expect(toastAddMock).toHaveBeenCalledWith(expect.objectContaining({ color: "error" }));
   });
 
@@ -154,11 +161,11 @@ describe("pages/settings/notifications.vue", () => {
       request.method === "PATCH" ? new Promise<Response>(() => {}) : jsonResponse({ categories }),
     );
     const wrapper = await mountSettings();
-    const toggle = wrapper.findAllComponents({ name: "USwitch" })[0]!;
+    const inApp = wrapper.findAllComponents({ name: "URadioGroup" })[0]!;
 
-    toggle.vm.$emit("update:modelValue", false);
+    inApp.vm.$emit("update:modelValue", "off");
     await flushPromises();
-    toggle.vm.$emit("update:modelValue", true);
+    inApp.vm.$emit("update:modelValue", "on");
     await flushPromises();
 
     expect(patches()).toHaveLength(1);

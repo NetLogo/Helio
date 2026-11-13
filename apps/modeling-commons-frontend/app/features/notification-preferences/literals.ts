@@ -4,7 +4,24 @@ export const notificationPreferenceLiterals = {
   seoTitle: "Notification Settings",
   seoDescription: "Manage how Modeling Commons notifies you in the app and by email.",
   inAppLabel: "In app",
+  inAppIcon: "i-lucide-bell",
   emailLabel: "Email",
+  emailIcon: "i-lucide-mail",
+  categoryIcons: {
+    "comment.on_your_model": "i-lucide-message-square",
+    "comment.reply_to_you": "i-lucide-reply",
+  } as Record<string, string>,
+  fallbackCategoryIcon: "i-lucide-bell",
+  inAppModes: [
+    {
+      value: "on",
+      label: "On",
+    },
+    {
+      value: "off",
+      label: "Off",
+    },
+  ],
   loadErrorTitle: "We couldn't load your notification settings",
   loadErrorMessage: "Refresh the page and try again.",
   emptyMessage: "There are no notification settings to manage yet.",
@@ -12,11 +29,11 @@ export const notificationPreferenceLiterals = {
   emailModes: [
     {
       value: "immediate",
-      label: "Immediately",
+      label: "Instant",
     },
     {
       value: "daily",
-      label: "Daily digest",
+      label: "Daily",
     },
     {
       value: "off",

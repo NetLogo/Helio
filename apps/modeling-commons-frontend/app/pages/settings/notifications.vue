@@ -22,49 +22,71 @@
           {{ notificationPreferenceLiterals.emptyMessage }}
         </p>
 
-        <ul v-else class="m-0 grid list-none gap-0 p-0 divide-y divide-default">
-          <li
-            v-for="preference in categories"
-            :key="preference.category"
-            class="grid gap-4 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+        <div v-else class="grid">
+          <div
+            class="hidden sm:grid grid-cols-[minmax(0,1fr)_8rem_14rem] gap-6 pb-3 text-sm font-medium text-muted"
           >
-            <div class="grid gap-1">
-              <p class="m-0 font-medium text-highlighted">{{ preference.label }}</p>
-              <p class="m-0 text-xs text-muted">{{ preference.description }}</p>
-            </div>
+            <span />
+            <span class="flex items-center gap-2">
+              <UIcon :name="notificationPreferenceLiterals.inAppIcon" class="size-4" />
+              {{ notificationPreferenceLiterals.inAppLabel }}
+            </span>
+            <span class="flex items-center gap-2">
+              <UIcon :name="notificationPreferenceLiterals.emailIcon" class="size-4" />
+              {{ notificationPreferenceLiterals.emailLabel }}
+            </span>
+          </div>
 
-            <div class="flex flex-wrap items-center gap-5">
-              <USwitch
-                :model-value="preference.inApp"
-                :label="notificationPreferenceLiterals.inAppLabel"
+          <ul class="m-0 grid list-none gap-0 p-0 divide-y divide-default border-t border-default">
+            <li
+              v-for="preference in categories"
+              :key="preference.category"
+              class="grid gap-4 py-4 sm:grid-cols-[minmax(0,1fr)_8rem_14rem] sm:gap-6 sm:items-center"
+            >
+              <div class="flex gap-3">
+                <UIcon :name="categoryIcon(preference.category)" class="size-5 shrink-0 mt-0.5 text-muted" />
+                <div class="grid gap-1">
+                  <p class="m-0 font-medium text-highlighted">{{ preference.label }}</p>
+                  <p class="m-0 text-xs text-muted">{{ preference.description }}</p>
+                </div>
+              </div>
+
+              <URadioGroup
+                :model-value="preference.inApp ? 'on' : 'off'"
+                :items="inAppModes"
+                :aria-label="`${notificationPreferenceLiterals.inAppLabel}: ${preference.label}`"
                 :disabled="isSaving(preference.category)"
-                @update:model-value="updatePreference(preference.category, { inApp: $event })"
-              />
-              <UFormField
-                :label="notificationPreferenceLiterals.emailLabel"
+                variant="table"
+                indicator="hidden"
                 orientation="horizontal"
-                class="items-center"
-              >
-                <USelectMenu
-                  :model-value="preference.email"
-                  :items="emailModes"
-                  value-key="value"
-                  :search-input="false"
-                  :disabled="isSaving(preference.category)"
-                  class="w-40"
-                  size="sm"
-                  @update:model-value="updatePreference(preference.category, { email: $event })"
-                />
-              </UFormField>
-            </div>
-          </li>
-        </ul>
+                size="sm"
+                :ui="segmented"
+                @update:model-value="updatePreference(preference.category, { inApp: $event === 'on' })"
+              />
+
+              <URadioGroup
+                :model-value="preference.email"
+                :items="emailModes"
+                :aria-label="`${notificationPreferenceLiterals.emailLabel}: ${preference.label}`"
+                :disabled="isSaving(preference.category)"
+                variant="table"
+                indicator="hidden"
+                orientation="horizontal"
+                size="sm"
+                :ui="segmented"
+                @update:model-value="updatePreference(preference.category, { email: $event as NotificationEmailMode })"
+              />
+            </li>
+          </ul>
+        </div>
       </ProfileSettingsCard>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { NotificationEmailMode } from "~/features/notification-preferences/types";
+
 definePageMeta({
   middleware: "auth",
   layout: "profile",
@@ -77,6 +99,12 @@ useSeoMeta({
 });
 
 const emailModes = [...notificationPreferenceLiterals.emailModes];
+const inAppModes = [...notificationPreferenceLiterals.inAppModes];
+const segmented = { fieldset: "w-full", item: "flex-1 justify-center py-1.5" };
+
+const categoryIcon = (category: string) =>
+  notificationPreferenceLiterals.categoryIcons[category] ??
+  notificationPreferenceLiterals.fallbackCategoryIcon;
 
 const { categories, pending, error, refresh, isSaving, updatePreference } =
   useNotificationPreferences();
