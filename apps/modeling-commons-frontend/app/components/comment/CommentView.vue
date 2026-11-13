@@ -36,13 +36,7 @@
           :alt="comment.author.name"
           size="lg"
           class="self-start my-1 text-xs"
-        >
-          <AvatarFallback
-            :seed="comment.author.name"
-            :initials="createAvatarInitials(comment.author.name)"
-            :label="comment.author.name"
-          />
-        </UAvatar>
+        />
       </NuxtLink>
       <UAvatar
         v-else
@@ -51,11 +45,7 @@
         size="lg"
         class="self-start my-1 text-xs"
       >
-        <AvatarFallback
-          :seed="comment.author.name"
-          :initials="createAvatarInitials(comment.author.name)"
-          :label="comment.author.name"
-        />
+        {{ createAvatarInitials(comment.author.name) }}
       </UAvatar>
     </div>
 

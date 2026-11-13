@@ -12,7 +12,11 @@ const [omar, jane, john] = authors;
 
 export const DEMO_MODEL_ID = "model-demo";
 
-const stampTree = (comment: Comment, parentId?: string, modelId: string = DEMO_MODEL_ID): Comment => ({
+const stampTree = (
+  comment: Comment,
+  parentId?: string,
+  modelId: string = DEMO_MODEL_ID,
+): Comment => ({
   ...comment,
   modelId,
   parentId,

@@ -9,11 +9,7 @@
         size="sm"
         :alt="author.userName ?? 'Anonymous'"
       >
-        <AvatarFallback
-          :seed="author.userName ?? ''"
-          :initials="createAvatarInitials(author.userName)"
-          :label="author.userName ?? 'Anonymous'"
-        />
+        {{  createAvatarInitials(author.userName) }}
       </UAvatar>
     </UAvatarGroup>
     <NuxtLink

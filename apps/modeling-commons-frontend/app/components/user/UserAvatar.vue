@@ -9,9 +9,7 @@
     :ui="{ ...asRecord(variantProps.avatar.ui), ...asRecord($attrs.ui) }"
     data-variant="compact"
     v-bind="$attrs"
-  >
-    <AvatarFallback :seed="name ?? ''" :initials="initials" :label="displayAlt" />
-  </UAvatar>
+  />
   <div
     v-else-if="variant === 'headline'"
     :class="[variantProps.container, container]"
@@ -28,7 +26,7 @@
       :ui="{ ...asRecord(variantProps.avatar.ui), ...asRecord($attrs.ui) }"
       v-bind="$attrs"
     >
-      <AvatarFallback :seed="name ?? ''" :initials="initials" :label="displayAlt" />
+      {{ initials }}
     </UAvatar>
     <div :class="variantProps.infoContainer">
       <p :class="variantProps.name">{{ name }}</p>
@@ -43,9 +41,7 @@
       :size="variantProps.avatar.size"
       :ui="{ ...asRecord(variantProps.avatar.ui), ...asRecord($attrs.ui) }"
       v-bind="$attrs"
-    >
-      <AvatarFallback :seed="name ?? ''" :initials="initials" :label="displayAlt" />
-    </UAvatar>
+    />
     <span :class="variantProps.name">{{ name }}</span>
   </div>
 </template>
