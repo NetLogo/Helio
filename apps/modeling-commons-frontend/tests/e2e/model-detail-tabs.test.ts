@@ -19,12 +19,7 @@ import { createPage } from "@nuxt/test-utils/e2e";
 import { appUrl, e2eSetup } from "./setup";
 import { signUpAndVerify } from "./helpers/auth";
 import { dumpOnFailure } from "./helpers/debug";
-
-// A real model card overlay link (`/models/<slug>/<id>`). When signed in, the
-// navbar also renders an `<a href="/models/upload">` whose icon `<span>` matches
-// the generic card selector and sorts first in DOM order — exclude it so the
-// first match is always a model card.
-const modelCardLink = "a[href^='/models/']:not([href='/models/upload']) span";
+import { modelCardLink } from "./helpers/page";
 
 // The tab `@click` can lag visibility after an SPA navigation (the detail view
 // is wrapped in <Suspense>), so a single click may land before the handler is

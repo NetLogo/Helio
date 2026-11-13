@@ -100,6 +100,43 @@ describe('fileService', () => {
     });
   });
 
+  describe('getPublicUrl', () => {
+    it('joins a public key onto the public base URL without touching storage', () => {
+      expect(service.getPublicUrl(`${PUBLIC_PREFIX}/2026/04/17/abcd-pic.png`)).toBe(
+        `https://cdn.example.com/test-bucket/${PUBLIC_PREFIX}/2026/04/17/abcd-pic.png`,
+      );
+      expect(storage.send).not.toHaveBeenCalled();
+    });
+
+    it('encodes each path segment of the key', () => {
+      expect(service.getPublicUrl(`${PUBLIC_PREFIX}/a b/c#d.png`)).toBe(
+        `https://cdn.example.com/test-bucket/${PUBLIC_PREFIX}/a%20b/c%23d.png`,
+      );
+    });
+
+    it('keeps serving legacy double-prefixed preview keys as public', async () => {
+      const legacyKey = `${PUBLIC_PREFIX}/${PUBLIC_PREFIX}/preview-images/2026/11/09/abcdefghij/p.png`;
+      storage.send.mockResolvedValue({
+        ContentType: 'image/png',
+        ContentLength: 3,
+        Metadata: { filename: 'p.png', createdat: new Date().toISOString() },
+      });
+
+      expect(service.getPublicUrl(legacyKey)).toBe(
+        `https://cdn.example.com/test-bucket/${legacyKey}`,
+      );
+      expect(await service.getUrl(legacyKey)).toBe(
+        `https://cdn.example.com/test-bucket/${legacyKey}`,
+      );
+      expect((await service.getMetadata(legacyKey)).access).toBe('public-read');
+    });
+
+    it('returns null for a key outside the public prefix', () => {
+      expect(service.getPublicUrl('2026/04/17/abcd-priv.nlogox')).toBeNull();
+      expect(service.getPublicUrl('files/publicity/abcd.png')).toBeNull();
+    });
+  });
+
   describe('getUrl', () => {
     it('returns public CDN URL for public keys', async () => {
       const url = await service.getUrl(`${PUBLIC_PREFIX}/2026/04/17/abcd-pic.png`);

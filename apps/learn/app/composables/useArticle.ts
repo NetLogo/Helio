@@ -3,7 +3,7 @@ import { ObjectModel, Service } from '~/data';
 export async function useArticle(path: string): Promise<ComputedRef<ObjectModel.Article>> {
   const { data, error } = await useAsyncData(path, () => Service.Article.getArticleByPath(path));
 
-  if (error.value) {
+  if (error.value || !data.value) {
     throw createError({ statusCode: 404, statusMessage: 'Article not found' });
   }
 

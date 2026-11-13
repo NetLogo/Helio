@@ -7,12 +7,14 @@ import {
 } from '#src/modules/model-author/domain/model-author.errors.ts';
 import { NotFoundException } from '#src/shared/exceptions/index.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.mock.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
+import { makeUniqueViolation } from '#src/shared/test/prisma-errors.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
+import type { ModelAuthorRepository } from '#src/modules/model-author/database/model-author.repository.port.ts';
 
 describe('modelAuthorService', () => {
-  const modelAuthorRepository = mockModelAuthorRepository();
-  const eventRepository = mockEventRepository();
+  const modelAuthorRepository = mockPort<ModelAuthorRepository>();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const domain = modelAuthorDomain();
 
@@ -29,14 +31,16 @@ describe('modelAuthorService', () => {
 
   describe('addContributor', () => {
     it('adds contributor when caller is owner', async () => {
-      modelAuthorRepository.findByCompositeKey
-        .mockResolvedValueOnce({ modelId: 'm1', userId: 'owner', role: 'owner' })
-        .mockResolvedValueOnce(undefined);
+      modelAuthorRepository.findByCompositeKey.mockResolvedValueOnce({
+        modelId: 'm1',
+        userId: 'owner',
+        role: 'owner',
+      });
 
       await service.addContributor('m1', 'user-2', 'owner');
 
       expect(modelAuthorRepository.insertTx).toHaveBeenCalledOnce();
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model_author.added' }),
       );
@@ -51,9 +55,8 @@ describe('modelAuthorService', () => {
     });
 
     it('throws AuthorAlreadyExistsError if user is already an author', async () => {
-      modelAuthorRepository.findByCompositeKey
-        .mockResolvedValueOnce({ role: 'owner' })
-        .mockResolvedValueOnce({ role: 'contributor' });
+      modelAuthorRepository.findByCompositeKey.mockResolvedValueOnce({ role: 'owner' });
+      modelAuthorRepository.insertTx.mockRejectedValueOnce(makeUniqueViolation());
 
       await expect(service.addContributor('m1', 'user-2', 'owner')).rejects.toThrow(
         AuthorAlreadyExistsError,
@@ -98,7 +101,7 @@ describe('modelAuthorService', () => {
       await service.transferOwnership('m1', 'user-2', 'owner');
 
       expect(modelAuthorRepository.updateRoleTx).toHaveBeenCalledTimes(2);
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model_author.ownership_transferred' }),
       );

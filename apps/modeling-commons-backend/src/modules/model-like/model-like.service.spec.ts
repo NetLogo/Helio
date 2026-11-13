@@ -2,12 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeModelLikeService from '#src/modules/model-like/model-like.service.ts';
 import modelLikeDomain from '#src/modules/model-like/domain/model-like.domain.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockModelLikeRepository } from '#src/modules/model-like/database/model-like.repository.mock.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelLikeRepository } from '#src/modules/model-like/database/model-like.repository.port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
 
 describe('modelLikeService', () => {
-  const modelLikeRepository = mockModelLikeRepository();
-  const eventRepository = mockEventRepository();
+  const modelLikeRepository = mockPort<ModelLikeRepository>();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const domain = modelLikeDomain();
 
@@ -32,7 +33,7 @@ describe('modelLikeService', () => {
         expect.anything(),
         expect.objectContaining({ modelId: 'model-1', userId: 'user-1' }),
       );
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           type: 'model.liked',
@@ -48,7 +49,7 @@ describe('modelLikeService', () => {
 
       await service.like('model-1', 'user-1');
 
-      expect(eventRepository.insert).not.toHaveBeenCalled();
+      expect(eventRepository.insertTx).not.toHaveBeenCalled();
     });
   });
 
@@ -63,7 +64,7 @@ describe('modelLikeService', () => {
         'model-1',
         'user-1',
       );
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model.unliked' }),
       );
@@ -74,7 +75,7 @@ describe('modelLikeService', () => {
 
       await service.unlike('model-1', 'user-1');
 
-      expect(eventRepository.insert).not.toHaveBeenCalled();
+      expect(eventRepository.insertTx).not.toHaveBeenCalled();
     });
   });
 

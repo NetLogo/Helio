@@ -46,7 +46,7 @@
           </UFormField>
 
           <UFormField label="Date of Birth">
-            <UInput v-model="dob" type="date" size="md" />
+            <UInput v-model.nullable="dob" type="date" size="md" />
           </UFormField>
 
           <UFormField label="Country">

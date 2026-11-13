@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import type { RadioGroupItem } from "@nuxt/ui";
-import type { UserKind } from '~/forms/auth';
+import type { UserKind } from '~/features/auth/validators';
 
 defineProps<{
   isProfilePublic: boolean;

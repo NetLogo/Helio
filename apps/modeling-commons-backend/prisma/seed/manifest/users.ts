@@ -1,5 +1,7 @@
 import type { UserSeed } from './types.js';
 
+export const DEV_PASSWORD = 'modelingcommons';
+
 export const USERS: UserSeed[] = [
   {
     key: 'uri',

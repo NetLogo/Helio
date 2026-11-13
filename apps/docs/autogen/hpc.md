@@ -1,6 +1,6 @@
 # {{title}}
 
-This document is an advanced guide that provides examples of how to run NetLogo BehaviorSpace experiments on a High-Performance Computing (HPC) cluster. The scripts provided in this guide are specifically for **Slurm**, a popular open-source workload manager and job scheduler, but they can be adapted for use with other schedulers.
+This document is an advanced guide that provides examples of how to run NetLogo [BehaviorSpace](/behaviorspace) experiments on a High-Performance Computing (HPC) cluster. The scripts provided in this guide are specifically for **Slurm**, a popular open-source workload manager and job scheduler, but they can be adapted for use with other schedulers.
 
 #### Table of Contents
 
@@ -198,7 +198,7 @@ This step can be performed on your local machine, not necessarily on an HPC.
 
 1. Export your BehaviorSpace experiment as an XML file. In BehaviorSpace, select your experiment and click _Export_.
 
-![[hpc/export.png]]
+![[hpc/export.webp]]
 
 - For maximum parallelization, set repetitions to **1** before exporting. This allows submitting a separate job for each repetition.
 

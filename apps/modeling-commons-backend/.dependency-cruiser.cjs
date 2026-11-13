@@ -7,6 +7,7 @@ const applicationLayerPaths = [
   '\\.service\\.ts$',
   '\\.handler\\.ts$',
   '\\.event-handler\\.ts$',
+  '\\.producer\\.ts$',
 ];
 
 const infrastructureLayerPaths = ['infrastructure', 'infra', 'database', 'repository'];
@@ -65,6 +66,21 @@ module.exports = {
       },
     },
 
+    {
+      name: 'user-notification-no-sibling-surface',
+      comment:
+        'user-notification surfaces (feed, email, digest, preferences) import only core; core imports no surface or delivery; only delivery composes surfaces',
+      severity: 'error',
+      from: {
+        path: '^src/modules/user-notification/(core|feed|email|digest|preferences)/',
+        pathNot: ['[.]spec[.]ts$', '[.]mock[.]ts$'],
+      },
+      to: {
+        path: '^src/modules/user-notification/(feed|email|digest|preferences|delivery)/',
+        pathNot: '^src/modules/user-notification/$1/',
+      },
+    },
+
     /* rules from the 'recommended' preset: */
     {
       name: 'no-circular',
@@ -75,6 +91,9 @@ module.exports = {
       from: {},
       to: {
         circular: true,
+        viaOnly: {
+          dependencyTypesNot: ['type-only'],
+        },
       },
     },
     {
@@ -152,7 +171,7 @@ module.exports = {
         'in your package.json.',
       from: {},
       to: {
-        pathNot: ['ajv'],
+        pathNot: ['ajv', 'fast-json-stringify'],
         dependencyTypes: ['npm-no-pkg', 'npm-unknown'],
       },
     },
@@ -222,7 +241,7 @@ module.exports = {
         'from.pathNot re of the not-to-dev-dep rule in the dependency-cruiser configuration',
       from: {
         path: '^(src)',
-        pathNot: '[.](?:spec|test|mock)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$',
+        pathNot: ['[.](?:spec|test|mock)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$', '^src/shared/test/'],
       },
       to: {
         dependencyTypes: ['npm-dev'],

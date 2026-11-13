@@ -37,6 +37,13 @@ Feature: Model Version Tags
     When I remove tag "removable" from model "Untagged Model"
     Then the response status should be 204
 
+  Scenario: Removing a tag that is not on the version returns 404
+    Given an authenticated user
+    And a public model "Untagged Remove Model" created by the current user
+    And a version "v1" for "Untagged Remove Model" with title "Initial"
+    When I remove an unknown tag from model "Untagged Remove Model"
+    Then the response status should be 404
+
   Scenario: List tags for a specific version
     Given an authenticated user
     And a public model "Version Tags" created by the current user

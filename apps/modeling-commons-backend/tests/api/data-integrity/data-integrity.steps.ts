@@ -10,7 +10,7 @@
 import assert from 'node:assert/strict';
 import { HeadObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Then, When } from '@cucumber/cucumber';
-import { readableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
+import { listableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
 import { ID_PATTERN } from '#src/shared/utils/id.ts';
 import type { ICustomWorld } from '../../support/custom-world.ts';
 
@@ -299,11 +299,11 @@ Then(
       const res = await get(this, `/api/v1/users/${u.id}/models?limit=1&page=1`);
       assert.equal(res.statusCode, 200, `user ${u.id} models returned ${res.statusCode}`);
       // The cohort calls the route anonymously, so the count it reports is the
-      // authorship rows whose model an anonymous viewer may read. Reuse the
+      // authorship rows whose model an anonymous viewer may list. Reuse the
       // same filter the route uses rather than restating the rule here.
       const count = (JSON.parse(res.body) as { count?: number }).count ?? 0;
       const expected = await db(this).modelAuthor.count({
-        where: { userId: u.id, model: readableModelFilter(null) },
+        where: { userId: u.id, model: listableModelFilter(null) },
       });
       assert.equal(
         count,

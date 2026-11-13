@@ -82,6 +82,18 @@ export type LegacyCollaboratorType = {
   name: string | null;
 };
 
+/** `title`, `is_question` and `answered_at` are not read: ModelComment has no home for them. */
+export type LegacyPosting = {
+  id: number;
+  person_id: number | null;
+  node_id: number | null;
+  parent_id: number | null;
+  body: string | null;
+  deleted_at: Date | null;
+  created_at: Date | null;
+  updated_at: Date | null;
+};
+
 export const PERSON_COLUMNS = `id, email_address, first_name, last_name, administrator,
        avatar_file_name, avatar_updated_at, birthdate, country_name, url, biography,
        created_at, updated_at`;
@@ -90,6 +102,7 @@ export const VERSION_COLUMNS = `id, node_id, person_id, description, contents, c
 export const TAG_COLUMNS = `id, name, created_at`;
 export const TAGGING_COLUMNS = `id, node_id, tag_id, created_at`;
 export const ATTACHMENT_COLUMNS = `id, node_id, person_id, filename, content_type, contents, created_at`;
+export const POSTING_COLUMNS = `id, person_id, node_id, parent_id, body, deleted_at, created_at, updated_at`;
 
 export function assertSchemaName(schema: string): string {
   if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(schema)) {

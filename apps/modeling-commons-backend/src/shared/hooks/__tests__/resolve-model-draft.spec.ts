@@ -1,0 +1,161 @@
+import {
+  ModelDraftAccessDeniedError,
+  ModelDraftNotFoundError,
+} from '#src/modules/model-draft/domain/model-draft.errors.ts';
+import type { ModelDraftEntity } from '#src/modules/model-draft/domain/model-draft.types.ts';
+import { ForbiddenException, UnauthorizedException } from '#src/shared/exceptions/index.ts';
+import { resolveModelDraft } from '#src/shared/hooks/resolve-model-draft.ts';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockPort, type MockedPort } from '#src/shared/test/mock-port.ts';
+import type { ModelDraftRepository } from '#src/modules/model-draft/database/model-draft.repository.port.ts';
+
+const reply = {} as FastifyReply;
+
+function makeDraft(overrides: Partial<ModelDraftEntity> = {}): ModelDraftEntity {
+  return {
+    id: 'draft-1',
+    userId: 'user-1',
+    modelId: null,
+    schemaVersion: 1,
+    data: {} as never,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
+}
+
+function buildRequest(opts: {
+  draftId: string;
+  userId?: string;
+  draftRepo?: MockedPort<ModelDraftRepository>;
+  modelRow?: {
+    id: string;
+    visibility: 'public' | 'private' | 'unlisted';
+    deletedAt: Date | null;
+    authors: { role: string }[];
+    permissions: { permissionLevel: string }[];
+  } | null;
+  viewer?: {
+    id: string;
+    systemRole: 'admin' | 'moderator' | 'user';
+    banned: boolean;
+    deletedAt: Date | null;
+  } | null;
+}): { request: FastifyRequest; draftRepo: MockedPort<ModelDraftRepository> } {
+  const draftRepo = opts.draftRepo ?? mockPort<ModelDraftRepository>();
+  const db = {
+    user: { findUnique: vi.fn().mockResolvedValue(opts.viewer ?? null) },
+    model: { findUnique: vi.fn().mockResolvedValue(opts.modelRow ?? null) },
+  };
+
+  const request = {
+    params: { id: opts.draftId },
+    user: opts.userId ? { id: opts.userId } : undefined,
+    server: { diContainer: { cradle: { db, modelDraftRepository: draftRepo } } },
+  } as unknown as FastifyRequest;
+
+  return { request, draftRepo };
+}
+
+describe('resolveModelDraft', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('throws UnauthorizedException when no user is on the request', async () => {
+    const { request } = buildRequest({ draftId: 'd1' });
+    // @ts-expect-error - no need for done callback
+    await expect(resolveModelDraft()(request, reply)).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('throws ModelDraftNotFoundError when the draft does not exist', async () => {
+    const draftRepo = mockPort<ModelDraftRepository>();
+    draftRepo.findById.mockResolvedValue(undefined);
+    const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
+
+    // @ts-expect-error - no need for done callback
+    await expect(resolveModelDraft()(request, reply)).rejects.toThrow(ModelDraftNotFoundError);
+  });
+
+  it('throws ModelDraftAccessDeniedError when the draft belongs to another user', async () => {
+    const draftRepo = mockPort<ModelDraftRepository>();
+    draftRepo.findById.mockResolvedValue(makeDraft({ userId: 'other' }));
+    const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
+
+    // @ts-expect-error - no need for done callback
+    await expect(resolveModelDraft()(request, reply)).rejects.toThrow(ModelDraftAccessDeniedError);
+  });
+
+  it('attaches the draft when the caller owns it and no model is linked', async () => {
+    const draftRepo = mockPort<ModelDraftRepository>();
+    const draft = makeDraft({ userId: 'u1' });
+    draftRepo.findById.mockResolvedValue(draft);
+    const { request } = buildRequest({ draftId: 'd1', userId: 'u1', draftRepo });
+
+    // @ts-expect-error - no need for done callback
+    await resolveModelDraft()(request, reply);
+
+    expect((request as unknown as { modelDraft: ModelDraftEntity }).modelDraft).toBe(draft);
+  });
+
+  it('rejects when the draft references a missing model', async () => {
+    const draftRepo = mockPort<ModelDraftRepository>();
+    draftRepo.findById.mockResolvedValue(makeDraft({ userId: 'u1', modelId: 'm1' }));
+    const { request } = buildRequest({
+      draftId: 'd1',
+      userId: 'u1',
+      draftRepo,
+      modelRow: null,
+      viewer: { id: 'u1', systemRole: 'user', banned: false, deletedAt: null },
+    });
+
+    // @ts-expect-error - no need for done callback
+    await expect(resolveModelDraft()(request, reply)).rejects.toThrow(/model not found/i);
+  });
+
+  it('throws ForbiddenException when the linked model exists but the user cannot write', async () => {
+    const draftRepo = mockPort<ModelDraftRepository>();
+    draftRepo.findById.mockResolvedValue(makeDraft({ userId: 'u1', modelId: 'm1' }));
+    const { request } = buildRequest({
+      draftId: 'd1',
+      userId: 'u1',
+      draftRepo,
+      modelRow: {
+        id: 'm1',
+        visibility: 'public',
+        deletedAt: null,
+        authors: [],
+        permissions: [],
+      },
+      viewer: { id: 'u1', systemRole: 'user', banned: false, deletedAt: null },
+    });
+
+    // @ts-expect-error - no need for done callback
+    await expect(resolveModelDraft()(request, reply)).rejects.toThrow(ForbiddenException);
+  });
+
+  it('attaches the draft when the user has write access to the linked model (owner)', async () => {
+    const draftRepo = mockPort<ModelDraftRepository>();
+    const draft = makeDraft({ userId: 'u1', modelId: 'm1' });
+    draftRepo.findById.mockResolvedValue(draft);
+    const { request } = buildRequest({
+      draftId: 'd1',
+      userId: 'u1',
+      draftRepo,
+      modelRow: {
+        id: 'm1',
+        visibility: 'public',
+        deletedAt: null,
+        authors: [{ role: 'owner' }],
+        permissions: [],
+      },
+      viewer: { id: 'u1', systemRole: 'user', banned: false, deletedAt: null },
+    });
+
+    // @ts-expect-error - no need for done callback
+    await resolveModelDraft()(request, reply);
+
+    expect((request as unknown as { modelDraft: ModelDraftEntity }).modelDraft).toBe(draft);
+  });
+});

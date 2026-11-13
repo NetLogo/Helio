@@ -2,7 +2,7 @@
 
 The Code tab is where the code for the model is stored. Commands you only want
 to use once can be typed in the Command Center, but collections of commands that
-you want to save for later use can be stored in the Code tab. ![[codetab/codetab.png]]
+you want to save for later use can be stored in the Code tab. ![[codetab/codetab.webp]]
 
 #### Table of Contents
 
@@ -15,7 +15,7 @@ Tools menu “Preferences” item on Windows and Linux, and with the NetLogo men
 
 ## Code Tab Toolbar
 
-<p><img src="./images/codetab/codetabtoolbar.png" style="width:6in" /></p>
+<p><img src="./images/codetab/codetabtoolbar.webp" style="width:6in" /></p>
 Details for these items can be found in the corresponding sections.
 
 - [Check](#checking-for-errors)
@@ -42,10 +42,10 @@ preference.
 <tbody>
 <tr>
  <td>
-<img src="./images/codetab/codetabproceduresmenu.png" style="width:2in" />
+<img src="./images/codetab/codetabproceduresmenu.webp" style="width:2in" />
 </td>
 <td>
-<img src="./images/codetab/codetabproceduresmenusearch.png" style="width:2in" />
+<img src="./images/codetab/codetabproceduresmenusearch.webp" style="width:2in" />
 </td>
 </tr>
 </tbody>
@@ -64,7 +64,7 @@ error will not be highlighted. If the error occurs in the Interface tab, for
 example if any button or plot commands result in a compilation error, the
 Interface tab will turn orange instead.
 
-![[codetab/codetaberror.png]]
+![[codetab/codetaberror.webp]]
 
 Switching tabs also causes the code to be checked, so if you just switch tabs,
 pressing the Check button first isn't necessary.
@@ -88,7 +88,7 @@ can then be moved and resized.
 ## Find & Replace
 
 To find a fragment of code in the Code tab, click on the "Find" button in the
-Code toolbar and the Find dialog will appear. ![[codetab/find-replace.png]]
+Code toolbar and the Find dialog will appear. ![[codetab/find-replace.webp]]
 
 You may enter a word or phrase to find, and optionally also a new word or phrase
 to replace it with. The "Ignore case" checkbox controls whether the
@@ -113,7 +113,7 @@ you open a set of square brackets "[" (perhaps after an `if` statement), NetLogo
 will automatically add spaces so that the following lines of code are two spaces
 further indented than the bracket. When you close the square brackets the
 closing bracket will be lined up with the matching open bracket.
-![[codetab/tabified-code.png]]
+![[codetab/tabified-code.webp]]
 
 NetLogo will try to indent the code as you type, but you can also press the tab
 key anywhere on any line to ask NetLogo to indent the line immediately. Or, you
@@ -170,10 +170,10 @@ File" items .You can make this menu always visible using the "Always show
 <tbody>
 <tr>
  <td>
-<img src="./images/codetab/includesmenu.png" />
+<img src="./images/codetab/includesmenu.webp" />
 </td>
 <td>
-<img src="./images/codetab/includesmenuopen.png" />
+<img src="./images/codetab/includesmenuopen.webp" />
 </td>
 </tr>
 </tbody>
@@ -196,10 +196,10 @@ apply to all Code tabs, not just the one that is currently visible.
 <tbody>
 <tr>
  <td>
-<img src="./images/codetab/tabsmenu.png" />
+<img src="./images/codetab/tabsmenu.webp" />
 </td>
 <td>
-<img src="./images/codetab/codetabtoolbarwithnls.png"  style="width:7in" />
+<img src="./images/codetab/codetabtoolbarwithnls.webp"  style="width:7in" />
 </td>
 </tr>
 </tbody>

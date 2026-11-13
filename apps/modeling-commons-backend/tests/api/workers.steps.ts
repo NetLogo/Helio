@@ -1,66 +1,445 @@
-import { Given, When, Then } from '@cucumber/cucumber';
-import { PgBoss } from 'pg-boss';
+import type { EventType } from '#src/modules/event-catalog.ts';
+import assert from 'node:assert';
+import { After, Given, When, Then } from '@cucumber/cucumber';
+import pg from 'pg';
 import env from '#src/config/env.ts';
+import realtimeConfig from '#src/config/realtime.ts';
+import workersConfig from '#src/config/workers.ts';
+import { getDeadLetterQueueName } from '#src/workers/queues.ts';
+import type { JobStateRow } from '#src/shared/jobs/job-queue.port.ts';
+import type Mail from 'nodemailer/lib/mailer/index.js';
 import type { ICustomWorld } from '../support/custom-world.ts';
 import type { TestUser } from '../support/auth-helper.ts';
+import type { StreamMessage, StreamTopic } from '@repo/modeling-commons-shared';
+import {
+  emailDeadLetterQueueName,
+  emailQueueName,
+  areAllJobsCompleted,
+  findEmailJobsByRecipient,
+  waitForEmailJobs,
+  type EmailJob,
+} from '../support/email-jobs.ts';
 
-interface PrismaCradle {
-  prisma: {
-    event: {
-      create: (args: { data: Record<string, unknown> }) => Promise<{ id: string }>;
-      findUnique: (args: {
-        where: { id: string };
-      }) => Promise<{ id: string; processedAt: Date | null } | null>;
-    };
-  };
-}
+const { queueName } = workersConfig.userNotifications;
+const deadLetterQueueName = getDeadLetterQueueName(queueName);
 
 function getUsers(context: Record<string, unknown>): Map<string, TestUser> {
   if (!context['users']) context['users'] = new Map<string, TestUser>();
   return context['users'] as Map<string, TestUser>;
 }
 
+async function waitForUserNotificationRow(
+  world: ICustomWorld,
+  seconds: number,
+  isDone: (row: JobStateRow) => boolean,
+): Promise<JobStateRow | undefined> {
+  const eventId = world.context['pendingEventId'] as string;
+  const { jobQueue } = world.server.diContainer.cradle;
+  const deadline = Date.now() + seconds * 1000;
+  while (Date.now() < deadline) {
+    const rows = await jobQueue.findJobStates([queueName, deadLetterQueueName], 'eventId', [
+      eventId,
+    ]);
+    const row = rows.find(isDone);
+    if (row) return row;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  return undefined;
+}
+
+function rigHandleEvent(world: ICustomWorld, shouldFail: () => boolean): void {
+  const { notificationDeliveryService } = world.server.diContainer.cradle;
+  const original = notificationDeliveryService.handleEvent.bind(notificationDeliveryService);
+  notificationDeliveryService.handleEvent = async (event) => {
+    if (shouldFail()) throw new Error('workers.feature: rigged handleEvent failure');
+    return original(event);
+  };
+  world.context['restoreHandleEvent'] = () => {
+    notificationDeliveryService.handleEvent = original;
+  };
+}
+
 Given(
-  'an unprocessed event of type {string} exists for {string}',
+  'events of type {string} are published to the user-notifications queue',
+  async function (this: ICustomWorld, eventType: string) {
+    const { boss } = this.server.diContainer.cradle;
+    await boss.subscribe(eventType, queueName);
+    this.context['restoreSubscription'] = async () => boss.unsubscribe(eventType, queueName);
+  },
+);
+
+After(async function (this: ICustomWorld) {
+  const restore = this.context['restoreSubscription'] as (() => Promise<void>) | undefined;
+  await restore?.();
+});
+
+Given(
+  'an event of type {string} is recorded for {string}',
   async function (this: ICustomWorld, eventType: string, actorName: string) {
     const actor = getUsers(this.context).get(actorName)!;
-    const { prisma } = this.server.diContainer.cradle as unknown as PrismaCradle;
-    const event = await prisma.event.create({
-      data: {
-        type: eventType,
+    const { eventRepository, prisma, transactionManager } = this.server.diContainer.cradle;
+    await transactionManager.run(async (ctx) =>
+      eventRepository.insertTx(ctx, {
+        type: eventType as EventType,
         actorId: actor.id,
         resourceType: 'test',
         resourceId: actor.id,
         payload: {},
-      },
+      }),
+    );
+    const event = await prisma.event.findFirstOrThrow({
+      where: { type: eventType, resourceId: actor.id },
+      orderBy: { createdAt: 'desc' },
     });
     this.context['pendingEventId'] = event.id;
   },
 );
 
-When('the event processor queue is triggered', async function (this: ICustomWorld) {
-  const boss = new PgBoss(env.db.url);
-  await boss.start();
-  try {
-    await boss.send('process-events', {});
-  } finally {
-    await boss.stop({ graceful: false });
-  }
+Given('handling events is rigged to fail once', function (this: ICustomWorld) {
+  let hasFailed = false;
+  rigHandleEvent(this, () => {
+    if (hasFailed) return false;
+    hasFailed = true;
+    return true;
+  });
+});
+
+Given('handling events is rigged to always fail', function (this: ICustomWorld) {
+  rigHandleEvent(this, () => true);
+});
+
+After(function (this: ICustomWorld) {
+  const restore = this.context['restoreHandleEvent'] as (() => void) | undefined;
+  restore?.();
+});
+
+When(
+  'a user-notifications job for that event is sent with a retry limit of {int} and a retry delay of {int} second(s)',
+  async function (this: ICustomWorld, retryLimit: number, retryDelay: number) {
+    const eventId = this.context['pendingEventId'] as string;
+    const { boss } = this.server.diContainer.cradle;
+    await boss.send(queueName, { kind: 'event', eventId }, { retryLimit, retryDelay });
+  },
+);
+
+Then(
+  'the user-notifications job of that event should complete within {int} seconds',
+  async function (this: ICustomWorld, seconds: number) {
+    const row = await waitForUserNotificationRow(
+      this,
+      seconds,
+      (candidate) => candidate.state === 'completed',
+    );
+    assert.ok(row, `The user-notifications job did not complete within ${seconds}s`);
+  },
+);
+
+Then(
+  'the user-notifications job of that event should wait to retry after {int} attempt(s) within {int} seconds',
+  async function (this: ICustomWorld, attempts: number, seconds: number) {
+    const row = await waitForUserNotificationRow(
+      this,
+      seconds,
+      (candidate) => candidate.state === 'retry',
+    );
+    assert.ok(row, `The user-notifications job did not reach the retry state within ${seconds}s`);
+    assert.strictEqual(row.retryCount + 1, attempts);
+  },
+);
+
+Then(
+  'a copy of the user-notifications job should reach the dead-letter queue within {int} seconds',
+  async function (this: ICustomWorld, seconds: number) {
+    const row = await waitForUserNotificationRow(
+      this,
+      seconds,
+      (candidate) => candidate.queue === deadLetterQueueName,
+    );
+    assert.ok(row, `No dead-letter copy of the user-notifications job appeared within ${seconds}s`);
+  },
+);
+
+type MailRecorder = {
+  sent: Array<Mail.Options>;
+  attempts: Map<string, number>;
+  shouldFail: (content: Mail.Options) => boolean;
+};
+
+function getMailRecorder(world: ICustomWorld): MailRecorder {
+  const existing = world.context['mailRecorder'] as MailRecorder | undefined;
+  if (existing) return existing;
+  const recorder: MailRecorder = { sent: [], attempts: new Map(), shouldFail: () => false };
+  const { mailService } = world.server.diContainer.cradle;
+  const original = mailService.sendMailAsync;
+  mailService.sendMailAsync = async (content) => {
+    const to = String(content.to);
+    recorder.attempts.set(to, (recorder.attempts.get(to) ?? 0) + 1);
+    if (recorder.shouldFail(content)) throw new Error('workers.feature: rigged send failure');
+    recorder.sent.push(content);
+    return { messageId: `workers-feature-${recorder.sent.length}` } as Awaited<
+      ReturnType<typeof original>
+    >;
+  };
+  world.context['mailRecorder'] = recorder;
+  world.context['restoreSendMail'] = () => {
+    mailService.sendMailAsync = original;
+  };
+  return recorder;
+}
+
+After(function (this: ICustomWorld) {
+  const restore = this.context['restoreSendMail'] as (() => void) | undefined;
+  restore?.();
+});
+
+function getAddress(world: ICustomWorld, name: string): string {
+  const user = getUsers(world.context).get(name);
+  assert.ok(user, `no user "${name}"`);
+  return user.email;
+}
+
+function buildEmail(to: string, subject = 'workers.feature'): Mail.Options {
+  return { to, subject, text: 'workers.feature' };
+}
+
+function countSentTo(world: ICustomWorld, address: string): number {
+  return getMailRecorder(world).sent.filter((content) => content.to === address).length;
+}
+
+async function waitForEmailJob(
+  world: ICustomWorld,
+  name: string,
+  seconds: number,
+  isDone: (job: EmailJob) => boolean,
+  queueName: string = emailQueueName,
+): Promise<EmailJob> {
+  const jobs = await waitForEmailJobs(
+    world.server,
+    [getAddress(world, name)],
+    (candidates) => candidates.some(isDone),
+    { timeoutMs: seconds * 1000, queueName },
+  );
+  return jobs.find(isDone) as EmailJob;
+}
+
+Given('email sending is recorded', function (this: ICustomWorld) {
+  getMailRecorder(this);
+});
+
+Given('sending email to {string} is rigged to fail', function (this: ICustomWorld, name: string) {
+  const address = getAddress(this, name);
+  getMailRecorder(this).shouldFail = (content) => content.to === address;
+});
+
+Given(
+  'sending email to {string} is rigged to fail once',
+  function (this: ICustomWorld, name: string) {
+    const address = getAddress(this, name);
+    const recorder = getMailRecorder(this);
+    recorder.shouldFail = (content) =>
+      content.to === address && recorder.attempts.get(address) === 1;
+  },
+);
+
+When('an email to {string} is queued', async function (this: ICustomWorld, name: string) {
+  const { mailService, transactionManager } = this.server.diContainer.cradle;
+  await transactionManager.run(async (ctx) =>
+    mailService.enqueue(buildEmail(getAddress(this, name)), ctx),
+  );
+});
+
+When(
+  '{int} emails to {string} are queued',
+  async function (this: ICustomWorld, count: number, name: string) {
+    const { mailService, transactionManager } = this.server.diContainer.cradle;
+    const address = getAddress(this, name);
+    for (let index = 1; index <= count; index++) {
+      await transactionManager.run(async (ctx) =>
+        mailService.enqueue(buildEmail(address, `workers.feature #${index}`), ctx),
+      );
+    }
+  },
+);
+
+When(
+  'an email to {string} is sent with a retry limit of {int} and a retry delay of {int} second(s)',
+  async function (this: ICustomWorld, name: string, retryLimit: number, retryDelay: number) {
+    const { boss } = this.server.diContainer.cradle;
+    await boss.send(emailQueueName, buildEmail(getAddress(this, name)), {
+      retryLimit,
+      retryDelay,
+    });
+  },
+);
+
+When(
+  'an email to {string} is sent with a retry delay of {int} second(s)',
+  async function (this: ICustomWorld, name: string, retryDelay: number) {
+    const { boss } = this.server.diContainer.cradle;
+    await boss.send(emailQueueName, buildEmail(getAddress(this, name)), { retryDelay });
+  },
+);
+
+Then(
+  'the email job to {string} should complete within {int} seconds',
+  async function (this: ICustomWorld, name: string, seconds: number) {
+    const job = await waitForEmailJob(this, name, seconds, (row) => row.state === 'completed');
+    assert.ok(job, `The email job to "${name}" did not complete within ${seconds}s`);
+    this.context[`emailJob:${name}`] = job;
+  },
+);
+
+Then(
+  'the email job to {string} should wait to retry after {int} attempt(s) within {int} seconds',
+  async function (this: ICustomWorld, name: string, attempts: number, seconds: number) {
+    const job = await waitForEmailJob(this, name, seconds, (row) => row.state === 'retry');
+    assert.strictEqual(job.retryCount + 1, attempts);
+    this.context[`emailJob:${name}`] = job;
+  },
+);
+
+Then(
+  'the email job to {string} should have been retried {int} time(s)',
+  function (this: ICustomWorld, name: string, retries: number) {
+    const job = this.context[`emailJob:${name}`] as EmailJob | undefined;
+    assert.ok(job, `no email job to "${name}" was observed`);
+    assert.strictEqual(job.retryCount, retries);
+  },
+);
+
+Then(
+  'the email job to {string} should stay waiting to retry with {int} attempt(s) for {int} seconds',
+  async function (this: ICustomWorld, name: string, attempts: number, seconds: number) {
+    const address = getAddress(this, name);
+    const recorder = getMailRecorder(this);
+    const deadline = Date.now() + seconds * 1000;
+    while (Date.now() < deadline) {
+      assert.strictEqual(recorder.attempts.get(address), attempts);
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
+    const [job] = await findEmailJobsByRecipient(this.server, [address]);
+    assert.strictEqual(job?.state, 'retry');
+  },
+);
+
+Then(
+  'a copy of the email job to {string} should reach the dead-letter queue within {int} seconds',
+  async function (this: ICustomWorld, name: string, seconds: number) {
+    await waitForEmailJob(this, name, seconds, () => true, emailDeadLetterQueueName);
+  },
+);
+
+Then(
+  'every email job to {string} should complete within {int} seconds',
+  async function (this: ICustomWorld, name: string, seconds: number) {
+    await waitForEmailJobs(this.server, [getAddress(this, name)], areAllJobsCompleted, {
+      timeoutMs: seconds * 1000,
+    });
+  },
+);
+
+Then(
+  'exactly {int} email(s) should have been sent to {string}',
+  function (this: ICustomWorld, count: number, name: string) {
+    assert.strictEqual(countSentTo(this, getAddress(this, name)), count);
+  },
+);
+
+Then('no email should have been sent to {string}', function (this: ICustomWorld, name: string) {
+  assert.strictEqual(countSentTo(this, getAddress(this, name)), 0);
 });
 
 Then(
-  'the event should be marked processed within {int} seconds',
-  async function (this: ICustomWorld, seconds: number) {
-    const eventId = this.context['pendingEventId'] as string;
-    const { prisma } = this.server.diContainer.cradle as unknown as PrismaCradle;
-    const deadline = Date.now() + seconds * 1000;
+  'each of the {int} emails to {string} should have been sent exactly once',
+  function (this: ICustomWorld, count: number, name: string) {
+    const address = getAddress(this, name);
+    const subjects = getMailRecorder(this)
+      .sent.filter((content) => content.to === address)
+      .map((content) => content.subject)
+      .sort();
+    const expected = Array.from(
+      { length: count },
+      (_, index) => `workers.feature #${index + 1}`,
+    ).sort();
+    assert.deepStrictEqual(subjects, expected);
+  },
+);
 
-    while (Date.now() < deadline) {
-      const event = await prisma.event.findUnique({ where: { id: eventId } });
-      if (event?.processedAt) return;
-      await new Promise((resolve) => setTimeout(resolve, 250));
-    }
+type RealtimeListener = {
+  client: pg.Client;
+  received: Array<StreamMessage>;
+};
 
-    throw new Error(`Event ${eventId} was not processed within ${seconds}s`);
+Given('the realtime channel is listened to', async function (this: ICustomWorld) {
+  const client = new pg.Client({ connectionString: env.db.url });
+  const listener: RealtimeListener = { client, received: [] };
+  client.on('notification', ({ payload }) => {
+    listener.received.push(JSON.parse(payload ?? 'null') as StreamMessage);
+  });
+  await client.connect();
+  await client.query(`LISTEN ${realtimeConfig.channel}`);
+  this.context['realtimeListener'] = listener;
+});
+
+After(async function (this: ICustomWorld) {
+  const listener = this.context['realtimeListener'] as RealtimeListener | undefined;
+  await listener?.client.end();
+});
+
+function countTopicMessages(world: ICustomWorld, topic: StreamTopic, event?: string): number {
+  const listener = world.context['realtimeListener'] as RealtimeListener;
+  return listener.received.filter(
+    (message) =>
+      message.topic.type === topic.type &&
+      message.topic.id === topic.id &&
+      (event === undefined || message.event === event),
+  ).length;
+}
+
+async function waitForTopicMessage(
+  world: ICustomWorld,
+  topic: StreamTopic,
+  event: string,
+  seconds: number,
+): Promise<number> {
+  const deadline = Date.now() + seconds * 1000;
+  while (Date.now() < deadline && countTopicMessages(world, topic, event) === 0) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return countTopicMessages(world, topic, event);
+}
+
+function getTestUser(world: ICustomWorld, userName: string): TestUser {
+  const user = getUsers(world.context).get(userName);
+  assert.ok(user, `no user "${userName}"`);
+  return user;
+}
+
+Then(
+  'the realtime channel should carry {string} for model {string} once within {int} seconds',
+  async function (this: ICustomWorld, event: string, modelTitle: string, seconds: number) {
+    const models = this.context['models'] as Map<string, string>;
+    const modelId = models.get(modelTitle);
+    assert.ok(modelId, `no model "${modelTitle}"`);
+    assert.strictEqual(
+      await waitForTopicMessage(this, { type: 'model', id: modelId }, event, seconds),
+      1,
+    );
+  },
+);
+
+Then(
+  'the realtime channel should carry {string} for user {string} once within {int} seconds',
+  async function (this: ICustomWorld, event: string, userName: string, seconds: number) {
+    const { id } = getTestUser(this, userName);
+    assert.strictEqual(await waitForTopicMessage(this, { type: 'user', id }, event, seconds), 1);
+  },
+);
+
+Then(
+  'the realtime channel should carry nothing for user {string}',
+  function (this: ICustomWorld, userName: string) {
+    const { id } = getTestUser(this, userName);
+    assert.strictEqual(countTopicMessages(this, { type: 'user', id }), 0);
   },
 );

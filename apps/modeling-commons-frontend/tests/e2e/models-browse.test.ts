@@ -7,6 +7,7 @@ import { createPage, url } from "@nuxt/test-utils/e2e";
 import { e2eSetup } from "./setup";
 import { expectPageIdentity, modelCardLink } from "./helpers/page";
 import { fillField } from "./helpers/form";
+import { gotoHydrated } from "./helpers/nav";
 
 // /models renders "Explore Models" only in the document <title>; its visible
 // headings are dynamic model-card titles. Wait for cards or the empty state
@@ -39,7 +40,7 @@ describe("models: browse", async () => {
 
   it("typing in the search bar updates the query and visible results", async () => {
     const page = await createPage();
-    await page.goto(url("/models"));
+    await gotoHydrated(page, "/models");
 
     await expectPageIdentity(page, /Explore Models/i, "/models");
     await cardOrEmpty(page);

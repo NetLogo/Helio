@@ -62,7 +62,7 @@ import {
   type ModelWriter,
   type NodeTree,
 } from './lib/node-migration.ts';
-import { getNlogoFileExtension, parseNetlogoContents } from './lib/nlogo.ts';
+import { getNlogoFileExtension, parseNetlogoContents } from '#src/shared/utils/netlogo-file.ts';
 import {
   buildFullName,
   normalizeEmail,

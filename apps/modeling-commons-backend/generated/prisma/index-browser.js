@@ -311,6 +311,27 @@ exports.Prisma.ModelDraftScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ModelCommentScalarFieldEnum = {
+  id: 'id',
+  legacyId: 'legacyId',
+  parentId: 'parentId',
+  userId: 'userId',
+  modelId: 'modelId',
+  versionNumber: 'versionNumber',
+  content: 'content',
+  likesCount: 'likesCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  editedAt: 'editedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.ModelCommentLikeScalarFieldEnum = {
+  modelCommentId: 'modelCommentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.EventScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -318,8 +339,38 @@ exports.Prisma.EventScalarFieldEnum = {
   resourceType: 'resourceType',
   resourceId: 'resourceId',
   payload: 'payload',
-  createdAt: 'createdAt',
-  processedAt: 'processedAt'
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UserNotificationScalarFieldEnum = {
+  id: 'id',
+  recipientId: 'recipientId',
+  eventId: 'eventId',
+  category: 'category',
+  url: 'url',
+  payload: 'payload',
+  actorId: 'actorId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  emailSentAt: 'emailSentAt',
+  readAt: 'readAt',
+  inAppSuppressed: 'inAppSuppressed',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.NotificationDigestScalarFieldEnum = {
+  recipientId: 'recipientId',
+  day: 'day',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UserNotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category',
+  email: 'email',
+  inApp: 'inApp',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -393,6 +444,12 @@ exports.ModelInteractionKind = exports.$Enums.ModelInteractionKind = {
   share: 'share'
 };
 
+exports.EmailMode = exports.$Enums.EmailMode = {
+  immediate: 'immediate',
+  daily: 'daily',
+  off: 'off'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Account: 'Account',
@@ -410,7 +467,12 @@ exports.Prisma.ModelName = {
   ModelLike: 'ModelLike',
   ModelInteraction: 'ModelInteraction',
   ModelDraft: 'ModelDraft',
-  Event: 'Event'
+  ModelComment: 'ModelComment',
+  ModelCommentLike: 'ModelCommentLike',
+  Event: 'Event',
+  UserNotification: 'UserNotification',
+  NotificationDigest: 'NotificationDigest',
+  UserNotificationPreference: 'UserNotificationPreference'
 };
 
 /**

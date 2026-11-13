@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import type { UserProps } from "#ui/types";
 import { useInfiniteScroll } from "@vueuse/core";
-import type { ModelCard } from "~/composables/model/useModelCard";
+import type { ModelCard } from "~/features/models/types";
 import { getAuthorUrl } from '../ModelAuthors.vue';
 
 const props = defineProps<{

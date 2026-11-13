@@ -5,11 +5,15 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { admin, openAPI } from 'better-auth/plugins';
 
 import rules from '#src/config/rules.ts';
+import { passwordPolicyHook } from '#src/lib/auth-password-policy.ts';
 import { newId } from '#src/shared/utils/id.ts';
 import transporter, { mailDomain } from './mail.ts';
 import { prisma } from './prisma.ts';
 
-const corePlugins = [openAPI({ disableDefaultReference: false }), admin()];
+/* Spelled out because the inferred type references better-auth's nested zod copy, which tsc cannot
+   name (TS2742). admin<{}> matches what admin() infers; the bare constraint loses the plugin endpoints. */
+type CorePlugins = Array<ReturnType<typeof openAPI> | ReturnType<typeof admin<{}>>>;
+const corePlugins: CorePlugins = [openAPI({ disableDefaultReference: false }), admin()];
 export const auth = betterAuth({
   appName: env.product.name,
   baseURL: env.auth.url,
@@ -102,6 +106,10 @@ export const auth = betterAuth({
         console.error('Failed to send verification email', err);
       });
     },
+  },
+
+  hooks: {
+    before: passwordPolicyHook,
   },
 
   rateLimit: {

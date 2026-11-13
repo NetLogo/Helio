@@ -1,6 +1,7 @@
 import type { ModelAdditionalFileEntity } from '#src/modules/model-additional-file/domain/model-additional-file.types.ts';
 import { AdditionalFileNotFoundError } from '#src/modules/model-additional-file/domain/model-additional-file.errors.ts';
 import { VersionNotFoundError } from '#src/modules/model-version/domain/model-version.errors.ts';
+import { modelAdditionalFileEventTypes } from '#src/modules/model-additional-file/model-additional-file.events.ts';
 
 export default function makeModelAdditionalFileService({
   transactionManager,
@@ -38,8 +39,8 @@ export default function makeModelAdditionalFileService({
 
       return transactionManager.run(async (ctx) => {
         await modelAdditionalFileRepository.insertTx(ctx, entity);
-        await eventRepository.insert(ctx, {
-          type: 'model_additional_file.added',
+        await eventRepository.insertTx(ctx, {
+          type: modelAdditionalFileEventTypes.added,
           actorId: userId,
           resourceType: 'model_additional_file',
           resourceId: entity.id,
@@ -55,8 +56,8 @@ export default function makeModelAdditionalFileService({
 
       await transactionManager.run(async (ctx) => {
         await modelAdditionalFileRepository.deleteTx(ctx, additionalFileId);
-        await eventRepository.insert(ctx, {
-          type: 'model_additional_file.deleted',
+        await eventRepository.insertTx(ctx, {
+          type: modelAdditionalFileEventTypes.deleted,
           actorId: userId,
           resourceType: 'model_additional_file',
           resourceId: additionalFileId,

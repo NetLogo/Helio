@@ -15,7 +15,9 @@
           {{ formatDate(announcement.date) }}
         </p>
         <div>
-          <MDC :value="announcement.content" />
+          <MDC v-slot="{ body, data }" :value="announcement.content">
+            <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" />
+          </MDC>
         </div>
       </div>
     </div>

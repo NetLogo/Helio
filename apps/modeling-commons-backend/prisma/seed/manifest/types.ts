@@ -3,6 +3,8 @@ export type UserKindLit = 'student' | 'teacher' | 'researcher' | 'other';
 export type VisibilityLit = 'public' | 'private' | 'unlisted';
 export type AuthorRoleLit = 'owner' | 'contributor';
 export type PermissionLevelLit = 'read' | 'write' | 'admin';
+export type EmailModeLit = 'immediate' | 'daily' | 'off';
+export type NotificationCategoryLit = 'comment.on_your_model' | 'comment.reply_to_you';
 
 export interface SocialLinkSeed {
   rawValue: string;
@@ -112,6 +114,29 @@ export interface ModelSeed {
   popularity?: PopularitySeed;
 }
 
+export interface CommentSeed {
+  /** Stable slug used to derive the comment id and link replies to parents. */
+  key: string;
+  legacyId?: number;
+  /** Author user key. Retained even when `deleted` (the read layer hides it). */
+  user: string;
+  content: string;
+  /** Scopes the comment to a specific model version; omit for general discussion. */
+  versionNumber?: number;
+  edited?: boolean;
+  /** Soft-delete tombstone: content is nulled and `deletedAt` set. */
+  deleted?: boolean;
+  likedBy?: string[];
+  createdDaysAgo?: number;
+  replies?: CommentSeed[];
+}
+
+export interface CommentThreadSeed {
+  /** Model key the thread hangs off. */
+  model: string;
+  comments: CommentSeed[];
+}
+
 export interface DraftSeed {
   key: string;
   user: string;
@@ -123,4 +148,11 @@ export interface DraftSeed {
   tags?: string[];
   primaryFile?: ModelFileSeed;
   createdDaysAgo?: number;
+}
+
+export interface NotificationPreferenceSeed {
+  user: string;
+  category: NotificationCategoryLit;
+  email: EmailModeLit;
+  inApp?: boolean;
 }

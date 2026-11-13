@@ -8,7 +8,9 @@
       <div v-for="(item, index) in contactData" :key="index" class="mb-8">
         <h3 class="text-2xl font-medium text-gray-800 mb-3">{{ item.heading }}</h3>
         <div class="pl-5 leading-loose">
-          <MDC :value="item.body" />
+          <MDC v-slot="{ body, data }" :value="item.body">
+            <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" />
+          </MDC>
         </div>
       </div>
     </div>

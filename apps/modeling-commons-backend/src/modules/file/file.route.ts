@@ -7,6 +7,7 @@ import { FileTooLargeError } from './domain/file.errors.ts';
 import { nanoid } from 'nanoid';
 
 const MAX_AVATAR_BYTES = rules.avatar.maxFileSize;
+const AVATAR_KEY_RANDOM_LENGTH = 10;
 
 export default async function fileRoutes(fastify: FastifyInstance) {
   const { fileService } = fastify.diContainer.cradle;
@@ -47,7 +48,7 @@ export default async function fileRoutes(fastify: FastifyInstance) {
         throw new FileTooLargeError(buffer.length, MAX_AVATAR_BYTES);
       }
 
-      const filename = `${nanoid(10)}-ua`;
+      const filename = `${nanoid(AVATAR_KEY_RANDOM_LENGTH)}-ua`;
 
       const key = await fileService.upload({
         filename,

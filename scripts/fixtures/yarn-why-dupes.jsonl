@@ -1,0 +1,10 @@
+{"type":"step","data":{"message":"Why do we have the module \"hastscript\"?","current":1,"total":4}}
+{"type":"step","data":{"message":"Initialising dependency graph","current":2,"total":4}}
+{"type":"step","data":{"message":"Finding dependency","current":3,"total":4}}
+{"type":"step","data":{"message":"Calculating file sizes","current":4,"total":4}}
+{"type":"info","data":"\r=> Found \"hastscript@7.2.0\""}
+{"type":"info","data":"Reasons this module exists"}
+{"type":"list","data":{"type":"reasons","items":["\"_project_#@repo#markdown#remark-directive-rehype\" depends on it","Hoisted from \"_project_#@repo#markdown#remark-directive-rehype#hastscript\""]}}
+{"type":"info","data":"Disk size without dependencies: \"464KB\""}
+{"type":"info","data":"\r=> Found \"hast-util-from-parse5#hastscript@9.0.1\""}
+{"type":"info","data":"This module exists because \"_project_#@repo#markdown#rehype-raw#hast-util-raw#hast-util-from-parse5\" depends on it."}

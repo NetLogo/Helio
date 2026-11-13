@@ -2,9 +2,8 @@ import type { ResourcesCollectionItem } from '@nuxt/content';
 import { createSharedComposable } from '@vueuse/core';
 
 async function _useResource(path: string): Promise<Ref<ResourcesCollectionItem>> {
-  const route = useRoute();
   const { data, error } = await useAsyncData(path, () =>
-    queryCollection('resources').where('stem', '=', route.path.replace(/^\//, '')).first(),
+    queryCollection('resources').where('stem', '=', `resources/${path}`).first(),
   );
 
   if (error.value || !data.value) {

@@ -1,5 +1,7 @@
-import { toUserSelectMenuItem, type UserSelectMenuItem } from "~/components/user/UserSelectMenu.vue";
-import type { ApiUser } from "~/composables/user/useUsers";
+import {
+  toUserSelectMenuItem,
+  type UserSelectMenuItem,
+} from "~/components/user/UserSelectMenu.vue";
 
 export function useUserFilter(
   filters: Ref<{ authorId?: string }>,
@@ -13,8 +15,8 @@ export function useUserFilter(
     () => filters.value.authorId,
     async (authorId) => {
       if (authorId) {
-        const user = await fetchUserById(useApi(), authorId);
-        selected.value = toUserSelectMenuItem(user as ApiUser);
+        const user = await fetchUserById(authorId);
+        selected.value = toUserSelectMenuItem(user as UserProfile);
       } else {
         selected.value = undefined;
       }

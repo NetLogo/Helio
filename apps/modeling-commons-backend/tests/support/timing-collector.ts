@@ -23,7 +23,10 @@ let activeScenario: string | undefined;
 
 // Legacy captured runs may still contain the old dashed 36-char identifier
 // format, so a NanoID-only matcher would fragment those older reports.
-const ID_RE = new RegExp(`${ID_PATTERN}|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`, 'i');
+const ID_RE = new RegExp(
+  `${ID_PATTERN}|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`,
+  'i',
+);
 const NUMERIC_RE = /^\d+$/;
 
 export const normaliseUrl = (rawUrl: string): string => {

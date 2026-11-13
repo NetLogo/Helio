@@ -1,18 +1,33 @@
 import { createHash } from 'node:crypto';
+import { hashPassword } from 'better-auth/crypto';
 import { prisma } from './providers.js';
 import { seedId, seededRandom } from './id.js';
 import { AssetUploader, loadNlogox, fakeNlogox, textAsset, type NlogoxAsset } from './assets.js';
+import type { Prisma } from '#prisma/index';
+import links from '#src/config/links.ts';
+import { selectCommentRecipients } from '#src/modules/model-comment/notifications/model-comment.recipients.ts';
+import {
+  isMuted,
+  resolveChannelPreferences,
+} from '#src/modules/user-notification/core/channel-preferences.domain.ts';
+import { truncatePreview } from '#src/shared/utils/formatters.ts';
 import {
   isRealFile,
+  type CommentSeed,
+  type CommentThreadSeed,
   type DraftSeed,
+  type EmailModeLit,
   type ModelFileSeed,
   type ModelSeed,
+  type NotificationPreferenceSeed,
   type TagSeed,
   type UserSeed,
   type VersionSeed,
 } from './manifest/index.js';
 
 const DAY = 86_400_000;
+const HOUR = DAY / 24;
+const DEFAULT_COMMENT_AGE_DAYS = 30;
 const NOW = Date.now();
 const daysAgo = (n: number) => new Date(NOW - n * DAY);
 
@@ -47,10 +62,9 @@ function mustGet(map: IdMap, key: string, kind: string): string {
 const pick = <T>(rng: () => number, pool: readonly T[]): T =>
   pool[Math.floor(rng() * pool.length)]!;
 
-// ── Users ───────────────────────────────────────────────────────────────────
-
-export async function loadUsers(users: UserSeed[]): Promise<IdMap> {
+export async function loadUsers(users: UserSeed[], password: string): Promise<IdMap> {
   const map: IdMap = new Map();
+  const passwordHash = await hashPassword(password);
 
   for (const u of users) {
     const id = seedId('user', u.key);
@@ -86,8 +100,14 @@ export async function loadUsers(users: UserSeed[]): Promise<IdMap> {
     const accountId = seedId('account', u.key);
     await prisma.account.upsert({
       where: { id: accountId },
-      update: {},
-      create: { id: accountId, userId: id, accountId: id, providerId: 'credential' },
+      update: { password: passwordHash },
+      create: {
+        id: accountId,
+        userId: id,
+        accountId: id,
+        providerId: 'credential',
+        password: passwordHash,
+      },
     });
 
     if (u.devSession) {
@@ -283,7 +303,12 @@ export async function loadModels(
         });
       } else {
         await prisma.modelPermission.create({
-          data: { id: seedId('perm', m.key, p.grantee ?? 'public'), modelId: id, granteeUserId, permissionLevel },
+          data: {
+            id: seedId('perm', m.key, p.grantee ?? 'public'),
+            modelId: id,
+            granteeUserId,
+            permissionLevel,
+          },
         });
       }
     }
@@ -391,7 +416,6 @@ function buildEvents(models: LoadedModel[], users: IdMap) {
       resourceId: m.id,
       payload: { title: m.versionTitles[0] ?? m.key, visibility: m.visibility },
       createdAt: m.createdAt,
-      processedAt: m.createdAt,
     });
 
     if (m.isFork && m.parentModelId) {
@@ -403,7 +427,6 @@ function buildEvents(models: LoadedModel[], users: IdMap) {
         resourceId: m.id,
         payload: { parentModelId: m.parentModelId, parentVersionNumber: m.parentVersionNumber },
         createdAt: m.createdAt,
-        processedAt: m.createdAt,
       });
     }
 
@@ -416,7 +439,6 @@ function buildEvents(models: LoadedModel[], users: IdMap) {
         resourceId: `${m.id}:${n}`,
         payload: { modelId: m.id, versionNumber: n },
         createdAt: m.createdAt,
-        processedAt: m.createdAt,
       });
     }
 
@@ -434,6 +456,182 @@ function buildEvents(models: LoadedModel[], users: IdMap) {
   }
 
   return events;
+}
+
+export async function loadComments(
+  threads: CommentThreadSeed[],
+  users: IdMap,
+  modelIds: IdMap,
+): Promise<{ comments: number; likes: number }> {
+  let commentCount = 0;
+  const likeRows: Array<{ modelCommentId: string; userId: string; createdAt: Date }> = [];
+
+  async function upsertNode(node: CommentSeed, modelId: string, parentId: string | null) {
+    const id = seedId('comment', node.key);
+    const createdAt = daysAgo(node.createdDaysAgo ?? DEFAULT_COMMENT_AGE_DAYS);
+    const deleted = node.deleted ?? false;
+    const likers = deleted ? [] : (node.likedBy ?? []);
+
+    // Reconcile the mutable fields on rerun so manifest edits propagate; the
+    // parent link and createdAt are fixed on first insert.
+    const mutable = {
+      content: deleted ? null : node.content,
+      likesCount: likers.length,
+      editedAt: !deleted && node.edited ? new Date(createdAt.getTime() + HOUR) : null,
+      deletedAt: deleted ? new Date(createdAt.getTime() + 2 * HOUR) : null,
+    };
+
+    await prisma.modelComment.upsert({
+      where: { id },
+      update: mutable,
+      create: {
+        id,
+        legacyId: node.legacyId ?? null,
+        parentId,
+        userId: mustGet(users, node.user, 'comment author'),
+        modelId,
+        versionNumber: node.versionNumber ?? null,
+        createdAt,
+        ...mutable,
+      },
+    });
+    commentCount += 1;
+
+    const likeRng = seededRandom(`comment-likes:${node.key}`);
+    for (const userKey of likers) {
+      likeRows.push({
+        modelCommentId: id,
+        userId: mustGet(users, userKey, 'comment liker'),
+        createdAt: new Date(createdAt.getTime() + Math.floor(likeRng() * DAY)),
+      });
+    }
+
+    for (const reply of node.replies ?? []) {
+      await upsertNode(reply, modelId, id);
+    }
+  }
+
+  for (const thread of threads) {
+    const modelId = mustGet(modelIds, thread.model, 'comment model');
+    for (const c of thread.comments) {
+      await upsertNode(c, modelId, null);
+    }
+  }
+
+  if (likeRows.length) {
+    await prisma.modelCommentLike.createMany({ data: likeRows, skipDuplicates: true });
+  }
+
+  return { comments: commentCount, likes: likeRows.length };
+}
+
+const NOTIFICATION_READ_AFTER_DAYS = 30;
+
+export async function loadNotifications(
+  threads: CommentThreadSeed[],
+  models: ModelSeed[],
+  preferences: NotificationPreferenceSeed[],
+  users: IdMap,
+  modelIds: IdMap,
+): Promise<{ notifications: number; preferences: number }> {
+  const channelsByPreference = new Map<string, { email: EmailModeLit; inApp: boolean }>();
+
+  for (const p of preferences) {
+    const userId = mustGet(users, p.user, 'notification preference user');
+    const channels = { email: p.email, inApp: p.inApp ?? true };
+    channelsByPreference.set(`${p.user}:${p.category}`, channels);
+    await prisma.userNotificationPreference.upsert({
+      where: { userId_category: { userId, category: p.category } },
+      update: channels,
+      create: {
+        id: seedId('notification-preference', p.user, p.category),
+        userId,
+        category: p.category,
+        ...channels,
+      },
+    });
+  }
+
+  const authorsByModel = new Map(models.map((m) => [m.key, m.authors.map((a) => a.user)]));
+
+  const events: Array<Record<string, unknown>> = [];
+  const notifications: Array<Prisma.UserNotificationUncheckedCreateInput & { id: string }> = [];
+
+  function collect(node: CommentSeed, modelKey: string, parent: CommentSeed | null) {
+    const modelId = mustGet(modelIds, modelKey, 'notification model');
+    const commentId = seedId('comment', node.key);
+    const parentCommentId = parent ? seedId('comment', parent.key) : null;
+    const ageDays = node.createdDaysAgo ?? DEFAULT_COMMENT_AGE_DAYS;
+    const createdAt = daysAgo(ageDays);
+    const actorId = mustGet(users, node.user, 'notification actor');
+    const eventId = seedId('event', 'model_comment.created', commentId);
+
+    events.push({
+      id: eventId,
+      type: 'model_comment.created',
+      actorId: actorId,
+      resourceType: 'model',
+      resourceId: modelId,
+      payload: { commentId, parentId: parentCommentId },
+      createdAt,
+    });
+
+    const recipients = selectCommentRecipients({
+      commenterId: node.user,
+      parentAuthorId: parent?.user ?? null,
+      modelAuthorIds: authorsByModel.get(modelKey) ?? [],
+    });
+
+    const read = ageDays >= NOTIFICATION_READ_AFTER_DAYS;
+    for (const r of recipients) {
+      const channels = resolveChannelPreferences(
+        r.category,
+        channelsByPreference.get(`${r.recipientId}:${r.category}`),
+      );
+      if (isMuted(channels)) continue;
+      const mode = channels.email;
+      const pendingDigest = mode === 'daily' && ageDays < 1;
+      const sentAfterMs = mode === 'daily' ? DAY : 0;
+      notifications.push({
+        id: seedId('notification', node.key, r.recipientId, r.category),
+        recipientId: mustGet(users, r.recipientId, 'notification recipient'),
+        eventId,
+        category: r.category,
+        payload: { commentId, excerpt: truncatePreview(node.content) },
+        url: links.modelComment(modelId, parentCommentId ?? commentId, commentId),
+        actorId,
+        targetType: 'model',
+        targetId: modelId,
+        createdAt,
+        readAt: read ? new Date(createdAt.getTime() + HOUR) : null,
+        emailSentAt:
+          mode === 'off' || pendingDigest ? null : new Date(createdAt.getTime() + sentAfterMs),
+      });
+    }
+  }
+
+  function walk(node: CommentSeed, modelKey: string, parent: CommentSeed | null) {
+    if (!node.deleted) collect(node, modelKey, parent);
+    for (const reply of node.replies ?? []) walk(reply, modelKey, node);
+  }
+
+  for (const thread of threads) {
+    for (const c of thread.comments) walk(c, thread.model, null);
+  }
+
+  if (events.length) {
+    await prisma.event.createMany({ data: events as never, skipDuplicates: true });
+  }
+
+  for (const notification of notifications) {
+    await prisma.userNotification.upsert({
+      where: { id: notification.id },
+      update: {},
+      create: notification,
+    });
+  }
+
+  return { notifications: notifications.length, preferences: preferences.length };
 }
 
 export async function loadDrafts(

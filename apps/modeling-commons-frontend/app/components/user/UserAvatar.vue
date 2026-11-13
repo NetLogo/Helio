@@ -69,7 +69,7 @@ const props = withDefaults(defineProps<AvatarProps>(), {
 const headlineImagePx = 80;
 
 const displayAlt = computed(() => createAltText(props.alt, props.name));
-const initials = computed(() => createInitials(props.name));
+const initials = computed(() => createAvatarInitials(props.name));
 const variantProps = computed(() => getVariantProps(props.variant));
 </script>
 
@@ -84,17 +84,6 @@ type AvatarProps = {
   pending?: boolean;
   container?: string;
 };
-
-function createInitials(name: string | null): string {
-  return (
-    name
-      ?.split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part: string) => part[0]?.toUpperCase() ?? "")
-      .join("") || "U"
-  );
-}
 
 function createAltText(alt?: string | null, name?: string | null): string {
   return alt ?? `Avatar for ${name ?? "User"}`;

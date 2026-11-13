@@ -10,6 +10,7 @@ import type { InferActions } from "better-auth/client";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/vue";
 import type { DeepReadonly } from "vue";
+import type { UseFetchOptions } from "#app";
 
 const userAdditionalFields = {
   user: {
@@ -82,7 +83,7 @@ export default defineNuxtPlugin({
     // -Omar Ibrahim, May 01 26
     const useFetchHeaders = new Proxy(useFetch, {
       apply(target, thisArg, argArray) {
-        const [input, options] = argArray as Parameters<typeof useFetch>;
+        const [input, options] = argArray as [Parameters<typeof useFetch>[0], UseFetchOptions<unknown>?];
 
         const mergedOptions = {
           ...options,
@@ -97,7 +98,9 @@ export default defineNuxtPlugin({
       },
     });
 
-    const session = await nuxtApp.runWithContext(() => authClient.useSession(useFetchHeaders));
+    // Annotated to break a type cycle: nuxtApp's type includes this plugin's provided $auth.
+    const session: Awaited<ReturnType<typeof authClient.useSession<typeof useFetchHeaders>>> =
+      await nuxtApp.runWithContext(() => authClient.useSession(useFetchHeaders));
 
     const refresh = () => {
       try {

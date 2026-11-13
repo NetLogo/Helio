@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import NetLogoUserManualLogo from '@repo/vue-ui/assets/brands/NetLogoUserManual.svg';
+import NetLogoUserManualLogo from '@repo/vue-ui/assets/brands/NetLogoUserManual.svg?url';
 import type { FooterLink } from '@repo/vue-ui/components/footer/types';
 import { onMounted, ref } from 'vue';
 

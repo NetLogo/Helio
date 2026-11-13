@@ -14,6 +14,8 @@ import { nanoid } from 'nanoid';
 // Both producers of the shape must use it or the reader mangles filenames.
 export const STAGING_KEY_RANDOM_SEGMENT_LENGTH = 10;
 
+export const PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX = 'preview-images';
+
 export default function makeModelDraftStorage({ storage, bucket, fileDomain }: Dependencies) {
   function stagingPrefix(userId: string, draftId: string): string {
     return `staging/${userId}/${draftId}/`;

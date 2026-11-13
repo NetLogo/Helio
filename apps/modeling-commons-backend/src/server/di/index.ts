@@ -1,19 +1,19 @@
+import { initStorage } from '#src/lib/storage.ts';
 import { makeDependencies } from '#src/modules/index.ts';
 import { formatName } from '#src/server/di/util.ts';
+import type { EventBus } from '#src/shared/cqrs/bus.types.ts';
 import { diContainer, fastifyAwilixPlugin } from '@fastify/awilix';
-import { asFunction, Lifetime } from 'awilix';
-import type { FastifyInstance } from 'fastify';
+import { asFunction, Lifetime, type AwilixContainer } from 'awilix';
+import type { FastifyBaseLogger, FastifyInstance } from 'fastify';
 import path from 'node:path';
 
-export async function di(fastify: FastifyInstance): Promise<void> {
-  diContainer.register({
-    ...makeDependencies({
-      logger: fastify.log,
-      eventBus: fastify.eventBus,
-    }),
-  });
+export async function loadDependencies(
+  container: AwilixContainer,
+  externals: { logger: FastifyBaseLogger; eventBus: EventBus },
+): Promise<void> {
+  container.register({ ...makeDependencies(externals) });
 
-  await diContainer.loadModules(
+  await container.loadModules(
     [
       path.join(
         import.meta.dirname,
@@ -29,19 +29,11 @@ export async function di(fastify: FastifyInstance): Promise<void> {
       },
     },
   );
+}
 
-  await diContainer.loadModules(
-    [path.join(import.meta.dirname, '../../modules/**/*.{handler,event-handler}.{js,ts}')],
-    {
-      formatName,
-      esModules: true,
-      resolverOptions: {
-        asyncInit: 'init',
-        register: asFunction,
-        lifetime: Lifetime.SINGLETON,
-      },
-    },
-  );
+export async function di(fastify: FastifyInstance): Promise<void> {
+  await initStorage();
+  await loadDependencies(diContainer, { logger: fastify.log, eventBus: fastify.eventBus });
 
   // Create a dependency injection container
   await fastify.register(fastifyAwilixPlugin, {

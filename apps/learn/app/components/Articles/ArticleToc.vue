@@ -1,5 +1,5 @@
 <template>
-  <UContentToc :links="article.item?.body?.toc?.links" />
+  <UContentToc :links="article.item?.body?.toc?.links" :ui="{ container: 'lg:pt-4', trigger: 'mt-0' }" />
 </template>
 
 <script setup lang="ts">

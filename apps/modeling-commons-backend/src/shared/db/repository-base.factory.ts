@@ -1,6 +1,8 @@
+import { Prisma } from '#prisma/index';
 import type { Mapper } from '#src/shared/ddd/mapper.interface.ts';
+import { mapPrismaError } from '#src/shared/db/prisma-error.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
-import { ConflictException, DatabaseErrorException } from '#src/shared/exceptions/index.ts';
+import { DatabaseErrorException } from '#src/shared/exceptions/index.ts';
 
 type PrismaDelegate = {
   create: (args: { data: unknown }) => Promise<unknown>;
@@ -25,13 +27,18 @@ export type RepositoryBase<Entity extends { id: string }> = {
 };
 
 function handleDatabaseError(error: unknown, operation: string): never {
-  if (error instanceof Error && 'code' in error && error.code === 'P2002') {
-    throw new ConflictException('Record already exists', error);
-  }
-  throw new DatabaseErrorException(
-    `Database operation failed: ${operation}`,
-    error instanceof Error ? error : new Error(String(error)),
+  throw (
+    mapPrismaError(error) ??
+    new DatabaseErrorException(
+      'Internal Server Error',
+      error instanceof Error ? error : new Error(String(error)),
+      { operation },
+    )
   );
+}
+
+function isRecordNotFound(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025';
 }
 
 export type RepositoryBaseFactory = <Entity extends { id: string }, DbRecord>(opts: {
@@ -56,12 +63,10 @@ export default function makeRepositoryBase({
 
     return {
       async insert(entity: Entity): Promise<void> {
-        try {
-          const data = mapper.toPersistence(entity);
-          await delegate.create({ data });
-        } catch (error) {
-          handleDatabaseError(error, `insert ${tableName}`);
-        }
+        const data = mapper.toPersistence(entity);
+        await delegate
+          .create({ data })
+          .catch((error: unknown) => handleDatabaseError(error, `insert ${tableName}`));
       },
 
       async findOneById(id: string): Promise<Entity | undefined> {
@@ -93,24 +98,22 @@ export default function makeRepositoryBase({
         };
       },
 
-      // eslint-disable-next-line @typescript-eslint/consistent-return -- handleDatabaseError always throws
       async update(entity: Entity): Promise<Entity> {
-        try {
-          const data = mapper.toPersistence(entity);
-          const record = await delegate.update({ where: { id: entity.id }, data });
-          return mapper.toDomain(record as DbRecord);
-        } catch (error) {
-          handleDatabaseError(error, `update ${tableName}`);
-        }
+        const data = mapper.toPersistence(entity);
+        const record = await delegate
+          .update({ where: { id: entity.id }, data })
+          .catch((error: unknown) => handleDatabaseError(error, `update ${tableName}`));
+        return mapper.toDomain(record as DbRecord);
       },
 
       async delete(entityId: string): Promise<boolean> {
-        try {
-          await delegate.delete({ where: { id: entityId } });
-          return true;
-        } catch {
-          return false;
-        }
+        return delegate.delete({ where: { id: entityId } }).then(
+          () => true,
+          (error: unknown) => {
+            if (isRecordNotFound(error)) return false;
+            return handleDatabaseError(error, `delete ${tableName}`);
+          },
+        );
       },
     };
   };

@@ -12,7 +12,7 @@ RESTful API backend: Fastify + TypeScript, Prisma/PostgreSQL, better-auth, admin
 
 Every module follows the same skeleton - mirror it when adding a new one:
 
-- `domain/` - aggregates, value types, domain errors, pure logic (`<module>.domain.ts`, `<module>.errors.ts`, `<module>.types.ts`).
+- `domain/` - aggregates, value types, domain errors, pure logic, domain predicate functions (`<module>.domain.ts`, `<module>.errors.ts`, `<module>.types.ts`).
 - `database/` - always three files: `<module>.repository.ts` (Prisma impl), `.repository.port.ts` (interface), `.repository.mock.ts` (for tests). Record shapes live here too (`<module>.record.ts`).
 - `dtos/` - Typebox request/response schemas + inferred types. Paginated responses have their own `*.paginated.response.dto.ts`.
 - `queries/` - read-side CQRS-like handlers for complex queries (`get-*.query.ts`, `list-*.query.ts`).
@@ -22,13 +22,16 @@ Every module follows the same skeleton - mirror it when adding a new one:
 - `<module>.mapper.ts` - record ↔ domain ↔ response.
 - `index.ts` - awilix registrations for the module.
 
+Exception: `src/modules/user-notification/` is organised by surface with a shared `core/`. `core/` holds the types, the notification repository, subjects, producer lookup, channel preference resolution and unsubscribe tokens (the contract between email and preferences). `feed/`, `email/` (which also builds the email links), `digest/` and `preferences/` each mirror the standard layout internally (`database/`, `dtos/`, `*.domain.ts`, `*.service.ts`, `*.query.ts`) and import only `core/`, the catalog and shared code, never a sibling surface. `delivery/` is the one composer: it may call `preferences/`, `email/` and `digest/`. `index.ts` and the route wire everything. The rule `user-notification-no-sibling-surface` in `.dependency-cruiser.cjs` enforces this (specs and mocks are exempt).
+
 Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read-only admin), `src/modules/file/` (S3 integration).
 
 ## Writes (Database mutations)
 
-- Always go through `transactionManager.run(async (ctx) => { ... })`.
-- Use `repository.insertTx(ctx, entity)` / `updateFields(ctx, ...)` / `softDelete(ctx, ...)` inside the txn.
-- Emit domain audit via `eventRepository.insert(ctx, { type, actorId, resourceType, resourceId, payload })` in the same txn. Event types are dotted (`model.created`, `model.deleted`).
+- Use a transaction (`transactionManager.run(async (ctx) => { ... })`) for multi-write units and for a write paired with an event or job; a single-statement write may skip it.
+- Use `repository.insertTx(ctx, entity)` / `updateFieldsTx(ctx, ...)` / `softDeleteTx(ctx, ...)` inside the txn. A method that takes a required `TransactionContext` ends in `Tx`; a method whose context is optional has no suffix.
+- Emit domain audit via `eventRepository.insertTx(ctx, { type, actorId, resourceType, resourceId, payload })` in the same txn. Event types are dotted (`model.created`, `model.deleted`).
+- `eventRepository.insertTx` also publishes the event type through `jobQueue.publishTx` in the same transaction, which sends one `{ eventId }` job to every queue subscribed to that type (`subscribesTo` in `src/config/workers.ts`), so a committed event always reaches its subscribers and a rolled back one never does.
 - For child aggregates (e.g. comments on a model), set `resourceType` to the *parent* (`model`), not the child. Per-resource audit queries surface child activity that way.
 - Soft delete, don't hard delete: models/users carry `deletedAt`. Call `modelDomain.assertNotDeleted(entity)` before mutating.
 - **Models are written through drafts**, not directly. Flow: `POST /v1/model-drafts` → `PATCH /v1/model-drafts/:id` → multipart upload to `/v1/model-drafts/:id/files` → `POST /v1/model-drafts/:id/publish`. There is no `POST /v1/models`. Publish auto-creates `v1`; a model never has zero versions.
@@ -47,7 +50,6 @@ Reference modules: `src/modules/model/` (full shape), `src/modules/event/` (read
 - Admin-only: `[requireAuth, requireRole('admin')]`.
 - All routes versioned under `/v1/...`.
 - Use Typebox schemas for `body` / `params` / `querystring` / `response`. For querystring-heavy routes.
-- Use `fastify.withTypeProvider<TypeBoxTypeProvider>().route({ ... })`.
 - Return shapes: `201 { id }` on create (see `idDtoSchema`), `204` on update/delete, full DTO on read.
 
 ## Imports
@@ -69,22 +71,41 @@ Use path aliases, never relative `../../`:
 
 ## Email
 
-- Send: `mailService.sendMail(content)` from `src/modules/mail/mail.service.ts`.
-- Build content: `mailDomain.create*Email(...)` factories in `src/modules/mail/domain/mail.domain.ts`. New MVP notifications can reuse `createNotificationEmail`; dedicated templates are polish.
+- Send: queue with `mailService.enqueue(content, ctx?)` from `src/modules/mail/mail.service.ts`, which sends a `send-email` pg-boss job whose data is the rendered `Mail.Options`. Only the `send-email` worker (`src/workers/email-sender.ts`) calls `sendMailAsync`; only `src/lib/auth.ts` uses the transporter directly.
+- Build content: `mailDomain.create*Email(...)` factories in `src/modules/mail/domain/mail.domain.ts`.
 - Templates: React Email components at `packages/emails/src/templates/` (`@repo/emails`).
-- Fire emails *after* `transactionManager.run` commits, with `Promise.allSettled` + logger on failure. Never block a write on SMTP, never let an email failure roll back the txn.
+- Enqueue inside the same `transactionManager.run` as the write, passing `ctx` (the job goes in through `jobQueue.sendTx`), so the email is queued only if the write commits. SMTP failures are retried by pg-boss and never roll back the write; retry limit, backoff, the `send-email-dead` dead letter and the 30 day retention live in `workersConfig.sendEmail` (`src/config/workers.ts`).
 - Local SMTP: Mailpit container (port 1025, web UI 8025) via `docker-compose.dev.yml`. No auth, no TLS.
+
+## Workers
+
+- One pg-boss instance per process, from DI: `boss` (`src/shared/jobs/boss.ts`) and the `jobQueue` port over it (`src/shared/jobs/pg-boss.job-queue.ts`).
+- `SERVER_ROLE=api` is send-only: its own 2-connection pool, no supervise or schedule. Every role installs the pg-boss schema on `boss.start()` under pg-boss's advisory lock, so the api can send before any worker starts. Every role creates the queues it sends to (`upsertQueueWithDeadLetter` in `src/workers/queues.ts`, called after `boss.start()` in `src/server/index.ts`), then runs `registerSubscriberQueues`, which creates the subscriber queues and subscribes them to their event types. `worker` and `standalone` own every other queue, the schedules and the workers (`src/workers/index.ts`).
+- `SERVER_ROLE=sse` is send-only like `api` and never consumes jobs. It serves only `realtime.route.ts` (`isRouteFileServed` in `src/server/route-files.ts`) plus whatever the plugins in `src/server/plugins/` register, since they load for every role, and holds one Postgres LISTEN connection on `realtimeConfig.channel` (`startPgListener` in `src/shared/realtime/pg-listener.ts`). `standalone` also serves the realtime routes.
+- Realtime topics are owned by modules: each declares `{ type, events, getTopic, canSubscribe }` in `src/modules/<module>/realtime/<module>.topic.ts` (`satisfies RealtimeTopic<'<type>'>` from `src/shared/realtime/realtime-topic.ts`) and is listed in `src/modules/realtime-topics.ts`; the registry is also in DI as `realtimeTopics`. `canSubscribe(deps, viewerId, id)` is the only permission check on a stream topic: it answers false for 403 or throws a `NotFoundException` for 404 (the model topic runs `policy.read` over `loadModelAccessContext`). The type and its events must first be added to `StreamTopic` and `StreamTopicEvents` in `packages/modeling-commons-shared/src/realtime/topics.ts`, or `yarn check-types` fails. `src/shared/realtime` only transports and imports no module.
+- Wire format: `notifyRealtime` (`src/shared/realtime/realtime-publisher.ts`) sends one `pg_notify(realtimeConfig.channel, ...)` per topic, from `eventRepository.insertTx` on the event's own transaction (so a rollback sends nothing and commit delivers it) and from the notification delivery service for `user_notification.created`. The payload is the JSON `StreamMessage` `{"topic":{"type":"model","id":"..."},"event":"model_comment.created"}`, ids only. A notify is not retried; the frontend resyncs on every stream open instead. The listener parses the payload (`parseRealtimeMessage`, logs and drops anything unreadable) and the broker writes it to the streams holding `buildTopicKey(topic)` as a plain `data: <json>` frame with no `event:` line. After its LISTEN connection is restored the listener broadcasts `data: {"event":"resync"}`.
+- Subscriptions: `GET /v1/events?topics=<type>:<id>,...` names every topic the stream follows (at most `realtimeConfig.streams.maxTopicsPerStream`). Each type is looked up in `realtimeTopics` (400 when none) and its `canSubscribe` runs once at open (403 or 404 refuses the whole stream); the broker then holds that fixed topic set until the stream closes. There is no subscribe call and no connection id: the frontend (`useServerStreamConnection`, `useStreamTopic`) builds the URL from the topics its components hold and reopens the stream when that set changes, and it treats every stream open as a resync, so it catches up on anything missed while closed.
+- Queue policies (retries, backoff, the `<queue>-dead` dead letter, retention) live per queue in `src/config/workers.ts` and are applied by `registerQueues` (`src/workers/queues.ts`) at server start in every role, from the `workerQueues` and `subscriberQueues` lists; a new queue must be added to one of them. Workers poll at the pg-boss default (2 s) and take one job per batch (`batchSize` default 1).
+- Queues: `user-notifications` (the event subscriber, one job per published event), `send-email` (one job per email), `send-daily-digests` (cron 17:00 UTC; pages the digest recipients and sends each digest inline; the `NotificationDigest` primary key on (recipient, UTC day of the window end) lets one daily digest through per recipient per day, claimed in the transaction that marks the notifications sent), `send-digest` (one job per preference switch to daily, for the categories switched on), `purge-notifications` and `purge-stale-model-drafts` (weekly crons).
+- Enqueue from a transaction with `jobQueue.sendTx(ctx, ...)`; never plain `send` inside `transactionManager.run`, or the job outlives a rollback.
+- A worker handler that throws is retried by pg-boss and ends in the queue's dead letter after the last retry, so do not catch to swallow in handlers; the daily digest run logs a failed recipient and continues, then throws after the last page so the whole run retries; recipients already sent have no pending rows and a claimed day, so the retry reaches only the failed ones.
 
 ## Testing
 
 - `yarn run test:unit` (vitest) · `yarn run test:e2e` (cucumber, needs `yarn run svc` running for postgres/object-storage/mailpit/netlogo-services).
-- `test:unit` is fully mocked (no DB); apply pending migrations before `test:e2e` (`yarn run db:migrate:dev`) — an unapplied migration makes the generated client mismatch the DB and 500s every affected route. Diagnose e2e failures from `reports/cucumber-report.json`.
+- During iteration run `yarn run test:e2e:sanity` plus the feature files you touched; run the full `yarn run test:e2e` once before review or merge.
+- `test:unit` is fully mocked (no DB). `test:e2e` runs against its own `test_e2e` database on the same Postgres, which `cucumber.mjs` creates if missing and migrates (`prisma migrate deploy`) at the start of every run, so it never truncates the dev database or shares its pg-boss queues. Every scenario starts with `boss.deleteAllJobs()`; assert queued or sent email through the `send-email` jobs (`tests/support/email-jobs.ts`). Only `test:e2e:data` reads the database in `.env`. Diagnose e2e failures from `reports/cucumber-report.json`.
 - In vitest specs, import `beforeEach`/`afterEach` from `vitest`, never `node:test` — wrong import silently no-ops the hook.
+- Specs for `src/shared/<area>/` live in `src/shared/<area>/__tests__/` and import their subject through `#src/...` aliases, not relative paths.
+- Tests should never enforce an implementation detail; they should focus on observable behavior and outcomes. Existing specs that pin implementation details get fixed incrementally.
+- Enforce constraints through tests, ensuring that the system behaves correctly under expected and edge-case scenarios.
 
 ## Config & limits
 
 - Limits (file size, allowed MIME types, rate caps, …) live in `src/config/rules.ts`. Don't redeclare module-local constants.
-- App-level env (`SMTP_*`, `STORAGE_*`, …) flows through `src/config/env.ts`. Services receive derived values via awilix DI (`storagePublicBaseUrl`, `bucket`), not direct `env.*` reads.
+- Rules shared with the frontend live in `packages/modeling-commons-shared`: `rules.ts` reads the auth rules from there, and the comment domain (`model-comment.domain.ts`) applies the comment content rules, trimming before the length check, so the request DTOs do not check comment length. The package is consumed from its built `dist`: after changing it, run `yarn workspace @repo/modeling-commons-shared build` (or keep root `yarn dev` running) before testing.
+- App-level env (`SMTP_*`, `STORAGE_*`, …) flows through `src/config/env.ts`. Importing `env` directly is fine; passing env-derived values through awilix DI is not required.
+- Worker settings live in `src/config/workers.ts`, one entry per queue: queue name (the dead-letter queue is always `<queueName>-dead`, from `getDeadLetterQueueName` in `src/workers/queues.ts`), queue policy, worker concurrency and, for scheduled queues, the cron expression. Tests validate that each cron expression is well-formed and adheres to the expected five-field format.
 
 ## Dev servers
 

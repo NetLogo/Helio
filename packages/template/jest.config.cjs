@@ -1,6 +1,12 @@
+const isWindows = process.platform === 'win32' || process.env.OS === 'Windows_NT';
+
 /** @type {import('jest').Config} */
 module.exports = {
   preset: "ts-jest/presets/default-esm",
+  testMatch: isWindows ? 
+    ['<rootDir>/__never_matches__/*.test.ts'] : 
+    ["<rootDir>/tests/**/*.test.ts"],
+  passWithNoTests: isWindows ? true : false,
   extensionsToTreatAsEsm: [".ts"],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",

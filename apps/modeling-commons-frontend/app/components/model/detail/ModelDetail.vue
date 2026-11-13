@@ -86,7 +86,7 @@
       @update:model-value="idx => onTabChange(idx)"
     >
       <template #discussion>
-        <ModelDiscussionTab />
+        <ModelDiscussionTab :model-id="card.model.id" />
       </template>
       <template #files>
         <ModelFilesTab
@@ -118,6 +118,7 @@ import type { AttachedFile } from "./types";
 import { getAuthorUrl, getPrimaryAuthor } from "~/components/model/ModelAuthors.vue";
 
 const props = defineProps<{ card: ModelCard; permissions: UserModelPermissions }>();
+const router = useRouter();
 
 type TabKey = "discussion" | "files" | "versions" | "family";
 
@@ -203,7 +204,25 @@ function onTabChange(idx: string | number) {
   if (key === "files" && filesStatus.value === "idle") {
     void loadFiles();
   }
+
+  router.replace({
+    query: router.currentRoute.value.query,
+    hash: "#" + key,
+  })
 }
+
+onMounted(() => {
+  const hash = router.currentRoute.value.hash.replace(/^#/, "");
+  const tabIndex = tabs.value.findIndex((tab) => tab.slot === hash);
+  if (tabIndex >= 0) {
+    activeTab.value = String(tabIndex);
+  }
+  nextTick(() =>
+    setTimeout(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "instant" });
+    }, 100)
+  );
+});
 
 const interactions = useModelInteractions();
 const toast = useToast();
@@ -309,11 +328,7 @@ async function handleDelete() {
   if (!modelId.value) return;
   deleting.value = true;
   try {
-    const api = useApi();
-    const { data, error } = await api.DELETE("/api/v1/models/{id}", {
-      params: { path: { id: modelId.value } },
-    });
-    handleApiError(data, error, "deleting model");
+    await deleteModelById(modelId.value);
     deleteOpen.value = false;
     toast.add({ title: "Model deleted", color: "success", icon: "i-lucide-trash-2" });
     await navigateTo(getAuthorUrl(getPrimaryAuthor(props.card.authors)));

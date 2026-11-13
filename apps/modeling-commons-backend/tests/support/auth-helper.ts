@@ -81,10 +81,7 @@ export async function createAuthenticatedUser(
   return { id, name, email, cookie };
 }
 
-export async function makeAdmin(
-  server: FastifyInstance,
-  userId: string,
-): Promise<void> {
+export async function makeAdmin(server: FastifyInstance, userId: string): Promise<void> {
   const { prisma } = server.diContainer.cradle as { prisma: { user: { update: Function } } };
   await prisma.user.update({
     where: { id: userId },

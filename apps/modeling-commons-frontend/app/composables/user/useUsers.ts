@@ -1,6 +1,4 @@
 export default function useUsers() {
-  const { GET } = useApi();
-
   const { query, debouncedQuery } = useSearchQuery();
   const key = computed(() => `users-${debouncedQuery.value}`);
 
@@ -11,19 +9,7 @@ export default function useUsers() {
     loadNextPage,
     canLoadMore,
     count,
-  } = useApiPagination(
-    key,
-    async (page: number) => {
-      const { data, error } = await GET("/api/v1/users", {
-        params: { query: { limit: 20, offset: (page - 1) * 20, keyword: _getKeywordValue() } },
-      });
-
-      const parsed = handleApiError(data, error, "fetching users");
-
-      return parsed;
-    },
-    { lazy: true },
-  );
+  } = useApiPagination(key, (page: number) => fetchUsers(page, _getKeywordValue()), { lazy: true });
 
   function reset() {
     query.value = "";
@@ -44,5 +30,3 @@ export default function useUsers() {
     reset,
   };
 }
-
-export type ApiUser = ResponseSuccessData<"GET", "/api/v1/users/{id}">;

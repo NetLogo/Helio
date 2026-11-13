@@ -3,10 +3,10 @@ import server from '../../src/server/index.ts';
 import { addIdFormat } from '../../src/shared/utils/validator.util.ts';
 import { isTimingEnabled, recordRequest } from './timing-collector.ts';
 
-export const buildApp = async () => {
+export const buildApp = async ({ logLevel = 'warn' }: { logLevel?: string } = {}) => {
   const app = Fastify({
     logger: {
-      level: 'warn',
+      level: logLevel,
     },
     disableRequestLogging: true,
     routerOptions: {

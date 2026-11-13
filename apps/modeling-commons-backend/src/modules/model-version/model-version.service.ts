@@ -3,6 +3,8 @@ import type {
   CreateVersionProps,
   UpdateCurrentVersionProps,
 } from '#src/modules/model-version/domain/model-version.types.ts';
+import { detectNetlogoVersion } from '#src/shared/utils/netlogo-file.ts';
+import { modelVersionEventTypes } from '#src/modules/model-version/model-version.events.ts';
 
 export default function makeModelVersionService({
   transactionManager,
@@ -26,14 +28,15 @@ export default function makeModelVersionService({
         access: 'private',
         pathPrefix: `uploads/models/${modelId}/versions`,
       });
+      const netlogoVersion = detectNetlogoVersion(nlogoxFile);
 
       return transactionManager.run(async (ctx) => {
-        const previous = await modelVersionRepository.findLatestByModel(modelId);
+        const previous = await modelVersionRepository.findLatestByModel(modelId, ctx);
         if (previous) {
-          await modelVersionRepository.finalize(ctx, previous.modelId, previous.versionNumber);
+          await modelVersionRepository.finalizeTx(ctx, previous.modelId, previous.versionNumber);
         }
 
-        const versionNumber = await modelVersionRepository.getNextVersionNumber(ctx, modelId);
+        const versionNumber = (previous?.versionNumber ?? 0) + 1;
         const entity = modelVersionDomain.createVersion({
           modelId,
           versionNumber,
@@ -41,13 +44,14 @@ export default function makeModelVersionService({
           description: input.description,
           previewImageFileKey: input.previewImageFileKey,
           netlogoFileKey,
+          netlogoVersion,
         });
 
         await modelVersionRepository.insertTx(ctx, entity);
-        await modelRepository.setLatestVersion(ctx, modelId, versionNumber);
+        await modelRepository.setLatestVersionTx(ctx, modelId, versionNumber);
 
-        await eventRepository.insert(ctx, {
-          type: 'model_version.created',
+        await eventRepository.insertTx(ctx, {
+          type: modelVersionEventTypes.created,
           actorId: userId,
           resourceType: 'model_version',
           resourceId: `${modelId}:${versionNumber}`,
@@ -68,14 +72,14 @@ export default function makeModelVersionService({
       modelVersionDomain.assertNotFinalized(current);
 
       await transactionManager.run(async (ctx) => {
-        await modelVersionRepository.updateFields(
+        await modelVersionRepository.updateFieldsTx(
           ctx,
           current.modelId,
           current.versionNumber,
           input,
         );
-        await eventRepository.insert(ctx, {
-          type: 'model_version.updated',
+        await eventRepository.insertTx(ctx, {
+          type: modelVersionEventTypes.updated,
           actorId: userId,
           resourceType: 'model_version',
           resourceId: `${modelId}:${current.versionNumber}`,

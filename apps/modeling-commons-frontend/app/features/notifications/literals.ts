@@ -1,0 +1,18 @@
+export const notificationLiterals = {
+  viewNamedLabel: "View {name}",
+  actorFallbackLabel: "View author",
+  targetFallbackLabel: "View model",
+  bellLabel: "Notifications",
+  markReadFailed: "Failed to mark notification as read",
+  bellUnreadLabel: "Notifications, {count} unread",
+  unreadRowLabel: "Unread",
+  menuSeeAll: "See all notifications",
+  pageTitle: "Notifications",
+  seoDescription: "Your Modeling Commons notifications.",
+  unreadOnlyLabel: "Unread only",
+  loadMore: "Load more",
+  emptyAll: "You have no notifications yet.",
+  emptyUnread: "You have no unread notifications.",
+  loadErrorTitle: "Something went wrong",
+  loadErrorMessage: "Notifications could not be loaded. Try again later.",
+} as const;

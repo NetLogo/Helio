@@ -1,5 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { NOTIFICATION_STATE_KEYS } from "~/components/notifications/shared";
 import useAuthActions from "~/composables/auth/useAuthActions";
 import { getEmailVerificationCallbackUrl, getResetPasswordRedirectUrl } from "~/utils/auth";
 import { buildAuthMock } from "~~/tests/helpers/mockUser";
@@ -103,5 +104,23 @@ describe("useAuthActions", () => {
     const actions = useAuthActions();
     await actions.signOut();
     expect(authMock.current!.client.signOut).toHaveBeenCalledTimes(1);
+  });
+
+  it("signOut resets notification state once the auth client resolves", async () => {
+    const unreadCount = useState<number>(NOTIFICATION_STATE_KEYS.unreadCount, () => 0);
+    unreadCount.value = 5;
+    let resolveSignOut: (value: unknown) => void = () => {};
+    authMock.current!.client.signOut.mockReturnValue(
+      new Promise((resolve) => {
+        resolveSignOut = resolve;
+      }),
+    );
+
+    const pending = useAuthActions().signOut();
+    expect(unreadCount.value).toBe(5);
+
+    resolveSignOut({ data: { success: true } });
+    await pending;
+    expect(unreadCount.value).toBe(0);
   });
 });

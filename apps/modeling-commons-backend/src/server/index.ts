@@ -8,11 +8,22 @@ import Cors from '@fastify/cors';
 import Helmet from '@fastify/helmet';
 import UnderPressure from '@fastify/under-pressure';
 
+import pg from 'pg';
+
 import env from '#src/config/env.ts';
+import realtimeConfig from '#src/config/realtime.ts';
 import { di } from '#src/server/di/index.ts';
+import { isRouteFileServed } from '#src/server/route-files.ts';
+import { startPgListener } from '#src/shared/realtime/pg-listener.ts';
 import { startWorkers } from '#src/workers/index.ts';
+import { registerQueues } from '#src/workers/queues.ts';
 
 export default async function createServer(fastify: FastifyInstance): Promise<FastifyInstance> {
+  // Announce server mode and environment
+  fastify.log.info(
+    { name: 'server' },
+    `Server is running in ${env.nodeEnv} mode with role (${env.server.role})`,
+  );
   // Set sensible default security headers
   await fastify.register(Helmet, {
     global: true,
@@ -80,18 +91,47 @@ export default async function createServer(fastify: FastifyInstance): Promise<Fa
   // Configure Dependency Injection
   await di(fastify);
 
+  const { boss } = fastify.diContainer.cradle;
+  await boss.start();
+  await registerQueues(boss);
+  fastify.addHook('onClose', async () => {
+    await boss.stop({ graceful: true });
+  });
+
   await startWorkers(fastify);
 
+  if (env.sse.enabled) {
+    const listener = startPgListener({
+      createClient: () =>
+        new pg.Client({
+          connectionString: env.db.url,
+          keepAlive: true,
+          keepAliveInitialDelayMillis: realtimeConfig.listener.keepAliveInitialDelayMs,
+          application_name: realtimeConfig.listener.applicationName,
+        }),
+      broker: fastify.diContainer.cradle.realtimeBroker,
+      topics: fastify.diContainer.cradle.realtimeTopics,
+      logger: fastify.log,
+      random: Math.random,
+    });
+    fastify.addHook('onClose', async () => {
+      await listener.stop();
+    });
+  }
+
   // Auto-load routes
-  await fastify.register(AutoLoad, {
-    dir: path.join(import.meta.dirname, '../modules'),
-    dirNameRoutePrefix: false,
-    options: {
-      prefix: '/api',
-    },
-    indexPattern: /^$/, // Ignore index files
-    matchFilter: (thisPath) => /\.(route|resolver)\.ts$/.test(thisPath),
-  });
+  if (env.api.enabled || env.sse.enabled) {
+    await fastify.register(AutoLoad, {
+      dir: path.join(import.meta.dirname, '../modules'),
+      dirNameRoutePrefix: false,
+      options: {
+        prefix: '/api',
+      },
+      indexPattern: /^$/, // Ignore index files
+      matchFilter: (thisPath) =>
+        isRouteFileServed(thisPath, { api: env.api.enabled, sse: env.sse.enabled }),
+    });
+  }
 
   await fastify.register(UnderPressure, {
     healthCheck: async () => true,

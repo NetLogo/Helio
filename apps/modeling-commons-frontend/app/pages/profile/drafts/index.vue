@@ -123,8 +123,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelDraftDto } from "~/composables/model/useModelDraft";
-
 definePageMeta({
   layout: "profile",
   middleware: ["auth"],
@@ -136,24 +134,9 @@ useSeoMeta({
   robots: "noindex, nofollow",
 });
 
-interface DraftsListResponse {
-  count: number;
-  limit: number;
-  page: number;
-  data: ModelDraftDto[];
-}
-
-const apiBase = useRuntimeConfig().public.apiBase as string;
 const toast = useToast();
 
-const { data, pending, error, refresh } = await useAsyncData("my-drafts", async () => {
-  const headers = import.meta.server ? useRequestHeaders(["cookie"]) : undefined;
-  const res = await $fetch<DraftsListResponse>(`${apiBase}/api/v1/model-drafts`, {
-    credentials: "include",
-    headers,
-  });
-  return res;
-});
+const { data, pending, error, refresh } = await useAsyncData("my-drafts", fetchDrafts);
 
 const drafts = computed(() => data.value?.data ?? []);
 const deletingId = ref<string | null>(null);
@@ -161,11 +144,8 @@ const deletingId = ref<string | null>(null);
 async function onDelete(id: string) {
   deletingId.value = id;
   try {
-    const res = await fetch(`${apiBase}/api/v1/model-drafts/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    if (!res.ok) throw new Error(`Request failed (${res.status})`);
+    const { response } = await deleteDraft(id);
+    if (!response.ok) throw new Error(`Request failed (${response.status})`);
     await refresh();
     toast.add({
       title: "Draft deleted",

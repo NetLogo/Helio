@@ -27,7 +27,10 @@ export default function modelVersionTagRepository({
       });
     },
 
-    async findByVersion(modelId: string, versionNumber: number): Promise<Array<ModelVersionTagEntity>> {
+    async findByVersion(
+      modelId: string,
+      versionNumber: number,
+    ): Promise<Array<ModelVersionTagEntity>> {
       const records = await db.modelVersionTag.findMany({
         where: { modelId, versionNumber },
         orderBy: { createdAt: 'desc' },
@@ -35,13 +38,6 @@ export default function modelVersionTagRepository({
       return records.map((r: unknown) =>
         modelVersionTagMapper.toDomain(r as ModelVersionTagRecord),
       );
-    },
-
-    async exists(modelId: string, versionNumber: number, tagId: string): Promise<boolean> {
-      const record = await db.modelVersionTag.findUnique({
-        where: { modelId_versionNumber_tagId: { modelId, versionNumber, tagId } },
-      });
-      return record !== null;
     },
   };
 }

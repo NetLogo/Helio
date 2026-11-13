@@ -31,7 +31,7 @@
                 >Best Usecases</span
               >
             </template>
-            <UCheckboxGroup v-model="state.peerReviewKinds" :items="peerReviewKindOptions" />
+            <UCheckboxGroup v-model="state.peerReviewKinds" :items="[...draftLiterals.peerReviewKindOptions]" />
           </UFormField>
         </UFormField>
 
@@ -40,7 +40,7 @@
             <span class="text-md leading-normal text-text">Description</span>
           </template>
           <UTextarea
-            v-model="state.peerReviewDescription"
+            v-model.nullable="state.peerReviewDescription"
             placeholder="Write 1-2 lines to help others understand what you are trying to resolve"
             :rows="6"
             class="w-full"
@@ -52,8 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import type { UploadFormInput } from "~/forms/upload";
-import { peerReviewKindOptions } from "~/forms/upload";
+import type { UploadFormInput } from "~/features/drafts/validators";
 
 const state = defineModel<UploadFormInput>({ required: true });
 </script>

@@ -23,7 +23,7 @@
 </template>
 <script setup lang="ts">
 import { useInfiniteScroll } from "@vueuse/core";
-import type { ModelCard } from "~/composables/model/useModelCard";
+import type { ModelCard } from "~/features/models/types";
 
 const props = withDefaults(
   defineProps<{

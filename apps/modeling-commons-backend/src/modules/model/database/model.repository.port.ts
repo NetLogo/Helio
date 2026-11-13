@@ -1,6 +1,6 @@
 import type { Model, ModelInteractionKind, Prisma } from '#prisma/index';
 import type { ModelCardRecord } from '#src/modules/model/database/model.card.record.ts';
-import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
 import type {
   Paginated,
@@ -8,6 +8,13 @@ import type {
   RepositoryPort,
 } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
+
+export type ModelPreviewRecord = {
+  id: string;
+  title: string | null;
+  previewImageFileKey: string | null;
+};
 
 export type ModelInteractionCounts = {
   view: number;
@@ -18,8 +25,12 @@ export type ModelInteractionCounts = {
 
 export interface ModelRepository extends RepositoryPort<Model> {
   findByIdIncludeDeleted: (id: string) => Promise<Model | undefined>;
-  setLatestVersion: (ctx: TransactionContext, modelId: string, versionNumber: number) => Promise<void>;
-  softDelete: (ctx: TransactionContext, id: string) => Promise<void>;
+  setLatestVersionTx: (
+    ctx: TransactionContext,
+    modelId: string,
+    versionNumber: number,
+  ) => Promise<void>;
+  softDeleteTx: (ctx: TransactionContext, id: string) => Promise<void>;
   search: <T, I extends Prisma.ModelInclude>(
     filters: ModelSearchFilters,
     params: PaginatedQueryParams,
@@ -29,7 +40,7 @@ export interface ModelRepository extends RepositoryPort<Model> {
       map: (record: Prisma.ModelGetPayload<{ include: I }>) => T;
     },
   ) => Promise<Paginated<T>>;
-  incrementInteractionCount: (
+  incrementInteractionCountTx: (
     ctx: TransactionContext,
     modelId: string,
     kind: ModelInteractionKind,
@@ -37,8 +48,12 @@ export interface ModelRepository extends RepositoryPort<Model> {
   findInteractionCounts: (modelId: string) => Promise<ModelInteractionCounts | null>;
   findChildren: (modelId: string, params: PaginatedQueryParams) => Promise<Paginated<Model>>;
   findCard: (modelId: string) => Promise<ModelCardRecord | null>;
+  findPreviewsReadableBy: (
+    modelIds: Array<string>,
+    viewer: ViewerContext | null,
+  ) => Promise<Array<ModelPreviewRecord>>;
   insertTx: (ctx: TransactionContext, entity: Model) => Promise<void>;
-  updateFields: (
+  updateFieldsTx: (
     ctx: TransactionContext,
     id: string,
     data: { visibility?: ModelVisibility; isEndorsed?: boolean },

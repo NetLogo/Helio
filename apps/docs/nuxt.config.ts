@@ -5,6 +5,7 @@ import { getDocumentedExtensionBuilders } from '@repo/netlogo-docs/extension-doc
 import { deepMerge } from '@repo/utils/std/objects';
 
 import pdfOverrides from './nuxt.config.pdf';
+import staticOverrides from './nuxt.config.static';
 import { websiteConfigSchema } from './runtime.config';
 
 import * as MarkdownConfig from '@repo/nuxt-core/markdown.config';
@@ -17,8 +18,21 @@ const basePath = process.env['BASE_PATH'] ?? '/';
 const isUsingPdfConfig = process.env['DOCS_ENV_PDF'] === '1';
 const optionalPdfLayer = isUsingPdfConfig ? pdfOverrides : {};
 
+const isUsingStaticConfig = process.env['DOCS_ENV_STATIC'] === '1';
+const optionalStaticLayer = isUsingStaticConfig ? staticOverrides : {};
+
+const optionalLayers = deepMerge(
+  optionalPdfLayer,
+  optionalStaticLayer,
+  { mergeArrays: false },
+)
+
 if (isUsingPdfConfig) {
   console.info('[repo] Running with PDF generation configuration overrides');
+}
+
+if (isUsingStaticConfig) {
+  console.info('[repo] Running with static hosting configuration overrides');
 }
 
 const extensions = (await getDocumentedExtensionBuilders(autogenConfig)).map((ext) => ({
@@ -97,7 +111,7 @@ export default defineNuxtConfig(
         baseURL: basePath,
       },
     },
-    optionalPdfLayer,
+    optionalLayers,
     { mergeArrays: false },
   ),
 );

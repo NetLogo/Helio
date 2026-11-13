@@ -64,23 +64,4 @@ export function createReadOnlyMapper<Record, RawResponse>(input: {
   });
 }
 
-export function createWriteOnlyMapper<Entity extends Record, Record, RawResponse>(input: {
-  toDomain: (record: Record) => Entity;
-  toResponse: (entity: Entity) => RawResponse;
-}): Mapper<Entity, Record, ResponseFormat<RawResponse>> {
-  return createMapperHelper<Entity, Record, RawResponse>({
-    toDomain: input.toDomain,
-    toPersistence: identity as (entity: Entity) => Record,
-    toResponse: input.toResponse,
-  });
-}
-
-export function createMapper<Entity, Record, RawResponse>(input: {
-  toPersistence: (entity: Entity) => Record;
-  toDomain: (record: Record) => Entity;
-  toResponse: (entity: Entity) => RawResponse;
-}): Mapper<Entity, Record, ResponseFormat<RawResponse>> {
-  return createMapperHelper<Entity, Record, RawResponse>(input);
-}
-
 export { identity };

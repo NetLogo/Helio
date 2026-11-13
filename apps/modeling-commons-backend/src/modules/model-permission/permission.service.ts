@@ -8,6 +8,8 @@ import {
   PermissionAlreadyExistsError,
   PermissionNotFoundError,
 } from '#src/modules/model-permission/domain/permission.errors.ts';
+import { rethrowUniqueViolation } from '#src/shared/db/prisma-error.ts';
+import { modelPermissionEventTypes } from '#src/modules/model-permission/model-permission.events.ts';
 
 export default function makePermissionService({
   transactionManager,
@@ -22,23 +24,21 @@ export default function makePermissionService({
       level: PermissionLevel,
       callerId: string,
     ): Promise<ModelPermissionEntity> {
-      const existing = await permissionRepository.findByModelAndUser(modelId, granteeUserId);
-      if (existing) {
-        throw new PermissionAlreadyExistsError(modelId, granteeUserId);
-      }
-
       const entity = permissionDomain.createPermission(modelId, granteeUserId, level);
 
-      await transactionManager.run(async (ctx) => {
-        await permissionRepository.insertTx(ctx, entity);
-        await eventRepository.insert(ctx, {
-          type: 'model_permission.granted',
-          actorId: callerId,
-          resourceType: 'model',
-          resourceId: modelId,
-          payload: { granteeUserId, permissionLevel: level },
-        });
-      });
+      await rethrowUniqueViolation(
+        transactionManager.run(async (ctx) => {
+          await permissionRepository.insertTx(ctx, entity);
+          await eventRepository.insertTx(ctx, {
+            type: modelPermissionEventTypes.granted,
+            actorId: callerId,
+            resourceType: 'model',
+            resourceId: modelId,
+            payload: { granteeUserId, permissionLevel: level },
+          });
+        }),
+        () => new PermissionAlreadyExistsError(modelId, granteeUserId),
+      );
 
       return entity;
     },
@@ -51,8 +51,8 @@ export default function makePermissionService({
 
       await transactionManager.run(async (ctx) => {
         await permissionRepository.deleteTx(ctx, modelId, granteeUserId);
-        await eventRepository.insert(ctx, {
-          type: 'model_permission.revoked',
+        await eventRepository.insertTx(ctx, {
+          type: modelPermissionEventTypes.revoked,
           actorId: callerId,
           resourceType: 'model',
           resourceId: modelId,
