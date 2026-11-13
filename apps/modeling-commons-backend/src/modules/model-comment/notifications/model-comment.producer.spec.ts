@@ -315,7 +315,7 @@ describe('modelCommentProducer', () => {
 
         expect(email.html).toContain('a model');
         expect(email.html).toContain('href="https://example.test/models/wolf"');
-        const images = email.html.match(/<img[^>]*>/g) ?? [];
+        const images: string[] = String(email.html ?? '').match(/<img[^>]*>/g) ?? [];
         const logo = env.product.logoUrl ? `src="${env.product.logoUrl}"` : undefined;
         expect(images.filter((tag) => !logo || !tag.includes(logo))).toEqual([]);
         for (const part of [email.subject, email.html, email.text]) {
