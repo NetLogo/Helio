@@ -53,6 +53,7 @@ export default defineConfig({
       await defineVitestProject({
         test: {
           name: "components",
+          setupFiles: ["./tests/setup/icons.ts"],
           include: ["app/components/**/*.{test,spec}.ts"],
           environment: "nuxt",
           environmentOptions: {
@@ -63,6 +64,7 @@ export default defineConfig({
       await defineVitestProject({
         test: {
           name: "nuxt",
+          setupFiles: ["./tests/setup/icons.ts"],
           include: ["tests/nuxt/**/*.{test,spec}.ts"],
           environment: "nuxt",
           environmentOptions: {
