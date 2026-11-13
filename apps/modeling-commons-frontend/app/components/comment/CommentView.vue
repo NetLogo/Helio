@@ -9,9 +9,6 @@
         : undefined
     "
     :tabindex="isHighlighted ? -1 : undefined"
-    :style="{
-      '--background': isHighlighted ? 'var(--color-royal-blue-lightest)' : undefined,
-    }"
     @focusout="handleFocusOut"
   >
     <div class="relative">
@@ -49,7 +46,12 @@
       </UAvatar>
     </div>
 
-    <div class="flex-1 flex flex-col gap-1">
+    <div
+      class="flex-1 flex flex-col gap-1"
+      :style="{
+        '--background': isHighlighted ? 'var(--color-royal-blue-lightest)' : undefined,
+      }"
+    >
       <CommentMetadataBar
         :author="comment.author"
         :created-at="comment.createdAt"
