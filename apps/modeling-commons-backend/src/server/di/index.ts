@@ -1,3 +1,4 @@
+import { initStorage } from '#src/lib/storage.ts';
 import { makeDependencies } from '#src/modules/index.ts';
 import { formatName } from '#src/server/di/util.ts';
 import type { EventBus } from '#src/shared/cqrs/bus.types.ts';
@@ -31,6 +32,7 @@ export async function loadDependencies(
 }
 
 export async function di(fastify: FastifyInstance): Promise<void> {
+  await initStorage();
   await loadDependencies(diContainer, { logger: fastify.log, eventBus: fastify.eventBus });
 
   // Create a dependency injection container
