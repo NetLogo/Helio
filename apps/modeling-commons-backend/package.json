@@ -23,7 +23,7 @@
     "svc:down": "docker-compose -f docker-compose.dev.yml down",
     "generate:types": "bash scripts/generate-types.sh",
     "sweep": "tsx --env-file-if-exists=.env scripts/sweep.ts",
-    "test": "yarn run test:unit && yarn run test:e2e",
+    "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:unit": "vitest run",
     "test:e2e": "sh -c 'FASTIFY_AUTOLOAD_TYPESCRIPT=1 cucumber-js --exit \"$@\"' --",

@@ -96,7 +96,7 @@ jobs:
         working-directory: apps/modeling-commons-backend
 
       - name: Run backend tests
-        run: yarn run test
+        run: yarn run test && yarn run test:e2e
         working-directory: apps/modeling-commons-backend
         env:
           E2E_MAILPIT: '1'
