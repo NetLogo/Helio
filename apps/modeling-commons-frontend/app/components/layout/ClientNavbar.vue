@@ -54,6 +54,7 @@
             :alt="user.name"
             :email="user.email"
             variant="headline"
+            container="w-full"
           />
         </template>
         <template #default="{ open }">
