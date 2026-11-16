@@ -107,6 +107,7 @@
         <ModelFamilyTab
           :parent="family?.parent ?? null"
           :children="family?.children ?? []"
+          :pending="familyStatus === 'pending'"
         />
       </template>
     </UTabs>

@@ -1,5 +1,6 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import type { ModelVersion } from "~/features/models/types";
 import ModelVersionsTab from "~/components/model/detail/ModelVersionsTab.vue";
 
@@ -15,11 +16,19 @@ function makeVersion(overrides: Partial<ModelVersion> = {}): ModelVersion {
 }
 
 describe("ModelVersionsTab", () => {
-  it("renders the loading skeleton while pending", async () => {
-    const wrapper = await mountSuspended(ModelVersionsTab, {
-      props: { modelId: "model-1", versions: [], pending: true },
-    });
-    expect(wrapper.findAll(".animate-pulse").length).toBeGreaterThan(0);
+  it("renders the loading skeleton once pending outlasts the boundary delay", async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = await mountSuspended(ModelVersionsTab, {
+        props: { modelId: "model-1", versions: [], pending: true },
+      });
+      expect(wrapper.text()).not.toContain("No versions available");
+      vi.advanceTimersByTime(200);
+      await nextTick();
+      expect(wrapper.findAll(".animate-pulse").length).toBeGreaterThan(0);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("renders an empty message when the version list is empty and not pending", async () => {

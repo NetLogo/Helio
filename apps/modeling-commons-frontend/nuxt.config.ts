@@ -17,6 +17,11 @@ export default defineNuxtConfig({
 
   ssr: true,
 
+  experimental: {
+    pendingWhenIdle: true,
+    purgeCachedData: false,
+  },
+
   app: {
     rootId: "__nuxt",
   },

@@ -7,7 +7,25 @@
       </p>
     </div>
 
-    <template v-if="parent || children.length > 0">
+    <AsyncBoundary :pending="pending" :empty="!parent && children.length === 0">
+      <template #loading>
+        <div class="space-y-3">
+          <div
+            v-for="i in 2"
+            :key="i"
+            class="h-20 rounded-lg border border-default bg-muted animate-pulse"
+          />
+        </div>
+      </template>
+
+      <template #empty>
+        <div class="flex flex-col items-center justify-center py-12 text-dimmed">
+          <UIcon name="i-lucide-git-branch" class="size-12 mb-3" />
+          <p class="text-sm font-medium">No family connections</p>
+          <p class="text-xs mt-1">Parent and child models will appear here.</p>
+        </div>
+      </template>
+
       <div v-if="parent" class="mb-5">
         <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-2">Forked from</p>
         <FamilyCard :model="parent" />
@@ -28,13 +46,7 @@
           <FamilyCard v-for="child in children" :key="child.id" :model="child" />
         </div>
       </div>
-    </template>
-
-    <div v-else class="flex flex-col items-center justify-center py-12 text-dimmed">
-      <UIcon name="i-lucide-git-branch" class="size-12 mb-3" />
-      <p class="text-sm font-medium">No family connections</p>
-      <p class="text-xs mt-1">Parent and child models will appear here.</p>
-    </div>
+    </AsyncBoundary>
   </div>
 </template>
 
@@ -44,6 +56,7 @@ import type { FamilyModel } from "./types";
 defineProps<{
   parent: FamilyModel | null;
   children: FamilyModel[];
+  pending?: boolean;
 }>();
 
 const childrenOpen = ref(true);
