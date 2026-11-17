@@ -3,15 +3,14 @@
  *
  * Source: nlcommons_production (Rails app, integer ids, tables: people, nodes,
  *         versions, tags, tagged_nodes, attachments, spam_warnings,
- *         permission_settings).
+ *         permission_settings, postings).
  * Target: new Prisma schema (NanoID ids, Model/ModelVersion split, Better Auth
  *         users, file storage by key).
  *
- * Idempotent via legacyId columns on User/Model/Tag — with one exception:
- * migrateInteractions has no dedupe key (ModelInteraction carries no legacyId
- * and no unique constraint), so re-running it duplicates every row. It is the
- * last phase; re-running the script after it has produced rows needs a manual
- * DELETE first.
+ * Idempotent via legacyId columns on User/Model/Tag/ModelComment, with one
+ * exception: migrateInteractions has no dedupe key (ModelInteraction carries no
+ * legacyId and no unique constraint), so re-running it duplicates every row.
+ * Re-running the script after it has produced rows needs a manual DELETE first.
  *
  * Re-running skips already-migrated rows but does NOT pick up changes to them,
  * nor new versions/attachments/tags on an already-migrated node. Use
@@ -36,10 +35,13 @@ import {
   LegacyDatabase,
   NODE_COLUMNS,
   PERSON_COLUMNS,
+  POSTING_COLUMNS,
   type LegacyNode,
   type LegacyPerson,
+  type LegacyPosting,
   type LegacyTag,
 } from './lib/legacy.ts';
+import { linkParents, mapPosting } from './lib/comments.ts';
 import { createModelFromNode } from './lib/node-migration.ts';
 import {
   buildFullName,
@@ -83,6 +85,7 @@ const report = {
   attachments: { migrated: 0, skipped_orphan: 0, previews_attached: 0 },
   taggings: { migrated: 0, skipped_orphan: 0 },
   interactions: { views: 0, runs: 0, downloads: 0 },
+  comments: { migrated: 0, skipped_existing: 0, skipped_orphan_model: 0, skipped_orphan_parent: 0 },
   errors: [] as string[],
 };
 
@@ -111,6 +114,9 @@ async function main() {
   console.log('→ Migrating model_views/runs/downloads → ModelInteraction');
   await migrateInteractions(modelIdMap, userIdMap);
 
+  console.log('→ Migrating postings → ModelComment');
+  await migrateComments(modelIdMap, userIdMap);
+
   console.log('→ Writing manifest + report');
   await writeFile(path.join(OUTPUT_DIR, 'report.json'), JSON.stringify(report, null, 2));
 
@@ -130,6 +136,8 @@ async function wipeTarget() {
       "ModelAuthor",
       "ModelPermission",
       "ModelLike",
+      "ModelCommentLike",
+      "ModelComment",
       "ModelInteraction",
       "ModelDraft",
       "Event",
@@ -420,6 +428,62 @@ async function migrateInteractions(
     report.interactions[counter] = count;
     console.log(`  ${table}: ${count} rows`);
   }
+}
+
+async function migrateComments(modelIdMap: Map<number, string>, userIdMap: Map<number, string>) {
+  const commentIdMap = new Map<number, string>();
+  const existing = await prisma.modelComment.findMany({
+    where: { legacyId: { not: null } },
+    select: { id: true, legacyId: true },
+  });
+  for (const c of existing) {
+    if (c.legacyId !== null) commentIdMap.set(c.legacyId, c.id);
+  }
+
+  const ctx = {
+    userIdByLegacyId: userIdMap,
+    modelIdByLegacyId: modelIdMap,
+    newId,
+    now: () => new Date(),
+  };
+
+  // A reply can precede its parent in id order, so parents are linked in a second pass.
+  await legacy.streamRows<LegacyPosting>(
+    `SELECT ${POSTING_COLUMNS} FROM ${legacy.table('postings')} ORDER BY id ASC`,
+    BATCH,
+    async (batch) => {
+      const toCreate: Prisma.ModelCommentCreateManyInput[] = [];
+      for (const p of batch) {
+        if (commentIdMap.has(p.id)) {
+          report.comments.skipped_existing++;
+          continue;
+        }
+        const row = mapPosting(p, ctx);
+        if (!row) {
+          report.comments.skipped_orphan_model++;
+          continue;
+        }
+        toCreate.push(row);
+        commentIdMap.set(p.id, row.id);
+        report.comments.migrated++;
+      }
+      if (toCreate.length > 0) {
+        await prisma.modelComment.createMany({ data: toCreate, skipDuplicates: true });
+      }
+    },
+  );
+
+  await legacy.streamRows<Pick<LegacyPosting, 'id' | 'parent_id'>>(
+    `SELECT id, parent_id FROM ${legacy.table('postings')} WHERE parent_id IS NOT NULL ORDER BY id ASC`,
+    BATCH,
+    async (batch) => {
+      const { links, skippedOrphanParent } = linkParents(batch, commentIdMap);
+      report.comments.skipped_orphan_parent += skippedOrphanParent;
+      for (const { id, parentId } of links) {
+        await prisma.modelComment.update({ where: { id }, data: { parentId } });
+      }
+    },
+  );
 }
 
 async function copyFile(src: string, dest: string) {

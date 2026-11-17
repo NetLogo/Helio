@@ -3,10 +3,11 @@ import makeModelInteractionService from '#src/modules/model-interaction/model-in
 import modelInteractionDomain from '#src/modules/model-interaction/domain/model-interaction.domain.ts';
 import { ModelInteractionKind } from '#src/modules/model-interaction/domain/model-interaction.types.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockModelInteractionRepository } from '#src/modules/model-interaction/database/model-interaction.repository.mock.ts';
-import { mockModelLikeRepository } from '#src/modules/model-like/database/model-like.repository.mock.ts';
-import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
 import type { ClientContext } from '#src/shared/http/client-context.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelLikeRepository } from '#src/modules/model-like/database/model-like.repository.port.ts';
+import type { ModelInteractionRepository } from '#src/modules/model-interaction/database/model-interaction.repository.port.ts';
+import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 
 function ctx(overrides: Partial<ClientContext> = {}): ClientContext {
   return {
@@ -21,9 +22,9 @@ function ctx(overrides: Partial<ClientContext> = {}): ClientContext {
 }
 
 describe('modelInteractionService', () => {
-  const modelInteractionRepository = mockModelInteractionRepository();
-  const modelLikeRepository = mockModelLikeRepository();
-  const modelRepository = mockModelRepository();
+  const modelInteractionRepository = mockPort<ModelInteractionRepository>();
+  const modelLikeRepository = mockPort<ModelLikeRepository>();
+  const modelRepository = mockPort<ModelRepository>();
   const transactionManager = mockTransactionManager();
   const domain = modelInteractionDomain();
 
@@ -52,7 +53,7 @@ describe('modelInteractionService', () => {
           versionNumber: 1,
         }),
       );
-      expect(modelRepository.incrementInteractionCount).toHaveBeenCalledWith(
+      expect(modelRepository.incrementInteractionCountTx).toHaveBeenCalledWith(
         expect.anything(),
         'model-1',
         ModelInteractionKind.run,
@@ -66,7 +67,7 @@ describe('modelInteractionService', () => {
 
       expect(modelInteractionRepository.hasRecentMatch).toHaveBeenCalled();
       expect(modelInteractionRepository.insertTx).toHaveBeenCalledOnce();
-      expect(modelRepository.incrementInteractionCount).toHaveBeenCalledWith(
+      expect(modelRepository.incrementInteractionCountTx).toHaveBeenCalledWith(
         expect.anything(),
         'model-1',
         ModelInteractionKind.view,
@@ -79,7 +80,7 @@ describe('modelInteractionService', () => {
       await service.record(ModelInteractionKind.view, 'model-1', ctx(), null);
 
       expect(modelInteractionRepository.insertTx).not.toHaveBeenCalled();
-      expect(modelRepository.incrementInteractionCount).not.toHaveBeenCalled();
+      expect(modelRepository.incrementInteractionCountTx).not.toHaveBeenCalled();
     });
   });
 

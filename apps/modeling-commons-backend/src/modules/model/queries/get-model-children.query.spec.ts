@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import makeGetModelChildrenQuery from '#src/modules/model/queries/get-model-children.query.ts';
-import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
 
 describe('getModelChildrenQuery', () => {
-  const modelRepository = mockModelRepository();
+  const modelRepository = mockPort<ModelRepository>();
   const query = makeGetModelChildrenQuery({ modelRepository } as never);
 
   beforeEach(() => {

@@ -1,4 +1,4 @@
-import { SystemRole } from '#src/modules/user/database/user.record.ts';
+import { SystemRole } from '#src/modules/user/shared/enums.ts';
 import type { UserEntity, UserPublicView } from '#src/modules/user/domain/user.types.ts';
 import { ArgumentInvalidException } from '#src/shared/exceptions/index.ts';
 
@@ -30,6 +30,10 @@ export default function userDomain() {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       };
+    },
+
+    formatGreetingName(user: { name: string | null }): string {
+      return user.name ?? 'there';
     },
 
     isAdmin(role: string | null | undefined): boolean {

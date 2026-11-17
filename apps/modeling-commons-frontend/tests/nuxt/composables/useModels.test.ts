@@ -2,7 +2,7 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 import useForumModels from "~/composables/model/useForumModels";
-import type { ModelsFilters } from "~/forms/models";
+import type { ModelsFilters } from "~/features/models/types";
 import { apiResult, makeApiClientMock } from "~~/tests/helpers/mockApi";
 
 const { apiState, routeState, navigateToMock } = vi.hoisted(() => ({

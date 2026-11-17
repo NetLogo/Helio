@@ -165,11 +165,11 @@ directed, outgoing links, and "in" refers to directed, incoming links.
 
 ##### New link reporter behavior
 
-![Table showing new link behavior](images/transition/new-link-behavior.png)
+![Table showing new link behavior](images/transition/new-link-behavior.webp)
 
 ##### Old link reporter behavior
 
-![Table showing old link behavior](images/transition/old-link-behavior.png)
+![Table showing old link behavior](images/transition/old-link-behavior.webp)
 
 ### Removal of Applets
 

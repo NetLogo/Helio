@@ -4,14 +4,11 @@ import { expect } from "vitest";
 /**
  * The clickable target for a model card on `/models`.
  *
- * Each card (`UBlogPost`) is a full-card overlay link rendered as
- * `<a href tabindex="-1"><span class="absolute inset-0" /></a>`. The `<a>` itself
- * collapses to zero height (its only child is absolutely positioned), so it
- * reports as hidden and `.click()`/`.waitFor()` on it time out. The stretched
- * `span` is the actual visible, clickable hit area — and there's exactly one per
- * card, so it also works for `.count()`.
+ * Each card (`UBlogPost`) renders an `<article>` whose direct child is a
+ * full-card overlay `<a href class="absolute inset-0">`. Scoping to `article`
+ * keeps navbar links such as `/models/upload` out of the match.
  */
-export const modelCardLink = "a[href^='/models/'] span";
+export const modelCardLink = "article > a[href^='/models/']";
 
 /**
  * Asserts the loaded page is the expected one.

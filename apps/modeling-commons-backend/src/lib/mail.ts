@@ -1,4 +1,5 @@
 import env from '#src/config/env.ts';
+import mailConfig from '#src/config/mail.ts';
 import { createTransport, type Transporter } from 'nodemailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 
@@ -9,7 +10,7 @@ class FastifyMailerError extends Error {
   }
 }
 
-const defaults: SMTPTransport.Options = {
+const defaults: SMTPTransport.MailOptions = {
   from: `${env.product.name} <${env.smtp.senderAddress}>`,
 };
 const hasAuth = env.smtp.user.length > 0;
@@ -17,6 +18,9 @@ const transport: SMTPTransport.Options | undefined = {
   host: env.smtp.host,
   port: env.smtp.port,
   secure: env.smtp.secure,
+  connectionTimeout: mailConfig.connectionTimeout,
+  greetingTimeout: mailConfig.greetingTimeout,
+  socketTimeout: mailConfig.socketTimeout,
   ...(hasAuth
     ? {
         auth: { user: env.smtp.user, pass: env.smtp.password },
@@ -25,7 +29,7 @@ const transport: SMTPTransport.Options | undefined = {
     : { ignoreTLS: true }),
 };
 
-let transporter: Transporter;
+let transporter: Transporter<SMTPTransport.SentMessageInfo>;
 
 try {
   transporter = createTransport(transport, defaults);

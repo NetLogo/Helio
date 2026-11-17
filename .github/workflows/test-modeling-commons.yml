@@ -66,8 +66,9 @@ jobs:
       - name: Assert the beta host is gone
         run: |
           if git grep -In "beta\.modelingcommons" -- \
-               ':!doc/' ':!*/doc/' ':!.ongoing/' ':!*/.ongoing/'; then
-            echo "::error::The retired beta host appears at the paths above. The app is served from www.modelingcommons.org; only doc/ and .ongoing/ may still mention it."
+               ':!doc/' ':!*/doc/' ':!.ongoing/' ':!*/.ongoing/' \
+               ':!apps/modeling-commons-backend/prisma/legacy-migration/'; then
+            echo "::error::The retired beta host appears at the paths above. The app is served from www.modelingcommons.org; only doc/, .ongoing/ and the legacy migration scripts may still mention it."
             exit 1
           fi
 
@@ -82,6 +83,10 @@ jobs:
         env:
           HELIO_HEADLESS: 1
 
+      - name: Validate backend dependency rules
+        run: yarn run deps:validate
+        working-directory: apps/modeling-commons-backend
+
       - name: Run services
         run: docker compose -f docker-compose.dev.yml up -d --wait
         working-directory: apps/modeling-commons-backend
@@ -91,8 +96,10 @@ jobs:
         working-directory: apps/modeling-commons-backend
 
       - name: Run backend tests
-        run: yarn run test
+        run: yarn run test && yarn run test:e2e
         working-directory: apps/modeling-commons-backend
+        env:
+          E2E_MAILPIT: '1'
 
       - name: Run backend server
         run: node dist/src/index.ts &

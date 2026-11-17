@@ -16,8 +16,8 @@ export default function makePrismaTransactionManager({
 }): TransactionManager {
   return {
     async run<T>(fn: (ctx: TransactionContext) => Promise<T>): Promise<T> {
+      const ctx = Object.create(null) as TransactionContext;
       return db.$transaction(async (tx) => {
-        const ctx = Object.create(null) as TransactionContext;
         contextMap.set(ctx, tx);
         try {
           return await fn(ctx);

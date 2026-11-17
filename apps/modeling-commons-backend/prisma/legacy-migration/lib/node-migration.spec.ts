@@ -175,7 +175,7 @@ describe('createModelFromNode', () => {
       versionNumber: 1,
       title: 'Wolf Sheep',
       description: 'Initial upload',
-      netlogoVersion: 'NetLogo 5.0.4',
+      netlogoVersion: '5.0.4',
       infoTab: 'the info tab',
       finalizedAt: version().created_at,
     });

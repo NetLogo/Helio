@@ -36,7 +36,7 @@ export default function makeModelInteractionService({
       const entity = modelInteractionDomain.create(modelId, kind, ctx, versionNumber);
       await transactionManager.run(async (tx) => {
         await modelInteractionRepository.insertTx(tx, entity);
-        await modelRepository.incrementInteractionCount(tx, modelId, kind);
+        await modelRepository.incrementInteractionCountTx(tx, modelId, kind);
       });
     },
 

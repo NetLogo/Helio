@@ -108,6 +108,33 @@ Feature: Model Authors
     Then the response status should be 200
     And the response body path "count" should be 1
 
+  Scenario: A user's unlisted models are hidden from anonymous callers
+    Given an authenticated user "author"
+    And a public model "Listed Model" created by "author"
+    And an unlisted model "Link Only Model" created by "author"
+    When I list models by user "author"
+    Then the response status should be 200
+    And the response body property "data" should have length 1
+    And the response body path "count" should be 1
+
+  Scenario: A user's unlisted models are hidden from an unrelated signed-in caller
+    Given an authenticated user "author"
+    And a public model "Listed Model" created by "author"
+    And an unlisted model "Link Only Model" created by "author"
+    And an authenticated user "stranger"
+    When "stranger" lists models by user "author"
+    Then the response status should be 200
+    And the response body property "data" should have length 1
+    And the response body path "count" should be 1
+
+  Scenario: A user sees their own unlisted models
+    Given an authenticated user "author"
+    And a public model "Listed Model" created by "author"
+    And an unlisted model "Link Only Model" created by "author"
+    When "author" lists models by user "author"
+    Then the response status should be 200
+    And the response body path "count" should be 2
+
   Scenario: Soft-deleted models are hidden from anonymous callers
     Given an authenticated user "author"
     And a public model "Doomed Model" created by "author"

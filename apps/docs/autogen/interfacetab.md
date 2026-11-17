@@ -28,7 +28,7 @@ and menu links above. They are located after the widgets chart.
 
 <figure style="text-align: center;">
   <img
-  src="images/interfacetab/interfacetools.png"
+  src="images/interfacetab/interfacetools.webp"
   alt="Tool Buttons.">
   <figcaption>Tool Buttons</figcaption>
 </figure>
@@ -131,10 +131,10 @@ Widget Dark Color Theme
 Forever Turtle Button
 </td>
 <td>
-<img src="./images/interfacetab/moveturtleforeverlight.png" style="width:60" />
+<img src="./images/interfacetab/moveturtleforeverlight.webp" style="width:60" />
 </td>
 <td>
-<img src="./images/interfacetab/moveturtleforeverdark.png" style="width:60" />
+<img src="./images/interfacetab/moveturtleforeverdark.webp" style="width:60" />
 </td>
 </tr>
 <tr>
@@ -147,10 +147,10 @@ Forever Turtle Button
 Slider
 </td>
 <td>
-<img src="./images/interfacetab/sliderlight.png" style="width:25" />
+<img src="./images/interfacetab/sliderlight.webp" style="width:25" />
 </td>
 <td>
-<img src="./images/interfacetab/sliderdark.png" style="width:25" />
+<img src="./images/interfacetab/sliderdark.webp" style="width:25" />
 </td>
 </tr>
 <tr>
@@ -158,10 +158,10 @@ Slider
 Switch
 </td>
 <td>
-<img src="./images/interfacetab/switchlight.png" style="width:1.5in" />
+<img src="./images/interfacetab/switchlight.webp" style="width:1.5in" />
 </td>
 <td>
-<img src="./images/interfacetab/switchdark.png" style="width::1.5in" />
+<img src="./images/interfacetab/switchdark.webp" style="width::1.5in" />
 </td>
 </tr>
 <tr>
@@ -169,10 +169,10 @@ Switch
 Chooser
 </td>
 <td>
-<img src="./images/interfacetab/chooserlight.png" style="width:2.5in" />
+<img src="./images/interfacetab/chooserlight.webp" style="width:2.5in" />
 </td>
 <td>
-<img src="./images/interfacetab/chooserdark.png" style="width:2.5in" />
+<img src="./images/interfacetab/chooserdark.webp" style="width:2.5in" />
 </td>
 </tr>
 <tr>
@@ -180,10 +180,10 @@ Chooser
 Input (Color)
 </td>
 <td>
-<img src="./images/interfacetab/colorinputlight.png" style="width:2.5in" />
+<img src="./images/interfacetab/colorinputlight.webp" style="width:2.5in" />
 </td>
 <td>
-<img src="./images/interfacetab/colorinputdark.png" style="width:2.5in" />
+<img src="./images/interfacetab/colorinputdark.webp" style="width:2.5in" />
 </td>
 </tr>
 <tr>
@@ -196,10 +196,10 @@ Input (Color)
 Monitor
 </td>
 <td>
-<img src="./images/interfacetab/monitorlight.png" style="width:100" />
+<img src="./images/interfacetab/monitorlight.webp" style="width:100" />
 </td>
 <td>
-<img src="./images/interfacetab/monitordark.png" style="width:100" />
+<img src="./images/interfacetab/monitordark.webp" style="width:100" />
 </td>
 </tr>
 <tr>
@@ -207,10 +207,10 @@ Monitor
 Plot
 </td>
 <td>
-<img src="./images/interfacetab/plotlight.png" style="width:2.65in" />
+<img src="./images/interfacetab/plotlight.webp" style="width:2.65in" />
 </td>
 <td>
-<img src="./images/interfacetab/plotdark.png" style="width:2.65in" />
+<img src="./images/interfacetab/plotdark.webp" style="width:2.65in" />
 </td>
 </tr>
 <tr>
@@ -218,10 +218,10 @@ Plot
 Output
 </td>
 <td>
-<img src="./images/interfacetab/outputlight.png" style="width:2.65in" />
+<img src="./images/interfacetab/outputlight.webp" style="width:2.65in" />
 </td>
 <td>
-<img src="./images/interfacetab/outputdark.png" style="width:2.65in" />
+<img src="./images/interfacetab/outputdark.webp" style="width:2.65in" />
 </td>
 </tr>
 <tr>
@@ -234,10 +234,10 @@ Output
 Note
 </td>
 <td>
-<img src="./images/interfacetab/notelight.png" style="width:2.65in" />
+<img src="./images/interfacetab/notelight.webp" style="width:2.65in" />
 </td>
 <td>
-<img src="./images/interfacetab/notedark.png" style="width:2.65in" />
+<img src="./images/interfacetab/notedark.webp" style="width:2.65in" />
 </td>
 </tr>
 <tr>
@@ -245,10 +245,10 @@ Note
 Editing a Note
 </td>
 <td>
-<img src="./images/interfacetab/editnotelight.png" style="width:2.65in" />
+<img src="./images/interfacetab/editnotelight.webp" style="width:2.65in" />
 </td>
 <td>
-<img src="./images/interfacetab/editnotedark.png" style="width:2.65in" />
+<img src="./images/interfacetab/editnotedark.webp" style="width:2.65in" />
 </td>
 </tr>
 </tbody>
@@ -263,7 +263,7 @@ Editing a Note
     <th>Description</th>
   </tr>
   <tr>
-    <td><img alt="Button" src="images/interfacetab/button.png"></td>
+    <td><img alt="Button" src="images/interfacetab/button.webp"></td>
     <td>Button</td>
     <td>
       A button is either <em>once</em> or <em>forever</em>. When you click
@@ -287,7 +287,7 @@ Editing a Note
     </td>
   </tr>
   <tr>
-    <td><img alt="Slider" src="images/interfacetab/slider.png"></td>
+    <td><img alt="Slider" src="images/interfacetab/slider.webp"></td>
     <td>Slider</td>
     <td>
       Sliders are used in models as a quick way to change a variable
@@ -303,11 +303,11 @@ Editing a Note
       <a href="dictionary#min-pcor"><code>min-pxcor</code></a> and the maximum <a href="dictionary#max-pcor"><code>max-pxcor</code></a> and the slider
       bounds will automatically adjust when you change the size of the world.
 <p></p>
-      <img alt="Input Box" src="images/interfacetab/sliderbounds.png">
+      <img alt="Input Box" src="images/interfacetab/sliderbounds.webp">
     </td>
   </tr>
   <tr>
-    <td><img alt="Switch" src="images/interfacetab/switch.png"></td>
+    <td><img alt="Switch" src="images/interfacetab/switch.webp"></td>
     <td>Switch</td>
     <td>
       Switches are a visual representation for a true/false global
@@ -316,7 +316,7 @@ Editing a Note
     </td>
   </tr>
   <tr>
-    <td><img alt="Chooser" src="images/interfacetab/chooser.png"></td>
+    <td><img alt="Chooser" src="images/interfacetab/chooser.webp"></td>
     <td>Chooser</td>
     <td>
       Choosers let you choose a value for a global variable from a list
@@ -325,7 +325,7 @@ Editing a Note
     </td>
   </tr>
   <tr>
-    <td><img alt="Input Box" src="images/interfacetab/input.png"></td>
+    <td><img alt="Input Box" src="images/interfacetab/input.webp"></td>
     <td>Input Box</td>
     <td>
       Input Boxes represent global variables that contain numbers,
@@ -345,7 +345,7 @@ Editing a Note
     </td>
   </tr>
   <tr>
-    <td><img alt="Monitor" src="images/interfacetab/monitor.png"></td>
+    <td><img alt="Monitor" src="images/interfacetab/monitor.webp"></td>
     <td>Monitor</td>
     <td>
       Monitors display the value of any reporter. The reporter could be
@@ -355,12 +355,12 @@ Editing a Note
     </td>
   </tr>
   <tr>
-    <td><img alt="Plot" src="images/interfacetab/plot.png"></td>
+    <td><img alt="Plot" src="images/interfacetab/plot.webp"></td>
     <td>Plot</td>
     <td>Plots show data the model is generating.</td>
   </tr>
   <tr>
-    <td><img alt="Output" src="images/interfacetab/output.png"></td>
+    <td><img alt="Output" src="images/interfacetab/output.webp"></td>
     <td>Output</td>
     <td>
       The output area is a scrolling area of text which can be used to
@@ -370,7 +370,7 @@ Editing a Note
   </tr>
   <tr>
     <td>
-      <img alt="Note" src="images/interfacetab/note.png">
+      <img alt="Note" src="images/interfacetab/note.webp">
     </td>
     <td>Note</td>
     <td>
@@ -383,7 +383,7 @@ Editing a Note
 ## Other Interface Toolbar controls
 The other controls in the Interface toolbar allow you to control the view
 updates and various other model properties.
-![[interfacetab/model-buttons.png]]
+![[interfacetab/model-buttons.webp]]
 
 The speed slider is located in the Interface Toolbar. You can make the
 model run faster by moving the slider to the right, or by clicking one
@@ -415,7 +415,7 @@ linear with the amount the slider knob is moved.
 ## Interface Menus
 ### Add Widgets Menu
 
-<p><img src="./images/interfacetab/add-widget-menu.png" style="width:3in" /></p>
+<p><img src="./images/interfacetab/add-widget-menu.webp" style="width:3in" /></p>
 
 This menu allows users to add widgets. This tool is entered by clicking
 the “Add Widget” dropdown menu on the Interface toolbar and making a
@@ -431,7 +431,7 @@ The Interaction Tool will be activated once you close the widget's Edit dialog b
 
 ### Align Widgets Menu
 
-<p><img src="./images/interfacetab/alignwidgetsmenu.png" style="width:3in" /></p>
+<p><img src="./images/interfacetab/alignwidgetsmenu.webp" style="width:3in" /></p>
 
 The Align Widgets is a popup menu of options to align, distribute, and
 stretch widgets. These options require at least two widgets to be selected.
@@ -476,7 +476,7 @@ becoming completely hidden behind another.
 The Interaction Tool is for making direct use of widgets to run commands
 and change global variables.
 
-<p><img src="./images/interfacetab/interactiontool.png" style="width:3in" /></p>
+<p><img src="./images/interfacetab/interactiontool.webp" style="width:3in" /></p>
 
 The effect of clicking is widget specific, as described in the widget chart.
 
@@ -512,7 +512,7 @@ menu. Using the Edit or Delete option with the right-click pull-down
 menu does not exit the Interaction Tool because they are “transient”
 actions.
 
-<p><img src="./images/interfacetab/widgetrightclick.png" style="width:3.1in" /></p>
+<p><img src="./images/interfacetab/widgetrightclick.webp" style="width:3.1in" /></p>
 
 ### Selection, Editing and Deletion Tools
 
@@ -533,7 +533,7 @@ This tool allows users to select and subsequently edit or move a
 widget or change its size. Enter this tool by pressing the “Selection
 Tool” icon on the Interface toolbar (cursor with dashed rectangle).
 
-<p><img src="./images/interfacetab/selectedwidgets.png" style="width:3.2in" /></p>
+<p><img src="./images/interfacetab/selectedwidgets.webp" style="width:3.2in" /></p>
 
 #### Selecting
 
@@ -609,7 +609,7 @@ to delete more items. The view cannot be deleted.
 You can also select the widget(s) you want to delete, then press the
 “Delete” button to delete them all at once.
 
-<p><img src="./images/interfacetab/deletiontool.png" style="width:3.7in" /></p>
+<p><img src="./images/interfacetab/deletiontool.webp" style="width:3.7in" /></p>
 
 #### Deleting
 
@@ -625,11 +625,11 @@ black because the patches are black and there are no turtles yet. You can open
 the 3D View, an alternate visual representation of the world, by right clicking
 (ctrl-clicking on Mac) on the View and choosing "Switch to 3D View" (this option
 is also available in the "Tools" menu).
-![[interfacetab/open3d-context.png]]
+![[interfacetab/open3d-context.webp]]
 
 There are a number of settings for the View (accessible by editing the View, or
 by pressing the "Settings" button in the Interface Toolbar):
-![[interfacetab/settings.png]]
+![[interfacetab/settings.webp]]
 
 Notice that the settings are broken up into three groups. There are world, view,
 and tick counter settings. World settings affect the properties of the world
@@ -717,13 +717,13 @@ mouse by clicking and dragging in the View.
 
 At the bottom of the 3D View window there are buttons to move the observer, or change
 the perspective from which you are looking at the world.
-![[interfacetab/3d-buttons.png]]
+![[interfacetab/3d-buttons.webp]]
 
 While you are adjusting one of these settings, a blue cross will appear at the
 current focus point of the 3D observer.
 The little blue triangle will always point along the y-axis in the positive
 direction, so you can orient yourself in case you get lost.
-![[interfacetab/3d-cross.png]]
+![[interfacetab/3d-cross.webp]]
 
 To look at the world from a different angle, press the "Orbit" button, then
 click and drag the mouse. The observer will continue to face the same point as
@@ -807,11 +807,11 @@ example, the 2D circle shape becomes a sphere in the 3D view.
 All other shapes are based on their 2D forms. If a shape is a rotatable shape,
 it is assumed to be a top view and it is extruded as if through a cookie cutter
 and oriented parallel to the xy-plane, as in Ants.
-![[interfacetab/3d-rotatable.png]]
+![[interfacetab/3d-rotatable.webp]]
 
 Or, if a shape is non-rotatable, it is assumed to be a side view, and it is
 drawn always facing the observer, as in Wolf Sheep Predation.
-![[interfacetab/3d-non-rotatable.png]]
+![[interfacetab/3d-non-rotatable.webp]]
 
 ## Command Center
 
@@ -823,7 +823,7 @@ the fly.
 the Command Center.)
 
 Let's take a look at the design of the Command Center.
-![[interfacetab/command-center.png]]
+![[interfacetab/command-center.webp]]
 
 The smaller box, below the large box, is where you type a command. After typing
 it press the Return or Enter key to run it. You can use the up arrow to access the
@@ -887,7 +887,7 @@ resulting file in another program.)
 When you create a plot, as with all widgets, the edit dialog automatically
 appears.
 
-![[Plot Editor|interfacetab/plot.png]]
+![[Plot Editor|interfacetab/plot.webp]]
 
 Many of the fields are fairly self-explanatory, such as the name of the plot,
 labels for the x and y axes, ranges for the axes, and the "Show legend?"
@@ -929,7 +929,7 @@ dialog with additional pen settings. The trash can button deletes the pen.
 
 Clicking a pen's edit button will open this dialog:
 
-![[Plot Editor|interfacetab/plot-pen-advanced.png]]
+![[Plot Editor|interfacetab/plot-pen-advanced.webp]]
 
 - Mode allows you to change the appearance of the plot pen: line, bar (for a bar
   chart), or point (a scatter plot of individual points).
@@ -952,21 +952,21 @@ Agent monitors display both the values of all the variables for a particular
 agent and a mini-view that shows the agent and a small area around it.
 
 You can open agent monitors through the Tools menu or the [[inspect]] command.
-![[interfacetab/agentmonitor1.png]]
+![[interfacetab/agentmonitor1.webp]]
 
 You can zoom in or out using the slider beneath the view and you can [[watch]]
 the agent in the main view using the "Watch" button.
-![[interfacetab/agentmonitor2.png]]
+![[interfacetab/agentmonitor2.webp]]
 
 Below the slider the current value of each agent variable is displayed. You can
 enter a new value, and press the Enter or Return key. It will be as if, for example,
 the code `set pcolor ...` had run.
-![[interfacetab/agentmonitor3.png]]
+![[interfacetab/agentmonitor3.webp]]
 
 Below the agent variable area there is a miniature command center. Rather than
 running code as the observer, or talking to all of the turtles, patches, or
 links, the code entered in this command center is run only by the agent shown in the window.
-![[interfacetab/agentmonitor4.png]]
+![[interfacetab/agentmonitor4.webp]]
 
 You can close an agent monitor by clicking the window's close button, or
 by pressing the Esc key. You can close all the agent monitors by using the

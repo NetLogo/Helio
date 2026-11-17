@@ -1,20 +1,8 @@
-import {
-  modelsPageLimit,
-  modelsQuerySchema,
-  type ModelsFilters,
-  type ModelSortBy,
-  type ModelsQuery,
-} from "~/forms/models";
-
-export type { ModelSortBy, ModelsQuery };
-
 interface UseModelsOptions {
   filters: Ref<ModelsFilters> | ComputedRef<ModelsFilters>;
 }
 
 export default function useForumModels({ filters }: UseModelsOptions) {
-  const { GET } = useApi();
-
   const {
     data: rows,
     page,
@@ -28,13 +16,10 @@ export default function useForumModels({ filters }: UseModelsOptions) {
     () => JSON.stringify(filters.value),
     async (page) => {
       const query: ModelsQuery = {
-        limit: modelsPageLimit,
+        limit: modelRules.pageLimit,
         page,
       };
-      const params = modelsQuerySchema.parse({ ...filters.value, ...query });
-      const res = await GET("/api/v1/models/card", { params: { query: params } });
-      const parsed = handleApiError(res.data, res.error, "fetching model query result");
-      return parsed;
+      return fetchModelCards(modelsQuerySchema.parse({ ...filters.value, ...query }));
     },
   );
 

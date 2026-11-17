@@ -3,6 +3,8 @@ import {
   NotOwnerError,
 } from '#src/modules/model-author/domain/model-author.errors.ts';
 import { NotFoundException } from '#src/shared/exceptions/index.ts';
+import { rethrowUniqueViolation } from '#src/shared/db/prisma-error.ts';
+import { modelAuthorEventTypes } from '#src/modules/model-author/model-author.events.ts';
 
 export default function makeModelAuthorService({
   transactionManager,
@@ -22,23 +24,21 @@ export default function makeModelAuthorService({
     async addContributor(modelId: string, userId: string, callerId: string): Promise<void> {
       await assertCallerIsOwner(modelId, callerId);
 
-      const existing = await modelAuthorRepository.findByCompositeKey(modelId, userId);
-      if (existing) {
-        throw new AuthorAlreadyExistsError(modelId, userId);
-      }
-
       const entity = modelAuthorDomain.createAuthor(modelId, userId, 'contributor');
 
-      await transactionManager.run(async (ctx) => {
-        await modelAuthorRepository.insertTx(ctx, entity);
-        await eventRepository.insert(ctx, {
-          type: 'model_author.added',
-          actorId: callerId,
-          resourceType: 'model',
-          resourceId: modelId,
-          payload: { userId, role: 'contributor' },
-        });
-      });
+      await rethrowUniqueViolation(
+        transactionManager.run(async (ctx) => {
+          await modelAuthorRepository.insertTx(ctx, entity);
+          await eventRepository.insertTx(ctx, {
+            type: modelAuthorEventTypes.added,
+            actorId: callerId,
+            resourceType: 'model',
+            resourceId: modelId,
+            payload: { userId, role: 'contributor' },
+          });
+        }),
+        () => new AuthorAlreadyExistsError(modelId, userId),
+      );
     },
 
     async remove(modelId: string, userId: string, callerId: string): Promise<void> {
@@ -52,8 +52,8 @@ export default function makeModelAuthorService({
 
       await transactionManager.run(async (ctx) => {
         await modelAuthorRepository.deleteTx(ctx, modelId, userId);
-        await eventRepository.insert(ctx, {
-          type: 'model_author.removed',
+        await eventRepository.insertTx(ctx, {
+          type: modelAuthorEventTypes.removed,
           actorId: callerId,
           resourceType: 'model',
           resourceId: modelId,
@@ -73,8 +73,8 @@ export default function makeModelAuthorService({
       await transactionManager.run(async (ctx) => {
         await modelAuthorRepository.updateRoleTx(ctx, modelId, callerId, 'contributor');
         await modelAuthorRepository.updateRoleTx(ctx, modelId, newOwnerId, 'owner');
-        await eventRepository.insert(ctx, {
-          type: 'model_author.ownership_transferred',
+        await eventRepository.insertTx(ctx, {
+          type: modelAuthorEventTypes.ownershipTransferred,
           actorId: callerId,
           resourceType: 'model',
           resourceId: modelId,

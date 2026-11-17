@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type * as z from "zod";
-import { signUpFields, signUpValidator } from "~/forms/auth";
 import { authRoutes, getSafeNextPath } from "~/utils/auth";
 
 definePageMeta({
@@ -31,7 +30,7 @@ const loginLink = computed(() =>
     ? { path: authRoutes.login, query: { next: nextPath.value } }
     : authRoutes.login,
 );
-const fields = signUpFields;
+const fields = getSignUpFields();
 const schema = signUpValidator;
 type Schema = z.output<typeof schema>;
 

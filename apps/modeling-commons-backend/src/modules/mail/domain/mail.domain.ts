@@ -1,5 +1,11 @@
 import env from '#src/config/env.ts';
-import { createRenderer, type EmailRenderer } from '@repo/emails';
+import {
+  createRenderer,
+  type EmailModel,
+  type EmailRenderer,
+  type NotificationSummaryItem,
+} from '@repo/emails';
+import type Mail from 'nodemailer/lib/mailer/index.js';
 
 let _renderer: EmailRenderer | null = null;
 function getRenderer(): EmailRenderer {
@@ -21,6 +27,16 @@ export type MailContent = {
   text: string;
 };
 
+type CommentEmailOptions = {
+  userEmail: string;
+  userName: string;
+  actorName: string;
+  model: EmailModel;
+  commentPreview: string;
+  commentUrl: string;
+  unsubscribeUrl: string;
+};
+
 export default function mailDomain() {
   const sender = `${env.product.name} <${env.smtp.senderAddress}>`;
   const renderer = getRenderer();
@@ -33,32 +49,22 @@ export default function mailDomain() {
     };
 
   return {
+    withOneClickUnsubscribe(content: Mail.Options, unsubscribeUrl: string): Mail.Options {
+      return {
+        ...content,
+        headers: {
+          'List-Unsubscribe': `<${unsubscribeUrl}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        },
+      };
+    },
+
     async createVerificationEmail(userEmail: string, userName: string, verificationLink: string) {
       return wrap(userEmail)(renderer.renderVerifyEmail({ userName, verificationLink }));
     },
 
     async createPasswordResetEmail(userEmail: string, userName: string, resetLink: string) {
       return wrap(userEmail)(renderer.renderPasswordResetEmail({ userName, resetLink }));
-    },
-
-    async createWelcomeEmail(userEmail: string, userName: string) {
-      return wrap(userEmail)(renderer.renderWelcomeEmail({ userName }));
-    },
-
-    async createAccountDeletedEmail(userEmail: string, userName: string) {
-      return wrap(userEmail)(renderer.renderAccountDeletedEmail({ userName }));
-    },
-
-    async createAccountDeletedByAdminEmail(userEmail: string, userName: string) {
-      return wrap(userEmail)(renderer.renderAccountDeletedByAdminEmail({ userName }));
-    },
-
-    async createAccountBannedEmail(userEmail: string, userName: string) {
-      return wrap(userEmail)(renderer.renderAccountBannedEmail({ userName }));
-    },
-
-    async createAccountInactiveEmail(userEmail: string, userName: string, inactivityPeriod: string) {
-      return wrap(userEmail)(renderer.renderAccountInactiveEmail({ userName, inactivityPeriod }));
     },
 
     async createAccountEmailChangeRequestEmail(
@@ -72,29 +78,66 @@ export default function mailDomain() {
       );
     },
 
-    async createAccountEmailChangedEmail(userEmail: string, userName: string, newEmail: string) {
-      return wrap(userEmail)(renderer.renderAccountEmailChangedEmail({ userName, newEmail }));
-    },
-
-    async createNotificationEmail(
-      userEmail: string,
-      userName: string,
-      notificationContent: string,
-      unsubscribeUrl: string,
-    ) {
-      return wrap(userEmail)(
-        renderer.renderNotificationEmail({ userName, notificationContent, unsubscribeUrl }),
-      );
-    },
-
     async createNotificationSummaryEmail(
       userEmail: string,
       userName: string,
-      notifications: Array<string>,
+      notifications: Array<NotificationSummaryItem>,
+      moreCount: number,
+      feedUrl: string,
       unsubscribeUrl: string,
+      preferencesUrl: string,
     ) {
       return wrap(userEmail)(
-        renderer.renderNotificationSummaryEmail({ userName, notifications, unsubscribeUrl }),
+        renderer.renderNotificationSummaryEmail({
+          userName,
+          notifications,
+          moreCount,
+          feedUrl,
+          unsubscribeUrl,
+          preferencesUrl,
+        }),
+      );
+    },
+
+    async createCommentedOnModelEmail({
+      userEmail,
+      userName,
+      actorName,
+      model,
+      commentPreview,
+      commentUrl,
+      unsubscribeUrl,
+    }: CommentEmailOptions) {
+      return wrap(userEmail)(
+        renderer.renderCommentedOnModelEmail({
+          userName,
+          commenterName: actorName,
+          model,
+          commentPreview,
+          commentUrl,
+          unsubscribeUrl,
+        }),
+      );
+    },
+
+    async createRepliedToCommentEmail({
+      userEmail,
+      userName,
+      actorName,
+      model,
+      commentPreview,
+      commentUrl,
+      unsubscribeUrl,
+    }: CommentEmailOptions) {
+      return wrap(userEmail)(
+        renderer.renderRepliedToCommentEmail({
+          userName,
+          replierName: actorName,
+          model,
+          replyPreview: commentPreview,
+          commentUrl,
+          unsubscribeUrl,
+        }),
       );
     },
   };

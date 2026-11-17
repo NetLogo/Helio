@@ -19,7 +19,7 @@ useSeoMeta({
   twitterSite: '@netlogo',
 });
 
-defineOgImageComponent('ThumbnailSeo', {
+defineOgImage('ThumbnailSeo', {
   title: lp.value.title,
   description: lp.value.subtitle,
   theme: '#f31500',
@@ -51,7 +51,9 @@ defineOgImageComponent('ThumbnailSeo', {
           }"
         />
       </div>
-      <MDC :value="lp.description" class="prose prose-medium prose-text-medium" />
+      <MDC v-slot="{ body, data }" :value="lp.description">
+        <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" class="prose prose-medium prose-text-medium" />
+      </MDC>
     </UPageBody>
 
     <template #left>

@@ -18,7 +18,10 @@ Flags: `--dry-run`, `--yes`, `--skip-storage`, `--verify-only`, `--drop-map`.
 1. Take a full database backup and a bucket snapshot. There is no undo.
 2. Stop the application. The script takes `ACCESS EXCLUSIVE` locks on every
    table and rewrites ids that in-flight requests are holding.
-3. Rehearse against a restored copy of the dump first.
+3. Drain the pg-boss queues (schema `pgboss`) before stopping the workers.
+   Queued job payloads carry old ids and the script does not rewrite that
+   schema, so a job left behind would run against ids that no longer exist.
+4. Rehearse against a restored copy of the dump first.
 
 Every user is logged out, because `Session.id` and `User.id` both change.
 Externally shared model URLs stop resolving. **Every unpublished draft is

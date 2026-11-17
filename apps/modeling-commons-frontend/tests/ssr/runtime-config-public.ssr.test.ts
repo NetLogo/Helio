@@ -5,8 +5,8 @@ import { describe, expect, it } from "vitest";
 const src = fs.readFileSync(path.resolve(process.cwd(), "nuxt.config.ts"), "utf8");
 
 const publicBlock = (() => {
-  const idx = src.indexOf("runtimeConfig:");
-  const close = src.indexOf("turnstile:", idx);
+  const idx = src.indexOf("public:", src.indexOf("runtimeConfig:"));
+  const close = src.indexOf("\n    },", idx);
   return src.slice(idx, close);
 })();
 

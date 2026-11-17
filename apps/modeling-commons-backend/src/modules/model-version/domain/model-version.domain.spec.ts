@@ -13,9 +13,11 @@ describe('modelVersionDomain', () => {
         versionNumber: 1,
         title: 'V1',
         netlogoFileKey: 'f1',
+        netlogoVersion: '7.0.0',
       });
 
       expect(version.versionNumber).toBe(1);
+      expect(version.netlogoVersion).toBe('7.0.0');
       expect(version.finalizedAt).toBeNull();
     });
   });

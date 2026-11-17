@@ -27,7 +27,7 @@ group that develops and distributes NetLogo.
 
 ## Modeling Commons Accounts
 
-![[Log in to Modeling Commons|modelingcommons/login.png]]
+![[Log in to Modeling Commons|modelingcommons/login.webp]]
 
 In order to upload models to the Modeling Commons, you must first register
 an account and log in. Unregistered users can view and download models, but
@@ -52,7 +52,7 @@ describe these in detail.
 A new model will be created in the Modeling Commons, with its own
 page, description, and forum. You should use this function the first
 time that you save a model to the Modeling Commons.
-![[Uploading a new model|modelingcommons/newmodel.png]]
+![[Uploading a new model|modelingcommons/newmodel.webp]]
 
 You must give your model a name. Model names are not required to be
 unique; you could have 2 or more models with the same name, though we
@@ -92,7 +92,7 @@ relationship between the old model and the new one. This relationship can be
 seen on the "family" tab for a given model. You may fork any model for which you
 have "view" permissions, including one that you cannot change. You may wish, for
 example, to create a variation on a model in the NetLogo models library.
-![[Uploading a child of an existing model|modelingcommons/childmodel.png]]
+![[Uploading a child of an existing model|modelingcommons/childmodel.webp]]
 
 To fork a model, you must give your new child a name, as well as select an
 existing model to fork. To indicate the existing model, start typing the name of

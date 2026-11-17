@@ -1,5 +1,3 @@
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
-import { mockUserRepository } from '#src/modules/user/database/user.repository.mock.ts';
 import userDomain from '#src/modules/user/domain/user.domain.ts';
 import { UserNotFoundError } from '#src/modules/user/domain/user.errors.ts';
 import type { UserEntity } from '#src/modules/user/domain/user.types.ts';
@@ -7,6 +5,9 @@ import makeUserService from '#src/modules/user/user.service.ts';
 import { ForbiddenException } from '#src/shared/exceptions/index.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { UserRepository } from '#src/modules/user/database/user.repository.port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
 
 function makeUser(overrides: Partial<UserEntity> = {}): UserEntity {
   return {
@@ -37,8 +38,8 @@ function makeUser(overrides: Partial<UserEntity> = {}): UserEntity {
 }
 
 describe('userService', () => {
-  const userRepository = mockUserRepository();
-  const eventRepository = mockEventRepository();
+  const userRepository = mockPort<UserRepository>();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const domain = userDomain();
 
@@ -59,7 +60,7 @@ describe('userService', () => {
 
       await service.updateProfile('user-1', 'user-1', 'user', { userKind: 'student' });
 
-      expect(userRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'user-1', {
+      expect(userRepository.updateFieldsTx).toHaveBeenCalledWith(expect.anything(), 'user-1', {
         userKind: 'student',
       });
     });
@@ -69,7 +70,7 @@ describe('userService', () => {
 
       await service.updateProfile('user-1', 'admin-1', 'admin', { userKind: 'teacher' });
 
-      expect(userRepository.updateFields).toHaveBeenCalled();
+      expect(userRepository.updateFieldsTx).toHaveBeenCalled();
     });
 
     it('rejects non-self non-admin update', async () => {
@@ -93,7 +94,7 @@ describe('userService', () => {
 
       await service.updateProfile('user-1', 'admin-1', 'admin', { systemRole: 'moderator' });
 
-      expect(userRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'user-1', {
+      expect(userRepository.updateFieldsTx).toHaveBeenCalledWith(expect.anything(), 'user-1', {
         systemRole: 'moderator',
       });
     });
@@ -113,7 +114,7 @@ describe('userService', () => {
 
       await service.softDelete('user-1', 'user-1', 'user');
 
-      expect(userRepository.softDelete).toHaveBeenCalledWith(expect.anything(), 'user-1');
+      expect(userRepository.softDeleteTx).toHaveBeenCalledWith(expect.anything(), 'user-1');
     });
 
     it('rejects non-self non-admin delete', async () => {

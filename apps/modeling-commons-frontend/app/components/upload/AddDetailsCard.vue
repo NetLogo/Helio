@@ -106,7 +106,7 @@
         </UFormField>
 
         <UFormField name="usecases" label="Best Usecases">
-          <UCheckboxGroup v-model="state.usecases" :items="modelUsecases" />
+          <UCheckboxGroup v-model="state.usecases" :items="[...draftLiterals.modelUsecases]" />
         </UFormField>
       </div>
     </div>
@@ -115,7 +115,7 @@
 
 <script setup lang="ts">
 import { toTagSelectMenuItem, type TagItem } from "~/components/tag/TagSelectMenu.vue";
-import { modelUsecases, type UploadFormInput } from "~/forms/upload";
+import type { UploadFormInput } from "~/features/drafts/validators";
 import type ImageUploader from './ImageUploader.vue';
 
 const state = defineModel<UploadFormInput>({ required: true });

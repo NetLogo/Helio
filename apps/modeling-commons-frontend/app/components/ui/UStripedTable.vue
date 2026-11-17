@@ -21,7 +21,7 @@ defineSlots<Slots>();
     :data="props.data"
     :columns="props.columns"
   >
-    <template v-for="(_, name) in $slots" #[name]="slotData">
+    <template v-for="name in Object.keys($slots) as Array<keyof Slots>" #[name]="slotData">
       <slot :name="name" v-bind="slotData ?? {}" />
     </template>
   </UTable>

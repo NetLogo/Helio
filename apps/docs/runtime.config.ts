@@ -9,9 +9,9 @@ const extraWebsiteConfig = z
     versionsSrc: data.VERSIONS_SRC,
   }));
 
+// Only the docs-specific fields: nuxt-core already sets the shared ones, and layer merging concatenates arrays.
 const websiteConfigSchema = rootWebsiteConfigSchema
   .transform((data) => ({
-    ...data,
     productIsBeta: data.productVersion.toLowerCase().includes('beta'),
   }))
   .and(extraWebsiteConfig);

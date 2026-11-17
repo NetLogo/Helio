@@ -8,7 +8,9 @@
         :src="author.userImage ?? undefined"
         size="sm"
         :alt="author.userName ?? 'Anonymous'"
-      />
+      >
+        {{  createAvatarInitials(author.userName) }}
+      </UAvatar>
     </UAvatarGroup>
     <NuxtLink
       class="font-medium hover:underline text-royal-blue-dark"

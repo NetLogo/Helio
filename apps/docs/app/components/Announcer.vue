@@ -21,7 +21,7 @@ import { Announcement } from '~~/shared/models/announcements';
 
 const fetcher = async () => {
   try {
-    const res = await $fetch<Announcements>(endpoints.announcements);
+    const res = await $fetch<Announcements>(endpoints.announcements, { "baseURL": "/" });
     return res.map((item) => new Announcement(item));
   } catch {
     return [];

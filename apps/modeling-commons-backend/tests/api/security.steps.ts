@@ -82,6 +82,19 @@ When(
   },
 );
 
+When(
+  'the current user PATCHes their own profile with body {string} as {string}',
+  async function (this: ICustomWorld, body: string, contentType: string) {
+    const user = this.context['currentUser'] as TestUser;
+    this.context.latestResponse = await this.server.inject({
+      method: 'PATCH',
+      url: `/api/v1/users/${user.id}`,
+      payload: body,
+      headers: { cookie: user.cookie, 'content-type': contentType },
+    });
+  },
+);
+
 When('the current user fetches their own profile', async function (this: ICustomWorld) {
   const user = this.context['currentUser'] as TestUser;
   this.context.latestResponse = await this.server.inject({

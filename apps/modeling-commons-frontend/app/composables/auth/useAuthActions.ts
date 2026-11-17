@@ -1,3 +1,4 @@
+import { resetNotificationState } from "~/components/notifications/shared";
 import { getEmailVerificationCallbackUrl, getResetPasswordRedirectUrl } from "~/utils/auth";
 
 type AuthUserKind = "student" | "teacher" | "researcher" | "other";
@@ -101,8 +102,10 @@ export default function useAuthActions() {
     });
   }
 
-  function signOut() {
-    return auth.client.signOut();
+  async function signOut() {
+    const result = await auth.client.signOut();
+    resetNotificationState();
+    return result;
   }
 
   return {

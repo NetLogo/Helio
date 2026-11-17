@@ -73,9 +73,9 @@ entries:
         - code: distancexyz-nowrap *xcor* *ycor* *zcor*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: dz
     entry_categories:
       - title: Commands and Reporters
@@ -100,7 +100,7 @@ entries:
         - code: dz
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: face-3d
     entry_categories:
       - title: Commands and Reporters
@@ -124,9 +124,9 @@ entries:
         - code: facexyz *x* *y* *z*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Observer Movement Command
-        url: images/observermovement.png
+        url: images/observermovement.webp
   - id: left
     entry_categories:
       - title: Commands and Reporters
@@ -148,7 +148,7 @@ entries:
         - code: left *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: link-pitch
     entry_categories:
       - title: Commands and Reporters
@@ -174,7 +174,7 @@ entries:
         - code: link-pitch
     icons:
       - alt: Link Command
-        url: images/link.png
+        url: images/link.webp
   - id: load-shapes-3d
     entry_categories:
       - title: Commands and Reporters
@@ -195,7 +195,7 @@ entries:
         - code: load-shapes-3d *filename*
     icons:
       - alt: Observer Movement Command
-        url: images/observermovement.png
+        url: images/observermovement.webp
   - id: min-max-pzcor
     entry_categories:
       - title: Commands and Reporters
@@ -255,9 +255,9 @@ entries:
         - code: neighbors6
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: orbit-cmds
     entry_categories:
       - title: Commands and Reporters
@@ -291,7 +291,7 @@ entries:
         - code: orbit-up *number*
     icons:
       - alt: Observer Movement Command
-        url: images/observermovement.png
+        url: images/observermovement.webp
   - id: observer-cors
     entry_categories:
       - title: Commands and Reporters
@@ -315,7 +315,7 @@ entries:
         - code: __ozcor
     icons:
       - alt: Observer Movement Command
-        url: images/observermovement.png
+        url: images/observermovement.webp
   - id: patch-3d
     entry_categories:
       - title: Commands and Reporters
@@ -343,7 +343,7 @@ entries:
         - code: patch *x* *y* *z*
     icons:
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: patch-at-3d
     entry_categories:
       - title: Commands and Reporters
@@ -375,9 +375,9 @@ entries:
         - code: patch-at *dx* *dy* *dz*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: patch-at-heading-pitch-and-distance
     entry_categories:
       - title: Commands and Reporters
@@ -410,9 +410,9 @@ entries:
         - code: patch-at-heading-pitch-and-distance *heading* *pitch* *distance*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: pitch
     entry_categories:
       - title: Built-In Variables
@@ -446,7 +446,7 @@ entries:
         - code: pitch
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: pzcor
     entry_categories:
       - title: Built-In Variables
@@ -471,9 +471,9 @@ entries:
         - code: pzcor
     icons:
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: random-pzcor
     entry_categories:
       - title: Commands and Reporters
@@ -547,7 +547,7 @@ entries:
         - code: right *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: roll
     entry_categories:
       - title: Built-In Variables
@@ -579,7 +579,7 @@ entries:
         - code: roll
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: roll-left
     entry_categories:
       - title: Commands and Reporters
@@ -599,7 +599,7 @@ entries:
         - code: roll-left *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: roll-right
     entry_categories:
       - title: Commands and Reporters
@@ -618,7 +618,7 @@ entries:
         - code: roll-right *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: setxyz
     entry_categories:
       - title: Commands and Reporters
@@ -654,9 +654,9 @@ entries:
         - code: setxyz *x y z*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Observer Movement Command
-        url: images/observermovement.png
+        url: images/observermovement.webp
   - id: tilt-cmds
     entry_categories:
       - title: Commands and Reporters
@@ -680,7 +680,7 @@ entries:
         - code: tilt-up *number*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: towards-pitch-cmd
     entry_categories:
       - title: Commands and Reporters
@@ -712,9 +712,9 @@ entries:
         - code: towards-pitch-nowrap *agent*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: towards-pitch-xyz-cmd
     entry_categories:
       - title: Commands and Reporters
@@ -746,9 +746,9 @@ entries:
         - code: towards-pitch-xyz-no-wrap *x* *y* *z*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: turtles-at-3d
     entry_categories:
       - title: Commands and Reporters
@@ -783,9 +783,9 @@ entries:
         - code: <breeds>-at *dx* *dy* *dz*
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
       - alt: Patch Command
-        url: images/patch.png
+        url: images/patch.webp
   - id: world-depth
     entry_categories:
       - title: Commands and Reporters
@@ -829,7 +829,7 @@ entries:
         - code: zcor
     icons:
       - alt: Turtle Command
-        url: images/turtle.png
+        url: images/turtle.webp
   - id: zoom
     entry_categories:
       - title: Commands and Reporters
@@ -850,7 +850,7 @@ entries:
         - code: zoom *number*
     icons:
       - alt: Observer Movement Command
-        url: images/observermovement.png
+        url: images/observermovement.webp
 categories:
   - title: Commands and Reporters
     id: commands-and-reporters

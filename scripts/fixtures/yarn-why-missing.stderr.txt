@@ -1,0 +1,4 @@
+{"type":"warning","data":"Resolution field \"fflate@0.7.5\" is incompatible with requested version \"fflate@0.7.3\""}
+{"type":"error","data":"We couldn't find a match!"}
+(node:37451) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)

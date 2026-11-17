@@ -35,14 +35,14 @@ Let's use NetLogo to explore this question.
 > **What to do:**
 >
 > 1. Start NetLogo.
-> 2. Choose "Models Library" from the File menu. ![[/file-menu.png]]
+> 2. Choose "Models Library" from the File menu. ![[/file-menu.webp]]
 > 3. Open the "Social Science" folder.
 > 4. Click on the model called "Party".
 > 5. Press the "open" button.
 > 6. Press the "setup" button.
 
 In the view of the model, you will see pink and blue groups with numbers:
-![[Party model|sample/party.png]]
+![[Party model|sample/party.webp]]
 
 These lines represent mingling groups at a party. Men are shown as blue, women
 pink. The numbers are the sizes of the groups.
@@ -81,7 +81,7 @@ There are lots of possible answers to this question about what happens at real
 parties. The designer of this simulation thought that groups at parties don't
 just form randomly. The groups are determined by how the individuals at the
 party behave. The designer chose to focus on a particular variable, called
-"tolerance": ![[The tolerance slider|sample/tolerance.png]]
+"tolerance": ![[The tolerance slider|sample/tolerance.webp]]
 
 Tolerance is defined here as the percentage of people of the opposite sex an
 individual is "comfortable" with. If the individual is in a group that has a

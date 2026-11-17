@@ -4,10 +4,12 @@ import modelVersionTagDomain from '#src/modules/model-version-tag/domain/model-v
 import { TagAlreadyAppliedError } from '#src/modules/model-version-tag/domain/model-version-tag.errors.ts';
 import { VersionNotFoundError } from '#src/modules/model-version/domain/model-version.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockModelVersionTagRepository } from '#src/modules/model-version-tag/database/model-version-tag.repository.mock.ts';
-import { mockModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.mock.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import type { ModelVersionEntity } from '#src/modules/model-version/domain/model-version.types.ts';
+import { makeUniqueViolation } from '#src/shared/test/prisma-errors.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.port.ts';
+import type { ModelVersionTagRepository } from '#src/modules/model-version-tag/database/model-version-tag.repository.port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
 
 function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionEntity {
   return {
@@ -27,10 +29,10 @@ function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionE
 }
 
 describe('modelVersionTagService', () => {
-  const modelVersionTagRepository = mockModelVersionTagRepository();
-  const modelVersionRepository = mockModelVersionRepository();
+  const modelVersionTagRepository = mockPort<ModelVersionTagRepository>();
+  const modelVersionRepository = mockPort<ModelVersionRepository>();
   const tagService = { upsertByName: vi.fn() };
-  const eventRepository = mockEventRepository();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const domain = modelVersionTagDomain();
 
@@ -51,7 +53,6 @@ describe('modelVersionTagService', () => {
     it('adds tag to current version', async () => {
       modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
       tagService.upsertByName.mockResolvedValue({ id: 'tag-1', name: 'ecology' });
-      modelVersionTagRepository.exists.mockResolvedValue(false);
 
       const result = await service.add('model-1', 'user-1', 'ecology');
 
@@ -70,7 +71,7 @@ describe('modelVersionTagService', () => {
     it('throws TagAlreadyAppliedError if tag exists on version', async () => {
       modelVersionRepository.findLatestByModel.mockResolvedValue(makeVersion());
       tagService.upsertByName.mockResolvedValue({ id: 'tag-1', name: 'ecology' });
-      modelVersionTagRepository.exists.mockResolvedValue(true);
+      modelVersionTagRepository.insertTx.mockRejectedValueOnce(makeUniqueViolation());
 
       await expect(service.add('model-1', 'user-1', 'ecology')).rejects.toThrow(
         TagAlreadyAppliedError,

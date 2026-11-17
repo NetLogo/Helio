@@ -25,7 +25,7 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 });
 
-defineOgImageComponent('DocsSeo', {
+defineOgImage('DocsSeo', {
   title: resource.value.title,
   description: resource.value.description,
   theme: '#f31500',

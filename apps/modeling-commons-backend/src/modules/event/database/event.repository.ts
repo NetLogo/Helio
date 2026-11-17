@@ -1,18 +1,28 @@
 import type {
+  EventJobData,
   EventRecord,
   EventRepositoryPort,
   InsertEventParams,
 } from '#src/modules/event/database/event.repository.port.ts';
+import type { EventType } from '#src/modules/event-catalog.ts';
 import type { EventSearchFilters } from '#src/modules/event/domain/event.types.ts';
 import type { Paginated, PaginatedQueryParams } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
+import { notifyRealtime } from '#src/shared/realtime/realtime-publisher.ts';
 
-export default function eventRepository({ db }: Dependencies): EventRepositoryPort {
+export default function eventRepository({
+  db,
+  jobQueue,
+  realtimeTopics,
+}: Dependencies): EventRepositoryPort {
   return {
-    async insert(ctx: TransactionContext, params: InsertEventParams): Promise<void> {
+    async insertTx<T extends EventType>(
+      ctx: TransactionContext,
+      params: InsertEventParams<T>,
+    ): Promise<void> {
       const client = resolveTransaction(ctx);
-      await client.event.create({
+      const event = await client.event.create({
         data: {
           type: params.type,
           actorId: params.actorId,
@@ -21,32 +31,25 @@ export default function eventRepository({ db }: Dependencies): EventRepositoryPo
           payload: params.payload,
         },
       });
+      const data: EventJobData = { eventId: event.id };
+      await jobQueue.publishTx(ctx, params.type, data);
+      await notifyRealtime(client, [params], realtimeTopics);
     },
 
-    async findUnprocessed(limit: number): Promise<Array<EventRecord>> {
-      const records = await db.event.findMany({
-        where: { processedAt: null },
-        orderBy: { createdAt: 'asc' },
-        take: limit,
-      });
-      return records as unknown as Array<EventRecord>;
-    },
-
-    async markProcessed(id: string): Promise<void> {
-      await db.event.update({
-        where: { id },
-        data: { processedAt: new Date() },
-      });
+    async findOneById(id: string): Promise<EventRecord | null> {
+      const record = await db.event.findUnique({ where: { id } });
+      return record as unknown as EventRecord | null;
     },
 
     async search(
       filters: EventSearchFilters,
       params: PaginatedQueryParams,
     ): Promise<Paginated<EventRecord>> {
-      const where: Pick<EventSearchFilters, 'type' | 'resourceType'> = {};
+      const where: { type?: string; resourceType?: string; id?: { in: Array<string> } } = {};
 
       if (filters.type) where.type = filters.type;
       if (filters.resourceType) where.resourceType = filters.resourceType;
+      if (filters.ids) where.id = { in: filters.ids };
 
       const [count, records] = await Promise.all([
         db.event.count({ where }),

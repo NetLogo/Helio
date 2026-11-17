@@ -82,10 +82,10 @@ const beginnersLinks = ref(beginnersLinksData);
 useSeoMeta({
   title: productName,
   description: productDescription,
-  keywords: productKeywords.join(', '),
 });
+useHead({ meta: [{ name: 'keywords', content: productKeywords.join(', ') }] });
 
-defineOgImageComponent('DocsSeo', {
+defineOgImage('DocsSeo', {
   title: productName,
   theme: '#f31500',
   siteLogo: '/turtles.png',

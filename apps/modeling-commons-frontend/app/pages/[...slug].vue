@@ -18,7 +18,7 @@
       </template>
     </UPageHero>
     <article class="modeling-commons-docs docs">
-      <ContentRenderer :value="page!" class="prose" />
+      <ContentRenderer :value="page!" :prose="false" class="prose" />
     </article>
   </UMain>
 </template>

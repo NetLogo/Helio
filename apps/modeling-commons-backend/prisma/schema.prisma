@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -51,6 +52,12 @@ enum ModelFileKind {
   additional
 }
 
+enum EmailMode {
+  immediate
+  daily
+  off
+}
+
 // Better Auth core tables
 
 model User {
@@ -87,6 +94,11 @@ model User {
   modelLikes       ModelLike[]
   modelInteractions ModelInteraction[]
   modelDrafts      ModelDraft[]
+  comments         ModelComment[]
+  commentLikes     ModelCommentLike[]
+  notifications           UserNotification[]
+  notificationPreferences UserNotificationPreference[]
+  notificationDigests     NotificationDigest[]
 
   // Better Auth Admin plugin
   role String?
@@ -202,6 +214,7 @@ model Model {
   likes           ModelLike[]
   interactions    ModelInteraction[]
   drafts          ModelDraft[]
+  comments        ModelComment[]
 
 
   @@unique([id, latestVersionNumber])
@@ -380,20 +393,110 @@ model ModelDraft {
   @@index([modelId])
 }
 
+model ModelComment {
+  id            String    @id @default(nanoid())
+  legacyId      Int?      @unique
+
+  parentId      String?
+  userId        String?
+
+  modelId       String
+  versionNumber Int?
+
+  content       String?   @db.Text
+  likesCount    Int       @default(0)
+
+  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime  @updatedAt      @db.Timestamptz(3)
+  editedAt      DateTime? @db.Timestamptz(3)
+  deletedAt     DateTime? @db.Timestamptz(3)
+
+  model   Model          @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  user    User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  parent  ModelComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies ModelComment[] @relation("CommentReplies")
+
+  likes   ModelCommentLike[]
+
+  @@index([modelId, parentId, createdAt])
+  @@index([parentId])
+  @@index([userId])
+}
+
+model ModelCommentLike {
+  modelCommentId String
+  userId         String
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+
+  modelComment ModelComment @relation(fields: [modelCommentId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([modelCommentId, userId])
+  @@index([userId])
+}
+
 model Event {
-  id           String    @id @default(nanoid())
+  id           String   @id @default(nanoid())
   type         String
   actorId      String
   resourceType String
   resourceId   String
   payload      Json
-  createdAt    DateTime  @default(now())
-  processedAt  DateTime?
+  createdAt    DateTime @default(now())
 
   actor User @relation(fields: [actorId], references: [id])
+
+  notifications UserNotification[]
 
   @@index([actorId])
   @@index([resourceType, resourceId])
   @@index([type])
-  @@index([processedAt])
+}
+
+model UserNotification {
+  id              String    @id @default(nanoid())
+  recipientId     String
+  eventId         String
+  category        String
+  url             String
+  payload         Json      @default("{}")
+  actorId         String?
+  targetType      String?
+  targetId        String?
+  emailSentAt     DateTime? @db.Timestamptz(3)
+  readAt          DateTime? @db.Timestamptz(3)
+  inAppSuppressed Boolean   @default(false)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(3)
+
+  recipient User  @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, recipientId, category])
+  @@index([recipientId, readAt, createdAt])
+  @@index([createdAt])
+  @@index([recipientId, createdAt], map: "UserNotification_unsent_recipientId_createdAt_idx", where: raw("\"emailSentAt\" IS NULL"))
+}
+
+model NotificationDigest {
+  recipientId String
+  day         DateTime @db.Date
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  recipient User @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@id([recipientId, day])
+  @@index([day])
+}
+
+model UserNotificationPreference {
+  id        String   @id @default(nanoid())
+  userId    String
+  category  String
+  email     EmailMode
+  inApp     Boolean
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category])
 }

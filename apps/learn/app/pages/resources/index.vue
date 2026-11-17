@@ -143,7 +143,7 @@ useSeoMeta({
   twitterSite: '@netlogo',
 });
 
-defineOgImageComponent('DocsSeo', {
+defineOgImage('DocsSeo', {
   title: 'NetLogo Resources',
   description: 'Books, curricula, datasets, and more',
   theme: '#f31500',

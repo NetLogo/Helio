@@ -40,8 +40,7 @@
 
 <script lang="ts">
 import { useInfiniteScroll } from "@vueuse/core";
-import type { ApiUser } from "~/composables/user/useUsers";
-export const toUserSelectMenuItem = (user: ApiUser) => ({
+export const toUserSelectMenuItem = (user: UserProfile) => ({
   label: user.name ?? "Unknown User",
   value: user.id,
   avatar: {
@@ -63,7 +62,7 @@ export type UserSelectMenuItem = {
 };
 
 const props = defineProps<{
-  users: Array<ApiUser>;
+  users: Array<UserProfile>;
   loading: boolean;
   loadNextPage: () => void;
   canLoadMore: boolean;
@@ -90,10 +89,6 @@ function clearSelection() {
 
 onMounted(() => {
   useInfiniteScroll(
-    // @ts-expect-error -- need to update @nuxt/ui for this to work
-    // but this is a chore for later and won't cause issues in the
-    // meantime
-    // -- Omar Ibrahim, Jun 02 26
     () => selectMenu.value?.viewportRef,
     () => {
       props.loadNextPage();

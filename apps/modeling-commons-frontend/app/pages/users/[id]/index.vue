@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const route = useRoute();
-const api = useApi();
 const user = useUser();
 
 const id = route.params.id as string;
@@ -9,13 +8,7 @@ const {
   data: profile,
   error,
   status,
-} = await useAsyncData<UserProfile | null>(`profile-${id}`, async () => {
-  const { data, error } = await api.GET("/api/v1/users/{id}", {
-    params: { path: { id } },
-  });
-
-  return handleApiError(data, error, "fetching user profile");
-});
+} = await useAsyncData<UserProfile | null>(`profile-${id}`, () => fetchUser(id));
 
 const isProfilePublic = computed(() => profile.value?.isProfilePublic);
 
@@ -66,11 +59,7 @@ const {
   cards: ModelCard[];
   count: number;
 }>(`models-by-user-${id}`, async () => {
-  const { data, error } = await api.GET("/api/v1/models/card", {
-    params: { query: { authorId: id, limit: 4, publicOnly: false } },
-  });
-
-  const safeData = handleApiError(data, error, "fetching models");
+  const safeData = await fetchModelCards({ authorId: id, limit: 4, publicOnly: false });
 
   return {
     cards: safeData.data,

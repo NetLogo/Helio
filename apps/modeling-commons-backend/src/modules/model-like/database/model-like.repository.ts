@@ -7,18 +7,15 @@ export default function modelLikeRepository({ db }: Dependencies): ModelLikeRepo
   return {
     async upsertTx(ctx: TransactionContext, entity: ModelLikeEntity): Promise<boolean> {
       const client = resolveTransaction(ctx);
-      const existing = await client.modelLike.findUnique({
-        where: { modelId_userId: { modelId: entity.modelId, userId: entity.userId } },
-      });
-      if (existing) return false;
-      await client.modelLike.create({
+      const result = await client.modelLike.createMany({
         data: {
           modelId: entity.modelId,
           userId: entity.userId,
           createdAt: entity.createdAt,
         },
+        skipDuplicates: true,
       });
-      return true;
+      return result.count > 0;
     },
 
     async deleteTx(ctx: TransactionContext, modelId: string, userId: string): Promise<boolean> {

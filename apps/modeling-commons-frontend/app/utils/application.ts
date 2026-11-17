@@ -1,6 +1,5 @@
 export async function navigateToRandomModel() {
-  const api = useApi();
-  const partialModel = await getRandomModelId(api);
+  const partialModel = await getRandomModelId();
   console.log("Fetched random model ID:", partialModel);
   if (partialModel) {
     navigateTo(createModelPath(partialModel.id, partialModel.title));

@@ -103,7 +103,7 @@ const prerequisites = computed(() => {
     .filter((req) => req !== null);
 });
 
-defineOgImageComponent('DocsSeo', {
+defineOgImage('DocsSeo', {
   title: product.name,
   description: product.longDescription,
   theme: '#f31500',
@@ -118,8 +118,8 @@ useSeoMeta({
   ogType: 'website',
   title: `Learn ${product.name}`,
   description: product.description,
-  keywords: [product.name, 'NetLogo', 'Learn', 'Agent-Based Modeling', 'Simulations'].join(', '),
 });
+useHead({ meta: [{ name: 'keywords', content: [product.name, 'NetLogo', 'Learn', 'Agent-Based Modeling', 'Simulations'].join(', ') }] });
 </script>
 
 <template>

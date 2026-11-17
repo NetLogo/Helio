@@ -4,6 +4,9 @@ import type { PopularTag } from '#src/modules/tag/database/tag.repository.port.t
 import type { Paginated } from '#src/shared/db/repository.port.ts';
 import type { DateRangeQueryParams } from '#src/shared/db/date-range-query.args.ts';
 import { paginatedQueryBase } from '#src/shared/ddd/query.base.ts';
+import { ID_PATTERN } from '#src/shared/utils/id.ts';
+
+const ID_RE = new RegExp(ID_PATTERN);
 
 export default function makeTagService({ tagRepository, tagDomain }: Dependencies) {
   return {
@@ -27,7 +30,7 @@ export default function makeTagService({ tagRepository, tagDomain }: Dependencie
     },
 
     async findByIdOrName(idOrName: string): Promise<TagEntity> {
-      const byId = await tagRepository.findOneById(idOrName);
+      const byId = ID_RE.test(idOrName) ? await tagRepository.findOneById(idOrName) : undefined;
       if (byId) return byId;
 
       const byName = await tagRepository.findByNameInsensitive(idOrName);

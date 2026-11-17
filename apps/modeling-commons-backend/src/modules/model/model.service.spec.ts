@@ -1,14 +1,18 @@
 import type { Model } from '#prisma/index';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
-import { mockModelRepository } from '#src/modules/model/database/model.repository.mock.ts';
+import makeModelRepository from '#src/modules/model/database/model.repository.ts';
 import modelDomain from '#src/modules/model/domain/model.domain.ts';
 import {
   ModelAlreadyDeletedError,
   ModelNotFoundError,
 } from '#src/modules/model/domain/model.errors.ts';
 import makeModelService from '#src/modules/model/model.service.ts';
+import { readableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
+import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelRepository } from '#src/modules/model/database/model.repository.port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
 
 function makeModel(overrides: Partial<Model> = {}): Model {
   return {
@@ -32,8 +36,8 @@ function makeModel(overrides: Partial<Model> = {}): Model {
 }
 
 describe('modelService', () => {
-  const modelRepository = mockModelRepository();
-  const eventRepository = mockEventRepository();
+  const modelRepository = mockPort<ModelRepository>();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const domain = modelDomain();
   const modelDraftService = {
@@ -59,7 +63,7 @@ describe('modelService', () => {
 
       await service.update('model-1', { visibility: 'private' });
 
-      expect(modelRepository.updateFields).toHaveBeenCalledWith(expect.anything(), 'model-1', {
+      expect(modelRepository.updateFieldsTx).toHaveBeenCalledWith(expect.anything(), 'model-1', {
         visibility: 'private',
       });
     });
@@ -77,14 +81,75 @@ describe('modelService', () => {
     });
   });
 
+  describe('getModelPreviewsForViewer', () => {
+    const viewer: ViewerContext = {
+      id: 'viewer-1',
+      systemRole: 'user',
+      banned: false,
+      deletedAt: null,
+    };
+    const previewDb = { user: { findUnique: vi.fn() }, model: { findMany: vi.fn() } };
+    const previewService = makeModelService({
+      modelRepository: makeModelRepository({
+        db: previewDb,
+        modelMapper: {},
+        repositoryBase: () => ({}),
+      } as never),
+      db: previewDb,
+    } as never);
+
+    it('reads title and preview of the readable, live models in one query', async () => {
+      previewDb.user.findUnique.mockResolvedValue(viewer);
+      previewDb.model.findMany.mockResolvedValue([
+        { id: 'model-1', versions: [{ title: 'Wolf Sheep', previewImageFileKey: 'preview.png' }] },
+      ]);
+
+      const previews = await previewService.getModelPreviewsForViewer(
+        ['model-1', 'model-2'],
+        'viewer-1',
+      );
+
+      expect(previewDb.model.findMany).toHaveBeenCalledOnce();
+      expect(previewDb.model.findMany.mock.calls[0]![0].where).toEqual({
+        AND: [{ id: { in: ['model-1', 'model-2'] }, deletedAt: null }, readableModelFilter(viewer)],
+      });
+      expect(previews).toEqual(
+        new Map([
+          ['model-1', { id: 'model-1', title: 'Wolf Sheep', previewImageFileKey: 'preview.png' }],
+        ]),
+      );
+    });
+
+    it('keeps a model whose latest version has no title or preview', async () => {
+      previewDb.user.findUnique.mockResolvedValue(viewer);
+      previewDb.model.findMany.mockResolvedValue([{ id: 'model-1', versions: [] }]);
+
+      const previews = await previewService.getModelPreviewsForViewer(['model-1'], 'viewer-1');
+
+      expect(previews.get('model-1')).toEqual({
+        id: 'model-1',
+        title: null,
+        previewImageFileKey: null,
+      });
+    });
+
+    it('reads nothing when there are no models', async () => {
+      const previews = await previewService.getModelPreviewsForViewer([], 'viewer-1');
+
+      expect(previews.size).toBe(0);
+      expect(previewDb.user.findUnique).not.toHaveBeenCalled();
+      expect(previewDb.model.findMany).not.toHaveBeenCalled();
+    });
+  });
+
   describe('softDelete', () => {
     it('soft deletes and emits event', async () => {
       modelRepository.findOneById.mockResolvedValue(makeModel());
 
       await service.softDelete('model-1', 'user-1');
 
-      expect(modelRepository.softDelete).toHaveBeenCalledWith(expect.anything(), 'model-1');
-      expect(eventRepository.insert).toHaveBeenCalledWith(
+      expect(modelRepository.softDeleteTx).toHaveBeenCalledWith(expect.anything(), 'model-1');
+      expect(eventRepository.insertTx).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ type: 'model.deleted' }),
       );
@@ -97,7 +162,7 @@ describe('modelService', () => {
 
       await service.softDelete('model-1', 'user-1');
 
-      const ctxArg = modelRepository.softDelete.mock.calls[0]![0];
+      const ctxArg = modelRepository.softDeleteTx.mock.calls[0]![0];
       expect(modelDraftService.purgeForModelTx).toHaveBeenCalledWith(ctxArg, 'model-1');
       expect(modelDraftService.cleanupDraftStaging).toHaveBeenCalledWith(purged);
     });
@@ -105,7 +170,7 @@ describe('modelService', () => {
     it('does not clean up draft staging when the transaction fails', async () => {
       modelRepository.findOneById.mockResolvedValue(makeModel());
       modelDraftService.purgeForModelTx.mockResolvedValue([]);
-      eventRepository.insert.mockRejectedValueOnce(new Error('boom'));
+      eventRepository.insertTx.mockRejectedValueOnce(new Error('boom'));
 
       await expect(service.softDelete('model-1', 'user-1')).rejects.toThrow('boom');
       expect(modelDraftService.cleanupDraftStaging).not.toHaveBeenCalled();

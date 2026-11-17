@@ -1,5 +1,6 @@
 <template>
-  <SideCatalog
+  <component
+    :is="CatalogComponent"
     :label="dictionaryDisplayName"
     :items="(catalogItems || []) as SideCatalogItem[]"
     item-prefix="primitive:"
@@ -9,6 +10,9 @@
     :scroll-margin-top="150"
     :is-loading="loading"
     with-route-transition
+    :class="{
+      'lg:mt-5 mb-10 px-2 mx-auto nl-container-width min-h-[70vh]': isOffline
+    }"
   >
     <div class="w-full [&>.min-h-screen]:min-h-0 lg:pr-5 pb-10 min-h-rest">
       <slot />
@@ -18,9 +22,9 @@
         <Anchor :href="removeHtmlExtension(dictionaryHomeDirectory)"> {{ dictionaryDisplayName }} </Anchor>.
       </p>
 
-      <Surround :surround="surround" class="mt-auto" />
+      <Surround v-if="!isOffline" :surround="surround" class="mt-auto"/>
     </div>
-  </SideCatalog>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -31,8 +35,12 @@ import type { CatalogItemData, PrimitiveCatalogProps, SideCatalogItem } from './
 const {
   public: {
     website: { productVersion },
+    isOffline
   },
 } = useRuntimeConfig();
+
+const SideCatalog = resolveComponent('SideCatalog') as typeof import('@repo/vue-ui')['SideCatalog'];
+const CatalogComponent = isOffline ? 'div' : SideCatalog;
 
 const { dictionaryDisplayName, dictionaryHomeDirectory, indexFileURI, currentItemId, currentItemLabel, primRoot } =
   defineProps<PrimitiveCatalogProps>();

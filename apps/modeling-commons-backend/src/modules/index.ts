@@ -6,11 +6,21 @@ import makeRepositoryBase, {
 } from '#src/shared/db/repository-base.factory.ts';
 import makePrismaTransactionManager from '#src/shared/db/prisma-transaction.manager.ts';
 import type { TransactionManager } from '#src/shared/db/transaction.port.ts';
+import makeBoss from '#src/shared/jobs/boss.ts';
+import type { JobQueue } from '#src/shared/jobs/job-queue.port.ts';
+import makePgBossJobQueue from '#src/shared/jobs/pg-boss.job-queue.ts';
+import env from '#src/config/env.ts';
+import realtimeConfig from '#src/config/realtime.ts';
+import { makeRealtimeBroker, type RealtimeBroker } from '#src/shared/realtime/broker.ts';
 import { asFunction, asValue, type Resolver } from 'awilix';
+import type { PgBoss } from 'pg-boss';
 import type { FastifyBaseLogger } from 'fastify';
 import type { Bucket, S3Client } from '@aws-sdk/client-s3';
 import storage, { bucket } from '#src/lib/storage.ts';
 import { makeFileDependencies } from '#src/modules/file/index.ts';
+import makeRegisteredNotificationModules from '#src/modules/notification-catalog.ts';
+import { realtimeTopics } from '#src/modules/realtime-topics.ts';
+import type { AnyRealtimeTopic } from '#src/shared/realtime/realtime-topic.ts';
 
 type Resolvers<T> = {
   [K in keyof T]: Resolver<T[K]>;
@@ -26,6 +36,10 @@ declare global {
     eventBus: EventBus;
     repositoryBase: RepositoryBaseFactory;
     transactionManager: TransactionManager;
+    boss: PgBoss;
+    jobQueue: JobQueue;
+    realtimeBroker: RealtimeBroker;
+    realtimeTopics: ReadonlyArray<AnyRealtimeTopic>;
   }
 }
 
@@ -45,6 +59,16 @@ export function makeDependencies({
     eventBus: asValue(eventBus),
     repositoryBase: asFunction(makeRepositoryBase),
     transactionManager: asFunction(makePrismaTransactionManager),
+    boss: asFunction(() => makeBoss({ logger, workersEnabled: env.workers.enabled })).singleton(),
+    jobQueue: asFunction(makePgBossJobQueue).singleton(),
+    registeredNotificationModules: asFunction(makeRegisteredNotificationModules).singleton(),
+    realtimeBroker: asFunction(() =>
+      makeRealtimeBroker({
+        maxStreamsPerUser: realtimeConfig.streams.maxPerUser,
+        heartbeatIntervalMs: realtimeConfig.streams.heartbeatIntervalMs,
+      }),
+    ).singleton(),
+    realtimeTopics: asValue(realtimeTopics),
     ...makeFileDependencies(),
   };
 }

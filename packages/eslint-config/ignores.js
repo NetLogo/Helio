@@ -15,6 +15,7 @@ const customIgnores = {
     "**/.output",
     "**/.build",
     "**/.dist",
+    "**/.ongoing",
   ],
 };
 

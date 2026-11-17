@@ -55,16 +55,6 @@ Date: 2026-05-20
 - Option B — Remove the `nitro.prerender: false` line and rely on the base config; keep the `routeRules` prerender markers.
 **Recommended:** Option A — makes the intent explicit and prevents accidental crawls of dynamic content (e.g., model pages) that aren't prerender-safe.
 
-## `turnstile.enabled` is a build-time string, not a runtime boolean
-
-**Severity:** medium
-**Location:** `nuxt.config.ts:38-41`
-**Description:** `turnstile.enabled: process.env.CAPTCHA_SITE_KEY` assigns the raw string (or `undefined`) to a field that the module treats as boolean. Because it's at the top level (not under `runtimeConfig`), the truthiness check is baked at build time and can't be toggled at runtime by env. If the build runs without `CAPTCHA_SITE_KEY` set, Turnstile is permanently disabled in that artifact even if the production env later provides one.
-**Workarounds:**
-- Option A — Coerce explicitly: `enabled: Boolean(process.env.CAPTCHA_SITE_KEY)`, and document that builds must have `CAPTCHA_SITE_KEY` set.
-- Option B — Move site key under `runtimeConfig.public.turnstile.siteKey` and drop `enabled` (let the module enable itself when a site key is present at runtime; check the module's actual behavior).
-**Recommended:** Option A — minimal change, makes intent explicit; revisit Option B only if you need runtime toggling.
-
 ## Duplicate `pages:extend` routes alias the same component to multiple names
 
 **Severity:** low
@@ -89,7 +79,6 @@ Date: 2026-05-20
 ---
 
 Out of scope / verified clean:
-- `runtimeConfig.turnstile.secretKey` is correctly server-only (not under `public`).
 - `routeRules` `xFrameOptions: false` / `frame-ancestors: ["*"]` for `/models/**/embed` are intentional and correctly wired through `nuxt-security`.
 - Middleware (`auth`, `guest`, global `onboarding`) is auto-loaded from `app/middleware/` and registered via `definePageMeta` on the right pages.
 - All file paths referenced in `hooks.pages:extend` exist on disk (`pages/models/[id]/index.vue`, `embed.vue`, `edit.vue`, `users/[id]/index.vue`).

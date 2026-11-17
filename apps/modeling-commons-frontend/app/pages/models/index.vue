@@ -36,7 +36,7 @@
                           : setFilter('order', 'asc')
                       "
                     >
-                      <UIcon :name="modelOrderIcons[filters.order ?? 'desc']" class="size-4" />
+                      <UIcon :name="modelLiterals.orderIcons[filters.order ?? 'desc']" class="size-4" />
                     </UButton>
                   </div>
                   <!-- @vue-expect-error -- readonly vs mutable types -->
@@ -44,7 +44,7 @@
                     v-model="filters.sortBy"
                     variant="card"
                     default-value="recent"
-                    :items="modelSortByOptions"
+                    :items="modelLiterals.sortByOptions"
                     @update:model-value="setModelSortBy"
                   />
                 </div>
@@ -166,15 +166,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  modelKeywordDebounceMs,
-  modelOrderIcons,
-  modelsIndexSeoMeta,
-  modelSortByOptions,
-  modelTypeFilterOptions,
-} from "~/forms/models";
-
-useSeoMeta(modelsIndexSeoMeta);
+useSeoMeta(modelLiterals.indexSeoMeta);
 
 const orientation = ref<"horizontal" | "vertical">("horizontal");
 
@@ -220,7 +212,7 @@ const setModelSortBy = (value: string) => {
 };
 
 const modelTypeButtons = computed(() =>
-  modelTypeFilterOptions.map(({ key, label }) => ({
+  modelLiterals.typeFilterOptions.map(({ key, label }) => ({
     key,
     label,
     onClick: () => setFilter(key, filters.value[key] ? undefined : true),
@@ -236,7 +228,7 @@ watch(pending, (isLoading) => {
 
 const { query: keyword, debouncedQuery: debouncedKeyword } = useSearchQuery({
   defaultValue: filters.value.keyword ?? "",
-  debounce: { ms: modelKeywordDebounceMs },
+  debounce: { ms: modelRules.keywordDebounceMs },
 });
 
 watch(debouncedKeyword, (value) => {

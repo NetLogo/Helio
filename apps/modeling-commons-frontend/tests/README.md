@@ -10,7 +10,7 @@ See `doc/test/PLAN.md` for the inventory and `doc/test/TESTING-OVERVIEW.md` for 
 - `e2e/` — full-stack journeys, real Fastify required.
 - `nuxt/` — Nuxt-aware tests that don't fit beside source (rare; only when colocation isn't appropriate).
 
-Unit tests for utils and component tests for SFCs are **colocated** next to the source — `Foo.test.ts` lives next to `Foo.ts` / `Foo.vue`. The Vitest config picks them up via the `unit` and `components` projects.
+Unit tests for utils live in `app/utils/__tests__/` and component tests in `app/components/<area>/__tests__/`, both importing through `~/` aliases. The Vitest config picks them up via the `unit` and `components` projects.
 
 ## Running
 

@@ -5,7 +5,7 @@
 The Resource Manager dialog, shown below, allows you to manipulate the resources
 that are bundled with a model.
 
-![Resource Manager dialog](images/resource-manager/dialog.png)
+![Resource Manager dialog](images/resource-manager/dialog.webp)
 
 You can store any file type in a model using the Resource Manager. Although each
 resource's original file extension is not included in its name, the Resource

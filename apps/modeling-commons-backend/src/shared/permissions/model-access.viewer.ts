@@ -1,4 +1,5 @@
 import type { ExtendedPrismaClient } from '#src/lib/prisma.ts';
+import { NotFoundException } from '#src/shared/exceptions/index.ts';
 import type { PolicyContext, SystemRole, ViewerContext } from './model-access.types.ts';
 
 export async function loadViewer(
@@ -27,24 +28,25 @@ export async function loadModelAccessContext(
   userId: string | null,
   modelId: string,
 ): Promise<PolicyContext> {
-  const viewer = await loadViewer(db, userId);
-
   const sentinelOrUserId = userId ?? '__never__';
-  const model = await db.model.findUnique({
-    where: { id: modelId },
-    select: {
-      id: true,
-      visibility: true,
-      deletedAt: true,
-      authors: { where: { userId: sentinelOrUserId }, select: { role: true } },
-      permissions: {
-        where: { granteeUserId: sentinelOrUserId },
-        select: { permissionLevel: true },
+  const [viewer, model] = await Promise.all([
+    loadViewer(db, userId),
+    db.model.findUnique({
+      where: { id: modelId },
+      select: {
+        id: true,
+        visibility: true,
+        deletedAt: true,
+        authors: { where: { userId: sentinelOrUserId }, select: { role: true } },
+        permissions: {
+          where: { granteeUserId: sentinelOrUserId },
+          select: { permissionLevel: true },
+        },
       },
-    },
-  });
+    }),
+  ]);
 
-  if (!model) throw new Error('Model not found');
+  if (!model) throw new NotFoundException('Model not found');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ownerRole = model.authors.length > 0 ? model.authors[0]!.role : null;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

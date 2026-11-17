@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -euo pipefail
-export WINDOWS_OS="$(uname -s | grep -i cygwin || true)"
+export WINDOWS_OS="$(uname -s | grep -iE 'cygwin|mingw|msys' || true)"
 export HELIO_HEADLESS="${HELIO_HEADLESS:-0}"
 export HELIO_LOG_INDENT_LEVEL="${HELIO_LOG_INDENT_LEVEL:-0}"
 export HELIO_LOG_STRING="${HELIO_LOG_STRING:-"  "}"
@@ -116,24 +116,3 @@ function require_env() {
   done
 }
 
-# list(processes_names) -> void
-function kill_processes_by_name() {
-  local processes_names=("$@")
-  local process
-  for process in "${processes_names[@]}"; do
-    pgrep $process | xargs -r kill -9 >/dev/null 2>/dev/null || true
-  done
-}
-
-# list(ports) -> void
-function kill_processes_by_port() {
-  local ports=("$@")
-  local port
-  for port in "${ports[@]}"; do
-    if [ -n "$WINDOWS_OS" ]; then
-      netstat -ano | grep ":$port " | awk '{print $5}' | xargs -r taskkill /F /PID >/dev/null 2>/dev/null || true
-    else
-      lsof -ti:$port | xargs -r kill -9 >/dev/null 2>/dev/null || true
-    fi
-  done
-}

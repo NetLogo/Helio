@@ -35,6 +35,25 @@ When(
 );
 
 When(
+  '{string} likes {string} {int} times at once',
+  async function (this: ICustomWorld, actorName: string, modelTitle: string, times: number) {
+    const actor = getUsers(this.context).get(actorName)!;
+    const modelId = getModels(this.context).get(modelTitle)!;
+    this.context['likeResponses'] = await Promise.all(
+      Array.from({ length: times }, () => likeAs(this.server, actor, modelId)),
+    );
+  },
+);
+
+Then('every like response status should be {int}', function (this: ICustomWorld, expected: number) {
+  const responses = this.context['likeResponses'] as Array<{ statusCode: number }>;
+  assert.deepStrictEqual(
+    responses.map((r) => r.statusCode),
+    responses.map(() => expected),
+  );
+});
+
+When(
   'an anonymous viewer likes {string}',
   async function (this: ICustomWorld, modelTitle: string) {
     const modelId = getModels(this.context).get(modelTitle)!;

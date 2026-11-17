@@ -36,9 +36,6 @@ files=(
   "hpc"
   "extensions"
   "extension-authoring"
-  "colorpicker"
-  "netlogo7intro"
-  "netlogopreferences"
 )
 for ext in $extensions; do
   files+=("$ext")

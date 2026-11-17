@@ -1,10 +1,13 @@
-import type { FastifyError, FastifyInstance } from 'fastify';
+import { STATUS_CODES } from 'node:http';
+import type { FastifyError, FastifyInstance, FastifyReply } from 'fastify';
 import fp from 'fastify-plugin';
 import {
   type ApiErrorResponse,
   apiErrorResponseSchema,
 } from '#src/shared/api/api-error.response.ts';
 import { getRequestId } from '#src/shared/app/app-request-context.ts';
+import { mapPgConnectionError } from '#src/shared/db/pg-connection-error.ts';
+import { mapPrismaError } from '#src/shared/db/prisma-error.ts';
 import { ExceptionBase } from '#src/shared/exceptions/index.ts';
 
 const fastifyErrorCodesMap: Record<
@@ -14,23 +17,20 @@ const fastifyErrorCodesMap: Record<
       message: string;
       error: string;
       correlationId?: string;
-      subErrors?: Array<{ path: string; message: string }>;
+      subErrors?: string;
     })
   | undefined
 > = {
   FST_ERR_VALIDATION: (error: FastifyError) => ({
-    subErrors: (error.validation ?? []).map((validationError) => ({
-      path: validationError.instancePath,
-      message: validationError.message ?? '',
-    })),
+    subErrors: JSON.stringify(
+      (error.validation ?? []).map((validationError) => ({
+        path: validationError.instancePath,
+        message: validationError.message ?? '',
+      })),
+    ),
     statusCode: 400,
     message: 'Validation error',
     error: 'Bad Request', // https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1
-  }),
-  FST_ERR_NOT_FOUND: () => ({
-    message: 'Not Found',
-    error: 'Not Found',
-    statusCode: 404, //  'https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4',
   }),
   FST_REQ_FILE_TOO_LARGE: () => ({
     message: 'File exceeds the maximum allowed size',
@@ -38,6 +38,26 @@ const fastifyErrorCodesMap: Record<
     statusCode: 413, // https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.11
   }),
 };
+
+function isCodedHttpError(error: Error): error is Error & { code: string; statusCode: number } {
+  return (
+    'code' in error &&
+    typeof error.code === 'string' &&
+    'statusCode' in error &&
+    typeof error.statusCode === 'number' &&
+    error.statusCode >= 400 &&
+    error.statusCode < 600
+  );
+}
+
+function sendException(res: FastifyReply, exception: ExceptionBase) {
+  return res.status(exception.statusCode).send({
+    statusCode: exception.statusCode,
+    message: exception.message,
+    error: exception.error,
+    correlationId: getRequestId(),
+  } satisfies ApiErrorResponse);
+}
 
 async function errorHandlerPlugin(fastify: FastifyInstance) {
   fastify.setErrorHandler((error: FastifyError | Error, _, res) => {
@@ -51,15 +71,30 @@ async function errorHandlerPlugin(fastify: FastifyInstance) {
       }
     }
 
-    // Catch all other errors
-    fastify.log.error(error);
-    if (error instanceof ExceptionBase) {
+    if (isCodedHttpError(error)) {
+      const isServerError = error.statusCode >= 500;
+      if (isServerError) fastify.log.error(error);
+      else fastify.log.debug(error);
+      const statusText =
+        STATUS_CODES[error.statusCode] ?? (isServerError ? 'Internal Server Error' : 'Bad Request');
       return res.status(error.statusCode).send({
         statusCode: error.statusCode,
-        message: error.message,
-        error: error.error,
+        message: statusText,
+        error: statusText,
         correlationId: getRequestId(),
       } satisfies ApiErrorResponse);
+    }
+
+    const databaseException = mapPrismaError(error) ?? mapPgConnectionError(error);
+    if (databaseException) {
+      if (databaseException.statusCode < 500) fastify.log.debug(databaseException);
+      else fastify.log.error(databaseException);
+      return sendException(res, databaseException);
+    }
+
+    fastify.log.error(error);
+    if (error instanceof ExceptionBase) {
+      return sendException(res, error);
     }
 
     return res.status(500).send({

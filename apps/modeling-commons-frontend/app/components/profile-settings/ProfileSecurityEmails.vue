@@ -9,7 +9,7 @@
       </p>
       <UAuthForm
         v-if="formVisible"
-        :fields="changeEmailFields"
+        :fields="[...authLiterals.changeEmailFields]"
         :validator="changeEmailValidator"
         :submit="{
           label: 'Update Email',
@@ -31,7 +31,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "#ui/types";
 import type * as z from "zod";
-import { changeEmailFields, changeEmailValidator } from "~/forms/auth";
 
 defineProps<{
   currentEmail: string;

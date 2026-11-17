@@ -42,7 +42,11 @@ export default function modelVersionRepository({
         : undefined;
     },
 
-    async finalize(ctx: TransactionContext, modelId: string, versionNumber: number): Promise<void> {
+    async finalizeTx(
+      ctx: TransactionContext,
+      modelId: string,
+      versionNumber: number,
+    ): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.modelVersion.update({
         where: { modelId_versionNumber: { modelId, versionNumber } },
@@ -50,7 +54,7 @@ export default function modelVersionRepository({
       });
     },
 
-    async updateFields(
+    async updateFieldsTx(
       ctx: TransactionContext,
       modelId: string,
       versionNumber: number,
@@ -83,16 +87,6 @@ export default function modelVersionRepository({
         page: params.page,
         data: records.map((r: unknown) => modelVersionMapper.toDomain(r as ModelVersionRecord)),
       };
-    },
-
-    async getNextVersionNumber(ctx: TransactionContext, modelId: string): Promise<number> {
-      const client = resolveTransaction(ctx);
-      const latest = await client.modelVersion.findFirst({
-        where: { modelId },
-        orderBy: { versionNumber: 'desc' },
-        select: { versionNumber: true },
-      });
-      return (latest?.versionNumber ?? 0) + 1;
     },
 
     async findNetlogoVersionsByPrefix(prefix: string): Promise<Array<string>> {

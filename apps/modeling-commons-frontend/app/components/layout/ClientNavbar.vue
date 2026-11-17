@@ -43,6 +43,9 @@
         variant="solid"
         color="primary"
       />
+      <Notifications
+        v-if="user.isLoggedIn"
+      />
       <UDropdownMenu v-if="user.isLoggedIn" :items="userDropdownItems" :content="{ align: 'end' }">
         <template #user-info>
           <UserAvatar
@@ -51,6 +54,7 @@
             :alt="user.name"
             :email="user.email"
             variant="headline"
+            container="w-full"
           />
         </template>
         <template #default="{ open }">
@@ -196,7 +200,7 @@ const userDropdownItems = computed<Array<Array<DropdownMenuItem>>>(() => {
           },
         },
       ],
-    ] satisfies DropdownMenuItem[];
+    ] satisfies DropdownMenuItem[][];
   }
   return [];
 });

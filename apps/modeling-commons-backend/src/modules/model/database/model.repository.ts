@@ -6,8 +6,9 @@ import {
 import type {
   ModelInteractionCounts,
   ModelRepository,
+  ModelPreviewRecord,
 } from '#src/modules/model/database/model.repository.port.ts';
-import type { ModelSearchFilters } from '#src/modules/model/dtos/model.dto.ts';
+import type { ModelSearchFilters } from '#src/modules/model/domain/model.types.ts';
 import type { ModelVisibility } from '#src/modules/model/shared/enums.ts';
 import { resolveTransaction } from '#src/shared/db/prisma-transaction.manager.ts';
 import {
@@ -16,6 +17,8 @@ import {
   type PaginatedQueryParams,
 } from '#src/shared/db/repository.port.ts';
 import type { TransactionContext } from '#src/shared/db/transaction.port.ts';
+import { readableModelFilter } from '#src/shared/permissions/model-access.filter.ts';
+import type { ViewerContext } from '#src/shared/permissions/model-access.types.ts';
 import { buildModelOrderBy, buildModelWhere } from './model.search.ts';
 
 const interactionCountColumn: Record<ModelInteractionKind, keyof Model> = {
@@ -44,7 +47,7 @@ export default function modelRepository({
       return record ? modelMapper.toDomain(record) : undefined;
     },
 
-    async setLatestVersion(
+    async setLatestVersionTx(
       ctx: TransactionContext,
       modelId: string,
       versionNumber: number,
@@ -56,7 +59,7 @@ export default function modelRepository({
       });
     },
 
-    async softDelete(ctx: TransactionContext, id: string): Promise<void> {
+    async softDeleteTx(ctx: TransactionContext, id: string): Promise<void> {
       const client = resolveTransaction(ctx);
       await client.model.update({
         where: { id },
@@ -69,7 +72,7 @@ export default function modelRepository({
       await client.model.create({ data: entity });
     },
 
-    async updateFields(
+    async updateFieldsTx(
       ctx: TransactionContext,
       id: string,
       data: { visibility?: ModelVisibility; isEndorsed?: boolean },
@@ -110,7 +113,7 @@ export default function modelRepository({
       return paginate((records as Array<never>).map(map), params, count);
     },
 
-    async incrementInteractionCount(
+    async incrementInteractionCountTx(
       ctx: TransactionContext,
       modelId: string,
       kind: ModelInteractionKind,
@@ -142,6 +145,31 @@ export default function modelRepository({
         where: { id: modelId, deletedAt: null },
         ...modelCardArgs,
       });
+    },
+
+    async findPreviewsReadableBy(
+      modelIds: Array<string>,
+      viewer: ViewerContext | null,
+    ): Promise<Array<ModelPreviewRecord>> {
+      if (modelIds.length === 0) return [];
+      const records = await db.model.findMany({
+        where: {
+          AND: [{ id: { in: modelIds }, deletedAt: null }, readableModelFilter(viewer)],
+        },
+        select: {
+          id: true,
+          versions: {
+            orderBy: { versionNumber: 'desc' },
+            take: 1,
+            select: { title: true, previewImageFileKey: true },
+          },
+        },
+      });
+      return records.map((record) => ({
+        id: record.id,
+        title: record.versions[0]?.title ?? null,
+        previewImageFileKey: record.versions[0]?.previewImageFileKey ?? null,
+      }));
     },
 
     async findChildren(modelId: string, params: PaginatedQueryParams): Promise<Paginated<Model>> {

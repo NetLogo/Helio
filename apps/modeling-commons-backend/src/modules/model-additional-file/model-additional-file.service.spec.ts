@@ -4,10 +4,11 @@ import modelAdditionalFileDomain from '#src/modules/model-additional-file/domain
 import { AdditionalFileNotFoundError } from '#src/modules/model-additional-file/domain/model-additional-file.errors.ts';
 import { VersionNotFoundError } from '#src/modules/model-version/domain/model-version.errors.ts';
 import { mockTransactionManager } from '#src/shared/test/mock-transaction-manager.ts';
-import { mockModelAdditionalFileRepository } from '#src/modules/model-additional-file/database/model-additional-file.repository.mock.ts';
-import { mockModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.mock.ts';
-import { mockEventRepository } from '#src/modules/event/database/event.repository.mock.ts';
 import type { ModelVersionEntity } from '#src/modules/model-version/domain/model-version.types.ts';
+import { mockPort } from '#src/shared/test/mock-port.ts';
+import type { ModelVersionRepository } from '#src/modules/model-version/database/model-version.repository.port.ts';
+import type { EventRepositoryPort } from '#src/modules/event/database/event.repository.port.ts';
+import type { ModelAdditionalFileRepository } from '#src/modules/model-additional-file/database/model-additional-file.repository.port.ts';
 
 function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionEntity {
   return {
@@ -27,10 +28,10 @@ function makeVersion(overrides: Partial<ModelVersionEntity> = {}): ModelVersionE
 }
 
 describe('modelAdditionalFileService', () => {
-  const modelAdditionalFileRepository = mockModelAdditionalFileRepository();
-  const modelVersionRepository = mockModelVersionRepository();
+  const modelAdditionalFileRepository = mockPort<ModelAdditionalFileRepository>();
+  const modelVersionRepository = mockPort<ModelVersionRepository>();
   const fileService = { upload: vi.fn().mockResolvedValue('2026/04/17/abcd-extra.csv') };
-  const eventRepository = mockEventRepository();
+  const eventRepository = mockPort<EventRepositoryPort>();
   const transactionManager = mockTransactionManager();
   const additionalFileDomain = modelAdditionalFileDomain();
 

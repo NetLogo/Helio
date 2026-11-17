@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import type { BadgeProps, UserProps } from "#ui/types";
-import type { ModelCard } from "~/composables/model/useModelCard";
+import type { ModelCard } from "~/features/models/types";
 
 const props = withDefaults(
   defineProps<{

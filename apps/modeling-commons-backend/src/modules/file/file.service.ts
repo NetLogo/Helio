@@ -31,6 +31,12 @@ export default function makeFileService({
 }: Dependencies) {
   const publicBaseUrl = storagePublicBaseUrl.replace(/\/+$/, '');
 
+  function getPublicUrl(key: string): string | null {
+    if (!isPublicKey(key)) return null;
+    const encoded = key.split('/').map(encodeURIComponent).join('/');
+    return `${publicBaseUrl}/${encoded}`;
+  }
+
   return {
     async upload(params: {
       filename: string;
@@ -67,14 +73,14 @@ export default function makeFileService({
       };
     },
 
+    getPublicUrl,
+
     async getUrl(
       key: string,
       options: { client?: StorageClient; expiresIn?: number } = {},
     ): Promise<string> {
-      if (isPublicKey(key)) {
-        const encoded = key.split('/').map(encodeURIComponent).join('/');
-        return `${publicBaseUrl}/${encoded}`;
-      }
+      const publicUrl = getPublicUrl(key);
+      if (publicUrl) return publicUrl;
       const { expiresIn = 3600, client = signingStorageClient } = options;
       return getSignedUrl(
         client,

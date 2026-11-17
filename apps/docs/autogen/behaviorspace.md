@@ -6,7 +6,7 @@ This guide has three parts:
 - [**How It Works**](#how-it-works): Walks you through how to use the tool and highlights
   its most commonly used features.
 - [**Advanced Usage**](#advanced-usage): How to use BehaviorSpace from the command
-  line, or from your own Java code.
+  line, from your own Java code, or on an HPC.
 
 A number of new features were introduced in NetLogo 6.4:
 
@@ -489,7 +489,7 @@ In the **Table output** sample image below, the header section is in red, the ru
 columns are in blue, the initial values of the variables for the run are in green, and the
 measurement metric data is in purple.
 
-![[behaviorspace/bs-table.png]]
+![[behaviorspace/bs-table.webp]]
 
 #### Spreadsheet output
 This format lists the step numbers as well as each metric for each run in a
@@ -520,7 +520,7 @@ In the **Spreadsheet output** sample image below, the header section is in red, 
 is in blue, the initial values of the variables for the run are in green, the extra calculated
 metrics are in orange, and the measurement metric data is in purple.
 
-![[behaviorspace/bs-spreadsheet.png]]
+![[behaviorspace/bs-spreadsheet.webp]]
 
 #### Statistics output
 *(Since 6.4)*
@@ -552,7 +552,7 @@ standard deviation of "count frogs", followed by the same statistics for
 and columns A-D show the parameter combination that was used. The statistics
 are calculated across all the repetitions.
 
-![[behaviorspace/bs-stats.png]]
+![[behaviorspace/bs-stats.webp]]
 
 #### Lists output
 *(Since 6.4)*
@@ -575,7 +575,7 @@ are in green, and the expanded list data is in purple. The list data starts in
 row 7, with the headers (the index into the list, starting from 0) starting in
 column E.
 
-![[behaviorspace/bs-lists.png]]
+![[behaviorspace/bs-lists.webp]]
 
 #### Output File Changes
 *(Since 6.4)*
@@ -969,6 +969,10 @@ Note the use of `-Dfile.encoding=UTF-8`. This forces all file I/O to use UTF-8
 encoding. Doing so ensures that NetLogo can load all models consistently, and
 that file-* primitives work consistently on all platforms, including models
 containing Unicode characters.
+
+### Cluster Computing (HPCs)
+
+BehaviorSpace experiments are often run on large-scale computing clusters.  More on that topic can be found [here](/hpc).
 
 ### Controlling API
 

@@ -3,6 +3,7 @@ Feature: Model Versions
   I want to manage model versions
   So that I can track changes to my models over time
 
+  @sanity
   Scenario: Create a version for a model
     Given an authenticated user
     And a public model "My Model" created by the current user

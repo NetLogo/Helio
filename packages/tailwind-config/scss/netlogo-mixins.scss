@@ -51,7 +51,7 @@
   }
 
   p code,
-  li code,
+  li code:not(pre code),
   table code,
   a.code {
     padding: calc(0.3 * var(--space-xxs)) var(--space-xxs);
@@ -72,7 +72,7 @@
   }
 
   a.code,
-  li code,
+  li code:not(pre code),
   p code,
   pre,
   table code {
@@ -82,7 +82,7 @@
   }
 
   a.code,
-  li code,
+  li code:not(pre code),
   p code,
   table code {
     border-radius: var(--radius-md);

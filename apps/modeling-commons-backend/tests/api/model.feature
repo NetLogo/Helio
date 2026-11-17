@@ -3,6 +3,7 @@ Feature: Model Management
   I want to manage models
   So that I can create, view, update, and delete models
 
+  @sanity
   Scenario: Create a model
     Given an authenticated user
     When I create a model with title "Wolf Sheep Predation"
@@ -16,6 +17,7 @@ Feature: Model Management
       """
     Then the response status should be 401
 
+  @sanity
   Scenario: Get a public model
     Given an authenticated user
     And a public model "Ants" created by the current user

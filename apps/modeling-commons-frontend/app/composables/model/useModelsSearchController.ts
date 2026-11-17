@@ -1,14 +1,4 @@
 import { readQueryParams, type QueryRecord } from "@repo/utils/lib/http/query";
-import {
-  modelsPageLimit,
-  modelsQueryFilters,
-  modelsQuerySchema,
-  type ModelDateRangeKey,
-  type ModelsFilters,
-} from "~/forms/models";
-
-export type { ModelDateRangeKey, ModelsFilters };
-
 export default function useModelsSearchController() {
   const route = useRoute();
 
@@ -16,8 +6,6 @@ export default function useModelsSearchController() {
     () => readQueryParams(route.query as QueryRecord, modelsQueryFilters) as ModelsFilters,
   );
   const instanceKey = computed(() => JSON.stringify(filters.value));
-
-  const { GET } = useApi();
 
   const {
     data,
@@ -32,13 +20,10 @@ export default function useModelsSearchController() {
     () => JSON.stringify(filters.value),
     async (page) => {
       const query: ModelsQuery = {
-        limit: modelsPageLimit,
+        limit: modelRules.pageLimit,
         page,
       };
-      const params = modelsQuerySchema.parse({ ...filters.value, ...query });
-      const res = await GET("/api/v1/models/card", { params: { query: params } });
-      const parsed = handleApiError(res.data, res.error, "fetching model query result");
-      return parsed;
+      return fetchModelCards(modelsQuerySchema.parse({ ...filters.value, ...query }));
     },
   );
 

@@ -1,9 +1,3 @@
-export type ModelDraftDto = ResponseSuccessData<"GET", "/api/v1/model-drafts/{id}">;
-export type DraftData = ModelDraftDto["data"];
-export type DraftFile = NonNullable<DraftData["primaryFile"]>;
-export type Visibility = NonNullable<DraftData["visibility"]>;
-export type DraftFormFields = RequestBody<"PATCH", "/api/v1/model-drafts/{id}">;
-
 export interface StagedFile {
   fileId: string;
   filename: string;
@@ -66,8 +60,6 @@ function debounceWithFlush<Args extends unknown[]>(
 }
 
 export default function useModelDraft(initialDraftId?: string) {
-  const { GET, POST, PATCH, DELETE } = useApi();
-
   const draftId = ref<string | null>(initialDraftId ?? null);
   const draft = ref<ModelDraftDto | null>(null);
   const saving = ref(false);
@@ -75,19 +67,13 @@ export default function useModelDraft(initialDraftId?: string) {
 
   async function ensureDraft(opts?: { modelId?: string }): Promise<string> {
     if (draftId.value) return draftId.value;
-    const { data, error } = await POST("/api/v1/model-drafts", {
-      body: opts?.modelId ? { modelId: opts.modelId } : {},
-    });
-    const parsed = handleApiError(data, error, "creating draft");
+    const parsed = await createDraft(opts?.modelId);
     draftId.value = parsed.id;
     return parsed.id;
   }
 
   async function load(id: string): Promise<ModelDraftDto> {
-    const { data, error } = await GET("/api/v1/model-drafts/{id}", {
-      params: { path: { id } },
-    });
-    const parsed = handleApiError(data, error, "loading draft");
+    const parsed = await fetchDraft(id);
     draftId.value = parsed.id;
     draft.value = parsed;
     return parsed;
@@ -97,37 +83,18 @@ export default function useModelDraft(initialDraftId?: string) {
     const id = await ensureDraft();
     saving.value = true;
     try {
-      const { data, error } = await PATCH("/api/v1/model-drafts/{id}", {
-        params: { path: { id } },
-        body: fields,
-      });
-      handleApiError(data, error, "saving draft");
+      await updateDraft(id, fields);
     } finally {
       saving.value = false;
     }
   }, 500);
 
   async function uploadFileRaw(
-    role: "primary" | "model-file" | "attachment" | "preview",
+    role: DraftFileRole,
     file: File,
   ): Promise<StagedFile & { previewImageUrl?: string }> {
     const id = await ensureDraft();
-    const body = new FormData();
-    body.append("role", role);
-    body.append("file", file);
-    const { data, error } = await POST("/api/v1/model-drafts/{id}/files", {
-      params: { path: { id } },
-      body: body as never,
-      bodySerializer: (b) => b as unknown as FormData,
-    });
-    const parsed = handleApiError(data, error, "uploading file") as {
-      id?: string;
-      filename: string;
-      sizeBytes: number;
-      mimeType: string;
-      s3Key: string;
-      previewImageUrl?: string;
-    };
+    const parsed = await uploadDraftFile(id, role, file);
     return {
       fileId: parsed.id ?? role,
       filename: parsed.filename,
@@ -151,9 +118,7 @@ export default function useModelDraft(initialDraftId?: string) {
     return uploadFileRaw("attachment", file);
   }
 
-  async function uploadPreviewImage(
-    file: File,
-  ): Promise<StagedFile & { previewImageUrl: string }> {
+  async function uploadPreviewImage(file: File): Promise<StagedFile & { previewImageUrl: string }> {
     const staged = await uploadFileRaw("preview", file);
     if (!staged.previewImageUrl) {
       throw new Error("Server did not return a preview image URL");
@@ -164,32 +129,11 @@ export default function useModelDraft(initialDraftId?: string) {
   async function removeFile(fileId: string): Promise<void> {
     const id = draftId.value;
     if (!id) return;
-    const { data, error } = await DELETE("/api/v1/model-drafts/{id}/files/{fileId}", {
-      params: { path: { id, fileId } },
-    });
-    handleApiError(data, error, "removing file");
+    await deleteDraftFile(id, fileId);
   }
 
-  async function generatePreview(): Promise<{
-    s3Key: string;
-    filename: string;
-    sizeBytes: number;
-    mimeType: string;
-    previewImageUrl: string;
-  }> {
-    const id = await ensureDraft();
-    const { data, error } = await POST(
-      "/api/v1/model-drafts/{id}/preview-image/generate",
-      { params: { path: { id } } },
-    );
-    const parsed = handleApiError(data, error, "generating preview image") as {
-      s3Key: string;
-      filename: string;
-      sizeBytes: number;
-      mimeType: string;
-      previewImageUrl: string;
-    };
-    return parsed;
+  async function generatePreview(): Promise<GeneratedDraftPreview> {
+    return generateDraftPreview(await ensureDraft());
   }
 
   async function publish(): Promise<{ id: string }> {
@@ -197,11 +141,7 @@ export default function useModelDraft(initialDraftId?: string) {
     if (!id) throw new Error("No draft to publish");
     publishing.value = true;
     try {
-      const { data, error } = await POST("/api/v1/model-drafts/{id}/publish", {
-        params: { path: { id } },
-      });
-      const parsed = handleApiError(data, error, "publishing draft");
-      return { id: parsed.modelId };
+      return await publishDraft(id);
     } finally {
       publishing.value = false;
     }
@@ -210,9 +150,7 @@ export default function useModelDraft(initialDraftId?: string) {
   async function abandon(): Promise<void> {
     const id = draftId.value;
     if (!id) return;
-    const { data, error } = await DELETE("/api/v1/model-drafts/{id}", {
-      params: { path: { id } },
-    });
+    const { data, error } = await deleteDraft(id);
     handleApiError(data, error, "discarding draft");
     draftId.value = null;
     draft.value = null;

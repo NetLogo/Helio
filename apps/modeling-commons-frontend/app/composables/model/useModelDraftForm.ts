@@ -1,9 +1,4 @@
-import type { AdditionalFile } from "~/composables/model/useModelAdditionalFiles";
-import type { ModelCard } from "~/composables/model/useModelCard";
-import type { DraftData, StagedFile, Visibility } from "~/composables/model/useModelDraft";
-import { getModelPreviewCard } from "~/forms/models";
-import type { PrimaryFileMeta, StagedAttachmentMeta, UploadFormInput } from "~/forms/upload";
-import { collectTagNames, draftToFormState, emptyUploadFormState } from "~/forms/upload";
+import type { StagedFile } from "~/composables/model/useModelDraft";
 
 type PreviewImageMeta = NonNullable<DraftData["previewImage"]>;
 
@@ -14,7 +9,6 @@ export interface UseModelDraftFormOptions {
 }
 
 export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
-  const { DELETE } = useApi();
   const {
     draftId,
     saving,
@@ -469,10 +463,7 @@ export default function useModelDraftForm(opts: UseModelDraftFormOptions = {}) {
     if (!opts.seedModelId) throw new Error("No model to delete");
     deletingModel.value = true;
     try {
-      const { data, error } = await DELETE("/api/v1/models/{id}", {
-        params: { path: { id: opts.seedModelId } },
-      });
-      handleApiError(data, error, "deleting model");
+      await deleteModelById(opts.seedModelId);
       await abandon().catch(() => null);
     } finally {
       deletingModel.value = false;

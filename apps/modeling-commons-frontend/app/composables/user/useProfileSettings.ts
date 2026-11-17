@@ -1,4 +1,3 @@
-import { userKindOptions, type UserKind } from "~/forms/auth";
 import type { SocialMediaLink } from "~/components/shared/SocialLink.vue";
 
 type SaveResult = {
@@ -36,7 +35,6 @@ function sameSocialLinks(a: Array<SocialMediaLink>, b: Array<SocialMediaLink>): 
 
 export default function useProfileSettings() {
   const auth = useNuxtApp().$auth;
-  const { POST } = useApi();
   const { profile, refresh } = useProfile();
   const isSaving = ref(false);
 
@@ -111,14 +109,7 @@ export default function useProfileSettings() {
   async function uploadAvatar(file: File): Promise<UploadAvatarResult> {
     isAvatarUploading.value = true;
     try {
-      const form = new FormData();
-      form.append("file", file);
-
-      const { error, data } = await POST("/api/v1/uploads/avatar", {
-        // @ts-expect-error - FormData doesn't type well with openAPI
-        // -Omar Ibrahim, May 04 26
-        body: form as unknown,
-      });
+      const { error, data } = await uploadAvatarImage(file);
       if (error) {
         return {
           data: null,
@@ -157,7 +148,7 @@ export default function useProfileSettings() {
     emailVerified,
     systemRoleLabel,
 
-    userKindOptions,
+    userKindOptions: [...authLiterals.userKindOptions],
 
     name: nameField.data,
     bio: bioField.data,

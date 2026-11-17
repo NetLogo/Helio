@@ -2,6 +2,7 @@
   <main class="prose min-h-screen" v-bind="dProps.main">
     <ContentRenderer
       :value="article.item"
+      :prose="false"
       tag="article"
       class="prose mt-4 prose-medium prose-text-medium"
       v-bind="dProps.contentRenderer"

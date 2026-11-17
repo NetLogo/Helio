@@ -1,3 +1,5 @@
+import { modelLikeEventTypes } from '#src/modules/model-like/model-like.events.ts';
+
 export default function makeModelLikeService({
   transactionManager,
   modelLikeRepository,
@@ -10,8 +12,8 @@ export default function makeModelLikeService({
       await transactionManager.run(async (ctx) => {
         const inserted = await modelLikeRepository.upsertTx(ctx, entity);
         if (inserted) {
-          await eventRepository.insert(ctx, {
-            type: 'model.liked',
+          await eventRepository.insertTx(ctx, {
+            type: modelLikeEventTypes.liked,
             actorId: userId,
             resourceType: 'model',
             resourceId: modelId,
@@ -25,8 +27,8 @@ export default function makeModelLikeService({
       await transactionManager.run(async (ctx) => {
         const deleted = await modelLikeRepository.deleteTx(ctx, modelId, userId);
         if (deleted) {
-          await eventRepository.insert(ctx, {
-            type: 'model.unliked',
+          await eventRepository.insertTx(ctx, {
+            type: modelLikeEventTypes.unliked,
             actorId: userId,
             resourceType: 'model',
             resourceId: modelId,

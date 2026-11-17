@@ -54,33 +54,7 @@ function getDockerStorageClient() {
   });
 }
 
-let buckets: ListBucketsCommandOutput;
-try {
-  buckets = await storage.send(new ListBucketsCommand({}));
-} catch (err: unknown) {
-  throw new StorageInitializationError(
-    'Failed to list storage buckets. This can happen if the storage service is not running or the provided credentials are invalid.',
-    err instanceof Error ? err : undefined,
-  );
-}
-
-let maybeBucket = buckets.Buckets?.find((b: Bucket) => b.Name === env.storage.bucket);
-
-if (!maybeBucket) {
-  try {
-    await storage.send(new CreateBucketCommand({ Bucket: env.storage.bucket }));
-  } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      err.name !== 'BucketAlreadyExists' &&
-      err.name !== 'BucketAlreadyOwnedByYou'
-    ) {
-      throw err;
-    }
-  }
-  maybeBucket = { Name: env.storage.bucket };
-}
-const bucket: Bucket = maybeBucket;
+const bucket: Bucket = { Name: env.storage.bucket };
 
 const publicReadPolicy = {
   Version: '2012-10-17',
@@ -95,29 +69,57 @@ const publicReadPolicy = {
   ],
 };
 
-await storage.send(
-  new PutBucketPolicyCommand({
-    Bucket: env.storage.bucket,
-    Policy: JSON.stringify(publicReadPolicy),
-  }),
-);
+export async function initStorage(): Promise<void> {
+  let buckets: ListBucketsCommandOutput;
+  try {
+    buckets = await storage.send(new ListBucketsCommand({}));
+  } catch (err: unknown) {
+    throw new StorageInitializationError(
+      'Failed to list storage buckets. This can happen if the storage service is not running or the provided credentials are invalid.',
+      err instanceof Error ? err : undefined,
+    );
+  }
 
-await storage.send(
-  new PutBucketCorsCommand({
-    Bucket: env.storage.bucket,
-    CORSConfiguration: {
-      CORSRules: [
-        {
-          AllowedOrigins: env.cors.allowedOrigins,
-          AllowedMethods: ['GET', 'PUT', 'POST', 'DELETE', 'HEAD'],
-          AllowedHeaders: ['*'],
-          ExposeHeaders: ['ETag'],
-          MaxAgeSeconds: 3000,
-        },
-      ],
-    },
-  }),
-);
+  const exists = buckets.Buckets?.some((b: Bucket) => b.Name === env.storage.bucket);
+
+  if (!exists) {
+    try {
+      await storage.send(new CreateBucketCommand({ Bucket: env.storage.bucket }));
+    } catch (err: unknown) {
+      if (
+        err instanceof Error &&
+        err.name !== 'BucketAlreadyExists' &&
+        err.name !== 'BucketAlreadyOwnedByYou'
+      ) {
+        throw err;
+      }
+    }
+  }
+
+  await storage.send(
+    new PutBucketPolicyCommand({
+      Bucket: env.storage.bucket,
+      Policy: JSON.stringify(publicReadPolicy),
+    }),
+  );
+
+  await storage.send(
+    new PutBucketCorsCommand({
+      Bucket: env.storage.bucket,
+      CORSConfiguration: {
+        CORSRules: [
+          {
+            AllowedOrigins: env.cors.allowedOrigins,
+            AllowedMethods: ['GET', 'PUT', 'POST', 'DELETE', 'HEAD'],
+            AllowedHeaders: ['*'],
+            ExposeHeaders: ['ETag'],
+            MaxAgeSeconds: 3000,
+          },
+        ],
+      },
+    }),
+  );
+}
 
 const internalClient = storage;
 

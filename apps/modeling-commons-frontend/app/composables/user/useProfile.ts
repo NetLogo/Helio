@@ -1,5 +1,3 @@
-type UserProfile = ResponseSuccessData<"GET", "/api/v1/users/{id}">;
-
 function useProfile() {
   const user = useUser();
   const auth = useNuxtApp().$auth;
@@ -11,4 +9,3 @@ function useProfile() {
 }
 
 export default useProfile;
-export type { UserProfile };

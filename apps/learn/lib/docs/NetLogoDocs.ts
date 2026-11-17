@@ -1,15 +1,14 @@
 import type TemplateRenderer from '@repo/template';
 import type { PageResult } from '@repo/template';
 import fs from 'fs';
-// @ts-expect-error TS7016: Could not find a declaration file for module 'glob'.
-import glob from 'glob';
+import { globSync } from 'glob';
 import path from 'path';
 import process from 'process';
 
 import { saveNavigationMetadata } from '@repo/netlogo-docs/helpers-node';
 
 function copyViaGlob(globPattern: string, destDir: string) {
-  const files = glob.sync(globPattern, { nodir: true });
+  const files = globSync(globPattern, { nodir: true });
   if (files.length === 0) {
     return;
   }

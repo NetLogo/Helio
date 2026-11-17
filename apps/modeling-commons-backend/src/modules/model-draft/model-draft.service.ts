@@ -35,11 +35,16 @@ import { CopyObjectCommand, HeadObjectCommand } from '#src/shared/storage/index.
 import { sanitizeFilename } from '#src/shared/storage/utils.ts';
 import { newId } from '#src/shared/utils/id.ts';
 import { nanoid } from 'nanoid';
-import { STAGING_KEY_RANDOM_SEGMENT_LENGTH } from './model-draft.storage.ts';
+import {
+  PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
+  STAGING_KEY_RANDOM_SEGMENT_LENGTH,
+} from './model-draft.storage.ts';
 import { ModelNotFoundError } from '../model/domain/model.errors.ts';
 import { UserNotFoundError } from '../user/domain/user.errors.ts';
 import { isValidNetlogoFilename } from '#src/shared/utils/netlogo.ts';
+import { detectNetlogoVersion } from '#src/shared/utils/netlogo-file.ts';
 import rules from '#src/config/rules.ts';
+import { modelDraftEventTypes } from '#src/modules/model-draft/model-draft.events.ts';
 
 const LEGACY_UUID_PREFIX_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i;
@@ -99,7 +104,6 @@ export default function makeModelDraftService({
 
     const ctx = await loadModelAccessContext(db, userId, modelId);
     if (!ctx.viewer) throw new UserNotFoundError(userId);
-    if (!ctx.model) throw new ModelNotFoundError(modelId);
     if (!canWrite(ctx))
       throw new UnauthorizedException('User does not have write access to the associated model');
     return;
@@ -180,7 +184,7 @@ export default function makeModelDraftService({
         modelId: params.modelId,
         filename: params.data.previewImage.filename,
         contentType: params.data.previewImage.mimeType,
-        pathPrefix: 'files/public/preview-images',
+        pathPrefix: PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
         acl: 'public-read',
         userId: params.userId,
       });
@@ -195,7 +199,7 @@ export default function makeModelDraftService({
         filename: 'preview.png',
         contentType,
         access: 'public-read',
-        pathPrefix: `preview-images/${params.modelId}`,
+        pathPrefix: `${PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX}/${params.modelId}`,
         userId: params.userId,
       });
     } catch (error) {
@@ -518,6 +522,19 @@ export default function makeModelDraftService({
           userId,
         });
 
+        const netlogoVersion = await fileService
+          .download(netlogoFileKey)
+          .then(({ blob }) =>
+            detectNetlogoVersion({ buffer: blob, filename: data.primaryFile.filename }),
+          )
+          .catch((error: unknown) => {
+            logger.warn(
+              { err: error, modelId: model.id, netlogoFileKey },
+              'Failed to read the NetLogo version on publish',
+            );
+            return null;
+          });
+
         const attachmentCopies = await Promise.all(
           (data.attachments ?? []).map(async (att) => ({
             ...att,
@@ -556,20 +573,21 @@ export default function makeModelDraftService({
             ? await modelVersionRepository.findLatestByModel(model.id, ctx)
             : null;
           if (previousVersion) {
-            await modelVersionRepository.finalize(
+            await modelVersionRepository.finalizeTx(
               ctx,
               previousVersion.modelId,
               previousVersion.versionNumber,
             );
           }
 
-          const versionNumber = await modelVersionRepository.getNextVersionNumber(ctx, model.id);
+          const versionNumber = (previousVersion?.versionNumber ?? 0) + 1;
           const version = modelVersionDomain.createVersion({
             modelId: model.id,
             versionNumber,
             title: data.title,
             description: data.description,
             netlogoFileKey,
+            netlogoVersion,
             previewImageFileKey,
           });
 
@@ -587,8 +605,8 @@ export default function makeModelDraftService({
               .map(async (entity) => modelVersionTagRepository.insertTx(ctx, entity)),
           );
 
-          await modelRepository.setLatestVersion(ctx, model.id, versionNumber);
-          await modelRepository.updateFields(ctx, model.id, { visibility: data.visibility });
+          await modelRepository.setLatestVersionTx(ctx, model.id, versionNumber);
+          await modelRepository.updateFieldsTx(ctx, model.id, { visibility: data.visibility });
 
           for (const att of attachmentCopies) {
             await modelAdditionalFileRepository.insertTx(
@@ -602,8 +620,10 @@ export default function makeModelDraftService({
             );
           }
 
-          await eventRepository.insert(ctx, {
-            type: existingModel ? 'model.version.created' : 'model.created',
+          await eventRepository.insertTx(ctx, {
+            type: existingModel
+              ? modelDraftEventTypes.versionCreated
+              : modelDraftEventTypes.modelCreated,
             actorId: userId,
             resourceType: 'model',
             resourceId: model.id,
@@ -634,7 +654,7 @@ export default function makeModelDraftService({
                 modelId: model.id,
                 filename: data.previewImage.filename,
                 contentType: data.previewImage.mimeType,
-                pathPrefix: 'files/public/preview-images',
+                pathPrefix: PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
                 acl: 'public-read',
                 userId,
               })
@@ -671,12 +691,12 @@ export default function makeModelDraftService({
         );
 
         return transactionManager.run(async (ctx) => {
-          await modelVersionRepository.updateFields(ctx, model.id, versionNumber, {
+          await modelVersionRepository.updateFieldsTx(ctx, model.id, versionNumber, {
             title: data.title,
             description: data.description,
             ...(newPreviewKey !== undefined ? { previewImageFileKey: newPreviewKey } : {}),
           });
-          await modelRepository.updateFields(ctx, model.id, { visibility: data.visibility });
+          await modelRepository.updateFieldsTx(ctx, model.id, { visibility: data.visibility });
 
           for (const tagId of tagIdsToInsert) {
             await modelVersionTagRepository.insertTx(
@@ -704,8 +724,8 @@ export default function makeModelDraftService({
             );
           }
 
-          await eventRepository.insert(ctx, {
-            type: 'model.version.updated',
+          await eventRepository.insertTx(ctx, {
+            type: modelDraftEventTypes.versionUpdated,
             actorId: userId,
             resourceType: 'model',
             resourceId: model.id,

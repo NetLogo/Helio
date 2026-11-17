@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const route = useRoute();
-const api = useApi();
 
 const id = route.params.id as string;
 
@@ -8,13 +7,7 @@ const {
   data: profile,
   error,
   status,
-} = useAsyncData<UserProfile | null>(`profile-${id}`, async () => {
-  const { data, error } = await api.GET("/api/v1/users/{id}", {
-    params: { path: { id } },
-  });
-
-  return handleApiError(data, error, "fetching user profile");
-});
+} = useAsyncData<UserProfile | null>(`profile-${id}`, () => fetchUser(id));
 
 // Mirrors users/[id]/index.vue: a private member's name must not reach a title
 // or an index, and a listing of someone's models is not useful to a crawler.
@@ -59,22 +52,11 @@ const {
   canLoadMore,
   count,
 } = await useApiPagination(`models-by-user-${id}`, async (page) => {
-  const { data, error } = await api.GET("/api/v1/models/card", {
-    // By default, the query endpoint returns search-like results with
-    // only public models. Setting `publicOnly=false` allows us to fetch
-    // all models by the user (assuming the requester has the necessary permissions).
-    // --Omar Ibrahim, May 14 26
-    params: {
-      query: {
-        authorId: id,
-        limit: 20,
-        offset: (page - 1) * 20,
-        publicOnly: false,
-      },
-    },
-  });
-
-  const safeData = handleApiError(data, error, "fetching models");
+  // By default, the query endpoint returns search-like results with
+  // only public models. Setting `publicOnly=false` allows us to fetch
+  // all models by the user (assuming the requester has the necessary permissions).
+  // --Omar Ibrahim, May 14 26
+  const safeData = await fetchModelCards({ authorId: id, limit: 20, page, publicOnly: false });
 
   return {
     data: safeData.data,

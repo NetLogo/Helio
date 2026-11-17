@@ -38,7 +38,7 @@ async function init(): Promise<void> {
       },
       onCreate: addIdFormat,
     },
-    trustProxy: env.trustProxy.maxHops,
+    trustProxy: env.trustProxy.addresses,
   });
 
   // Graceful shutdown: close DB connection when the server shuts down

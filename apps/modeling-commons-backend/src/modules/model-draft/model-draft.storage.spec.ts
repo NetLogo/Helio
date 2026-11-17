@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import makeModelDraftStorage from '#src/modules/model-draft/model-draft.storage.ts';
-import { PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
+import makeModelDraftStorage, {
+  PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
+} from '#src/modules/model-draft/model-draft.storage.ts';
+import makeFileDomain from '#src/modules/file/domain/file.domain.ts';
+import { isPublicKey, PUBLIC_PREFIX } from '#src/modules/file/domain/file.types.ts';
 
 describe('modelDraftStorage', () => {
   const storage = { send: vi.fn() };
@@ -48,6 +51,31 @@ describe('modelDraftStorage', () => {
       const cmd = storage.send.mock.calls[0]![0];
       expect(cmd.input.Key).toBe(key);
       expect(cmd.input.ACL).toBe('public-read');
+    });
+  });
+
+  describe('copyStagedToPermanent', () => {
+    it('keys a published preview image under a single public prefix', async () => {
+      storage.send.mockResolvedValue({});
+      const storageWithRealDomain = makeModelDraftStorage({
+        storage,
+        bucket,
+        fileDomain: makeFileDomain(),
+      } as never);
+
+      const key = await storageWithRealDomain.copyStagedToPermanent({
+        stagingKey: `${PUBLIC_PREFIX}/staging/u1/d1/abcdefghij-preview.png`,
+        modelId: 'm1',
+        filename: 'preview.png',
+        contentType: 'image/png',
+        pathPrefix: PREVIEW_IMAGE_PATH_UNDER_PUBLIC_PREFIX,
+        acl: 'public-read',
+      });
+
+      expect(key).toMatch(/^files\/public\/preview-images\/\d{4}\//);
+      expect(key).not.toContain(`${PUBLIC_PREFIX}/${PUBLIC_PREFIX}`);
+      expect(isPublicKey(key)).toBe(true);
+      expect(storage.send.mock.calls[0]![0].input).toMatchObject({ Key: key, ACL: 'public-read' });
     });
   });
 

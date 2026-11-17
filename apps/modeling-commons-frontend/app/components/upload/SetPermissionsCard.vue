@@ -18,7 +18,7 @@
           <template #label>
             <span class="text-md">Model Permissions <span class="text-coral">*</span></span>
           </template>
-          <URadioGroup v-model="state.permission" :items="permissionOptions as Mutable<typeof permissionOptions>" class="mt-2" />
+          <URadioGroup v-model="state.permission" :items="draftLiterals.permissionOptions as Mutable<typeof draftLiterals.permissionOptions>" class="mt-2" />
         </UFormField>
       </div>
     </div>
@@ -26,8 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import type { UploadFormInput } from "~/forms/upload";
-import { permissionOptions } from "~/forms/upload";
+import type { UploadFormInput } from "~/features/drafts/validators";
 
 const state = defineModel<UploadFormInput>({ required: true });
 </script>

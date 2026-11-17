@@ -6,7 +6,7 @@
     <div class="flex flex-col gap-3">
       <UAuthForm
         v-if="isChangingPassword"
-        :fields="changePasswordFields"
+        :fields="[...authLiterals.changePasswordFields]"
         :schema="changePasswordValidator"
         :submit="{
           label: 'Update Password',
@@ -43,7 +43,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "#ui/types";
 import type * as z from "zod";
-import { changePasswordFields, changePasswordValidator } from "~/forms/auth";
 
 const toast = useToast();
 const { changePassword } = useAuthActions();

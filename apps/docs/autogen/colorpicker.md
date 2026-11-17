@@ -32,7 +32,7 @@ The Simple tab of the Color Picker in the Tools menu has buttons to allow the
 user to copy the color (icon to the right of the grey rectangle), or exit the
 dialog (cancel).
 
-<p><img src="./images/colorpicker/colorpickersimple.png"style="width:7in" /></p>
+<p><img src="./images/colorpicker/colorpickersimple.webp"style="width:7in" /></p>
 
 As shown below Simple tab for the Color Input adds a blue 'OK' button to the
 right of 'Cancel.' Choosing 'OK' changes the Input to the selected color,
@@ -41,12 +41,12 @@ selected color in the clipboard. It can then be copied to the Code Tab, or any
 other text area. The dialog remains open. Cancel closes the dialog without
 changing the color input widget.
 
-<p><img src="./images/colorpicker/colorpickersimpleoklight.png"style="width:7in" /></p>
+<p><img src="./images/colorpicker/colorpickersimpleoklight.webp"style="width:7in" /></p>
 
 When editing a Note, there are four buttons that can be clicked to open a Color
 Picker.
 
-<p><img src="./images/colorpicker/editnotelight.png"/></p>
+<p><img src="./images/colorpicker/editnotelight.webp"/></p>
 
 The 'Simple' tab of the color picker is the same, regardless of context. The
 'Advanced' tab allows different output formats, depending on the context.
@@ -57,7 +57,7 @@ The 'Simple' tab of the color picker is the same, regardless of context. The
 
 The Advanced Tab allows a much more nuanced way to choose a color.
 
-<p><img src="./images/colorpicker/colorpickeradvanced.png"style="width:7in" /></p>
+<p><img src="./images/colorpicker/colorpickeradvanced.webp"style="width:7in" /></p>
 
 The rainbow slider on the left allows users to select a hue. The slider to its
 right allows the user to select the transparency of the color. By default, the
@@ -79,15 +79,15 @@ text field. For HSB (Hue, Saturation, Brightness) there are three numeric
 fields. The color selected using the Input format can then be modified by using
 the hue slider, transparency slider or the palette rectangle.
 
-<p><img src="./images/colorpicker/colorpickerinputformatchoices.png"/></p>
+<p><img src="./images/colorpicker/colorpickerinputformatchoices.webp"/></p>
 
 In this example the input is a NetLogo word.
 
-<p><img src="./images/colorpicker/colorpickerinputformatNLword.png"/></p>
+<p><img src="./images/colorpicker/colorpickerinputformatNLword.webp"/></p>
 
 In this example the input is HSB.
 
-<p><img src="./images/colorpicker/colorpickerHSBinputRGBAoutput.png"style="width:7in" /></p>
+<p><img src="./images/colorpicker/colorpickerHSBinputRGBAoutput.webp"style="width:7in" /></p>
 
 ### Output Format
 
@@ -98,7 +98,7 @@ Number can be output. As the user changes a color the value of the Input value
 is updated. In the image below it was initially lime - 0.3, but changed to
 lime - 0.6
 
-<p><img src="./images/colorpicker/colorpickerNLwordinputRGBAoutput.png"style="width:7in" /></p>
+<p><img src="./images/colorpicker/colorpickerNLwordinputRGBAoutput.webp"style="width:7in" /></p>
 
 ### Output Formats for Different Contexts
 
@@ -119,7 +119,7 @@ alpha). Otherwise "RGBA" output produces a 4-item list (with alpha). In the
 example below you can see that the output is a 3-item list, because there is no
 transparency and RGBA output is selected.
 
-<p><img src="./images/colorpicker/colorpickerHexinputRGBAoutput.png"style="width:7in" /></p>
+<p><img src="./images/colorpicker/colorpickerHexinputRGBAoutput.webp"style="width:7in" /></p>
 
 ### Details about the Alpha Bar
 
@@ -133,6 +133,6 @@ that the output color will be opaque. The first example shows the case where
 there is no alpha bar. The second example show the highlighted output because
 there is transparency, but an opaque output format.
 
-<p><img src="./images/colorpicker/colorpickernoalpha.png"style="width:7in" /></p>
+<p><img src="./images/colorpicker/colorpickernoalpha.webp"style="width:7in" /></p>
 
-<p><img src="./images/colorpicker/colorpickerHSBinputNLnumberoutput.png"style="width:7in" /></p>
+<p><img src="./images/colorpicker/colorpickerHSBinputNLnumberoutput.webp"style="width:7in" /></p>

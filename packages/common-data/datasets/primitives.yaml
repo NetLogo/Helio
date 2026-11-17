@@ -3126,7 +3126,7 @@ primitives:
       It is equivalent to:
 
       ```
-                patch-ahead distance != nobody
+      patch-ahead distance != nobody
       ```
 
     examples:
@@ -3150,7 +3150,7 @@ primitives:
           It is equivalent to:
 
           ```
-                    patch-ahead distance != nobody
+          patch-ahead distance != nobody
           ```
 
         examples:
@@ -6161,12 +6161,12 @@ primitives:
        numeric):
 
       ```
-                move-to patch-here  ;; go to patch center
-                let p min-one-of neighbors [patch-variable]  ;; or neighbors4
-                if [patch-variable] of p < patch-variable [
-                face p
-                move-to p
-                ]
+      move-to patch-here  ;; go to patch center
+      let p min-one-of neighbors [patch-variable]  ;; or neighbors4
+      if [patch-variable] of p < patch-variable [
+      face p
+      move-to p
+      ]
       ```
 
 
@@ -6205,12 +6205,12 @@ primitives:
            numeric):
 
           ```
-                    move-to patch-here  ;; go to patch center
-                    let p min-one-of neighbors [patch-variable]  ;; or neighbors4
-                    if [patch-variable] of p < patch-variable [
-                    face p
-                    move-to p
-                    ]
+          move-to patch-here  ;; go to patch center
+          let p min-one-of neighbors [patch-variable]  ;; or neighbors4
+          if [patch-variable] of p < patch-variable [
+          face p
+          move-to p
+          ]
           ```
 
 
@@ -6246,12 +6246,12 @@ primitives:
        numeric):
 
       ```
-                move-to patch-here  ;; go to patch center
-                let p min-one-of neighbors [patch-variable]  ;; or neighbors4
-                if [patch-variable] of p < patch-variable [
-                face p
-                move-to p
-                ]
+      move-to patch-here  ;; go to patch center
+      let p min-one-of neighbors [patch-variable]  ;; or neighbors4
+      if [patch-variable] of p < patch-variable [
+      face p
+      move-to p
+      ]
       ```
 
 
@@ -14432,7 +14432,7 @@ primitives:
        use with-max instead.
 
       ```
-                show max-one-of patches [count turtles-here]
+      show max-one-of patches [count turtles-here]
 
       ;; prints the first patch with the most turtles on it
       ```
@@ -14459,7 +14459,7 @@ primitives:
            use with-max instead.
 
           ```
-                    show max-one-of patches [count turtles-here]
+          show max-one-of patches [count turtles-here]
 
           ;; prints the first patch with the most turtles on it
           ```
@@ -15103,7 +15103,7 @@ primitives:
        equivalent to the following NetLogo code:
 
       ```
-                number1 - (floor (number1 / number2)) * number2
+      number1 - (floor (number1 / number2)) * number2
       ```
 
       Note that mod is "infix", that is, it comes between its
@@ -15139,7 +15139,7 @@ primitives:
            equivalent to the following NetLogo code:
 
           ```
-                    number1 - (floor (number1 / number2)) * number2
+          number1 - (floor (number1 / number2)) * number2
           ```
 
           Note that mod is "infix", that is, it comes between its
@@ -20369,7 +20369,7 @@ primitives:
 
 
       ```
-                number1 - (int (number1 / number2)) * number2
+      number1 - (int (number1 / number2)) * number2
       ```
 
 
@@ -20409,7 +20409,7 @@ primitives:
 
 
           ```
-                    number1 - (int (number1 / number2)) * number2
+          number1 - (int (number1 / number2)) * number2
           ```
 
 
@@ -22758,12 +22758,12 @@ primitives:
       Example:
 
       ```
-                ask turtles [ set shape "wolf" ]
-                ;; assumes you have made a "wolf"
-                ;; shape in NetLogo's [Turtle Shapes Editor](shapes)
-                ask links [ set shape "link 1" ]
-                ;; assumes you have made a "link 1" shape in
-                ;; the Link Shapes Editor
+      ask turtles [ set shape "wolf" ]
+      ;; assumes you have made a "wolf"
+      ;; shape in NetLogo's [Turtle Shapes Editor](shapes)
+      ask links [ set shape "link 1" ]
+      ;; assumes you have made a "link 1" shape in
+      ;; the Link Shapes Editor
       ```
 
       See also [[set-default-shape|set-default-shape]], [[shapes|shapes]].
@@ -22798,12 +22798,12 @@ primitives:
           Example:
 
           ```
-                    ask turtles [ set shape "wolf" ]
-                    ;; assumes you have made a "wolf"
-                    ;; shape in NetLogo's [Turtle Shapes Editor](shapes)
-                    ask links [ set shape "link 1" ]
-                    ;; assumes you have made a "link 1" shape in
-                    ;; the Link Shapes Editor
+          ask turtles [ set shape "wolf" ]
+          ;; assumes you have made a "wolf"
+          ;; shape in NetLogo's [Turtle Shapes Editor](shapes)
+          ask links [ set shape "link 1" ]
+          ;; assumes you have made a "link 1" shape in
+          ;; the Link Shapes Editor
           ```
 
           See also [[set-default-shape|set-default-shape]], [[shapes|shapes]].
@@ -25677,12 +25677,12 @@ primitives:
        numeric):
 
       ```
-                move-to patch-here  ;; go to patch center
-                let p max-one-of neighbors [patch-variable]  ;; or neighbors4
-                if [patch-variable] of p > patch-variable [
-                face p
-                move-to p
-                ]
+      move-to patch-here  ;; go to patch center
+      let p max-one-of neighbors [patch-variable]  ;; or neighbors4
+      if [patch-variable] of p > patch-variable [
+      face p
+      move-to p
+      ]
       ```
 
       Note that the turtle always ends up on a patch center and has a
@@ -25720,12 +25720,12 @@ primitives:
            numeric):
 
           ```
-                    move-to patch-here  ;; go to patch center
-                    let p max-one-of neighbors [patch-variable]  ;; or neighbors4
-                    if [patch-variable] of p > patch-variable [
-                    face p
-                    move-to p
-                    ]
+          move-to patch-here  ;; go to patch center
+          let p max-one-of neighbors [patch-variable]  ;; or neighbors4
+          if [patch-variable] of p > patch-variable [
+          face p
+          move-to p
+          ]
           ```
 
 
@@ -25761,12 +25761,12 @@ primitives:
        numeric):
 
       ```
-                move-to patch-here  ;; go to patch center
-                let p max-one-of neighbors [patch-variable]  ;; or neighbors4
-                if [patch-variable] of p > patch-variable [
-                face p
-                move-to p
-                ]
+      move-to patch-here  ;; go to patch center
+      let p max-one-of neighbors [patch-variable]  ;; or neighbors4
+      if [patch-variable] of p > patch-variable [
+      face p
+      move-to p
+      ]
       ```
 
       Note that the turtle always ends up on a patch center and has a
@@ -46905,14 +46905,14 @@ primitives:
 
 
       ```
-        palette:scheme-dialog
+      palette:scheme-dialog
 
-        ;; In the dialog the user selects scheme type "Divergent," the scheme named "Spectral," and the number 3, and clicks the *Copy* button.
-        ;; In the Command Center the user types "show palette:scheme-colors " and then pastes the clipboard contents, and hits *Enter*.
+      ;; In the dialog the user selects scheme type "Divergent," the scheme named "Spectral," and the number 3, and clicks the *Copy* button.
+      ;; In the Command Center the user types "show palette:scheme-colors " and then pastes the clipboard contents, and hits *Enter*.
 
-        show palette:scheme-colors "Divergent" "Spectral" 3
+      show palette:scheme-colors "Divergent" "Spectral" 3
 
-        => [[252 141 89] [255 255 191] [153 213 148]]
+      => [[252 141 89] [255 255 191] [153 213 148]]
       ```
     metadata:
       name: scheme-dialog
@@ -46944,14 +46944,14 @@ primitives:
 
 
         ```
-          palette:scheme-dialog
+        palette:scheme-dialog
 
-          ;; In the dialog the user selects scheme type "Divergent," the scheme named "Spectral," and the number 3, and clicks the *Copy* button.
-          ;; In the Command Center the user types "show palette:scheme-colors " and then pastes the clipboard contents, and hits *Enter*.
+        ;; In the dialog the user selects scheme type "Divergent," the scheme named "Spectral," and the number 3, and clicks the *Copy* button.
+        ;; In the Command Center the user types "show palette:scheme-colors " and then pastes the clipboard contents, and hits *Enter*.
 
-          show palette:scheme-colors "Divergent" "Spectral" 3
+        show palette:scheme-colors "Divergent" "Spectral" 3
 
-          => [[252 141 89] [255 255 191] [153 213 148]]
+        => [[252 141 89] [255 255 191] [153 213 148]]
         ```
     urlHome: https://docs.netlogo.org/palette.html
     sourceIcon: i-lets-icons-color-mode

@@ -14,7 +14,6 @@ export default function eventMapper(): Mapper<DomainEvent, EventRecord, EventRes
         resourceId: record.resourceId,
         payload: record.payload,
         createdAt: new Date(record.createdAt),
-        processedAt: record.processedAt ? new Date(record.processedAt) : null,
       };
     },
 
@@ -27,7 +26,6 @@ export default function eventMapper(): Mapper<DomainEvent, EventRecord, EventRes
         resourceId: entity.resourceId,
         payload: entity.payload,
         createdAt: entity.createdAt.toISOString(),
-        processedAt: entity.processedAt ? entity.processedAt.toISOString() : null,
       };
     },
 
@@ -40,8 +38,7 @@ export default function eventMapper(): Mapper<DomainEvent, EventRecord, EventRes
         resourceId: entity.resourceId,
         payload: entity.payload,
         createdAt: entity.createdAt,
-        processedAt: entity.processedAt,
-      };
+      } as EventRecord;
     },
   };
 }

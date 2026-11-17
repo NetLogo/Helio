@@ -5,7 +5,9 @@
       <div class="w-full lg:w-1/2">
         <h1 class="text-3xl lg:text-4xl font-semibold mb-4">{{ donationData.title }}</h1>
         <div class="text-lg leading-relaxed mb-8">
-          <MDC :value="donationData.text" />
+          <MDC v-slot="{ body, data }" :value="donationData.text">
+            <MDCRenderer v-if="body" :body="body" :data="data" :prose="false" tag="div" />
+          </MDC>
         </div>
         <div class="flex flex-col items-center">
           <NuxtLink :to="donationData.url" external target="_blank">
