@@ -11,11 +11,11 @@ export const modelCommentNotifications = {
   categories: {
     [modelCommentCategories.onYourModel]: {
       ...modelCommentLiterals.categories[modelCommentCategories.onYourModel],
-      defaults: { email: 'immediate', inApp: true },
+      defaults: { email: 'daily', inApp: true },
     },
     [modelCommentCategories.replyToYou]: {
       ...modelCommentLiterals.categories[modelCommentCategories.replyToYou],
-      defaults: { email: 'immediate', inApp: true },
+      defaults: { email: 'daily', inApp: true },
     },
   },
 } as const;

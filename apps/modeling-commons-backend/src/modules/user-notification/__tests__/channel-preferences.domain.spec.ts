@@ -145,11 +145,17 @@ describe('listDailyCategories', () => {
     ).toEqual(['comment.on_your_model']);
   });
 
-  it('lists nothing for a user on the catalog defaults', () => {
-    expect(listDailyCategories([])).toEqual([]);
+  it('lists the categories whose catalog default is daily for a user without overrides', () => {
+    const dailyByDefault = categories
+      .filter((info) => info.defaults.email === 'daily')
+      .map((info) => info.category);
+
+    expect(listDailyCategories([])).toEqual(dailyByDefault);
   });
 
   it('ignores overrides of unknown categories', () => {
-    expect(listDailyCategories([{ category: 'comment.mentions_you', email: 'daily' }])).toEqual([]);
+    expect(listDailyCategories([{ category: 'comment.mentions_you', email: 'daily' }])).toEqual(
+      listDailyCategories([]),
+    );
   });
 });

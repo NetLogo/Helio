@@ -79,7 +79,11 @@ describe('notificationDeliveryService handleEvent', () => {
 
   beforeEach(() => {
     sentIds.clear();
-    notificationPreferenceRepository.findAllByUser.mockReset().mockResolvedValue([]);
+    notificationPreferenceRepository.findAllByUser.mockReset().mockResolvedValue(
+      (['comment.on_your_model', 'comment.reply_to_you'] as const).map((category) =>
+        makePreferenceRecord({ category, email: 'immediate', inApp: true }),
+      ),
+    );
     userNotificationRepository.insertTx.mockReset().mockResolvedValue(makeInsertedNotification());
     userNotificationRepository.markEmailSentTx
       .mockReset()
@@ -617,7 +621,13 @@ describe('notificationDeliveryService handleEvent', () => {
                 inApp: false,
               }),
             ]
-          : [],
+          : [
+              makePreferenceRecord({
+                category: 'comment.on_your_model',
+                email: 'immediate',
+                inApp: true,
+              }),
+            ],
       );
       userRepository.findOneById.mockImplementation(async (id: string) =>
         makeUserRecord({ id, email: `${id}@example.test` }),
@@ -711,7 +721,13 @@ describe('notificationDeliveryService handleEvent', () => {
                 inApp: false,
               }),
             ]
-          : [],
+          : [
+              makePreferenceRecord({
+                category: 'comment.on_your_model',
+                email: 'immediate',
+                inApp: true,
+              }),
+            ],
       );
       userRepository.findOneById.mockImplementation(async (id: string) =>
         makeUserRecord({ id, email: `${id}@example.test` }),

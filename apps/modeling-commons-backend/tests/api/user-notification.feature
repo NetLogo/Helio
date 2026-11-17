@@ -87,8 +87,10 @@ Feature: Notification Preferences and Feed
 
   Scenario: Commenting notifies other authors but never the commenter
     Given an authenticated user "owner"
+    And "owner" sets email to "immediate" for category "comment.on_your_model"
     And a public model "Notify Model" created by "owner"
     And an authenticated user "contributor"
+    And "contributor" sets email to "immediate" for category "comment.on_your_model"
     And "owner" has added "contributor" as a contributor to "Notify Model"
     And an authenticated user "commenter"
     When "commenter" comments "Great work!" on "Notify Model"
@@ -153,6 +155,7 @@ Feature: Notification Preferences and Feed
 
   Scenario: A category muted in-app is delivered by email but stays out of the feed
     Given an authenticated user "owner"
+    And "owner" sets email to "immediate" for category "comment.on_your_model"
     And a public model "Quiet Model" created by "owner"
     And "owner" mutes the in-app channel for category "comment.on_your_model"
     And an authenticated user "commenter"
@@ -326,6 +329,7 @@ Feature: Notification Preferences and Feed
 
   Scenario: The one-click unsubscribe in a comment email turns off that category for that recipient only
     Given an authenticated user "owner"
+    And "owner" sets email to "immediate" for category "comment.on_your_model"
     And a public model "Unsubscribe Model" created by "owner"
     And an authenticated user "contributor"
     And "owner" has added "contributor" as a contributor to "Unsubscribe Model"
@@ -360,6 +364,7 @@ Feature: Notification Preferences and Feed
   Scenario: The comment email shows a readable model with its title and preview image
     Given Mailpit is reachable
     And an authenticated user "owner"
+    And "owner" sets email to "immediate" for category "comment.on_your_model"
     And a public model "Pictured Model" created by "owner"
     And the model "Pictured Model" has a public preview image
     And an authenticated user "commenter"
@@ -378,6 +383,7 @@ Feature: Notification Preferences and Feed
     And a public model "Hidden Model" created by "owner"
     And the model "Hidden Model" has a public preview image
     And an authenticated user "commenter"
+    And "commenter" sets email to "immediate" for category "comment.reply_to_you"
     And "commenter" has commented "Hello there" on "Hidden Model" as "question"
     And the comment notification has been delivered
     And "owner" updates the model "Hidden Model" with visibility "private"

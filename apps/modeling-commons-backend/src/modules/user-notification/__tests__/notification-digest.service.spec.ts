@@ -366,6 +366,7 @@ describe('notificationDigestService', () => {
     it('defaults to the categories the recipient has on daily', async () => {
       notificationPreferenceRepository.findAllByUser.mockResolvedValue([
         makeRecord({ userId: 'recipient-1', category: 'comment.reply_to_you', email: 'daily' }),
+        makeRecord({ userId: 'recipient-1', category: 'comment.on_your_model', email: 'off' }),
       ]);
 
       await service.sendDailyDigest('recipient-1', window);
