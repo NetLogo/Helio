@@ -546,6 +546,21 @@ broadcast network selection dropdown are potentially valid for a HubNet client
 (even a client on a different network) to connect to. Similarly HubNet clients
 may connect to any HubNet server reachable from their computer.
 
+### Why am I being asked if I want to run the `startup` procedure in some models?
+
+Any model can define a procedure called `startup`, which if defined will be run
+when the model is first loaded in a NetLogo session. Historically, this would
+happen automatically, but this can cause some issues. For example, many HubNet
+models initialize the HubNet server in the `startup` procedure, which opens a
+blocking dialog that requires you to start the server before interacting with
+the model. There are also no restrictions on what a model author can put in the
+`startup` procedure, including the creation and deletion of arbitrary files, the
+use of third-party extension primitives, or a computationally-intensive
+procedure that causes NetLogo to hang. For these reasons, NetLogo now asks the
+user for confirmation before running a defined `startup` procedure. This
+behavior can be disabled or re-enabled at any time by changing the corresponding
+preference in the Preferences dialog.
+
 ## Usage
 
 ### When I move the speed slider all the way to the right, why does my model seem to stop?
